@@ -1,0 +1,388 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mixture phase weights</title><style>body{background:#F5EFE6;color:#1F1E1B;font:16px/1.55 Arial;max-width:1300px;margin:36px auto;padding:0 24px}h1,h2,h3{font-family:Georgia;font-weight:500}a{color:#224A82}table{border-collapse:collapse;font-size:14px}td,th{padding:6px 12px;border-bottom:1px solid #ccc}.scroll{overflow:auto}</style></head><body><h1>Data mixture by phase</h1><h3>What each phase emphasizes</h3>
+<p>Each phase weights 200 topic × quality groups. Topic shares below sum over quality buckets; quality shares sum over topics. Phase percentages refer to planned training steps, rounded to mixture-block boundaries. Topic names describe the dominant content in each cluster, using the <a href="https://storage.googleapis.com/marin-public/held/harrier-k40-cluster-overview/2026.08.18/index.html?revision=uniform-sampling">store’s labels and examples</a>.</p>
+<ul>
+<li><strong>Start to 25% — Harrier:</strong> Software-heavy, led by infrastructure/security (9.3%), performance logs and low-level code (9.0%), and natural-science research (8.8%). General software development/web code contributes 7.9%; history/literature 6.9%; math problems/proofs 4.3%.</li>
+<li><strong>25% to roughly 80% — new phase 0:</strong> More command-line agent transcripts (1.3% → 6.0%), law/courts (1.1% → 3.6%), and world news (0.8% → 2.7%). Less general software development/web code (7.9% → 4.5%), finance (5.6% → 2.4%), history/literature (6.9% → 3.7%), and math (4.3% → 1.8%). Performance logs and low-level code become the largest cluster at 10.6%.</li>
+<li><strong>Roughly 80% to finish — new phase 1:</strong> More natural-science research (6.9% → 11.3%), alongside performance logs/low-level code (11.4%) and agent transcripts (6.6%). General software development/web code falls again, to 3.1%, and math to 1.4%. The highest classifier-rated quality bucket, Q4, rises from 22.9% to 28.0% of the mixture; it was 22.6% in the initial phase.</li>
+</ul>
+<p>Arrows compare each phase with the preceding phase. These are configured weights, not measured token counts or claims that every document matches its cluster’s label. <a href="https://storage.googleapis.com/marin-public/held/h100-mix25-paloma/mixture-phases-2026.09.13.1/index.html">All 40 topic shares and five quality shares</a>.</p><h2>Topic shares (%)</h2><div class="scroll"><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>cluster</th>
+      <th>topic</th>
+      <th>Start–25%: Harrier</th>
+      <th>25–80%: new phase 0</th>
+      <th>80–100%: new phase 1</th>
+      <th>Original cooldown (reference)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>Geopolitics and World News</td>
+      <td>0.78</td>
+      <td>2.65</td>
+      <td>1.80</td>
+      <td>7.10</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>Consumer Health and Supplements</td>
+      <td>4.21</td>
+      <td>3.71</td>
+      <td>2.32</td>
+      <td>0.35</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Arts, History, and Culture</td>
+      <td>1.19</td>
+      <td>0.59</td>
+      <td>0.55</td>
+      <td>0.61</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Finance, Insurance, and Markets</td>
+      <td>5.64</td>
+      <td>2.43</td>
+      <td>2.78</td>
+      <td>0.46</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Consumer Tech and Cybersecurity</td>
+      <td>0.31</td>
+      <td>1.04</td>
+      <td>0.45</td>
+      <td>1.19</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Government Notices and Environment</td>
+      <td>1.30</td>
+      <td>2.79</td>
+      <td>3.92</td>
+      <td>8.65</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Public Policy Debates</td>
+      <td>0.58</td>
+      <td>1.65</td>
+      <td>1.10</td>
+      <td>0.41</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>Games and Gambling</td>
+      <td>1.38</td>
+      <td>1.33</td>
+      <td>1.54</td>
+      <td>0.36</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>Schools and Children's Programs</td>
+      <td>0.24</td>
+      <td>0.84</td>
+      <td>0.87</td>
+      <td>1.82</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>Study Skills and Academic Writing</td>
+      <td>0.12</td>
+      <td>0.91</td>
+      <td>0.75</td>
+      <td>1.80</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>Personal Wellbeing and Conduct</td>
+      <td>0.24</td>
+      <td>1.26</td>
+      <td>1.27</td>
+      <td>0.55</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>Food and Recipes</td>
+      <td>0.76</td>
+      <td>1.32</td>
+      <td>0.87</td>
+      <td>1.52</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>Travel and Destinations</td>
+      <td>2.31</td>
+      <td>2.64</td>
+      <td>3.41</td>
+      <td>3.63</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>Command-Line Agent Transcripts</td>
+      <td>1.31</td>
+      <td>6.04</td>
+      <td>6.56</td>
+      <td>9.46</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>Software Development and Web Code</td>
+      <td>7.85</td>
+      <td>4.46</td>
+      <td>3.07</td>
+      <td>3.00</td>
+    </tr>
+    <tr>
+      <td>15</td>
+      <td>Clinical Treatment and Dentistry</td>
+      <td>0.09</td>
+      <td>1.64</td>
+      <td>1.21</td>
+      <td>0.06</td>
+    </tr>
+    <tr>
+      <td>16</td>
+      <td>Sports and Competition</td>
+      <td>1.05</td>
+      <td>2.31</td>
+      <td>2.22</td>
+      <td>1.28</td>
+    </tr>
+    <tr>
+      <td>17</td>
+      <td>SEO and Online Business</td>
+      <td>4.59</td>
+      <td>2.95</td>
+      <td>2.61</td>
+      <td>0.34</td>
+    </tr>
+    <tr>
+      <td>18</td>
+      <td>Business Software and Strategy</td>
+      <td>0.76</td>
+      <td>1.21</td>
+      <td>1.15</td>
+      <td>0.99</td>
+    </tr>
+    <tr>
+      <td>19</td>
+      <td>Home Maintenance and Trades</td>
+      <td>0.32</td>
+      <td>0.57</td>
+      <td>0.89</td>
+      <td>0.39</td>
+    </tr>
+    <tr>
+      <td>20</td>
+      <td>School Curricula and Teacher Training</td>
+      <td>1.73</td>
+      <td>0.95</td>
+      <td>0.81</td>
+      <td>2.53</td>
+    </tr>
+    <tr>
+      <td>21</td>
+      <td>Christian Faith and Devotion</td>
+      <td>3.77</td>
+      <td>2.25</td>
+      <td>2.01</td>
+      <td>3.07</td>
+    </tr>
+    <tr>
+      <td>22</td>
+      <td>Application and Web Development</td>
+      <td>0.74</td>
+      <td>0.25</td>
+      <td>0.13</td>
+      <td>1.67</td>
+    </tr>
+    <tr>
+      <td>23</td>
+      <td>Consumer Devices and Vehicles</td>
+      <td>3.41</td>
+      <td>2.45</td>
+      <td>1.86</td>
+      <td>2.01</td>
+    </tr>
+    <tr>
+      <td>24</td>
+      <td>Emotions, Relationships, and Wellbeing</td>
+      <td>3.49</td>
+      <td>2.13</td>
+      <td>1.37</td>
+      <td>11.14</td>
+    </tr>
+    <tr>
+      <td>25</td>
+      <td>Whimsical and Fan Fiction Writing</td>
+      <td>5.73</td>
+      <td>4.37</td>
+      <td>4.78</td>
+      <td>2.21</td>
+    </tr>
+    <tr>
+      <td>26</td>
+      <td>Council and Board Meeting Records</td>
+      <td>0.70</td>
+      <td>2.31</td>
+      <td>2.49</td>
+      <td>0.79</td>
+    </tr>
+    <tr>
+      <td>27</td>
+      <td>General Knowledge and Trivia</td>
+      <td>0.25</td>
+      <td>0.22</td>
+      <td>0.12</td>
+      <td>0.19</td>
+    </tr>
+    <tr>
+      <td>28</td>
+      <td>Performance Logs and Low-Level Code</td>
+      <td>8.97</td>
+      <td>10.63</td>
+      <td>11.36</td>
+      <td>0.23</td>
+    </tr>
+    <tr>
+      <td>29</td>
+      <td>Courses, Tutoring, and School Services</td>
+      <td>3.35</td>
+      <td>3.28</td>
+      <td>3.96</td>
+      <td>5.23</td>
+    </tr>
+    <tr>
+      <td>30</td>
+      <td>Natural Sciences Research</td>
+      <td>8.79</td>
+      <td>6.85</td>
+      <td>11.28</td>
+      <td>2.53</td>
+    </tr>
+    <tr>
+      <td>31</td>
+      <td>Fiction, Film, and Television</td>
+      <td>0.07</td>
+      <td>0.77</td>
+      <td>0.63</td>
+      <td>1.12</td>
+    </tr>
+    <tr>
+      <td>32</td>
+      <td>Software Infrastructure and Security</td>
+      <td>9.27</td>
+      <td>8.28</td>
+      <td>8.04</td>
+      <td>1.03</td>
+    </tr>
+    <tr>
+      <td>33</td>
+      <td>Racing, Sports, and Entertainment Records</td>
+      <td>0.42</td>
+      <td>1.05</td>
+      <td>1.21</td>
+      <td>0.30</td>
+    </tr>
+    <tr>
+      <td>34</td>
+      <td>Pets, Gardening, and Pest Control</td>
+      <td>0.68</td>
+      <td>0.61</td>
+      <td>0.20</td>
+      <td>1.17</td>
+    </tr>
+    <tr>
+      <td>35</td>
+      <td>Crafts, Design, and Home Decor</td>
+      <td>1.04</td>
+      <td>1.52</td>
+      <td>1.53</td>
+      <td>4.63</td>
+    </tr>
+    <tr>
+      <td>36</td>
+      <td>Gambling and Financial Services</td>
+      <td>0.31</td>
+      <td>0.64</td>
+      <td>0.93</td>
+      <td>0.48</td>
+    </tr>
+    <tr>
+      <td>37</td>
+      <td>Law, Courts, and Regulation</td>
+      <td>1.09</td>
+      <td>3.63</td>
+      <td>2.88</td>
+      <td>6.29</td>
+    </tr>
+    <tr>
+      <td>38</td>
+      <td>History, Literature, and Heritage</td>
+      <td>6.87</td>
+      <td>3.66</td>
+      <td>3.67</td>
+      <td>0.33</td>
+    </tr>
+    <tr>
+      <td>39</td>
+      <td>Mathematics Problems and Proofs</td>
+      <td>4.28</td>
+      <td>1.78</td>
+      <td>1.40</td>
+      <td>9.10</td>
+    </tr>
+  </tbody>
+</table></div><h2>Quality-bucket shares (%)</h2><p>Q0 is the lowest classifier-rated bucket; Q4 is the highest. The original cooldown column is a reference and is not used by the mixture-swap treatment.</p><div class="scroll"><table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>quality</th>
+      <th>Start–25%: Harrier</th>
+      <th>25–80%: new phase 0</th>
+      <th>80–100%: new phase 1</th>
+      <th>Original cooldown (reference)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>2.35</td>
+      <td>3.33</td>
+      <td>2.94</td>
+      <td>1.23</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>11.64</td>
+      <td>14.26</td>
+      <td>14.68</td>
+      <td>9.12</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>28.85</td>
+      <td>26.87</td>
+      <td>22.90</td>
+      <td>25.33</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>34.52</td>
+      <td>32.68</td>
+      <td>31.51</td>
+      <td>36.98</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>22.63</td>
+      <td>22.85</td>
+      <td>27.97</td>
+      <td>27.34</td>
+    </tr>
+  </tbody>
+</table></div><p><a href="topic_weights.csv">Topic CSV</a> · <a href="quality_weights.csv">Quality CSV</a> · <a href="cluster_labels.json">Cluster labels</a> · <a href="https://github.com/marin-community/marin/issues/9126">Issue #9126</a></p></body></html>

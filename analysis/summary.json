@@ -1,0 +1,447 @@
+{
+  "retrieved_date_local": "2026-10-04",
+  "total_store_tokens": 23106103007622,
+  "tokens_per_step": 46137344,
+  "planned_steps": 390251,
+  "phase_boundaries_steps": [
+    0,
+    108000,
+    312192,
+    390251
+  ],
+  "phase_budgets_tokens": [
+    4982833152000,
+    9420876546048,
+    3601434935296
+  ],
+  "planned_tokens": 18005144633344,
+  "max_planned_epochs": 6.740831025867672,
+  "max_initial_weight_diff_vs_pinned_spec": 3.469446951953614e-18,
+  "current_snapshot": {
+    "hero-12d8b6f0-dee637": {
+      "stages": [
+        [
+          0,
+          223,
+          0.9999999999999996
+        ],
+        [
+          312192,
+          223,
+          0.9999999999999997
+        ]
+      ],
+      "state": "crashed",
+      "heartbeat": "2026-09-03T23:14:25Z",
+      "summary_step": 58020,
+      "seq_len": 4096
+    },
+    "hero-fa4sm100-nomask-step146k": {
+      "stages": [
+        [
+          0,
+          223,
+          1.0
+        ],
+        [
+          108000,
+          223,
+          1.0
+        ],
+        [
+          312192,
+          223,
+          1.0000000000000002
+        ]
+      ],
+      "state": "running",
+      "heartbeat": "2026-10-03T21:38:08Z",
+      "summary_step": 199174,
+      "seq_len": 4096
+    },
+    "hero-main-step121638": {
+      "stages": [
+        [
+          0,
+          223,
+          1.0000000000000002
+        ],
+        [
+          108000,
+          223,
+          0.9999999999999998
+        ],
+        [
+          312192,
+          223,
+          0.9999999999999997
+        ]
+      ],
+      "state": "crashed",
+      "heartbeat": "2026-09-23T21:40:33Z",
+      "summary_step": 146344,
+      "seq_len": 4096
+    },
+    "hero-mix-996f4891-step108k": {
+      "stages": [
+        [
+          0,
+          223,
+          1.0
+        ],
+        [
+          108000,
+          223,
+          1.0000000000000002
+        ],
+        [
+          312192,
+          223,
+          1.0
+        ]
+      ],
+      "state": "crashed",
+      "heartbeat": "2026-09-15T23:20:06Z",
+      "summary_step": 108981,
+      "seq_len": 4096
+    },
+    "hero-nopdl-step108k": {
+      "stages": [
+        [
+          0,
+          223,
+          1.0
+        ],
+        [
+          108000,
+          223,
+          1.0
+        ],
+        [
+          312192,
+          223,
+          1.0000000000000002
+        ]
+      ],
+      "state": "crashed",
+      "heartbeat": "2026-09-18T19:14:23Z",
+      "summary_step": 121979,
+      "seq_len": 4096
+    },
+    "hero-ragged_a2a-nccl2307-ep-step81k": {
+      "stages": [
+        [
+          0,
+          223,
+          1.0
+        ],
+        [
+          312192,
+          223,
+          0.9999999999999998
+        ]
+      ],
+      "state": "crashed",
+      "heartbeat": "2026-09-15T17:14:34Z",
+      "summary_step": 108257,
+      "seq_len": 4096
+    },
+    "hero-wd-gate-router-p02-step58k": {
+      "stages": [
+        [
+          0,
+          223,
+          1.0
+        ],
+        [
+          312192,
+          223,
+          1.0
+        ]
+      ],
+      "state": "crashed",
+      "heartbeat": "2026-09-09T19:34:06Z",
+      "summary_step": 81919,
+      "seq_len": 4096
+    }
+  },
+  "paired_windows": {
+    "ep": {
+      "train/cross_entropy_loss": {
+        "n": 200,
+        "mean_new_minus_old": -0.0064983397722244264,
+        "max_absolute_delta": 0.0071408748626708984,
+        "ratio_medians": 0.9948899878537503
+      },
+      "grad/norm/total": {
+        "n": 20,
+        "mean_new_minus_old": 0.007026614248752594,
+        "max_absolute_delta": 0.2282278835773468,
+        "ratio_medians": 1.001316768135682
+      },
+      "throughput/mfu": {
+        "n": 200,
+        "mean_new_minus_old": 1.3743309601009934,
+        "max_absolute_delta": 14.38234427551669,
+        "ratio_medians": 1.081535211115699
+      },
+      "throughput/tokens_per_second": {
+        "n": 200,
+        "mean_new_minus_old": 161538.8614953896,
+        "max_absolute_delta": 1690500.7508023907,
+        "ratio_medians": 1.0815352111156988
+      },
+      "moe/drop_fraction": {
+        "n": 200,
+        "mean_new_minus_old": -0.034197276729921046,
+        "max_absolute_delta": 0.03518550318073143,
+        "ratio_medians": 0.0022156193789828584
+      }
+    },
+    "kernels": {
+      "train/cross_entropy_loss": {
+        "n": 200,
+        "mean_new_minus_old": 0.00036009907722473145,
+        "max_absolute_delta": 0.0008767843246459961,
+        "ratio_medians": 1.0002633333586382
+      },
+      "grad/norm/total": {
+        "n": 20,
+        "mean_new_minus_old": -0.026446565985679626,
+        "max_absolute_delta": 0.2743123173713684,
+        "ratio_medians": 0.9464982405987884
+      },
+      "throughput/mfu": {
+        "n": 200,
+        "mean_new_minus_old": 2.558293480926029,
+        "max_absolute_delta": 16.174324876800306,
+        "ratio_medians": 1.1082262505486442
+      },
+      "throughput/tokens_per_second": {
+        "n": 200,
+        "mean_new_minus_old": 300701.81657662656,
+        "max_absolute_delta": 1901130.1512576544,
+        "ratio_medians": 1.1082262505486442
+      },
+      "moe/drop_fraction": {
+        "n": 200,
+        "mean_new_minus_old": 1.3871448622508477e-06,
+        "max_absolute_delta": 9.47414699828986e-05,
+        "ratio_medians": 1.0305724604425643
+      }
+    }
+  },
+  "windows": [
+    {
+      "window": "window_mix_before",
+      "run": "hero-ragged_a2a-nccl2307-ep-step81k",
+      "range": [
+        107800,
+        108200
+      ],
+      "metrics": {
+        "train/cross_entropy_loss": {
+          "n": 400,
+          "mean": 1.209754175543785,
+          "median": 1.2099641561508179
+        },
+        "grad/norm/total": {
+          "n": 40,
+          "mean": 0.6022193662822246,
+          "median": 0.6064739227294922
+        },
+        "throughput/mfu": {
+          "n": 400,
+          "mean": 22.65420239757074,
+          "median": 23.22885478576849
+        },
+        "throughput/tokens_per_second": {
+          "n": 400,
+          "mean": 2662774.957147717,
+          "median": 2730319.599042599
+        },
+        "moe/drop_fraction": {
+          "n": 400,
+          "mean": 0.00011451007177432378,
+          "median": 0.00011160614138299769
+        }
+      }
+    },
+    {
+      "window": "window_kernel_new",
+      "run": "hero-fa4sm100-nomask-step146k",
+      "range": [
+        146139,
+        146339
+      ],
+      "metrics": {
+        "train/cross_entropy_loss": {
+          "n": 200,
+          "mean": 1.209490275979042,
+          "median": 1.2094626426696777
+        },
+        "grad/norm/total": {
+          "n": 20,
+          "mean": 0.6924720346927643,
+          "median": 0.6814032196998596
+        },
+        "throughput/mfu": {
+          "n": 200,
+          "mean": 26.47286306295144,
+          "median": 26.751823576443275
+        },
+        "throughput/tokens_per_second": {
+          "n": 200,
+          "mean": 3111620.3329933537,
+          "median": 3144409.351839534
+        },
+        "moe/drop_fraction": {
+          "n": 200,
+          "mean": 9.601564767460028e-05,
+          "median": 9.474649348042227e-05
+        }
+      }
+    },
+    {
+      "window": "window_ep_control",
+      "run": "hero-wd-gate-router-p02-step58k",
+      "range": [
+        81716,
+        81917
+      ],
+      "metrics": {
+        "train/cross_entropy_loss": {
+          "n": 201,
+          "mean": 1.2299875958048883,
+          "median": 1.2297850847244263
+        },
+        "grad/norm/total": {
+          "n": 20,
+          "mean": 0.3732937350869179,
+          "median": 0.3829152435064316
+        },
+        "throughput/mfu": {
+          "n": 201,
+          "mean": 21.486316905174498,
+          "median": 21.69889728304262
+        },
+        "throughput/tokens_per_second": {
+          "n": 201,
+          "mean": 2525501.6959932074,
+          "median": 2550488.3936766773
+        },
+        "moe/drop_fraction": {
+          "n": 201,
+          "mean": 0.03427153041303499,
+          "median": 0.034258789298209275
+        }
+      }
+    },
+    {
+      "window": "window_ep_new",
+      "run": "hero-ragged_a2a-nccl2307-ep-step81k",
+      "range": [
+        81716,
+        81917
+      ],
+      "metrics": {
+        "train/cross_entropy_loss": {
+          "n": 201,
+          "mean": 1.2234901148288404,
+          "median": 1.2236589193344116
+        },
+        "grad/norm/total": {
+          "n": 20,
+          "mean": 0.3803203493356705,
+          "median": 0.3834194540977478
+        },
+        "throughput/mfu": {
+          "n": 201,
+          "mean": 22.859876860071022,
+          "median": 23.46732492696734
+        },
+        "throughput/tokens_per_second": {
+          "n": 201,
+          "mean": 2686949.9335366143,
+          "median": 2758349.379516348
+        },
+        "moe/drop_fraction": {
+          "n": 201,
+          "mean": 7.569034410182588e-05,
+          "median": 7.59627895824837e-05
+        }
+      }
+    },
+    {
+      "window": "window_kernel_control",
+      "run": "hero-main-step121638",
+      "range": [
+        146139,
+        146339
+      ],
+      "metrics": {
+        "train/cross_entropy_loss": {
+          "n": 200,
+          "mean": 1.2091301769018172,
+          "median": 1.2091442346572876
+        },
+        "grad/norm/total": {
+          "n": 20,
+          "mean": 0.7189186006784439,
+          "median": 0.7199202179908752
+        },
+        "throughput/mfu": {
+          "n": 200,
+          "mean": 23.91456958202541,
+          "median": 24.139315923259694
+        },
+        "throughput/tokens_per_second": {
+          "n": 200,
+          "mean": 2810918.516416727,
+          "median": 2837335.201438196
+        },
+        "moe/drop_fraction": {
+          "n": 200,
+          "mean": 9.462850281234943e-05,
+          "median": 9.193579017212897e-05
+        }
+      }
+    },
+    {
+      "window": "window_mix_after",
+      "run": "hero-mix-996f4891-step108k",
+      "range": [
+        108000,
+        108200
+      ],
+      "metrics": {
+        "train/cross_entropy_loss": {
+          "n": 200,
+          "mean": 1.2346469086408616,
+          "median": 1.2349005937576294
+        },
+        "grad/norm/total": {
+          "n": 20,
+          "mean": 0.6777726024389267,
+          "median": 0.6797362267971039
+        },
+        "throughput/mfu": {
+          "n": 200,
+          "mean": 22.96365612209882,
+          "median": 23.535987835090317
+        },
+        "throughput/tokens_per_second": {
+          "n": 200,
+          "mean": 2699148.1480289735,
+          "median": 2766420.0177593613
+        },
+        "moe/drop_fraction": {
+          "n": 200,
+          "mean": 0.00011044195429845289,
+          "median": 9.818993170153011e-05
+        }
+      }
+    }
+  ],
+  "duplicate_value_conflicts": []
+}

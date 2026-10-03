@@ -1,0 +1,39 @@
+{
+  "verified_utc": "2026-10-03T22:26:40.710320+00:00",
+  "tool": "Tabbit Playwright",
+  "desktop": {
+    "viewport": 1440,
+    "body_width": 1425,
+    "all_five_images_loaded": true,
+    "initial_rows": 200
+  },
+  "mobile": {
+    "viewport": 390,
+    "document_width": 375,
+    "no_document_horizontal_overflow": true
+  },
+  "interactions": {
+    "agent_domain_rows": 5,
+    "agent_Q4_rows": 1,
+    "math_search_rows": 5,
+    "highest_planned_exposure": "c27q0",
+    "sample_panel_opens": true,
+    "toc_checkpoint_matches": 4,
+    "notes_persist_after_reload": true,
+    "temporary_test_notes_restored": true
+  },
+  "standalone": {
+    "rows": 200,
+    "all_five_images_loaded": true,
+    "remote_http_requests": [],
+    "page_errors": []
+  },
+  "screenshots": [
+    "screenshots/desktop.png",
+    "screenshots/mobile.png"
+  ],
+  "limitations": [
+    "Browser extensions may inject chrome-extension scripts; these are not remote HTTP resources from this report.",
+    "PDF print output was not exported or validated."
+  ]
+}

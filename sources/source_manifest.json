@@ -1,0 +1,665 @@
+[
+  {
+    "file": "issue.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8435",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/8435",
+    "bytes": 8902,
+    "sha256": "a54694915dc162c10a2754ad58dfae46cad0ea9573c01b0db151e42a0743ddc2",
+    "retrieved_utc": "2026-10-03T21:32:58.487399+00:00"
+  },
+  {
+    "file": "comments_p1.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8435/comments?per_page=100&page=1",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/8435/comments?per_page=100&page=1",
+    "bytes": 106995,
+    "sha256": "961fa251b7b9c11aed54a123c0570414b4c05ba9e9f3106bdcdf59191cef6a58",
+    "retrieved_utc": "2026-10-03T21:32:58.646971+00:00"
+  },
+  {
+    "file": "data_overview.html",
+    "url": "https://storage.googleapis.com/marin-public/held/harrier-k40-cluster-overview/2026.08.18/index.html?revision=uniform-sampling",
+    "final_url": "https://storage.googleapis.com/marin-public/held/harrier-k40-cluster-overview/2026.08.18/index.html?revision=uniform-sampling",
+    "bytes": 1124165,
+    "sha256": "7bb03ec42887be8fd57cdc61899a8585e465d352aff5ec109e0193ac6726522e",
+    "retrieved_utc": "2026-10-03T21:33:00.184780+00:00"
+  },
+  {
+    "file": "prior_repo.json",
+    "url": "https://api.github.com/repos/fudan-chen/pretrain",
+    "final_url": "https://api.github.com/repos/fudan-chen/pretrain",
+    "bytes": 5075,
+    "sha256": "42eeda969a3789ed25fa1f6dde1ccc41a2954d150f55e19ec9aa8e148f17fd57",
+    "retrieved_utc": "2026-10-03T21:32:58.501610+00:00"
+  },
+  {
+    "file": "prior_tree.json",
+    "url": "https://api.github.com/repos/fudan-chen/pretrain/git/trees/main?recursive=1",
+    "final_url": "https://api.github.com/repos/fudan-chen/pretrain/git/trees/main?recursive=1",
+    "bytes": 157590,
+    "sha256": "2fe1fea79a3d07b8969380817650f320cad207d1da7cfe0fe7ccaac9890c2d8d",
+    "retrieved_utc": "2026-10-03T21:32:59.375260+00:00"
+  },
+  {
+    "file": "marin_repo.json",
+    "url": "https://api.github.com/repos/marin-community/marin",
+    "final_url": "https://api.github.com/repos/marin-community/marin",
+    "bytes": 6547,
+    "sha256": "8f0102d9d911838ea55343b10a04f7d6092c966d4c2684b2eb418c7eb3d467d6",
+    "retrieved_utc": "2026-10-03T21:32:59.105825+00:00"
+  },
+  {
+    "file": "wandb_report.html",
+    "url": "https://wandb.ai/marin-community/marin_moe/reports/535B-A23B-18T-Token-Hero-Run-Scaling-Ladder--VmlldzoxNzc2MDM5Ng",
+    "final_url": "https://forge.coreweave.com/wandb/marin-community/marin_moe/reports/535B-A23B-18T-Token-Hero-Run-Scaling-Ladder--VmlldzoxNzc2MDM5Ng",
+    "bytes": 4577,
+    "sha256": "7da8f6363880555610657ce923bec14856c28eac45bbeeb0f2ca264abc99fc48",
+    "retrieved_utc": "2026-10-03T21:32:59.632201+00:00"
+  },
+  {
+    "file": "code_train.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/12d8b6f09f96ad4f0277445765c1a00dbc81d5be/experiments/grug/moe_hero_ep/train.py",
+    "final_url": "https://raw.githubusercontent.com/marin-community/marin/12d8b6f09f96ad4f0277445765c1a00dbc81d5be/experiments/grug/moe_hero_ep/train.py",
+    "bytes": 46165,
+    "sha256": "adfdbb3128babe5270e56d73518aa02f54fd7ba88c8844cf0c5602cb8232d8fc",
+    "retrieved_utc": "2026-10-03T21:34:44.803795+00:00"
+  },
+  {
+    "file": "code_model.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/12d8b6f09f96ad4f0277445765c1a00dbc81d5be/experiments/grug/moe_hero_ep/model.py",
+    "final_url": "https://raw.githubusercontent.com/marin-community/marin/12d8b6f09f96ad4f0277445765c1a00dbc81d5be/experiments/grug/moe_hero_ep/model.py",
+    "bytes": 73204,
+    "sha256": "ddbd6473ebb5faa52a8935491852efbe7bea62d4ba64df93679754307d96bf06",
+    "retrieved_utc": "2026-10-03T21:34:44.829176+00:00"
+  },
+  {
+    "file": "code_optimizer.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/12d8b6f09f96ad4f0277445765c1a00dbc81d5be/experiments/grug/moe_hero_ep/optimizer.py",
+    "final_url": "https://raw.githubusercontent.com/marin-community/marin/12d8b6f09f96ad4f0277445765c1a00dbc81d5be/experiments/grug/moe_hero_ep/optimizer.py",
+    "bytes": 9346,
+    "sha256": "2e64be6d9c1534add6aeecfcc0e71388e29936d6b66df59ac37db6b67b6de42f",
+    "retrieved_utc": "2026-10-03T21:34:44.742912+00:00"
+  },
+  {
+    "file": "code_launch_scaling_ladder.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/12d8b6f09f96ad4f0277445765c1a00dbc81d5be/experiments/grug/moe_hero_ep/launch_scaling_ladder.py",
+    "final_url": "https://raw.githubusercontent.com/marin-community/marin/12d8b6f09f96ad4f0277445765c1a00dbc81d5be/experiments/grug/moe_hero_ep/launch_scaling_ladder.py",
+    "bytes": 14086,
+    "sha256": "e35bcea2c1eb2fb2363703711c59408227a269f3a598c9e2189bdc48494079ad",
+    "retrieved_utc": "2026-10-03T21:34:44.772305+00:00"
+  },
+  {
+    "file": "code_launch_datakit_moe_mix.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/12d8b6f09f96ad4f0277445765c1a00dbc81d5be/experiments/grug/moe_hero_ep/launch_datakit_moe_mix.py",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "file": "plot_scaling_ladder.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/d23e6e9c3673435fb82d83aa6c51a607d0da6009/experiments/grug/moe_hero_ep/plot_scaling_ladder.py",
+    "final_url": "https://raw.githubusercontent.com/marin-community/marin/d23e6e9c3673435fb82d83aa6c51a607d0da6009/experiments/grug/moe_hero_ep/plot_scaling_ladder.py",
+    "bytes": 15754,
+    "sha256": "35069ff126690dd82fe9aefd768009e1a1073c4e6e1c674e857ee5a3a35fbacb",
+    "retrieved_utc": "2026-10-03T21:34:45.257818+00:00"
+  },
+  {
+    "file": "ep_writeup.html",
+    "url": "https://storage.googleapis.com/marin-public/rav/moe-fixed-wave-a2a-384/2026.08.17/index.html",
+    "final_url": "https://storage.googleapis.com/marin-public/rav/moe-fixed-wave-a2a-384/2026.08.17/index.html",
+    "bytes": 43372,
+    "sha256": "16a3e03ca0c82da266a96eb275a6af1cf5a2bc2003689756f5c76b19fa3c45f3",
+    "retrieved_utc": "2026-10-03T21:34:46.188333+00:00"
+  },
+  {
+    "file": "issue_8443.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8443",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/8443",
+    "bytes": 4729,
+    "sha256": "a9b046fae539728b0fad0dbb30a88214fc40339087cbc954ca3c4ec58053bd3a",
+    "retrieved_utc": "2026-10-03T21:34:45.441973+00:00"
+  },
+  {
+    "file": "issue_8443_comments.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8443/comments?per_page=100",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/8443/comments?per_page=100",
+    "bytes": 10682,
+    "sha256": "746148951e79310791e048455e2723234a9f345cccbbc628842528fb21744887",
+    "retrieved_utc": "2026-10-03T21:34:45.460308+00:00"
+  },
+  {
+    "file": "issue_8480.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8480",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/8480",
+    "bytes": 5727,
+    "sha256": "09459681c87a2e80b35dd73745bcfc6b2a6cd0e8cfafd3107810964fa95c5727",
+    "retrieved_utc": "2026-10-03T21:34:45.497885+00:00"
+  },
+  {
+    "file": "issue_8480_comments.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8480/comments?per_page=100",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/8480/comments?per_page=100",
+    "bytes": 14784,
+    "sha256": "ebc5781289ca63959bc68e0c0f9d5e5a6a595033a6574c7287059d308a799017",
+    "retrieved_utc": "2026-10-03T21:34:46.056029+00:00"
+  },
+  {
+    "file": "issue_9352.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/9352",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/9352",
+    "bytes": 11177,
+    "sha256": "3e295992ad2c115f5f32a3a0546c26440d919d410ba958517f28123e6bb1c3f5",
+    "retrieved_utc": "2026-10-03T21:34:46.204725+00:00"
+  },
+  {
+    "file": "issue_9352_comments.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/9352/comments?per_page=100",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/9352/comments?per_page=100",
+    "bytes": 2,
+    "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+    "retrieved_utc": "2026-10-03T21:34:46.135239+00:00"
+  },
+  {
+    "file": "issue_9615.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/9615",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/9615",
+    "bytes": 9739,
+    "sha256": "3cae02d2a4f95d5ba4c4df08b956b19647888670c708dd141efb11f71b678326",
+    "retrieved_utc": "2026-10-03T21:34:46.171453+00:00"
+  },
+  {
+    "file": "issue_9615_comments.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/9615/comments?per_page=100",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/9615/comments?per_page=100",
+    "bytes": 56832,
+    "sha256": "80eb22d975650e494685315f0358b8c14e05b13a85779d1620e3ad4362d547a3",
+    "retrieved_utc": "2026-10-03T21:34:46.941445+00:00"
+  },
+  {
+    "file": "issue_8827.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8827",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/8827",
+    "bytes": 2662,
+    "sha256": "66fa72dc0b4db51ce120d30a44d0bb20aa757dec3812c80273640595ef9916ee",
+    "retrieved_utc": "2026-10-03T21:34:46.921607+00:00"
+  },
+  {
+    "file": "issue_8827_comments.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8827/comments?per_page=100",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/8827/comments?per_page=100",
+    "bytes": 73425,
+    "sha256": "ef7daf0fab65ffafa15d61bb5960a3ca568985686c4c4d6aa5b48c2a1e26b4f7",
+    "retrieved_utc": "2026-10-03T21:34:46.961700+00:00"
+  },
+  {
+    "file": "issue_7856.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/7856",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/7856",
+    "bytes": 7457,
+    "sha256": "8a3003e9805980f8d93d33eeb0922a18424e45c402b0fe0afc7f502c763cbebe",
+    "retrieved_utc": "2026-10-03T21:34:46.853724+00:00"
+  },
+  {
+    "file": "issue_7856_comments.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/7856/comments?per_page=100",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/7856/comments?per_page=100",
+    "bytes": 28239,
+    "sha256": "e8e51c9aafa302b9e78f03fbeeb9311fb536eed42d970de4f3d25b175517150e",
+    "retrieved_utc": "2026-10-03T21:34:46.890312+00:00"
+  },
+  {
+    "file": "issue_8003.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8003",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/8003",
+    "bytes": 6900,
+    "sha256": "c222e237353768ab0eb31f8e193d8a38fe9fd84aa66392665ad2f46807af9f3e",
+    "retrieved_utc": "2026-10-03T21:34:47.534962+00:00"
+  },
+  {
+    "file": "issue_8003_comments.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8003/comments?per_page=100",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/8003/comments?per_page=100",
+    "bytes": 9563,
+    "sha256": "bd78221de53b4150370e3e9551c35e414729c65b405807cec38984d59f5ca05d",
+    "retrieved_utc": "2026-10-03T21:34:47.497784+00:00"
+  },
+  {
+    "file": "issue_6442.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/6442",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/6442",
+    "bytes": 9357,
+    "sha256": "a9a47ee888b45adda1358f79579103e737708be04ba24a492d3c3936a4d56c33",
+    "retrieved_utc": "2026-10-03T21:34:47.699713+00:00"
+  },
+  {
+    "file": "issue_6442_comments.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/6442/comments?per_page=100",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/6442/comments?per_page=100",
+    "bytes": 14578,
+    "sha256": "50a54dcbceb85ce33caf1f0e771c69f0b71f0a21a4177e9bf7213fd13abb517d",
+    "retrieved_utc": "2026-10-03T21:34:47.875160+00:00"
+  },
+  {
+    "file": "issue_5203.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/5203",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/5203",
+    "bytes": 4552,
+    "sha256": "8bf5b85673ffae74ec863720db093cc27f899df1ca19d5d3bd08e3f71b82c794",
+    "retrieved_utc": "2026-10-03T21:34:47.641849+00:00"
+  },
+  {
+    "file": "issue_5203_comments.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/5203/comments?per_page=100",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/5203/comments?per_page=100",
+    "bytes": 7203,
+    "sha256": "3f5183354201993fc00c3bfc85aafa07dc4c3a4996a15f8006d81ac53412450b",
+    "retrieved_utc": "2026-10-03T21:34:48.264236+00:00"
+  },
+  {
+    "file": "issue_6739.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/6739",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/6739",
+    "bytes": 10086,
+    "sha256": "e0299120cb975f2a9af656f0896da3ecc62789f1af3a7d7ee75a87ba8fe2c9ff",
+    "retrieved_utc": "2026-10-03T21:34:48.349781+00:00"
+  },
+  {
+    "file": "issue_6739_comments.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/6739/comments?per_page=100",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/6739/comments?per_page=100",
+    "bytes": 35817,
+    "sha256": "7b9e5722be5e33f4808290dc5c51d8a225fe7a07df50fc7ef3adb072dbea1632",
+    "retrieved_utc": "2026-10-03T21:34:48.581308+00:00"
+  },
+  {
+    "file": "issue_7208.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/7208",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/7208",
+    "bytes": 7966,
+    "sha256": "80871363b0383acac4fa0ca65f01b26fb4ec50c27c90969e0e7ae8f37d38c20f",
+    "retrieved_utc": "2026-10-03T21:34:48.513569+00:00"
+  },
+  {
+    "file": "issue_7208_comments.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/7208/comments?per_page=100",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/7208/comments?per_page=100",
+    "bytes": 80934,
+    "sha256": "b14314c564e697bbd3f700b5b747f23308f4a5fde173ee4832cdb509a16bc55c",
+    "retrieved_utc": "2026-10-03T21:34:48.656632+00:00"
+  },
+  {
+    "file": "issue_6443.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/6443",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/6443",
+    "bytes": 6531,
+    "sha256": "29c885002cd92b35e68a0cdae2e98fcd009c3c1fa5c6a96a1835eaa529c4f0e1",
+    "retrieved_utc": "2026-10-03T21:34:48.893110+00:00"
+  },
+  {
+    "file": "issue_6443_comments.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/6443/comments?per_page=100",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/6443/comments?per_page=100",
+    "bytes": 4814,
+    "sha256": "990999fec7047459e2a9351349037e6a98775e1076681317d4300358603d0f17",
+    "retrieved_utc": "2026-10-03T21:34:48.943113+00:00"
+  },
+  {
+    "file": "prior_README.md",
+    "url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/README.md",
+    "final_url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/README.md",
+    "bytes": 4916,
+    "sha256": "80a02376ac22370ca506cb7dbfd097957bcf727aaec38b53c913716f2833fbaf",
+    "retrieved_utc": "2026-10-03T21:34:49.041053+00:00"
+  },
+  {
+    "file": "prior_docs_learning_06-reading-training-signals.md",
+    "url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/docs/learning/06-reading-training-signals.md",
+    "final_url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/docs/learning/06-reading-training-signals.md",
+    "bytes": 3893,
+    "sha256": "2f5624dc2b76c8cc1f91cb2d2c4d48c2b2fe4408d289eb89aa020fb18f8ffd27",
+    "retrieved_utc": "2026-10-03T21:34:49.090986+00:00"
+  },
+  {
+    "file": "prior_docs_learning_04-worked-example-step-32999.md",
+    "url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/docs/learning/04-worked-example-step-32999.md",
+    "final_url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/docs/learning/04-worked-example-step-32999.md",
+    "bytes": 2754,
+    "sha256": "4aec0f0ddbf5cee96473b1d2fe55fa8ea2e610d042a6c4f8754f5810c627c564",
+    "retrieved_utc": "2026-10-03T21:34:49.147812+00:00"
+  },
+  {
+    "file": "prior_reports_generated_hero_2026-09-03-pm.md",
+    "url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/reports/generated/hero/2026-09-03-pm.md",
+    "final_url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/reports/generated/hero/2026-09-03-pm.md",
+    "bytes": 1708,
+    "sha256": "895befa4603d8406439906e1c3ed936039fa8b644a1f6005a6b87cac6528ac8c",
+    "retrieved_utc": "2026-10-03T21:34:49.369829+00:00"
+  },
+  {
+    "file": "prior_notes_daily_2026-10-02.md",
+    "url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/notes/daily/2026-10-02.md",
+    "final_url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/notes/daily/2026-10-02.md",
+    "bytes": 7770,
+    "sha256": "6fb889e0b4aaee3a44d9dae60f0f72fc11e4a55af5c530dc577101b130f438ab",
+    "retrieved_utc": "2026-10-03T21:34:49.442721+00:00"
+  },
+  {
+    "file": "prior_scripts_marin_wandb.py",
+    "url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/scripts/marin_wandb.py",
+    "final_url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/scripts/marin_wandb.py",
+    "bytes": 3095,
+    "sha256": "0c2aa6563b0157a16587c68da9a2066d322b53a91796fe788fd2e23f33472048",
+    "retrieved_utc": "2026-10-03T21:34:49.518985+00:00"
+  },
+  {
+    "file": "prior_scripts_pull_data.py",
+    "url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/scripts/pull_data.py",
+    "final_url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/scripts/pull_data.py",
+    "bytes": 4840,
+    "sha256": "1784548df38d5f3f69cb881521ed74714173d3ee5b6e7385fc46750b6c9650d0",
+    "retrieved_utc": "2026-10-03T21:34:49.575924+00:00"
+  },
+  {
+    "file": "prior_scripts_marin_tracker_hero.py",
+    "url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/scripts/marin_tracker/hero.py",
+    "final_url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/scripts/marin_tracker/hero.py",
+    "bytes": 12022,
+    "sha256": "182dc5587fbc521be41f84c028cf49f26fbee1afe561c4d87215dec783b65c14",
+    "retrieved_utc": "2026-10-03T21:34:49.662830+00:00"
+  },
+  {
+    "file": "prior_data_hero_hero-12d8b6f0-dee637_meta.json",
+    "url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/data/hero/hero-12d8b6f0-dee637/meta.json",
+    "final_url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/data/hero/hero-12d8b6f0-dee637/meta.json",
+    "bytes": 148066,
+    "sha256": "3f2caf0a8cd0f74d7575c31fae1064a6b5f1179359cb4ed85f96d207d1000f33",
+    "retrieved_utc": "2026-10-03T21:34:49.994201+00:00"
+  },
+  {
+    "file": "prior_data_hero_hero-12d8b6f0-dee637_mixture.jsonl",
+    "url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/data/hero/hero-12d8b6f0-dee637/mixture.jsonl",
+    "final_url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/data/hero/hero-12d8b6f0-dee637/mixture.jsonl",
+    "bytes": 9388,
+    "sha256": "f1feb4508d0ad7cf3c31d96701a965fe18b5311c8ca6b330ddb4e2216e96f384",
+    "retrieved_utc": "2026-10-03T21:34:49.961836+00:00"
+  },
+  {
+    "file": "prior_data_hero_hero-12d8b6f0-dee637_eval.jsonl",
+    "url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/data/hero/hero-12d8b6f0-dee637/eval.jsonl",
+    "final_url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/data/hero/hero-12d8b6f0-dee637/eval.jsonl",
+    "bytes": 51383,
+    "sha256": "ce5f6fb2aef9f543504c8ffa320271a13de3338a6ec0792987983112b1285cdb",
+    "retrieved_utc": "2026-10-03T21:34:50.073278+00:00"
+  },
+  {
+    "file": "prior_data_hero_hero-12d8b6f0-dee637_dense.csv",
+    "url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/data/hero/hero-12d8b6f0-dee637/dense.csv",
+    "final_url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/data/hero/hero-12d8b6f0-dee637/dense.csv",
+    "bytes": 2266224,
+    "sha256": "d40d4f3f3699502a4afa73df323bfc038bc66965ce49063d9432f551443156e7",
+    "retrieved_utc": "2026-10-03T21:34:50.597845+00:00"
+  },
+  {
+    "file": "hero_related_search.json",
+    "url": "https://api.github.com/search/issues?q=repo%3Amarin-community%2Fmarin+hero+gate+router&per_page=20",
+    "final_url": "https://api.github.com/search/issues?q=repo%3Amarin-community%2Fmarin+hero+gate+router&per_page=20",
+    "bytes": 212672,
+    "sha256": "8ce21440371c8efd367fe52d950af9a461e1ad52e8736909748b8689b8828fa1",
+    "retrieved_utc": "2026-10-03T21:34:50.604354+00:00"
+  },
+  {
+    "file": "issue_8506.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8506",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/8506",
+    "bytes": 3937,
+    "sha256": "77e2a282f368870dfe7edcc5460f92582f68a30f9e21947150e047d012939c9a",
+    "retrieved_utc": "2026-10-03T21:35:49.007745+00:00"
+  },
+  {
+    "file": "issue_8506_comments.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8506/comments?per_page=100",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/8506/comments?per_page=100",
+    "bytes": 151775,
+    "sha256": "5d7840f10eb28fdc78b229d924a13fdc6626c18b3718c1f41b0ab2a7bb399cb7",
+    "retrieved_utc": "2026-10-03T21:35:49.176265+00:00"
+  },
+  {
+    "file": "issue_8818.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8818",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/8818",
+    "bytes": 3339,
+    "sha256": "1a7e2c34008ccc43b9ff84b569d91c0dc3fca972b48660a3aff839c1d5b774ec",
+    "retrieved_utc": "2026-10-03T21:35:49.021534+00:00"
+  },
+  {
+    "file": "issue_8818_comments.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8818/comments?per_page=100",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/8818/comments?per_page=100",
+    "bytes": 59228,
+    "sha256": "17355f588909489d922ac9d459eee2b482bef94a13db01d325f8582c0c0afd54",
+    "retrieved_utc": "2026-10-03T21:35:49.109279+00:00"
+  },
+  {
+    "file": "harrier_mix_12d8b6f0.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/12d8b6f09f96ad4f0277445765c1a00dbc81d5be/experiments/grug/moe_hero_ep/harrier_mix_2026_08_18.py",
+    "final_url": "https://raw.githubusercontent.com/marin-community/marin/12d8b6f09f96ad4f0277445765c1a00dbc81d5be/experiments/grug/moe_hero_ep/harrier_mix_2026_08_18.py",
+    "bytes": 6193,
+    "sha256": "a706e1a33dfe530ab72cf28678b472fe7aaa72cfcd715ad853dbba2eb5613995",
+    "retrieved_utc": "2026-10-03T21:35:49.534629+00:00"
+  },
+  {
+    "file": "harrier_mix_996f4891.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/996f4891/experiments/grug/moe_hero_ep/harrier_mix_2026_08_18.py",
+    "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "file": "harrier_mix_main.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/main/experiments/grug/moe_hero_ep/harrier_mix_2026_08_18.py",
+    "final_url": "https://raw.githubusercontent.com/marin-community/marin/main/experiments/grug/moe_hero_ep/harrier_mix_2026_08_18.py",
+    "bytes": 7104,
+    "sha256": "90b2881c131682567bae111e8d6cf4d104a0a81c0e0bc1f206b96226d1f295d7",
+    "retrieved_utc": "2026-10-03T21:35:49.587929+00:00"
+  },
+  {
+    "file": "issue_9126.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/9126",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/9126",
+    "bytes": 16199,
+    "sha256": "ff42bfae305d778697b7471eaa9bf5e96727abf8260b84d7222f5c7d00647930",
+    "retrieved_utc": "2026-10-03T21:37:13.549180+00:00"
+  },
+  {
+    "file": "issue_9126_comments.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/9126/comments?per_page=100",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/9126/comments?per_page=100",
+    "bytes": 7303,
+    "sha256": "ec815f06d5e74b8b07703932039e862800b4ad79a1d6883cb01fc8c2ab700420",
+    "retrieved_utc": "2026-10-03T21:37:13.450394+00:00"
+  },
+  {
+    "file": "issue_8870.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8870",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/8870",
+    "bytes": 7534,
+    "sha256": "19866ee91b32ada6cc196ad699bdf9dd0eac75dd669add143f4ae4ce6af52ae1",
+    "retrieved_utc": "2026-10-03T21:37:13.464698+00:00"
+  },
+  {
+    "file": "issue_8870_comments.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8870/comments?per_page=100",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/8870/comments?per_page=100",
+    "bytes": 111784,
+    "sha256": "0b31e85fdbfeb4e938ff4c11dc7736e93ced670dbe838fe54440152bdb9f28ec",
+    "retrieved_utc": "2026-10-03T21:37:13.629080+00:00"
+  },
+  {
+    "file": "issue_9062.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/9062",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/9062",
+    "bytes": 5948,
+    "sha256": "e56b18a8dcf73a5d077a27ad19bdaa6ce51ceee03016ea5013df2cc928283fe5",
+    "retrieved_utc": "2026-10-03T21:37:14.116589+00:00"
+  },
+  {
+    "file": "issue_9062_comments.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/9062/comments?per_page=100",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/9062/comments?per_page=100",
+    "bytes": 4508,
+    "sha256": "2aa2d59ca8c0ff9ae72a0ab1214fa7941ab3328960a281bde2a4534271e344c4",
+    "retrieved_utc": "2026-10-03T21:37:14.081134+00:00"
+  },
+  {
+    "file": "issue_9332.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/9332",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/9332",
+    "bytes": 6624,
+    "sha256": "66b342981ae1a3673bd97687e9134bc227150fe023f5b4117a85ba60e3857942",
+    "retrieved_utc": "2026-10-03T21:37:14.196556+00:00"
+  },
+  {
+    "file": "issue_9332_comments.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/9332/comments?per_page=100",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/9332/comments?per_page=100",
+    "bytes": 10368,
+    "sha256": "07cc616cba80b466b85ef5ee5f2c0f8e0fcd615c32a0b817165d2b5e6efe3f27",
+    "retrieved_utc": "2026-10-03T21:37:14.234873+00:00"
+  },
+  {
+    "file": "issue_9333.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/9333",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/9333",
+    "bytes": 6431,
+    "sha256": "a8441cd465cf7c730d6167b73e5db55b3e37e05103d4ce3d28b7c2ab2d6e4854",
+    "retrieved_utc": "2026-10-03T21:37:14.710607+00:00"
+  },
+  {
+    "file": "issue_9333_comments.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/9333/comments?per_page=100",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/9333/comments?per_page=100",
+    "bytes": 4508,
+    "sha256": "2d5cff91a85ba7cf31f45055fe1be54e621d3277cd5988dd05fd93223ce82696",
+    "retrieved_utc": "2026-10-03T21:37:14.726815+00:00"
+  },
+  {
+    "file": "issue_8317.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8317",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/8317",
+    "bytes": 7224,
+    "sha256": "2054de07f8301161d777e94e9cf118d557a0858855d18047e789e77e33296578",
+    "retrieved_utc": "2026-10-03T21:37:14.812436+00:00"
+  },
+  {
+    "file": "issue_8317_comments.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8317/comments?per_page=100",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/8317/comments?per_page=100",
+    "bytes": 71017,
+    "sha256": "a5e09559c69f44d9f6c9fcbaf423e272b8e176e16c046e1d922c674a88c1e3f3",
+    "retrieved_utc": "2026-10-03T21:37:14.947939+00:00"
+  },
+  {
+    "file": "issue_9689.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/9689",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/9689",
+    "bytes": 5016,
+    "sha256": "8460170f79256a5b076556cdcb22321d3c02faeeaba5d0709c6d1cacd2b94b6b",
+    "retrieved_utc": "2026-10-03T21:37:15.358138+00:00"
+  },
+  {
+    "file": "issue_9689_comments.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/9689/comments?per_page=100",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/9689/comments?per_page=100",
+    "bytes": 10093,
+    "sha256": "49a1fe279b31cdbf3ae71ada27ca164181d6d167ced258a9e60350a395a40679",
+    "retrieved_utc": "2026-10-03T21:37:15.361094+00:00"
+  },
+  {
+    "file": "harrier_spec_12d8b6f0.json",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/12d8b6f09f96ad4f0277445765c1a00dbc81d5be/experiments/grug/moe_hero_ep/harrier_mix_2026_08_18.json",
+    "final_url": "https://raw.githubusercontent.com/marin-community/marin/12d8b6f09f96ad4f0277445765c1a00dbc81d5be/experiments/grug/moe_hero_ep/harrier_mix_2026_08_18.json",
+    "bytes": 20247,
+    "sha256": "d664c5012bf5431c42c49686fde8e82f6d35f819e59280bcc6a62b6b04d968c8",
+    "retrieved_utc": "2026-10-03T21:37:15.295136+00:00"
+  },
+  {
+    "file": "harrier_spec_main.json",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/main/experiments/grug/moe_hero_ep/harrier_mix_2026_08_18.json",
+    "final_url": "https://raw.githubusercontent.com/marin-community/marin/main/experiments/grug/moe_hero_ep/harrier_mix_2026_08_18.json",
+    "bytes": 29521,
+    "sha256": "8f3fd489a6b2bacdcbf61e47577e4e87864e320aece2a62eae64c8f62721344e",
+    "retrieved_utc": "2026-10-03T21:37:15.534888+00:00"
+  },
+  {
+    "file": "launch_datakit_moe_mix.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/12d8b6f09f96ad4f0277445765c1a00dbc81d5be/experiments/grug/moe/launch_datakit_moe_mix.py",
+    "final_url": "https://raw.githubusercontent.com/marin-community/marin/12d8b6f09f96ad4f0277445765c1a00dbc81d5be/experiments/grug/moe/launch_datakit_moe_mix.py",
+    "bytes": 15701,
+    "sha256": "cb37487c4e716f967be309a3eb51a6f8a6ae407de43cfb739628ffc02936bfa2",
+    "retrieved_utc": "2026-10-03T21:37:15.789315+00:00"
+  },
+  {
+    "file": "mix_study_final-2026.09.15.1_final_results.csv",
+    "url": "https://storage.googleapis.com/marin-public/held/h100-mix25-paloma/final-2026.09.15.1/final_results.csv",
+    "final_url": "https://storage.googleapis.com/marin-public/held/h100-mix25-paloma/final-2026.09.15.1/final_results.csv",
+    "bytes": 5334,
+    "sha256": "eab3a513da9477e68f927c1ce290dda85f012778f772493030be78032431833a",
+    "retrieved_utc": "2026-10-03T21:38:35.184984+00:00"
+  },
+  {
+    "file": "mix_study_final-2026.09.15.1_point_speedups.csv",
+    "url": "https://storage.googleapis.com/marin-public/held/h100-mix25-paloma/final-2026.09.15.1/point_speedups.csv",
+    "final_url": "https://storage.googleapis.com/marin-public/held/h100-mix25-paloma/final-2026.09.15.1/point_speedups.csv",
+    "bytes": 16577,
+    "sha256": "f3511561c956fd93990d9f67fed98cb7a53620660634a0ffaad3c1375762eb91",
+    "retrieved_utc": "2026-10-03T21:38:35.382858+00:00"
+  },
+  {
+    "file": "mix_study_swarm-2026.09.14.1_comparison.csv",
+    "url": "https://storage.googleapis.com/marin-public/held/h100-mix25-paloma/swarm-2026.09.14.1/comparison.csv",
+    "final_url": "https://storage.googleapis.com/marin-public/held/h100-mix25-paloma/swarm-2026.09.14.1/comparison.csv",
+    "bytes": 4755,
+    "sha256": "9f5ddf657d56897aa811b33b0b9af87a40522fe803951cead2f2263e08d3454e",
+    "retrieved_utc": "2026-10-03T21:38:35.175651+00:00"
+  },
+  {
+    "file": "mix_study_swarm-2026.09.14.1_selected_runs.json",
+    "url": "https://storage.googleapis.com/marin-public/held/h100-mix25-paloma/swarm-2026.09.14.1/selected_runs.json",
+    "final_url": "https://storage.googleapis.com/marin-public/held/h100-mix25-paloma/swarm-2026.09.14.1/selected_runs.json",
+    "bytes": 161820,
+    "sha256": "cb2a8b6ac3df1adf2b7861844c8a688736729ebad0a7329bed5a7f5c334a6851",
+    "retrieved_utc": "2026-10-03T21:38:35.795538+00:00"
+  },
+  {
+    "file": "mix_study_mixture-phases-2026.09.13.1_index.html",
+    "url": "https://storage.googleapis.com/marin-public/held/h100-mix25-paloma/mixture-phases-2026.09.13.1/index.html",
+    "final_url": "https://storage.googleapis.com/marin-public/held/h100-mix25-paloma/mixture-phases-2026.09.13.1/index.html",
+    "bytes": 10706,
+    "sha256": "e282faa3e697f41b9c3e3f20e9981078230f21f4b71fa776ae68a0396c3f4902",
+    "retrieved_utc": "2026-10-03T21:38:36.498808+00:00"
+  },
+  {
+    "file": "issue_9162.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/9162",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/9162",
+    "bytes": 4665,
+    "sha256": "4eb5bae474e795fe2d72b88e60758ac655befe812ccc969a47ac48b78769335e",
+    "retrieved_utc": "2026-10-03T21:38:35.806981+00:00"
+  },
+  {
+    "file": "issue_9183.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/9183",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/9183",
+    "bytes": 5766,
+    "sha256": "3664c601b197fefb037de7da57206fe1024290d7435f296e0e95553f13261af5",
+    "retrieved_utc": "2026-10-03T21:38:36.037787+00:00"
+  },
+  {
+    "file": "issue_9179.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/9179",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/9179",
+    "bytes": 5754,
+    "sha256": "ea38c33b535f47363f0fb744f6a3911647b5d5d837457c00228d9b93d87cc4b6",
+    "retrieved_utc": "2026-10-03T21:38:36.451511+00:00"
+  },
+  {
+    "file": "best_mixture_996f489106c7b922.json",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/main/experiments/grug/moe_hero_ep/best_mixture_996f489106c7b922.json",
+    "error": "HTTP Error 404: Not Found"
+  }
+]

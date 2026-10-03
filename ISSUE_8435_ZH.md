@@ -1,0 +1,305 @@
+# #8435 主帖及27条评论：逐条中文解读
+
+本章按原顺序覆盖主帖及27条评论。每条保留原文入口和作者身份；“原意”是中文转述，保留数字、条件和判断强度；“读法”是本报告的解释。重复引用上一条的英文段落不再重复，代码路径与数学符号保持原样。原始英文全文保存在 `sources/issue_thread.md`，可对照检查。本章不能用“已解决”概括全部条目：评论中有计划、问题、实验、否定结论和社交回复。
+
+## 主帖｜为什么先花约1%算力做 Scaling Ladder
+
+[原文](https://github.com/marin-community/marin/issues/8435)
+
+**原意。** 这个issue记录Hero Run配置、scaling ladder和训练表现。先做小尺度实验有五个用途：预估模型表现并与旧recipe比较，差得明显就重新检查模型或数据；观察随训练预算增长的grad norm和token dropping，上一轮就由此发现grad norm超过4并引入logit z-loss，后来消融发现没修时大batch会中途爆炸；为约100天的训练逐阶段设预期；遇到异常时对照小实验，区分正常动态和问题；全部成本约占总compute的1%。
+
+EP实现是自写JAX/XLA专家并行，链接另有详解。上轮训练是8K预训练、1T tokens的65K extension，再计划262K；这一轮先回4K，提高同token budget下的sequence数量，减轻专家不均衡。之前4K→65K的drop约7%→40%；新pooled/wave在4K约3%，65K仍可能过高。
+
+计划在开跑10–20天时分叉做1–2天早期cooldown，供RL实验，也观察全尺寸长context的drop。候选方案是换成熟的dropless kernel、提高capacity，最后才考虑sequence-level balancing，因为中途逼专家重新专门化可能更差。qk scaling准备试 `mscale=1+X·ln(new/old)`、X接近0.1；原定50%时4K→8K，95%时8K→65K，再按小模型信息安排262K。共享路径约占相关神经元的三分之一，给高drop时提供稳定backbone；作者报告40% drop仍能学习、未见loss spikes。
+
+若硬件或MFU使进度严重拖延，前约25%阶段优先缩短token horizon，同时重算线性decay和datamix，使新终点仍到峰值LR的5%。
+
+**读法。** 早期cooldown是分叉，不能把它的LR decay接回主训练；扩context是预案，不能写成完成。2026-10-04抓取仍4K，而后续讨论已更倾向16K而非8K。梯度高的历史结果也不能替代这一轮验证。
+
+## C001｜完整初始配方与系统设计
+
+ClassicLarry，2026-08-19 00:15 UTC。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5335872267)
+
+**原意。** 535.3B总参数/22.76B激活参数、18T tokens、约2.70e24前向+反向FLOPs；GB200、EP64、手写pooled-wave all-to-all；数据来自fuzzy-dedup datakit store的两阶段Harrier。
+
+| 初始模型配置 | 值 |
+|---|---|
+| hidden_dim / layers | 6144 / 48 |
+| query heads / head_dim | 48 / 128 |
+| KV heads | 存12；local12、global6；GQA4:1/8:1 |
+| experts / top-k | 384 / 8 |
+| expert FFN / latent width | 3072 / 3072 |
+| shared experts | 2个dense SwiGLU，width3072 |
+| vocab | 128256 |
+| max context / sliding window | 4096 / 2048 |
+| global_every | 4；末层也全局 |
+| capacity / transport capacity | 1.15 / 1.15 |
+| expert waves | 3 |
+| qk_mult / RoPE theta | 1.3 / 10000；fused half-RoPE |
+| ShortConv | K、attn、MLP三处，kernel4 |
+| init std | 0.5/√hidden≈0.006379 |
+
+模型的详细部件：
+
+1. **全MoE层。** 每层MLP都走QB router，没有dense-only layers。
+2. **QB直方图路由。** 加bias后取top-(K+1)，第K+1个score给每token阈值α；每专家对`score−α`取上侧分位β。10k-bin histogram由全局实时min/max和累积count估计。`−β`在下一步作为zero-mean、stop-gradient bias应用，以调整负载而不对这项bias校正回传梯度。
+3. **合并权重。** 对未加bias的选中logits做sigmoid，K项再归一到固定和2.5；不是通常的softmax router。
+4. **LatentMoE。** hidden→3072→learnable RMSNorm→dispatch→合并→hidden，router仍读6144维。Norm把activation scale与down-projection initialization分开。
+5. **Shared experts。** 两条dense SwiGLU处理每个token，与routed path相加后接residual。
+6. **Embedding/readout RMSNorm。** 除block内部外，还在embedding和untied lm_head前放learnable RMSNorm。
+7. **GatedNorm。** 所有这些RMSNorm后还有rank128的可学习gate：`x·sigmoid(silu(x·w_down)·w_up)`。
+8. **XSA。** 每head从attention输出里减去与自己的value平行的分量，减少简单复制V的通道。
+9. **Attention head gate。** `2·sigmoid(x·attn_gate)`，attn_gate零初始化，所以初始gate=1。
+10. **QK RMSNorm。** 每head、RoPE之前对Q/K无参数RMS归一化。
+11. **Half-RoPE。** head前一半维度有RoPE、后一半没有；global层完全NoPE。
+12. **ShortConv。** 因果depthwise kernel4、identity-init、packed document边界mask，在K/attn/MLP三处。
+13. **Embedding/readout不共享权重。** token_embed replicated并shard-local lookup，lm_head做FSDP+model sharding。
+14. **最终logit z-loss。** `1e-4·logsumexp(logits)^2`融合进CE，参与优化；router z-loss只记日志。监控还包括各层entropy、load balance、sender/receiver drop。
+
+优化器分三组：矩阵用MuonH：bf16 Newton–Schulz正交化5步、Nesterov momentum0.95，再沿Frobenius球面做保范数更新；lm_head用AdamH，Adam moments取方向、同样保范数，使用MuonH LR；embedding、router、router_bias、attn_gate、1D norm gains和短卷积用Adam。
+
+| 初始优化器配置 | 值 |
+|---|---|
+| MuonH LR / Adam LR | 0.003291 / 0.000759；比值13/3 |
+| beta1 / beta2 | 0.90 / 0.95 |
+| Adam epsilon / Muon epsilon | 6.04e-15 / 1e-8 |
+| momentum / nesterov | 0.95 / true |
+| symmetric GEMM use_syrk | true |
+| LR | linear；warmup1%；min ratio0.05 |
+| global grad clip | 无 |
+| final-logit z-loss | 1e-4 |
+
+MuonH/AdamH不额外加decoupled WD，约束来自保范数投影。LR、beta2、epsilon由既有refit按compute、hidden和tokens/batch缩放：`adam_lr=0.087571·tokens^-0.3461·hidden^-0.3448·sqrt(tpb)`；`beta2=clip(0.999^(tpb/131072),0.95,0.9999)`；`epsilon=9.676e-18·sqrt(tokens/tpb)`。
+
+训练布局：11 racks，rack内16 nodes×4GPU做EP64，rack间数据复制；batch11264、seq4096、原计划390139 steps；约791 tokens/active-param。初期params/compute/output bf16，fp32 master在pinned host，optimizer state offload；router top-k和QB统计前保留fp32路径。两阶段参考预算15T+3.75T、80%阶段边界；small runs使用simulated epoching模拟大预算数据曝光，8 epochs cap，初始max约2.1。**代码对>1e23 FLOPs的expensive run关闭simulated epoching，所以主Hero不是把小模型的模拟循环机械重复。**
+
+工程提速的原意依次是：
+
+- fixed pooled-wave transport：静态pool/buffer shape；expert IDs以header rows随activation传输，不另发metadata collective；3 waves减少单次activation内存；round-robin receiver分配减轻sender偏置。
+- latent payload减半，MFU的FLOP accounting同时修正，避免高估利用率。
+- FA4-cute segmented attention通过每token key lower bounds表达窗口与文档mask，不生成B×S×S mask；64×64 tiles适配B200；bounds放scan之外预算。
+- 融合linear+CE在线流式logsumexp，不materialize128k词表logits；vocab block4096；backward GEMMs用bf16 tensor cores，原评论报告CE形状约2.3×加速，不能当全step加速。
+- ShortConv用Pallas/Triton fused kernel，depthwise无需跨channel通信；GPU外保留参考fallback。
+- QuACK symmetric GEMM只计算对称输出的一边，减少Newton–Schulz两次`X·Xᵀ`的重复乘法。
+- 分布式Muon只在rack内：非expert层堆栈leading axis zero-pad后reshard；4D专家栈按expert axis分发，不gather矩阵fan-in/fan-out；避免DCN慢链路。
+- 48层ArrayStacked+scan；RoPE用where选、KV heads用cond、mask bounds先算再选，使局部/全局层共用一个编译体。
+- `recompute_all`重算整block省显存；`save_moe`可保留dispatch tensor，少重跑EP通信。
+- capacity1.15给计算与缓冲上界，但会有assignment drop。
+- host offload释放HBM留给通信，checkpoint read-back和恢复内存由#8443/#8480修正；hourly temporary checkpoints用于preemption续训。
+- runtime启用latency hiding、overlap limit4、CUDA async allocator；PGLE和GPU command buffers关闭。
+
+Ladder记录：d768/1rack/1024batch/11420steps/48Btokens/61Mactive；d1024/2racks/2048batch/15276steps/128B/162M；d1536/6racks/6144batch/15128steps/381B/481M；d2048/11racks/11264batch/20072steps/926B/1.2B；Hero d6144/11racks/11264batch/390139steps/18T/22.8B。
+
+输出当时仍pending：checkpoint、最终eval和吞吐。d2048参考compute-step约24M tok/s、sustained约17M，MFU p50约13.6%，差距主要是跨rack DCN突发归约。**这是小rung的数字，不是535B的吞吐。**
+
+**读法。** 这些是2026-08-19的初始版本。后来换ragged、fp32参数resident device、weight decay和FA4 backend；不能把最初配置当成所有后续阶段的真实设置。
+
+## C002｜数据从哪里来，怎样去重、分桶
+
+Helw150，2026-08-19。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5336301526)
+
+**原意。** 冻结的HF provenance表列出292个来源，原始pre-dedupe数据25.6T tokens，超过100个来源是rollout datasets。fuzzy dedup与针对常见LM-eval-harness及Artificial Analysis评测的n-gram decontamination合计去掉2.494T，benchmark相关约25万文档被删，剩23.106T。fuzzy dedup用MinHash与linked pairs/connected components内的启发式。
+
+所有文档用Harrier0.6B embedding。主题分桶：在256万文档样本上先做5000个K-means clusters，再agglomerative clustering成40桶。质量：GLM5.2标注后蒸馏到“Faster Transformer”classifier，输入Harrier embedding和token distribution。链接提供各桶样本与source distribution。
+
+**读法。** 原文中后一句写“those 500 clusters”，与前面的5000不一致；本文保留这处不一致，不猜它一定是哪次配置。23.106T是候选池；去重后的量、分类权重、训练曝光次数是三个数字。这里没有足够信息证明decontamination覆盖所有未来评测。
+
+## C003｜贴出 Scaling Ladder 的 W&B report
+
+ClassicLarry，2026-08-19。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5337709199)
+
+**原意。** 提供ladder report链接。**读法。** 这是资料入口，没有新增实验结论。
+
+## C004｜拟合出的终点约2.04，来自条件外推
+
+ClassicLarry，2026-08-19。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5344533796)
+
+**原意。** 以固定recipe的rungs拟合`L=1.5+A·C^-α`，compute不含lm_head；Hero终点dropless Paloma macro loss预测约2.039。逐5%画出实测小模型及Hero外推。对已完成rungs用60–80%窗口预测自身终点，误差约0.003–0.004；80%datamix切换每个rung都有小CE bump。67B历史run的三次预测误差约0.6%。提供可重画W&B图的脚本。
+
+**读法。** 原评论说“four rungs finished”，同时说d2048在81%crash；脚本实际把d2048后段外推，并加0.005 correction。应理解为四条rung轨迹被用于拟合，不是四条都完成100%。原评论把后段变平称作cosine decay，但Hero运行config是linear，不能据此给当前run改scheduler名称。
+
+## C005｜怎样和旧模型的 scaling law 比
+
+ClassicLarry，2026-08-19。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5344804457)
+
+**原意。** May recipe更接近compute-optimal，本轮约12×overtrained，67B-A2B约100×overtrained。67B用8K context，拟合floor1.4；May图误用1.6，应该1.5。主要架构变化是4/256稀疏度到4/192，少25%总参数以适应GB200容量，另有小改动；整体轨迹看起来合理。
+
+grad norm在ladder约25%进度到峰值；小run batch偏大，可能抑制gradient，Hero可能峰值更高。drop早期到10%，再到0、后期约4%；Hero1%warmup对应更多steps，预计未必有同样初始尖峰；最可能约2%，4K下到8%也可能。
+
+**读法。** 这些是预期，不能拿2%当观察值或承诺。overtraining是相对compute-optimal token horizon，不是训练集已经过拟合的同义词。
+
+## C006｜d2048崩了，为什么不重跑
+
+ClassicLarry，2026-08-19。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5344856737)
+
+**原意。** d2048在81%失败，不再恢复，把剩余时间给Hero；前81%动态够清楚，余19%可外推。实际主训练末期不会一直4K，datamix也可能改，所以scaling law主要服务前50%的健康监控。
+
+**读法。** 是资源决策。失败原因这一条没给出，不能自动写成NaN、OOM或网络错误。
+
+## C007｜四个风险窗口，十二项健康检查
+
+ClassicLarry，2026-08-19。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5345040115)
+
+**原意。** 前3%检查warmup、initialization、batch与capacity；约30%检查gradient是否从峰值转弯，若一直涨，再看z-loss、drop和norm constraints；context extension看drop；最后低Loss区间若plateau/异常，先查numerics。
+
+健康检查包括：grad norm的振荡和增长速度；hyperball矩阵是否真保范数（曾有JAX/sharding norm计算bug，显式计算后改善）；drop是否像ladder；train loss和eval是否下降；router bias是否稳；entropy是否接近max；embedding norm是否合理；MFU是否稳；Adam/MuonH LR是否按schedule；W&B config是否正确；逐5%是否接近预测。
+
+**读法。** 全局范数只能粗筛。后续#8818证明全局Loss正常仍会有局部参数或早期专家的特殊动态；应补分层grad与敲除验证。
+
+## C008｜初期参数范数检查为健康
+
+ClassicLarry，2026-08-20。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5357943524)
+
+**原意。** 参数分组计数MuonH23、AdamH1、Adam12；范数是48层stacked tensor整体的L2，不能当每层范数。MuonH/AdamH范数恒定符合hyperball；Adam组随学习改变，没有爆炸、塌缩、NaN/inf。token_embed177→197、router67→139、router_bias0→538.9、attn_gate0→22.62都被视为正常初始动态。
+
+**读法。** 原评论把gate说成“starts closed at zero”，措辞不准确：参数为0、实际`2sigmoid(0)=1`，是中性打开。这个初期检查后来也不能代替step42k的深入调查；“当时健康”不意味着之后永远不需监控。
+
+## C009｜rms_attn不动，也可能正常
+
+ClassicLarry，2026-08-20。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5357978745)
+
+**原意。** rms attention norm没移动，但ladder也有类似行为。**读法。** 作者只是对照动态，没有证明这一参数永远无需学习，也没有提出修复。
+
+## C010｜预测的适用条件被明确限定
+
+ClassicLarry，2026-08-20。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5358054499)
+
+**原意。** 预注册Loss是假设全程4K、同datamix与token count。至少context会变，datamix在8月19日已与ladder不同。extension安排取决于EP kernel进展，不能预先完整模拟。context extension前预测仍有用；作者预计old/new datamix在Paloma上较近。
+
+**读法。** 限制不是脚注：后续拿2.04逐点判定达标时必须先检查这些条件。
+
+## C011｜读者请求补工程代码链接
+
+mansimov，2026-08-20。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5361751142)
+
+**原意。** 希望性能优化部分贴代码，PyTorch用户可参考JAX实现再移植。**读法。** 这是复用请求，没有新增benchmark。
+
+## C012｜作者已经补上链接
+
+ClassicLarry，2026-08-20。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5362936645)
+
+**原意。** 赞同并已补链接。**读法。** C001里的固定SHA入口就是后续理解每项优化的路径。
+
+## C013｜公开组成报告不等于token store能下载
+
+windsornguyen，2026-08-22。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5378422117)
+
+**原意。** CoreWeave公开endpoint无法匿名下载Harrier store：ListObjectsV2 AccessDenied；unsigned GetObject `.artifact.json`返回403；已知cell metadata keys也失败。询问是否有公开access/download procedure或mirror；GCS composition report可读。
+
+**读法。** 明确的访问边界。不能把403当数据不存在，更不能据此假装已复现完整训练语料。
+
+## C014｜读者认为前3%风险已过去
+
+WhenWen，2026-08-24。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5390867355)
+
+**原意。** 引用warmup风险，认为这一关看来已过。**读法。** 读者判断，不是新的正式验收。
+
+## C015｜为什么在NVLink rack内还要LatentMoE
+
+MythosAd，2026-08-24。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5395671408)
+
+**原意。** GB200 NVL72通信带宽很高，latent主要是跨更大规模减少通信，还是也提高能力？**读法。** 问题指向通信代价与表征设计两种可能贡献，C017回答。
+
+## C016｜作者明确不开放完整数据
+
+dlwh，2026-08-24。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5401686089)
+
+**原意。** 可分享很多datamix metadata，但不能给直接数据访问，询问对方想要什么。**读法。** 本报告只根据可验证的配置、候选池统计和公开样本研究；没有把metadata开放称为语料完全开放。
+
+## C017｜LatentMoE需要learnable RMSNorm
+
+ClassicLarry，2026-08-25。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5406648997)
+
+**原意。** latent单独将通信减半；加learnable RMSNorm后性能优于无latent；没有norm出现activation scale问题、质量约差30%。top4/192换top8/384、专家减半宽度，作者报告约15%quality gain，但通信翻倍；latent抵消通信增量，可维持通信和compute。
+
+**读法。** 不能只移植降维层、不移植scale处理。百分比的metric未在本评论定义，不能当准确率百分点；“compute不变”是设计对齐，不是证明所有硬件end-to-end耗时完全相同。
+
+## C018｜三个架构问题：dense交替、relative PE、AdamH embedding
+
+MythosAd，2026-08-26。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5427499956)
+
+**原意。** #6443尝试dense/MoE交替、没有shared，为何不继续？dense FFN是否能承担共性计算、少一半all-to-all；dropless成熟后是否更适合？#7208相对位置实验负面，但只local learned-relative、global NoPE是否值得？#5203 embedding AdamH在四尺度看似有效，为何Hero仍用Adam，是后续MuonH或#6442推翻了吗？
+
+**读法。** 读者提出替代设计，不是Hero已经实现这些方案。
+
+## C019｜三项答复，尤其是稀有token的梯度尖峰
+
+ClassicLarry，2026-08-27。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5433154702)
+
+**原意。** dense/MoE交替的小尺度、对齐active:total实验质量近似、MFU高约20%，但dense小尺度天然较好，信号不足；未做大尺度消融，且JAX scan下异构层麻烦，因此优先研究drop。relative PE早期有较低Loss，但kernel不够快、改window时有bug；更看好relative PE+MLA；小尺度global RoPE胜NoPE的优势会随scale减弱。
+
+embedding AdamH最初有效，LR sweep高40%时却出现grad spikes到20。作者猜测稀有token的norm接近0、以后出现时embedding RMSNorm大幅放大梯度。不希望模型features依赖完美hyperparameters，所以退回普通Adam。
+
+**读法。** 稀有词根因是作者的猜测，不能写成已证实。退回Adam解决的是这个feature的鲁棒性风险，不能推广成AdamH普遍无效。
+
+## C020｜读者补充自己的设计动机
+
+MythosAd，2026-08-27。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5433737400)
+
+**原意。** dense和MoE分开有利于共性/专门化及独立调kernel，不只关注目前MFU；固定local window的relative PE不需外推，global纯内容寻址。认可需要更大scale消融。**读法。** 技术观点，未提供新训练结果。
+
+## C021｜希望看中途模型生成
+
+mudkjp，2026-08-28。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5458731192)
+
+**原意。** 哪里能看ongoing model generations？**读法。** Loss不能代替生成质量，C024给了入口。
+
+## C022｜复现分桶还需要classifier与cluster weights
+
+ruisizhang123，2026-08-31。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5483980316)
+
+**原意。** datamix按category/quality codeword选取，复现需要raw text→codeword映射，因此请求K-means与Fast Transformer checkpoint。**读法。** 只拿200个weight数值仍不能给新的语料准确分桶。
+
+## C023｜相关weights已经给出HF版本
+
+Helw150，2026-08-31。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5485981757)
+
+**原意。** 该版本cluster与classifier weights在 `marin-data-mix-tools` 的 `08.18.2026` tree，inference代码在repo。**读法。** 这是分桶工具的可复用产物，和完整store访问是两件事。[工具入口](https://huggingface.co/marin-community/marin-data-mix-tools/tree/08.18.2026/08.18.2026)
+
+## C024｜中途generations跟踪在#8827
+
+ClassicLarry，2026-09-01。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5489229549)
+
+**原意。** 已在#8827开始展示。**读法。** 可以作为错误类型的定性材料，不能拿几个挑选的样例代替统计评测。[生成记录](https://github.com/marin-community/marin/issues/8827)
+
+## C025｜Router精度实验：建议保持现状
+
+yonromai，2026-09-22。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5785310423)
+
+**原意。** 建议继续使用当前router算术。BF16 operands+FP32 accumulation/output提高了保存输入上的精度，但也改变专家选择；小规模继续20步没有显示中途切换的收益。
+
+| 保存输入测试 | 当前BF16输出后转FP32 | BF16 operands、FP32 accum/output | FP32 operands |
+|---|---:|---:|---:|
+| score RMS error对FP64 | 0.0074565 | 0.00002808 | 0.00000416 |
+| max error | 0.0311123 | 0.00007003 | 0.00002373 |
+| 324条top8顺序 | 80条变 | 全部一致 | 全部一致 |
+| isolated forward ms | 14.07 | 14.07 | 18.20 |
+| isolated backward ms | 14.43 | 14.48 | 23.26 |
+
+fixture只有32个byte-distinct activation vectors，324条是有效保存记录，并非324个独立随机向量；生产shape probe把它们tile到65536行，保留频率。
+
+实际step126000 restored batch：top8顺序8.9853%变化，专家集合2.6479%变化。preferred算术两种launch顺序都约1.5–2%慢；30paired postcompile steps的median throughput ratio0.98245、iteration-time ratio1.01436；peak HBM都115.5375GiB。
+
+20步continuation，19个真实postcompile batches：current/pref平均train loss1.24572355/1.24572228，差−0.00000127；sender drops684900/722882，约+5.55%；receiver字段0；entropy5.945189/5.945129；expert-count CV0.097451/0.098131。两run有不同router gradients和pending QB状态，不能因Loss近似就说轨迹完全一样。
+
+纠正后的Paloma用同一current算术并应用各自pending QB state：current loss2.22016478、preferred-trained2.22088742，pref高0.00072265；macro BPB高0.00029618，16子集15个loss较高。这太早、差值太小，且preferred-trained被旧算术评估，不能判断长期preferred策略质量。
+
+全模型实验只有1rack、batch1024，生产11racks/global11264，cross-rack reductions没测，QB histogram样本数量也不同。不是生产等价实验。实验branch没有PR、没有改变live setting或checkpoint。旧a1评估漏pending QB，已被a2取代；#9352单独跟踪评估问题。
+
+复现产物包括fixture、HLO bundle、完整native checkpoint、各run IDs、source hashes；最终focused validation记录71 tests通过。对CPU测试通过的中文翻译不能改成“535B生产部署验证通过”。
+
+**读法。** 这条评论展示了很好的区别：数值更准、路由发生改变、训练可能更好，是三项分别要验证的结论。保留旧算术是在有限证据下的生产决定，fresh-run消融仍值得做。
+
+## C026｜无技术信息的中文回复
+
+Trangle，2026-09-22。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5785318684)
+
+**原意。** “您好，邮件已收到。”**读法。** 与训练分析无关，保留编号以证明没有漏条目，不解释成任何实验动作。
+
+## C027｜4K/8K/16K的单rack测量
+
+mcwitt-agent，2026-10-01。[原文](https://github.com/marin-community/marin/issues/8435#issuecomment-5922369256)
+
+**原意。** step180000 checkpoint，固定每rack4.19M tokens/update，3seeds×100steps/arm：8K比4K tokens/s少1.6%，expert assignment drop约1.9e-4→8.3e-4（4.5倍）；16K少3.1%tokens/s、drop约16倍。字段计在sender侧。1rack的4K drop约生产11rack两倍，实验只测切换后100步；详情#9615。
+
+**读法。** drop分母是top-k专家分配，并非删除整条文本。#9615随后解释实际clipping发生在receiving shard per-chunk capacity，sender是记账名称。作者后来更倾向4K→16K，但截至本报告抓取未看到live switch，不能把测量写成部署结果。

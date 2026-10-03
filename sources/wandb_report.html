@@ -1,0 +1,46 @@
+<!doctype html>
+<!--
+  We disable Google Translate because it does not play well with React
+  See https://github.com/facebook/react/issues/11538
+-->
+<html lang="en" data-forge-shell="true" translate="no">
+  <head>
+    <meta charset="UTF-8" />
+    <script>
+      try {
+        const isDarkMode = localStorage.getItem('__wb_theme') === 'dark';
+        document.documentElement.style.colorScheme = isDarkMode
+          ? 'dark'
+          : 'light';
+        if (isDarkMode) {
+          document.documentElement.setAttribute('data-dark-mode', 'true');
+        }
+      } catch {}
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="/shell-assets/coreweave-favicon-32-BY_4gvU0.png" />
+    <link
+      rel="apple-touch-icon"
+      sizes="256x256"
+      href="/shell-assets/coreweave-apple-touch-icon-256-DqUDMTMd.png" />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      crossorigin
+      href="/fonts/source-sans-3/latin-normal.woff2" />
+    <script>
+window.__FORGE_SHELL_CONFIG__ = {"remotes":{"wandb":{"version":"v1","entry":"/assets/26de4d77f/federation/remoteEntry.js","configScriptUrl":"/assets/26de4d77f/env.shell.js","assetBase":"/assets/26de4d77f","routes":[{"surface":"forge","shellPath":"/wandb","remotePath":"/","preserveOnAccountSwitch":["/","/home","/subscriptions"]},{"surface":"forge","shellPath":"/projects","remotePath":"/projects"},{"surface":"forge","shellPath":"/account-settings","remotePath":"/account-settings","preserveOnAccountSwitch":["/account-settings/:account"]},{"surface":"forge","shellPath":"/automations","remotePath":"/automations"},{"surface":"forge","shellPath":"/aria","remotePath":"/home/aria"},{"surface":"forge","shellPath":"/profile","remotePath":"/profile","preserveOnAccountSwitch":["/profile/*"]},{"surface":"forge","shellPath":"/forge-reports","remotePath":"/forge-reports"},{"surface":"forge","shellPath":"/fully-connected","remotePath":"/fully-connected"},{"surface":"forge","shellPath":"/inference","remotePath":"/forge/inference"},{"surface":"forge","shellPath":"/notebooks","remotePath":"/notebooks"},{"surface":"forge","shellPath":"/registry","remotePath":"/registry"},{"surface":"forge","shellPath":"/post-training","remotePath":"/post-training"},{"surface":"forge","shellPath":"/settings","remotePath":"/settings"},{"surface":"forge","shellPath":"/sandboxes","remotePath":"/sandboxes"}]},"agentLens":{"version":"v1","entry":"https://agent-pulse.wandb.ai/assets/federation/remoteEntry.js","routes":[{"surface":"forge","shellPath":"/pulse","remotePath":"/"},{"surface":"forge","shellPath":"/agentlens","remotePath":"/"},{"surface":"forge","shellPath":"/agent-lens","remotePath":"/"}]},"distillation":{"version":"v1","entry":"https://forge.coreweave.com/api/distillation/distillation-remote/remoteEntry.js","routes":[{"surface":"forge","shellPath":"/post-train","remotePath":"/"}]}},"origins":{"forge":"https://forge.coreweave.com","identity":"https://id.coreweave.com"},"infraConsoleOrigin":"https://console.coreweave.com","teleportAdminCheck":true,"adminEnvironments":{"dev":"https://forge.wandb.test","prod":"https://forge.coreweave.com"},"analytics":{"environmentName":"production","thirdPartyEnabled":true}};
+</script>
+    <title>Forge</title>
+    <script type="module" crossorigin src="/shell-assets/mf-entry-bootstrap-0-56fe31c7.js"></script>
+    <link rel="stylesheet" crossorigin href="/shell-assets/index-CB1WCbr8.css">
+  <link rel="modulepreload" crossorigin href="/remoteEntry-DdCQ__xp.js"><link rel="modulepreload" crossorigin href="/shell-assets/hostInit-BSlNxouS.js"><link rel="modulepreload" crossorigin href="/shell-assets/index-CYMtUD4C.js"><link rel="modulepreload" crossorigin href="/shell-assets/virtualExposes-DP0zrMfa.js"><link rel="modulepreload" crossorigin href="/shell-assets/_virtual_mf-localSharedImportMap___mfe_internal__forgeShell__mf_owner__1-Dl2Z4Brj.js"><link rel="modulepreload" crossorigin href="/shell-assets/virtual_mf-REMOTE_ENTRY_ID___mfe_internal__forgeShell__remoteEntry-_hash_-BMqWrCuB.js"><link rel="modulepreload" crossorigin href="/shell-assets/virtual_mf-exposes___mfe_internal__forgeShell__remoteEntry-_hash_-ChiJXsfH.js"><link rel="modulepreload" crossorigin href="/shell-assets/vite-preload-helper-Czpn1I53.js"><link rel="modulepreload" crossorigin href="/shell-assets/rolldown-runtime-CbXtAM7H.js"><link rel="modulepreload" crossorigin href="/shell-assets/dist-SPYi807S.js"></head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

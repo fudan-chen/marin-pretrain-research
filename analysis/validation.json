@@ -1,0 +1,17 @@
+{
+  "checks_passed": 255,
+  "highlights": [
+    "27 comments translated and anchored",
+    "58 operations entries",
+    "200 buckets x 3 normalized phases",
+    "400 public examples",
+    "200-step EP and kernel paired windows",
+    "all relative HTML links valid",
+    "complete source archive checksums valid"
+  ],
+  "not_verified": [
+    "GPU training/kernel reproduction",
+    "causality of individual mixture buckets",
+    "future cooldown and long-context outcomes"
+  ]
+}

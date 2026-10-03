@@ -1,0 +1,1110 @@
+<!doctype html>
+<!-- Published with Marin's publish_site utility. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fixed pooled-wave all-to-all for the 8-of-384 MoE</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #09111c;
+      --bg-soft: #101b2a;
+      --panel: rgba(18, 31, 48, 0.92);
+      --panel-strong: #17263a;
+      --line: #334a64;
+      --text: #f1f5f9;
+      --muted: #9eb0c5;
+      --cyan: #55d6d0;
+      --blue: #72a7ff;
+      --amber: #f6bf5b;
+      --red: #ff7e79;
+      --green: #7ce3a1;
+      --violet: #b79aff;
+      --shadow: 0 22px 60px rgba(0, 0, 0, 0.28);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 8% 5%, rgba(85, 214, 208, 0.13), transparent 27rem),
+        radial-gradient(circle at 92% 16%, rgba(114, 167, 255, 0.12), transparent 32rem),
+        var(--bg);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.55;
+    }
+
+    a { color: #8fdcf1; }
+    a:hover { color: #c2f1ff; }
+
+    code, .mono {
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      font-size: 0.92em;
+    }
+
+    .page {
+      width: min(1220px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 80px;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 42px;
+      border: 1px solid var(--line);
+      border-radius: 26px;
+      background: linear-gradient(145deg, rgba(22, 41, 60, 0.97), rgba(10, 20, 32, 0.97));
+      box-shadow: var(--shadow);
+    }
+
+    .hero::after {
+      position: absolute;
+      right: -90px;
+      bottom: -155px;
+      width: 390px;
+      height: 390px;
+      border: 52px solid rgba(85, 214, 208, 0.08);
+      border-radius: 50%;
+      content: "";
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--cyan);
+      font-size: 0.76rem;
+      font-weight: 750;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      max-width: 900px;
+      margin: 0;
+      font-size: clamp(2.2rem, 5vw, 4.55rem);
+      line-height: 1.02;
+      letter-spacing: -0.055em;
+    }
+
+    .lead {
+      max-width: 790px;
+      margin: 22px 0 0;
+      color: #c7d4e3;
+      font-size: clamp(1rem, 1.8vw, 1.2rem);
+    }
+
+    .hero-tags, .legend, .wave-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+    }
+
+    .hero-tags { margin-top: 25px; }
+
+    .tag, .legend-item {
+      padding: 7px 11px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: rgba(5, 12, 21, 0.48);
+      color: #d9e4ef;
+      font-size: 0.8rem;
+      white-space: nowrap;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 12px;
+      margin: 18px 0 48px;
+    }
+
+    .metric {
+      min-height: 124px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.16);
+    }
+
+    .metric .value {
+      display: block;
+      color: var(--cyan);
+      font-size: 1.68rem;
+      font-weight: 780;
+      letter-spacing: -0.035em;
+    }
+
+    .metric .label {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.8rem;
+      line-height: 1.3;
+    }
+
+    section { margin-top: 58px; }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 0.75fr) minmax(300px, 1fr);
+      gap: 40px;
+      align-items: end;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      margin: 0;
+      font-size: clamp(1.75rem, 3.6vw, 3rem);
+      line-height: 1.08;
+      letter-spacing: -0.04em;
+    }
+
+    h3 {
+      margin: 0 0 9px;
+      font-size: 1.12rem;
+      line-height: 1.25;
+    }
+
+    .section-head p, .muted { color: var(--muted); }
+    .section-head p { margin: 0; }
+
+    .panel {
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: var(--shadow);
+    }
+
+    .panel + .panel { margin-top: 16px; }
+
+    .model-flow {
+      display: grid;
+      grid-template-columns: repeat(13, minmax(36px, 1fr));
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .flow-node {
+      display: grid;
+      min-height: 112px;
+      place-content: center;
+      padding: 11px;
+      border: 1px solid #3b536d;
+      border-radius: 13px;
+      background: #142236;
+      text-align: center;
+    }
+
+    .flow-node strong { display: block; font-size: 0.9rem; }
+    .flow-node small { display: block; margin-top: 5px; color: var(--muted); }
+    .flow-node.attn { border-color: #5e79a5; background: #172a47; }
+    .flow-node.route { border-color: #3a958f; background: #123431; }
+    .flow-node.shared { border-color: #9b804a; background: #352b18; }
+    .flow-node.merge { border-color: #7b65aa; background: #2b2142; }
+
+    .arrow {
+      display: grid;
+      place-content: center;
+      color: #7089a5;
+      font-size: 1.25rem;
+    }
+
+    .span-2 { grid-column: span 2; }
+    .span-3 { grid-column: span 3; }
+
+    .branch-note {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .note {
+      padding: 14px 16px;
+      border-left: 3px solid var(--cyan);
+      border-radius: 0 10px 10px 0;
+      background: rgba(85, 214, 208, 0.07);
+      color: #c9d8e6;
+      font-size: 0.88rem;
+    }
+
+    .note.shared-note {
+      border-left-color: var(--amber);
+      background: rgba(246, 191, 91, 0.07);
+    }
+
+    .a2a-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(340px, 0.95fr);
+      gap: 18px;
+    }
+
+    .step-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: steps;
+    }
+
+    .step-list li {
+      position: relative;
+      min-height: 70px;
+      padding: 13px 14px 13px 58px;
+      border: 1px solid #32485f;
+      border-radius: 12px;
+      background: #101d2d;
+      counter-increment: steps;
+    }
+
+    .step-list li::before {
+      position: absolute;
+      left: 14px;
+      top: 13px;
+      display: grid;
+      width: 30px;
+      height: 30px;
+      place-content: center;
+      border-radius: 9px;
+      background: rgba(85, 214, 208, 0.15);
+      color: var(--cyan);
+      content: counter(steps);
+      font-weight: 800;
+    }
+
+    .step-list strong { display: block; }
+    .step-list span { color: var(--muted); font-size: 0.87rem; }
+
+    .rack-map {
+      min-height: 100%;
+      background:
+        linear-gradient(rgba(114, 167, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(114, 167, 255, 0.04) 1px, transparent 1px),
+        #0c1725;
+      background-size: 22px 22px;
+    }
+
+    .rack-title { margin-bottom: 15px; }
+
+    .gpu-row {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 5px;
+    }
+
+    .gpu {
+      aspect-ratio: 1.08;
+      display: grid;
+      place-content: center;
+      border: 1px solid #42617e;
+      border-radius: 7px;
+      background: #16283c;
+      color: #bcd0e3;
+      font: 0.67rem "SFMono-Regular", Consolas, monospace;
+    }
+
+    .gpu.source { border-color: var(--cyan); color: var(--cyan); box-shadow: 0 0 0 2px rgba(85, 214, 208, 0.12); }
+    .gpu.target { border-color: var(--violet); color: #d7c8ff; box-shadow: 0 0 0 2px rgba(183, 154, 255, 0.13); }
+
+    .rack-arrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 18px 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .rack-arrow::before, .rack-arrow::after {
+      height: 1px;
+      flex: 1;
+      background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+      content: "";
+    }
+
+    .expert-bank {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .expert {
+      padding: 12px 4px;
+      border: 1px solid #755fc0;
+      border-radius: 8px;
+      background: #281e40;
+      color: #d9cdff;
+      text-align: center;
+      font: 0.72rem "SFMono-Regular", Consolas, monospace;
+    }
+
+    .wave-shell { overflow: hidden; }
+
+    .wave-buttons { margin: 0 0 18px; }
+
+    .wave-button {
+      padding: 8px 13px;
+      border: 1px solid #47617b;
+      border-radius: 999px;
+      color: #c7d5e4;
+      background: #111e2e;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.86rem;
+    }
+
+    .wave-button[aria-pressed="true"] {
+      border-color: var(--cyan);
+      background: rgba(85, 214, 208, 0.14);
+      color: var(--cyan);
+    }
+
+    .wave-stage {
+      display: grid;
+      grid-template-columns: 1.05fr 50px 0.95fr 50px 0.9fr 50px 0.95fr;
+      gap: 5px;
+      align-items: center;
+    }
+
+    .stage-box {
+      min-height: 178px;
+      padding: 14px;
+      border: 1px solid #3b536d;
+      border-radius: 12px;
+      background: #101d2d;
+    }
+
+    .stage-box h3 { color: #e9f2fa; font-size: 0.96rem; }
+    .stage-box p { margin: 7px 0 0; color: var(--muted); font-size: 0.8rem; }
+    .stage-box code { color: var(--cyan); }
+
+    .mini-pools {
+      display: grid;
+      grid-template-columns: repeat(8, 1fr);
+      gap: 3px;
+      margin-top: 13px;
+    }
+
+    .pool {
+      height: 43px;
+      padding-top: 4px;
+      border: 1px solid #39645f;
+      border-radius: 4px;
+      background: linear-gradient(to top, rgba(85, 214, 208, 0.35) 68%, transparent 68%);
+      color: #a7c3cf;
+      text-align: center;
+      font: 0.57rem "SFMono-Regular", Consolas, monospace;
+    }
+
+    .stage-arrow {
+      color: var(--cyan);
+      text-align: center;
+      font-size: 1.6rem;
+    }
+
+    .wave-timeline {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 16px;
+    }
+
+    .wave-lane {
+      padding: 12px;
+      border: 1px solid #344b63;
+      border-radius: 10px;
+      background: #0d1927;
+      transition: border-color 150ms ease, background 150ms ease, transform 150ms ease;
+    }
+
+    .wave-lane.active {
+      border-color: var(--cyan);
+      background: rgba(85, 214, 208, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .wave-lane strong { display: block; color: var(--cyan); }
+    .wave-lane small { color: var(--muted); }
+
+    .formula-grid, .decision-grid, .evidence-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .formula-grid { grid-template-columns: repeat(3, 1fr); }
+    .decision-grid { grid-template-columns: repeat(2, 1fr); }
+    .evidence-grid { grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr); }
+
+    .formula {
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #101d2d;
+    }
+
+    .formula .equation {
+      display: block;
+      margin: 13px 0;
+      padding: 10px;
+      overflow-x: auto;
+      border: 1px solid #2e485f;
+      border-radius: 8px;
+      background: #09131f;
+      color: var(--cyan);
+      white-space: nowrap;
+    }
+
+    .formula p { margin: 0; color: var(--muted); font-size: 0.87rem; }
+
+    .memory-bars { margin-top: 18px; }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: minmax(180px, 0.9fr) minmax(220px, 2fr) 85px;
+      gap: 13px;
+      align-items: center;
+      margin: 13px 0;
+      font-size: 0.85rem;
+    }
+
+    .bar-track {
+      height: 25px;
+      overflow: hidden;
+      border: 1px solid #30475f;
+      border-radius: 7px;
+      background: #09131f;
+    }
+
+    .bar-fill {
+      height: 100%;
+      border-radius: 6px;
+      background: linear-gradient(90deg, var(--blue), var(--cyan));
+    }
+
+    .bar-fill.risk { background: linear-gradient(90deg, #c5635f, var(--red)); }
+    .bar-fill.receiver { background: linear-gradient(90deg, #8d6de0, var(--violet)); }
+
+    .decision {
+      min-height: 170px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #101d2d;
+    }
+
+    .decision .basis {
+      display: inline-block;
+      margin-bottom: 10px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      background: rgba(114, 167, 255, 0.12);
+      color: #a9c8ff;
+      font-size: 0.7rem;
+      font-weight: 750;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .decision p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.83rem;
+    }
+
+    th, td {
+      padding: 12px 13px;
+      border-bottom: 1px solid #2b4056;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      color: #b8c8d9;
+      background: #132238;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    .status-ok { color: var(--green); font-weight: 750; }
+    .status-bad { color: var(--red); font-weight: 750; }
+    .status-note { color: var(--amber); font-weight: 750; }
+
+    .comm-chart { padding: 8px 0 0; }
+
+    .donut-wrap {
+      display: grid;
+      grid-template-columns: 170px 1fr;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .donut {
+      width: 164px;
+      aspect-ratio: 1;
+      display: grid;
+      place-content: center;
+      border-radius: 50%;
+      background: conic-gradient(var(--amber) 0 27%, #2f6a6b 27% 100%);
+    }
+
+    .donut::after {
+      grid-area: 1 / 1;
+      width: 112px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: #101d2d;
+      content: "";
+    }
+
+    .donut-label {
+      z-index: 1;
+      grid-area: 1 / 1;
+      text-align: center;
+    }
+
+    .donut-label strong { display: block; font-size: 1.5rem; }
+    .donut-label small { color: var(--muted); }
+
+    .callout {
+      padding: 18px 20px;
+      border: 1px solid rgba(246, 191, 91, 0.45);
+      border-radius: 14px;
+      background: rgba(246, 191, 91, 0.08);
+    }
+
+    .callout p { margin: 5px 0 0; color: #d4c8aa; }
+
+    .source-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 9px 20px;
+      margin: 0;
+      padding-left: 19px;
+      color: var(--muted);
+    }
+
+    .source-list li { padding-left: 3px; }
+
+    footer {
+      margin-top: 54px;
+      padding-top: 22px;
+      border-top: 1px solid var(--line);
+      color: #768ca4;
+      font-size: 0.78rem;
+    }
+
+    @media (max-width: 1050px) {
+      .summary-grid { grid-template-columns: repeat(3, 1fr); }
+      .model-flow { grid-template-columns: repeat(7, minmax(40px, 1fr)); }
+      .wave-stage { grid-template-columns: 1fr; }
+      .stage-arrow { transform: rotate(90deg); }
+      .a2a-grid, .evidence-grid { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 720px) {
+      .page { width: min(100% - 20px, 1220px); padding-top: 10px; }
+      .hero { padding: 28px 22px; }
+      .summary-grid, .formula-grid, .decision-grid, .branch-note, .source-list { grid-template-columns: 1fr; }
+      .section-head { grid-template-columns: 1fr; gap: 12px; }
+      .model-flow { grid-template-columns: 1fr; }
+      .span-2, .span-3 { grid-column: auto; }
+      .arrow { transform: rotate(90deg); }
+      .bar-row { grid-template-columns: 1fr; gap: 5px; }
+      .donut-wrap { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+      .wave-timeline { grid-template-columns: 1fr; }
+    }
+
+    @media print {
+      :root { color-scheme: light; --bg: #fff; --text: #101820; --muted: #4a5a68; --panel: #fff; --line: #b8c2cc; }
+      body { background: #fff; }
+      .hero, .panel, .metric { box-shadow: none; }
+      .wave-button { display: none; }
+      a { color: #145c85; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <p class="eyebrow">MoE transport design report · 17 August 2026</p>
+      <h1>Fixed pooled-wave all-to-all for the 8-of-384 MoE</h1>
+      <p class="lead">
+        <strong>TL;DR:</strong> The merged sender CF 1.10 and receiver CF 1.15 configuration completed
+        a 20-step one-rack gate without an OOM. Median throughput for steps 2 through 19 was 250,691
+        tokens/s. The transport keeps all collective shapes static, uses three waves, and does not
+        exchange token counts. It reports sender and receiver drops separately. The short hero gate
+        does not establish the final drop rate.
+      </p>
+      <div class="hero-tags" aria-label="Design limits">
+        <span class="tag">one GB200 rack</span>
+        <span class="tag">64 GPUs</span>
+        <span class="tag">BF16 device parameters</span>
+        <span class="tag">FP32 pinned-host master parameters</span>
+        <span class="tag">no FP8</span>
+        <span class="tag">no micro-batches</span>
+        <span class="tag">no metadata collective</span>
+      </div>
+    </header>
+
+    <div class="summary-grid" aria-label="Selected design summary">
+      <div class="metric"><span class="value">384</span><span class="label">routed experts</span></div>
+      <div class="metric"><span class="value">top 8</span><span class="label">expert assignments per token</span></div>
+      <div class="metric"><span class="value">6 / GPU</span><span class="label">local routed experts</span></div>
+      <div class="metric"><span class="value">3 waves</span><span class="label">same static shapes in each wave</span></div>
+      <div class="metric"><span class="value">250,691</span><span class="label">current median tokens/s, steps 2–19</span></div>
+      <div class="metric"><span class="value">no OOM</span><span class="label">current 20-step one-rack gate</span></div>
+    </div>
+
+    <section id="moe-layer">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">01 · Model position</p>
+          <h2>Where the transport fits</h2>
+        </div>
+        <p>
+          Each of the 48 transformer blocks has an attention branch and an MoE branch.
+          The fixed pooled-wave transport is only in the routed expert path. The two shared experts stay local.
+        </p>
+      </div>
+
+      <div class="panel">
+        <div class="model-flow" aria-label="Transformer block flow">
+          <div class="flow-node"><strong>Block input</strong><small>width 6144</small></div>
+          <div class="arrow" aria-hidden="true">→</div>
+          <div class="flow-node attn span-2"><strong>RMSNorm + attention</strong><small>48 heads, SConv, residual</small></div>
+          <div class="arrow" aria-hidden="true">→</div>
+          <div class="flow-node route"><strong>Router</strong><small>384 scores, select top 8</small></div>
+          <div class="arrow" aria-hidden="true">→</div>
+          <div class="flow-node route"><strong>Latent down</strong><small>6144 → 3072</small></div>
+          <div class="arrow" aria-hidden="true">→</div>
+          <div class="flow-node route span-2"><strong>Fixed pooled-wave A2A</strong><small>route, expert MLP, return</small></div>
+          <div class="arrow" aria-hidden="true">→</div>
+          <div class="flow-node merge"><strong>Latent up</strong><small>3072 → 6144</small></div>
+        </div>
+        <div class="model-flow" style="margin-top: 8px" aria-label="Shared expert merge">
+          <div class="flow-node shared span-3"><strong>Two shared experts</strong><small>local dense path, width 6144, intermediate 3072</small></div>
+          <div class="arrow" aria-hidden="true">↗</div>
+          <div class="flow-node merge span-2"><strong>Add routed and shared outputs</strong><small>then SConv</small></div>
+          <div class="arrow" aria-hidden="true">→</div>
+          <div class="flow-node span-2"><strong>Residual add</strong><small>block output, width 6144</small></div>
+        </div>
+        <div class="branch-note">
+          <div class="note">
+            <strong>Routed path:</strong> The router reads full-width tokens. The latent projection reduces each row to 3072 values before the all-to-all. This cuts routed activation traffic in half.
+          </div>
+          <div class="note shared-note">
+            <strong>Shared path:</strong> The two shared experts do not use expert parallel all-to-all. Their output joins the routed result after the latent up projection.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="rack-view">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">02 · Rack view</p>
+          <h2>One pool for each destination GPU</h2>
+        </div>
+        <p>
+          The sender does not allocate one transport cell for each of 384 experts.
+          It allocates 64 destination pools for each wave. The receiver reads the local expert ID from the same BF16 payload.
+        </p>
+      </div>
+
+      <div class="a2a-grid">
+        <div class="panel">
+          <ol class="step-list">
+            <li><strong>Route local tokens</strong><span>Each GPU has 65,536 tokens. Top-8 routing makes 524,288 assignments.</span></li>
+            <li><strong>Map each assignment</strong><span>The expert ID gives a destination GPU and one local expert ID from 0 to 5.</span></li>
+            <li><strong>Stripe destination ranks</strong><span><code>wave = rank mod 3</code>. <code>pool row = rank ÷ 3</code>.</span></li>
+            <li><strong>Build 64 fixed pools</strong><span>Each destination gets 3,004 BF16 rows in one wave. Extra sender rows are dropped.</span></li>
+            <li><strong>Send the payload</strong><span>The first full-width row carries packed expert IDs. No count exchange is required.</span></li>
+            <li><strong>Compact on the receiver</strong><span>The receiver groups rows into six static expert arrays. It drops rows above the receiver capacity.</span></li>
+            <li><strong>Compute and return</strong><span>One batched SwiGLU GEMM serves the six experts. A fixed reverse all-to-all returns the outputs.</span></li>
+          </ol>
+        </div>
+
+        <div class="panel rack-map">
+          <h3 class="rack-title">Expert-parallel rack</h3>
+          <p class="muted">64 GPUs. Each sender has one pool for every GPU.</p>
+          <div class="gpu-row" aria-label="64 GPU rack">
+            <div class="gpu source">GPU 00</div><div class="gpu">01</div><div class="gpu">02</div><div class="gpu">03</div>
+            <div class="gpu">04</div><div class="gpu">05</div><div class="gpu">06</div><div class="gpu">07</div>
+            <div class="gpu">08</div><div class="gpu">09</div><div class="gpu">10</div><div class="gpu">11</div>
+            <div class="gpu">12</div><div class="gpu">13</div><div class="gpu">14</div><div class="gpu">15</div>
+            <div class="gpu">16</div><div class="gpu">17</div><div class="gpu">18</div><div class="gpu">19</div>
+            <div class="gpu">20</div><div class="gpu">21</div><div class="gpu">22</div><div class="gpu">23</div>
+            <div class="gpu">24</div><div class="gpu">25</div><div class="gpu">26</div><div class="gpu">27</div>
+            <div class="gpu">28</div><div class="gpu">29</div><div class="gpu">30</div><div class="gpu">31</div>
+            <div class="gpu">32</div><div class="gpu">33</div><div class="gpu">34</div><div class="gpu">35</div>
+            <div class="gpu">36</div><div class="gpu">37</div><div class="gpu">38</div><div class="gpu">39</div>
+            <div class="gpu">40</div><div class="gpu">41</div><div class="gpu target">GPU 42</div><div class="gpu">43</div>
+            <div class="gpu">44</div><div class="gpu">45</div><div class="gpu">46</div><div class="gpu">47</div>
+            <div class="gpu">48</div><div class="gpu">49</div><div class="gpu">50</div><div class="gpu">51</div>
+            <div class="gpu">52</div><div class="gpu">53</div><div class="gpu">54</div><div class="gpu">55</div>
+            <div class="gpu">56</div><div class="gpu">57</div><div class="gpu">58</div><div class="gpu">59</div>
+            <div class="gpu">60</div><div class="gpu">61</div><div class="gpu">62</div><div class="gpu">63</div>
+          </div>
+          <div class="rack-arrow">fixed A2A sends one pool from GPU 00 to GPU 42</div>
+          <p class="muted">GPU 42 decodes six local expert IDs from the payload.</p>
+          <div class="expert-bank" aria-label="Six local experts on one GPU">
+            <div class="expert">E252</div><div class="expert">E253</div><div class="expert">E254</div>
+            <div class="expert">E255</div><div class="expert">E256</div><div class="expert">E257</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="wave-view">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">03 · One wave</p>
+          <h2>Static shapes from send to combine</h2>
+        </div>
+        <p>
+          All three waves use the same array shapes. The waves run in order and add their results to one FP32 output accumulator.
+          Each wave has a forward all-to-all and a reverse all-to-all.
+        </p>
+      </div>
+
+      <div class="panel wave-shell">
+        <div class="wave-buttons" role="group" aria-label="Select a wave">
+          <button class="wave-button" type="button" data-wave="0" aria-pressed="true">Wave 0</button>
+          <button class="wave-button" type="button" data-wave="1" aria-pressed="false">Wave 1</button>
+          <button class="wave-button" type="button" data-wave="2" aria-pressed="false">Wave 2</button>
+        </div>
+
+        <div class="wave-stage">
+          <div class="stage-box">
+            <h3>1. Sender pools</h3>
+            <code>[64, 3004, 3072]</code>
+            <p>One fixed pool for each destination. One extra full-width header row carries the local expert IDs.</p>
+            <div class="mini-pools" aria-hidden="true">
+              <div class="pool">G0</div><div class="pool">G1</div><div class="pool">G2</div><div class="pool">G3</div>
+              <div class="pool">G4</div><div class="pool">G5</div><div class="pool">…</div><div class="pool">G63</div>
+            </div>
+          </div>
+          <div class="stage-arrow" aria-hidden="true">⇄</div>
+          <div class="stage-box">
+            <h3>2. Fixed all-to-all</h3>
+            <code>[64, 3005, 3072]</code>
+            <p>The shape includes the header. Each GPU sends and receives the same number of BF16 values.</p>
+          </div>
+          <div class="stage-arrow" aria-hidden="true">→</div>
+          <div class="stage-box">
+            <h3>3. Receiver compact</h3>
+            <code>[6, 33497, 3072]</code>
+            <p>The receiver groups rows by local expert. Rows above 33,497 for one expert in one wave are dropped.</p>
+          </div>
+          <div class="stage-arrow" aria-hidden="true">⇄</div>
+          <div class="stage-box">
+            <h3>4. Expert MLP + return</h3>
+            <code>6 × SwiGLU</code>
+            <p>The receiver computes all six local experts in one batched operation. It expands the rows and uses the reverse fixed all-to-all.</p>
+          </div>
+        </div>
+
+        <div class="wave-timeline" aria-label="Three sequential waves">
+          <div class="wave-lane active" data-lane="0"><strong>Wave 0</strong><small>destination ranks 0, 3, 6, …</small></div>
+          <div class="wave-lane" data-lane="1"><strong>Wave 1</strong><small>destination ranks 1, 4, 7, …</small></div>
+          <div class="wave-lane" data-lane="2"><strong>Wave 2</strong><small>destination ranks 2, 5, 8, …</small></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="capacity">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">04 · Capacity and memory</p>
+          <h2>Two limits control two different risks</h2>
+        </div>
+        <p>
+          Sender capacity controls traffic from one source to one destination. Receiver capacity controls the final load for one local expert.
+          The second limit is necessary because traffic from 64 senders can select the same expert.
+        </p>
+      </div>
+
+      <div class="formula-grid">
+        <div class="formula">
+          <h3>Assignments on each GPU</h3>
+          <span class="equation">65,536 tokens × top 8 = 524,288</span>
+          <p>The global batch is 1024. The sequence length is 4096. The expert axis has 64 GPUs.</p>
+        </div>
+        <div class="formula">
+          <h3>Sender pool capacity</h3>
+          <span class="equation">ceil(1.10 × 524,288 ÷ 64 ÷ 3) = 3,004</span>
+          <p>This fixed pool is for one destination GPU in one wave.</p>
+        </div>
+        <div class="formula">
+          <h3>Receiver expert capacity</h3>
+          <span class="equation">ceil(1.15 × 524,288 ÷ 6 ÷ 3) = 33,497</span>
+          <p>This fixed array is for one local expert in one wave.</p>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top: 16px">
+        <h3>BF16 activation-bank size for one array</h3>
+        <p class="muted">
+          These values show array payload size. They do not show full device peak memory. The full peak also includes parameters, gradients, copies, compiler temporaries, and allocator reserve.
+        </p>
+        <div class="memory-bars">
+          <div class="bar-row">
+            <span>Historical direct fixed CF 1.33<br><code>[6,64,1816,3072]</code></span>
+            <div class="bar-track"><div class="bar-fill risk" style="width: 100%"></div></div>
+            <strong>3.99 GiB</strong>
+          </div>
+          <div class="bar-row">
+            <span>Current sender pool, one wave<br><code>[64,3004,3072]</code></span>
+            <div class="bar-track"><div class="bar-fill" style="width: 27.6%"></div></div>
+            <strong>1.10 GiB</strong>
+          </div>
+          <div class="bar-row">
+            <span>Current receiver compact, one wave<br><code>[6,33497,3072]</code></span>
+            <div class="bar-track"><div class="bar-fill receiver" style="width: 28.8%"></div></div>
+            <strong>1.15 GiB</strong>
+          </div>
+        </div>
+        <div class="note" style="margin-top: 18px">
+          The receiver processes all six local experts in each wave. The per-wave receiver bank is one third of the equivalent three-wave capacity. The sender and receiver payload arrays are 1.10 GiB and 1.15 GiB before other live data.
+        </div>
+      </div>
+    </section>
+
+    <section id="decisions">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">05 · Design basis</p>
+          <h2>What the profiles changed</h2>
+        </div>
+        <p>
+          The design came from measured memory limits and XProf traces. Some choices have a direct A/B result.
+          Other choices use the measured fit boundary and a simple memory model.
+        </p>
+      </div>
+
+      <div class="decision-grid">
+        <article class="decision">
+          <span class="basis">OOM evidence</span>
+          <h3>Pool by destination GPU</h3>
+          <p>
+            Direct fixed expert cells failed at the 8-of-384 shape. MHEP-055 had a 192.65 GiB XLA estimate and failed on a 123.49 GiB CUDA allocation. A destination pool removes the global expert axis from the transport buffer.
+          </p>
+        </article>
+        <article class="decision">
+          <span class="basis">Memory boundary</span>
+          <h3>Use waves</h3>
+          <p>
+            A three-expert bank fit at 182.47 GiB in MHEP-057. A six-expert bank failed at 193.77 GiB in MHEP-058. Sequential waves keep only part of the receiver bank active.
+          </p>
+        </article>
+        <article class="decision">
+          <span class="basis">A/B profile</span>
+          <h3>Use three waves</h3>
+          <p>
+            MHEP-101 used two local expert-capacity units in each of three waves. It reached 270,799 tokens/s. MHEP-102 used three units in each of two waves. It reached 268,462 tokens/s. Three waves were 0.87% faster in this short profile test.
+          </p>
+        </article>
+        <article class="decision">
+          <span class="basis">XProf hotspot</span>
+          <h3>Control traffic size</h3>
+          <p>
+            At receiver CF 1.33, the main fixed A2A shape grew to <code>[6,64,1816,3072]</code>. Fixed A2A self-time increased by 34.36%. NCCL send and receive time increased by 35.27%. Communication was 27.0% of exclusive device time.
+          </p>
+        </article>
+        <article class="decision">
+          <span class="basis">Protocol constraint</span>
+          <h3>Carry expert IDs in-band</h3>
+          <p>
+            Each sender and receiver knows all static shapes. The expert ID uses one packed full-width header row in the activation payload. This avoids a count exchange and a second metadata collective.
+          </p>
+        </article>
+        <article class="decision">
+          <span class="basis">Metric definition</span>
+          <h3>Report both receiver rates</h3>
+          <p>
+            For total assignments <code>T</code>, sender drops <code>S</code>, and receiver drops <code>R</code>, the additive rates are <code>S/T</code> and <code>R/T</code>. They add to total drop rate. The conditional receiver rate is <code>R/(T-S)</code>.
+          </p>
+        </article>
+        <article class="decision">
+          <span class="basis">Fit test</span>
+          <h3>Use BF16 device parameters</h3>
+          <p>
+            The six-expert bank failed before a timed step with the original device parameter storage. The BF16 parameter test MHEP-059 completed 10 steps at 286,467 tokens/s. The optimizer state and the FP32 master parameters stay in pinned host memory.
+          </p>
+        </article>
+        <article class="decision">
+          <span class="basis">Traffic reduction</span>
+          <h3>Route the 3072-wide latent</h3>
+          <p>
+            The router still reads the 6144-wide model state. The routed activation is projected to 3072 before dispatch. This halves the width of the values sent through the expert transport.
+          </p>
+        </article>
+        <article class="decision">
+          <span class="basis">Current rack gate</span>
+          <h3>Use sender CF 1.10 and receiver CF 1.15</h3>
+          <p>
+            MHEP-118 completed 20 steps without an OOM or preemption. Median throughput for steps 2 through 19 was 250,691 tokens/s. The lower receiver factor reduces its BF16 compact array from 1.33 GiB to 1.15 GiB. This run is too short to measure the final drop rate.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section id="evidence">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">06 · Results</p>
+          <h2>Evidence from the one-rack runs</h2>
+        </div>
+        <p>
+          Short one-rack runs found fit and profile limits. MHEP-103 is the 200-step result for the prior 1.05 sender and 1.33 receiver factors. MHEP-118 tests the merged 1.10 sender and 1.15 receiver factors for 20 steps. Early drop values change as router balance changes during training.
+        </p>
+      </div>
+
+      <div class="evidence-grid">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Run</th><th>Change</th><th>Result</th><th>Measured value</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>MHEP-055</td><td>Direct fixed A2A, 8-of-384</td><td class="status-bad">OOM</td><td>XLA 192.65 GiB. CUDA request 123.49 GiB.</td></tr>
+              <tr><td>MHEP-057</td><td>Three-expert bank, CF 1.0</td><td class="status-ok">Fit</td><td>XLA 182.47 GiB. 264,613 tokens/s. Communication 21.2%.</td></tr>
+              <tr><td>MHEP-058</td><td>Six-expert bank, CF 1.0</td><td class="status-bad">OOM</td><td>XLA 193.77 GiB. CUDA request 120.26 GiB.</td></tr>
+              <tr><td>MHEP-059</td><td>BF16 device parameters</td><td class="status-ok">Fit</td><td>286,467 tokens/s over the short steady window.</td></tr>
+              <tr><td>MHEP-061</td><td>Receiver CF 1.33</td><td class="status-note">Fit, slower</td><td>255,310 tokens/s. Fixed A2A self-time +34.36%.</td></tr>
+              <tr><td>MHEP-101</td><td>Three-wave pooled profile</td><td class="status-ok">Selected</td><td>270,799 tokens/s over steps 2–9.</td></tr>
+              <tr><td>MHEP-102</td><td>Two-wave pooled profile</td><td class="status-note">Valid</td><td>268,462 tokens/s over steps 2–9. It was 0.87% slower.</td></tr>
+              <tr><td>MHEP-103</td><td>Prior CF 1.05 / 1.33, 200 steps</td><td class="status-ok">Passed</td><td>256,818 tokens/s and 2.41% drop over steps 150–199.</td></tr>
+              <tr><td>MHEP-118</td><td>Merged CF 1.10 / 1.15, 20 steps</td><td class="status-ok">Passed</td><td>250,691 median tokens/s over steps 2–19. Final drop was 19.33%: 7.14% sender and 12.19% receiver. The conditional receiver rate was 13.12%.</td></tr>
+              <tr><td>4-rack d2560</td><td>CF 1.15 / 1.15, 24 layers</td><td class="status-note">In progress</td><td>At step 17,563, the prior 501-step medians were 6.38M tokens/s and 3.08% drop: 2.92% sender and 0.162% receiver.</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="panel comm-chart">
+          <h3>XProf signal at CF 1.33</h3>
+          <div class="donut-wrap">
+            <div class="donut" aria-label="27 percent communication and 73 percent compute">
+              <div class="donut-label"><strong>27.0%</strong><small>communication</small></div>
+            </div>
+            <div>
+              <p class="muted">
+                NCCL send and receive was the largest single kernel group. It used 17.9% of exclusive profiled device time in MHEP-061.
+              </p>
+              <div class="legend">
+                <span class="legend-item"><span style="color: var(--amber)">●</span> communication</span>
+                <span class="legend-item"><span style="color: #4dabab">●</span> compute</span>
+              </div>
+            </div>
+          </div>
+          <div class="callout" style="margin-top: 24px">
+            <h3>Prior hero long-run result</h3>
+            <p>
+              MHEP-103 completed all 200 steps on 16 nodes and 64 GPUs with the prior factors. It had no OOM, non-finite loss, failure, or preemption. The final loss was 3.25104.
+            </p>
+          </div>
+          <div class="callout" style="margin-top: 16px">
+            <h3>Longer drop signal at another scale</h3>
+            <p>
+              The four-rack d2560 run had processed 294.7B tokens at step 17,563 of 88,242. Its prior 501-step median receiver drop was 0.162%, while sender drop was 2.92%. This run uses both capacity factors at 1.15 and a smaller 24-layer model, so its throughput is not a direct hero comparison.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="limits">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">07 · Scope</p>
+          <h2>What this data does not prove</h2>
+        </div>
+        <p>The report separates measured results from the current engineering judgment.</p>
+      </div>
+      <div class="panel">
+        <ul>
+          <li>Three waves won one short A/B profile. This is not a full search over all wave counts and pool layouts.</li>
+          <li>The merged 1.10 sender and 1.15 receiver factors have one 20-step hero result. The prior 1.05 sender and 1.33 receiver factors have one full 200-step hero result.</li>
+          <li>MHEP-118 verified sender and receiver metrics on one rack. Its 19.33% final drop is an early-run value and is not a final drop estimate.</li>
+          <li>The four-rack d2560 run supports the drop trend, but it uses a smaller model and both capacity factors at 1.15.</li>
+          <li>The merged receiver keeps rows in fixed source order and does not use router scores for overflow. Open PR #8347 proposes a per-receiver rotation so overflow does not always select the same last source.</li>
+          <li>The buffer sizes in this report are payload estimates. XLA peak memory includes more live data.</li>
+          <li>The selected throughput has one rack placement. The memory and drop conclusions have higher confidence than the exact throughput value.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="sources">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">08 · Links</p>
+          <h2>Code and run records</h2>
+        </div>
+        <p>The HTML file has no external script or style dependency. Run links need network access.</p>
+      </div>
+      <div class="panel">
+        <ul class="source-list">
+          <li><a href="https://github.com/marin-community/marin/pull/8289">Merged transport PR #8289</a></li>
+          <li><a href="https://github.com/marin-community/marin/pull/8348">Merged metrics and capacity PR #8348</a></li>
+          <li><a href="https://github.com/marin-community/marin/pull/8347">Open fairness and sender-capacity PR #8347</a></li>
+          <li><a href="https://wandb.ai/marin-community/rav_moe/runs/mhep-103-bf16params-pooled-striped-wave2-send105-recv133-200-20260814">MHEP-103 W&amp;B</a></li>
+          <li><a href="https://wandb.ai/marin-community/rav_moe/runs/mhep-118-recv-metrics-send110-recv115-smoke">MHEP-118 W&amp;B</a></li>
+          <li><a href="https://wandb.ai/marin-community/marin_moe/runs/mhep-d2560-L24-pool-cf115-8of384-4rack-20260816-r2">Four-rack d2560 W&amp;B</a></li>
+          <li><a href="https://iris.oa.dev/proxy/xprof/open?uri=s3%3A%2F%2Fmarin-us-east-02a%2Ftmp%2Fttl%3D30d%2Fxprof%2Fmhep-101-bf16params-pooled-striped-wave2-send105-recv133-profile-20260814&amp;tool=trace_viewer">MHEP-101 XProf</a></li>
+          <li><a href="https://github.com/marin-community/marin/blob/main/lib/levanter/src/levanter/grug/_moe/ep_fixed_pooled_wave_all_to_all.py">Transport implementation</a></li>
+          <li><a href="https://github.com/marin-community/marin/blob/main/experiments/grug/moe_hero_ep/heuristic.py">Selected model configuration</a></li>
+          <li><a href="https://github.com/marin-community/marin/blob/main/experiments/grug/moe_hero_ep/model.py">MoE layer integration</a></li>
+          <li><a href="https://github.com/marin-community/marin/blob/main/experiments/grug/moe_hero_ep/launch.py">One-rack launch configuration</a></li>
+        </ul>
+      </div>
+    </section>
+
+    <footer>
+      Report basis: merged main at <code>a4dcd392f</code>, saved Iris monitoring records, W&amp;B history, and XProf summaries. Generated on 17 August 2026. The four-rack W&amp;B values are a step-17,563 snapshot from an active run.
+    </footer>
+  </main>
+
+  <script>
+    const buttons = document.querySelectorAll(".wave-button");
+    const lanes = document.querySelectorAll(".wave-lane");
+
+    for (const button of buttons) {
+      button.addEventListener("click", () => {
+        const selectedWave = button.dataset.wave;
+        for (const item of buttons) {
+          item.setAttribute("aria-pressed", String(item === button));
+        }
+        for (const lane of lanes) {
+          lane.classList.toggle("active", lane.dataset.lane === selectedWave);
+        }
+      });
+    }
+  </script>
+</body>
+</html>

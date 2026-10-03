@@ -1,0 +1,1035 @@
+{
+  "integrity_manifest_created_utc": "2026-10-03T22:23:49.714980+00:00",
+  "files": [
+    {
+      "file": "code_launch_scaling_ladder.py",
+      "bytes": 14086,
+      "sha256": "e35bcea2c1eb2fb2363703711c59408227a269f3a598c9e2189bdc48494079ad",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/12d8b6f09f96ad4f0277445765c1a00dbc81d5be/experiments/grug/moe_hero_ep/launch_scaling_ladder.py",
+      "retrieved_utc": "2026-10-03T21:34:44.772305+00:00"
+    },
+    {
+      "file": "code_model.py",
+      "bytes": 73204,
+      "sha256": "ddbd6473ebb5faa52a8935491852efbe7bea62d4ba64df93679754307d96bf06",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/12d8b6f09f96ad4f0277445765c1a00dbc81d5be/experiments/grug/moe_hero_ep/model.py",
+      "retrieved_utc": "2026-10-03T21:34:44.829176+00:00"
+    },
+    {
+      "file": "code_optimizer.py",
+      "bytes": 9346,
+      "sha256": "2e64be6d9c1534add6aeecfcc0e71388e29936d6b66df59ac37db6b67b6de42f",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/12d8b6f09f96ad4f0277445765c1a00dbc81d5be/experiments/grug/moe_hero_ep/optimizer.py",
+      "retrieved_utc": "2026-10-03T21:34:44.742912+00:00"
+    },
+    {
+      "file": "code_train.py",
+      "bytes": 46165,
+      "sha256": "adfdbb3128babe5270e56d73518aa02f54fd7ba88c8844cf0c5602cb8232d8fc",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/12d8b6f09f96ad4f0277445765c1a00dbc81d5be/experiments/grug/moe_hero_ep/train.py",
+      "retrieved_utc": "2026-10-03T21:34:44.803795+00:00"
+    },
+    {
+      "file": "comments.json",
+      "bytes": 115973,
+      "sha256": "ebce8c798a526aa8e34efe9aec1fd741d523425d04ec06a04f2f3aa7f6f37740",
+      "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
+    },
+    {
+      "file": "comments_p1.json",
+      "bytes": 106995,
+      "sha256": "961fa251b7b9c11aed54a123c0570414b4c05ba9e9f3106bdcdf59191cef6a58",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8435/comments?per_page=100&page=1",
+      "retrieved_utc": "2026-10-03T21:32:58.646971+00:00"
+    },
+    {
+      "file": "data_overview.html",
+      "bytes": 1124165,
+      "sha256": "7bb03ec42887be8fd57cdc61899a8585e465d352aff5ec109e0193ac6726522e",
+      "url": "https://storage.googleapis.com/marin-public/held/harrier-k40-cluster-overview/2026.08.18/index.html?revision=uniform-sampling",
+      "retrieved_utc": "2026-10-03T21:33:00.184780+00:00"
+    },
+    {
+      "file": "ep_writeup.html",
+      "bytes": 43372,
+      "sha256": "16a3e03ca0c82da266a96eb275a6af1cf5a2bc2003689756f5c76b19fa3c45f3",
+      "url": "https://storage.googleapis.com/marin-public/rav/moe-fixed-wave-a2a-384/2026.08.17/index.html",
+      "retrieved_utc": "2026-10-03T21:34:46.188333+00:00"
+    },
+    {
+      "file": "harrier_mix_12d8b6f0.py",
+      "bytes": 6193,
+      "sha256": "a706e1a33dfe530ab72cf28678b472fe7aaa72cfcd715ad853dbba2eb5613995",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/12d8b6f09f96ad4f0277445765c1a00dbc81d5be/experiments/grug/moe_hero_ep/harrier_mix_2026_08_18.py",
+      "retrieved_utc": "2026-10-03T21:35:49.534629+00:00"
+    },
+    {
+      "file": "harrier_mix_main.py",
+      "bytes": 7104,
+      "sha256": "90b2881c131682567bae111e8d6cf4d104a0a81c0e0bc1f206b96226d1f295d7",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/main/experiments/grug/moe_hero_ep/harrier_mix_2026_08_18.py",
+      "retrieved_utc": "2026-10-03T21:35:49.587929+00:00"
+    },
+    {
+      "file": "harrier_spec_12d8b6f0.json",
+      "bytes": 20247,
+      "sha256": "d664c5012bf5431c42c49686fde8e82f6d35f819e59280bcc6a62b6b04d968c8",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/12d8b6f09f96ad4f0277445765c1a00dbc81d5be/experiments/grug/moe_hero_ep/harrier_mix_2026_08_18.json",
+      "retrieved_utc": "2026-10-03T21:37:15.295136+00:00"
+    },
+    {
+      "file": "harrier_spec_main.json",
+      "bytes": 29521,
+      "sha256": "8f3fd489a6b2bacdcbf61e47577e4e87864e320aece2a62eae64c8f62721344e",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/main/experiments/grug/moe_hero_ep/harrier_mix_2026_08_18.json",
+      "retrieved_utc": "2026-10-03T21:37:15.534888+00:00"
+    },
+    {
+      "file": "hero_related_search.json",
+      "bytes": 212672,
+      "sha256": "8ce21440371c8efd367fe52d950af9a461e1ad52e8736909748b8689b8828fa1",
+      "url": "https://api.github.com/search/issues?q=repo%3Amarin-community%2Fmarin+hero+gate+router&per_page=20",
+      "retrieved_utc": "2026-10-03T21:34:50.604354+00:00"
+    },
+    {
+      "file": "issue.json",
+      "bytes": 8902,
+      "sha256": "a54694915dc162c10a2754ad58dfae46cad0ea9573c01b0db151e42a0743ddc2",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8435",
+      "retrieved_utc": "2026-10-03T21:32:58.487399+00:00"
+    },
+    {
+      "file": "issue_5203.json",
+      "bytes": 4552,
+      "sha256": "8bf5b85673ffae74ec863720db093cc27f899df1ca19d5d3bd08e3f71b82c794",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/5203",
+      "retrieved_utc": "2026-10-03T21:34:47.641849+00:00"
+    },
+    {
+      "file": "issue_5203_comments.json",
+      "bytes": 7203,
+      "sha256": "3f5183354201993fc00c3bfc85aafa07dc4c3a4996a15f8006d81ac53412450b",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/5203/comments?per_page=100",
+      "retrieved_utc": "2026-10-03T21:34:48.264236+00:00"
+    },
+    {
+      "file": "issue_6442.json",
+      "bytes": 9357,
+      "sha256": "a9a47ee888b45adda1358f79579103e737708be04ba24a492d3c3936a4d56c33",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/6442",
+      "retrieved_utc": "2026-10-03T21:34:47.699713+00:00"
+    },
+    {
+      "file": "issue_6442_comments.json",
+      "bytes": 14578,
+      "sha256": "50a54dcbceb85ce33caf1f0e771c69f0b71f0a21a4177e9bf7213fd13abb517d",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/6442/comments?per_page=100",
+      "retrieved_utc": "2026-10-03T21:34:47.875160+00:00"
+    },
+    {
+      "file": "issue_6443.json",
+      "bytes": 6531,
+      "sha256": "29c885002cd92b35e68a0cdae2e98fcd009c3c1fa5c6a96a1835eaa529c4f0e1",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/6443",
+      "retrieved_utc": "2026-10-03T21:34:48.893110+00:00"
+    },
+    {
+      "file": "issue_6443_comments.json",
+      "bytes": 4814,
+      "sha256": "990999fec7047459e2a9351349037e6a98775e1076681317d4300358603d0f17",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/6443/comments?per_page=100",
+      "retrieved_utc": "2026-10-03T21:34:48.943113+00:00"
+    },
+    {
+      "file": "issue_6739.json",
+      "bytes": 10086,
+      "sha256": "e0299120cb975f2a9af656f0896da3ecc62789f1af3a7d7ee75a87ba8fe2c9ff",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/6739",
+      "retrieved_utc": "2026-10-03T21:34:48.349781+00:00"
+    },
+    {
+      "file": "issue_6739_comments.json",
+      "bytes": 35817,
+      "sha256": "7b9e5722be5e33f4808290dc5c51d8a225fe7a07df50fc7ef3adb072dbea1632",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/6739/comments?per_page=100",
+      "retrieved_utc": "2026-10-03T21:34:48.581308+00:00"
+    },
+    {
+      "file": "issue_7208.json",
+      "bytes": 7966,
+      "sha256": "80871363b0383acac4fa0ca65f01b26fb4ec50c27c90969e0e7ae8f37d38c20f",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/7208",
+      "retrieved_utc": "2026-10-03T21:34:48.513569+00:00"
+    },
+    {
+      "file": "issue_7208_comments.json",
+      "bytes": 80934,
+      "sha256": "b14314c564e697bbd3f700b5b747f23308f4a5fde173ee4832cdb509a16bc55c",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/7208/comments?per_page=100",
+      "retrieved_utc": "2026-10-03T21:34:48.656632+00:00"
+    },
+    {
+      "file": "issue_7856.json",
+      "bytes": 7457,
+      "sha256": "8a3003e9805980f8d93d33eeb0922a18424e45c402b0fe0afc7f502c763cbebe",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/7856",
+      "retrieved_utc": "2026-10-03T21:34:46.853724+00:00"
+    },
+    {
+      "file": "issue_7856_comments.json",
+      "bytes": 28239,
+      "sha256": "e8e51c9aafa302b9e78f03fbeeb9311fb536eed42d970de4f3d25b175517150e",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/7856/comments?per_page=100",
+      "retrieved_utc": "2026-10-03T21:34:46.890312+00:00"
+    },
+    {
+      "file": "issue_8003.json",
+      "bytes": 6900,
+      "sha256": "c222e237353768ab0eb31f8e193d8a38fe9fd84aa66392665ad2f46807af9f3e",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8003",
+      "retrieved_utc": "2026-10-03T21:34:47.534962+00:00"
+    },
+    {
+      "file": "issue_8003_comments.json",
+      "bytes": 9563,
+      "sha256": "bd78221de53b4150370e3e9551c35e414729c65b405807cec38984d59f5ca05d",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8003/comments?per_page=100",
+      "retrieved_utc": "2026-10-03T21:34:47.497784+00:00"
+    },
+    {
+      "file": "issue_8317.json",
+      "bytes": 7224,
+      "sha256": "2054de07f8301161d777e94e9cf118d557a0858855d18047e789e77e33296578",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8317",
+      "retrieved_utc": "2026-10-03T21:37:14.812436+00:00"
+    },
+    {
+      "file": "issue_8317_comments.json",
+      "bytes": 71017,
+      "sha256": "a5e09559c69f44d9f6c9fcbaf423e272b8e176e16c046e1d922c674a88c1e3f3",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8317/comments?per_page=100",
+      "retrieved_utc": "2026-10-03T21:37:14.947939+00:00"
+    },
+    {
+      "file": "issue_8443.json",
+      "bytes": 4729,
+      "sha256": "a9b046fae539728b0fad0dbb30a88214fc40339087cbc954ca3c4ec58053bd3a",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8443",
+      "retrieved_utc": "2026-10-03T21:34:45.441973+00:00"
+    },
+    {
+      "file": "issue_8443_comments.json",
+      "bytes": 10682,
+      "sha256": "746148951e79310791e048455e2723234a9f345cccbbc628842528fb21744887",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8443/comments?per_page=100",
+      "retrieved_utc": "2026-10-03T21:34:45.460308+00:00"
+    },
+    {
+      "file": "issue_8480.json",
+      "bytes": 5727,
+      "sha256": "09459681c87a2e80b35dd73745bcfc6b2a6cd0e8cfafd3107810964fa95c5727",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8480",
+      "retrieved_utc": "2026-10-03T21:34:45.497885+00:00"
+    },
+    {
+      "file": "issue_8480_comments.json",
+      "bytes": 14784,
+      "sha256": "ebc5781289ca63959bc68e0c0f9d5e5a6a595033a6574c7287059d308a799017",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8480/comments?per_page=100",
+      "retrieved_utc": "2026-10-03T21:34:46.056029+00:00"
+    },
+    {
+      "file": "issue_8506.json",
+      "bytes": 3937,
+      "sha256": "77e2a282f368870dfe7edcc5460f92582f68a30f9e21947150e047d012939c9a",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8506",
+      "retrieved_utc": "2026-10-03T21:35:49.007745+00:00"
+    },
+    {
+      "file": "issue_8506_comments.json",
+      "bytes": 151775,
+      "sha256": "5d7840f10eb28fdc78b229d924a13fdc6626c18b3718c1f41b0ab2a7bb399cb7",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8506/comments?per_page=100",
+      "retrieved_utc": "2026-10-03T21:35:49.176265+00:00"
+    },
+    {
+      "file": "issue_8818.json",
+      "bytes": 3339,
+      "sha256": "1a7e2c34008ccc43b9ff84b569d91c0dc3fca972b48660a3aff839c1d5b774ec",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8818",
+      "retrieved_utc": "2026-10-03T21:35:49.021534+00:00"
+    },
+    {
+      "file": "issue_8818_comments.json",
+      "bytes": 59228,
+      "sha256": "17355f588909489d922ac9d459eee2b482bef94a13db01d325f8582c0c0afd54",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8818/comments?per_page=100",
+      "retrieved_utc": "2026-10-03T21:35:49.109279+00:00"
+    },
+    {
+      "file": "issue_8827.json",
+      "bytes": 2662,
+      "sha256": "66fa72dc0b4db51ce120d30a44d0bb20aa757dec3812c80273640595ef9916ee",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8827",
+      "retrieved_utc": "2026-10-03T21:34:46.921607+00:00"
+    },
+    {
+      "file": "issue_8827_comments.json",
+      "bytes": 73425,
+      "sha256": "ef7daf0fab65ffafa15d61bb5960a3ca568985686c4c4d6aa5b48c2a1e26b4f7",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8827/comments?per_page=100",
+      "retrieved_utc": "2026-10-03T21:34:46.961700+00:00"
+    },
+    {
+      "file": "issue_8870.json",
+      "bytes": 7534,
+      "sha256": "19866ee91b32ada6cc196ad699bdf9dd0eac75dd669add143f4ae4ce6af52ae1",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8870",
+      "retrieved_utc": "2026-10-03T21:37:13.464698+00:00"
+    },
+    {
+      "file": "issue_8870_comments.json",
+      "bytes": 111784,
+      "sha256": "0b31e85fdbfeb4e938ff4c11dc7736e93ced670dbe838fe54440152bdb9f28ec",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8870/comments?per_page=100",
+      "retrieved_utc": "2026-10-03T21:37:13.629080+00:00"
+    },
+    {
+      "file": "issue_9062.json",
+      "bytes": 5948,
+      "sha256": "e56b18a8dcf73a5d077a27ad19bdaa6ce51ceee03016ea5013df2cc928283fe5",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/9062",
+      "retrieved_utc": "2026-10-03T21:37:14.116589+00:00"
+    },
+    {
+      "file": "issue_9062_comments.json",
+      "bytes": 4508,
+      "sha256": "2aa2d59ca8c0ff9ae72a0ab1214fa7941ab3328960a281bde2a4534271e344c4",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/9062/comments?per_page=100",
+      "retrieved_utc": "2026-10-03T21:37:14.081134+00:00"
+    },
+    {
+      "file": "issue_9126.json",
+      "bytes": 16199,
+      "sha256": "ff42bfae305d778697b7471eaa9bf5e96727abf8260b84d7222f5c7d00647930",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/9126",
+      "retrieved_utc": "2026-10-03T21:37:13.549180+00:00"
+    },
+    {
+      "file": "issue_9126_comments.json",
+      "bytes": 7303,
+      "sha256": "ec815f06d5e74b8b07703932039e862800b4ad79a1d6883cb01fc8c2ab700420",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/9126/comments?per_page=100",
+      "retrieved_utc": "2026-10-03T21:37:13.450394+00:00"
+    },
+    {
+      "file": "issue_9162.json",
+      "bytes": 4665,
+      "sha256": "4eb5bae474e795fe2d72b88e60758ac655befe812ccc969a47ac48b78769335e",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/9162",
+      "retrieved_utc": "2026-10-03T21:38:35.806981+00:00"
+    },
+    {
+      "file": "issue_9179.json",
+      "bytes": 5754,
+      "sha256": "ea38c33b535f47363f0fb744f6a3911647b5d5d837457c00228d9b93d87cc4b6",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/9179",
+      "retrieved_utc": "2026-10-03T21:38:36.451511+00:00"
+    },
+    {
+      "file": "issue_9183.json",
+      "bytes": 5766,
+      "sha256": "3664c601b197fefb037de7da57206fe1024290d7435f296e0e95553f13261af5",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/9183",
+      "retrieved_utc": "2026-10-03T21:38:36.037787+00:00"
+    },
+    {
+      "file": "issue_9332.json",
+      "bytes": 6624,
+      "sha256": "66b342981ae1a3673bd97687e9134bc227150fe023f5b4117a85ba60e3857942",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/9332",
+      "retrieved_utc": "2026-10-03T21:37:14.196556+00:00"
+    },
+    {
+      "file": "issue_9332_comments.json",
+      "bytes": 10368,
+      "sha256": "07cc616cba80b466b85ef5ee5f2c0f8e0fcd615c32a0b817165d2b5e6efe3f27",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/9332/comments?per_page=100",
+      "retrieved_utc": "2026-10-03T21:37:14.234873+00:00"
+    },
+    {
+      "file": "issue_9333.json",
+      "bytes": 6431,
+      "sha256": "a8441cd465cf7c730d6167b73e5db55b3e37e05103d4ce3d28b7c2ab2d6e4854",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/9333",
+      "retrieved_utc": "2026-10-03T21:37:14.710607+00:00"
+    },
+    {
+      "file": "issue_9333_comments.json",
+      "bytes": 4508,
+      "sha256": "2d5cff91a85ba7cf31f45055fe1be54e621d3277cd5988dd05fd93223ce82696",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/9333/comments?per_page=100",
+      "retrieved_utc": "2026-10-03T21:37:14.726815+00:00"
+    },
+    {
+      "file": "issue_9352.json",
+      "bytes": 11177,
+      "sha256": "3e295992ad2c115f5f32a3a0546c26440d919d410ba958517f28123e6bb1c3f5",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/9352",
+      "retrieved_utc": "2026-10-03T21:34:46.204725+00:00"
+    },
+    {
+      "file": "issue_9352_comments.json",
+      "bytes": 2,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/9352/comments?per_page=100",
+      "retrieved_utc": "2026-10-03T21:34:46.135239+00:00"
+    },
+    {
+      "file": "issue_9615.json",
+      "bytes": 9739,
+      "sha256": "3cae02d2a4f95d5ba4c4df08b956b19647888670c708dd141efb11f71b678326",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/9615",
+      "retrieved_utc": "2026-10-03T21:34:46.171453+00:00"
+    },
+    {
+      "file": "issue_9615_comments.json",
+      "bytes": 56832,
+      "sha256": "80eb22d975650e494685315f0358b8c14e05b13a85779d1620e3ad4362d547a3",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/9615/comments?per_page=100",
+      "retrieved_utc": "2026-10-03T21:34:46.941445+00:00"
+    },
+    {
+      "file": "issue_9689.json",
+      "bytes": 5016,
+      "sha256": "8460170f79256a5b076556cdcb22321d3c02faeeaba5d0709c6d1cacd2b94b6b",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/9689",
+      "retrieved_utc": "2026-10-03T21:37:15.358138+00:00"
+    },
+    {
+      "file": "issue_9689_comments.json",
+      "bytes": 10093,
+      "sha256": "49a1fe279b31cdbf3ae71ada27ca164181d6d167ced258a9e60350a395a40679",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/9689/comments?per_page=100",
+      "retrieved_utc": "2026-10-03T21:37:15.361094+00:00"
+    },
+    {
+      "file": "issue_thread.md",
+      "bytes": 70334,
+      "sha256": "3a2720215a9ac2e46eb2f7e149ac8738ee6c85b110692ebc3e0bc94edcd96894",
+      "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
+    },
+    {
+      "file": "launch_datakit_moe_mix.py",
+      "bytes": 15701,
+      "sha256": "cb37487c4e716f967be309a3eb51a6f8a6ae407de43cfb739628ffc02936bfa2",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/12d8b6f09f96ad4f0277445765c1a00dbc81d5be/experiments/grug/moe/launch_datakit_moe_mix.py",
+      "retrieved_utc": "2026-10-03T21:37:15.789315+00:00"
+    },
+    {
+      "file": "marin_repo.json",
+      "bytes": 6547,
+      "sha256": "8f0102d9d911838ea55343b10a04f7d6092c966d4c2684b2eb418c7eb3d467d6",
+      "url": "https://api.github.com/repos/marin-community/marin",
+      "retrieved_utc": "2026-10-03T21:32:59.105825+00:00"
+    },
+    {
+      "file": "mix_study_final-2026.09.15.1_final_results.csv",
+      "bytes": 5334,
+      "sha256": "eab3a513da9477e68f927c1ce290dda85f012778f772493030be78032431833a",
+      "url": "https://storage.googleapis.com/marin-public/held/h100-mix25-paloma/final-2026.09.15.1/final_results.csv",
+      "retrieved_utc": "2026-10-03T21:38:35.184984+00:00"
+    },
+    {
+      "file": "mix_study_final-2026.09.15.1_point_speedups.csv",
+      "bytes": 16577,
+      "sha256": "f3511561c956fd93990d9f67fed98cb7a53620660634a0ffaad3c1375762eb91",
+      "url": "https://storage.googleapis.com/marin-public/held/h100-mix25-paloma/final-2026.09.15.1/point_speedups.csv",
+      "retrieved_utc": "2026-10-03T21:38:35.382858+00:00"
+    },
+    {
+      "file": "mix_study_mixture-phases-2026.09.13.1_index.html",
+      "bytes": 10706,
+      "sha256": "e282faa3e697f41b9c3e3f20e9981078230f21f4b71fa776ae68a0396c3f4902",
+      "url": "https://storage.googleapis.com/marin-public/held/h100-mix25-paloma/mixture-phases-2026.09.13.1/index.html",
+      "retrieved_utc": "2026-10-03T21:38:36.498808+00:00"
+    },
+    {
+      "file": "mix_study_swarm-2026.09.14.1_comparison.csv",
+      "bytes": 4755,
+      "sha256": "9f5ddf657d56897aa811b33b0b9af87a40522fe803951cead2f2263e08d3454e",
+      "url": "https://storage.googleapis.com/marin-public/held/h100-mix25-paloma/swarm-2026.09.14.1/comparison.csv",
+      "retrieved_utc": "2026-10-03T21:38:35.175651+00:00"
+    },
+    {
+      "file": "mix_study_swarm-2026.09.14.1_selected_runs.json",
+      "bytes": 161820,
+      "sha256": "cb2a8b6ac3df1adf2b7861844c8a688736729ebad0a7329bed5a7f5c334a6851",
+      "url": "https://storage.googleapis.com/marin-public/held/h100-mix25-paloma/swarm-2026.09.14.1/selected_runs.json",
+      "retrieved_utc": "2026-10-03T21:38:35.795538+00:00"
+    },
+    {
+      "file": "plot_scaling_ladder.py",
+      "bytes": 15754,
+      "sha256": "35069ff126690dd82fe9aefd768009e1a1073c4e6e1c674e857ee5a3a35fbacb",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/d23e6e9c3673435fb82d83aa6c51a607d0da6009/experiments/grug/moe_hero_ep/plot_scaling_ladder.py",
+      "retrieved_utc": "2026-10-03T21:34:45.257818+00:00"
+    },
+    {
+      "file": "prior_README.md",
+      "bytes": 4916,
+      "sha256": "80a02376ac22370ca506cb7dbfd097957bcf727aaec38b53c913716f2833fbaf",
+      "url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/README.md",
+      "retrieved_utc": "2026-10-03T21:34:49.041053+00:00"
+    },
+    {
+      "file": "prior_data_hero_hero-12d8b6f0-dee637_dense.csv",
+      "bytes": 2266224,
+      "sha256": "d40d4f3f3699502a4afa73df323bfc038bc66965ce49063d9432f551443156e7",
+      "url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/data/hero/hero-12d8b6f0-dee637/dense.csv",
+      "retrieved_utc": "2026-10-03T21:34:50.597845+00:00"
+    },
+    {
+      "file": "prior_data_hero_hero-12d8b6f0-dee637_eval.jsonl",
+      "bytes": 51383,
+      "sha256": "ce5f6fb2aef9f543504c8ffa320271a13de3338a6ec0792987983112b1285cdb",
+      "url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/data/hero/hero-12d8b6f0-dee637/eval.jsonl",
+      "retrieved_utc": "2026-10-03T21:34:50.073278+00:00"
+    },
+    {
+      "file": "prior_data_hero_hero-12d8b6f0-dee637_meta.json",
+      "bytes": 148066,
+      "sha256": "3f2caf0a8cd0f74d7575c31fae1064a6b5f1179359cb4ed85f96d207d1000f33",
+      "url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/data/hero/hero-12d8b6f0-dee637/meta.json",
+      "retrieved_utc": "2026-10-03T21:34:49.994201+00:00"
+    },
+    {
+      "file": "prior_data_hero_hero-12d8b6f0-dee637_mixture.jsonl",
+      "bytes": 9388,
+      "sha256": "f1feb4508d0ad7cf3c31d96701a965fe18b5311c8ca6b330ddb4e2216e96f384",
+      "url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/data/hero/hero-12d8b6f0-dee637/mixture.jsonl",
+      "retrieved_utc": "2026-10-03T21:34:49.961836+00:00"
+    },
+    {
+      "file": "prior_docs_learning_04-worked-example-step-32999.md",
+      "bytes": 2754,
+      "sha256": "4aec0f0ddbf5cee96473b1d2fe55fa8ea2e610d042a6c4f8754f5810c627c564",
+      "url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/docs/learning/04-worked-example-step-32999.md",
+      "retrieved_utc": "2026-10-03T21:34:49.147812+00:00"
+    },
+    {
+      "file": "prior_docs_learning_06-reading-training-signals.md",
+      "bytes": 3893,
+      "sha256": "2f5624dc2b76c8cc1f91cb2d2c4d48c2b2fe4408d289eb89aa020fb18f8ffd27",
+      "url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/docs/learning/06-reading-training-signals.md",
+      "retrieved_utc": "2026-10-03T21:34:49.090986+00:00"
+    },
+    {
+      "file": "prior_notes_daily_2026-10-02.md",
+      "bytes": 7770,
+      "sha256": "6fb889e0b4aaee3a44d9dae60f0f72fc11e4a55af5c530dc577101b130f438ab",
+      "url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/notes/daily/2026-10-02.md",
+      "retrieved_utc": "2026-10-03T21:34:49.442721+00:00"
+    },
+    {
+      "file": "prior_repo.json",
+      "bytes": 5075,
+      "sha256": "42eeda969a3789ed25fa1f6dde1ccc41a2954d150f55e19ec9aa8e148f17fd57",
+      "url": "https://api.github.com/repos/fudan-chen/pretrain",
+      "retrieved_utc": "2026-10-03T21:32:58.501610+00:00"
+    },
+    {
+      "file": "prior_reports_generated_hero_2026-09-03-pm.md",
+      "bytes": 1708,
+      "sha256": "895befa4603d8406439906e1c3ed936039fa8b644a1f6005a6b87cac6528ac8c",
+      "url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/reports/generated/hero/2026-09-03-pm.md",
+      "retrieved_utc": "2026-10-03T21:34:49.369829+00:00"
+    },
+    {
+      "file": "prior_scripts_marin_tracker_hero.py",
+      "bytes": 12022,
+      "sha256": "182dc5587fbc521be41f84c028cf49f26fbee1afe561c4d87215dec783b65c14",
+      "url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/scripts/marin_tracker/hero.py",
+      "retrieved_utc": "2026-10-03T21:34:49.662830+00:00"
+    },
+    {
+      "file": "prior_scripts_marin_wandb.py",
+      "bytes": 3095,
+      "sha256": "0c2aa6563b0157a16587c68da9a2066d322b53a91796fe788fd2e23f33472048",
+      "url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/scripts/marin_wandb.py",
+      "retrieved_utc": "2026-10-03T21:34:49.518985+00:00"
+    },
+    {
+      "file": "prior_scripts_pull_data.py",
+      "bytes": 4840,
+      "sha256": "1784548df38d5f3f69cb881521ed74714173d3ee5b6e7385fc46750b6c9650d0",
+      "url": "https://raw.githubusercontent.com/fudan-chen/pretrain/01c76b9e5c377ccc07e492649455e7774490f3af/scripts/pull_data.py",
+      "retrieved_utc": "2026-10-03T21:34:49.575924+00:00"
+    },
+    {
+      "file": "prior_tree.json",
+      "bytes": 157590,
+      "sha256": "2fe1fea79a3d07b8969380817650f320cad207d1da7cfe0fe7ccaac9890c2d8d",
+      "url": "https://api.github.com/repos/fudan-chen/pretrain/git/trees/main?recursive=1",
+      "retrieved_utc": "2026-10-03T21:32:59.375260+00:00"
+    },
+    {
+      "file": "source_manifest.json",
+      "bytes": 35252,
+      "sha256": "ec08e42301832f7f5babf2fbb8e0aa2d332ec756160ffee4cf16938eb0c0c4c5",
+      "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
+    },
+    {
+      "file": "thread_5203.md",
+      "bytes": 3246,
+      "sha256": "16f468611afc622553fb78eda30953d105f9077e98e296fa8af64a1bd40185e8",
+      "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
+    },
+    {
+      "file": "thread_6442.md",
+      "bytes": 8699,
+      "sha256": "638b7ab14e2089635681cd6c742d2c3493bf155b5c19eb9c7448b1c1712ddee9",
+      "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
+    },
+    {
+      "file": "thread_6443.md",
+      "bytes": 4404,
+      "sha256": "c936457f7b84375970bf9d2e0229269477a9b579572d84112abd67936afd27ce",
+      "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
+    },
+    {
+      "file": "thread_6739.md",
+      "bytes": 27996,
+      "sha256": "77c3e5bde1577381491c6e1a6e93b3fbc892117913078527f1f0fac8ecc10305",
+      "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
+    },
+    {
+      "file": "thread_7208.md",
+      "bytes": 37229,
+      "sha256": "69f816877dc73959446887ab16b6966a75ab0a29918ac8680ffbbe7ab244ac08",
+      "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
+    },
+    {
+      "file": "thread_7856.md",
+      "bytes": 17466,
+      "sha256": "64cd71e0d0f500eea184c25029b07a99a7e96f64b6c668aa8ed5c4c750044e6d",
+      "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
+    },
+    {
+      "file": "thread_8003.md",
+      "bytes": 7421,
+      "sha256": "d72886a882d7ee98fc477adadba8a1fc1593995bdf9b03db92944ad35b7def45",
+      "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
+    },
+    {
+      "file": "thread_8443.md",
+      "bytes": 6870,
+      "sha256": "7056b95132e9ee79e2eb743d2e799364175e40eac151a870b3126aa47875e7a3",
+      "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
+    },
+    {
+      "file": "thread_8480.md",
+      "bytes": 8910,
+      "sha256": "dab3436b417909f4a1df42843f73f5a65bc917cf7d9c5f3c3cfefcb76a917a5a",
+      "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
+    },
+    {
+      "file": "thread_8506.md",
+      "bytes": 50561,
+      "sha256": "5c08ac632764165e3037342b5d19c39bad8203ead1e95ff677c66d6cfd847131",
+      "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
+    },
+    {
+      "file": "thread_8818.md",
+      "bytes": 25090,
+      "sha256": "d34276687dfb7afce81e325d0684aa59fe7d65be4fce7dc9e9e79852807f8753",
+      "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
+    },
+    {
+      "file": "thread_8827.md",
+      "bytes": 60950,
+      "sha256": "7927476d8a2be5117e4022a9db9daf9df1e33959f24ca95b5d7f2db92b1bcc3b",
+      "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
+    },
+    {
+      "file": "thread_9352.md",
+      "bytes": 8488,
+      "sha256": "5ac629995e27dd08d55a2879929f561fa8fc005bb8b172ccf4bdab17c052ba69",
+      "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
+    },
+    {
+      "file": "thread_9615.md",
+      "bytes": 27005,
+      "sha256": "317f067d9058adabaac1c83455f1704bf49b79eb38ba8822f96c0e3f69b89225",
+      "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
+    },
+    {
+      "file": "wandb/hero-12d8b6f0-dee637_dense.json",
+      "bytes": 723037,
+      "sha256": "6ff9428c5a77ad5a2a91e9d6dc096f5f949cbeef291e26f3a941a16a4f3cc595",
+      "retrieved_utc": "2026-10-03T21:38:03.233207+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-12d8b6f0-dee637",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-12d8b6f0-dee637_eval.json",
+      "bytes": 122293,
+      "sha256": "a8f9b3537ed8c28436462d69a8dc4ae70f95915c14ffc608cccb93887256097e",
+      "retrieved_utc": "2026-10-03T21:38:04.305147+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-12d8b6f0-dee637",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-12d8b6f0-dee637_keys.json",
+      "bytes": 54591,
+      "sha256": "07a7b584c9108b66fb24a57388c67dc3a667979bf04303fb4b433daa5b766c48",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-12d8b6f0-dee637_meta.json",
+      "bytes": 492325,
+      "sha256": "9738023a60b236cbf010976139782ce5038d806b4977f4b9da8edd8a9b45de67",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-12d8b6f0-dee637",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-12d8b6f0-dee637_mixture.json",
+      "bytes": 25137,
+      "sha256": "fd97cd5b172884da2fa38d5690f5141e7a72292fb209ae2511e5ee3ed2df7af9",
+      "retrieved_utc": "2026-10-03T21:38:05.271655+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-12d8b6f0-dee637",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-12d8b6f0-dee637_router.json",
+      "bytes": 922465,
+      "sha256": "c9e1032c9bf9ff2dd3f83495ecfa213f321cb949203440b19bc2a9fc90f6b339",
+      "retrieved_utc": "2026-10-03T21:38:06.784826+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-12d8b6f0-dee637",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-fa4sm100-nomask-step146k_dense.json",
+      "bytes": 737040,
+      "sha256": "daf69b81451ca28bea470d1464c612192a5614aef97ba2600126b3675800cfb5",
+      "retrieved_utc": "2026-10-03T21:38:10.353524+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-fa4sm100-nomask-step146k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-fa4sm100-nomask-step146k_eval.json",
+      "bytes": 96791,
+      "sha256": "f6d3df1ed466960128406cffd572c5107f8e5af38dc7b771d0e1576ad207c708",
+      "retrieved_utc": "2026-10-03T21:38:11.454064+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-fa4sm100-nomask-step146k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-fa4sm100-nomask-step146k_keys.json",
+      "bytes": 187548,
+      "sha256": "0ea9251a992344d48a6456e87bace04b276d8d64a5e6a31c23ee59adc5a6d340",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-fa4sm100-nomask-step146k_meta.json",
+      "bytes": 1288488,
+      "sha256": "ca57924fb6cb56a3927696550a238c004b84fb7b31b9ced3cf65b266f11fe058",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-fa4sm100-nomask-step146k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-fa4sm100-nomask-step146k_mixture.json",
+      "bytes": 51284,
+      "sha256": "595aa462b86b9ac22c5c8cee1acbc2d536c4c645ffc2be1ffd573803d69a8d2d",
+      "retrieved_utc": "2026-10-03T21:38:12.927027+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-fa4sm100-nomask-step146k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-fa4sm100-nomask-step146k_router.json",
+      "bytes": 917810,
+      "sha256": "70195379e523d6da25a6c299659fd1f00a925c52bf5030efca5a6ea55fb230f1",
+      "retrieved_utc": "2026-10-03T21:38:14.636199+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-fa4sm100-nomask-step146k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-main-step121638_dense.json",
+      "bytes": 736921,
+      "sha256": "34a5c28dab9cb5c56b6fc9fcee56ba6b9001374fca2e7ab87239e44e0dda0648",
+      "retrieved_utc": "2026-10-03T21:38:14.539074+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-main-step121638",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-main-step121638_eval.json",
+      "bytes": 40679,
+      "sha256": "cca119947b0897876b67c4ad9f1e4c6732605ac0239aa82afa4735296b7a7a04",
+      "retrieved_utc": "2026-10-03T21:38:15.411482+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-main-step121638",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-main-step121638_keys.json",
+      "bytes": 187524,
+      "sha256": "31ac3b0dba2a0a91b05b95a99213523f318f345c539b05d2d53329d66c625392",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-main-step121638_meta.json",
+      "bytes": 1289580,
+      "sha256": "b48c0cf7483a50e6607f064965f95e915376d366c5b2e66f7e68f3d693ecde37",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-main-step121638",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-main-step121638_mixture.json",
+      "bytes": 38489,
+      "sha256": "6753118cedec27fd01d3baa854133137022b18520ac2e2af2a2df27822a8b3e4",
+      "retrieved_utc": "2026-10-03T21:38:16.357775+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-main-step121638",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-main-step121638_router.json",
+      "bytes": 824154,
+      "sha256": "ad91c979cbe8fc1ff181c61783625bb81622bf67eaca7187b30f4de57b0ae146",
+      "retrieved_utc": "2026-10-03T21:38:17.823727+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-main-step121638",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-mix-996f4891-step108k_dense.json",
+      "bytes": 431473,
+      "sha256": "a874ab43b16691d3422afcc9197f360fdf0c36e0abe8814c21783e7fdda2c8bd",
+      "retrieved_utc": "2026-10-03T21:38:09.417841+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-mix-996f4891-step108k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-mix-996f4891-step108k_keys.json",
+      "bytes": 184306,
+      "sha256": "8380c3b888e7c67a8dc1d9d6d50648e74dd97b07456dda7a8f71f11c7e1c09cd",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-mix-996f4891-step108k_meta.json",
+      "bytes": 1264225,
+      "sha256": "a0469b11ec7dfe2c6840b17dc660e85a45a5ade8da108dff1fdcf922bc344148",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-mix-996f4891-step108k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-mix-996f4891-step108k_mixture.json",
+      "bytes": 25709,
+      "sha256": "94bd363874b7f654fd9d8304b01ccace55e5f576c82fb11f61bca4637384d00d",
+      "retrieved_utc": "2026-10-03T21:38:10.325218+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-mix-996f4891-step108k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-mix-996f4891-step108k_router.json",
+      "bytes": 495314,
+      "sha256": "6cb33d89f422aff1d339012190c5352506364ca16ce143700601b8fba4a9b4b2",
+      "retrieved_utc": "2026-10-03T21:38:11.668615+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-mix-996f4891-step108k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-nopdl-step108k_dense.json",
+      "bytes": 726588,
+      "sha256": "c259726fca985e33c925420a79d8fc662163c7c653fe42c0e5c67313243ea955",
+      "retrieved_utc": "2026-10-03T21:38:09.576475+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-nopdl-step108k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-nopdl-step108k_eval.json",
+      "bytes": 15752,
+      "sha256": "8516baf1769ef319e1242613e8ff7653ff6beab5e16137b0342dd90795f5a709",
+      "retrieved_utc": "2026-10-03T21:38:10.306817+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-nopdl-step108k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-nopdl-step108k_keys.json",
+      "bytes": 187315,
+      "sha256": "899f996e66632fe54df0c52e506d4e77e5b9b2e45510bca321b44fdd2f8192e2",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-nopdl-step108k_meta.json",
+      "bytes": 1288406,
+      "sha256": "33290439525f659c11e9e42d0e3102b0efcef9f13d7b4af7fa5bed904e7d0568",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-nopdl-step108k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-nopdl-step108k_mixture.json",
+      "bytes": 25702,
+      "sha256": "92594c9a694e295457fe8027be839a26f96346d11efc251480c42601c17d5ad4",
+      "retrieved_utc": "2026-10-03T21:38:11.203743+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-nopdl-step108k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-nopdl-step108k_router.json",
+      "bytes": 782394,
+      "sha256": "53ca4c22257e4e51278fbe7d88b7c0bb4535aa03c64793fdba753b184e9fcd4a",
+      "retrieved_utc": "2026-10-03T21:38:13.290688+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-nopdl-step108k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-ragged_a2a-nccl2307-ep-step81k_dense.json",
+      "bytes": 728924,
+      "sha256": "97d019648a3f41276b6356a4ab13916ce85cb62d7262cf8a535faad31465c042",
+      "retrieved_utc": "2026-10-03T21:38:03.815943+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-ragged_a2a-nccl2307-ep-step81k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-ragged_a2a-nccl2307-ep-step81k_eval.json",
+      "bytes": 31115,
+      "sha256": "f71db79987a8a20499482c7d7775802ce5c7ff7b94c0057d1cdeb1d9101ec9f3",
+      "retrieved_utc": "2026-10-03T21:38:04.706386+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-ragged_a2a-nccl2307-ep-step81k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-ragged_a2a-nccl2307-ep-step81k_keys.json",
+      "bytes": 187341,
+      "sha256": "eb7870cc5d9b92823c618cdff749278b895b33aa703dc625d89372e20d41640b",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-ragged_a2a-nccl2307-ep-step81k_meta.json",
+      "bytes": 1279759,
+      "sha256": "cd122169a99c0fe5c754d50c2570d005917269aef65285cfc10cb16ac04fe8ac",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-ragged_a2a-nccl2307-ep-step81k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-ragged_a2a-nccl2307-ep-step81k_mixture.json",
+      "bytes": 39117,
+      "sha256": "3db2e52abb996b012dd0cf149087d8fb513c7465b1738a54c612b0d9cd689d3e",
+      "retrieved_utc": "2026-10-03T21:38:05.541185+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-ragged_a2a-nccl2307-ep-step81k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-ragged_a2a-nccl2307-ep-step81k_router.json",
+      "bytes": 799502,
+      "sha256": "4af81a05344d518e2d15a0d082fa6d16f0792f2362cf93084a740b9262b39d4c",
+      "retrieved_utc": "2026-10-03T21:38:07.030313+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-ragged_a2a-nccl2307-ep-step81k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-wd-gate-router-p02-step58k_dense.json",
+      "bytes": 725685,
+      "sha256": "dc154625932b7f926bbf2e259891ba577a28b68eb5788082baafb7cf3f2656bb",
+      "retrieved_utc": "2026-10-03T21:38:03.848091+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-wd-gate-router-p02-step58k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-wd-gate-router-p02-step58k_eval.json",
+      "bytes": 27953,
+      "sha256": "401dd9ab46aa4425b37fd5702ca3354f977fd54ed33e611f131de5d791b0c85f",
+      "retrieved_utc": "2026-10-03T21:38:04.651605+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-wd-gate-router-p02-step58k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-wd-gate-router-p02-step58k_keys.json",
+      "bytes": 187402,
+      "sha256": "a0f99b3e89f6ccf8cb0dab16a22c390d9e4b14b155559d82e16e737c2d1067be",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-wd-gate-router-p02-step58k_meta.json",
+      "bytes": 1268128,
+      "sha256": "d45a08fb614e1f769b33ae3bba9deef56dc8fb0f9f6959711845db15b6320a17",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-wd-gate-router-p02-step58k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-wd-gate-router-p02-step58k_mixture.json",
+      "bytes": 25952,
+      "sha256": "937fe4671fdc846d4693cc114b7fbc6747cc2da3de7ec908c0f18cb4ab4b6985",
+      "retrieved_utc": "2026-10-03T21:38:05.459664+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-wd-gate-router-p02-step58k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/hero-wd-gate-router-p02-step58k_router.json",
+      "bytes": 862986,
+      "sha256": "92a56d88025a9ae6577b9298599d6cc824dd24620ef54ac767610cd2e3ebb38b",
+      "retrieved_utc": "2026-10-03T21:38:06.928335+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-wd-gate-router-p02-step58k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/window_ep_control.json",
+      "bytes": 52484,
+      "sha256": "fbedbcc6891f3363797fb098aeff208564c6b5b845082cff105440b65f6c734c",
+      "retrieved_utc": "2026-10-03T21:40:40.502449+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-wd-gate-router-p02-step58k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/window_ep_new.json",
+      "bytes": 52871,
+      "sha256": "3392249d9ddaf1946c790402c39da16c3cc6282e28fc97ee24232f4e1b24ca74",
+      "retrieved_utc": "2026-10-03T21:40:40.513870+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-ragged_a2a-nccl2307-ep-step81k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/window_kernel_control.json",
+      "bytes": 53483,
+      "sha256": "41f91e25678d89bad1f1e896f9f8fa2c8988da923506b24888b8bc12d4a07d86",
+      "retrieved_utc": "2026-10-03T21:40:41.253979+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-main-step121638",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/window_kernel_new.json",
+      "bytes": 53473,
+      "sha256": "62977201261dda3bbecff34e22a255153d47eb6e97fb58aad73ea09f973b2771",
+      "retrieved_utc": "2026-10-03T21:40:41.358228+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-fa4sm100-nomask-step146k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/window_mix_after.json",
+      "bytes": 53541,
+      "sha256": "624160caf52f50036afb3d8826e86bed77c42f5c1369688a0f7db2a2be372edb",
+      "retrieved_utc": "2026-10-03T21:40:41.223494+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-mix-996f4891-step108k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb/window_mix_before.json",
+      "bytes": 106240,
+      "sha256": "ca5e8c1a0a2e27e53a7f37e7871ba9f5848fd7591a0cfde62c4ddd51e6fbd804",
+      "retrieved_utc": "2026-10-03T21:40:40.650578+00:00",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-ragged_a2a-nccl2307-ep-step81k",
+      "origin": "Anonymous public GraphQL; request specs and collector code archived."
+    },
+    {
+      "file": "wandb_report.html",
+      "bytes": 4577,
+      "sha256": "7da8f6363880555610657ce923bec14856c28eac45bbeeb0f2ca264abc99fc48",
+      "url": "https://wandb.ai/marin-community/marin_moe/reports/535B-A23B-18T-Token-Hero-Run-Scaling-Ladder--VmlldzoxNzc2MDM5Ng",
+      "retrieved_utc": "2026-10-03T21:32:59.632201+00:00"
+    },
+    {
+      "file": "wandb_report_browser.json",
+      "bytes": 5733,
+      "sha256": "8ab277b318b65167f93a18df3fb6f143e1ca605e571404fd984e6a8adcd6fc81",
+      "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
+    }
+  ]
+}

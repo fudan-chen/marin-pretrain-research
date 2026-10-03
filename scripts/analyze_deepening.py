@@ -8,7 +8,7 @@ def read(p):return json.loads(p.read_text())
 def save(name,obj):(A/name).write_text(json.dumps(obj,ensure_ascii=False,indent=2))
 def table(name,rows):
     with (A/name).open('w',newline='') as f:
-        writer=csv.DictWriter(f,fieldnames=list(rows[0]));writer.writeheader();writer.writerows(rows)
+        writer=csv.DictWriter(f,fieldnames=list(rows[0]),lineterminator='\n');writer.writeheader();writer.writerows(rows)
 def digest(obj):return hashlib.sha256(json.dumps(obj,sort_keys=True,separators=(',',':')).encode()).hexdigest()
 rows=pq.read_table(D/'hf_observations.parquet').to_pylist();swarm=pq.read_table(D/'hf_swarm.parquet').to_pylist()[0]
 buckets=pq.read_table(D/'hf_buckets.parquet').to_pylist()[0];content=pq.read_table(D/'hf_content.parquet').to_pylist()[0]

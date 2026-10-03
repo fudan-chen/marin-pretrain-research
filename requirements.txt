@@ -2,3 +2,4 @@ numpy==2.0.2
 matplotlib==3.9.4
 Markdown==3.9
 beautifulsoup4==4.15.0
+pyarrow==21.0.0

@@ -15,6 +15,8 @@ Tᵢ = Σₛ Bₛ × wᵢ,s
 Eᵢ = Tᵢ / Aᵢ
 ```
 
+**这里使用配置权重，不是加载器取整后的有效权重。**第二轮发现，K=49152时原配比有17个正权重桶在完整块上分到零条序列，余数集中到c30q4；新主阶段则已对齐计数格点。[取整机制与逐桶复核](DEEP_DIVE_ZH.md)另列有效比例。
+
 Eᵢ=2 表示计划抽取量相当于该桶库存的两倍。它不是“每一篇文章恰好读过两次”：桶内 permutation、packing、续训 cursor、重复文档和切换跳过都会影响实际曝光。库存本身也只是这份 token store 的可用量，不是互联网某种知识的总量。
 
 最新 4K 配置每步 **46,137,344 tokens**。按 390251 个计划 updates 计算，三个阶段如下。它们是配置预算，后两阶段中的未来部分尚未完成。
@@ -25,7 +27,7 @@ Eᵢ=2 表示计划抽取量相当于该桶库存的两倍。它不是“每一�
 | 新主阶段配比 | [108000,312192) | 9.42088T | 52.325% | 当前处于此阶段 |
 | 新 cooldown 配比 | [312192,390251) | 3.60143T | 20.000% | 配置里的未来计划 |
 
-早期小模型实验以 25% 为切换点，实际 Hero 在约 27.675% 才部署。把“小模型实验的阶段边界”抄成大模型已经执行的时间线，会掩盖这次延迟。[配比实验 #9126](https://github.com/marin-community/marin/issues/9126) · [实际切换 #9162](https://github.com/marin-community/marin/pull/9162)
+配比验证的scaling ladder以名义25%为切换点，另一个d512搜索swarm从10%的共同checkpoint继续；实际Hero在约27.675%才部署。把“小模型实验的阶段边界”抄成大模型已经执行的时间线，会掩盖这次延迟。[配比实验 #9126](https://github.com/marin-community/marin/issues/9126) · [实际切换 #9162](https://github.com/marin-community/marin/pull/9162)
 
 ## 2. 实际配比改变了什么
 
@@ -108,6 +110,8 @@ d1536 最终结果的 Paloma macro BPB 改善约0.716%，16个子集15个改善�
 ![新配比相对旧配比的固定Paloma子集BPB变化](assets/mixture_eval.png)
 
 代码子集在 d768、d1024 略差，在 d1536 转为改善，说明小代理排序也存在规模依赖。d1536代码BPB改善约0.463%，比macro的改善小；不能把macro的“等效算力约20%”移植到代码能力。d512同checkpoint、三seed实验的Uncheatable代码改善支持继续尝试，但没有消除最终535B收益的不确定性。[实验细节和限制](https://github.com/marin-community/marin/issues/9126)
+
+第二轮读取完整registry后发现：d512新配比的GSM8K任务BPB在三个seed上均退化，均值约+10.844%；HumanEval任务BPB均值约−4.034%，三个seed均改善。这些是文本BPB，不能换算为解题准确率或pass@1。数学域削减与退化同时发生，尚无单桶因果证据。[完整54项任务与选择偏差分析](DEEP_DIVE_ZH.md)
 
 ### 3.3 “等效算力提高20%”怎样算，为什么容易夸大
 
@@ -208,9 +212,11 @@ Marin的三阶段为我们提供一个“顺序值得研究”的例子：主阶
 
 ### 5.3 上下文变长，会改变顺序，即便每步token数不变
 
-#9615里最重要的发现不是16K仅慢3.1%，而是修改 `max_seq_len` 会改变 loader 的数据流：IO块按固定token切成不同条数的sequence，块内shuffle依赖sequence数；混合block按sequence计数；续训位置也可能用旧sequence单位。4K→16K时，简单用相同步数乘新batch，无法保证读到相同的原始token位置。[完整数据流调查](https://github.com/marin-community/marin/issues/9615)
+\#9615里最重要的发现不是16K仅慢3.1%，而是修改 `max_seq_len` 会改变 loader 的数据流：IO块按固定token切成不同条数的sequence，块内shuffle依赖sequence数；混合block按sequence计数；续训位置也可能用旧sequence单位。4K→16K时，简单用相同步数乘新batch，无法保证读到相同的原始token位置。[完整数据流调查](https://github.com/marin-community/marin/issues/9615)
 
 实际固定全局token量时，4K的batch11264变成16K的2816，旧49152条sequence混合block的边界对齐周期会改变。讨论中的方案会让108000的旧边界向108096对齐；这是阶段语义变化，不是GPU数学误差。直接改长度的重复2.85T、漏1.6T是讨论中的估计，不是本报告重放算出的结果。
+
+第二轮按生产计数逻辑独立复算了两种较温和的迁移方案：195125步保留K=49152、历史边界移到108096，完整块绝对游标差约2.951B；缩K到12288、历史边界保持108000，约108.907B。后者还改变了有效配比。绝对差之和包含向前与向后偏移，不能直接写成重复token量。[公式、逐桶CSV与范围限制](DEEP_DIVE_ZH.md)
 
 稳妥设计是存储每桶的原始token cursor、已消费permutation窗口和阶段身份，切换时明确映射；或者先按足够长的块生成稳定序列再切成短训练片段，使顺序尽量不依赖当前context。Marin当时仍在讨论具体实现，不能把这个建议写成已部署。为避开未完成窗口而跳过约50Btokens，是特定切换点的方案估计，不是任何训练的通用安全上界。
 

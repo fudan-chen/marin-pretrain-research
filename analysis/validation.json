@@ -1,17 +1,24 @@
 {
-  "checks_passed": 255,
+  "checks_passed": 277,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
     "200 buckets x 3 normalized phases",
     "400 public examples",
     "200-step EP and kernel paired windows",
+    "934 swarm observations / 915 exact weight pairs",
+    "54 task BPB comparisons",
+    "1200 counts match native 3.12 arithmetic and 1200 match legacy sensitivity",
+    "complete-block cursor differences independently totaled",
+    "eight embedded figures",
     "all relative HTML links valid",
     "complete source archive checksums valid"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",
     "causality of individual mixture buckets",
-    "future cooldown and long-context outcomes"
+    "independent confirmation after candidate selection",
+    "535B task accuracy or long-context outcomes",
+    "full token ID / inner shuffle replay"
   ]
 }

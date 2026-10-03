@@ -15,11 +15,12 @@ if not font or not pathlib.Path(font).exists():
 from matplotlib import font_manager
 font_manager.fontManager.addfont(font)
 plt.rcParams['font.family']=FontProperties(fname=font).get_name()
-plt.rcParams.update({'axes.spines.top':False,'axes.spines.right':False,'axes.grid':True,'grid.alpha':.18,'font.size':10,'figure.facecolor':'white','axes.unicode_minus':False,'savefig.dpi':180,'svg.fonttype':'path'})
+plt.rcParams.update({'axes.spines.top':False,'axes.spines.right':False,'axes.grid':True,'grid.alpha':.18,'font.size':10,'figure.facecolor':'white','axes.unicode_minus':False,'savefig.dpi':180,'svg.fonttype':'path','svg.hashsalt':'marin-535b-2026-10-04'})
 BLUE='#224f77'; ORANGE='#c07a2c'; RED='#a7443a'; GREEN='#3b7769'
 def save(fig,name):
     fig.savefig(OUT/(name+'.png'),bbox_inches='tight')
-    fig.savefig(OUT/(name+'.svg'),bbox_inches='tight')
+    svg=OUT/(name+'.svg');fig.savefig(svg,bbox_inches='tight',metadata={'Date':None})
+    svg.write_text('\n'.join(line.rstrip() for line in svg.read_text().splitlines())+'\n')
     plt.close(fig)
 series=json.loads((A/'series.json').read_text())
 events=[(58014,'Gate/router WD'),(81716,'Ragged EP'),(108000,'新配比'),(108778,'PDL off'),(121638,'Main'),(146139,'FA4 / masks')]

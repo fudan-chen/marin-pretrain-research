@@ -4,9 +4,10 @@
 [hidden]{display:none!important}main{overflow-wrap:anywhere}.sidebar details a{display:block;padding:4px 9px;line-height:1.6;font-size:12px}.sidebar details a.minor{padding-left:17px;color:#506674}.filters input,.filters select,button.action,.notes textarea{font-family:inherit}.notes textarea{font-size:15px;line-height:1.8}
 @media(max-width:980px){.layout{display:block;padding:15px}.sidebar{position:static;height:auto;max-height:none;padding:10px 5px 18px}.sidebar nav{display:flex;gap:6px;flex-wrap:wrap}.sidebar nav a.major{margin:0;padding:5px 10px;border-left:0;border-bottom:2px solid #729dbd}.sidebar details,.sidebar input{display:none}.intro,.chapter{padding:23px}.chapter{margin-top:15px}.intro h1{font-size:25px}.facts{gap:12px}.chapter h1{font-size:23px}body{font-size:15px}.chapter img{margin:18px auto}.top-link{right:12px}}
 @media print{body{background:white;font-size:11pt}.layout{display:block;padding:0}.sidebar,.intro .actions,.top-link,.filters,.notes,.footer{display:none}.intro{background:white;border:none;padding:0}.chapter{border:0;padding:0;margin:25pt 0;break-before:page}.chapter h2,.chapter h3{break-after:avoid}.chapter p{max-width:none}.table-wrap,.bucket-scroll{overflow:visible;max-height:none}table{font-size:9pt;min-width:0}.chapter img{max-height:245mm;object-fit:contain}pre{white-space:pre-wrap}a{color:inherit}}
-</style></head><body id="top"><div class="layout"><aside class="sidebar"><div class="brand">Marin 535B<br>预训练研究</div><div class="meta">公开快照：2026-10-04<br>重点：故障机制、Loss、数据顺序</div><input id="toc-search" aria-label="筛选章节目录" placeholder="筛选章节标题"><nav><a class="major" href="#report">研究主报告</a><a class="major" href="#data">数据配比与顺序</a><a class="major" href="#translation">#8435逐条中文解读</a><a class="major" href="#operations">58条运行记录</a><a class="major" href="#provenance">来源与复核</a><a class="major" href="#explorer">200桶查询</a><a class="major" href="#notes">我的研究笔记</a></nav><details open><summary>研究主报告 · 章节</summary><a class="" href="#report-1">1. 先把最容易误读的三个地方说清楚</a><a class="minor" href="#report-11-loss">1.1 通信实现改变，也会让 Loss 下降</a><a class="minor" href="#report-12-loss">1.2 配比改变以后，训练 Loss 上升，也可能是合理的</a><a class="minor" href="#report-13">1.3 某层输出很小，不能据此说它没用</a><a class="" href="#report-2">2. 模型与训练的实际结构</a><a class="minor" href="#report-21-535b-token-23b">2.1 为什么是 535B，但每个 token 只激活约 23B</a><a class="minor" href="#report-22">2.2 专家并行与数据并行分别跨哪里</a><a class="minor" href="#report-23">2.3 注意力的局部层与全局层</a><a class="minor" href="#report-24">2.4 为什么训练中参数范数不动，并不奇怪</a><a class="" href="#report-3">3. 工程问题逐项对应：做了什么、解决了什么、为什么</a><a class="minor" href="#report-31-checkpoint">3.1 Checkpoint 写得出来，却读不回来</a><a class="minor" href="#report-32-host-ram">3.2 一味加 host RAM，仍然在恢复后被杀</a><a class="minor" href="#report-33-host-rss">3.3 每隔几次保存，host RSS 的地板抬高</a><a class="minor" href="#report-34-loader">3.4 Loader 缓存不是越大越好</a><a class="minor" href="#report-35-nvlinkib">3.5 NVLink、IB 与节点掉线，不能混为训练数值不稳定</a><a class="minor" href="#report-36-ragged-ep">3.6 Ragged EP 第一次切换：质量和速度通过，稳定性没通过</a><a class="minor" href="#report-37-executable">3.7 “两个 executable 交替”是曾经的解释，后来被排除</a><a class="minor" href="#report-38-nccl-headers-runtime">3.8 NCCL 编译 headers 与 runtime 不一致：实在的缺陷，但不是全部解释</a><a class="minor" href="#report-39-gpu-pdl-warp">3.9 真正把 GPU 内部卡在哪里抓出来：PDL 与 warp 读取不一致</a><a class="minor" href="#report-310-checkpoint">3.10 存储策略不让删 checkpoint，却误伤了原子提交</a><a class="minor" href="#report-311-checkpoint">3.11 Checkpoint 留得多，反而把训练拖停</a><a class="minor" href="#report-312">3.12 正确的提速改动也需要数值对照</a><a class="minor" href="#report-313-router">3.13 Router “提高精度”改变的是路由策略</a><a class="minor" href="#report-314">3.14 参数存了，不代表评估用了完整状态</a><a class="minor" href="#report-315-drop">3.15 拉长上下文：drop 变多，先看分母与数据相关性</a><a class="" href="#report-4-scaling-ladder">4. 怎样使用 Scaling Ladder，而不把它当承诺</a><a class="" href="#report-5">5. 一张曲线至少对应四种不同量</a><a class="" href="#report-6-pretrain">6. 旧 pretrain 仓库究竟缺了什么</a><a class="" href="#report-7">7. 资料可信到哪一步</a></details><details><summary>数据配比与顺序 · 章节</summary><a class="" href="#data-1">1. 先区分库存、抽样配比和训练顺序</a><a class="" href="#data-2">2. 实际配比改变了什么</a><a class="minor" href="#data-21-agent">2.1 加了 Agent、法律、新闻，减少了一部分代码、数学和历史</a><a class="minor" href="#data-22">2.2 新配比并不是简单地“越高质量越多”</a><a class="minor" href="#data-23">2.3 桶名称为什么只能当导航</a><a class="" href="#data-3-loss">3. 数据与 Loss 的关联：现有证据能走多远</a><a class="minor" href="#data-31-ce">3.1 为什么新配比的训练CE会升高</a><a class="minor" href="#data-32">3.2 固定验证集上，哪些分布改善了</a><a class="minor" href="#data-33-20">3.3 “等效算力提高20%”怎样算，为什么容易夸大</a><a class="" href="#data-4">4. 怎样为自己的模型精心调配比</a><a class="minor" href="#data-41">4.1 第一步不是选百分比，而是固定目标与对照</a><a class="minor" href="#data-42-200">4.2 先把200桶压成几个可解释的方向</a><a class="minor" href="#data-43">4.3 一次改变一个方向，并说清从哪里拿预算</a><a class="minor" href="#data-44-checkpoint">4.4 先做同checkpoint分叉，再做规模确认</a><a class="minor" href="#data-45-ce">4.5 用验证变化决定下一轮，别用训练CE决定</a><a class="" href="#data-5">5. 怎样安排数据顺序</a><a class="minor" href="#data-51">5.1 把“总量”和“何时使用”分成两项实验</a><a class="minor" href="#data-52">5.2 切换后观察多久，取决于要观察什么</a><a class="minor" href="#data-53-token">5.3 上下文变长，会改变顺序，即便每步token数不变</a><a class="minor" href="#data-54">5.4 长上下文需要两套验证口径</a><a class="" href="#data-6">6. 一份可以直接用于你项目的实验记录</a><a class="" href="#data-7">7. 完整配比与曝光附表</a><a class="minor" href="#data-71-40">7.1 40个语义域的全部比例</a><a class="minor" href="#data-72">7.2 计划曝光轮数最高的十个桶</a><a class="minor" href="#data-73-d1536palomabpb">7.3 d1536固定Paloma的全部子集BPB结果</a></details><details><summary>#8435逐条中文解读 · 章节</summary><a class="" href="#translation-1-scaling-ladder">主帖｜为什么先花约1%算力做 Scaling Ladder</a><a class="" href="#translation-c001">C001｜完整初始配方与系统设计</a><a class="" href="#translation-c002">C002｜数据从哪里来，怎样去重、分桶</a><a class="" href="#translation-c003-scaling-ladder-wb-report">C003｜贴出 Scaling Ladder 的 W&amp;B report</a><a class="" href="#translation-c004204">C004｜拟合出的终点约2.04，来自条件外推</a><a class="" href="#translation-c005-scaling-law">C005｜怎样和旧模型的 scaling law 比</a><a class="" href="#translation-c006d2048">C006｜d2048崩了，为什么不重跑</a><a class="" href="#translation-c007">C007｜四个风险窗口，十二项健康检查</a><a class="" href="#translation-c008">C008｜初期参数范数检查为健康</a><a class="" href="#translation-c009rms_attn">C009｜rms_attn不动，也可能正常</a><a class="" href="#translation-c010">C010｜预测的适用条件被明确限定</a><a class="" href="#translation-c011">C011｜读者请求补工程代码链接</a><a class="" href="#translation-c012">C012｜作者已经补上链接</a><a class="" href="#translation-c013token-store">C013｜公开组成报告不等于token store能下载</a><a class="" href="#translation-c0143">C014｜读者认为前3%风险已过去</a><a class="" href="#translation-c015nvlink-racklatentmoe">C015｜为什么在NVLink rack内还要LatentMoE</a><a class="" href="#translation-c016">C016｜作者明确不开放完整数据</a><a class="" href="#translation-c017latentmoelearnable-rmsnorm">C017｜LatentMoE需要learnable RMSNorm</a><a class="" href="#translation-c018denserelative-peadamh-embedding">C018｜三个架构问题：dense交替、relative PE、AdamH embedding</a><a class="" href="#translation-c019token">C019｜三项答复，尤其是稀有token的梯度尖峰</a><a class="" href="#translation-c020">C020｜读者补充自己的设计动机</a><a class="" href="#translation-c021">C021｜希望看中途模型生成</a><a class="" href="#translation-c022classifiercluster-weights">C022｜复现分桶还需要classifier与cluster weights</a><a class="" href="#translation-c023weightshf">C023｜相关weights已经给出HF版本</a><a class="" href="#translation-c024generations8827">C024｜中途generations跟踪在#8827</a><a class="" href="#translation-c025router">C025｜Router精度实验：建议保持现状</a><a class="" href="#translation-c026">C026｜无技术信息的中文回复</a><a class="" href="#translation-c0274k8k16krack">C027｜4K/8K/16K的单rack测量</a></details><details><summary>58条运行记录 · 章节</summary></details><details><summary>来源与复核 · 章节</summary><a class="" href="#provenance-1">1. 这次实际读取了哪些材料</a><a class="" href="#provenance-2-run">2. 生产曲线为什么必须按run拼接</a><a class="" href="#provenance-3">3. 配比表与曝光怎样计算</a><a class="" href="#provenance-4">4. 怎样重建和检查</a><a class="" href="#provenance-5">5. 仍然需要额外实验才能回答的问题</a></details></aside><main><header class="intro"><h1>从一次大规模预训练里，学会定位问题与调整数据</h1><p>逐条读工程记录，把改动、症状、原因和验证对应起来；重新计算配比和曲线，明确哪里仍缺少因果证据。</p><div class="facts"><span>主帖 + 27条评论</span><span>58条生产事件</span><span>40域 × 5质量档</span><span>7段生产run</span></div><div class="actions"><a href="#report">从三个案例开始</a><a href="#data">直接看数据分析</a><a href="REPORT_ZH.md" download>Markdown主报告</a><a href="report_standalone.html" download>下载单文件HTML</a><button class="action" id="print-report">打印 / 保存PDF</button></div></header><section class="chapter" id="report"><h1 id="report-marin-535b-loss">Marin 535B 预训练：读懂故障、Loss 与数据配比</h1>
+</style></head><body id="top"><div class="layout"><aside class="sidebar"><div class="brand">Marin 535B<br>预训练研究</div><div class="meta">公开快照：2026-10-04<br>重点：故障机制、Loss、数据顺序</div><input id="toc-search" aria-label="筛选章节目录" placeholder="筛选章节标题"><nav><a class="major" href="#report">研究主报告</a><a class="major" href="#data">数据配比与顺序</a><a class="major" href="#deep">第二轮：搜索、取舍与游标</a><a class="major" href="#translation">#8435逐条中文解读</a><a class="major" href="#operations">58条运行记录</a><a class="major" href="#provenance">来源与复核</a><a class="major" href="#explorer">200桶查询</a><a class="major" href="#notes">我的研究笔记</a></nav><details open><summary>研究主报告 · 章节</summary><a class="" href="#report-1">1. 先把最容易误读的三个地方说清楚</a><a class="minor" href="#report-11-loss">1.1 通信实现改变，也会让 Loss 下降</a><a class="minor" href="#report-12-loss">1.2 配比改变以后，训练 Loss 上升，也可能是合理的</a><a class="minor" href="#report-13">1.3 某层输出很小，不能据此说它没用</a><a class="" href="#report-2">2. 模型与训练的实际结构</a><a class="minor" href="#report-21-535b-token-23b">2.1 为什么是 535B，但每个 token 只激活约 23B</a><a class="minor" href="#report-22">2.2 专家并行与数据并行分别跨哪里</a><a class="minor" href="#report-23">2.3 注意力的局部层与全局层</a><a class="minor" href="#report-24">2.4 为什么训练中参数范数不动，并不奇怪</a><a class="" href="#report-3">3. 工程问题逐项对应：做了什么、解决了什么、为什么</a><a class="minor" href="#report-31-checkpoint">3.1 Checkpoint 写得出来，却读不回来</a><a class="minor" href="#report-32-host-ram">3.2 一味加 host RAM，仍然在恢复后被杀</a><a class="minor" href="#report-33-host-rss">3.3 每隔几次保存，host RSS 的地板抬高</a><a class="minor" href="#report-34-loader">3.4 Loader 缓存不是越大越好</a><a class="minor" href="#report-35-nvlinkib">3.5 NVLink、IB 与节点掉线，不能混为训练数值不稳定</a><a class="minor" href="#report-36-ragged-ep">3.6 Ragged EP 第一次切换：质量和速度通过，稳定性没通过</a><a class="minor" href="#report-37-executable">3.7 “两个 executable 交替”是曾经的解释，后来被排除</a><a class="minor" href="#report-38-nccl-headers-runtime">3.8 NCCL 编译 headers 与 runtime 不一致：实在的缺陷，但不是全部解释</a><a class="minor" href="#report-39-gpu-pdl-warp">3.9 真正把 GPU 内部卡在哪里抓出来：PDL 与 warp 读取不一致</a><a class="minor" href="#report-310-checkpoint">3.10 存储策略不让删 checkpoint，却误伤了原子提交</a><a class="minor" href="#report-311-checkpoint">3.11 Checkpoint 留得多，反而把训练拖停</a><a class="minor" href="#report-312">3.12 正确的提速改动也需要数值对照</a><a class="minor" href="#report-313-router">3.13 Router “提高精度”改变的是路由策略</a><a class="minor" href="#report-314">3.14 参数存了，不代表评估用了完整状态</a><a class="minor" href="#report-315-drop">3.15 拉长上下文：drop 变多，先看分母与数据相关性</a><a class="" href="#report-4-scaling-ladder">4. 怎样使用 Scaling Ladder，而不把它当承诺</a><a class="" href="#report-5">5. 一张曲线至少对应四种不同量</a><a class="" href="#report-6-pretrain">6. 旧 pretrain 仓库究竟缺了什么</a><a class="" href="#report-7">7. 资料可信到哪一步</a></details><details><summary>数据配比与顺序 · 章节</summary><a class="" href="#data-1">1. 先区分库存、抽样配比和训练顺序</a><a class="" href="#data-2">2. 实际配比改变了什么</a><a class="minor" href="#data-21-agent">2.1 加了 Agent、法律、新闻，减少了一部分代码、数学和历史</a><a class="minor" href="#data-22">2.2 新配比并不是简单地“越高质量越多”</a><a class="minor" href="#data-23">2.3 桶名称为什么只能当导航</a><a class="" href="#data-3-loss">3. 数据与 Loss 的关联：现有证据能走多远</a><a class="minor" href="#data-31-ce">3.1 为什么新配比的训练CE会升高</a><a class="minor" href="#data-32">3.2 固定验证集上，哪些分布改善了</a><a class="minor" href="#data-33-20">3.3 “等效算力提高20%”怎样算，为什么容易夸大</a><a class="" href="#data-4">4. 怎样为自己的模型精心调配比</a><a class="minor" href="#data-41">4.1 第一步不是选百分比，而是固定目标与对照</a><a class="minor" href="#data-42-200">4.2 先把200桶压成几个可解释的方向</a><a class="minor" href="#data-43">4.3 一次改变一个方向，并说清从哪里拿预算</a><a class="minor" href="#data-44-checkpoint">4.4 先做同checkpoint分叉，再做规模确认</a><a class="minor" href="#data-45-ce">4.5 用验证变化决定下一轮，别用训练CE决定</a><a class="" href="#data-5">5. 怎样安排数据顺序</a><a class="minor" href="#data-51">5.1 把“总量”和“何时使用”分成两项实验</a><a class="minor" href="#data-52">5.2 切换后观察多久，取决于要观察什么</a><a class="minor" href="#data-53-token">5.3 上下文变长，会改变顺序，即便每步token数不变</a><a class="minor" href="#data-54">5.4 长上下文需要两套验证口径</a><a class="" href="#data-6">6. 一份可以直接用于你项目的实验记录</a><a class="" href="#data-7">7. 完整配比与曝光附表</a><a class="minor" href="#data-71-40">7.1 40个语义域的全部比例</a><a class="minor" href="#data-72">7.2 计划曝光轮数最高的十个桶</a><a class="minor" href="#data-73-d1536palomabpb">7.3 d1536固定Paloma的全部子集BPB结果</a></details><details><summary>第二轮：搜索、取舍与游标 · 章节</summary><a class="" href="#deep-1-run934915">1. 六个run背后，是934条观测与915对不同权重</a><a class="minor" href="#deep-11">1.1 搜索范围可以数清，选中规则还不能完整复现</a><a class="minor" href="#deep-12-2001000">1.2 他们还保存了200×1000的内容特征，域标签不是全部输入信息</a><a class="" href="#deep-2-token">2. 小模型怎么模拟十几万亿token的重复曝光</a><a class="" href="#deep-3-bpb">3. 代码改善的同时，数学任务BPB怎样变了</a><a class="minor" href="#deep-31-seed">3.1 三个seed里的改善与退化同时存在</a><a class="minor" href="#deep-32-seed">3.2 收益超过seed波动，不等于已经通过独立检验</a><a class="" href="#deep-4">4. 域总比例隐藏了怎样的质量档迁移</a><a class="" href="#deep-5">5. 配置里非零，不代表加载器真的抽到</a><a class="minor" href="#deep-51-49152sequence200">5.1 49152条sequence如何分给200桶</a><a class="minor" href="#deep-52">5.2 一次本地误诊怎样被排除</a><a class="" href="#deep-6-108907b2951b">6. 108.907B与2.951B，已经独立对上了</a><a class="minor" href="#deep-61">6.1 为什么改长度会改历史游标</a><a class="minor" href="#deep-62">6.2 两种方案的逐桶差异</a><a class="minor" href="#deep-63">6.3 工程调整顺序</a><a class="" href="#deep-7">7. 把这些发现落实成下一轮配比实验</a><a class="" href="#deep-54bpb">附录：54项任务BPB完整对照</a></details><details><summary>#8435逐条中文解读 · 章节</summary><a class="" href="#translation-1-scaling-ladder">主帖｜为什么先花约1%算力做 Scaling Ladder</a><a class="" href="#translation-c001">C001｜完整初始配方与系统设计</a><a class="" href="#translation-c002">C002｜数据从哪里来，怎样去重、分桶</a><a class="" href="#translation-c003-scaling-ladder-wb-report">C003｜贴出 Scaling Ladder 的 W&amp;B report</a><a class="" href="#translation-c004204">C004｜拟合出的终点约2.04，来自条件外推</a><a class="" href="#translation-c005-scaling-law">C005｜怎样和旧模型的 scaling law 比</a><a class="" href="#translation-c006d2048">C006｜d2048崩了，为什么不重跑</a><a class="" href="#translation-c007">C007｜四个风险窗口，十二项健康检查</a><a class="" href="#translation-c008">C008｜初期参数范数检查为健康</a><a class="" href="#translation-c009rms_attn">C009｜rms_attn不动，也可能正常</a><a class="" href="#translation-c010">C010｜预测的适用条件被明确限定</a><a class="" href="#translation-c011">C011｜读者请求补工程代码链接</a><a class="" href="#translation-c012">C012｜作者已经补上链接</a><a class="" href="#translation-c013token-store">C013｜公开组成报告不等于token store能下载</a><a class="" href="#translation-c0143">C014｜读者认为前3%风险已过去</a><a class="" href="#translation-c015nvlink-racklatentmoe">C015｜为什么在NVLink rack内还要LatentMoE</a><a class="" href="#translation-c016">C016｜作者明确不开放完整数据</a><a class="" href="#translation-c017latentmoelearnable-rmsnorm">C017｜LatentMoE需要learnable RMSNorm</a><a class="" href="#translation-c018denserelative-peadamh-embedding">C018｜三个架构问题：dense交替、relative PE、AdamH embedding</a><a class="" href="#translation-c019token">C019｜三项答复，尤其是稀有token的梯度尖峰</a><a class="" href="#translation-c020">C020｜读者补充自己的设计动机</a><a class="" href="#translation-c021">C021｜希望看中途模型生成</a><a class="" href="#translation-c022classifiercluster-weights">C022｜复现分桶还需要classifier与cluster weights</a><a class="" href="#translation-c023weightshf">C023｜相关weights已经给出HF版本</a><a class="" href="#translation-c024generations8827">C024｜中途generations跟踪在#8827</a><a class="" href="#translation-c025router">C025｜Router精度实验：建议保持现状</a><a class="" href="#translation-c026">C026｜无技术信息的中文回复</a><a class="" href="#translation-c0274k8k16krack">C027｜4K/8K/16K的单rack测量</a></details><details><summary>58条运行记录 · 章节</summary></details><details><summary>来源与复核 · 章节</summary><a class="" href="#provenance-1">1. 这次实际读取了哪些材料</a><a class="" href="#provenance-2-run">2. 生产曲线为什么必须按run拼接</a><a class="" href="#provenance-3">3. 配比表与曝光怎样计算</a><a class="" href="#provenance-4">4. 怎样重建和检查</a><a class="" href="#provenance-5">5. 仍然需要额外实验才能回答的问题</a></details></aside><main><header class="intro"><h1>从一次大规模预训练里，学会定位问题与调整数据</h1><p>逐条读工程记录，把改动、症状、原因和验证对应起来；重新计算配比和曲线，明确哪里仍缺少因果证据。</p><div class="facts"><span>主帖 + 27条评论</span><span>58条生产事件</span><span>40域 × 5质量档</span><span>7段生产run</span><span>934条配比观测</span></div><div class="actions"><a href="#report">从三个案例开始</a><a href="#data">直接看数据分析</a><a href="#deep">第二轮新增结论</a><a href="REPORT_ZH.md" download>Markdown主报告</a><a href="report_standalone.html" download>下载单文件HTML</a><button class="action" id="print-report">打印 / 保存PDF</button></div></header><section class="chapter" id="report"><h1 id="report-marin-535b-loss">Marin 535B 预训练：读懂故障、Loss 与数据配比</h1>
 <p>这份报告研究的是 Marin 的 <strong>535.3B 总参数、22.76B 激活参数（通常写作 A23B）</strong> Hero Run。18T 是训练目标，不是已经完成的训练量。资料截止北京时间 <strong>2026 年 10 月 4 日约 05:38</strong>：最新公开 W&amp;B 快照在 step 199174、约 51% 进度，配置仍是 4K 上下文。后面的 cooldown 与 16K/65K/262K 扩展不能写成已完成结果。</p>
 <p>阅读顺序建议：先读本篇的三个具体案例，再查工程问题表；需要逐条对照原文时读《#8435 中文逐条解读》；真正准备调整自己的数据时读《数据配比与顺序实操》。HTML 把这些内容合在同一页，保留搜索、目录、200 桶数据查询和本地笔记。</p>
+<p>第二轮新增<a href="#deep">搜索、任务取舍与加载器游标深挖</a>：核对934条观测、逐seed检查数学/代码BPB、复算整数配比与108.907B/2.951B游标差。后文原训练时间线不变。</p>
 <h2 id="report-1">1. 先把最容易误读的三个地方说清楚</h2>
 <h3 id="report-11-loss">1.1 通信实现改变，也会让 Loss 下降</h3>
 <p>在 step 81716，更换专家通信实现后，训练 CE 平均下降约 <strong>0.006498 nats</strong>。本报告从两条公开 W&amp;B run 取得完全相同的 step 区间 <code>[81716, 81916)</code>，逐 step 对齐 200 个样本，重新算出了这个差值。旧实现平均丢弃约 3.43% 的专家分配，新实现约 0.0076%。相同 checkpoint、相同批次下，少丢弃专家计算，本身就会改变前向结果。</p>
@@ -56,7 +57,7 @@
 <p>9 月 2 日从 pooled-wave 改为 ragged。约 70 个更新内：drop 从约 3.4% 降到 &lt;0.01%，MFU 从约 20.5% 到 23.4%，同批次 Loss 降约 0.006。但是两次启动都发生 silent hang，于是回退到旧代码和旧 checkpoint。新 run 使用独立 W&amp;B ID、checkpoint tree，没有污染旧树；回退后同批次 Loss 重放也被核验。<a href="https://github.com/marin-community/marin/issues/8506#issuecomment-5518830230" rel="noopener" target="_blank">回退决定</a></p>
 <p><strong>为什么这种改动要有 rollback。</strong> 内核数学正确、单 rack smoke 正常，都无法覆盖11 racks 下的同步行为。部署最先验证的应该是“发生异常能否回到完整旧状态”，不能只有一个越来越快的候选分支。</p>
 <h3 id="report-37-executable">3.7 “两个 executable 交替”是曾经的解释，后来被排除</h3>
-<h1 id="report-8870-hang-watchplain-executable-symmetric-memory-window-watchmodeinlinestep10-capacity-limited-eval-watch-step">8870 首帖把 hang 与 watch/plain executable 交替、symmetric memory window 重叠联系起来。但后续代码审计发现生产配置是 <code>WatchMode.INLINE</code>：每步是同一编译路径，<code>step%10</code> 只是是否写日志。capacity-limited eval 也早已禁用。因此“刚过 watch step 就挂了”是时间上相邻，不是机制证据。</h1>
+<p>#8870 首帖把 hang 与 watch/plain executable 交替、symmetric memory window 重叠联系起来。但后续代码审计发现生产配置是 <code>WatchMode.INLINE</code>：每步是同一编译路径，<code>step%10</code> 只是是否写日志。capacity-limited eval 也早已禁用。因此“刚过 watch step 就挂了”是时间上相邻，不是机制证据。</p>
 <p>另一个 symmetric window 问题确实存在，但不能因为相似就移植其根因。报告在这里保留排除过程，因为只读首帖会学到一条已经失效的诊断。<a href="https://github.com/marin-community/marin/issues/8870#issuecomment-5531534090" rel="noopener" target="_blank">首帖解释的纠正</a></p>
 <h3 id="report-38-nccl-headers-runtime">3.8 NCCL 编译 headers 与 runtime 不一致：实在的缺陷，但不是全部解释</h3>
 <p>运行期 NCCL 是 2.30.7，PJRT 的 device kernels 却按 2.29.7 headers 编译。旧 compat shim 的行为与新 device API 有差异，缺少一些新的 barrier timeout 能力。换成一致 headers 后，四次立即挂起的模式变成通过约 200 步试验；但后来又在约 1590 clean steps 后出现 hang。</p>
@@ -159,6 +160,7 @@
 <pre><code>Tᵢ = Σₛ Bₛ × wᵢ,s
 Eᵢ = Tᵢ / Aᵢ
 </code></pre>
+<p><strong>这里使用配置权重，不是加载器取整后的有效权重。</strong>第二轮发现，K=49152时原配比有17个正权重桶在完整块上分到零条序列，余数集中到c30q4；新主阶段则已对齐计数格点。<a href="#deep">取整机制与逐桶复核</a>另列有效比例。</p>
 <p>Eᵢ=2 表示计划抽取量相当于该桶库存的两倍。它不是“每一篇文章恰好读过两次”：桶内 permutation、packing、续训 cursor、重复文档和切换跳过都会影响实际曝光。库存本身也只是这份 token store 的可用量，不是互联网某种知识的总量。</p>
 <p>最新 4K 配置每步 <strong>46,137,344 tokens</strong>。按 390251 个计划 updates 计算，三个阶段如下。它们是配置预算，后两阶段中的未来部分尚未完成。</p>
 <div class="table-wrap"><table>
@@ -195,7 +197,7 @@ Eᵢ = Tᵢ / Aᵢ
 </tr>
 </tbody>
 </table></div>
-<p>早期小模型实验以 25% 为切换点，实际 Hero 在约 27.675% 才部署。把“小模型实验的阶段边界”抄成大模型已经执行的时间线，会掩盖这次延迟。<a href="https://github.com/marin-community/marin/issues/9126" rel="noopener" target="_blank">配比实验 #9126</a> · <a href="https://github.com/marin-community/marin/pull/9162" rel="noopener" target="_blank">实际切换 #9162</a></p>
+<p>配比验证的scaling ladder以名义25%为切换点，另一个d512搜索swarm从10%的共同checkpoint继续；实际Hero在约27.675%才部署。把“小模型实验的阶段边界”抄成大模型已经执行的时间线，会掩盖这次延迟。<a href="https://github.com/marin-community/marin/issues/9126" rel="noopener" target="_blank">配比实验 #9126</a> · <a href="https://github.com/marin-community/marin/pull/9162" rel="noopener" target="_blank">实际切换 #9162</a></p>
 <h2 id="data-2">2. 实际配比改变了什么</h2>
 <h3 id="data-21-agent">2.1 加了 Agent、法律、新闻，减少了一部分代码、数学和历史</h3>
 <p>下面是从 200 个实际权重求和得到的 domain 比例。表里的变化是<strong>百分点</strong>；比如 1.31%→6.04% 是增加 4.73 个百分点，也约为原来的 4.6 倍。这两种说法不能混用。</p>
@@ -415,6 +417,7 @@ Eᵢ = Tᵢ / Aᵢ
 <p>d1536 最终结果的 Paloma macro BPB 改善约0.716%，16个子集15个改善。Wikipedia分布反而恶化约0.500%。下图展示全部子集；负值表示更好。macro是子集宏平均，不代表按真实用户请求分布加权的质量。</p>
 <p><img alt="新配比相对旧配比的固定Paloma子集BPB变化" src="assets/mixture_eval.png"/></p>
 <p>代码子集在 d768、d1024 略差，在 d1536 转为改善，说明小代理排序也存在规模依赖。d1536代码BPB改善约0.463%，比macro的改善小；不能把macro的“等效算力约20%”移植到代码能力。d512同checkpoint、三seed实验的Uncheatable代码改善支持继续尝试，但没有消除最终535B收益的不确定性。<a href="https://github.com/marin-community/marin/issues/9126" rel="noopener" target="_blank">实验细节和限制</a></p>
+<p>第二轮读取完整registry后发现：d512新配比的GSM8K任务BPB在三个seed上均退化，均值约+10.844%；HumanEval任务BPB均值约−4.034%，三个seed均改善。这些是文本BPB，不能换算为解题准确率或pass@1。数学域削减与退化同时发生，尚无单桶因果证据。<a href="#deep">完整54项任务与选择偏差分析</a></p>
 <h3 id="data-33-20">3.3 “等效算力提高20%”怎样算，为什么容易夸大</h3>
 <p>原配比拟合 BPB≈a·C^(−α)，若忽略不可约loss floor，α≈0.0400069，则让旧配比达到新BPB所需的算力倍数为：</p>
 <pre><code>倍数 = (0.925068 / 0.918442)^(1 / 0.0400069) ≈ 1.19684
@@ -539,8 +542,9 @@ Eᵢ = Tᵢ / Aᵢ
 <p>切换后的同checkpoint重加权评估可立即解释CE分布差。前200steps的生产对照更适合检查内核数值、drop、吞吐、cursor与checkpoint，并不够确认长期数据收益；704GPU、每步46.1Mtokens时，200steps也约9.23Btokens，但它仍只是特定进度附近的短窗。</p>
 <p>学习效果应按“已训练多少额外token”和“多少次optimizer更新”观察，记录固定验证域的轨迹，并与未切换分支同期比较。不要只看生产CE回到切换前数值的时刻；回到旧数字不表示能力恢复，也不表示新配比已经学完。</p>
 <h3 id="data-53-token">5.3 上下文变长，会改变顺序，即便每步token数不变</h3>
-<h1 id="data-961516k31-max_seq_len-loader-iotokensequenceshufflesequenceblocksequencesequence4k16kbatchtoken">9615里最重要的发现不是16K仅慢3.1%，而是修改 <code>max_seq_len</code> 会改变 loader 的数据流：IO块按固定token切成不同条数的sequence，块内shuffle依赖sequence数；混合block按sequence计数；续训位置也可能用旧sequence单位。4K→16K时，简单用相同步数乘新batch，无法保证读到相同的原始token位置。<a href="https://github.com/marin-community/marin/issues/9615" rel="noopener" target="_blank">完整数据流调查</a></h1>
+<p>#9615里最重要的发现不是16K仅慢3.1%，而是修改 <code>max_seq_len</code> 会改变 loader 的数据流：IO块按固定token切成不同条数的sequence，块内shuffle依赖sequence数；混合block按sequence计数；续训位置也可能用旧sequence单位。4K→16K时，简单用相同步数乘新batch，无法保证读到相同的原始token位置。<a href="https://github.com/marin-community/marin/issues/9615" rel="noopener" target="_blank">完整数据流调查</a></p>
 <p>实际固定全局token量时，4K的batch11264变成16K的2816，旧49152条sequence混合block的边界对齐周期会改变。讨论中的方案会让108000的旧边界向108096对齐；这是阶段语义变化，不是GPU数学误差。直接改长度的重复2.85T、漏1.6T是讨论中的估计，不是本报告重放算出的结果。</p>
+<p>第二轮按生产计数逻辑独立复算了两种较温和的迁移方案：195125步保留K=49152、历史边界移到108096，完整块绝对游标差约2.951B；缩K到12288、历史边界保持108000，约108.907B。后者还改变了有效配比。绝对差之和包含向前与向后偏移，不能直接写成重复token量。<a href="#deep">公式、逐桶CSV与范围限制</a></p>
 <p>稳妥设计是存储每桶的原始token cursor、已消费permutation窗口和阶段身份，切换时明确映射；或者先按足够长的块生成稳定序列再切成短训练片段，使顺序尽量不依赖当前context。Marin当时仍在讨论具体实现，不能把这个建议写成已部署。为避开未完成窗口而跳过约50Btokens，是特定切换点的方案估计，不是任何训练的通用安全上界。</p>
 <p>建议你在小型数据fixture上给原始token/文档编号，执行以下有意义的检查：不改长度的续训是否精确重放；4K→16K是否保留期望顺序；阶段边界前后是否出现重复/漏读；checkpoint落在shuffle窗口中间时如何处理；每桶实际采样比例是否与预算吻合。保存每次切换的审计文件，包含允许跳过的范围和理由。</p>
 <h3 id="data-54">5.4 长上下文需要两套验证口径</h3>
@@ -1178,6 +1182,908 @@ decision: "接受/继续确认/回退，写具体证据"
 </tr>
 </tbody>
 </table></div></section>
+<section class="chapter" id="deep"><h1 id="deep-_1">第二轮深挖：配比搜索的代价、数学退化与真正的数据游标</h1>
+<p>这次新增分析从三个疑点出发。原报告引用了六个 d512 run，新配比究竟是在多大的搜索中被选出来的？代码文本变好时，数学和其他任务有没有代价？长上下文讨论中的108.9B与2.95B究竟怎么算，能否独立复算？</p>
+<p>本篇读取固定版本的完整 swarm registry，并执行归档加载器中两段计数函数。结果揭示了原来的汇总表没能说明的取舍。<strong>新配比在六个小模型对照里的代码 BPB 改善相当一致，但 GSM8K 的 BPB 也在三个 seed 上一致变差；缩小混合块会改变取整后的实际配比，继而改变历史游标。</strong>这些是代理实验和加载器层面的证据，尚不是535B最终能力结论。训练曲线仍沿用第一版的05:38快照，本篇没有把后来抓到的代码时间当成训练已前进的证据。</p>
+<h2 id="deep-1-run934915">1. 六个run背后，是934条观测与915对不同权重</h2>
+<h3 id="deep-11">1.1 搜索范围可以数清，选中规则还不能完整复现</h3>
+<p>固定 HF revision <code>75c25718e2a7cf7a3b1b498b00479351f80345e0</code> 下，<code>h100-d512-from10pct-store-4d2e363d</code> 的 observations parquet 有 <strong>934行、934个不同run名</strong>。对两个阶段的完整权重做精确序列化和哈希，得到 <strong>915对不同权重</strong>。其中906对只出现一次，6对出现两次，2对出现三次，1对出现十次。多次出现只说明权重相同，不能自动算成独立seed验证；本篇分析的旧/新候选恰好各有三个明确seed。<a href="https://huggingface.co/datasets/marin-community/grug-moe-mix-swarm/tree/75c25718e2a7cf7a3b1b498b00479351f80345e0/registry/v1/swarms/h100-d512-from10pct-store-4d2e363d" rel="noopener" target="_blank">固定registry</a> · <a href="analysis/swarm_inventory.csv">本地逐run清单</a></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>registry里的group</th>
+<th style="text-align: right;">观测行数</th>
+<th>可以从名字读出的实验方向</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mixprior_candidate</td>
+<td style="text-align: right;">601</td>
+<td>候选配比；不能据名字还原其优化目标</td>
+</tr>
+<tr>
+<td>systematic_grid</td>
+<td style="text-align: right;">100</td>
+<td>网格方案</td>
+</tr>
+<tr>
+<td>floored_ablation</td>
+<td style="text-align: right;">60</td>
+<td>带floor的消融</td>
+</tr>
+<tr>
+<td>skew_swap</td>
+<td style="text-align: right;">48</td>
+<td>偏置与交换</td>
+</tr>
+<tr>
+<td>semantic_domain_ablation</td>
+<td style="text-align: right;">40</td>
+<td>语义域消融</td>
+</tr>
+<tr>
+<td>proportional_domain_ablation</td>
+<td style="text-align: right;">40</td>
+<td>按比例的域消融</td>
+</tr>
+<tr>
+<td>core_design</td>
+<td style="text-align: right;">25</td>
+<td>核心设计与对照</td>
+</tr>
+<tr>
+<td>proportional_baseline</td>
+<td style="text-align: right;">10</td>
+<td>比例基线</td>
+</tr>
+<tr>
+<td>semantic_quality_ablation</td>
+<td style="text-align: right;">6</td>
+<td>语义质量消融</td>
+</tr>
+<tr>
+<td>proportional_quality_isolation</td>
+<td style="text-align: right;">4</td>
+<td>质量档隔离</td>
+</tr>
+</tbody>
+</table></div>
+<p>这张表说明搜索并非只试了两种配方。它还不够说明“某个域消融的因果效果”：需要读取对应两阶段权重、确认其余方向怎么补偿，核对checkpoint、训练预算和评估版本。group名称只是索引。本次没有把934行变成934个独立因果样本。<a href="analysis/swarm_audit.json">复核摘要</a></p>
+<p>作者在<a href="https://github.com/marin-community/marin/issues/9126" rel="noopener" target="_blank">#9126的swarm方法</a>中记录：六个run均从完成10%基线训练的step-393 checkpoint恢复、使用相同d512预算。六个已引用run在完整registry中逐字段匹配，observations的SHA256也与swarm manifest吻合。因此原来三seed对照不是从另一套实验拼来的。但这六个run属于用于选择配比的同一批资料。即便效果在三个seed上重复，也不能消除反复挑选候选带来的乐观偏差。<strong>重复运行回答“这两个配方的差异是否稳定”；独立确认回答“搜索选出的配方离开这批选择数据后是否仍好”。</strong></p>
+<p>公开registry保存了权重、任务BPB、训练末尾指标以及来源路径；本次取得的文件中未发现可完整复现候选选择的拟合模型、超参数、目标权重和搜索过程。<code>evaluation_suite=grug-hero-fsdp-krr</code> 这个名称也不足以证明最终选择是如何加权的。本报告不把猜测的surrogate算法写成作者实际做法。可以借鉴<a href="https://arxiv.org/html/2407.01492v2" rel="noopener" target="_blank">RegMix的原论文</a>所述“用小规模配比实验预测并筛选大规模配方”的思路；Marin这一候选的全部选择规则仍缺证据。</p>
+<h3 id="deep-12-2001000">1.2 他们还保存了200×1000的内容特征，域标签不是全部输入信息</h3>
+<p><code>content.parquet</code>有200行、1000列的token加权内容直方图，每行和在浮点误差内等于1。元数据记录了20,000的sample_size、100的range_len、seed=0、max_embed_tokens=2048及centroid/lookup哈希。它描述的是每个domain×quality桶在更细内容簇上的组成。两个桶即使标签不同，也可能共享大量内容；一个桶的Q3与Q4也可能对应不同主题。</p>
+<p>但这里只能核实特征被归档，不能确认它怎样进入最终选择模型。内容特征根路径仍指向旧 <code>store_81e7e39a</code>，训练swarm指向重建后的 <code>store_4d2e363d</code>。后者增加了fuzzy-dedup豁免来源。registry另标明质量桶语义 <code>exact_match_to_historical=false</code>。本次核对发现200桶的库存数与生产spec <strong>全部相等</strong>；这说明库存口径对得上，却不能消除特征取样和历史语义的差别。迁移数据时，表面上同名、同大小还不是内容完全一致的证明。<a href="sources/deepening_2026_10_04/hf_content.parquet">特征和来源元数据</a> · <a href="sources/harrier_mix_main.py">重建说明</a> · <a href="analysis/swarm_audit.json">库存核对</a></p>
+<h2 id="deep-2-token">2. 小模型怎么模拟十几万亿token的重复曝光</h2>
+<p>swarm元数据写的是 <strong>14,835,253,248 physical tokens</strong> 与 <strong>16,875,000,000,000 simulated tokens</strong>。两者相差约1137.49倍。前者是小实验实际训练量，后者是它模拟的剩余大训练预算；不能把16.875T写成每个d512实验真的训练了这么多token。该模型活跃参数约20.84M，总参数约597.61M，也不等同于535B模型的缩小倍数。<a href="sources/deepening_2026_10_04/hf_swarm.parquet">swarm元数据</a></p>
+<p>16.875T对应18.75T参考预算扣除前10%；两个剩余阶段为13.125T与3.75T。14.835B则等于3537步×1024序列×4096，即3930步参考run剩余90%的训练量。这里的18.75T是配比模拟参考预算；当前Hero配置总量约18.005T。参考预算、物理小实验预算、生产计划预算要分别记录。</p>
+<p>加载器的做法是先建立token序列、做桶内shuffle，再把每个桶截成原长度的实验/目标预算比：</p>
+<pre><code>r = 14,835,253,248 / 16,875,000,000,000 = 0.0008791261184
+小实验桶长度 = floor(原桶序列数 × r)
+</code></pre>
+<p>MixtureDataset采用restart策略，某桶读完后可以继续循环。假设暂时忽略截断与packing尾部，小实验某桶训练量和库存都缩小r倍，曝光轮数便近似保持：</p>
+<pre><code>小实验曝光轮数 ≈ (r × 目标训练量 × 桶权重) / (r × 桶库存)
+               = 目标训练量 × 桶权重 / 桶库存
+</code></pre>
+<p>这一步有明确目的：让小实验提前遇到稀缺桶反复曝光的后果。否则短实验几乎都处于首次读数据阶段，可能偏好一种到18T时已经过度重复的配方。代价也明确：<strong>重复比例接近了，覆盖的独特内容大幅减少了。</strong>代理可能对小切片的内容偶然性敏感；相同轮数不保证大、小模型记忆化程度、泛化或遗忘相同。<a href="https://github.com/marin-community/marin/blob/ad754c6d67555d6369a4a312ff7388e43cfd08c1/lib/levanter/src/levanter/data/text/datasets.py#L840" rel="noopener" target="_blank">归档生产加载器的截取位置</a></p>
+<p>当前Hero的配置 <code>experiment_budget</code> 与 <code>target_budget</code> 都是null；其训练FLOPs也超过Harrier代码的1e23阈值，生产使用未按此比例缩小的库存。因此“小模型看到的重复效应”是搜索辅助证据，不能当成生产实际已经读完某桶的证明。<a href="sources/wandb/hero-fa4sm100-nomask-step146k_meta.json">实际配置</a> · <a href="sources/harrier_mix_main.py">阈值与预算逻辑</a></p>
+<p>如果在自己的实验里使用这种模拟，至少要做两种代理对照：保持曝光轮数的小切片版，以及使用更大独特内容、接受较低轮数的版本。两者都支持的方向更值得扩规模。切片长度和有效配比要在取整后记录；很小的桶可能被截到零，不能只检查原始权重是否为正。</p>
+<h2 id="deep-3-bpb">3. 代码改善的同时，数学任务BPB怎样变了</h2>
+<h3 id="deep-31-seed">3.1 三个seed里的改善与退化同时存在</h3>
+<p>把六个run按名字里的seed0/1/2配对，固定dropless文本指标结果如下。变化采用三seed均值之比，负值更好；最后一列说的是三次差值的方向。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>固定文本指标</th>
+<th style="text-align: right;">旧均值BPB</th>
+<th style="text-align: right;">新均值BPB</th>
+<th style="text-align: right;">相对变化</th>
+<th>三个seed方向</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Paloma macro</td>
+<td style="text-align: right;">1.193383</td>
+<td style="text-align: right;">1.186012</td>
+<td style="text-align: right;">−0.618%</td>
+<td>全部改善</td>
+</tr>
+<tr>
+<td>Paloma programming languages</td>
+<td style="text-align: right;">0.704489</td>
+<td style="text-align: right;">0.678921</td>
+<td style="text-align: right;">−3.629%</td>
+<td>全部改善</td>
+</tr>
+<tr>
+<td>Uncheatable macro</td>
+<td style="text-align: right;">0.877434</td>
+<td style="text-align: right;">0.864898</td>
+<td style="text-align: right;">−1.429%</td>
+<td>全部改善</td>
+</tr>
+<tr>
+<td>Uncheatable github_cpp</td>
+<td style="text-align: right;">0.603348</td>
+<td style="text-align: right;">0.572521</td>
+<td style="text-align: right;">−5.109%</td>
+<td>全部改善</td>
+</tr>
+<tr>
+<td>Uncheatable bbc_news</td>
+<td style="text-align: right;">0.985231</td>
+<td style="text-align: right;">0.990258</td>
+<td style="text-align: right;">+0.510%</td>
+<td>全部退化</td>
+</tr>
+</tbody>
+</table></div>
+<p>同一registry还保存54项 <code>grouped_bpb</code>。这里的任务名不能转换为准确率：<code>logprob_gsm8k_5shot</code>衡量其评估文本的BPB，<code>logprob_humaneval_10shot</code>也不是代码执行的pass@1。没有生成、执行与判分结果，就不能从这些值推算解题成功率。<a href="analysis/paired_seed_tasks_bpb.csv">全部逐seed数据</a></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>任务BPB</th>
+<th style="text-align: right;">旧均值</th>
+<th style="text-align: right;">新均值</th>
+<th style="text-align: right;">均值变化</th>
+<th style="text-align: right;">seed0变化</th>
+<th style="text-align: right;">seed1变化</th>
+<th style="text-align: right;">seed2变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>logprob_gsm8k_5shot</td>
+<td style="text-align: right;">0.703881</td>
+<td style="text-align: right;">0.780208</td>
+<td style="text-align: right;"><strong>+10.844%</strong></td>
+<td style="text-align: right;">+10.589%</td>
+<td style="text-align: right;">+15.090%</td>
+<td style="text-align: right;">+7.333%</td>
+</tr>
+<tr>
+<td>logprob_humaneval_10shot</td>
+<td style="text-align: right;">0.517601</td>
+<td style="text-align: right;">0.496723</td>
+<td style="text-align: right;"><strong>−4.034%</strong></td>
+<td style="text-align: right;">−3.036%</td>
+<td style="text-align: right;">−6.268%</td>
+<td style="text-align: right;">−2.762%</td>
+</tr>
+<tr>
+<td>mmlu_pro_5shot</td>
+<td style="text-align: right;">4.048721</td>
+<td style="text-align: right;">3.974465</td>
+<td style="text-align: right;">−1.834%</td>
+<td style="text-align: right;">−0.402%</td>
+<td style="text-align: right;">+6.458%</td>
+<td style="text-align: right;">−10.956%</td>
+</tr>
+<tr>
+<td>medqa_0shot</td>
+<td style="text-align: right;">2.542674</td>
+<td style="text-align: right;">3.334277</td>
+<td style="text-align: right;">+31.133%</td>
+<td style="text-align: right;">+18.414%</td>
+<td style="text-align: right;">+102.679%</td>
+<td style="text-align: right;">−15.153%</td>
+</tr>
+</tbody>
+</table></div>
+<p>完整54行中，5行在三个seed上均改善，11行均变差，其余38行方向混合。部分行是语言平均与组成语言，这些不是54份独立投票；医学等高波动行也提醒我们不能只按均值排名。附录保留全部54行，避免只挑代码或数学说故事。</p>
+<p><img alt="代码、数学、新闻与语言BPB的逐seed变化" src="assets/paired_seed_tradeoffs.png"/></p>
+<p>GSM8K三seed都变差，和c39数学域份额降低同时发生，值得把“数学是否受损”列为扩规模前的保留条件。但200桶、两个阶段同时改变，而且代理覆盖内容更少，所以这里<strong>无法把10.844%的变化全归因于c39减少</strong>。其他数据迁移、顺序和能力权衡都可能参与。更不能说535B的GSM8K准确率已经下降10.844%。</p>
+<p>对代码/Agent模型，可以接受某些非目标文本指标退化，但应在实验前写明允许多少、以什么独立任务衡量。对于兼顾数学的通用模型，这组结果支持保留数学约束、增设解题评估和反向消融；它不支持直接照抄最终200桶权重。</p>
+<h3 id="deep-32-seed">3.2 收益超过seed波动，不等于已经通过独立检验</h3>
+<p>Paloma macro的三个配对绝对差值为 −0.006793、−0.007554、−0.007765 BPB，平均−0.007371。假定配对差值独立、近似正态，使用df=2的t区间，条件95%区间约为 <strong>[−0.008641,−0.006100]</strong>。三个结果相当一致，不能把它简单写成“都在随机波动里”。<a href="analysis/paired_seed_fixed.csv">逐seed固定指标与条件区间</a></p>
+<p>这个区间仍有三个限制：只有三个差值，无法可靠检验正态假设；名字同seed不证明全部随机流相同；候选已经经过选择，区间没有计算挑选偏差。作为敏感性检查，若假设差值符号在零效应下可交换，用2³种符号翻转做双侧检验，三次同向的最小p也只有0.25。这不是作者做过的随机化试验，不能拿这个值证明“没收益”，只是说明n=3下不同统计假设能给出很不同的确信程度。</p>
+<p>实际决策应是：把这组稳定的文本收益当作进入下一轮确认的理由，冻结候选，再用未参与选择的seed、checkpoint分叉和盲测集确认；任务保留条件要逐项核对。验证成本有限时，优先确认最影响产品的退化，而不是再为同一macro多画一张好看的平均曲线。</p>
+<h2 id="deep-4">4. 域总比例隐藏了怎样的质量档迁移</h2>
+<p>把40域总和展开成200桶，可以看出看似相同的“增加某域”用了不同做法。下表使用配置权重，百分点变化以原配比为基准；加载器取整的区别在下一节。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>桶</th>
+<th style="text-align: right;">原配比</th>
+<th style="text-align: right;">新主阶段</th>
+<th style="text-align: right;">变化/百分点</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>c13q3 Agent</td>
+<td style="text-align: right;">0.6452%</td>
+<td style="text-align: right;">4.1219%</td>
+<td style="text-align: right;">+3.4767</td>
+<td>Agent增量主要落在Q3</td>
+</tr>
+<tr>
+<td>c13q4 Agent</td>
+<td style="text-align: right;">0.3001%</td>
+<td style="text-align: right;">0.9989%</td>
+<td style="text-align: right;">+0.6988</td>
+<td>Q4也增加，但不是主要增量</td>
+</tr>
+<tr>
+<td>c28q4 底层编程</td>
+<td style="text-align: right;">1.8712%</td>
+<td style="text-align: right;">5.4179%</td>
+<td style="text-align: right;">+3.5467</td>
+<td>最大单桶增量</td>
+</tr>
+<tr>
+<td>c28q2 底层编程</td>
+<td style="text-align: right;">2.4053%</td>
+<td style="text-align: right;">1.3896%</td>
+<td style="text-align: right;">−1.0158</td>
+<td>同一域内部减少部分较低档</td>
+</tr>
+<tr>
+<td>c28q3 底层编程</td>
+<td style="text-align: right;">3.8023%</td>
+<td style="text-align: right;">2.6998%</td>
+<td style="text-align: right;">−1.1025</td>
+<td>不能把域总增幅当每档都增加</td>
+</tr>
+<tr>
+<td>c37q3 法律</td>
+<td style="text-align: right;">0.4119%</td>
+<td style="text-align: right;">2.2420%</td>
+<td style="text-align: right;">+1.8301</td>
+<td>法律主要增加Q3</td>
+</tr>
+<tr>
+<td>c37q4 法律</td>
+<td style="text-align: right;">0.3473%</td>
+<td style="text-align: right;">0.3805%</td>
+<td style="text-align: right;">+0.0332</td>
+<td>Q4几乎不变</td>
+</tr>
+<tr>
+<td>c39q2 数学</td>
+<td style="text-align: right;">1.9673%</td>
+<td style="text-align: right;">0.7792%</td>
+<td style="text-align: right;">−1.1881</td>
+<td>数学主要损失之一</td>
+</tr>
+<tr>
+<td>c39q4 数学</td>
+<td style="text-align: right;">0.9263%</td>
+<td style="text-align: right;">0.1790%</td>
+<td style="text-align: right;">−0.7472</td>
+<td>约减少80.67%的原有权重</td>
+</tr>
+</tbody>
+</table></div>
+<p><img alt="200桶的新主阶段权重变化" src="assets/cell_weight_shifts.png"/></p>
+<p>c13的Q4绝对占比增加，域内Q4占比却从约22.85%降至16.53%。两个结论同时成立。对你自己的配比，既要看全局有效token比例，也要看域内质量构成；否则“增加高质量Agent”可能实际变成主要增加某类Q3项目文本。原页面两个样本已说明Agent桶包含README和代码问答，不能据标签推定新增了真实多步工具轨迹。</p>
+<p>这些分解提供更具体的下一步实验方向：保持c13域总量不变，交换Q3/Q4验证轨迹质量；保持c28域总量不变，验证高档替换是否改善执行通过率；恢复部分c39q2/q4，从事先指定的非目标桶扣回预算，检查数学任务和代码是否出现可接受的折中。它们都是待验证假设。整包比较无法替代这些局部对照。</p>
+<h2 id="deep-5">5. 配置里非零，不代表加载器真的抽到</h2>
+<h3 id="deep-51-49152sequence200">5.1 49152条sequence如何分给200桶</h3>
+<p>生产revision <code>ad754c6d67555d6369a4a312ff7388e43cfd08c1</code> 的MixtureDataset先归一化权重，再算每块每桶序列数。正数转int32等同于向下取整；余数全部加给当前计数最大的桶。之后在块内随机排列这些固定数量的桶号。因此完整块上的配比不是无限精度概率采样。</p>
+<pre><code>Nᵢ = floor(K × normalize(w)ᵢ)
+R  = K − Σᵢ Nᵢ
+把R全部加给argmax(N)的桶
+有效权重 = Nᵢ / K
+</code></pre>
+<p><a href="https://github.com/marin-community/marin/blob/ad754c6d67555d6369a4a312ff7388e43cfd08c1/lib/levanter/src/levanter/data/mixture.py#L143" rel="noopener" target="_blank">固定代码143–159行</a> · <a href="analysis/loader_quantization.csv">完整2400行计算表（含旧求和敏感性）</a> · <a href="analysis/loader_probe_python312.json">原函数执行结果</a></p>
+<p>使用仓库指定的Python3.12、归档配置和K=49152，原配比有 <strong>17个正权重桶分到0条序列</strong>。98条余数给c30q4，其有效比例从4.803146%变为 <strong>5.000814%</strong>，增加约0.197668个百分点。新主阶段权重本来就在1/49152的格点上，余数为零、没有正权重桶被抹掉。未来cooldown在这次3.12执行中也没有余数。<a href="analysis/loader_quantization.json">计数摘要</a></p>
+<p>本报告原有曝光表是<strong>配置权重计划</strong>，所以仍保留原值；现在另列有效完整块比例。原配比17个极小桶实际上没分到完整块样本，不意味着新主阶段也没用它们。比如c27q0原阶段为零，新主阶段获得3条/块。不能用全程6.74轮的计划值推断它前期已重复训练。</p>
+<p>如果把K缩到12288，最小可表达正比例提高4倍：从约0.002035%变成0.008138%。新主阶段出现 <strong>7个正权重桶归零</strong>，81条余数全给c28q4，其比例从5.417887%变为 <strong>6.070964%</strong>，增加0.653076个百分点。K的改变不仅影响shuffle内存或切换对齐，也偷偷改变配方。</p>
+<h3 id="deep-52">5.2 一次本地误诊怎样被排除</h3>
+<p>最初在Python3.9复算时，cooldown权重的普通求和为1.0000000000000002。归一化使不少本应为整数的K×w略低于整数，向下取整后产生183条余数，全给c30q4。如果仅凭这个结果就写“线上cooldown会漂移0.372个百分点”，结论会过头。</p>
+<p>核对发现仓库 <code>.python-version</code> 指定3.12；Python从3.12改进了浮点 <code>sum</code>。本次用3.12.13和numpy2.0.2执行<strong>归档代码的原归一化函数及原计数函数</strong>，同一cooldown配置的和为1.0，余数为零。因而183只保留为旧运行环境下可复现的敏感性例子。W&amp;B运行元数据另报告Python3.12.14，与仓库大版本一致；本地执行的是3.12.13，并未在其线上容器中重放，未来cooldown也尚未执行。<a href="sources/wandb/hero-fa4sm100-nomask-step146k_meta.json">W&amp;B版本元数据</a><a href="sources/deepening_2026_10_04/python_version_production.txt">版本文件</a> · <a href="https://docs.python.org/3/builtins/functions.html#sum" rel="noopener" target="_blank">Python官方变更说明</a> · <a href="analysis/loader_probe_python39.json">3.9本地对照</a></p>
+<p>这对迁移实验很具体：记录运行时版本、字典顺序和最终整数计数，不能只比较JSON权重。修取整算法也应视为配比变更，保存边界和每桶游标；否则“修一个数值细节”会改变从checkpoint恢复后看到的数据。</p>
+<h2 id="deep-6-108907b2951b">6. 108.907B与2.951B，已经独立对上了</h2>
+<h3 id="deep-61">6.1 为什么改长度会改历史游标</h3>
+<p>当前4K每步11264条序列；固定token量改到16K后，每步2816条。阶段边界从step换成累积sequence索引，且必须落在K的整数边界。4K、K=49152时，阶段起点108000对齐；16K仍用49152时，108000不再对齐，向后取到108096才满足条件。</p>
+<p>对于完整混合块，桶i的历史逻辑token游标是：</p>
+<pre><code>Cᵢ = sequence长度 × Σ已完成阶段/块 (完整块数 × 该阶段每块桶i的整数序列数)
+</code></pre>
+<p>不同长度/块大小配置都从global step重建历史，而不是直接恢复每桶实际已消费的token位置。因此即使总token量完全相同，每桶游标也可能不同。改K还会引入上一节的取整变化，误差随训练步数累积。</p>
+<h3 id="deep-62">6.2 两种方案的逐桶差异</h3>
+<p>下面以4K生产配置为旧路径，16K配置为新路径。全部使用归档权重、整数计数和历史第一阶段；只计算<strong>完整混合块</strong>。这不是实际文档重放，也没有把桶内shuffle或有限库存的取模计入。<a href="analysis/cursor_audit.csv">逐桶CSV</a> · <a href="scripts/analyze_deepening.py">复算脚本</a> · <a href="https://github.com/marin-community/marin/issues/9615" rel="noopener" target="_blank">原讨论</a></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>切换step</th>
+<th style="text-align: right;">16K的K</th>
+<th style="text-align: right;">新路径历史配比边界</th>
+<th style="text-align: right;">Σ绝对游标差/B tokens</th>
+<th style="text-align: right;">向前游标/B</th>
+<th style="text-align: right;">向后游标/B</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>195125</td>
+<td style="text-align: right;">49152</td>
+<td style="text-align: right;">108096</td>
+<td style="text-align: right;"><strong>2.951348</strong></td>
+<td style="text-align: right;">1.475674</td>
+<td style="text-align: right;">1.475674</td>
+</tr>
+<tr>
+<td>195125</td>
+<td style="text-align: right;">12288</td>
+<td style="text-align: right;">108000</td>
+<td style="text-align: right;"><strong>108.907479</strong></td>
+<td style="text-align: right;">54.453740</td>
+<td style="text-align: right;">54.453740</td>
+</tr>
+<tr>
+<td>216000</td>
+<td style="text-align: right;">49152</td>
+<td style="text-align: right;">108096</td>
+<td style="text-align: right;">2.951348</td>
+<td style="text-align: right;">1.475674</td>
+<td style="text-align: right;">1.475674</td>
+</tr>
+<tr>
+<td>216000</td>
+<td style="text-align: right;">12288</td>
+<td style="text-align: right;">108000</td>
+<td style="text-align: right;">121.448448</td>
+<td style="text-align: right;">60.724224</td>
+<td style="text-align: right;">60.724224</td>
+</tr>
+</tbody>
+</table></div>
+<p>原讨论在195125附近给出的约2.95B与108.9B，均被独立复算到相应数值。前一方案只有历史96步被归到另一阶段，差异在后续当前阶段保持不变；后一方案改变每个块的分配，差异随后续步数增长。在195125步，改K方案最大单桶偏移发生在c30q4，约+28.506B tokens；216000步最大改为c28q4，约+32.238B。</p>
+<p>这里的108.907B是绝对差之和，包含54.454B向前和54.454B向后，不是108.907B“重复token”。向后游标有重复风险，向前游标有漏读风险；是否对应原始数据同一token，还取决于序列重新packing、桶内permutation、restart取模和窗口处理。若要确认实际数据损失，需要token ID或可审计的区间映射。</p>
+<p>195125步两种长度路径各有29,360,128 tokens尚处于部分混合块，不在这张完整块表内；216000步两条路径恰好都没有部分块。所以完整块差异对上原估算，不等于全部加载器语义已验证。</p>
+<p><img alt="两种16K方案的完整块游标差异" src="assets/cursor_differences.png"/></p>
+<h3 id="deep-63">6.3 工程调整顺序</h3>
+<p>从这些结果出发，迁移长度时应先冻结并记录有效整数配比，再明确历史边界怎样换算，最后处理桶内序列顺序。三个问题独立检查，不能通过“全局tokens相同”一次性带过。</p>
+<p>优先保留混合块大小，能避免这一组权重被重新取整的较大偏移；但历史边界移动与内部sequence级shuffle仍要处理。更稳妥的长期实现是checkpoint保存每桶已消费的逻辑token游标、shuffle种子和窗口状态，长度切换按这些状态恢复。若明确选择跳过不完整窗口，把跳过区间写进审计文件，实际曝光预算据此更新。原讨论的固定1Mi-token I/O块、窗口跳过等仍是迁移方案；本报告没有宣称生产已部署16K。</p>
+<h2 id="deep-7">7. 把这些发现落实成下一轮配比实验</h2>
+<p>对自己的模型，不建议从这份报告抄一个“Agent6%、数学2%”的比例。更有价值的是下面四项具体实验。每项使用固定checkpoint、optimizer状态、学习率、有效token预算和独立验证；候选冻结后再换未用于选择的seed确认。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>要检验的问题</th>
+<th>具体改动</th>
+<th>必须一起看的结果</th>
+<th>什么结果会否定假设</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数学BPB退化来自数学预算削减吗</td>
+<td>从预先指定的桶回收预算，分别恢复c39q2、c39q4；保留整包新配比作对照</td>
+<td>数学固定BPB、真正解题准确率、代码通过率、通用验证</td>
+<td>数学任务无改善；或恢复权重只降低模板文本Loss</td>
+</tr>
+<tr>
+<td>Agent增量是轨迹收益还是文本替换</td>
+<td>固定域总量，交换经审计的真实轨迹和README/问答来源</td>
+<td>多步工具成功率、错误恢复、轨迹BPB</td>
+<td>只在项目文本BPB上获益，工具成功率无收益</td>
+</tr>
+<tr>
+<td>代理是否被小切片内容偶然性支配</td>
+<td>同配方换桶切片seed，比较模拟曝光与较大独特内容版</td>
+<td>候选排序是否稳定、稀缺桶收益和记忆化差距</td>
+<td>排名随切片反复倒置</td>
+</tr>
+<tr>
+<td>长度迁移是否保持数据语义</td>
+<td>在编号token fixture上跑旧路径/新路径，固定有效整数权重</td>
+<td>每桶cursor、实际token ID覆盖、重复/跳过清单</td>
+<td>全局预算一致但关键桶大幅回读或漏读</td>
+</tr>
+</tbody>
+</table></div>
+<p>把最终选择写成一个有约束的问题更清楚：改善你预先指定的目标指标，同时满足通用、数学、代码等保留项及每桶累计曝光上限。允许退化的阈值来自产品和预算，不来自本报告的任意百分比。只在确认误差范围与选择偏差后，才把代理收益外推到更大模型；规模确认应该保留退化项，而不是只复核macro。</p>
+<p>本篇新增证据到这里已经回答了三个起始疑点：搜索规模比六个run大得多；文本收益伴随可见的任务BPB代价；两种游标方案的数量能用生产计数逻辑复算。仍待确认的是完整选择器、独立盲测、535B任务收益和线上实际token重放，不能把它们填成已经完成的实验。</p>
+<!-- GENERATED_DEEP_TABLES -->
+<h2 id="deep-54bpb">附录：54项任务BPB完整对照</h2>
+<p>这里全部是registry里的<code>grouped_bpb</code>，不是答题准确率。部分行是语言平均与其组成项，不能再把54行平均当独立macro。列中变化分别按每个seed的旧值作分母，汇总列使用三seed均值之比。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>指标</th>
+<th style="text-align: right;">旧均值</th>
+<th style="text-align: right;">新均值</th>
+<th style="text-align: right;">均值变化</th>
+<th style="text-align: right;">seed0</th>
+<th style="text-align: right;">seed1</th>
+<th style="text-align: right;">seed2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>arc_challenge_0shot</td>
+<td style="text-align: right;">1.505742</td>
+<td style="text-align: right;">1.532854</td>
+<td style="text-align: right;">+1.801%</td>
+<td style="text-align: right;">+3.376%</td>
+<td style="text-align: right;">-0.809%</td>
+<td style="text-align: right;">+2.893%</td>
+</tr>
+<tr>
+<td>belebele_arabic</td>
+<td style="text-align: right;">2.112318</td>
+<td style="text-align: right;">2.337673</td>
+<td style="text-align: right;">+10.669%</td>
+<td style="text-align: right;">+13.504%</td>
+<td style="text-align: right;">+17.310%</td>
+<td style="text-align: right;">+1.433%</td>
+</tr>
+<tr>
+<td>belebele_bengali</td>
+<td style="text-align: right;">2.404882</td>
+<td style="text-align: right;">2.162132</td>
+<td style="text-align: right;">-10.094%</td>
+<td style="text-align: right;">-0.341%</td>
+<td style="text-align: right;">-0.651%</td>
+<td style="text-align: right;">-25.002%</td>
+</tr>
+<tr>
+<td>belebele_chinese_simplified</td>
+<td style="text-align: right;">2.111457</td>
+<td style="text-align: right;">2.288092</td>
+<td style="text-align: right;">+8.366%</td>
+<td style="text-align: right;">+10.993%</td>
+<td style="text-align: right;">+14.936%</td>
+<td style="text-align: right;">-0.412%</td>
+</tr>
+<tr>
+<td>belebele_french</td>
+<td style="text-align: right;">2.084445</td>
+<td style="text-align: right;">2.211483</td>
+<td style="text-align: right;">+6.095%</td>
+<td style="text-align: right;">+1.886%</td>
+<td style="text-align: right;">+14.725%</td>
+<td style="text-align: right;">+1.670%</td>
+</tr>
+<tr>
+<td>belebele_german</td>
+<td style="text-align: right;">2.147409</td>
+<td style="text-align: right;">2.331335</td>
+<td style="text-align: right;">+8.565%</td>
+<td style="text-align: right;">+1.442%</td>
+<td style="text-align: right;">+26.531%</td>
+<td style="text-align: right;">-2.082%</td>
+</tr>
+<tr>
+<td>belebele_hebrew</td>
+<td style="text-align: right;">2.159602</td>
+<td style="text-align: right;">2.183095</td>
+<td style="text-align: right;">+1.088%</td>
+<td style="text-align: right;">+1.259%</td>
+<td style="text-align: right;">+10.704%</td>
+<td style="text-align: right;">-7.839%</td>
+</tr>
+<tr>
+<td>belebele_hindi</td>
+<td style="text-align: right;">2.235632</td>
+<td style="text-align: right;">2.289793</td>
+<td style="text-align: right;">+2.423%</td>
+<td style="text-align: right;">+12.197%</td>
+<td style="text-align: right;">+5.136%</td>
+<td style="text-align: right;">-8.614%</td>
+</tr>
+<tr>
+<td>belebele_indonesian</td>
+<td style="text-align: right;">2.096887</td>
+<td style="text-align: right;">2.210955</td>
+<td style="text-align: right;">+5.440%</td>
+<td style="text-align: right;">+0.497%</td>
+<td style="text-align: right;">+17.792%</td>
+<td style="text-align: right;">-1.738%</td>
+</tr>
+<tr>
+<td>belebele_japanese</td>
+<td style="text-align: right;">2.182792</td>
+<td style="text-align: right;">2.503730</td>
+<td style="text-align: right;">+14.703%</td>
+<td style="text-align: right;">+30.693%</td>
+<td style="text-align: right;">+8.428%</td>
+<td style="text-align: right;">+5.138%</td>
+</tr>
+<tr>
+<td>belebele_korean</td>
+<td style="text-align: right;">2.103286</td>
+<td style="text-align: right;">2.317418</td>
+<td style="text-align: right;">+10.181%</td>
+<td style="text-align: right;">+11.314%</td>
+<td style="text-align: right;">+18.368%</td>
+<td style="text-align: right;">+1.252%</td>
+</tr>
+<tr>
+<td>belebele_mean</td>
+<td style="text-align: right;">2.225631</td>
+<td style="text-align: right;">2.279940</td>
+<td style="text-align: right;">+2.440%</td>
+<td style="text-align: right;">+3.097%</td>
+<td style="text-align: right;">+9.737%</td>
+<td style="text-align: right;">-5.055%</td>
+</tr>
+<tr>
+<td>belebele_portuguese</td>
+<td style="text-align: right;">2.082693</td>
+<td style="text-align: right;">2.168189</td>
+<td style="text-align: right;">+4.105%</td>
+<td style="text-align: right;">+3.388%</td>
+<td style="text-align: right;">+7.820%</td>
+<td style="text-align: right;">+1.157%</td>
+</tr>
+<tr>
+<td>belebele_russian</td>
+<td style="text-align: right;">2.083243</td>
+<td style="text-align: right;">2.188933</td>
+<td style="text-align: right;">+5.073%</td>
+<td style="text-align: right;">+3.555%</td>
+<td style="text-align: right;">+13.064%</td>
+<td style="text-align: right;">-1.232%</td>
+</tr>
+<tr>
+<td>belebele_spanish</td>
+<td style="text-align: right;">2.067143</td>
+<td style="text-align: right;">2.180415</td>
+<td style="text-align: right;">+5.480%</td>
+<td style="text-align: right;">+0.935%</td>
+<td style="text-align: right;">+13.157%</td>
+<td style="text-align: right;">+2.442%</td>
+</tr>
+<tr>
+<td>belebele_swahili</td>
+<td style="text-align: right;">2.611473</td>
+<td style="text-align: right;">2.274700</td>
+<td style="text-align: right;">-12.896%</td>
+<td style="text-align: right;">-24.507%</td>
+<td style="text-align: right;">+4.872%</td>
+<td style="text-align: right;">-16.365%</td>
+</tr>
+<tr>
+<td>belebele_thai</td>
+<td style="text-align: right;">2.099350</td>
+<td style="text-align: right;">2.205541</td>
+<td style="text-align: right;">+5.058%</td>
+<td style="text-align: right;">+8.392%</td>
+<td style="text-align: right;">+7.612%</td>
+<td style="text-align: right;">-0.658%</td>
+</tr>
+<tr>
+<td>belebele_turkish</td>
+<td style="text-align: right;">2.553841</td>
+<td style="text-align: right;">2.494661</td>
+<td style="text-align: right;">-2.317%</td>
+<td style="text-align: right;">+0.175%</td>
+<td style="text-align: right;">-7.844%</td>
+<td style="text-align: right;">+0.902%</td>
+</tr>
+<tr>
+<td>belebele_vietnamese</td>
+<td style="text-align: right;">2.226209</td>
+<td style="text-align: right;">2.309530</td>
+<td style="text-align: right;">+3.743%</td>
+<td style="text-align: right;">+2.399%</td>
+<td style="text-align: right;">+15.249%</td>
+<td style="text-align: right;">-5.738%</td>
+</tr>
+<tr>
+<td>belebele_yoruba</td>
+<td style="text-align: right;">2.698693</td>
+<td style="text-align: right;">2.381243</td>
+<td style="text-align: right;">-11.763%</td>
+<td style="text-align: right;">-9.530%</td>
+<td style="text-align: right;">-3.279%</td>
+<td style="text-align: right;">-20.915%</td>
+</tr>
+<tr>
+<td>boolq_0shot</td>
+<td style="text-align: right;">2.337118</td>
+<td style="text-align: right;">2.790609</td>
+<td style="text-align: right;">+19.404%</td>
+<td style="text-align: right;">-2.412%</td>
+<td style="text-align: right;">-0.625%</td>
+<td style="text-align: right;">+85.082%</td>
+</tr>
+<tr>
+<td>copa_0shot</td>
+<td style="text-align: right;">1.796570</td>
+<td style="text-align: right;">1.816864</td>
+<td style="text-align: right;">+1.130%</td>
+<td style="text-align: right;">-0.155%</td>
+<td style="text-align: right;">+0.599%</td>
+<td style="text-align: right;">+2.970%</td>
+</tr>
+<tr>
+<td>csqa_0shot</td>
+<td style="text-align: right;">3.513143</td>
+<td style="text-align: right;">3.454227</td>
+<td style="text-align: right;">-1.677%</td>
+<td style="text-align: right;">-26.650%</td>
+<td style="text-align: right;">-4.099%</td>
+<td style="text-align: right;">+30.990%</td>
+</tr>
+<tr>
+<td>gpqa_0shot</td>
+<td style="text-align: right;">3.053380</td>
+<td style="text-align: right;">2.550840</td>
+<td style="text-align: right;">-16.458%</td>
+<td style="text-align: right;">+4.174%</td>
+<td style="text-align: right;">-10.261%</td>
+<td style="text-align: right;">-40.235%</td>
+</tr>
+<tr>
+<td>hellaswag_0shot</td>
+<td style="text-align: right;">0.960747</td>
+<td style="text-align: right;">0.962227</td>
+<td style="text-align: right;">+0.154%</td>
+<td style="text-align: right;">+0.037%</td>
+<td style="text-align: right;">+0.138%</td>
+<td style="text-align: right;">+0.287%</td>
+</tr>
+<tr>
+<td>include_arabic</td>
+<td style="text-align: right;">2.080453</td>
+<td style="text-align: right;">2.056948</td>
+<td style="text-align: right;">-1.130%</td>
+<td style="text-align: right;">-2.046%</td>
+<td style="text-align: right;">-0.240%</td>
+<td style="text-align: right;">-1.107%</td>
+</tr>
+<tr>
+<td>include_bengali</td>
+<td style="text-align: right;">2.087904</td>
+<td style="text-align: right;">2.097406</td>
+<td style="text-align: right;">+0.455%</td>
+<td style="text-align: right;">+1.344%</td>
+<td style="text-align: right;">-3.407%</td>
+<td style="text-align: right;">+3.519%</td>
+</tr>
+<tr>
+<td>include_chinese</td>
+<td style="text-align: right;">2.062426</td>
+<td style="text-align: right;">2.067323</td>
+<td style="text-align: right;">+0.237%</td>
+<td style="text-align: right;">-1.184%</td>
+<td style="text-align: right;">-0.512%</td>
+<td style="text-align: right;">+2.445%</td>
+</tr>
+<tr>
+<td>include_french</td>
+<td style="text-align: right;">2.066041</td>
+<td style="text-align: right;">2.073420</td>
+<td style="text-align: right;">+0.357%</td>
+<td style="text-align: right;">+0.394%</td>
+<td style="text-align: right;">-2.008%</td>
+<td style="text-align: right;">+2.736%</td>
+</tr>
+<tr>
+<td>include_german</td>
+<td style="text-align: right;">2.059030</td>
+<td style="text-align: right;">2.015680</td>
+<td style="text-align: right;">-2.105%</td>
+<td style="text-align: right;">+1.500%</td>
+<td style="text-align: right;">-6.432%</td>
+<td style="text-align: right;">-1.144%</td>
+</tr>
+<tr>
+<td>include_hebrew</td>
+<td style="text-align: right;">2.100660</td>
+<td style="text-align: right;">2.086287</td>
+<td style="text-align: right;">-0.684%</td>
+<td style="text-align: right;">-1.051%</td>
+<td style="text-align: right;">-0.624%</td>
+<td style="text-align: right;">-0.384%</td>
+</tr>
+<tr>
+<td>include_hindi</td>
+<td style="text-align: right;">2.079289</td>
+<td style="text-align: right;">2.112698</td>
+<td style="text-align: right;">+1.607%</td>
+<td style="text-align: right;">+3.318%</td>
+<td style="text-align: right;">-0.134%</td>
+<td style="text-align: right;">+1.636%</td>
+</tr>
+<tr>
+<td>include_indonesian</td>
+<td style="text-align: right;">2.078966</td>
+<td style="text-align: right;">2.076693</td>
+<td style="text-align: right;">-0.109%</td>
+<td style="text-align: right;">-1.596%</td>
+<td style="text-align: right;">-1.387%</td>
+<td style="text-align: right;">+2.685%</td>
+</tr>
+<tr>
+<td>include_japanese</td>
+<td style="text-align: right;">2.068139</td>
+<td style="text-align: right;">2.108272</td>
+<td style="text-align: right;">+1.941%</td>
+<td style="text-align: right;">+2.429%</td>
+<td style="text-align: right;">-0.740%</td>
+<td style="text-align: right;">+4.163%</td>
+</tr>
+<tr>
+<td>include_korean</td>
+<td style="text-align: right;">2.077640</td>
+<td style="text-align: right;">2.103353</td>
+<td style="text-align: right;">+1.238%</td>
+<td style="text-align: right;">-0.845%</td>
+<td style="text-align: right;">-1.307%</td>
+<td style="text-align: right;">+5.991%</td>
+</tr>
+<tr>
+<td>include_mean</td>
+<td style="text-align: right;">2.077282</td>
+<td style="text-align: right;">2.081300</td>
+<td style="text-align: right;">+0.193%</td>
+<td style="text-align: right;">+0.267%</td>
+<td style="text-align: right;">-1.369%</td>
+<td style="text-align: right;">+1.701%</td>
+</tr>
+<tr>
+<td>include_portuguese</td>
+<td style="text-align: right;">2.096324</td>
+<td style="text-align: right;">2.115303</td>
+<td style="text-align: right;">+0.905%</td>
+<td style="text-align: right;">-0.051%</td>
+<td style="text-align: right;">-1.780%</td>
+<td style="text-align: right;">+4.545%</td>
+</tr>
+<tr>
+<td>include_russian</td>
+<td style="text-align: right;">2.062518</td>
+<td style="text-align: right;">2.056128</td>
+<td style="text-align: right;">-0.310%</td>
+<td style="text-align: right;">+0.303%</td>
+<td style="text-align: right;">+0.084%</td>
+<td style="text-align: right;">-1.318%</td>
+</tr>
+<tr>
+<td>include_spanish</td>
+<td style="text-align: right;">2.045542</td>
+<td style="text-align: right;">2.077784</td>
+<td style="text-align: right;">+1.576%</td>
+<td style="text-align: right;">+1.018%</td>
+<td style="text-align: right;">+0.584%</td>
+<td style="text-align: right;">+3.148%</td>
+</tr>
+<tr>
+<td>include_turkish</td>
+<td style="text-align: right;">2.097408</td>
+<td style="text-align: right;">2.084645</td>
+<td style="text-align: right;">-0.609%</td>
+<td style="text-align: right;">+1.657%</td>
+<td style="text-align: right;">-2.790%</td>
+<td style="text-align: right;">-0.583%</td>
+</tr>
+<tr>
+<td>include_vietnamese</td>
+<td style="text-align: right;">2.096897</td>
+<td style="text-align: right;">2.087555</td>
+<td style="text-align: right;">-0.445%</td>
+<td style="text-align: right;">-1.108%</td>
+<td style="text-align: right;">+0.349%</td>
+<td style="text-align: right;">-0.590%</td>
+</tr>
+<tr>
+<td>lambada_0shot</td>
+<td style="text-align: right;">0.865726</td>
+<td style="text-align: right;">0.862382</td>
+<td style="text-align: right;">-0.386%</td>
+<td style="text-align: right;">-0.027%</td>
+<td style="text-align: right;">-1.206%</td>
+<td style="text-align: right;">+0.076%</td>
+</tr>
+<tr>
+<td>lb_bbh_3shot</td>
+<td style="text-align: right;">1.739421</td>
+<td style="text-align: right;">1.815566</td>
+<td style="text-align: right;">+4.378%</td>
+<td style="text-align: right;">+11.179%</td>
+<td style="text-align: right;">-0.337%</td>
+<td style="text-align: right;">+3.394%</td>
+</tr>
+<tr>
+<td>logprob_gsm8k_5shot</td>
+<td style="text-align: right;">0.703881</td>
+<td style="text-align: right;">0.780208</td>
+<td style="text-align: right;">+10.844%</td>
+<td style="text-align: right;">+10.589%</td>
+<td style="text-align: right;">+15.090%</td>
+<td style="text-align: right;">+7.333%</td>
+</tr>
+<tr>
+<td>logprob_humaneval_10shot</td>
+<td style="text-align: right;">0.517601</td>
+<td style="text-align: right;">0.496723</td>
+<td style="text-align: right;">-4.034%</td>
+<td style="text-align: right;">-3.036%</td>
+<td style="text-align: right;">-6.268%</td>
+<td style="text-align: right;">-2.762%</td>
+</tr>
+<tr>
+<td>medmcqa_0shot</td>
+<td style="text-align: right;">2.496934</td>
+<td style="text-align: right;">2.813764</td>
+<td style="text-align: right;">+12.689%</td>
+<td style="text-align: right;">+20.567%</td>
+<td style="text-align: right;">+29.668%</td>
+<td style="text-align: right;">-10.087%</td>
+</tr>
+<tr>
+<td>medqa_0shot</td>
+<td style="text-align: right;">2.542674</td>
+<td style="text-align: right;">3.334277</td>
+<td style="text-align: right;">+31.133%</td>
+<td style="text-align: right;">+18.414%</td>
+<td style="text-align: right;">+102.679%</td>
+<td style="text-align: right;">-15.153%</td>
+</tr>
+<tr>
+<td>mmlu_pro_5shot</td>
+<td style="text-align: right;">4.048721</td>
+<td style="text-align: right;">3.974465</td>
+<td style="text-align: right;">-1.834%</td>
+<td style="text-align: right;">-0.402%</td>
+<td style="text-align: right;">+6.458%</td>
+<td style="text-align: right;">-10.956%</td>
+</tr>
+<tr>
+<td>musr_0shot</td>
+<td style="text-align: right;">0.814476</td>
+<td style="text-align: right;">0.787177</td>
+<td style="text-align: right;">-3.352%</td>
+<td style="text-align: right;">-8.117%</td>
+<td style="text-align: right;">-10.113%</td>
+<td style="text-align: right;">+8.266%</td>
+</tr>
+<tr>
+<td>openbookqa_0shot</td>
+<td style="text-align: right;">1.975019</td>
+<td style="text-align: right;">1.966359</td>
+<td style="text-align: right;">-0.438%</td>
+<td style="text-align: right;">-0.449%</td>
+<td style="text-align: right;">+0.476%</td>
+<td style="text-align: right;">-1.342%</td>
+</tr>
+<tr>
+<td>piqa_0shot</td>
+<td style="text-align: right;">1.266125</td>
+<td style="text-align: right;">1.290504</td>
+<td style="text-align: right;">+1.925%</td>
+<td style="text-align: right;">+1.948%</td>
+<td style="text-align: right;">+1.483%</td>
+<td style="text-align: right;">+2.346%</td>
+</tr>
+<tr>
+<td>sciq_0shot</td>
+<td style="text-align: right;">1.672190</td>
+<td style="text-align: right;">1.639693</td>
+<td style="text-align: right;">-1.943%</td>
+<td style="text-align: right;">+1.052%</td>
+<td style="text-align: right;">-9.263%</td>
+<td style="text-align: right;">+2.802%</td>
+</tr>
+<tr>
+<td>truthfulqa_mc1_0shot</td>
+<td style="text-align: right;">0.768190</td>
+<td style="text-align: right;">0.768158</td>
+<td style="text-align: right;">-0.004%</td>
+<td style="text-align: right;">+2.907%</td>
+<td style="text-align: right;">-2.603%</td>
+<td style="text-align: right;">-0.190%</td>
+</tr>
+<tr>
+<td>winogrande_0shot</td>
+<td style="text-align: right;">0.445815</td>
+<td style="text-align: right;">0.449790</td>
+<td style="text-align: right;">+0.892%</td>
+<td style="text-align: right;">+0.913%</td>
+<td style="text-align: right;">+0.903%</td>
+<td style="text-align: right;">+0.859%</td>
+</tr>
+</tbody>
+</table></div>
+<p><a href="analysis/paired_seed_tasks_bpb.csv">完整逐seed差值与条件区间CSV</a> · <a href="analysis/paired_seed_fixed.csv">固定文本逐seedCSV</a></p></section>
 <section class="chapter" id="translation"><h1 id="translation-8435-27">#8435 主帖及27条评论：逐条中文解读</h1>
 <p>本章按原顺序覆盖主帖及27条评论。每条保留原文入口和作者身份；“原意”是中文转述，保留数字、条件和判断强度；“读法”是本报告的解释。重复引用上一条的英文段落不再重复，代码路径与数学符号保持原样。原始英文全文保存在 <code>sources/issue_thread.md</code>，可对照检查。本章不能用“已解决”概括全部条目：评论中有计划、问题、实验、否定结论和社交回复。</p>
 <h2 id="translation-1-scaling-ladder">主帖｜为什么先花约1%算力做 Scaling Ladder</h2>
@@ -1911,6 +2817,7 @@ decision: "接受/继续确认/回退，写具体证据"
 </tbody>
 </table></div>
 <p>被引用的内部Echo/Iris事故页无法由公开链接验证。本报告没有读取它们，事故事实仅依据公开评论；必要处明确保留“原因未确认”。训练数据token store不公开，本地没有重训535B或GPU内核复现。</p>
+<p>第二轮新增材料位于 <code>sources/deepening_2026_10_04/</code>：固定HF revision的完整934行swarm与桶/内容/预算元数据，生产SHA的MixtureDataset、文本加载器与Python版本，以及固定当前代码SHA。新增原始文件没有覆盖第一版快照。训练曲线截止时间仍为05:38；新增分析范围见<a href="#deep">第二轮章节</a>。</p>
 <h2 id="provenance-2-run">2. 生产曲线为什么必须按run拼接</h2>
 <p>新W&amp;B run继承旧历史，试部署也会重放一段步骤。如果把它们简单合并，某些step会出现多个值，某次失败试验还可能被画成生产继续训练。这里按公开handoff记录规定生产run的生效区间：</p>
 <div class="table-wrap"><table>
@@ -1964,7 +2871,7 @@ decision: "接受/继续确认/回退，写具体证据"
 <p>W&amp;B的run状态 <code>crashed</code> 也可能来自主动取消、部署或watchdog。诊断要回到对应事件和checkpoint，不从run颜色直接推断数值发散。</p>
 <h2 id="provenance-3">3. 配比表与曝光怎样计算</h2>
 <p>库存取固定版本 <code>harrier_mix_2026_08_18.json</code> 的200个 <code>available_tokens</code>，总数23,106,103,007,622。实际权重取最新生产run的 <code>data.train_weights</code>，筛选 <code>c\d\dq\d</code>，每阶段200桶之和均为1；23个验证来源权重为零。原配比与固定版本phase0权重最大差约3.47e−18，属于浮点精度差。</p>
-<p>domain比例是同cluster五档求和；质量比例是同档40域求和；阶段预算=(结束step−开始step)×11264×4096。曝光是三阶段预算乘权重后求和、除以桶库存。所有表都保留计算值与CSV，不用图上读数反推权重。</p>
+<p>domain比例是同cluster五档求和；质量比例是同档40域求和；阶段预算=(结束step−开始step)×11264×4096。曝光是三阶段预算乘配置权重后求和、除以桶库存；它未计入每混合块整数计数的偏移。第二轮另存 <code>analysis/loader_quantization.csv</code>，把配置与完整块有效权重分列。所有表都保留计算值与CSV，不用图上读数反推权重。</p>
 <p>如果后续16K切换改变batch tokens、阶段边界或跳过数据，实际曝光需重新核算。本报告计算的是<strong>当前4K配置下的全程计划</strong>。网页里的source enrichment、quality档、抽样weight、重复epochs分别使用自己的分母。</p>
 <h2 id="provenance-4">4. 怎样重建和检查</h2>
 <p>在仓库根目录执行README中的离线命令，可从已归档JSON生成CSV、图和HTML。<code>scripts/validate.py</code>检查评论覆盖、库存总量、200桶×3权重归一、预算、配对窗口步数与数值、内部链接和生成文件。它验证这些计算与归档的一致性，不验证作者的所有因果解释。</p>
@@ -1972,7 +2879,7 @@ decision: "接受/继续确认/回退，写具体证据"
 <h2 id="provenance-5">5. 仍然需要额外实验才能回答的问题</h2>
 <ol>
 <li>新配比里的哪个domain/quality变化分别贡献了多少535B收益；当前没有200桶同checkpoint的完整损失分解和独立扰动实验。</li>
-<li>数学份额下降对数学任务的影响；文本macro BPB不能回答。</li>
+<li>数学份额下降对535B解题能力的影响；新增d512任务BPB显示三seed均退化，但不是准确率，也不能定位单桶因果。</li>
 <li>Cooldown、16K及更长上下文的最终能力和长期稳定性；当前快照尚未完成。</li>
 <li>PDL缓解是否覆盖全部hang，以及9月底、10月初storage/coordination故障的起始原因；不能把恢复成功当根因确证。</li>
 <li>当前计划epochs与实际文档曝光的差距；不公开的token store及cursor无法在本机完整重放。</li>

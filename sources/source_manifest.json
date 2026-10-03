@@ -661,5 +661,181 @@
     "file": "best_mixture_996f489106c7b922.json",
     "url": "https://raw.githubusercontent.com/marin-community/marin/main/experiments/grug/moe_hero_ep/best_mixture_996f489106c7b922.json",
     "error": "HTTP Error 404: Not Found"
+  },
+  {
+    "file": "deepening_2026_10_04/marin_head.json",
+    "url": "https://api.github.com/repos/marin-community/marin/commits/main",
+    "final_url": "https://api.github.com/repos/marin-community/marin/commits/main",
+    "bytes": 9874,
+    "sha256": "54a0db45e925d6aef05377e6e7a7547b65a5e44dae4315c39eb828c7cae428bf",
+    "retrieved_utc": "2026-10-03T22:33:58.854481+00:00"
+  },
+  {
+    "file": "deepening_2026_10_04/hf_swarm_tree.json",
+    "url": "https://huggingface.co/api/datasets/marin-community/grug-moe-mix-swarm/tree/75c25718e2a7cf7a3b1b498b00479351f80345e0/registry/v1/swarms/h100-d512-from10pct-store-4d2e363d?recursive=true&limit=1000",
+    "final_url": "https://huggingface.co/api/datasets/marin-community/grug-moe-mix-swarm/tree/75c25718e2a7cf7a3b1b498b00479351f80345e0/registry/v1/swarms/h100-d512-from10pct-store-4d2e363d?recursive=true&limit=1000",
+    "bytes": 1747,
+    "sha256": "d7b2fe6a255014f2c272c86045780902cc5154439595019d29f34dcd1dbc6b6d",
+    "retrieved_utc": "2026-10-03T22:33:58.719021+00:00"
+  },
+  {
+    "file": "deepening_2026_10_04/swarm_analyze.py",
+    "url": "https://storage.googleapis.com/marin-public/held/h100-mix25-paloma/swarm-2026.09.14.1/analyze.py",
+    "final_url": "https://storage.googleapis.com/marin-public/held/h100-mix25-paloma/swarm-2026.09.14.1/analyze.py",
+    "bytes": 1991,
+    "sha256": "d9f36bec9213b4fde72d7a4f2fda59a04651f8c8e284aae669ba702ca31d8b43",
+    "retrieved_utc": "2026-10-03T22:33:59.363080+00:00"
+  },
+  {
+    "file": "deepening_2026_10_04/regmix_paper.html",
+    "url": "https://arxiv.org/html/2407.01492v2",
+    "final_url": "https://arxiv.org/html/2407.01492v2",
+    "bytes": 666685,
+    "sha256": "e1a03b0b609f5410b30e3e02dd68c1d8295fc5f57fe91d476120ccac2384479b",
+    "retrieved_utc": "2026-10-03T22:33:59.983042+00:00"
+  },
+  {
+    "file": "deepening_2026_10_04/marin_tree.json",
+    "url": "https://api.github.com/repos/marin-community/marin/git/trees/621bf9738b3ed9536aafc34b77cf8147740f1c17?recursive=1",
+    "final_url": "https://api.github.com/repos/marin-community/marin/git/trees/621bf9738b3ed9536aafc34b77cf8147740f1c17?recursive=1",
+    "bytes": 1322549,
+    "sha256": "8114b68426529abf06fbf8d4cbff95f338c16ae45a5275037314a7b53bd3ca30",
+    "retrieved_utc": "2026-10-03T22:34:00.943119+00:00"
+  },
+  {
+    "file": "deepening_2026_10_04/hf_buckets.parquet",
+    "url": "https://huggingface.co/datasets/marin-community/grug-moe-mix-swarm/resolve/75c25718e2a7cf7a3b1b498b00479351f80345e0/registry/v1/swarms/h100-d512-from10pct-store-4d2e363d/buckets.parquet",
+    "final_url": "https://us.aws.cdn.hf.co/xet-bridge-us/6a503f70106bbcd3f5ef0d7e/76f1584d4d855cd5b89d051489660de84f77e9d72cd75a78243ff63c7407e798?X-Xet-Cas-Uid=public&user_id=public&xip=-1r9DiNEDJ8&response-content-disposition=inline%3B+filename*%3DUTF-8%27%27buckets.parquet%3B+filename%3D%22buckets.parquet%22%3B&Expires=1791070561&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly91cy5hd3MuY2RuLmhmLmNvL3hldC1icmlkZ2UtdXMvNmE1MDNmNzAxMDZiYmNkM2Y1ZWYwZDdlLzc2ZjE1ODRkNGQ4NTVjZDViODlkMDUxNDg5NjYwZGU4NGY3N2U5ZDcyY2Q3NWE3ODI0M2ZmNjNjNzQwN2U3OThcXD9YLVhldC1DYXMtVWlkPXB1YmxpYyZ1c2VyX2lkPXB1YmxpYyZ4aXA9LTFyOURpTkVESjgmcmVzcG9uc2UtY29udGVudC1kaXNwb3NpdGlvbj1pbmxpbmUlM0IrZmlsZW5hbWUlMkElM0RVVEYtOCUyNyUyN2J1Y2tldHMucGFycXVldCUzQitmaWxlbmFtZSUzRCUyMmJ1Y2tldHMucGFycXVldCUyMiUzQiIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiRXBvY2hUaW1lIjoxNzkxMDcwNTYxfX19XX0_&Signature=MEYCIQCeAxFCzJx2Xe6790O9lCC9rvnzBKUq4BL0TA9Nw-F%7ElgIhAJzaLscj5OmheMS6pWqTDSX9fQeTRdWWMRsh38fAlsu-&Key-Pair-Id=01KXEF4KZ1B6FV465MAWR4M21F&Hash-Algorithm=SHA256",
+    "bytes": 7692,
+    "sha256": "d9b8a4580dc6acd55a19d83ab21bbecdb97f561b6335618d0e86bb337f7fd584",
+    "retrieved_utc": "2026-10-03T22:35:57.163426+00:00"
+  },
+  {
+    "file": "deepening_2026_10_04/hf_content.parquet",
+    "url": "https://huggingface.co/datasets/marin-community/grug-moe-mix-swarm/resolve/75c25718e2a7cf7a3b1b498b00479351f80345e0/registry/v1/swarms/h100-d512-from10pct-store-4d2e363d/content.parquet",
+    "final_url": "https://us.aws.cdn.hf.co/xet-bridge-us/6a503f70106bbcd3f5ef0d7e/285dca7f64aa66ac783cfeee44350959dd6817b3567b8a39755f8908931a100b?xip=-1r9DiNEDJ8&X-Xet-Cas-Uid=public&response-content-disposition=inline%3B+filename*%3DUTF-8%27%27content.parquet%3B+filename%3D%22content.parquet%22%3B&user_id=public&Expires=1791070561&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly91cy5hd3MuY2RuLmhmLmNvL3hldC1icmlkZ2UtdXMvNmE1MDNmNzAxMDZiYmNkM2Y1ZWYwZDdlLzI4NWRjYTdmNjRhYTY2YWM3ODNjZmVlZTQ0MzUwOTU5ZGQ2ODE3YjM1NjdiOGEzOTc1NWY4OTA4OTMxYTEwMGJcXD94aXA9LTFyOURpTkVESjgmWC1YZXQtQ2FzLVVpZD1wdWJsaWMmcmVzcG9uc2UtY29udGVudC1kaXNwb3NpdGlvbj1pbmxpbmUlM0IrZmlsZW5hbWUlMkElM0RVVEYtOCUyNyUyN2NvbnRlbnQucGFycXVldCUzQitmaWxlbmFtZSUzRCUyMmNvbnRlbnQucGFycXVldCUyMiUzQiZ1c2VyX2lkPXB1YmxpYyIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiRXBvY2hUaW1lIjoxNzkxMDcwNTYxfX19XX0_&Signature=MEQCIFElitq8TCD2BiiooJjT1bHVXtWt6-2QxRw3LktwrPRCAiBkWeJGSA7MN31ZMKR4NzwpwhOREqKB4ci0qPg-QyvBVA__&Key-Pair-Id=01KXEF4KZ1B6FV465MAWR4M21F&Hash-Algorithm=SHA256",
+    "bytes": 973384,
+    "sha256": "d008dbb28ca07297044513ee07a8ea4a87f0c2bebeab96b24b709fccd52c23f5",
+    "retrieved_utc": "2026-10-03T22:35:57.404466+00:00"
+  },
+  {
+    "file": "deepening_2026_10_04/hf_migration_rejections.parquet",
+    "url": "https://huggingface.co/datasets/marin-community/grug-moe-mix-swarm/resolve/75c25718e2a7cf7a3b1b498b00479351f80345e0/registry/v1/swarms/h100-d512-from10pct-store-4d2e363d/migration_rejections.parquet",
+    "final_url": "https://us.aws.cdn.hf.co/xet-bridge-us/6a503f70106bbcd3f5ef0d7e/56f17f214ad9d10be2cd399414f5cb65961465dd8cc15014894f60eea536d113?user_id=public&response-content-disposition=inline%3B+filename*%3DUTF-8%27%27migration_rejections.parquet%3B+filename%3D%22migration_rejections.parquet%22%3B&xip=-1r9DiNEDJ8&X-Xet-Cas-Uid=public&Expires=1791070561&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly91cy5hd3MuY2RuLmhmLmNvL3hldC1icmlkZ2UtdXMvNmE1MDNmNzAxMDZiYmNkM2Y1ZWYwZDdlLzU2ZjE3ZjIxNGFkOWQxMGJlMmNkMzk5NDE0ZjVjYjY1OTYxNDY1ZGQ4Y2MxNTAxNDg5NGY2MGVlYTUzNmQxMTNcXD91c2VyX2lkPXB1YmxpYyZyZXNwb25zZS1jb250ZW50LWRpc3Bvc2l0aW9uPWlubGluZSUzQitmaWxlbmFtZSUyQSUzRFVURi04JTI3JTI3bWlncmF0aW9uX3JlamVjdGlvbnMucGFycXVldCUzQitmaWxlbmFtZSUzRCUyMm1pZ3JhdGlvbl9yZWplY3Rpb25zLnBhcnF1ZXQlMjIlM0ImeGlwPS0xcjlEaU5FREo4JlgtWGV0LUNhcy1VaWQ9cHVibGljIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJFcG9jaFRpbWUiOjE3OTEwNzA1NjF9fX1dfQ__&Signature=MEUCIQCVUmZKBDyV%7EBNG4DNQjfYodXqJkoqbk-CuDyIieq8t7gIgdd0CSJQISxeRn6As94jAGr0AuuhRWLVI5lJC0F6yY0E_&Key-Pair-Id=01KXEF4KZ1B6FV465MAWR4M21F&Hash-Algorithm=SHA256",
+    "bytes": 520,
+    "sha256": "8cecf4b12e28c8d9d544736957f9fe3cd9e58cac5c7469906a84edd2be880a77",
+    "retrieved_utc": "2026-10-03T22:35:57.194969+00:00"
+  },
+  {
+    "file": "deepening_2026_10_04/hf_observations.parquet",
+    "url": "https://huggingface.co/datasets/marin-community/grug-moe-mix-swarm/resolve/75c25718e2a7cf7a3b1b498b00479351f80345e0/registry/v1/swarms/h100-d512-from10pct-store-4d2e363d/observations.parquet",
+    "final_url": "https://us.aws.cdn.hf.co/xet-bridge-us/6a503f70106bbcd3f5ef0d7e/00087b152acb6c6a6fd8e8b76e2faca606003e24914828e2acfdb1c1fe2d9d32?X-Xet-Cas-Uid=public&user_id=public&xip=-1r9DiNEDJ8&response-content-disposition=inline%3B+filename*%3DUTF-8%27%27observations.parquet%3B+filename%3D%22observations.parquet%22%3B&Expires=1791070563&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly91cy5hd3MuY2RuLmhmLmNvL3hldC1icmlkZ2UtdXMvNmE1MDNmNzAxMDZiYmNkM2Y1ZWYwZDdlLzAwMDg3YjE1MmFjYjZjNmE2ZmQ4ZThiNzZlMmZhY2E2MDYwMDNlMjQ5MTQ4MjhlMmFjZmRiMWMxZmUyZDlkMzJcXD9YLVhldC1DYXMtVWlkPXB1YmxpYyZ1c2VyX2lkPXB1YmxpYyZ4aXA9LTFyOURpTkVESjgmcmVzcG9uc2UtY29udGVudC1kaXNwb3NpdGlvbj1pbmxpbmUlM0IrZmlsZW5hbWUlMkElM0RVVEYtOCUyNyUyN29ic2VydmF0aW9ucy5wYXJxdWV0JTNCK2ZpbGVuYW1lJTNEJTIyb2JzZXJ2YXRpb25zLnBhcnF1ZXQlMjIlM0IiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuIjp7IkVwb2NoVGltZSI6MTc5MTA3MDU2M319fV19&Signature=MEUCIQD-upys4m2SSsfdFQIRH9Nu8%7E%7EslYyQrl-aOhhMijOVOAIgYX67bbC9Solv-bCTv%7ES4zFudOWuTRTnMGuOic6kIADw_&Key-Pair-Id=01KXEF4KZ1B6FV465MAWR4M21F&Hash-Algorithm=SHA256",
+    "bytes": 2170294,
+    "sha256": "c0f293ba2fdadec851196332f7c9d5c363f5a7ed5561014146dd34ce978eec9a",
+    "retrieved_utc": "2026-10-03T22:35:59.265515+00:00"
+  },
+  {
+    "file": "deepening_2026_10_04/hf_swarm.parquet",
+    "url": "https://huggingface.co/datasets/marin-community/grug-moe-mix-swarm/resolve/75c25718e2a7cf7a3b1b498b00479351f80345e0/registry/v1/swarms/h100-d512-from10pct-store-4d2e363d/swarm.parquet",
+    "final_url": "https://us.aws.cdn.hf.co/xet-bridge-us/6a503f70106bbcd3f5ef0d7e/66f9c69e31fc1e1a3c33bf5a6b1776db02559cfd1d142cf9df90d4c95d59df0a?response-content-disposition=inline%3B+filename*%3DUTF-8%27%27swarm.parquet%3B+filename%3D%22swarm.parquet%22%3B&user_id=public&xip=-1r9DiNEDJ8&X-Xet-Cas-Uid=public&Expires=1791070563&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly91cy5hd3MuY2RuLmhmLmNvL3hldC1icmlkZ2UtdXMvNmE1MDNmNzAxMDZiYmNkM2Y1ZWYwZDdlLzY2ZjljNjllMzFmYzFlMWEzYzMzYmY1YTZiMTc3NmRiMDI1NTljZmQxZDE0MmNmOWRmOTBkNGM5NWQ1OWRmMGFcXD9yZXNwb25zZS1jb250ZW50LWRpc3Bvc2l0aW9uPWlubGluZSUzQitmaWxlbmFtZSUyQSUzRFVURi04JTI3JTI3c3dhcm0ucGFycXVldCUzQitmaWxlbmFtZSUzRCUyMnN3YXJtLnBhcnF1ZXQlMjIlM0ImdXNlcl9pZD1wdWJsaWMmeGlwPS0xcjlEaU5FREo4JlgtWGV0LUNhcy1VaWQ9cHVibGljIiwiQ29uZGl0aW9uIjp7IkRhdGVMZXNzVGhhbiI6eyJFcG9jaFRpbWUiOjE3OTEwNzA1NjN9fX1dfQ__&Signature=MEUCIAwES-VPsS7EfyAZ-slNKb-6PHjLhdqiAGQ8U60Lqn4mAiEA-umKmmu90McbyEba%7E61D3vMhuE5AfyjsAeheFcf5PKw_&Key-Pair-Id=01KXEF4KZ1B6FV465MAWR4M21F&Hash-Algorithm=SHA256",
+    "bytes": 12592,
+    "sha256": "b0fe0e22d695323fdde7b52e5d48d721db99adce3edbb5253b27ad4ee8544bf5",
+    "retrieved_utc": "2026-10-03T22:35:58.994687+00:00"
+  },
+  {
+    "file": "deepening_2026_10_04/mixture.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/621bf9738b3ed9536aafc34b77cf8147740f1c17/lib/levanter/src/levanter/data/mixture.py",
+    "final_url": "https://raw.githubusercontent.com/marin-community/marin/621bf9738b3ed9536aafc34b77cf8147740f1c17/lib/levanter/src/levanter/data/mixture.py",
+    "bytes": 22896,
+    "sha256": "67e97941a79753b2e5865f7f41c7762436a428599ecd1a60d643aa891a817685",
+    "retrieved_utc": "2026-10-03T22:35:57.954236+00:00"
+  },
+  {
+    "file": "deepening_2026_10_04/datasets.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/621bf9738b3ed9536aafc34b77cf8147740f1c17/lib/levanter/src/levanter/data/text/datasets.py",
+    "final_url": "https://raw.githubusercontent.com/marin-community/marin/621bf9738b3ed9536aafc34b77cf8147740f1c17/lib/levanter/src/levanter/data/text/datasets.py",
+    "bytes": 47569,
+    "sha256": "4fd44ff53067beb7a2ac05cc4d41f0dda18012691751a85e7c5eb65c4849823b",
+    "retrieved_utc": "2026-10-03T22:35:58.545632+00:00"
+  },
+  {
+    "file": "deepening_2026_10_04/test_varying_mixture.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/621bf9738b3ed9536aafc34b77cf8147740f1c17/lib/levanter/tests/test_varying_mixture.py",
+    "final_url": "https://raw.githubusercontent.com/marin-community/marin/621bf9738b3ed9536aafc34b77cf8147740f1c17/lib/levanter/tests/test_varying_mixture.py",
+    "bytes": 5567,
+    "sha256": "ecd9444c84cba0fcfc104271d62e7fb28bf093f21df5a5f73e61f7b03f282f7e",
+    "retrieved_utc": "2026-10-03T22:35:59.050248+00:00"
+  },
+  {
+    "file": "deepening_2026_10_04/hero-mixture-log.md",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/621bf9738b3ed9536aafc34b77cf8147740f1c17/docs/reports/hero-mixture-log.md",
+    "final_url": "https://raw.githubusercontent.com/marin-community/marin/621bf9738b3ed9536aafc34b77cf8147740f1c17/docs/reports/hero-mixture-log.md",
+    "bytes": 3518,
+    "sha256": "4fb41bba7670158dbff3c17b1968101589ccfb66649e2d979832aea1988d3e4a",
+    "retrieved_utc": "2026-10-03T22:35:59.475060+00:00"
+  },
+  {
+    "file": "deepening_2026_10_04/mixture_production.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/ad754c6d67555d6369a4a312ff7388e43cfd08c1/lib/levanter/src/levanter/data/mixture.py",
+    "final_url": "https://raw.githubusercontent.com/marin-community/marin/ad754c6d67555d6369a4a312ff7388e43cfd08c1/lib/levanter/src/levanter/data/mixture.py",
+    "bytes": 22896,
+    "sha256": "67e97941a79753b2e5865f7f41c7762436a428599ecd1a60d643aa891a817685",
+    "retrieved_utc": "2026-10-03T22:38:35.089019+00:00"
+  },
+  {
+    "file": "deepening_2026_10_04/datasets_production.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/ad754c6d67555d6369a4a312ff7388e43cfd08c1/lib/levanter/src/levanter/data/text/datasets.py",
+    "final_url": "https://raw.githubusercontent.com/marin-community/marin/ad754c6d67555d6369a4a312ff7388e43cfd08c1/lib/levanter/src/levanter/data/text/datasets.py",
+    "bytes": 47495,
+    "sha256": "47d95f41313356831bcc4b8861ecc765cbc04c6e8c32dc2c5a35abd74c619e4d",
+    "retrieved_utc": "2026-10-03T22:38:35.100145+00:00"
+  },
+  {
+    "file": "deepening_2026_10_04/dataset_production.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/ad754c6d67555d6369a4a312ff7388e43cfd08c1/lib/levanter/src/levanter/data/dataset.py",
+    "final_url": "https://raw.githubusercontent.com/marin-community/marin/ad754c6d67555d6369a4a312ff7388e43cfd08c1/lib/levanter/src/levanter/data/dataset.py",
+    "bytes": 20205,
+    "sha256": "563ffddbf46ea665d00c71f92614dadd6d13478c91b9753b00dbbf21f88288a5",
+    "retrieved_utc": "2026-10-03T22:38:35.075621+00:00"
+  },
+  {
+    "file": "deepening_2026_10_04/schedule_production.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/ad754c6d67555d6369a4a312ff7388e43cfd08c1/lib/levanter/src/levanter/schedule.py",
+    "final_url": "https://raw.githubusercontent.com/marin-community/marin/ad754c6d67555d6369a4a312ff7388e43cfd08c1/lib/levanter/src/levanter/schedule.py",
+    "bytes": 5065,
+    "sha256": "01a2faa0d7a0b5cca4aad4cd702ed9aed5114111293970d8ea379d36f40ff281",
+    "retrieved_utc": "2026-10-03T22:38:35.585386+00:00"
+  },
+  {
+    "file": "deepening_2026_10_04/launch_h100_scaling_ladder.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/621bf9738b3ed9536aafc34b77cf8147740f1c17/experiments/grug/moe_hero_ep/launch_h100_scaling_ladder.py",
+    "final_url": "https://raw.githubusercontent.com/marin-community/marin/621bf9738b3ed9536aafc34b77cf8147740f1c17/experiments/grug/moe_hero_ep/launch_h100_scaling_ladder.py",
+    "bytes": 11850,
+    "sha256": "1157a5c61a820c46f36fc6d5a951d82b5f75329805326ff6b01fc431dfe3863a",
+    "retrieved_utc": "2026-10-03T22:38:35.597390+00:00"
+  },
+  {
+    "file": "deepening_2026_10_04/hf_registry_tree.json",
+    "url": "https://huggingface.co/api/datasets/marin-community/grug-moe-mix-swarm/tree/75c25718e2a7cf7a3b1b498b00479351f80345e0/registry/v1?recursive=true&limit=1000",
+    "final_url": "https://huggingface.co/api/datasets/marin-community/grug-moe-mix-swarm/tree/75c25718e2a7cf7a3b1b498b00479351f80345e0/registry/v1?recursive=true&limit=1000",
+    "bytes": 13797,
+    "sha256": "b4b10a55c7520ebf6a23eab590cd3ced9ceebfb0115a4062fb6f834230d02f91",
+    "retrieved_utc": "2026-10-03T22:45:46.392221+00:00"
+  },
+  {
+    "file": "deepening_2026_10_04/python_version_production.txt",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/ad754c6d67555d6369a4a312ff7388e43cfd08c1/.python-version",
+    "final_url": "https://raw.githubusercontent.com/marin-community/marin/ad754c6d67555d6369a4a312ff7388e43cfd08c1/.python-version",
+    "bytes": 5,
+    "sha256": "7b55f8e67b5623c4bef3fa691288da9437d79d3aba156de48d481db32ac7d16d",
+    "retrieved_utc": "2026-10-03T22:45:46.431131+00:00"
+  },
+  {
+    "file": "deepening_2026_10_04/pyproject_production.toml",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/ad754c6d67555d6369a4a312ff7388e43cfd08c1/pyproject.toml",
+    "final_url": "https://raw.githubusercontent.com/marin-community/marin/ad754c6d67555d6369a4a312ff7388e43cfd08c1/pyproject.toml",
+    "bytes": 20924,
+    "sha256": "5857f05f3134f4e6968d2d16f18d72620cfa763216922624e14d8a527d1bb2de",
+    "retrieved_utc": "2026-10-03T22:45:46.481712+00:00"
   }
 ]

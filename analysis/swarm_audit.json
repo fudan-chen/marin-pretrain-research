@@ -1,0 +1,74 @@
+{
+  "rows": 934,
+  "unique_run_names": 934,
+  "exact_distinct_weight_pairs": 915,
+  "group_counts": {
+    "core_design": 25,
+    "floored_ablation": 60,
+    "skew_swap": 48,
+    "systematic_grid": 100,
+    "semantic_domain_ablation": 40,
+    "semantic_quality_ablation": 6,
+    "proportional_baseline": 10,
+    "proportional_quality_isolation": 4,
+    "proportional_domain_ablation": 40,
+    "mixprior_candidate": 601
+  },
+  "weight_pair_multiplicities": {
+    "3": 2,
+    "1": 906,
+    "2": 6,
+    "10": 1
+  },
+  "task_metrics_per_row": {
+    "54": 934
+  },
+  "selected_rows_match_v1_exactly": true,
+  "observations_manifest_sha_matches": true,
+  "physical_training_tokens": 14835253248,
+  "simulated_training_tokens": 16875000000000,
+  "slice_ratio": 0.0008791261184,
+  "phase_budgets": [
+    13125000000000,
+    3750000000000
+  ],
+  "active_parameters": 20840448,
+  "total_parameters": 597608192,
+  "bucket_semantics": {
+    "domains": "Harrier 40-way assignments",
+    "quality": "ordinal q0-q4 with v5 content-type-specific cutoffs",
+    "exact_match_to_historical": false
+  },
+  "content_matrix_shape": [
+    200,
+    1000
+  ],
+  "content_row_sum_bounds": [
+    0.9999999999999998,
+    1.0000000000000002
+  ],
+  "content_provenance": {
+    "kind": "token_weighted_luxical_histograms",
+    "root": "s3://marin-us-east-02a/marin/mixprior/shared-content/luxical-one-rc4-k5000/store_81e7e39a",
+    "meta_uri": "s3://marin-us-east-02a/marin/mixprior/shared-content/luxical-one-rc4-k5000/store_81e7e39a/_meta.json",
+    "meta_sha256": "af44ea7e4d5e5ff649db353199cf0167f14734ae91b1f87c1b5636bb04837400",
+    "sampling": {
+      "sample_size": 20000,
+      "range_len": 100,
+      "seed": 0,
+      "token_weighted": true,
+      "max_embed_tokens": 2048,
+      "quant_scale": 0.004724409448818898
+    },
+    "centroids_sha256": "11e7ed99cecbf6c8c334ccb57f9d51db63b7a922ac2500e5ca7fce56e085e46d",
+    "lookup_sha256": "a1aa004f38d4240ba94e56b03c8c252e513a572c2766d387d986e17ada7413c3"
+  },
+  "selected_task_directions": {
+    "all_three_improve": 5,
+    "all_three_worsen": 11,
+    "mixed": 38
+  },
+  "registry_stock_total": 23106103007622,
+  "production_stock_total": 23106103007622,
+  "registry_stock_differences": []
+}

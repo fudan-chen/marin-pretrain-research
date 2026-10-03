@@ -4,6 +4,8 @@
 
 阅读顺序建议：先读本篇的三个具体案例，再查工程问题表；需要逐条对照原文时读《#8435 中文逐条解读》；真正准备调整自己的数据时读《数据配比与顺序实操》。HTML 把这些内容合在同一页，保留搜索、目录、200 桶数据查询和本地笔记。
 
+第二轮新增[搜索、任务取舍与加载器游标深挖](DEEP_DIVE_ZH.md)：核对934条观测、逐seed检查数学/代码BPB、复算整数配比与108.907B/2.951B游标差。后文原训练时间线不变。
+
 ## 1. 先把最容易误读的三个地方说清楚
 
 ### 1.1 通信实现改变，也会让 Loss 下降
@@ -102,7 +104,7 @@ MuonH 用于 attention、专家、latent 和 GatedNorm 的矩阵，AdamH 用于 
 
 ### 3.7 “两个 executable 交替”是曾经的解释，后来被排除
 
-#8870 首帖把 hang 与 watch/plain executable 交替、symmetric memory window 重叠联系起来。但后续代码审计发现生产配置是 `WatchMode.INLINE`：每步是同一编译路径，`step%10` 只是是否写日志。capacity-limited eval 也早已禁用。因此“刚过 watch step 就挂了”是时间上相邻，不是机制证据。
+\#8870 首帖把 hang 与 watch/plain executable 交替、symmetric memory window 重叠联系起来。但后续代码审计发现生产配置是 `WatchMode.INLINE`：每步是同一编译路径，`step%10` 只是是否写日志。capacity-limited eval 也早已禁用。因此“刚过 watch step 就挂了”是时间上相邻，不是机制证据。
 
 另一个 symmetric window 问题确实存在，但不能因为相似就移植其根因。报告在这里保留排除过程，因为只读首帖会学到一条已经失效的诊断。[首帖解释的纠正](https://github.com/marin-community/marin/issues/8870#issuecomment-5531534090)
 

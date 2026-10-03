@@ -1,0 +1,49 @@
+{
+  "scope": "complete mixture blocks, physical token offsets before finite-source modulo and inner shuffling",
+  "scenarios": [
+    {
+      "step": 195125,
+      "new_block_size": 49152,
+      "new_historical_boundary": 108096,
+      "l1_cursor_difference_tokens": 2951348224,
+      "forward_cursor_tokens": 1475674112,
+      "backward_cursor_tokens": 1475674112,
+      "old_partial_block_tokens": 29360128,
+      "new_partial_block_tokens": 29360128,
+      "largest_difference_cell": "c28q4"
+    },
+    {
+      "step": 195125,
+      "new_block_size": 12288,
+      "new_historical_boundary": 108000,
+      "l1_cursor_difference_tokens": 108907479040,
+      "forward_cursor_tokens": 54453739520,
+      "backward_cursor_tokens": 54453739520,
+      "old_partial_block_tokens": 29360128,
+      "new_partial_block_tokens": 29360128,
+      "largest_difference_cell": "c30q4"
+    },
+    {
+      "step": 216000,
+      "new_block_size": 49152,
+      "new_historical_boundary": 108096,
+      "l1_cursor_difference_tokens": 2951348224,
+      "forward_cursor_tokens": 1475674112,
+      "backward_cursor_tokens": 1475674112,
+      "old_partial_block_tokens": 0,
+      "new_partial_block_tokens": 0,
+      "largest_difference_cell": "c28q4"
+    },
+    {
+      "step": 216000,
+      "new_block_size": 12288,
+      "new_historical_boundary": 108000,
+      "l1_cursor_difference_tokens": 121448448000,
+      "forward_cursor_tokens": 60724224000,
+      "backward_cursor_tokens": 60724224000,
+      "old_partial_block_tokens": 0,
+      "new_partial_block_tokens": 0,
+      "largest_difference_cell": "c28q4"
+    }
+  ]
+}

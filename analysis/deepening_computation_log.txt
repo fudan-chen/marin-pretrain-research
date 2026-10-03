@@ -1,0 +1,183 @@
+{
+  "swarm_rows": 934,
+  "distinct_weight_pairs": 915,
+  "task_directions": {
+    "all_three_improve": 5,
+    "all_three_worsen": 11,
+    "mixed": 38
+  },
+  "stock_differences": 0,
+  "cursor": [
+    {
+      "step": 195125,
+      "new_block_size": 49152,
+      "new_historical_boundary": 108096,
+      "l1_cursor_difference_tokens": 2951348224,
+      "forward_cursor_tokens": 1475674112,
+      "backward_cursor_tokens": 1475674112,
+      "old_partial_block_tokens": 29360128,
+      "new_partial_block_tokens": 29360128,
+      "largest_difference_cell": "c28q4"
+    },
+    {
+      "step": 195125,
+      "new_block_size": 12288,
+      "new_historical_boundary": 108000,
+      "l1_cursor_difference_tokens": 108907479040,
+      "forward_cursor_tokens": 54453739520,
+      "backward_cursor_tokens": 54453739520,
+      "old_partial_block_tokens": 29360128,
+      "new_partial_block_tokens": 29360128,
+      "largest_difference_cell": "c30q4"
+    },
+    {
+      "step": 216000,
+      "new_block_size": 49152,
+      "new_historical_boundary": 108096,
+      "l1_cursor_difference_tokens": 2951348224,
+      "forward_cursor_tokens": 1475674112,
+      "backward_cursor_tokens": 1475674112,
+      "old_partial_block_tokens": 0,
+      "new_partial_block_tokens": 0,
+      "largest_difference_cell": "c28q4"
+    },
+    {
+      "step": 216000,
+      "new_block_size": 12288,
+      "new_historical_boundary": 108000,
+      "l1_cursor_difference_tokens": 121448448000,
+      "forward_cursor_tokens": 60724224000,
+      "backward_cursor_tokens": 60724224000,
+      "old_partial_block_tokens": 0,
+      "new_partial_block_tokens": 0,
+      "largest_difference_cell": "c28q4"
+    }
+  ],
+  "quantization_accurate": [
+    {
+      "block_size": 49152,
+      "sum_mode": "accurate",
+      "normalization_total": 0.9999999999999999,
+      "remainder": 98,
+      "recipient": "c30q4",
+      "positive_but_zero": [
+        "c00q0",
+        "c02q0",
+        "c04q0",
+        "c06q0",
+        "c08q0",
+        "c09q0",
+        "c13q0",
+        "c15q0",
+        "c19q0",
+        "c22q0",
+        "c26q0",
+        "c27q0",
+        "c28q0",
+        "c30q0",
+        "c31q0",
+        "c33q0",
+        "c34q0"
+      ],
+      "max_absolute_shift_pp": 0.19766784130534343,
+      "phase": 0
+    },
+    {
+      "block_size": 49152,
+      "sum_mode": "accurate",
+      "normalization_total": 1.0,
+      "remainder": 0,
+      "recipient": "c28q4",
+      "positive_but_zero": [],
+      "max_absolute_shift_pp": 2.710505431213761e-18,
+      "phase": 1
+    },
+    {
+      "block_size": 49152,
+      "sum_mode": "accurate",
+      "normalization_total": 1.0,
+      "remainder": 0,
+      "recipient": "c30q4",
+      "positive_but_zero": [],
+      "max_absolute_shift_pp": 1.3877787807814457e-15,
+      "phase": 2
+    },
+    {
+      "block_size": 12288,
+      "sum_mode": "accurate",
+      "normalization_total": 0.9999999999999999,
+      "remainder": 95,
+      "recipient": "c30q4",
+      "positive_but_zero": [
+        "c00q0",
+        "c02q0",
+        "c04q0",
+        "c04q1",
+        "c06q0",
+        "c08q0",
+        "c08q1",
+        "c09q0",
+        "c10q0",
+        "c13q0",
+        "c15q0",
+        "c15q1",
+        "c19q0",
+        "c19q1",
+        "c22q0",
+        "c26q0",
+        "c26q1",
+        "c27q0",
+        "c28q0",
+        "c30q0",
+        "c31q0",
+        "c31q1",
+        "c33q0",
+        "c34q0",
+        "c37q0"
+      ],
+      "max_absolute_shift_pp": 0.7713983100553434,
+      "phase": 0
+    },
+    {
+      "block_size": 12288,
+      "sum_mode": "accurate",
+      "normalization_total": 1.0,
+      "remainder": 81,
+      "recipient": "c28q4",
+      "positive_but_zero": [
+        "c00q0",
+        "c02q0",
+        "c04q0",
+        "c06q0",
+        "c11q0",
+        "c27q0",
+        "c30q0"
+      ],
+      "max_absolute_shift_pp": 0.653076171875,
+      "phase": 1
+    },
+    {
+      "block_size": 12288,
+      "sum_mode": "accurate",
+      "normalization_total": 1.0,
+      "remainder": 78,
+      "recipient": "c30q4",
+      "positive_but_zero": [
+        "c00q0",
+        "c02q0",
+        "c04q0",
+        "c06q0",
+        "c06q1",
+        "c08q0",
+        "c11q0",
+        "c12q0",
+        "c13q0",
+        "c27q0",
+        "c33q0",
+        "c34q0"
+      ],
+      "max_absolute_shift_pp": 0.6327311197916643,
+      "phase": 2
+    }
+  ]
+}

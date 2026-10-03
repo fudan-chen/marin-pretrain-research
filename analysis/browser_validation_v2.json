@@ -1,0 +1,36 @@
+{
+  "verified_utc": "2026-10-03T23:08:12.222498+00:00",
+  "tool": "Tabbit Playwright",
+  "desktop": {
+    "viewport": 1440,
+    "document_width": 1425,
+    "all_eight_images_loaded": true,
+    "deep_tables": 7,
+    "task_appendix_rows": 54
+  },
+  "mobile": {
+    "viewport": 390,
+    "document_width": 375,
+    "deep_text_width": 297,
+    "no_document_horizontal_overflow": true,
+    "table_container_width": 297,
+    "table_scroll_width": 620
+  },
+  "standalone": {
+    "all_eight_images_embedded_and_loaded": true,
+    "task_appendix_rows": 54,
+    "math_search_filtered_rows": 5,
+    "remote_http_requests": [],
+    "page_errors": []
+  },
+  "screenshots": [
+    "screenshots/deep_desktop_v2.png",
+    "screenshots/deep_mobile_v2.png"
+  ],
+  "notes": [
+    "Initial navigation only changed the hash and retained the cached v1 DOM. Explicit reload loaded v2 and all checks passed.",
+    "Two issue-number paragraphs were rendered as H1 by the Markdown parser; their leading hashes are now escaped.",
+    "Existing v1 browser evidence is retained separately.",
+    "Screenshots precede two final small prose clarifications and a new header shortcut; final HTML links are revalidated."
+  ]
+}

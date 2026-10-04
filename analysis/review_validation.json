@@ -1,4 +1,4 @@
 {
-  "test_groups_passed": 9,
+  "test_groups_passed": 11,
   "scope": "Rubric input validation, claim-stage boundaries and baseline arithmetic; not external rubric validity or model training."
 }

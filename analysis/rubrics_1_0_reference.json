@@ -1,11 +1,5 @@
 {
-  "version": "1.1",
-  "changes_from_1_0": {
-    "changed_rules": [
-      "R16"
-    ],
-    "reason": "Separate figure preparation checks from observed reader comprehension. Other anchors unchanged."
-  },
+  "version": "1.0",
   "authorship": "本报告提炼的工作规则，不是Marin官方标准或经外部验证的评分量表。",
   "status_labels": {
     "pass": "证据齐全",
@@ -347,19 +341,19 @@
     },
     {
       "id": "R16",
-      "title": "图表准备与理解证据分开",
+      "title": "图表能被读者正确复述",
       "area": "表达",
-      "question": "当前验证的是图表准备，还是读者能正确复述？",
+      "question": "读者能说清横纵轴、参照、样本数和不能推出什么吗？",
       "anchors": {
-        "pass": "先声明范围：图表准备检查单位、参照、样本数、原值和窄屏；理解主张另需真实回答、评审依据、分歧及修订记录。",
-        "partial": "图表准备可核对，但缺读者回答；不能据此声称理解效果已验证。",
-        "fail": "以页面能打开、自评勾选或作者校准例，代替真实读者理解证据。"
+        "pass": "图包含单位、参照、范围、样本数、原值入口和解释；窄屏可读。",
+        "partial": "数值正确但解释/分母/可访问替代缺失。",
+        "fail": "截断差结果、混用参照，或把图中的相关性画成因果证明。"
       },
-      "why": "界面可用与读者理解是两种证据；图表准备足够时仍可进入候选讨论。",
+      "why": "图要帮助判断，不应替代证据限定。",
       "evidence_links": [
         {
-          "label": "理解检查协议",
-          "href": "ASSESSMENT_GUIDE_ZH.md"
+          "label": "理解文档",
+          "href": "LEARNING_GUIDE_ZH.md"
         },
         {
           "label": "图与交互复核",
@@ -533,9 +527,9 @@
     }
   ],
   "example_audit": {
-    "scope": "固定公开快照支持的结论范围；R16仅评图表准备，不声称读者理解已验证。不是给Marin团队打分，也不是已完成的新训练。",
+    "scope": "固定公开快照支持的结论范围；不是给Marin团队打分，也不是已完成的新训练。",
     "schema": "marin-review/1",
-    "framework_version": "1.1",
+    "framework_version": "1.0",
     "target": "用公开材料评估选中配比能被推荐到哪一步",
     "judgments": {
       "R01": {
@@ -600,7 +594,7 @@
       },
       "R16": {
         "status": "pass",
-        "evidence": "仅图表准备范围：14图有单位、参照、原值、边界及窄屏复核。真实读者回答和理解效果仍未验证。"
+        "evidence": "报告对应材料：LEARNING_GUIDE_ZH.md。此通过项只覆盖其已声明的公开/本地复算范围。"
       },
       "R17": {
         "status": "pass",

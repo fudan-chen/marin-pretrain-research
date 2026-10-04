@@ -8,6 +8,7 @@ chapters=[('learning','理解文档与自测','LEARNING_GUIDE_ZH.md'),('rubrics'
 chapters.insert(0,('decision-guide','候选选择与规则回放','DECISION_GUIDE_ZH.md'))
 chapters.insert(0,('transfer-guide','预算分解与供体实验','TRANSFER_GUIDE_ZH.md'))
 chapters.insert(0,('order-guide','顺序、边缘块与索引','ORDER_GUIDE_ZH.md'))
+chapters.insert(0,('assessment-guide','理解检查、锚点与分歧','ASSESSMENT_GUIDE_ZH.md'))
 readings={x['file']:x for x in json.loads((ROOT/'analysis/figure_readings.json').read_text())}
 sections=[];toc=[]
 for slug,label,file in chapters:
@@ -25,6 +26,7 @@ for slug,label,file in chapters:
     for fig in soup.select('img[src]'):
         note=readings.get(fig['src'])
         if not note:continue
+        fig['id']='figure-'+pathlib.Path(fig['src']).stem
         box=soup.new_tag('div',attrs={'class':'figure-reading'})
         for label,key in [('看什么','question'),('怎么读','reading'),('边界','boundary')]:
             p=soup.new_tag('p');strong=soup.new_tag('strong');strong.string=label+'：';p.append(strong);p.append(note[key]);box.append(p)
@@ -44,6 +46,7 @@ nav+='<a class="major" href="#planner">自己的配比预算工具</a><a class="
 nav='<a class="major" href="#decision-lab">候选决策实验室</a>'+nav
 nav='<a class="major" href="#transfer-lab">预算分解与交换草案</a>'+nav
 nav='<a class="major" href="#order-lab">顺序整数账本</a>'+nav
+nav='<a class="major" href="#assessment-lab">理解检查与回答记录</a>'+nav
 details=''
 for slug,label,_ in chapters:
     links=''.join('<a class="%s" href="#%s">%s</a>'%('minor' if kind=='h3' else '',ident,html.escape(text)) for s,_,ident,text,kind in toc if s==slug)
@@ -65,6 +68,9 @@ template=template.replace('<a href="#decision-lab">比较候选与退步限制</
 template=template.replace('<script>DECISIONUI</script>','<script>DECISIONUI</script><script type="application/json" id="transfer-data">TRANSFERDATA</script><script>TRANSFERUI</script>')
 template=template.replace('<script>TRANSFERUI</script>','<script>TRANSFERUI</script><script type="application/json" id="order-data">ORDERDATA</script><script>ORDERCORE</script><script>ORDERUI</script>')
 template=template.replace('<a href="#transfer-lab">拆预算并设计供体实验</a>','<a href="#order-lab">检查顺序与累计量</a><a href="#transfer-lab">拆预算并设计供体实验</a>')
+template=template.replace('WORKBENCH DECISIONLAB','ASSESSMENTLAB WORKBENCH DECISIONLAB')
+template=template.replace('<script>ORDERUI</script>','<script>ORDERUI</script><script type="application/json" id="assessment-data">ASSESSMENTDATA</script><script>ASSESSMENTCORE</script><script>ASSESSMENTUI</script>')
+template=template.replace('<a href="#order-lab">检查顺序与累计量</a>','<a href="#assessment-lab">保存自己的证据判断</a><a href="#order-lab">检查顺序与累计量</a>')
 workbench=json.loads((ROOT/'analysis/workbench_data.json').read_text());rubric=json.loads((ROOT/'analysis/rubrics.json').read_text());chapter_paths={file:'#'+slug for slug,_,file in chapters}
 for c in workbench['cases']:c['source']=chapter_paths.get(c['source'],c['source'])
 for rule in rubric['rules']:
@@ -82,6 +88,9 @@ mapping.update({'TRANSFERLAB':(ROOT/'assets/transfer.html').read_text(),'TRANSFE
 mapping['CSS']+='\n'+(ROOT/'assets/order.css').read_text()
 mapping.update({'ORDERLAB':(ROOT/'assets/order.html').read_text(),'ORDERDATA':data(json.loads((ROOT/'analysis/order_workbench_data.json').read_text())),
                 'ORDERCORE':(ROOT/'assets/order-core.js').read_text(),'ORDERUI':(ROOT/'assets/order-ui.js').read_text()})
+mapping['CSS']+='\n'+(ROOT/'assets/assessment.css').read_text()
+mapping.update({'ASSESSMENTLAB':(ROOT/'assets/assessment.html').read_text(),'ASSESSMENTDATA':data(json.loads((ROOT/'analysis/assessment_data.json').read_text())),
+                'ASSESSMENTCORE':(ROOT/'assets/assessment-core.js').read_text(),'ASSESSMENTUI':(ROOT/'assets/assessment-ui.js').read_text()})
 page=re.sub('|'.join(sorted(mapping,key=len,reverse=True)),lambda m:mapping[m[0]],template)
 # Link existing markdown artifacts to their corresponding chapters in this combined report.
 for slug,_,file in chapters:page=page.replace('href="'+file+'"','href="#'+slug+'"')

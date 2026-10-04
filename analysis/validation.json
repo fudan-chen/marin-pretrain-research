@@ -1,5 +1,5 @@
 {
-  "checks_passed": 707,
+  "checks_passed": 755,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -23,7 +23,7 @@
     "five interpretation cases / four metrics with switchable baselines",
     "14 figure-reading entries / five preserved collapsed tables",
     "18 terms / five reading exercises",
-    "nine review logic and arithmetic checks",
+    "eleven review logic, migration and arithmetic checks",
     "browser import/persistence/print and offline workbench checks",
     "597 seed0 candidates / seven exact BPB inputs / nine constrained-selection scenarios",
     "bounded selector provenance audit / five new source files",
@@ -40,7 +40,11 @@
     "48 historical and 480 compiled archived stage-count evaluations",
     "20 conditional edge/index proofs / all 40 JS mode-amplitude cases",
     "same original window budget with locked edge blocks / planned count-only exports",
-    "unlocked-edge diagnostic counterexample / separate actual-token-stream unknowns"
+    "unlocked-edge diagnostic counterexample / separate actual-token-stream unknowns",
+    "R16 1.1 scope correction / seventeen unchanged anchors / explicit old-version migration",
+    "ten source-bound comprehension cases / thirty authored calibration examples",
+    "thirteen answer-revision, critical-error and reviewer-disagreement boundary groups",
+    "file-protocol offline reader workbench / actual Blob export / local data restored"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",
@@ -53,6 +57,7 @@
     "external rubric scoring validity or actual reader comprehension study",
     "truth of user-entered self-assessment evidence",
     "prospective factorial GPU outcomes and actual finite data stream",
-    "portable integer weight encoding across other runtimes or block sizes"
+    "portable integer weight encoding across other runtimes or block sizes",
+    "external reviewer identity, scoring agreement and transfer-task comprehension"
   ]
 }

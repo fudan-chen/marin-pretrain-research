@@ -1,0 +1,20 @@
+{
+  "test_groups_passed": 13,
+  "tests": [
+    "Blank or unattempted cases stay unknown rather than zero or pass",
+    "Thirty authored annotations replay without becoming external observations",
+    "Critical overreach cannot be averaged away by all other perfect ratings",
+    "Unknown dimensions, critical checks and absent evidence cannot settle a review",
+    "Versions, source hashes and undeclared cases are rejected before mutation",
+    "Answer revisions preserve prior text and review rather than inheriting pass",
+    "Reviewer disagreement keeps two original ratings and is never averaged",
+    "Identical reviewer labels cannot masquerade as distinct review",
+    "Adjudication requires a real recorded disagreement and preserves the original basis",
+    "Revised reviewer opinions retain earlier events and inconsistent history is rejected",
+    "Fabricated imported summary claims cannot grant comprehension or training decisions",
+    "Unicode and HTML-like answer text survive JSON while fixed fields stay bounded",
+    "Contradictory critical status or invalid scores fail without changing the original"
+  ],
+  "authored_replay_count": 30,
+  "scope": "Manual assessment state, revision and provenance boundaries; no automatic Chinese grading, external reader result or scoring validity verified"
+}

@@ -12,6 +12,7 @@ report:
 	$(PYTHON) scripts/build_decision.py
 	$(PYTHON) scripts/build_transfer.py > analysis/transfer_computation_log.txt
 	$(PYTHON) scripts/build_order.py
+	$(PYTHON) scripts/build_assessment.py
 	$(PYTHON) scripts/charts.py
 	$(PYTHON) scripts/charts_deepening.py
 	$(PYTHON) scripts/charts_practical.py
@@ -24,6 +25,7 @@ report:
 	$(PYTHON) scripts/test_transfer.py
 	$(PYTHON) scripts/test_order.py
 	$(NODE) scripts/test_order.cjs
+	$(NODE) scripts/test_assessment.cjs
 	$(PYTHON) scripts/build_html.py
 	$(PYTHON) scripts/archive_manifest.py
 	$(PYTHON) scripts/validate.py

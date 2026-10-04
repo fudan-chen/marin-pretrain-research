@@ -1,0 +1,59 @@
+{
+  "schema": "marin-reader-assessment/1",
+  "protocol_version": "0.1",
+  "bank_sha256": "af243326543419598b975a13742e187fbfae72057acf553d0afe53a39e398c77",
+  "record_kind": "local_unverified_reader_record",
+  "participant_label": "",
+  "cases": {
+    "Q01": {
+      "draft": "",
+      "reference_first_opened_at": null,
+      "revisions": []
+    },
+    "Q02": {
+      "draft": "",
+      "reference_first_opened_at": null,
+      "revisions": []
+    },
+    "Q03": {
+      "draft": "",
+      "reference_first_opened_at": null,
+      "revisions": []
+    },
+    "Q04": {
+      "draft": "",
+      "reference_first_opened_at": null,
+      "revisions": []
+    },
+    "Q05": {
+      "draft": "",
+      "reference_first_opened_at": null,
+      "revisions": []
+    },
+    "Q06": {
+      "draft": "",
+      "reference_first_opened_at": null,
+      "revisions": []
+    },
+    "Q07": {
+      "draft": "",
+      "reference_first_opened_at": null,
+      "revisions": []
+    },
+    "Q08": {
+      "draft": "",
+      "reference_first_opened_at": null,
+      "revisions": []
+    },
+    "Q09": {
+      "draft": "",
+      "reference_first_opened_at": null,
+      "revisions": []
+    },
+    "Q10": {
+      "draft": "",
+      "reference_first_opened_at": null,
+      "revisions": []
+    }
+  }
+}

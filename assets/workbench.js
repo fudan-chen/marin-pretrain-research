@@ -2,7 +2,7 @@
  'use strict';
  const input=JSON.parse(document.getElementById('workbench-data').textContent),framework=JSON.parse(document.getElementById('rubric-data').textContent),C=ReviewCore;
  const q=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),pct=n=>(n>0?'+':'')+n.toFixed(3)+'%';
- const labels=framework.status_labels,key='marin-review-framework-v1';let selectedStage='P1',audit=C.normalizeAudit(framework.example_audit,framework.rules),storageMessage='';
+ const labels=framework.status_labels,key='marin-review-framework-v1.1';let selectedStage='P1',audit=C.normalizeAudit(framework.example_audit,framework.rules),storageMessage='';
  try{const saved=localStorage.getItem(key);if(saved)audit=C.normalizeAudit(JSON.parse(saved),framework.rules);}catch(e){storageMessage='本地记录未读取；可用JSON保存。';}
  function save(){
   let normalized;
@@ -54,6 +54,7 @@
  function serialize(){audit.target=q('#review-target').value;return JSON.stringify(C.normalizeAudit(audit,framework.rules),null,2);}
  q('#copy-review-json').addEventListener('click',()=>{try{q('#review-json').value=serialize();q('#review-import-status').textContent='已填入当前评审，可复制。';}catch(e){q('#review-import-status').textContent=e.message;}});
  q('#import-review').addEventListener('click',()=>{try{const next=C.normalizeAudit(JSON.parse(q('#review-json').value),framework.rules);audit=next;save();refresh();q('#review-import-status').textContent='导入成功；当前评审已更新。';}catch(e){q('#review-import-status').textContent='导入未完成：'+e.message+' 当前判断保留。';}});
+ q('#migrate-review').addEventListener('click',()=>{try{const next=C.migrateAudit1_0(JSON.parse(q('#review-json').value),framework.rules);audit=next;save();refresh();q('#review-import-status').textContent='1.0已显式迁移；原R16保留，当前R16未确认，须重评。旧版本缓存未改。';}catch(e){q('#review-import-status').textContent='迁移未完成：'+e.message+' 当前判断保留。';}});
  q('#export-review').addEventListener('click',()=>{try{const url=URL.createObjectURL(new Blob([serialize()],{type:'application/json;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='marin-证据评审.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}catch(e){q('#review-status').textContent=e.message;}});
  refresh();
  // Opening a fragment inside a collapsed appendix should reveal its enclosing details.

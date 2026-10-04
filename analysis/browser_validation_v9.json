@@ -1,0 +1,131 @@
+{
+  "functional": {
+    "firstAnswerExposureRecorded": true,
+    "htmlLikeTextEscaped": true,
+    "criticalOverreachCannotBeAveraged": true,
+    "existingLocalDataRestored": true,
+    "tenSourceBoundCases": true,
+    "newRevisionDoesNotInheritRatings": true,
+    "invalidVersionRetainsRecord": true,
+    "actualExportBlobChecked": true,
+    "explicitRuleMigrationResetsR16": true,
+    "disagreementAndAdjudicationPreserved": true,
+    "persistedAfterReload": true,
+    "fabricatedSummaryIgnored": true
+  },
+  "caseIds": [
+    "Q01",
+    "Q02",
+    "Q03",
+    "Q04",
+    "Q05",
+    "Q06",
+    "Q07",
+    "Q08",
+    "Q09",
+    "Q10"
+  ],
+  "bank_sha256": "af243326543419598b975a13742e187fbfae72057acf553d0afe53a39e398c77",
+  "errors": [],
+  "exportScope": "Actual button Blob checked, OS save not tested",
+  "exportSummary": {
+    "answerRevisions": 2,
+    "reviewEvents": 3,
+    "overallScore": null,
+    "schema": "marin-reader-assessment/1",
+    "externalReaderStudy": null,
+    "trainingGateDecision": null
+  },
+  "version": "report-v9-2026-10-05",
+  "verified_utc": "2026-10-04T17:42:35.449226+00:00",
+  "desktop": {
+    "viewport": 1440,
+    "documentWidth": 1425
+  },
+  "mobile": {
+    "documentWidth": 375,
+    "tableContainerWidth": 297,
+    "viewport": 390,
+    "tableScrollWidth": 900
+  },
+  "standalone": {
+    "embeddedFigures": 14,
+    "protocol": "file:",
+    "questionCount": 10,
+    "controlsUpdated": true,
+    "errors": [],
+    "figureReadings": 14,
+    "externalHttpRequests": [],
+    "loadedFigures": 14
+  },
+  "screenshots": [
+    {
+      "file": "analysis/browser_v9_assessment_desktop.png",
+      "sha256": "1cb75d93d0fa7c02f3256956519b3d0bd4ae216af9f78c895795970b650fe81b",
+      "exact_receipt_path_viewed": "/Users/chen/Library/Application Support/Tabbit Browser/LocalAgent/Runtime/artifacts/task-6f89cbc1-e68e-4987-893d-649dc9b0aa42/screenshot-shot-b56a562f-87dd-4c61-a09f-7312bff0f5b8.png"
+    },
+    {
+      "file": "analysis/browser_v9_assessment_disagreement.png",
+      "sha256": "e16377f9f0441567e7d59e4384425ae498791df2dd15a5b9e5edf6674bc90916",
+      "exact_receipt_path_viewed": "/Users/chen/Library/Application Support/Tabbit Browser/LocalAgent/Runtime/artifacts/task-6f89cbc1-e68e-4987-893d-649dc9b0aa42/screenshot-shot-c7dacebf-2526-457a-9bea-c19811fe2841.png"
+    },
+    {
+      "file": "analysis/browser_v9_assessment_mobile.png",
+      "sha256": "d0c893a4ed31c0a278ea990ee0f2889417bdac6bec5b03086463902e84182bae",
+      "exact_receipt_path_viewed": "/Users/chen/Library/Application Support/Tabbit Browser/LocalAgent/Runtime/artifacts/task-6f89cbc1-e68e-4987-893d-649dc9b0aa42/screenshot-shot-514b8879-c710-40b6-b123-6ac01eb84f51.png"
+    }
+  ],
+  "visual_inspection": "Corrected desktop problem and disagreement frames, and original 390px review frame, all viewed at exact returned paths. Text readable; wide table stays inside its scrolling container.",
+  "screenshot_scope": "Browser fixtures, not participant observations",
+  "capture_correction": "First two desktop frames covered next section. Replacement frames followed blur, rendering waits and position check; five total captures in task, only three final frames used.",
+  "not_verified": [
+    "actual reader comprehension",
+    "external scoring validity or reviewer identity",
+    "OS download save",
+    "GPU training or actual token stream"
+  ],
+  "migration_format_check": {
+    "invalidOldR16CannotBeHiddenByMigration": true,
+    "localDataRestored": true,
+    "bank_sha256": "af243326543419598b975a13742e187fbfae72057acf553d0afe53a39e398c77"
+  },
+  "final_task_release": {
+    "taskId": "task-6f89cbc1-e68e-4987-893d-649dc9b0aa42",
+    "issues": [],
+    "finished": true,
+    "recommendedScreenshotLimit": 3,
+    "closedTabIds": [],
+    "downloads": [],
+    "keep": true,
+    "screenshotCount": 5,
+    "forcedCleanup": false,
+    "artifacts": [
+      {
+        "name": "screenshot-shot-4cbe907f-2827-4bdd-b550-505f8f9b6006.png",
+        "path": "/Users/chen/Library/Application Support/Tabbit Browser/LocalAgent/Runtime/artifacts/task-6f89cbc1-e68e-4987-893d-649dc9b0aa42/screenshot-shot-4cbe907f-2827-4bdd-b550-505f8f9b6006.png",
+        "bytes": 213655
+      },
+      {
+        "name": "screenshot-shot-514b8879-c710-40b6-b123-6ac01eb84f51.png",
+        "path": "/Users/chen/Library/Application Support/Tabbit Browser/LocalAgent/Runtime/artifacts/task-6f89cbc1-e68e-4987-893d-649dc9b0aa42/screenshot-shot-514b8879-c710-40b6-b123-6ac01eb84f51.png",
+        "bytes": 79888
+      },
+      {
+        "name": "screenshot-shot-a6ade906-3c93-4287-8609-4b9656a7b0f8.png",
+        "path": "/Users/chen/Library/Application Support/Tabbit Browser/LocalAgent/Runtime/artifacts/task-6f89cbc1-e68e-4987-893d-649dc9b0aa42/screenshot-shot-a6ade906-3c93-4287-8609-4b9656a7b0f8.png",
+        "bytes": 214971
+      },
+      {
+        "name": "screenshot-shot-b56a562f-87dd-4c61-a09f-7312bff0f5b8.png",
+        "path": "/Users/chen/Library/Application Support/Tabbit Browser/LocalAgent/Runtime/artifacts/task-6f89cbc1-e68e-4987-893d-649dc9b0aa42/screenshot-shot-b56a562f-87dd-4c61-a09f-7312bff0f5b8.png",
+        "bytes": 235006
+      },
+      {
+        "name": "screenshot-shot-c7dacebf-2526-457a-9bea-c19811fe2841.png",
+        "path": "/Users/chen/Library/Application Support/Tabbit Browser/LocalAgent/Runtime/artifacts/task-6f89cbc1-e68e-4987-893d-649dc9b0aa42/screenshot-shot-c7dacebf-2526-457a-9bea-c19811fe2841.png",
+        "bytes": 208708
+      }
+    ],
+    "groupId": "888CAE7813D0A75AC670C76F94B9F79C"
+  }
+}

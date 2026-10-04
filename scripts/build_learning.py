@@ -21,7 +21,7 @@ rule(12,'目标和能力保底预先冻结','决策','选配比究竟要优化�
 rule(13,'根因证据和缓解效果分开','工程','恢复运行能证明哪个假设，排除了什么？','根因证据、排除实验、缓解动作和残余未知分别归档。','有恢复和可行解释，但关键排除或底层证据不足。','恢复成功就写成根因已确认。','silent hang、存储故障和数值异常需要不同证据。',[('58条运行记录','OPERATIONS_ZH.md'),('15类工程机制','REPORT_ZH.md')]),
 rule(14,'执行状态不只看配置路径','工程','实际加载的代码、checkpoint和数据状态是什么？','代码/环境、checkpoint内容、随机与数据状态可核对，回退点明确。','记录配置与fallback相同，实际恢复内容尚未确认。','相同路径就断言状态逐字节一致。','配置相同能减少混杂，但不能保证每次启动执行相同。',[('原始配置对照','analysis/strong_baseline_config_audit.csv'),('恢复与游标边界','DEEP_DIVE_ZH.md')]),
 rule(15,'能力主张有实际任务验证','评估','目标文本概率的变化是否转化为任务表现？','生成正确率/执行测试与BPB并列，题目、解码和污染检查有记录。','只有BPB线索，能力主张保持为候选假设。','HumanEval BPB写成pass@1，GSM8K BPB写成正确率。','预测指定答案与自己生成正确答案不是同一个测试。',[('任务BPB边界','CONCLUSIONS_ZH.md'),('逐seed任务表','analysis/strong_baseline_paired.csv')]),
-rule(16,'图表能被读者正确复述','表达','读者能说清横纵轴、参照、样本数和不能推出什么吗？','图包含单位、参照、范围、样本数、原值入口和解释；窄屏可读。','数值正确但解释/分母/可访问替代缺失。','截断差结果、混用参照，或把图中的相关性画成因果证明。','图要帮助判断，不应替代证据限定。',[('理解文档','LEARNING_GUIDE_ZH.md'),('图与交互复核','analysis/browser_validation_v5.json')]),
+rule(16,'图表准备与理解证据分开','表达','当前验证的是图表准备，还是读者能正确复述？','先声明范围：图表准备检查单位、参照、样本数、原值和窄屏；理解主张另需真实回答、评审依据、分歧及修订记录。','图表准备可核对，但缺读者回答；不能据此声称理解效果已验证。','以页面能打开、自评勾选或作者校准例，代替真实读者理解证据。','界面可用与读者理解是两种证据；图表准备足够时仍可进入候选讨论。',[('理解检查协议','ASSESSMENT_GUIDE_ZH.md'),('图与交互复核','analysis/browser_validation_v5.json')]),
 rule(17,'结论可离线复算','复现','分享包能从固定材料重建关键结果吗？','归档、计算脚本、数字检查、链接和离线阅读验证齐全。','报告可读，但部分计算需未知在线状态。','只有截图/结论，关键原值或公式丢失。','复算不等于重训；两者的验证范围都应写清。',[('离线构建','Makefile'),('计算验证','analysis/validation.json')]),
 rule(18,'未解决问题有下一步和退出条件','改进','下一次工作会消除哪个不确定性？','缺口、下一步、所需资源、验收/推翻条件和变更记录明确。','有待办，但只写“继续深入”或缺验收。','抓取条数/美化数量当作研究收益，反例被删除。','持续改进应降低具体不确定性。',[('持续改进记录','IMPROVEMENT_LOG_ZH.md'),('决策管线','PIPELINE_ZH.md')])]
 pipeline=[
@@ -32,14 +32,15 @@ pipeline=[
 {'id':'P4','title':'检验顺序与恢复','question':'累计量相同后，先后还有作用吗？','required':['R05','R09','R10','R14'],'outputs':['逐桶曝光匹配','整数混合块与cursor重放','中途及末期评估'],'next':'总量不匹配先修补偿；没做顺序实验可有理由跳过整个阶段。'},
 {'id':'P5','title':'放大与生产切换','question':'更大模型确认后，实际切换状态是否可复验？','required':['R07','R11','R12','R14','R15'],'outputs':['更大代理与强基线','固定评估和回退点','切换前后状态清单'],'next':'方向不稳定返回候选；状态不可核对先处理工程问题。'},
 {'id':'P6','title':'复盘与下一轮','question':'哪条判断被推翻，下一步最值得做什么？','required':['R01','R17','R18'],'outputs':['版本差异与反例','缺口优先级','下一轮可检验问题'],'next':'保留旧快照；新信息建立新版本，再回到P0。'}]
-examples={'scope':'固定公开快照支持的结论范围；不是给Marin团队打分，也不是已完成的新训练。','schema':'marin-review/1','framework_version':'1.0','target':'用公开材料评估选中配比能被推荐到哪一步','judgments':{}}
+examples={'scope':'固定公开快照支持的结论范围；R16仅评图表准备，不声称读者理解已验证。不是给Marin团队打分，也不是已完成的新训练。','schema':'marin-review/1','framework_version':'1.1','target':'用公开材料评估选中配比能被推荐到哪一步','judgments':{}}
 partial={7:'三组continuation参与过候选研究，共同历史依赖仍在；无选择后独立确认。',9:'库存与名义计划已重算；去重后独立库存和真实历史token流未恢复。',10:'连续补偿与完整块cursor已算；桶内shuffle与token ID未重放。',11:'有ladder结果，但阶段/系统不同，未补上更大模型比例基线。',13:'公开时间线区分缓解与猜测，部分底层日志与根因证据不可访问。',14:'4组记录配置可比，fallback相同；实际恢复文件与启动环境未核对。',15:'54项任务为BPB；新535B生成正确率尚未验证。'}
 missing={12:'完整selector目标和约束未知；不能替作者补造预先冻结的guardrail。'}
 for r in rules:
     n=int(r['id'][1:]);status='partial' if n in partial else 'unassessed' if n in missing else 'pass'
     evidence=partial.get(n) or missing.get(n) or ('报告对应材料：'+r['evidence_links'][0]['href']+'。此通过项只覆盖其已声明的公开/本地复算范围。')
     examples['judgments'][r['id']]={'status':status,'evidence':evidence}
-save('rubrics.json',{'version':'1.0','authorship':'本报告提炼的工作规则，不是Marin官方标准或经外部验证的评分量表。','status_labels':{'pass':'证据齐全','partial':'部分证据','fail':'有反证/口径冲突','unassessed':'未确认','na':'本阶段不适用'},'rules':rules,'pipeline':pipeline,'example_audit':examples})
+examples['judgments']['R16']['evidence']='仅图表准备范围：14图有单位、参照、原值、边界及窄屏复核。真实读者回答和理解效果仍未验证。'
+save('rubrics.json',{'version':'1.1','changes_from_1_0':{'changed_rules':['R16'],'reason':'Separate figure preparation checks from observed reader comprehension. Other anchors unchanged.'},'authorship':'本报告提炼的工作规则，不是Marin官方标准或经外部验证的评分量表。','status_labels':{'pass':'证据齐全','partial':'部分证据','fail':'有反证/口径冲突','unassessed':'未确认','na':'本阶段不适用'},'rules':rules,'pipeline':pipeline,'example_audit':examples})
 
 findings=json.loads((A/'findings_audit.json').read_text());summary=json.loads((A/'summary.json').read_text());paired=list(csv.DictReader((A/'strong_baseline_paired.csv').open()))
 metrics=[]

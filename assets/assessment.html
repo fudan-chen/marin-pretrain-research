@@ -1,0 +1,19 @@
+<section class="chapter assessment-lab" id="assessment-lab">
+<h1>理解检查：把结论写清，再查证据</h1>
+<p>十个题目来自报告中的真实反例。先保存自己的判断，再展开参考；修改会另存修订，原回答和对应评审保留。<a href="#assessment-guide">阅读题目、锚点和实施流程</a></p>
+<div class="assessment-flow" aria-label="理解检查流程"><span>写下判断</span><span>保存原回答</span><span>查看证据</span><span>分别评审</span><span>保留分歧</span><span>修订与迁移题</span></div>
+<p class="status">网页检查记录结构，不自动理解中文或验证评分。展开时间仅记录本页行为；“未展开”不证明没有看其他材料。两份不同评审标记也不证明真实独立身份。</p>
+<div class="assessment-controls"><div><label for="assessment-person">答题者标记（可留空，用代号即可）</label><input id="assessment-person" maxlength="120" placeholder="例如读者A"></div><div><label for="assessment-case">选择题目</label><select id="assessment-case"></select></div></div>
+<h2 id="assessment-title"></h2><p id="assessment-prompt"></p><p id="assessment-rules" class="status"></p>
+<label for="assessment-answer">你的判断：看到什么、为什么、还缺什么、怎样验证</label><textarea id="assessment-answer" maxlength="12000" placeholder="先用自己的话回答。可以保留候选，但要写清它当前支持哪层结论。"></textarea>
+<button class="action" id="assessment-save-answer">保存为一份新回答</button><p id="assessment-message" class="status" role="status" aria-live="polite"></p>
+<details id="assessment-reference"><summary>查看参考、判断锚点与证据</summary><div id="assessment-reference-body"></div></details>
+<div id="assessment-review-panel" hidden><h2>对保存的回答逐项评审</h2><label for="assessment-revision">回答修订（评分只对应这一份原文）</label><select id="assessment-revision"></select><pre id="assessment-saved-answer"></pre><p id="assessment-exposure" class="status"></p>
+<div class="assessment-controls"><div><label for="assessment-review-slot">评审记录</label><select id="assessment-review-slot"><option value="A">评审A</option><option value="B">评审B</option><option value="adjudication">分歧仲裁</option></select></div><div><label for="assessment-reviewer">评审者标记</label><input id="assessment-reviewer" maxlength="120" placeholder="不同标记仍需人工核对独立性"></div></div>
+<div class="assessment-ratings" id="assessment-ratings"></div><label for="assessment-critical-status">是否检查关键越界</label><select id="assessment-critical-status"><option value="not_checked">尚未检查</option><option value="none">按当前答案，未发现列出的越界</option><option value="issues">发现关键越界</option></select><div id="assessment-critical-options"></div>
+<label for="assessment-evidence">摘录答案原句，并说明与哪条锚点对应；仲裁还须说明为何取舍</label><textarea id="assessment-evidence" maxlength="4000"></textarea><button class="action" id="assessment-save-review">保存这份人工评审</button>
+<div id="assessment-review-result" class="assessment-result" aria-live="polite"></div><div class="table-wrap"><table id="assessment-review-table"><thead><tr><th>记录</th><th>标记</th><th>结论范围</th><th>限制原因</th><th>追加证据</th><th>越界检查</th><th>答案摘句与理由</th></tr></thead><tbody></tbody></table></div></div>
+<h2>十题记录概览</h2><p class="status">未作答保留为未作答；没有总分、理解率或训练阶段自动放行。修订同一道题不证明能处理新情境。</p><div class="table-wrap"><table id="assessment-case-table"><thead><tr><th>题目</th><th>当前回答</th><th>人工评审状态</th><th>锚点状态</th><th>关键越界</th></tr></thead><tbody></tbody></table></div>
+<div class="actions"><button class="action" id="assessment-copy-json">把当前记录放入JSON框</button><button class="action" id="assessment-export">导出理解检查JSON</button></div><details><summary>导入、复制与核对JSON</summary><label for="assessment-json">理解检查记录JSON（题目版本变化时须人工迁移）</label><textarea id="assessment-json"></textarea><button class="action" id="assessment-import">导入并检查格式</button></details><p id="assessment-storage" class="status" aria-live="polite"></p>
+<p><a href="analysis/assessment_authored_replays.json">30份作者编写的评分校准例</a> · <a href="analysis/assessment_data.json">题库与来源摘要</a>。校准例用于检查工具和讨论锚点，未作为实际读者结果。</p>
+</section>

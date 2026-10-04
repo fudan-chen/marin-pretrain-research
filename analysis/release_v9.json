@@ -1,0 +1,32 @@
+{
+  "version": "report-v9-2026-10-05",
+  "report_checks": 755,
+  "rubric_framework_version": "1.1",
+  "changed_rules": [
+    "R16"
+  ],
+  "unchanged_rule_anchors": 17,
+  "pipeline_stages_unchanged": 7,
+  "reader_protocol_version": "0.1",
+  "reader_case_count": 10,
+  "author_calibration_example_count": 30,
+  "reader_record_boundary_groups": 13,
+  "experiment_review_groups": 11,
+  "casebank_sha256": "af243326543419598b975a13742e187fbfae72057acf553d0afe53a39e398c77",
+  "source_files_unchanged_from_v8": 318,
+  "source_integrity_manifest_timestamp_regenerated": true,
+  "figure_count": 14,
+  "external_reader_study_status": "not_conducted",
+  "external_scoring_validity": null,
+  "training_status": "not_executed",
+  "next_local_milestone": "Audit source-bound engineering failure comprehension: mitigation versus root cause and combined versus component attribution",
+  "artifacts": {
+    "analysis/assessment_data.json": "88becabc6c732f186e89cf183f1df74e8ea60bc29849f4e15c75b28264457b43",
+    "analysis/assessment_authored_replays.json": "82550b9a32f1317e33222f386835e23f195c2583d56c4fe902b44093029c3fcf",
+    "analysis/r16_scope_audit.json": "8d838884ec5afc1768cfd28dbedee007baa7c5fad0ec75184ce4a90739fa12a6",
+    "analysis/browser_validation_v9.json": "5fb550db03ef93cd671321e587da0d8e6b31747913fba97898c9c1f8166d60cf",
+    "analysis/rubrics_1_0_reference.json": "6f63c2410ef84823f12e1ed420f367bad07bfe010f8d127d1c93f00c2266ce86",
+    "index.html": "b5bec2ecb2b45f9aa469587e6f8c5997cf82c186bcdff9aff83c195e2709cf21",
+    "report_standalone.html": "0b9b173f715e3714a2e6d1e430f97ee1a5e5bf45174011a13c138ff94a3cb061"
+  }
+}

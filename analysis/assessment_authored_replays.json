@@ -1,0 +1,386 @@
+{
+  "bank_sha256": "af243326543419598b975a13742e187fbfae72057acf553d0afe53a39e398c77",
+  "scope": "30 authored calibration examples; exercises evaluation-state logic only; no external human agreement measured",
+  "examples": [
+    {
+      "case_id": "Q01",
+      "kind": "bounded",
+      "authored_answer": "这只能描述该窗口训练CE上升，不能单独判定新配比损害能力。 抽样分布变了，较难文本占比提高也会抬高训练CE；路由丢弃和恢复状态仍需核对。这个解释也不证明新配比更好。 先比较共同状态和预算下、相同固定验证集与路由路径的结果，再决定是否回退。",
+      "author_assigned_ratings": {
+        "scope": 2,
+        "mechanism": 2,
+        "next": 2
+      },
+      "author_assigned_critical_errors": [],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q01",
+      "kind": "generic",
+      "authored_answer": "这个结果可以保留为线索，仍需要更多研究。",
+      "author_assigned_ratings": {
+        "scope": 1,
+        "mechanism": 0,
+        "next": 0
+      },
+      "author_assigned_critical_errors": [],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q01",
+      "kind": "overreach",
+      "authored_answer": "训练CE升高已经证明模型能力退步，可以据此直接回退新配比。",
+      "author_assigned_ratings": {
+        "scope": 0,
+        "mechanism": 0,
+        "next": 0
+      },
+      "author_assigned_critical_errors": [
+        "Q01-E1"
+      ],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q02",
+      "kind": "bounded",
+      "authored_answer": "不能换算pass@1；目前支持代码目标文本预测改善的候选线索。 BPB按byte度量给定目标文本的预测代价；生成、解码与执行错误不由这个均值直接给出。三seed续训也不是535B验证。 冻结候选，补相同题目/解码设置的实际生成与执行评估，并记录波动和风险，再决定放大。",
+      "author_assigned_ratings": {
+        "scope": 2,
+        "mechanism": 2,
+        "next": 2
+      },
+      "author_assigned_critical_errors": [],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q02",
+      "kind": "generic",
+      "authored_answer": "这个结果可以保留为线索，仍需要更多研究。",
+      "author_assigned_ratings": {
+        "scope": 1,
+        "mechanism": 0,
+        "next": 0
+      },
+      "author_assigned_critical_errors": [],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q02",
+      "kind": "overreach",
+      "authored_answer": "HumanEval BPB改善7.50%，所以pass@1也提升7.50%，可以写成代码正确率收益。",
+      "author_assigned_ratings": {
+        "scope": 0,
+        "mechanism": 0,
+        "next": 0
+      },
+      "author_assigned_critical_errors": [
+        "Q02-E1"
+      ],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q03",
+      "kind": "bounded",
+      "authored_answer": "这是三个续训终点均值的差值比例，说明简单参照已经取得大部分观察macro差。 它没有隔离库存比例本身的因果贡献；不同配方同时改动多个桶。参照变强后，选中方案的额外macro改善很小，但代码等子任务仍需分别看。 保留比例参照与退步项；若要归因某类数据，用明确供体、相同预算的局部干预与独立重复。",
+      "author_assigned_ratings": {
+        "scope": 2,
+        "mechanism": 2,
+        "next": 2
+      },
+      "author_assigned_critical_errors": [],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q03",
+      "kind": "generic",
+      "authored_answer": "这个结果可以保留为线索，仍需要更多研究。",
+      "author_assigned_ratings": {
+        "scope": 1,
+        "mechanism": 0,
+        "next": 0
+      },
+      "author_assigned_critical_errors": [],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q03",
+      "kind": "overreach",
+      "authored_answer": "库存比例对最终能力提升的因果贡献率是92.05%，535B可以沿用。",
+      "author_assigned_ratings": {
+        "scope": 0,
+        "mechanism": 0,
+        "next": 0
+      },
+      "author_assigned_critical_errors": [
+        "Q03-E1"
+      ],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q04",
+      "kind": "bounded",
+      "authored_answer": "这是一批不同配方的搜索终点，支持提出候选，不等于冻结候选的独立重复。 搜索与事后调阈值会偏向乐观结果；当前材料没有恢复完整历史selector，也不能把新工作台的规则写成当时的选择方法。 在看新结果前冻结候选、参照、主目标和风险阈值，用未参与选择的重复与确认评估检验；没有符合条件者应保留空集。",
+      "author_assigned_ratings": {
+        "scope": 2,
+        "mechanism": 2,
+        "next": 2
+      },
+      "author_assigned_critical_errors": [],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q04",
+      "kind": "generic",
+      "authored_answer": "这个结果可以保留为线索，仍需要更多研究。",
+      "author_assigned_ratings": {
+        "scope": 1,
+        "mechanism": 0,
+        "next": 0
+      },
+      "author_assigned_critical_errors": [],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q04",
+      "kind": "overreach",
+      "authored_answer": "597个终点就是同一候选597次独立复验，事后选第一名已确认稳定收益。",
+      "author_assigned_ratings": {
+        "scope": 0,
+        "mechanism": 0,
+        "next": 0
+      },
+      "author_assigned_critical_errors": [
+        "Q04-E1"
+      ],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q05",
+      "kind": "bounded",
+      "authored_answer": "可以把197c保留为有取舍的macro候选，不能说全面更好或医学保底已通过。 平均与关键任务衡量不同目标；BPB越低越好，MedQA方向为退步。单seed事后比较也没有证明医学问答准确率下降同样百分比。 按预先定义的风险阈值独立确认；若医学是硬约束，当前冲突要单列，不能由macro改善抵消。",
+      "author_assigned_ratings": {
+        "scope": 2,
+        "mechanism": 2,
+        "next": 2
+      },
+      "author_assigned_critical_errors": [],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q05",
+      "kind": "generic",
+      "authored_answer": "这个结果可以保留为线索，仍需要更多研究。",
+      "author_assigned_ratings": {
+        "scope": 1,
+        "mechanism": 0,
+        "next": 0
+      },
+      "author_assigned_critical_errors": [],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q05",
+      "kind": "overreach",
+      "authored_answer": "macro改善足以抵消MedQA退步，所以全面更好，医学硬保底也通过了。",
+      "author_assigned_ratings": {
+        "scope": 0,
+        "mechanism": 0,
+        "next": 0
+      },
+      "author_assigned_critical_errors": [
+        "Q05-E1"
+      ],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q06",
+      "kind": "bounded",
+      "authored_answer": "这是全程名义曝光比，不是每篇文档的真实重复次数，也不是已完成的读取量。 库存、抽样权重和实际曝光有不同分母；去重覆盖、随机排列、有限库存取模和历史会影响具体重复。4K生产快照仍未完成18T目标。 加量前核对有效去重库存、已有历史和剩余预算；若要报告实际重复，需实际token/文档ID与读取记录。",
+      "author_assigned_ratings": {
+        "scope": 2,
+        "mechanism": 2,
+        "next": 2
+      },
+      "author_assigned_critical_errors": [],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q06",
+      "kind": "generic",
+      "authored_answer": "这个结果可以保留为线索，仍需要更多研究。",
+      "author_assigned_ratings": {
+        "scope": 1,
+        "mechanism": 0,
+        "next": 0
+      },
+      "author_assigned_critical_errors": [],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q06",
+      "kind": "overreach",
+      "authored_answer": "计划6.74轮就是每篇文档实际重复6.74次，生产已经完成这些读取。",
+      "author_assigned_ratings": {
+        "scope": 0,
+        "mechanism": 0,
+        "next": 0
+      },
+      "author_assigned_critical_errors": [
+        "Q06-E1"
+      ],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q07",
+      "kind": "bounded",
+      "authored_answer": "不能；原比较同时包含累计量与时序变化，且供体和其他桶也在变。 两个阶段变化可拆成同累计量的常数加量与和为零的时序余量。账本分解识别了待检验因素，没有给各因素分配因果收益。 先确认累计配方和供体，再在相同累计量、预算与状态下构造整数匹配的前置/后置比较。",
+      "author_assigned_ratings": {
+        "scope": 2,
+        "mechanism": 2,
+        "next": 2
+      },
+      "author_assigned_critical_errors": [],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q07",
+      "kind": "generic",
+      "authored_answer": "这个结果可以保留为线索，仍需要更多研究。",
+      "author_assigned_ratings": {
+        "scope": 1,
+        "mechanism": 0,
+        "next": 0
+      },
+      "author_assigned_critical_errors": [],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q07",
+      "kind": "overreach",
+      "authored_answer": "两候选端点的差证明数学前置有效，8.070B就是前置的因果收益。",
+      "author_assigned_ratings": {
+        "scope": 0,
+        "mechanism": 0,
+        "next": 0
+      },
+      "author_assigned_critical_errors": [
+        "Q07-E1"
+      ],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q08",
+      "kind": "bounded",
+      "authored_answer": "修正支持声明域内的整块计数设计；不能由24次计数推出实际数据流或能力已经确认。 全局余数分配可能改变未声明桶，权重支持与整数支持不一致。修正解决这个执行算术问题，但没有读取真实store、恢复内容或跑生成评估。 保留原泄漏反例和逐桶整数残差；再核对实际库存、cursor、shuffle与token ID，按冻结方案独立训练确认。",
+      "author_assigned_ratings": {
+        "scope": 2,
+        "mechanism": 2,
+        "next": 2
+      },
+      "author_assigned_critical_errors": [],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q08",
+      "kind": "generic",
+      "authored_answer": "这个结果可以保留为线索，仍需要更多研究。",
+      "author_assigned_ratings": {
+        "scope": 1,
+        "mechanism": 0,
+        "next": 0
+      },
+      "author_assigned_critical_errors": [],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q08",
+      "kind": "overreach",
+      "authored_answer": "24次计数通过说明真实数据干预和模型能力都已确认。",
+      "author_assigned_ratings": {
+        "scope": 0,
+        "mechanism": 0,
+        "next": 0
+      },
+      "author_assigned_critical_errors": [
+        "Q08-E1"
+      ],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q09",
+      "kind": "bounded",
+      "authored_answer": "不够；完整块匹配没有覆盖两端实际读取的槽位。 部分块某桶的读数依赖块内排列，不能按权重期望代填。k10关闭shuffle的合法诊断仍有140序列L1差；这只是反例，不是Marin历史读取差。 保留原总预算，让两端数组与累计游标共同不变，中间整数补偿；再核对实际恢复、key与映射。",
+      "author_assigned_ratings": {
+        "scope": 2,
+        "mechanism": 2,
+        "next": 2
+      },
+      "author_assigned_critical_errors": [],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q09",
+      "kind": "generic",
+      "authored_answer": "这个结果可以保留为线索，仍需要更多研究。",
+      "author_assigned_ratings": {
+        "scope": 1,
+        "mechanism": 0,
+        "next": 0
+      },
+      "author_assigned_critical_errors": [],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q09",
+      "kind": "overreach",
+      "authored_answer": "中间整块差为零就足够；140序列是Marin历史实际读取差。",
+      "author_assigned_ratings": {
+        "scope": 0,
+        "mechanism": 0,
+        "next": 0
+      },
+      "author_assigned_critical_errors": [
+        "Q09-E1"
+      ],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q10",
+      "kind": "bounded",
+      "authored_answer": "应写成“共同状态条件下的累计逻辑索引匹配”；没有验证Marin实际token内容。 计数、边缘数组和游标匹配提供条件逻辑关系；实际checkpoint、next index、混合/内部shuffle key、底层映射与packing仍未核对。任一共同状态不同都可能使推论失效。 固定代码/环境和恢复内容，取得真实cursor、keys和store manifest，重放实际token ID；另做生成评估才能讨论能力。",
+      "author_assigned_ratings": {
+        "scope": 2,
+        "mechanism": 2,
+        "next": 2
+      },
+      "author_assigned_critical_errors": [],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q10",
+      "kind": "generic",
+      "authored_answer": "这个结果可以保留为线索，仍需要更多研究。",
+      "author_assigned_ratings": {
+        "scope": 1,
+        "mechanism": 0,
+        "next": 0
+      },
+      "author_assigned_critical_errors": [],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    },
+    {
+      "case_id": "Q10",
+      "kind": "overreach",
+      "authored_answer": "480次计数和20个索引证明已复现Marin真实token流，生产切换可以直接通过。",
+      "author_assigned_ratings": {
+        "scope": 0,
+        "mechanism": 0,
+        "next": 0
+      },
+      "author_assigned_critical_errors": [
+        "Q10-E1"
+      ],
+      "provenance": "Written calibration example; not a reader observation or automatic language judgment"
+    }
+  ]
+}

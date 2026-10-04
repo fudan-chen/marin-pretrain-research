@@ -1,0 +1,15 @@
+{
+  "test_groups_passed": 12,
+  "random_schedule_cases": 100,
+  "claims_verified": [
+    "budget conservation",
+    "balanced phase compensation",
+    "unequal-stage swapping changes exposure",
+    "aggregate and per-bucket infeasibility",
+    "history retention",
+    "floor and epoch limits after quantization",
+    "zero-count buckets",
+    "finite and normalized inputs"
+  ],
+  "scope": "Arithmetic tests; no model training or Loss prediction."
+}

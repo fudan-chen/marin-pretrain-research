@@ -1,0 +1,13 @@
+{
+  "label": "100B自拟教学示例，不是Marin的库存或推荐配比",
+  "budgetB": 100,
+  "earlyFraction": 0.7,
+  "blockUnits": 49152,
+  "buckets": [
+    {"name": "通用网页", "stockB": 120, "historyB": 20, "weightPct": 45, "floorPct": 10, "capEpochs": 2, "earlyShiftPP": -5},
+    {"name": "代码", "stockB": 30, "historyB": 10, "weightPct": 25, "floorPct": 5, "capEpochs": 2, "earlyShiftPP": 0},
+    {"name": "数学", "stockB": 12, "historyB": 4, "weightPct": 15, "floorPct": 3, "capEpochs": 2, "earlyShiftPP": 5},
+    {"name": "科学论文", "stockB": 15, "historyB": 3, "weightPct": 10, "floorPct": 2, "capEpochs": 2, "earlyShiftPP": 0},
+    {"name": "多语保留", "stockB": 10, "historyB": 1, "weightPct": 5, "floorPct": 2, "capEpochs": 2, "earlyShiftPP": 0}
+  ]
+}

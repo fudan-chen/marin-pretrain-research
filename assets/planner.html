@@ -1,0 +1,15 @@
+<section class="chapter planner" id="planner">
+<h1>用自己的预算，核对配比与顺序</h1>
+<p>先填独立去重后的可用库存、已经抽样的历史token量、目标比例及曝光上限。早期增幅要合计零；工具自动计算后期补偿，使每桶的全程曝光与恒定配比相同。所有B均为十亿tokens，历史量与库存使用同一个tokenizer。</p>
+<p class="status" id="plan-label"></p>
+<div class="filters"><label>后续预算/B <input id="plan-budget" type="number" step="any"></label><label>前段占后续预算/% <input id="plan-fraction" type="number" step="any"></label><label>每混合块采样单位 <input id="plan-block" type="number" step="1"></label></div>
+<div class="table-wrap"><table class="plan-input"><thead><tr><th>桶名</th><th>库存/B</th><th>历史抽样/B</th><th>基准比例/%</th><th>阶段保底/%</th><th>全程曝光上限/轮</th><th>前段增幅/百分点</th></tr></thead><tbody id="plan-input-rows"></tbody></table></div>
+<p>保底按每阶段检查，上限按历史加后续曝光检查。历史未知时，应先查消费记录。这里的零只能表示确认没有历史抽样。上限由你指定，示例的2轮不代表通用安全值。</p>
+<p id="plan-error" role="alert" class="plan-error" hidden></p>
+<div id="plan-results"><p id="plan-summary" aria-live="polite"></p><p class="status">下图：蓝条为前段比例，橙条为后段比例；每行右侧为两段的百分比。</p><div id="plan-bars"></div>
+<div class="table-wrap"><table><thead><tr><th>桶名</th><th>前段比例</th><th>后段比例</th><th>含历史总曝光/B</th><th>计划轮数</th><th>取整引入曝光差/B</th><th>直接交换阶段曝光差/B</th><th>约束结果</th></tr></thead><tbody id="plan-output-rows"></tbody></table></div><p class="status" id="plan-quantization"></p></div>
+<p class="status">取整采用“每桶向下取整，再把全部余数给最大桶”，用于展示Marin加载器的风险；计算使用浏览器JavaScript，不能替代Python3.12加载器、有限库存取模或真实token流重放。模型收益需要训练实验验证。</p>
+<div class="actions"><button id="plan-reset" class="action">恢复教学示例</button><button id="plan-export" class="action">导出输入与审计结果</button></div>
+<details><summary>用JSON填写更多桶（最多200个）</summary><p>先点击“显示当前输入”，按相同字段编辑。导出文件中的input对象可单独粘贴回来。内容仅在当前页面内处理。</p><textarea id="plan-json" aria-label="配比计划JSON" spellcheck="false"></textarea><div class="actions"><button id="plan-show-json" class="action">显示当前输入</button><button id="plan-apply-json" class="action">应用JSON</button></div></details>
+<p><a href="analysis/planner_example.json" download>下载示例输入JSON</a> · <a href="#practical">阅读实验设计与预算公式</a></p>
+</section>

@@ -1,0 +1,39 @@
+{
+  "errors": [],
+  "compensationInvalid": "总保底与剩余容量可同时满足。曝光补偿后的阶段比例超出0%至100%；降低早期增幅或调整阶段长度。",
+  "inputError": "基准比例必须合计100%",
+  "jsonRoundTrip": true,
+  "mobile": {
+    "chapterWidth": 345,
+    "tableScrollWidth": 850,
+    "tableWrapWidth": 297,
+    "documentWidth": 375,
+    "barsWidth": 297,
+    "viewport": 390,
+    "allImagesLoaded": true
+  },
+  "capacityError": "数学的保底超过剩余曝光容量。补偿顺序与恒定配比的理论曝光差L1：0.000000B；直接交换两个阶段：13.333333B。取整后，补偿顺序相对恒定配比仍差0.001628B。当前方案有未满足的约束，见下表。",
+  "desktop": {
+    "documentWidth": 1425,
+    "bodyWidth": 1075,
+    "inputRows": 5,
+    "resultRows": 5,
+    "viewport": 1440
+  },
+  "standalone": {
+    "errors": [],
+    "loadedImages": 10,
+    "plannerResultRows": 5,
+    "embeddedImages": 10,
+    "thirdAppendixRows": 80,
+    "remoteHTTP": []
+  },
+  "historyError": "数学的保底超过剩余曝光容量；数学的历史曝光已超过上限。补偿顺序与恒定配比的理论曝光差L1：0.000000B；直接交换两个阶段：13.333333B。取整后，补偿顺序相对恒定配比仍差0.001628B。当前方案有未满足的约束，见下表。",
+  "initial": "总保底与剩余容量可同时满足。补偿顺序与恒定配比的理论曝光差L1：0.000000B；直接交换两个阶段：13.333333B。取整后，补偿顺序相对恒定配比仍差0.001628B。当前方案通过这些预算约束。",
+  "checked_utc": "2026-10-04 01:29:54 UTC",
+  "screenshots": [
+    "analysis/screenshots/planner_desktop_v3.png",
+    "analysis/screenshots/planner_mobile_v3.png"
+  ],
+  "scope": "Local report UI and numerical budget controls, not training or model quality."
+}

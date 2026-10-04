@@ -1,5 +1,5 @@
 {
-  "checks_passed": 277,
+  "checks_passed": 368,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -10,7 +10,10 @@
     "54 task BPB comparisons",
     "1200 counts match native 3.12 arithmetic and 1200 match legacy sensitivity",
     "complete-block cursor differences independently totaled",
-    "eight embedded figures",
+    "80 domain interventions / 125 source configs",
+    "8 order comparisons / 3 token budget conventions",
+    "12 planner numeric test groups / 100 random schedules",
+    "ten embedded figures",
     "all relative HTML links valid",
     "complete source archive checksums valid"
   ],
@@ -19,6 +22,7 @@
     "causality of individual mixture buckets",
     "independent confirmation after candidate selection",
     "535B task accuracy or long-context outcomes",
-    "full token ID / inner shuffle replay"
+    "full token ID / inner shuffle replay",
+    "all original experiment launch code SHAs and actual restored checkpoint contents"
   ]
 }

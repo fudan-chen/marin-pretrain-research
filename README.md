@@ -10,10 +10,11 @@
 - [#8435逐条中文解读](ISSUE_8435_ZH.md)：主帖及27条评论的中文整理，数值、配置、含义和证据边界；不是逐句机械翻译。
 - [数据配比与顺序](DATA_GUIDE_ZH.md)：200桶、三阶段、样本审计、固定验证关联、曝光预算、可证伪的配比与顺序实验。
 - [第二轮深挖](DEEP_DIVE_ZH.md)：934条swarm观测、三seed/54项任务BPB、模拟曝光、200桶内部迁移、实际计数与长上下文游标复算。
+- [第三轮：自己的实验方案](PRACTICAL_ZH.md)：80个删域、10个质量实验、数学Q4响应、125个原始配置与8组顺序比较，解释怎样控制曝光与替代关系。
 - [58条生产运行索引](OPERATIONS_ZH.md)：按日期追踪尝试、回退、修正与仍未确认的原因，每条链接原评论。
 - [来源与复核方法](PROVENANCE_ZH.md)：7段run拼接、抽样限制、计算公式、来源范围及尚不能回答的问题。
 
-`sources/`保存公开原始JSON、代码、页面和W&B抽样；`analysis/`保存CSV、指标与验证记录；`assets/`保存8张PNG/SVG及HTML样式。原始材料的权利属于各自来源，保留来源与原有权利；不能把原始训练数据误认为本仓库公开。
+`sources/`保存公开原始JSON、代码、页面和W&B抽样；`analysis/`保存CSV、指标与验证记录；`assets/`保存10张PNG/SVG、HTML样式及离线预算工具。原始材料的权利属于各自来源，保留来源与原有权利；不能把原始训练数据误认为本仓库公开。
 
 ## 离线重建
 
@@ -25,7 +26,7 @@ python3 -m venv .venv
 make report
 ```
 
-当前已在macOS、Python3.9.6执行。图表默认使用系统Arial Unicode；其他系统需要可用的中文字体，可设置 `MARIN_REPORT_FONT` 为字体绝对路径。SVG导出为字形路径，阅读已导出的图不依赖本机字体。`make report`只使用归档材料，不访问网络。
+当前已在macOS、Python3.9.6执行。第三轮重建还需Node.js运行预算工具的数值验证，可用`NODE`变量指定现有运行时。已生成的HTML不需要Node。图表默认使用系统Arial Unicode；其他系统需要可用的中文字体，可设置 `MARIN_REPORT_FONT` 为字体绝对路径。SVG导出为字形路径，阅读已导出的图不依赖本机字体。`make report`只使用归档材料，不访问网络。
 
 浏览器若限制file页面的本地存储，可用 `make serve`，打开 `http://127.0.0.1:8765/`。完整HTML包括桌面/窄屏排版、目录筛选、200桶域/质量/关键词筛选、曝光排序、样本片段与笔记导出。
 
@@ -46,5 +47,13 @@ make report
 检查包括评论覆盖、每个引用的comment ID、200桶三阶段归一、预算及曝光、两组逐step对照、内部链接、源文件SHA256和单文件图嵌入。结果在 [analysis/validation.json](analysis/validation.json)。浏览器交互与窄屏检查另存为 [analysis/browser_validation.json](analysis/browser_validation.json)。
 
 第二轮页面检查保存为 [analysis/browser_validation_v2.json](analysis/browser_validation_v2.json)，包括八张内嵌图、54行附录、窄屏表格滚动与单文件无远程HTTP请求。
+
+## 第三轮复核与工具
+
+第二版保留为本地标签`report-v2-2026-10-04`。第三轮新增材料位于`sources/practical_2026_10_04/`，没有刷新旧曲线；303个原始归档文件保留校验和。125个W&B配置核对参照与实际阶段边界，80个删域的记录控制条件一致，但原启动代码SHA、实际恢复内容及token ID未逐一复现。
+
+HTML的“自己的配比预算工具”可以填后续预算、库存、历史抽样、每阶段保底、曝光上限和早期增幅，也可用JSON填写最多200桶。它计算后期曝光补偿、直接交换阶段的曝光差、整数取整后的容量与保底问题，并导出输入和结果。默认100B配比是自拟教学数据，不是Marin配比或训练推荐；工具不会预测Loss或执行训练。
+
+`node scripts/test_planner.cjs`验证12组预算性质与100个随机补偿计划，结果在[planner_validation.json](analysis/planner_validation.json)。报告重建通过368项检查；新增浏览器记录见[browser_validation_v3.json](analysis/browser_validation_v3.json)。
 
 这些检查确认报告与公开快照一致。GPU训练、kernel故障、逐桶因果贡献、未来cooldown/长上下文结果没有在本机复现。报告明确区分作者记录、本地重新计算、机制解释与建议实验。

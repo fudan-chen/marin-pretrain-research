@@ -1,0 +1,5 @@
+run_a,run_b,critical_config_differences,endpoint_error_a,endpoint_error_b
+h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829,h100-d512-mix-proportional-seed0-from10pct-20260826-rno2a,,0.0,0.0
+h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829,h100-d512-mix-proportional-seed1-from10pct-20260826-rno2a,,0.0,0.0
+h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829,h100-d512-mix-proportional-seed2-from10pct-20260826-rno2a,,0.0,0.0
+h100-d512-mixprior-197c9f5ceff6b9ee-seed0-from10pct-20260829,h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829,,0.0,0.0

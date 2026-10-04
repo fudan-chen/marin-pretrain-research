@@ -41,7 +41,7 @@ for r in rows:
     b=semantic if r['group'].startswith('semantic') else prop0
     assert all(r[p][k]==0 for p in ['phase0_weights','phase1_weights'] for k in removed)
     ab.append({'group':r['group'],'domain':c,'domain_zh':names[c],'run_name':r['run_name'],'control_run':b['run_name'],
-               'control_removed_phase0_pct':100*sum(b['phase0_weights'][k] for k in removed),'control_removed_phase1_pct':100*sum(b['phase1_weights'][k] for k in removed),
+               'control_removed_phase0_pct':100*math.fsum(b['phase0_weights'][k] for k in removed),'control_removed_phase1_pct':100*math.fsum(b['phase1_weights'][k] for k in removed),
                'max_remaining_renormalization_error':error(r,b,removed),
                'paloma_bpb':metric(r,PM),'paloma_change_pct':100*(metric(r,PM)/metric(b,PM)-1),
                'gsm8k_bpb':metric(r,GM),'gsm8k_change_pct':100*(metric(r,GM)/metric(b,GM)-1),

@@ -1,0 +1,6 @@
+size,metric,change_pct
+d512_proxy,eval_dropless/paloma/macro_bpb,-0.6176284544417987
+d512_proxy,eval_dropless/paloma/dolma_100_programing_languages-llama3/bpb,-3.6292574217216544
+d768,eval_dropless/paloma/dolma_100_programing_languages-llama3/bpb,0.27749603783828736
+d1024,eval_dropless/paloma/dolma_100_programing_languages-llama3/bpb,0.062118402787847415
+d1536,eval_dropless/paloma/dolma_100_programing_languages-llama3/bpb,-0.4629715491368924

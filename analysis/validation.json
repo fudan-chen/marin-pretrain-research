@@ -1,5 +1,5 @@
 {
-  "checks_passed": 368,
+  "checks_passed": 479,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -10,12 +10,15 @@
     "54 task BPB comparisons",
     "1200 counts match native 3.12 arithmetic and 1200 match legacy sensitivity",
     "complete-block cursor differences independently totaled",
-    "80 domain interventions / 125 source configs",
+    "80 domain interventions / 129 source configs",
     "8 order comparisons / 3 token budget conventions",
     "12 planner numeric test groups / 100 random schedules",
-    "ten embedded figures",
+    "strong proportional baseline / 16 macro contributions",
+    "597 seed0 endpoints / three independently checked observed frontiers",
+    "four new config contrasts / six step393 resume windows",
+    "twelve embedded figures",
     "all relative HTML links valid",
-    "complete source archive checksums valid"
+    "313 source archive checksums valid"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",
@@ -23,6 +26,7 @@
     "independent confirmation after candidate selection",
     "535B task accuracy or long-context outcomes",
     "full token ID / inner shuffle replay",
-    "all original experiment launch code SHAs and actual restored checkpoint contents"
+    "all original experiment launch code SHAs and actual restored checkpoint contents",
+    "full selector objective, fitted model and hidden constraints"
   ]
 }

@@ -1,0 +1,343 @@
+{
+  "three_seed_metrics": {
+    "eval_dropless/paloma/macro_bpb": {
+      "metric": "eval_dropless/paloma/macro_bpb",
+      "old_mean": 1.1933826208114624,
+      "proportional_mean": 1.1865977048873901,
+      "selected_mean": 1.1860119501749675,
+      "proportional_vs_old_pct": -0.5685448912821189,
+      "selected_vs_old_pct": -0.6176284544417987,
+      "selected_vs_proportional_pct": -0.04936422091581516,
+      "mean_selected_minus_proportional": -0.0005857547124226888,
+      "conditional_t95_low": -0.002078449011374064,
+      "conditional_t95_high": 0.0009069395865286862,
+      "all_three_selected_better": true,
+      "all_three_selected_worse": false
+    },
+    "eval_dropless/paloma/dolma_100_programing_languages-llama3/bpb": {
+      "metric": "eval_dropless/paloma/dolma_100_programing_languages-llama3/bpb",
+      "old_mean": 0.7044887542724609,
+      "proportional_mean": 0.6915642619132996,
+      "selected_mean": 0.6789210438728333,
+      "proportional_vs_old_pct": -1.8345917207023055,
+      "selected_vs_old_pct": -3.6292574217216544,
+      "selected_vs_proportional_pct": -1.8282058135114188,
+      "mean_selected_minus_proportional": -0.012643218040466309,
+      "conditional_t95_low": -0.014571539094564738,
+      "conditional_t95_high": -0.01071489698636788,
+      "all_three_selected_better": true,
+      "all_three_selected_worse": false
+    },
+    "logprob_gsm8k_5shot": {
+      "metric": "logprob_gsm8k_5shot",
+      "old_mean": 0.7038808875598414,
+      "proportional_mean": 0.7688293388233775,
+      "selected_mean": 0.7802076989485478,
+      "proportional_vs_old_pct": 9.227193465743078,
+      "selected_vs_old_pct": 10.843711306512404,
+      "selected_vs_proportional_pct": 1.4799591470564755,
+      "mean_selected_minus_proportional": 0.011378360125170387,
+      "conditional_t95_low": -0.04436096127094131,
+      "conditional_t95_high": 0.06711768152128209,
+      "all_three_selected_better": false,
+      "all_three_selected_worse": false
+    },
+    "logprob_humaneval_10shot": {
+      "metric": "logprob_humaneval_10shot",
+      "old_mean": 0.5176012245548983,
+      "proportional_mean": 0.5370011142126808,
+      "selected_mean": 0.49672331175246504,
+      "proportional_vs_old_pct": 3.748037820904515,
+      "selected_vs_old_pct": -4.0335903031116,
+      "selected_vs_proportional_pct": -7.500506310730604,
+      "mean_selected_minus_proportional": -0.040277802460215784,
+      "conditional_t95_low": -0.06266464555961601,
+      "conditional_t95_high": -0.017890959360815552,
+      "all_three_selected_better": true,
+      "all_three_selected_worse": false
+    }
+  },
+  "proportional_fraction_of_observed_old_to_selected_macro_gap": 0.9205289801551667,
+  "macro_reconstruction_max_error": 1.341104507446289e-07,
+  "noncode_15_subset_means": {
+    "old": 1.22597549756368,
+    "new": 1.2198180026478238,
+    "proportional": 1.2195999092525907
+  },
+  "noncode_selected_vs_proportional_pct": 0.01788237220898825,
+  "candidate_seed_counts": {
+    "0": 597,
+    "1": 3,
+    "2": 1
+  },
+  "observed_seed0_candidates": 597,
+  "pareto": {
+    "paloma_humaneval": {
+      "dimensions": [
+        0,
+        1
+      ],
+      "frontier_count": 8,
+      "selected_seed0_dominator_count": 2,
+      "selected_seed0_dominators": [
+        "h100-d512-mixprior-197c9f5ceff6b9ee-seed0-from10pct-20260829",
+        "h100-d512-mixprior-df90e8b7f0951a11-seed0-from10pct-20260829"
+      ]
+    },
+    "paloma_gsm8k": {
+      "dimensions": [
+        0,
+        2
+      ],
+      "frontier_count": 11,
+      "selected_seed0_dominator_count": 84,
+      "selected_seed0_dominators": [
+        "h100-d512-mixprior-4876fec103d84439-seed0-from10pct-20260829",
+        "h100-d512-mixprior-a61e63b32c974bff-seed0-from10pct-20260829",
+        "h100-d512-mixprior-e4edeb1593bf4231-seed0-from10pct-20260829",
+        "h100-d512-mixprior-8477a804615faec6-seed0-from10pct-20260829",
+        "h100-d512-mixprior-a9785eb1e7d34697-seed0-from10pct-20260829",
+        "h100-d512-mixprior-5b8551bc416666b0-seed0-from10pct-20260829",
+        "h100-d512-mixprior-820ba7e0b2aae1da-seed0-from10pct-20260829",
+        "h100-d512-mixprior-0f6f49441a783695-seed0-from10pct-20260829",
+        "h100-d512-mixprior-e39cb6b882e121cd-seed0-from10pct-20260829",
+        "h100-d512-mixprior-e45191f5acf9bcb9-seed0-from10pct-20260829",
+        "h100-d512-mixprior-b75429a62e62e0a9-seed0-from10pct-20260829",
+        "h100-d512-mixprior-bc051d3b5158e13b-seed0-from10pct-20260829",
+        "h100-d512-mixprior-fbb520da8e55242a-seed0-from10pct-20260829",
+        "h100-d512-mixprior-1d687b849a887005-seed0-from10pct-20260829",
+        "h100-d512-mixprior-2bcf4203095401eb-seed0-from10pct-20260829",
+        "h100-d512-mixprior-42c06ea0c85ae453-seed0-from10pct-20260829",
+        "h100-d512-mixprior-4602cace15312bd4-seed0-from10pct-20260829",
+        "h100-d512-mixprior-6008f9351fb382c9-seed0-from10pct-20260829",
+        "h100-d512-mixprior-6ca9873dc2ef0b25-seed0-from10pct-20260829",
+        "h100-d512-mixprior-72f4d0cf1bf300be-seed0-from10pct-20260829",
+        "h100-d512-mixprior-78dc0f0ebb2ea3c2-seed0-from10pct-20260829",
+        "h100-d512-mixprior-8d2bb165618c15cb-seed0-from10pct-20260829",
+        "h100-d512-mixprior-c792b1ae19e42572-seed0-from10pct-20260829",
+        "h100-d512-mixprior-d4bad85275e7122f-seed0-from10pct-20260829",
+        "h100-d512-mixprior-d5fd60e236dc9576-seed0-from10pct-20260829",
+        "h100-d512-mixprior-ed2e80d65d0d6d08-seed0-from10pct-20260829",
+        "h100-d512-mixprior-b19bb39756c5bf1e-seed0-from10pct-20260829",
+        "h100-d512-mixprior-feaa8bc74ca55f38-seed0-from10pct-20260829",
+        "h100-d512-mixprior-37ec07c629628d08-seed0-from10pct-20260829",
+        "h100-d512-mixprior-77a1d67f3e29712f-seed0-from10pct-20260829",
+        "h100-d512-mixprior-92f4441139dff853-seed0-from10pct-20260829",
+        "h100-d512-mixprior-b70b4d81af9d0175-seed0-from10pct-20260829",
+        "h100-d512-mixprior-efcd10df0877e5b9-seed0-from10pct-20260829",
+        "h100-d512-mixprior-dde7e6c9b887a890-seed0-from10pct-20260829",
+        "h100-d512-mixprior-b04abe4c7ad0e100-seed0-from10pct-20260829",
+        "h100-d512-mixprior-2f8d37e7f9bf7325-seed0-from10pct-20260829",
+        "h100-d512-mixprior-35982e7a2228788c-seed0-from10pct-20260829",
+        "h100-d512-mixprior-3f389bcd9a8dee55-seed0-from10pct-20260829",
+        "h100-d512-mixprior-52828100edc3b810-seed0-from10pct-20260829",
+        "h100-d512-mixprior-5ef2bac853a957fc-seed0-from10pct-20260829",
+        "h100-d512-mixprior-632e1abfa60c7e20-seed0-from10pct-20260829",
+        "h100-d512-mixprior-72b251ddbfd1c16a-seed0-from10pct-20260829",
+        "h100-d512-mixprior-780ae4a66ec08c0b-seed0-from10pct-20260829",
+        "h100-d512-mixprior-8862c95728d7d4bd-seed0-from10pct-20260829",
+        "h100-d512-mixprior-8bc67a341c1d938f-seed0-from10pct-20260829",
+        "h100-d512-mixprior-adb894e2fba11b98-seed0-from10pct-20260829",
+        "h100-d512-mixprior-b755da9a2cc03d2b-seed0-from10pct-20260829",
+        "h100-d512-mixprior-cf834382a5928b75-seed0-from10pct-20260829",
+        "h100-d512-mixprior-e3c16fbeef6e8681-seed0-from10pct-20260829",
+        "h100-d512-mixprior-e8b41e5d09781037-seed0-from10pct-20260829",
+        "h100-d512-mixprior-f166afb48f0a74b3-seed0-from10pct-20260829",
+        "h100-d512-mixprior-3f75cc0d21c65c7f-seed0-from10pct-20260829",
+        "h100-d512-mixprior-a097103d39e68c9c-seed0-from10pct-20260829",
+        "h100-d512-mixprior-7215148f42f0114e-seed0-from10pct-20260829",
+        "h100-d512-mixprior-97c0d9de41484132-seed0-from10pct-20260829",
+        "h100-d512-mixprior-dc4496213bc705f9-seed0-from10pct-20260829",
+        "h100-d512-mixprior-92e3dcddc9f1c9b0-seed0-from10pct-20260829",
+        "h100-d512-mixprior-05040e528683a5eb-seed0-from10pct-20260829",
+        "h100-d512-mixprior-10c0562ae66da54f-seed0-from10pct-20260829",
+        "h100-d512-mixprior-80324df7baf50056-seed0-from10pct-20260829",
+        "h100-d512-mixprior-b5e87b77dfda3dc0-seed0-from10pct-20260829",
+        "h100-d512-mixprior-c53002dd3d3800ec-seed0-from10pct-20260829",
+        "h100-d512-mixprior-d4083ca4e2b35f65-seed0-from10pct-20260829",
+        "h100-d512-mixprior-08ce96bd2cfad893-seed0-from10pct-20260829",
+        "h100-d512-mixprior-2f88d6030d2730cb-seed0-from10pct-20260829",
+        "h100-d512-mixprior-4ae9496ab07483cc-seed0-from10pct-20260829",
+        "h100-d512-mixprior-4d3d5a776ecb3ccd-seed0-from10pct-20260829",
+        "h100-d512-mixprior-4ec4c7501ff86c5a-seed0-from10pct-20260829",
+        "h100-d512-mixprior-6860a62d94f92eaa-seed0-from10pct-20260829",
+        "h100-d512-mixprior-778356a0febae506-seed0-from10pct-20260829",
+        "h100-d512-mixprior-7f5fc51ef4389bdd-seed0-from10pct-20260829",
+        "h100-d512-mixprior-8d615131b2931cb1-seed0-from10pct-20260829",
+        "h100-d512-mixprior-9e0de3be10986119-seed0-from10pct-20260829",
+        "h100-d512-mixprior-b100ad1935c71002-seed0-from10pct-20260829",
+        "h100-d512-mixprior-b76966f86e9a7249-seed0-from10pct-20260829",
+        "h100-d512-mixprior-b81a6ce0ada662d3-seed0-from10pct-20260829",
+        "h100-d512-mixprior-ebd4e1bd2387c375-seed0-from10pct-20260829",
+        "h100-d512-mixprior-f574d556903353ac-seed0-from10pct-20260829",
+        "h100-d512-mixprior-f5a6541da0d6ca4a-seed0-from10pct-20260829",
+        "h100-d512-mixprior-197c9f5ceff6b9ee-seed0-from10pct-20260829",
+        "h100-d512-mixprior-19b697225c02a94b-seed0-from10pct-20260829",
+        "h100-d512-mixprior-a1ae55056fe63498-seed0-from10pct-20260829",
+        "h100-d512-mixprior-2d02e594203d6b7c-seed0-from10pct-20260829",
+        "h100-d512-mixprior-8d5f0aed232ce1b7-seed0-from10pct-20260829"
+      ]
+    },
+    "paloma_humaneval_gsm8k": {
+      "dimensions": [
+        0,
+        1,
+        2
+      ],
+      "frontier_count": 38,
+      "selected_seed0_dominator_count": 1,
+      "selected_seed0_dominators": [
+        "h100-d512-mixprior-197c9f5ceff6b9ee-seed0-from10pct-20260829"
+      ]
+    }
+  },
+  "counterexample_run": "h100-d512-mixprior-197c9f5ceff6b9ee-seed0-from10pct-20260829",
+  "counterexample_task_directions": {
+    "better": 23,
+    "worse": 31
+  },
+  "scale_effects": [
+    {
+      "size": "d512_proxy",
+      "metric": "eval_dropless/paloma/macro_bpb",
+      "change_pct": -0.6176284544417987
+    },
+    {
+      "size": "d512_proxy",
+      "metric": "eval_dropless/paloma/dolma_100_programing_languages-llama3/bpb",
+      "change_pct": -3.6292574217216544
+    },
+    {
+      "size": "d768",
+      "metric": "eval_dropless/paloma/dolma_100_programing_languages-llama3/bpb",
+      "change_pct": 0.27749603783828736
+    },
+    {
+      "size": "d1024",
+      "metric": "eval_dropless/paloma/dolma_100_programing_languages-llama3/bpb",
+      "change_pct": 0.062118402787847415
+    },
+    {
+      "size": "d1536",
+      "metric": "eval_dropless/paloma/dolma_100_programing_languages-llama3/bpb",
+      "change_pct": -0.4629715491368924
+    }
+  ],
+  "exposure_shares": [
+    {
+      "baseline": "old",
+      "kind": "quality",
+      "name": "Q0",
+      "nominal_remaining_pct": 2.1022670041623384
+    },
+    {
+      "baseline": "old",
+      "kind": "quality",
+      "name": "Q1",
+      "nominal_remaining_pct": 11.08186872803313
+    },
+    {
+      "baseline": "old",
+      "kind": "quality",
+      "name": "Q2",
+      "nominal_remaining_pct": 28.07185219672455
+    },
+    {
+      "baseline": "old",
+      "kind": "quality",
+      "name": "Q3",
+      "nominal_remaining_pct": 35.06472124120402
+    },
+    {
+      "baseline": "old",
+      "kind": "quality",
+      "name": "Q4",
+      "nominal_remaining_pct": 23.679290829875953
+    },
+    {
+      "baseline": "old",
+      "kind": "domain",
+      "name": "c39_math",
+      "nominal_remaining_pct": 5.352196687293952
+    },
+    {
+      "baseline": "new",
+      "kind": "quality",
+      "name": "Q0",
+      "nominal_remaining_pct": 3.2472963686342595
+    },
+    {
+      "baseline": "new",
+      "kind": "quality",
+      "name": "Q1",
+      "nominal_remaining_pct": 14.354564525462962
+    },
+    {
+      "baseline": "new",
+      "kind": "quality",
+      "name": "Q2",
+      "nominal_remaining_pct": 25.98876953125
+    },
+    {
+      "baseline": "new",
+      "kind": "quality",
+      "name": "Q3",
+      "nominal_remaining_pct": 32.420744719328695
+    },
+    {
+      "baseline": "new",
+      "kind": "quality",
+      "name": "Q4",
+      "nominal_remaining_pct": 23.988624855324076
+    },
+    {
+      "baseline": "new",
+      "kind": "domain",
+      "name": "c39_math",
+      "nominal_remaining_pct": 1.6981336805555556
+    },
+    {
+      "baseline": "proportional",
+      "kind": "quality",
+      "name": "Q0",
+      "nominal_remaining_pct": 3.8173110738426503
+    },
+    {
+      "baseline": "proportional",
+      "kind": "quality",
+      "name": "Q1",
+      "nominal_remaining_pct": 17.45191137299977
+    },
+    {
+      "baseline": "proportional",
+      "kind": "quality",
+      "name": "Q2",
+      "nominal_remaining_pct": 28.354725520451122
+    },
+    {
+      "baseline": "proportional",
+      "kind": "quality",
+      "name": "Q3",
+      "nominal_remaining_pct": 31.109291461521277
+    },
+    {
+      "baseline": "proportional",
+      "kind": "quality",
+      "name": "Q4",
+      "nominal_remaining_pct": 19.26676057118517
+    },
+    {
+      "baseline": "proportional",
+      "kind": "domain",
+      "name": "c39_math",
+      "nominal_remaining_pct": 2.082421717115057
+    }
+  ],
+  "assumptions": [
+    "Three paired continuation seed labels, not three independently initialized checkpoints.",
+    "Conditional t intervals assume iid normal paired differences, exclude selection effects, and are not guarantees.",
+    "Gap fraction is arithmetic on endpoints, not a causal mediation estimate.",
+    "Pareto frontiers are observed single-seed endpoint frontiers, not deployment recommendations.",
+    "Proxy and larger ladders differ in stage timing and some recorded settings."
+  ]
+}

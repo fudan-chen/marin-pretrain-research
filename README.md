@@ -6,6 +6,7 @@
 
 ## 内容
 
+- [第四轮：结论与判断](CONCLUSIONS_ZH.md)：补上库存比例强基线，拆解16项macro贡献，检查597个单seed候选的取舍，并给出数学修复、独立确认与跨规模实验决策。
 - [研究主报告](REPORT_ZH.md)：三个Loss误读案例、模型与系统结构、15类工程问题的症状/原因/改动/验证、scaling与旧仓库分析。
 - [#8435逐条中文解读](ISSUE_8435_ZH.md)：主帖及27条评论的中文整理，数值、配置、含义和证据边界；不是逐句机械翻译。
 - [数据配比与顺序](DATA_GUIDE_ZH.md)：200桶、三阶段、样本审计、固定验证关联、曝光预算、可证伪的配比与顺序实验。
@@ -14,7 +15,7 @@
 - [58条生产运行索引](OPERATIONS_ZH.md)：按日期追踪尝试、回退、修正与仍未确认的原因，每条链接原评论。
 - [来源与复核方法](PROVENANCE_ZH.md)：7段run拼接、抽样限制、计算公式、来源范围及尚不能回答的问题。
 
-`sources/`保存公开原始JSON、代码、页面和W&B抽样；`analysis/`保存CSV、指标与验证记录；`assets/`保存10张PNG/SVG、HTML样式及离线预算工具。原始材料的权利属于各自来源，保留来源与原有权利；不能把原始训练数据误认为本仓库公开。
+`sources/`保存公开原始JSON、代码、页面和W&B抽样；`analysis/`保存CSV、指标与验证记录；`assets/`保存12张PNG/SVG、HTML样式及离线预算工具。原始材料的权利属于各自来源，保留来源与原有权利；不能把原始训练数据误认为本仓库公开。
 
 ## 离线重建
 
@@ -57,3 +58,11 @@ HTML的“自己的配比预算工具”可以填后续预算、库存、历史�
 `node scripts/test_planner.cjs`验证12组预算性质与100个随机补偿计划，结果在[planner_validation.json](analysis/planner_validation.json)。报告重建通过368项检查；新增浏览器记录见[browser_validation_v3.json](analysis/browser_validation_v3.json)。
 
 这些检查确认报告与公开快照一致。GPU训练、kernel故障、逐桶因果贡献、未来cooldown/长上下文结果没有在本机复现。报告明确区分作者记录、本地重新计算、机制解释与建议实验。
+
+## 第四轮：结论与复算
+
+第三版保留为本地标签`report-v3-2026-10-04`。第四轮新增4个W&B配置与6个恢复初期窗口，来源位于`sources/findings_2026_10_04/`；源归档增加到313文件，生产曲线仍保留原快照。`scripts/analyze_findings.py`离线重算三组continuation seed的强基线比较、16项macro贡献和597个seed0候选的观察前沿。
+
+“92.05%的观察macro差值”是终点均值的算术比较，不是因果贡献率；候选前沿也是单seed观察，不能作为部署推荐。新章节把代码/学术收益、数学风险、小幅macro的不确定性和跨规模迁移分别说明。附录保留54项任务逐seed结果，原值与假设见[findings_audit.json](analysis/findings_audit.json)。
+
+第四轮离线重建通过479项检查，另检查12张内嵌图、54行新附录、390px窄屏表格和单文件无远程请求，记录在[browser_validation_v4.json](analysis/browser_validation_v4.json)。第四版标签为`report-v4-2026-10-04`。

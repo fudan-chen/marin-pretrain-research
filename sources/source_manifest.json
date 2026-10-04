@@ -2967,5 +2967,179 @@
     "bytes": 46790,
     "sha256": "daf879a9f9b513e507c098224f6fcf51ecfb79937b84330e059494c2dbad6fff",
     "retrieved_utc": "2026-10-04T01:13:04.209486+00:00"
+  },
+  {
+    "file": "findings_2026_10_04/config_h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829.json",
+    "url": "https://api.wandb.ai/graphql",
+    "request_body": {
+      "query": "query($e:String!,$p:String!,$r:String!){project(name:$p,entityName:$e){run(name:$r){name displayName state config summaryMetrics}}}",
+      "variables": {
+        "e": "marin-community",
+        "p": "marin_moe",
+        "r": "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829"
+      }
+    },
+    "bytes": 123801,
+    "sha256": "5feded08d402b5b7e21a52cef9598c5a09467d8e1db29e9c15e07d809fc8ab61",
+    "retrieved_utc": "2026-10-04T06:03:25.448339+00:00"
+  },
+  {
+    "file": "findings_2026_10_04/config_h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829.json",
+    "url": "https://api.wandb.ai/graphql",
+    "request_body": {
+      "query": "query($e:String!,$p:String!,$r:String!){project(name:$p,entityName:$e){run(name:$r){name displayName state config summaryMetrics}}}",
+      "variables": {
+        "e": "marin-community",
+        "p": "marin_moe",
+        "r": "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829"
+      }
+    },
+    "bytes": 123797,
+    "sha256": "b3c26e6aeaf67a9d3488e8538eec7033835c84cc755be6ba92d4dcc1e2bdcfa3",
+    "retrieved_utc": "2026-10-04T06:03:25.519229+00:00"
+  },
+  {
+    "file": "findings_2026_10_04/config_h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829.json",
+    "url": "https://api.wandb.ai/graphql",
+    "request_body": {
+      "query": "query($e:String!,$p:String!,$r:String!){project(name:$p,entityName:$e){run(name:$r){name displayName state config summaryMetrics}}}",
+      "variables": {
+        "e": "marin-community",
+        "p": "marin_moe",
+        "r": "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829"
+      }
+    },
+    "bytes": 123812,
+    "sha256": "0d0bc86a560de727beff99afce5952ea9ab3f845a3dbf4d0eca06b8d78670f2f",
+    "retrieved_utc": "2026-10-04T06:03:25.509758+00:00"
+  },
+  {
+    "file": "findings_2026_10_04/config_h100-d512-mixprior-197c9f5ceff6b9ee-seed0-from10pct-20260829.json",
+    "url": "https://api.wandb.ai/graphql",
+    "request_body": {
+      "query": "query($e:String!,$p:String!,$r:String!){project(name:$p,entityName:$e){run(name:$r){name displayName state config summaryMetrics}}}",
+      "variables": {
+        "e": "marin-community",
+        "p": "marin_moe",
+        "r": "h100-d512-mixprior-197c9f5ceff6b9ee-seed0-from10pct-20260829"
+      }
+    },
+    "bytes": 123447,
+    "sha256": "5a448693447e7c4d9321c416aab123215bd09236be02e1712ae486606d235a65",
+    "retrieved_utc": "2026-10-04T06:03:26.267430+00:00"
+  },
+  {
+    "file": "findings_2026_10_04/window_h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829.json",
+    "url": "https://api.wandb.ai/graphql",
+    "request_body": {
+      "query": "query($e:String!,$p:String!,$r:String!,$specs:[JSONString!]!){project(name:$p,entityName:$e){run(name:$r){sampledHistory(specs:$specs)}}}",
+      "variables": {
+        "e": "marin-community",
+        "p": "marin_moe",
+        "r": "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829",
+        "specs": [
+          "{\"keys\": [\"_step\", \"train/cross_entropy_loss\"], \"samples\": 100, \"minStep\": 380, \"maxStep\": 430}",
+          "{\"keys\": [\"_step\", \"throughput/total_tokens\"], \"samples\": 100, \"minStep\": 380, \"maxStep\": 430}"
+        ]
+      }
+    },
+    "bytes": 4438,
+    "sha256": "4b8ea4608783287fe8b33b53851fe747835eba6133207b4c4d3f490d2663b9d1",
+    "retrieved_utc": "2026-10-04T06:03:26.660776+00:00"
+  },
+  {
+    "file": "findings_2026_10_04/window_h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829.json",
+    "url": "https://api.wandb.ai/graphql",
+    "request_body": {
+      "query": "query($e:String!,$p:String!,$r:String!,$specs:[JSONString!]!){project(name:$p,entityName:$e){run(name:$r){sampledHistory(specs:$specs)}}}",
+      "variables": {
+        "e": "marin-community",
+        "p": "marin_moe",
+        "r": "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829",
+        "specs": [
+          "{\"keys\": [\"_step\", \"train/cross_entropy_loss\"], \"samples\": 100, \"minStep\": 380, \"maxStep\": 430}",
+          "{\"keys\": [\"_step\", \"throughput/total_tokens\"], \"samples\": 100, \"minStep\": 380, \"maxStep\": 430}"
+        ]
+      }
+    },
+    "bytes": 4430,
+    "sha256": "b7fbbee049f48e3d6c6947c21d2a3a4fabb56991a3d47cd000064818b0fb4ff2",
+    "retrieved_utc": "2026-10-04T06:03:27.338521+00:00"
+  },
+  {
+    "file": "findings_2026_10_04/window_h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829.json",
+    "url": "https://api.wandb.ai/graphql",
+    "request_body": {
+      "query": "query($e:String!,$p:String!,$r:String!,$specs:[JSONString!]!){project(name:$p,entityName:$e){run(name:$r){sampledHistory(specs:$specs)}}}",
+      "variables": {
+        "e": "marin-community",
+        "p": "marin_moe",
+        "r": "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829",
+        "specs": [
+          "{\"keys\": [\"_step\", \"train/cross_entropy_loss\"], \"samples\": 100, \"minStep\": 380, \"maxStep\": 430}",
+          "{\"keys\": [\"_step\", \"throughput/total_tokens\"], \"samples\": 100, \"minStep\": 380, \"maxStep\": 430}"
+        ]
+      }
+    },
+    "bytes": 4434,
+    "sha256": "068a2af0588db08fa2f8facc8249672cd9877e3f7676ad83b4ae781abcb8f7d0",
+    "retrieved_utc": "2026-10-04T06:03:27.870820+00:00"
+  },
+  {
+    "file": "findings_2026_10_04/window_h100-d512-mix-proportional-seed0-from10pct-20260826-rno2a.json",
+    "url": "https://api.wandb.ai/graphql",
+    "request_body": {
+      "query": "query($e:String!,$p:String!,$r:String!,$specs:[JSONString!]!){project(name:$p,entityName:$e){run(name:$r){sampledHistory(specs:$specs)}}}",
+      "variables": {
+        "e": "marin-community",
+        "p": "marin_moe",
+        "r": "h100-d512-mix-proportional-seed0-from10pct-20260826-rno2a",
+        "specs": [
+          "{\"keys\": [\"_step\", \"train/cross_entropy_loss\"], \"samples\": 100, \"minStep\": 380, \"maxStep\": 430}",
+          "{\"keys\": [\"_step\", \"throughput/total_tokens\"], \"samples\": 100, \"minStep\": 380, \"maxStep\": 430}"
+        ]
+      }
+    },
+    "bytes": 4430,
+    "sha256": "5cd0cd8cad3517cebbc343a8b7f93eba9fbf94cfd66384fe2b9e0d58fe28283c",
+    "retrieved_utc": "2026-10-04T06:03:27.856336+00:00"
+  },
+  {
+    "file": "findings_2026_10_04/window_h100-d512-mix-proportional-seed1-from10pct-20260826-rno2a.json",
+    "url": "https://api.wandb.ai/graphql",
+    "request_body": {
+      "query": "query($e:String!,$p:String!,$r:String!,$specs:[JSONString!]!){project(name:$p,entityName:$e){run(name:$r){sampledHistory(specs:$specs)}}}",
+      "variables": {
+        "e": "marin-community",
+        "p": "marin_moe",
+        "r": "h100-d512-mix-proportional-seed1-from10pct-20260826-rno2a",
+        "specs": [
+          "{\"keys\": [\"_step\", \"train/cross_entropy_loss\"], \"samples\": 100, \"minStep\": 380, \"maxStep\": 430}",
+          "{\"keys\": [\"_step\", \"throughput/total_tokens\"], \"samples\": 100, \"minStep\": 380, \"maxStep\": 430}"
+        ]
+      }
+    },
+    "bytes": 4435,
+    "sha256": "d2a90240d2d99c289476fd97018c373e20d2ef3b4e35541d0c76daaae4bfecb0",
+    "retrieved_utc": "2026-10-04T06:03:28.524554+00:00"
+  },
+  {
+    "file": "findings_2026_10_04/window_h100-d512-mix-proportional-seed2-from10pct-20260826-rno2a.json",
+    "url": "https://api.wandb.ai/graphql",
+    "request_body": {
+      "query": "query($e:String!,$p:String!,$r:String!,$specs:[JSONString!]!){project(name:$p,entityName:$e){run(name:$r){sampledHistory(specs:$specs)}}}",
+      "variables": {
+        "e": "marin-community",
+        "p": "marin_moe",
+        "r": "h100-d512-mix-proportional-seed2-from10pct-20260826-rno2a",
+        "specs": [
+          "{\"keys\": [\"_step\", \"train/cross_entropy_loss\"], \"samples\": 100, \"minStep\": 380, \"maxStep\": 430}",
+          "{\"keys\": [\"_step\", \"throughput/total_tokens\"], \"samples\": 100, \"minStep\": 380, \"maxStep\": 430}"
+        ]
+      }
+    },
+    "bytes": 4423,
+    "sha256": "9849008fb79999d4b3329aa9db410289f9a75b8033b588d8909b26a5562c9f0c",
+    "retrieved_utc": "2026-10-04T06:03:29.798492+00:00"
   }
 ]

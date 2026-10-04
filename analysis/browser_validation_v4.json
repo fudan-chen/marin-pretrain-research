@@ -1,0 +1,59 @@
+{
+  "mobile": {
+    "documentWidth": 375,
+    "bodyWidth": 375,
+    "firstTableWrapWidth": 297,
+    "firstTableScrollWidth": 620,
+    "viewport": 390,
+    "figureWidths": [
+      296.9921875,
+      296.9921875
+    ]
+  },
+  "standalone": {
+    "embeddedFigures": 12,
+    "externalHttpRequests": [],
+    "loadedFigures": 12,
+    "taskAppendixRows": 54,
+    "latestFirst": "conclusions"
+  },
+  "errors": [],
+  "scope": "Local report presentation and browser checks; no model training",
+  "desktop": {
+    "hasGap": true,
+    "taskAppendixRows": 54,
+    "latestFirst": "conclusions",
+    "latestTables": [
+      4,
+      4,
+      3,
+      3,
+      4,
+      5,
+      54
+    ],
+    "figures": 12,
+    "documentWidth": 1425,
+    "comparison": [
+      "Paloma macro BPB\n1.193383\n1.186598\n1.186012\n−0.0494%",
+      "100种编程语言文本 BPB\n0.704489\n0.691564\n0.678921\n−1.8282%",
+      "HumanEval目标文本 BPB\n0.517601\n0.537001\n0.496723\n−7.5005%",
+      "GSM8K目标文本 BPB\n0.703881\n0.768829\n0.780208\n+1.4800%"
+    ],
+    "viewport": 1440,
+    "loadedFigures": 12
+  },
+  "live": {
+    "scrollY": 1691,
+    "chapterHeadingTop": 23.96875,
+    "taskAppendixRows": 54,
+    "hasLatestNav": true
+  },
+  "screenshots": [
+    "analysis/screenshots/conclusions_desktop_v4.png",
+    "analysis/screenshots/conclusions_mobile_v4.png"
+  ],
+  "visualReview": "Desktop comparison and mobile horizontal table scroll inspected. Desktop capture used instant scrolling to avoid capturing the CSS scroll animation.",
+  "checkedUtc": "2026-10-04T06:27:40.883Z",
+  "navigationRecovery": "Initial local server was no longer running; restarted before successful checks."
+}

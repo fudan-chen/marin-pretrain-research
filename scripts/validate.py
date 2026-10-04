@@ -63,7 +63,7 @@ manifest=read(S/'archive_manifest.json')
 ok('All archived file checksums match',all(hashlib.sha256((S/x['file']).read_bytes()).hexdigest()==x['sha256'] for x in manifest['files']))
 stand=(ROOT/'report_standalone.html').read_text()
 figure_count=len(soup.select('img[src^="assets/"]'))
-ok('Standalone embeds all ten referenced figures',figure_count==10 and stand.count('src="data:image/png;base64,')==figure_count)
+ok('Standalone embeds all twelve referenced figures',figure_count==12 and stand.count('src="data:image/png;base64,')==figure_count)
 D=S/'deepening_2026_10_04';rows=pq.read_table(D/'hf_observations.parquet').to_pylist();swarm=read(A/'swarm_audit.json')
 ok('Full pinned swarm has 934 distinct run names',len(rows)==len({r['run_name'] for r in rows})==934)
 hashes={hashlib.sha256(json.dumps([r['phase0_weights'],r['phase1_weights']],sort_keys=True,separators=(',',':')).encode()).hexdigest() for r in rows}
@@ -105,6 +105,52 @@ for short in ['r-stem-pre-high','r-stem-cool-high']:
     ok('Observed first resumed updates '+short,[x['_step'] for x in pts]==list(range(393,431)))
 ok('80 full appendix rows and offline planner embedded',len(soup.select('#practical table')[-1].select('tbody tr'))==80 and 'MixPlanner.analyze' in stand and soup.select_one('#planner-example') is not None)
 ok('Planner meaningful numeric checks passed',read(A/'planner_validation.json')['test_groups_passed']==12 and read(A/'planner_validation.json')['random_schedule_cases']==100)
-report={'checks_passed':len(checks),'highlights':['27 comments translated and anchored','58 operations entries','200 buckets x 3 normalized phases','400 public examples','200-step EP and kernel paired windows','934 swarm observations / 915 exact weight pairs','54 task BPB comparisons','1200 counts match native 3.12 arithmetic and 1200 match legacy sensitivity','complete-block cursor differences independently totaled','80 domain interventions / 125 source configs','8 order comparisons / 3 token budget conventions','12 planner numeric test groups / 100 random schedules','ten embedded figures','all relative HTML links valid','complete source archive checksums valid'],'not_verified':['GPU training/kernel reproduction','causality of individual mixture buckets','independent confirmation after candidate selection','535B task accuracy or long-context outcomes','full token ID / inner shuffle replay','all original experiment launch code SHAs and actual restored checkpoint contents']}
+# Fourth round: independently check endpoint, decomposition and frontier claims.
+f=read(A/'findings_audit.json');PM='eval_dropless/paloma/macro_bpb';PC='eval_dropless/paloma/dolma_100_programing_languages-llama3/bpb';HE='logprob_humaneval_10shot';GM='logprob_gsm8k_5shot'
+proportional={int(re.search(r'seed(\d+)',r['run_name'])[1]):r for r in rows if r['group']=='proportional_baseline'}
+def metric_value(row,key):return row['training_eval_metrics' if key.startswith('eval') else 'grouped_bpb'][key]
+def average(group,key):return statistics.mean(metric_value(group[i],key) for i in range(3))
+ok('Strong baseline uses the same continuation seed labels 0 through 2',set(paired['new'])==set(paired['old'])=={0,1,2} and {0,1,2}<=set(proportional))
+computed_gap=(average(paired['old'],PM)-average(proportional,PM))/(average(paired['old'],PM)-average(paired['new'],PM))
+ok('92.052898 percent is the independently computed endpoint gap ratio',abs(computed_gap-f['proportional_fraction_of_observed_old_to_selected_macro_gap'])<1e-12 and abs(computed_gap-.920528980155)<1e-10)
+ds=[metric_value(paired['new'][i],PM)-metric_value(proportional[i],PM) for i in range(3)]
+half=4.302652729749462*statistics.stdev(ds)/math.sqrt(3)
+ok('Three macro differences favor selected but conditional t interval crosses zero',all(d<0 for d in ds) and statistics.mean(ds)-half<0<statistics.mean(ds)+half and abs(f['three_seed_metrics'][PM]['conditional_t95_low']-(statistics.mean(ds)-half))<1e-12)
+ok('Code and HumanEval improve in all three strong-baseline comparisons',all(metric_value(paired['new'][i],k)<metric_value(proportional[i],k) for k in [PC,HE] for i in range(3)))
+ok('GSM8K has two regressions and one improvement against proportional',sum(metric_value(paired['new'][i],GM)>metric_value(proportional[i],GM) for i in range(3))==2)
+comp=list(csv.DictReader((A/'strong_baseline_comparison.csv').open()));per_seed=list(csv.DictReader((A/'strong_baseline_paired.csv').open()))
+for row in comp:
+    key=row['metric'];p=average(proportional,key);n=average(paired['new'],key)
+    ok('Strong baseline endpoint and every seed '+key,abs(float(row['proportional_mean'])-p)<1e-12 and abs(float(row['selected_mean'])-n)<1e-12 and abs(float(row['selected_vs_proportional_pct'])-100*(n/p-1))<1e-10 and all(abs(float(x['selected_minus_proportional'])-(metric_value(paired['new'][int(x['seed'])],key)-metric_value(proportional[int(x['seed'])],key)))<1e-12 for x in per_seed if x['metric']==key))
+constituents=[k for k in paired['new'][0]['training_eval_metrics'] if k.startswith('eval_dropless/paloma/') and k.endswith('-llama3/bpb')]
+ok('Macro uses exactly sixteen constituents and excludes token aggregate',len(constituents)==16 and 'eval_dropless/paloma/bpb' not in constituents and set(constituents)==set(f['sixteen_macro_constituents']))
+ok('Every raw macro is recovered from actual sixteen-subset average',all(abs(statistics.mean(metric_value(g[i],k) for k in constituents)-metric_value(g[i],PM))<2e-7 for g in [paired['old'],paired['new'],proportional] for i in range(3)))
+contributions=list(csv.DictReader((A/'macro_contributions.csv').open()))
+ok('All sixteen contributions sum to raw constituent net change',len(contributions)==16 and all(abs(float(r['contribution_to_macro_bpb'])-(average(paired['new'],r['metric'])-average(proportional,r['metric']))/16)<1e-12 for r in contributions))
+ok('Ten macro components improve and six regress',sum(average(paired['new'],k)<average(proportional,k) for k in constituents)==10)
+ok('Noncode fifteen-subset mean slightly regresses',abs(100*(statistics.mean(average(paired['new'],k) for k in constituents if k!=PC)/statistics.mean(average(proportional,k) for k in constituents if k!=PC)-1)-f['noncode_selected_vs_proportional_pct'])<1e-10 and f['noncode_selected_vs_proportional_pct']>0)
+candidates=[r for r in rows if r['group']=='mixprior_candidate' and re.search(r'seed(\d+)',r['run_name'])[1]=='0'];candidate_counts=collections.Counter(re.search(r'seed(\d+)',r['run_name'])[1] for r in rows if r['group']=='mixprior_candidate')
+ok('Search is concentrated in 597 seed0, three seed1 and one seed2',dict(candidate_counts)=={'0':597,'1':3,'2':1} and len(candidates)==597)
+frontier_rows=list(csv.DictReader((A/'observed_pareto_frontiers.csv').open()))
+for objective,keys,expected,dominators in [('paloma_humaneval',[PM,HE],8,2),('paloma_gsm8k',[PM,GM],11,84),('paloma_humaneval_gsm8k',[PM,HE,GM],38,1)]:
+    # Different implementation: explicit pair comparisons, not the producer's broadcast matrix.
+    values={r['run_name']:tuple(metric_value(r,k) for k in keys) for r in candidates}
+    counts={name:sum(all(x<=y for x,y in zip(other,v)) and any(x<y for x,y in zip(other,v)) for other in values.values()) for name,v in values.items()}
+    ok('Independent observed frontier '+objective,sum(v==0 for v in counts.values())==expected and counts[paired['new'][0]['run_name']]==dominators and all(int(r['dominator_count'])==counts[r['run_name']] for r in frontier_rows if r['objective']==objective))
+alt=all_rows[f['counterexample_run']]
+ok('197c dominates selected seed0 on three axes but not all tasks',all(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in [PM,HE,GM]) and sum(metric_value(alt,k)>metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==31 and sum(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==23)
+ok('197c has no independent seed1 or seed2 counterpart in this registry',sum('197c9f5ceff6b9ee-' in r['run_name'] for r in rows)==1)
+F=S/'findings_2026_10_04'
+ok('Four new configurations and six resume windows archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and len(manifest['files'])==313)
+for i,row in enumerate(f['configs']):
+    def source_run(name):return read((F if 'mixprior-' in name else P)/('config_'+name+'.json'))['data']['project']['run']
+    ra,rb=source_run(row['run_a']),source_run(row['run_b']);ca,cb=json.loads(ra['config']),json.loads(rb['config'])
+    ok('New source critical settings and endpoints '+str(i),ca['model']==cb['model'] and ca['optimizer']==cb['optimizer'] and ca['resources']==cb['resources'] and ca['eval']==cb['eval'] and ca['trainer']['value']['trainer']['load_checkpoint_path'][-1]==cb['trainer']['value']['trainer']['load_checkpoint_path'][-1] and json.loads(ra['summaryMetrics'])[PM]==metric_value(all_rows[row['run_a']],PM) and json.loads(rb['summaryMetrics'])[PM]==metric_value(all_rows[row['run_b']],PM) and not row['differences_after_declared_path_and_weight_exclusions'])
+for p in F.glob('window_*.json'):
+    raw=read(p)['data']['project']['run']['sampledHistory'];h=[[json.loads(x) if isinstance(x,str) else x for x in series] for series in raw]
+    ok('New source resume window '+p.stem,[x['_step'] for x in h[0]]==list(range(393,431)) and h[1][0]['throughput/total_tokens']==394*4194304)
+effects=f['scale_effects'];ok('Proxy code gain does not keep its sign in every larger ladder',next(r['change_pct'] for r in effects if r['size']=='d512_proxy' and r['metric']==PC)<0 and next(r['change_pct'] for r in effects if r['size']=='d768')>0 and next(r['change_pct'] for r in effects if r['size']=='d1024')>0 and next(r['change_pct'] for r in effects if r['size']=='d1536')<0)
+ok('Latest conclusions and all 54 task rows embedded',soup.select_one('main section.chapter')['id']=='conclusions' and len(soup.select('#conclusions table')[-1].select('tbody tr'))==54)
+report={'checks_passed':len(checks),'highlights':['27 comments translated and anchored','58 operations entries','200 buckets x 3 normalized phases','400 public examples','200-step EP and kernel paired windows','934 swarm observations / 915 exact weight pairs','54 task BPB comparisons','1200 counts match native 3.12 arithmetic and 1200 match legacy sensitivity','complete-block cursor differences independently totaled','80 domain interventions / 129 source configs','8 order comparisons / 3 token budget conventions','12 planner numeric test groups / 100 random schedules','strong proportional baseline / 16 macro contributions','597 seed0 endpoints / three independently checked observed frontiers','four new config contrasts / six step393 resume windows','twelve embedded figures','all relative HTML links valid','313 source archive checksums valid'],'not_verified':['GPU training/kernel reproduction','causality of individual mixture buckets','independent confirmation after candidate selection','535B task accuracy or long-context outcomes','full token ID / inner shuffle replay','all original experiment launch code SHAs and actual restored checkpoint contents','full selector objective, fitted model and hidden constraints']}
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

@@ -113,3 +113,7 @@ domain比例是同cluster五档求和；质量比例是同档40域求和；阶�
 本轮原318来源与生产曲线没有刷新。浏览器中的测试回答属于工具验收样例，不作为真实参与者观察；退出测试后恢复原本地数据。实际OS下载保存和外部理解研究保持未验证。
 
 规则1.0的完整本地方法快照保存在`analysis/rubrics_1_0_reference.json`，来自V8提交`eb8d668`，用于离线逐项核对1.1的改动范围。这是作者方法版本，不增加公共来源数量。
+
+## 10月5日工程补充快照
+
+12份公共GitHub API文件另存`sources/engineering_2026_10_05/`：三个issue及完整comments、#9062/#9183/#9333的PR元数据和全部files。分页next-link与issue comment / PR changed_files计数均核对。#8435/#8506/#8870的评论数量、IDs、正文及issue正文与旧档相同；PR diff用于审计具体依赖、PDL调用与tail测试。原318项清单中的317个非抓取清单文件保持字节不变；`source_manifest.json`追加新记录，完整归档变为330项。训练曲线和数据配比没有刷新。见[差异审计](analysis/engineering_refresh_audit.json)。

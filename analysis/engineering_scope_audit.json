@@ -1,0 +1,73 @@
+{
+  "scope": "Actual semantic edits; no new cluster experiment or causal confirmation",
+  "rubric_framework_version": "1.1",
+  "rules_applied": [
+    "R01",
+    "R02",
+    "R03",
+    "R12",
+    "R13",
+    "R14"
+  ],
+  "base_commit": "a697bfa",
+  "changes": [
+    {
+      "file": "REPORT_ZH.md",
+      "before": "相同 checkpoint、相同批次下，少丢弃专家计算，本身就会改变前向结果。",
+      "after": "相同 checkpoint、相同批次由作者的公开部署对照记录支持；本地独立核对的是相同 step 区间的指标点，没有重放真实 token ID。少丢弃专家计算本身会改变前向结果。"
+    },
+    {
+      "file": "REPORT_ZH.md",
+      "before": "### 3.6 Ragged EP 第一次切换：质量和速度通过，稳定性没通过",
+      "after": "### 3.6 Ragged EP 第一次切换：短窗数值和速度通过，稳定性没通过"
+    },
+    {
+      "file": "REPORT_ZH.md",
+      "before": "### 3.9 真正把 GPU 内部卡在哪里抓出来：PDL 与 warp 读取不一致",
+      "after": "### 3.9 GPU dump 收窄机制：PDL 下可能提前读取旧分组边界"
+    },
+    {
+      "file": "REPORT_ZH.md",
+      "before": "后续 GPU dump 定位到 QuACK 0.6.4 的 SM100 grouped backward GEMM。MMA/epilogue warps 已退出，TMA-load warp 还在等待一个不会被释放的 pipeline barrier，scheduler warp 则以为仍有工作。不同 warp 对同一组 `cu_seqlens` 边界解码不同。",
+      "after": "后续 GPU dump 把停滞位置收窄到 QuACK 0.6.4 的 SM100 grouped backward GEMM：MMA/epilogue warps 已退出，TMA-load warp 仍等 pipeline barrier。作者由不同 warp 的工作边界和第二份 dump 的首 tile 分歧，推断它们可能读取了不同版本的 `cu_seqlens`。直接观测到的 warp 状态与尚需确认的旧边界读取机制应分开。"
+    },
+    {
+      "file": "REPORT_ZH.md",
+      "before": "三处 grouped-GEMM launcher 设置 `use_pdl=False`",
+      "after": "相关 grouped-GEMM launcher 统一设置 `use_pdl=False`"
+    },
+    {
+      "file": "REPORT_ZH.md",
+      "before": "一次 manifest upload 没 timeout，rank0 卡在 S3 上传；另一次背景提交没有完成，下一次保存又会等它。",
+      "after": "一次 manifest upload 没 timeout，rank0 卡在 S3 上传。清理后服务从00:39 UTC重新接受写入，但01:01的step146582背景保存仍有448/704进程完成、256个进程停写，起因未确认。异步保存让训练继续，下一次保存却可能等上一次未完成的commit。"
+    },
+    {
+      "file": "REPORT_ZH.md",
+      "before": "清理旧临时 checkpoint 和重复件后恢复写入；生产记录说明保留了若干 handoff，删掉的旧 handoff 也被明确列出。诊断不能把“写入被 quota 暂停”写成 GPU hang。",
+      "after": "清理旧临时 checkpoint 和重复件后恢复写入，后续02:43/03:44的保存正常；它没有解释清理后的256进程停滞。生产记录说明保留了若干 handoff，删掉的旧 handoff 也被明确列出。诊断应分别记已确认的配额拒写与未确认的后续保存停滞。"
+    },
+    {
+      "file": "REPORT_ZH.md",
+      "before": "step146139 部署 native SM100 FA4 和 ragged MLP tail-mask removal",
+      "after": "step146139 部署 native SM100 FA4、ragged MLP tail-mask removal 和每100step协调GC"
+    },
+    {
+      "file": "REPORT_ZH.md",
+      "before": "本文独立抓取同批次 `[146139,146339)`",
+      "after": "按作者同批次设计，本文独立抓取并复算 `[146139,146339)` 的指标点"
+    },
+    {
+      "file": "REPORT_ZH.md",
+      "before": "这里有实测的质量近似对齐与吞吐改善。但窗口只有200步，eval/save/resume 需要继续测；官方接受记录没有把未测项写成已经通过。",
+      "after": "这里有200步训练CE差值与整包吞吐改善的实测，不能由此推出长期质量或生成正确率相同。三项改动同时部署，收益也不能全归给FA4。验收当时eval、自己保存后恢复和首个永久保存尚未覆盖；官方记录没有把未测项写成通过。"
+    },
+    {
+      "file": "OPERATIONS_ZH.md",
+      "generator": "scripts/appendices.py",
+      "before": "容量104.56TiB超过100TiB引发405 write suspension；rank0 manifest无timeout导致静默卡住。清理约49TB后正常保存；保留3个durable handoff，81716已删除，58014无durable副本。",
+      "after": "分两段：104.56TiB超100TiB、405拒写与rank0无timeout manifest阻塞有对应证据。清理恢复写入后，01:01的146582保存仍有256/704进程停写，起因未确认；后续两次保存正常。清理约49TB，保留3个durable handoff，81716已删除，58014无durable副本。"
+    }
+  ],
+  "independent_input_token_replay": null,
+  "component_ablation": null
+}

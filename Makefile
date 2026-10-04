@@ -12,6 +12,7 @@ report:
 	$(PYTHON) scripts/build_decision.py
 	$(PYTHON) scripts/build_transfer.py > analysis/transfer_computation_log.txt
 	$(PYTHON) scripts/build_order.py
+	$(PYTHON) scripts/build_engineering.py
 	$(PYTHON) scripts/build_assessment.py
 	$(PYTHON) scripts/charts.py
 	$(PYTHON) scripts/charts_deepening.py

@@ -1,0 +1,78 @@
+{
+  "atlas_sha256": "490c1cff0c43c7678ce458318919af2b14d419e94096323f9af80f2f28524cd3",
+  "standalone": {
+    "embeddedFigures": 14,
+    "protocol": "file:",
+    "questionCount": 10,
+    "atlas_sha256": "490c1cff0c43c7678ce458318919af2b14d419e94096323f9af80f2f28524cd3",
+    "bank_sha256": "ce6db7ca2f9bd3f55e50011759a2f3b12c99def12f8191f14ecacb439948ab0f",
+    "errors": [],
+    "episodeCount": 8,
+    "figureReadings": 14,
+    "loadedFigures": 14,
+    "httpRequests": []
+  },
+  "version": "report-v10-2026-10-05",
+  "functional": {
+    "tenQuestionAnchorsUnchanged": true,
+    "correctSourceLinks": true,
+    "quotaAndLaterStallRemainSeparate": true,
+    "actualExportBlobPreservesUnknowns": true,
+    "caseNotesIsolatedAndTextEscaped": true,
+    "oldBankNotSilentlyImported": true,
+    "offlineSelectorsAndEmbeddedInputs": true,
+    "allEightCasesAndTwentyFourClaims": true,
+    "actualOldBankImportRejectsWithoutOverwrite": true,
+    "existingLocalStorageUnchanged": true,
+    "transientNotesDoNotPretendPersisted": true
+  },
+  "mobile": {
+    "viewport": 390,
+    "timelineColumns": "297px",
+    "documentWidth": 375
+  },
+  "visual_review": "Viewed exact returned screenshots: E05 desktop chronology and evidence, E07 390px offline timeline, E04 unknown component attribution and falsifier. No visible overlap or page overflow.",
+  "not_verified": [
+    "OS download file save",
+    "535B GPU or SM100 test execution",
+    "actual external reader comprehension or grading validity",
+    "bytewise input token replay",
+    "component performance ablation"
+  ],
+  "export_scope": "Actual button Blob inspected; OS file save not tested",
+  "corrected_test_attempt": {
+    "issue": "After reload, draft details collapsed; accessible textbox absent, DOM value was empty",
+    "application_error": false,
+    "check": "Opened details and verified visible empty input"
+  },
+  "bank_sha256": "ce6db7ca2f9bd3f55e50011759a2f3b12c99def12f8191f14ecacb439948ab0f",
+  "verified_utc": "2026-10-04T18:18:15.224Z",
+  "desktop": {
+    "viewport": 1440,
+    "timelineCards": 4,
+    "documentWidth": 1425
+  },
+  "export": {
+    "case_id": "E05",
+    "training_gate_decision": null,
+    "atlas_sha256": "490c1cff0c43c7678ce458318919af2b14d419e94096323f9af80f2f28524cd3",
+    "schema": "marin-engineering-draft/1",
+    "execution_status": "not_executed",
+    "reader_understanding": null
+  },
+  "errors": [],
+  "screenshots": [
+    {
+      "file": "analysis/browser_v10_engineering_desktop.png",
+      "sha256": "792b23c3ebc524bf503bd6842353d731c0c570f9618a8a22cdcfa32e13475a8e"
+    },
+    {
+      "file": "analysis/browser_v10_engineering_mobile.png",
+      "sha256": "24043b2b4a90566472f5088f87a4b94081c8db5e3041e28f554227a8a02bbe16"
+    },
+    {
+      "file": "analysis/browser_v10_engineering_unknown.png",
+      "sha256": "c12cfd8cfb391c6d4563c69eeebefc89cbe20fd5dcafa00faf4aae7234687a39"
+    }
+  ]
+}

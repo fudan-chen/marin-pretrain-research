@@ -1,0 +1,12 @@
+<section class="chapter" id="engineering-lab">
+<h1>工程证据链：从症状到下一项检查</h1>
+<p>八个案例对照原评论与固定 PR diff。这里检查具体陈述是否超出材料；选项和解释由报告作者编写，页面不自动判断自由文本，也不产生训练审批。</p>
+<label for="engineering-case">选择问题</label><select id="engineering-case"></select>
+<div class="engineering-head"><h2 id="engineering-title"></h2><p id="engineering-scope" class="status"></p></div>
+<ol id="engineering-timeline" class="engineering-timeline" aria-label="记录顺序；箭头只表示时间先后"></ol>
+<div id="engineering-evidence" class="engineering-evidence"></div>
+<div class="engineering-claim"><h3>这句结论支持到哪里</h3><label for="engineering-claim">对照一项陈述</label><select id="engineering-claim"></select><p id="engineering-verdict" aria-live="polite"></p><p id="engineering-reason"></p></div>
+<div class="engineering-next"><h3>下一项能区分解释的检查</h3><dl id="engineering-test"></dl></div>
+<details><summary>写自己的排查草案（暂存本次页面，不覆盖已有评审）</summary><p>“未知”应对应缺的证据。草案未执行；导出保留案例、原文件摘要和你的输入。</p><label for="engineering-notes">假说、预期与推翻条件</label><textarea id="engineering-notes" rows="5" placeholder="当前判断是什么？下一次记录什么？出现什么结果就必须改写判断？"></textarea><button id="engineering-export" class="action">导出此案证据与草案</button><p id="engineering-export-status" class="status" aria-live="polite"></p></details>
+<p><a href="#engineering-guide">读工程排障文档与规则应用</a> · <a href="analysis/engineering_data.json">八案与原始证据摘要</a> · <a href="analysis/engineering_refresh_audit.json">本次 GitHub 刷新差异</a></p>
+</section>

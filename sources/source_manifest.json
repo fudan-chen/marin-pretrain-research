@@ -3181,5 +3181,101 @@
     "bytes": 1322549,
     "sha256": "4bc6e573afcf7d3c861535badd6c0eb431c907134f26e44325c0a725444db7a9",
     "retrieved_utc": "2026-10-04T07:35:22.283949+00:00"
+  },
+  {
+    "file": "engineering_2026_10_05/issue_8435.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8435",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/8435",
+    "bytes": 8902,
+    "sha256": "a54694915dc162c10a2754ad58dfae46cad0ea9573c01b0db151e42a0743ddc2",
+    "retrieved_utc": "2026-10-04T18:02:45.647807+00:00"
+  },
+  {
+    "file": "engineering_2026_10_05/issue_8435_comments.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8435/comments?per_page=100&page=1",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/8435/comments?per_page=100&page=1",
+    "bytes": 106995,
+    "sha256": "961fa251b7b9c11aed54a123c0570414b4c05ba9e9f3106bdcdf59191cef6a58",
+    "retrieved_utc": "2026-10-04T18:02:45.934890+00:00"
+  },
+  {
+    "file": "engineering_2026_10_05/issue_8506.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8506",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/8506",
+    "bytes": 3937,
+    "sha256": "77e2a282f368870dfe7edcc5460f92582f68a30f9e21947150e047d012939c9a",
+    "retrieved_utc": "2026-10-04T18:02:45.709104+00:00"
+  },
+  {
+    "file": "engineering_2026_10_05/issue_8506_comments.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8506/comments?per_page=100&page=1",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/8506/comments?per_page=100&page=1",
+    "bytes": 151775,
+    "sha256": "5d7840f10eb28fdc78b229d924a13fdc6626c18b3718c1f41b0ab2a7bb399cb7",
+    "retrieved_utc": "2026-10-04T18:02:45.898186+00:00"
+  },
+  {
+    "file": "engineering_2026_10_05/issue_8870.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8870",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/8870",
+    "bytes": 7534,
+    "sha256": "19866ee91b32ada6cc196ad699bdf9dd0eac75dd669add143f4ae4ce6af52ae1",
+    "retrieved_utc": "2026-10-04T18:02:46.525524+00:00"
+  },
+  {
+    "file": "engineering_2026_10_05/issue_8870_comments.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8870/comments?per_page=100&page=1",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/8870/comments?per_page=100&page=1",
+    "bytes": 111784,
+    "sha256": "0b31e85fdbfeb4e938ff4c11dc7736e93ced670dbe838fe54440152bdb9f28ec",
+    "retrieved_utc": "2026-10-04T18:02:46.844006+00:00"
+  },
+  {
+    "file": "engineering_2026_10_05/pull_9062.json",
+    "url": "https://api.github.com/repos/marin-community/marin/pulls/9062",
+    "final_url": "https://api.github.com/repos/marin-community/marin/pulls/9062",
+    "bytes": 23585,
+    "sha256": "8b0858a7f0122821f1d0e137c8e7ab1ca35cafeebde813d0dc95e607c7f4b3fe",
+    "retrieved_utc": "2026-10-04T18:02:46.929867+00:00"
+  },
+  {
+    "file": "engineering_2026_10_05/pull_9062_files.json",
+    "url": "https://api.github.com/repos/marin-community/marin/pulls/9062/files?per_page=100&page=1",
+    "final_url": "https://api.github.com/repos/marin-community/marin/pulls/9062/files?per_page=100&page=1",
+    "bytes": 22332,
+    "sha256": "104fcc484acb833d3a2c0fe15339b5aaad510fd8bfe36e208b777ae3108553d5",
+    "retrieved_utc": "2026-10-04T18:02:47.008720+00:00"
+  },
+  {
+    "file": "engineering_2026_10_05/pull_9183.json",
+    "url": "https://api.github.com/repos/marin-community/marin/pulls/9183",
+    "final_url": "https://api.github.com/repos/marin-community/marin/pulls/9183",
+    "bytes": 20641,
+    "sha256": "318e62656ec0f4700a17d7b24dd3babb9289cc8e52cee196c5c90085131766c5",
+    "retrieved_utc": "2026-10-04T18:02:47.580238+00:00"
+  },
+  {
+    "file": "engineering_2026_10_05/pull_9183_files.json",
+    "url": "https://api.github.com/repos/marin-community/marin/pulls/9183/files?per_page=100&page=1",
+    "final_url": "https://api.github.com/repos/marin-community/marin/pulls/9183/files?per_page=100&page=1",
+    "bytes": 2571,
+    "sha256": "7280186f07610ab7f1b1bded6059601ae3c76725d2b9d823bafd54fc838d6d45",
+    "retrieved_utc": "2026-10-04T18:02:47.970278+00:00"
+  },
+  {
+    "file": "engineering_2026_10_05/pull_9333.json",
+    "url": "https://api.github.com/repos/marin-community/marin/pulls/9333",
+    "final_url": "https://api.github.com/repos/marin-community/marin/pulls/9333",
+    "bytes": 21417,
+    "sha256": "c066fa209c4899c8aae0016729df78fc14f23e5e03ef957648e634636b3be4c2",
+    "retrieved_utc": "2026-10-04T18:02:48.057686+00:00"
+  },
+  {
+    "file": "engineering_2026_10_05/pull_9333_files.json",
+    "url": "https://api.github.com/repos/marin-community/marin/pulls/9333/files?per_page=100&page=1",
+    "final_url": "https://api.github.com/repos/marin-community/marin/pulls/9333/files?per_page=100&page=1",
+    "bytes": 11977,
+    "sha256": "63f96277b6bd9fe66261e8ba7a12872654381ac1a352792bafb3c6833c11b9a5",
+    "retrieved_utc": "2026-10-04T18:02:48.090054+00:00"
   }
 ]

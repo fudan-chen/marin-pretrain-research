@@ -1,5 +1,5 @@
 {
-  "checks_passed": 755,
+  "checks_passed": 803,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -18,7 +18,7 @@
     "four new config contrasts / six step393 resume windows",
     "fourteen embedded figures",
     "all relative HTML links valid",
-    "318 source archive checksums valid",
+    "330 source archive checksums valid",
     "18 authored rubrics / seven claim-stage decisions",
     "five interpretation cases / four metrics with switchable baselines",
     "14 figure-reading entries / five preserved collapsed tables",
@@ -44,7 +44,11 @@
     "R16 1.1 scope correction / seventeen unchanged anchors / explicit old-version migration",
     "ten source-bound comprehension cases / thirty authored calibration examples",
     "thirteen answer-revision, critical-error and reviewer-disagreement boundary groups",
-    "file-protocol offline reader workbench / actual Blob export / local data restored"
+    "file-protocol offline reader workbench / actual Blob export / local data restored",
+    "eight source-bound engineering timelines / twenty-four authored claim contrasts",
+    "eleven actual wording repairs / quota and post-cleanup stall separated",
+    "twelve dated public GitHub payloads / all 317 prior content files unchanged",
+    "current and historical question-bank digests kept separate"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

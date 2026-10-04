@@ -57,7 +57,7 @@
 | 51 | 2026-09-23 21:39:45 | 计划从146139部署native SM100 FA4、去ragged tail masks、每100step协调GC；捆绑改动需整包对照。 | [定位](https://github.com/marin-community/marin/issues/8506#issuecomment-5803401391) |
 | 52 | 2026-09-23 21:40:58 | 启动记录：run `hero-fa4sm100-nomask-step146k`，代码 `ad754c6d67`。这是部署身份记录，是否通过需看后面的结果。 | [定位](https://github.com/marin-community/marin/issues/8506#issuecomment-5803416767) |
 | 53 | 2026-09-23 22:41:06 | 整包200步接受，MFU26.75%对24.10%，CE均差+3.6e−4；没有大偏离。eval、自己保存后恢复、首个永久保存当时仍未覆盖。 | [定位](https://github.com/marin-community/marin/issues/8506#issuecomment-5804146010) |
-| 54 | 2026-09-24 15:47:28 | 容量104.56TiB超过100TiB引发405 write suspension；rank0 manifest无timeout导致静默卡住。清理约49TB后正常保存；保留3个durable handoff，81716已删除，58014无durable副本。 | [定位](https://github.com/marin-community/marin/issues/8506#issuecomment-5817400840) |
+| 54 | 2026-09-24 15:47:28 | 分两段：104.56TiB超100TiB、405拒写与rank0无timeout manifest阻塞有对应证据。清理恢复写入后，01:01的146582保存仍有256/704进程停写，起因未确认；后续两次保存正常。清理约49TB，保留3个durable handoff，81716已删除，58014无durable副本。 | [定位](https://github.com/marin-community/marin/issues/8506#issuecomment-5817400840) |
 | 55 | 2026-09-27 14:21:06 | 9月27日watchdog终止并重试，最初stall原因未知。CUDA peer-memory errors在teardown才出现，不能用来倒推GPU根因。 | [定位](https://github.com/marin-community/marin/issues/8506#issuecomment-5856665151) |
 | 56 | 2026-10-01 00:33:26 | 9月30日184731临时保存未完成，下次保存checkpoint barrier timeout。先行storage/worker/GPU原因未找到；恢复后继续。 | [定位](https://github.com/marin-community/marin/issues/8506#issuecomment-5922288472) |
 | 57 | 2026-10-02 15:57:11 | 10月2日多个启动重试，RegisterTask超时与multihost tracker初始化失败；起始原因未确认，attempt12恢复至193732。 | [定位](https://github.com/marin-community/marin/issues/8506#issuecomment-5956153758) |

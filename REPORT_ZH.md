@@ -10,7 +10,7 @@
 
 ### 1.1 通信实现改变，也会让 Loss 下降
 
-在 step 81716，更换专家通信实现后，训练 CE 平均下降约 **0.006498 nats**。本报告从两条公开 W&B run 取得完全相同的 step 区间 `[81716, 81916)`，逐 step 对齐 200 个样本，重新算出了这个差值。旧实现平均丢弃约 3.43% 的专家分配，新实现约 0.0076%。相同 checkpoint、相同批次下，少丢弃专家计算，本身就会改变前向结果。
+在 step 81716，更换专家通信实现后，训练 CE 平均下降约 **0.006498 nats**。本报告从两条公开 W&B run 取得完全相同的 step 区间 `[81716, 81916)`，逐 step 对齐 200 个样本，重新算出了这个差值。旧实现平均丢弃约 3.43% 的专家分配，新实现约 0.0076%。相同 checkpoint、相同批次由作者的公开部署对照记录支持；本地独立核对的是相同 step 区间的指标点，没有重放真实 token ID。少丢弃专家计算本身会改变前向结果。
 
 因此，这里不能解释成“数据质量提高让 Loss 降低”。它首先是执行路径改变后的直接效果。整个部署还同时更新了通信 wheel、GEMM 和状态布局，单凭这次整包切换，不能把所有吞吐收益分摊到某个内核。[部署及官方同批次对照](https://github.com/marin-community/marin/issues/8506#issuecomment-5610467489)
 
@@ -96,7 +96,7 @@ MuonH 用于 attention、专家、latent 和 GatedNorm 的矩阵，AdamH 用于 
 
 相反，watchdog 结束时出现的 CUDA peer-memory error 可能是 teardown 的后果，不该倒推成最初原因。9 月 27 日事件明确把这点写了出来。[因果顺序纠正](https://github.com/marin-community/marin/issues/8506#issuecomment-5856665151)
 
-### 3.6 Ragged EP 第一次切换：质量和速度通过，稳定性没通过
+### 3.6 Ragged EP 第一次切换：短窗数值和速度通过，稳定性没通过
 
 9 月 2 日从 pooled-wave 改为 ragged。约 70 个更新内：drop 从约 3.4% 降到 <0.01%，MFU 从约 20.5% 到 23.4%，同批次 Loss 降约 0.006。但是两次启动都发生 silent hang，于是回退到旧代码和旧 checkpoint。新 run 使用独立 W&B ID、checkpoint tree，没有污染旧树；回退后同批次 Loss 重放也被核验。[回退决定](https://github.com/marin-community/marin/issues/8506#issuecomment-5518830230)
 
@@ -114,13 +114,13 @@ MuonH 用于 attention、专家、latent 和 GatedNorm 的矩阵，AdamH 用于 
 
 所以 #9062 修的是版本偏差，有真实短期收益；不能写成“silent hang 根因已经完全解决”。[header 修复](https://github.com/marin-community/marin/pull/9062) · [后来复发](https://github.com/marin-community/marin/issues/8506#issuecomment-5614639876)
 
-### 3.9 真正把 GPU 内部卡在哪里抓出来：PDL 与 warp 读取不一致
+### 3.9 GPU dump 收窄机制：PDL 下可能提前读取旧分组边界
 
-后续 GPU dump 定位到 QuACK 0.6.4 的 SM100 grouped backward GEMM。MMA/epilogue warps 已退出，TMA-load warp 还在等待一个不会被释放的 pipeline barrier，scheduler warp 则以为仍有工作。不同 warp 对同一组 `cu_seqlens` 边界解码不同。
+后续 GPU dump 把停滞位置收窄到 QuACK 0.6.4 的 SM100 grouped backward GEMM：MMA/epilogue warps 已退出，TMA-load warp 仍等 pipeline barrier。作者由不同 warp 的工作边界和第二份 dump 的首 tile 分歧，推断它们可能读取了不同版本的 `cu_seqlens`。直接观测到的 warp 状态与尚需确认的旧边界读取机制应分开。
 
 PDL（programmatic dependent launch）允许后续 kernel 提前启动，再由 kernel 内部等待前驱完成。这里只有 load/scheduler warps 在首次读取前执行 `griddepcontrol.wait`，MMA/epilogue 没有等。因此它们可能提前读到尚未写完的专家分组边界，错误地判定没有工作并退出。第二次 dump 中有一个 cluster 在第一个 tile 就出现分歧，加强了这个机制解释。[dump 分析](https://github.com/marin-community/marin/issues/8870#issuecomment-5688372126)
 
-**改动。** 三处 grouped-GEMM launcher 设置 `use_pdl=False`，先让前驱完整结束；另一条 upstream 方向是在相关 warps 加 wait。microbenchmark 成本在约 0.3% 以内。微基准没复现稀有 hang，不能宣布定论；生产 recurrence interval 才是后续判断依据。部署同时升级了 PJRT wheel，因此 2.6% 吞吐收益也不能算成“关闭 PDL 自己提速”。[PR #9183](https://github.com/marin-community/marin/pull/9183) · [200 步接受记录](https://github.com/marin-community/marin/issues/8506#issuecomment-5690222518)
+**改动。** 相关 grouped-GEMM launcher 统一设置 `use_pdl=False`，先让前驱完整结束；另一条 upstream 方向是在相关 warps 加 wait。microbenchmark 成本在约 0.3% 以内。微基准没复现稀有 hang，不能宣布定论；生产 recurrence interval 才是后续判断依据。部署同时升级了 PJRT wheel，因此 2.6% 吞吐收益也不能算成“关闭 PDL 自己提速”。[PR #9183](https://github.com/marin-community/marin/pull/9183) · [200 步接受记录](https://github.com/marin-community/marin/issues/8506#issuecomment-5690222518)
 
 ### 3.10 存储策略不让删 checkpoint，却误伤了原子提交
 
@@ -132,17 +132,17 @@ PDL（programmatic dependent launch）允许后续 kernel 提前启动，再由 
 
 ### 3.11 Checkpoint 留得多，反而把训练拖停
 
-9月23/24日，区域存储达到约 104.56 TiB，超过100 TiB quota，服务端暂停写入并返回405。约11.7 TiB 的增量主要来自强制 checkpoint 和 durable handoff copies。一次 manifest upload 没 timeout，rank0 卡在 S3 上传；另一次背景提交没有完成，下一次保存又会等它。
+9月23/24日，区域存储达到约 104.56 TiB，超过100 TiB quota，服务端暂停写入并返回405。约11.7 TiB 的增量主要来自强制 checkpoint 和 durable handoff copies。一次 manifest upload 没 timeout，rank0 卡在 S3 上传。清理后服务从00:39 UTC重新接受写入，但01:01的step146582背景保存仍有448/704进程完成、256个进程停写，起因未确认。异步保存让训练继续，下一次保存却可能等上一次未完成的commit。
 
-清理旧临时 checkpoint 和重复件后恢复写入；生产记录说明保留了若干 handoff，删掉的旧 handoff 也被明确列出。诊断不能把“写入被 quota 暂停”写成 GPU hang。[存储事故、恢复与遗失的锚点](https://github.com/marin-community/marin/issues/8506#issuecomment-5817400840)
+清理旧临时 checkpoint 和重复件后恢复写入，后续02:43/03:44的保存正常；它没有解释清理后的256进程停滞。生产记录说明保留了若干 handoff，删掉的旧 handoff 也被明确列出。诊断应分别记已确认的配额拒写与未确认的后续保存停滞。[存储事故、恢复与遗失的锚点](https://github.com/marin-community/marin/issues/8506#issuecomment-5817400840)
 
 ### 3.12 正确的提速改动也需要数值对照
 
-step146139 部署 native SM100 FA4 和 ragged MLP tail-mask removal，官方200步报告：MFU 24.10%→26.75%，tokens/s 2.83M→3.14M。本文独立抓取同批次 `[146139,146339)`，200 个 CE 差值平均 **+0.0003601**，max abs **0.0008768**，复现官方约 +3.6e-4 的结果。
+step146139 部署 native SM100 FA4、ragged MLP tail-mask removal 和每100step协调GC，官方200步报告：MFU 24.10%→26.75%，tokens/s 2.83M→3.14M。按作者同批次设计，本文独立抓取并复算 `[146139,146339)` 的指标点，200 个 CE 差值平均 **+0.0003601**，max abs **0.0008768**，复现官方约 +3.6e-4 的结果。
 
 tail masks 为什么能删？grouped GEMM 只读真实 segment 范围，return transport 只送 active rows；无效 tail 不会进入最终 combine。测试用 NaN 填满 unused capacity，专门检查它是否泄露进输出。local/FSDP 路径仍读取完整缓冲，所以保留 masks。[FA4 原生内核](https://github.com/marin-community/marin/pull/9332) · [tail masks 与 NaN 测试](https://github.com/marin-community/marin/pull/9333)
 
-这里有实测的质量近似对齐与吞吐改善。但窗口只有200步，eval/save/resume 需要继续测；官方接受记录没有把未测项写成已经通过。[正式验收](https://github.com/marin-community/marin/issues/8506#issuecomment-5804146010)
+这里有200步训练CE差值与整包吞吐改善的实测，不能由此推出长期质量或生成正确率相同。三项改动同时部署，收益也不能全归给FA4。验收当时eval、自己保存后恢复和首个永久保存尚未覆盖；官方记录没有把未测项写成通过。[正式验收](https://github.com/marin-community/marin/issues/8506#issuecomment-5804146010)
 
 ### 3.13 Router “提高精度”改变的是路由策略
 
@@ -210,3 +210,5 @@ W&B 图表在本报告中按七条实际 lineage 的有效区间拼接，避免�
 - **来源相冲突时：**优先用运行配置和原始metric，保留历史说法及后续纠正。当前state=running是抓取时点，旧run的state=crashed不等于模型数值发散；多次是主动切换、协调器退出或基础设施中断。
 
 继续阅读《数据实操》和《逐条中文解读》，可以分别查实验方案和每条原评论。所有计算输入和生成脚本都保存在独立仓库中。
+
+第十轮用[工程证据链](ENGINEERING_GUIDE_ZH.md)进一步审计以上陈述：恢复进度、短窗数值、机制解释与根因确认分别记录。GitHub在10月5日刷新；本篇训练数值仍为上述冻结快照。

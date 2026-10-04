@@ -1,7 +1,7 @@
 {
   "schema": "marin-reader-assessment/1",
   "protocol_version": "0.1",
-  "bank_sha256": "af243326543419598b975a13742e187fbfae72057acf553d0afe53a39e398c77",
+  "bank_sha256": "ce6db7ca2f9bd3f55e50011759a2f3b12c99def12f8191f14ecacb439948ab0f",
   "record_kind": "local_unverified_reader_record",
   "participant_label": "",
   "cases": {

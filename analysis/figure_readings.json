@@ -102,5 +102,13 @@
     "boundary": "预算为13.125T/3.75T名义模拟；不指定实际供体路径，不估计Loss或桶因果贡献。",
     "values": "analysis/transfer_cell_differences.csv",
     "chapter": "TRANSFER_GUIDE_ZH.md"
+  },
+  {
+    "file": "assets/order_edge_ledger.png",
+    "question": "为什么时序变化只放进完整块？",
+    "reading": "三臂总窗口相同；两端灰块共同保留，前后完整部分按56/16做整数补偿。",
+    "boundary": "本报告未执行草案；逻辑匹配要求共同历史、cursor、key与映射；不是Marin实际读取图。",
+    "values": "templates/order_edge_locked.json",
+    "chapter": "ORDER_GUIDE_ZH.md"
   }
 ]

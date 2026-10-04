@@ -1,0 +1,14 @@
+{
+  "test_groups_passed": 7,
+  "tests": [
+    "All 40 mode/amplitude combinations match 480 native count digests",
+    "Unpermuted negative control matches archived-method diagnostic",
+    "Interior equality cannot waive changed outer blocks",
+    "Invalid amplitude fails without clipping",
+    "Zero amplitude remains one no-op recipe",
+    "Export is a planned count contract and preserves unknown live state",
+    "Source inputs remain immutable"
+  ],
+  "mode_amplitude_cases": 40,
+  "scope": "Count ledger and exported states, not trainer execution"
+}

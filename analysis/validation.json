@@ -1,5 +1,5 @@
 {
-  "checks_passed": 622,
+  "checks_passed": 707,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -16,12 +16,12 @@
     "strong proportional baseline / 16 macro contributions",
     "597 seed0 endpoints / three independently checked observed frontiers",
     "four new config contrasts / six step393 resume windows",
-    "thirteen embedded figures",
+    "fourteen embedded figures",
     "all relative HTML links valid",
     "318 source archive checksums valid",
     "18 authored rubrics / seven claim-stage decisions",
     "five interpretation cases / four metrics with switchable baselines",
-    "13 figure-reading entries / five preserved collapsed tables",
+    "14 figure-reading entries / five preserved collapsed tables",
     "18 terms / five reading exercises",
     "nine review logic and arithmetic checks",
     "browser import/persistence/print and offline workbench checks",
@@ -35,7 +35,12 @@
     "13 transfer boundary groups / independent raw-weight arithmetic",
     "12 planned arm records / eight unique integer recipes / 24 repaired and 24 original native loader counts",
     "original global-rounding leakage preserved / declared-domain integer repair",
-    "transfer browser budget, donor, export, six print tables and offline checks"
+    "transfer browser budget, donor, export, six print tables and offline checks",
+    "eight order comparisons / complete-block residuals and partial-edge bounds",
+    "48 historical and 480 compiled archived stage-count evaluations",
+    "20 conditional edge/index proofs / all 40 JS mode-amplitude cases",
+    "same original window budget with locked edge blocks / planned count-only exports",
+    "unlocked-edge diagnostic counterexample / separate actual-token-stream unknowns"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

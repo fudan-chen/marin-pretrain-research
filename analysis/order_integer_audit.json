@@ -1,0 +1,29 @@
+{
+  "historical_pairs": 8,
+  "historical_runs": 16,
+  "historical_complete_block_l1_tokens": [
+    2293760,
+    2293760,
+    4456448,
+    4456448,
+    2293760,
+    2424832,
+    4718592,
+    4718592
+  ],
+  "start_sequence_index": 402432,
+  "end_sequence_index": 4024320,
+  "common_edge_read_sequences": [
+    39936,
+    43008
+  ],
+  "interior_blocks": [
+    56,
+    16
+  ],
+  "symmetric_max_k": 19,
+  "default_k": 10,
+  "default_receiver_forward_tokens": 4587520,
+  "conditional_count_match": "Edge-locked construction only, provided same keys, mapping, history and cursor",
+  "actual_stream_verified": false
+}

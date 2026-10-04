@@ -74,7 +74,8 @@ figure_rows=[
 ('math_q4_response','数学Q4加量是否单调改善？','横轴为恢复后名义模拟曝光，点为单seed终点。','连线不是拟合；其他桶预算同时减少，标签不等于权重倍数。','analysis/math_q4_response.csv','PRACTICAL_ZH.md'),
 ('macro_contribution_findings','相对强基线的净改善被哪些子集支撑？','16项绝对BPB差除以16；负贡献改善macro。','宏观分解不是训练桶因果归因；整体汇总不当第17项。','analysis/macro_contributions.csv','CONCLUSIONS_ZH.md'),
 ('observed_frontier_findings','为什么不同目标会选出不同候选？','上排全部597个seed0，下排局部放大；两个轴均越小越好。','观察前沿不是确认或部署推荐；197c还有其他任务退步。','analysis/observed_pareto_frontiers.csv','CONCLUSIONS_ZH.md'),
-('candidate_budget_decomposition','看域净差会漏掉多少Q档变化？','四候选均相对996f；条形全长为桶累计半L1，蓝色为域净差半L1，棕色为域内相抵。','预算为13.125T/3.75T名义模拟；不指定实际供体路径，不估计Loss或桶因果贡献。','analysis/transfer_cell_differences.csv','TRANSFER_GUIDE_ZH.md')]
+('candidate_budget_decomposition','看域净差会漏掉多少Q档变化？','四候选均相对996f；条形全长为桶累计半L1，蓝色为域净差半L1，棕色为域内相抵。','预算为13.125T/3.75T名义模拟；不指定实际供体路径，不估计Loss或桶因果贡献。','analysis/transfer_cell_differences.csv','TRANSFER_GUIDE_ZH.md'),
+('order_edge_ledger','为什么时序变化只放进完整块？','三臂总窗口相同；两端灰块共同保留，前后完整部分按56/16做整数补偿。','本报告未执行草案；逻辑匹配要求共同历史、cursor、key与映射；不是Marin实际读取图。','templates/order_edge_locked.json','ORDER_GUIDE_ZH.md')]
 save('figure_readings.json',[{'file':'assets/'+name+'.png','question':question,'reading':reading,'boundary':boundary,'values':values,'chapter':chapter} for name,question,reading,boundary,values,chapter in figure_rows])
 
 doc=R/'RUBRICS_ZH.md'

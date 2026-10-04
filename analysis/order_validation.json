@@ -1,0 +1,19 @@
+{
+  "test_groups_passed": 12,
+  "tests": [
+    "Observed-index window covers 3537 updates with two partial edges",
+    "Single partial-block window is never counted twice",
+    "Unaligned phase boundary fails rather than silently snapping",
+    "Historical complete blocks retain nonzero differences for every pair",
+    "All 20 amplitudes conserve counts and declared support",
+    "Integer compensation is 2k early and minus 7k late",
+    "All outer blocks keep common weights and absolute boundaries",
+    "Magnitude, type and capacity violations cannot be clipped",
+    "Unlocked interior equality cannot assert whole-window equality",
+    "Zero amplitude is a no-op even without edge locking",
+    "Partial-bucket difference bounds contain all feasible counts",
+    "Matching proposal keeps live state, keys and outcomes unknown"
+  ],
+  "amplitudes_checked": 20,
+  "scope": "Integer-ledger designs and assumptions; no actual stream or GPU outcome validation"
+}

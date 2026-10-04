@@ -63,7 +63,7 @@ manifest=read(S/'archive_manifest.json')
 ok('All archived file checksums match',all(hashlib.sha256((S/x['file']).read_bytes()).hexdigest()==x['sha256'] for x in manifest['files']))
 stand=(ROOT/'report_standalone.html').read_text()
 figure_count=len(soup.select('img[src^="assets/"]'))
-ok('Standalone embeds all thirteen referenced figures',figure_count==13 and stand.count('src="data:image/png;base64,')==figure_count)
+ok('Standalone embeds all fourteen referenced figures',figure_count==14 and stand.count('src="data:image/png;base64,')==figure_count)
 D=S/'deepening_2026_10_04';rows=pq.read_table(D/'hf_observations.parquet').to_pylist();swarm=read(A/'swarm_audit.json')
 ok('Full pinned swarm has 934 distinct run names',len(rows)==len({r['run_name'] for r in rows})==934)
 hashes={hashlib.sha256(json.dumps([r['phase0_weights'],r['phase1_weights']],sort_keys=True,separators=(',',':')).encode()).hexdigest() for r in rows}
@@ -167,7 +167,7 @@ ok('Interpretation types do not present all arrows as observed causality',any(n[
 for metric in workbench['metrics']:
     key=metric['key'];raw=[r for r in per_seed if r['metric']==key]
     ok('Interactive metric uses all original seed BPB values '+key,len(raw)==3 and [r['seed'] for r in metric['seeds']]==[0,1,2] and all(abs(metric['seeds'][int(r['seed'])][name]-float(r[name+'_bpb']))<1e-12 for r in raw for name in ['old','proportional','selected']) and all(abs(metric['means'][name]-statistics.mean(float(r[name+'_bpb']) for r in raw))<1e-12 for name in ['old','proportional','selected']))
-ok('All thirteen scientific figures have reading and original-value entries',len(figure_notes)==13 and {x['file'] for x in figure_notes}=={i['src'] for i in soup.select('img[src^="assets/"]')} and len(soup.select('.figure-reading'))==13 and all((ROOT/x['values']).exists() and (ROOT/x['chapter']).exists() and x['reading'] and x['boundary'] for x in figure_notes))
+ok('All fourteen scientific figures have reading and original-value entries',len(figure_notes)==14 and {x['file'] for x in figure_notes}=={i['src'] for i in soup.select('img[src^="assets/"]')} and len(soup.select('.figure-reading'))==14 and all((ROOT/x['values']).exists() and (ROOT/x['chapter']).exists() and x['reading'] and x['boundary'] for x in figure_notes))
 long_tables=[t for t in soup.select('table') if len(t.select('tbody tr'))>30]
 ok('All five long tables are retained but initially collapsed',len(long_tables)==5 and all(t.find_parent('details',class_='large-table-details') is not None and not t.find_parent('details',class_='large-table-details').has_attr('open') for t in long_tables))
 ok('Learning guide includes eighteen terms and five expandable exercises',len(soup.select('#learning table')[1].select('tbody tr'))==18 and len(soup.select('#learning details'))==5)
@@ -262,5 +262,51 @@ report['highlights']+=['597 seed0 candidates / seven exact BPB inputs / nine con
 report['highlights']=[x.replace('twelve embedded figures','thirteen embedded figures').replace('12 figure-reading entries','13 figure-reading entries') for x in report['highlights']]
 report['highlights']+=['four candidate budget decompositions / 1600 bucket and 320 domain rows','math amount and timing separated / explicit donor-factorial plans','13 transfer boundary groups / independent raw-weight arithmetic','12 planned arm records / eight unique integer recipes / 24 repaired and 24 original native loader counts','original global-rounding leakage preserved / declared-domain integer repair','transfer browser budget, donor, export, six print tables and offline checks']
 report['not_verified']+=['prospective factorial GPU outcomes and actual finite data stream','portable integer weight encoding across other runtimes or block sizes']
+order=read(A/'order_workbench_data.json');orderprobe=read(A/'order_loader_probe_python312.json');order_checks=read(A/'order_validation.json');order_js=read(A/'order_js_validation.json')
+ok('Order input embeds exact archived audit and planned recipes',json.loads(soup.select_one('#order-data').text)==order and len(order['historical_pairs'])==8 and len(order['historical_runs'])==16 and soup.select_one('#order-lab') is not None)
+ok('Order tests cover partial windows, count lattice and immutable exports',order_checks['test_groups_passed']==12 and order_checks['amplitudes_checked']==20 and order_js['test_groups_passed']==7 and order_js['mode_amplitude_cases']==40)
+ok('Order probe executes six archived methods in pinned runtime',orderprobe['source_sha256']==hashlib.sha256((D/'mixture_production.py').read_bytes()).hexdigest() and orderprobe['python_version'].startswith('3.12.') and orderprobe['numpy_version']=='2.0.2' and len(orderprobe['source_methods'])==6 and len(orderprobe['historical_rows'])==48 and len(orderprobe['compiled_rows'])==480 and len(orderprobe['edge_proofs'])==20)
+raw_counts={(r['run'],r['phase']):r['counts'] for r in orderprobe['historical_rows']}
+for run,r in order['historical_runs'].items():
+    cfg=json.loads(read(ROOT/r['source'])['data']['project']['run']['config']);w=cfg['data']['value']['train_weights']
+    ok('Historical order inputs retain source, boundaries and native counts '+run,r['source_sha256']==hashlib.sha256((ROOT/r['source']).read_bytes()).hexdigest() and r['phase_weights']==[{k:v for k,v in p.items() if k in stock} for _,p in w] and cfg['data']['value']['mixture_block_size']==49152 and cfg['trainer']['value']['trainer']['train_batch_size']==1024 and [s*1024 for s,_ in w]==r['sequence_boundaries']==[0,393216,3194880] and all(raw_counts[(run,i)]==r['expected_counts'][i] for i in range(3)))
+order_csv=list(csv.DictReader((A/'order_integer_cell_audit.csv').open()));order_csv_rows={(r['pair'],r['cell']):r for r in order_csv}
+for p in order['historical_pairs']:
+    a=[raw_counts[(p['run_a'],i)] for i in range(3)];b=[raw_counts[(p['run_b'],i)] for i in range(3)]
+    full={k:56*(b[1][k]-a[1][k])+16*(b[2][k]-a[2][k]) for k in stock}
+    ok('Independent complete-block order residual '+p['pair'],full==p['complete_block_difference_sequences'] and sum(abs(v) for v in full.values())*4096==p['complete_block_l1_tokens'] and sum(v for k,v in full.items() if k.startswith('c39q'))*4096==p['complete_block_math_net_tokens'] and p['whole_window_exact_difference_tokens'] is None and [x['complete_blocks'] for x in p['window_ledger']]==[56,16])
+    lo=full.copy();hi=full.copy()
+    for phase,read_sequences in [(1,39936),(2,43008)]:
+        for k in stock:
+            lo[k]+=max(0,b[phase][k]-(49152-read_sequences))-min(a[phase][k],read_sequences)
+            hi[k]+=min(b[phase][k],read_sequences)-max(0,a[phase][k]-(49152-read_sequences))
+    ok('Partial-bound audit remains a loose interval '+p['pair'],all(p['whole_window_difference_bounds_sequences'][k]==[lo[k],hi[k]] and int(order_csv_rows[(p['pair'],k)]['complete_block_delta_sequences'])==full[k] and int(order_csv_rows[(p['pair'],k)]['whole_window_delta_lower_sequences'])==lo[k] and int(order_csv_rows[(p['pair'],k)]['whole_window_delta_upper_sequences'])==hi[k] for k in stock))
+ok('Every order CSV pair retains all 200 buckets',len(order_csv)==len(order_csv_rows)==1600)
+from order_core import compile_order
+native_recipes={(r['k'],r['lock_edges'],r['arm'],r['stage']):r for r in orderprobe['compiled_rows']};recipe_inputs=[]
+for k in range(20):
+    for lock in [True,False]:
+        p=compile_order(order['baseline_counts'],order['initial_counts'],49152,k,lock_edges=lock)
+        recipe_inputs.append({'k':k,'lock_edges':lock,'arms':[{'id':a['id'],'stages':a['stages']} for a in p['arms']]})
+        independent=[]
+        for a in p['arms']:
+            e0=order['baseline_counts'][0].copy();e1=order['baseline_counts'][1].copy();n=a['sign']*k
+            e0['c39q4']+=2*n;e0['c26q4']-=2*n;e1['c39q4']-=7*n;e1['c26q4']+=7*n
+            targets=[order['initial_counts'],order['baseline_counts'][0],e0,e1,order['baseline_counts'][1]] if lock else [order['initial_counts'],e0,e1]
+            independent.append(a['interior_counts']==[e0,e1] and all(native_recipes[(k,lock,a['id'],i)]['matches_target'] and native_recipes[(k,lock,a['id'],i)]['count_sha256']==hashlib.sha256(json.dumps(c,sort_keys=True,separators=(',',':')).encode()).hexdigest() and c==a['stages'][i]['counts'] and sum(c.values())==49152 and min(c.values())>=0 for i,c in enumerate(targets)) and all(56*(e0[c]-order['baseline_counts'][0][c])+16*(e1[c]-order['baseline_counts'][1][c])==0 for c in stock))
+        ok('Independent integer schedule and native counts k%d locked=%s'%(k,lock),all(independent))
+ok('Native schedule input digest matches every current encoded recipe',orderprobe['input_recipes_sha256']==hashlib.sha256(json.dumps(recipe_inputs,sort_keys=True,separators=(',',':')).encode()).hexdigest())
+ok('All 20 conditional proofs retain identical outer arrays and cursors',[p['k'] for p in orderprobe['edge_proofs']]==list(range(20)) and all(p['interior_counts_exact'] and [e['block'] for e in p['edge_blocks']]==[8,81] and all(e['arrays_and_cursors_identical'] for e in p['edge_blocks']) and 'actual token stream unverified' in p['scope'] for p in orderprobe['edge_proofs']))
+ok('Unlocked k10 diagnosis preserves explicit counterexample scope',[r['l1_difference_sequences'] for r in orderprobe['unlocked_debug_k10']]==[0,140,140] and all('randomize_blocks=False' in r['scope'] for r in orderprobe['unlocked_debug_k10']))
+for file,field in [('templates/order_edge_locked.json','locked_default'),('templates/order_edges_changed_counterexample.json','unlocked_default')]:
+    p=read(ROOT/file)
+    ok('Order contract preserves unexecuted state '+field,p==order[field] and p['physical_budget_tokens']==14835253248 and p['sequence_interval']==[402432,4024320] and p['status']=='planned_not_executed' and p['launchable'] is False and p['actual_token_stream_verified'] is False and all(p[n] is None for n in ['actual_checkpoint_digest','actual_data_cursor','actual_shuffle_keys','token_store_manifest','independent_eval_manifest','generation_results']))
+ok('Order baseline stays tied to unconfirmed V7 integer recipe',order['baseline_counts']==transfer['plans'][0]['arms'][-1]['integer_repair']['target_phase_counts'] and all(order['initial_counts']==raw_counts[(run,0)] for run in order['historical_runs']) and order['locked_default']['capacity']=={'early_units_per_k':2,'late_units_per_k':7,'forward_max_k':19,'reverse_max_k':56,'symmetric_max_k':19})
+browser8=read(A/'browser_validation_v8.json')
+ok('Order browser covers every history, boundary and count export',all(browser8['functional'][k] for k in ['eightHistoricalPairsMatch','fortyModeAmplitudeCasesMatch','unlockedCounterexampleVisible','invalidAmplitudeBlocksOutput','exportIsPlannedCountsOnly','existingLocalDataPreserved']) and not browser8['errors'])
+ok('Order standalone and mobile retain complete local evidence',browser8['standalone']['embeddedFigures']==browser8['standalone']['loadedFigures']==14 and browser8['standalone']['figureReadings']==14 and browser8['standalone']['externalHttpRequests']==[] and browser8['standalone']['historicalPairs']==8 and browser8['mobile']['documentWidth']<=browser8['mobile']['viewport'] and browser8['mobile']['tableScrollWidth']>browser8['mobile']['tableContainerWidth'])
+report['highlights']=[x.replace('thirteen embedded figures','fourteen embedded figures').replace('13 figure-reading entries','14 figure-reading entries') for x in report['highlights']]
+report['highlights']+=['eight order comparisons / complete-block residuals and partial-edge bounds','48 historical and 480 compiled archived stage-count evaluations','20 conditional edge/index proofs / all 40 JS mode-amplitude cases','same original window budget with locked edge blocks / planned count-only exports','unlocked-edge diagnostic counterexample / separate actual-token-stream unknowns']
+report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

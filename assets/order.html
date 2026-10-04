@@ -1,0 +1,17 @@
+<section class="chapter order-lab" id="order-lab">
+<h1>顺序账本：同累计量，到底匹配到哪一层</h1>
+<p>阶段补偿只是开始。先看八组历史对照的完整块差，再比较“共同边缘块”和“两端也更改”的计数草案。<a href="#order-guide">阅读原理、反例和管线</a></p>
+<label for="order-history">历史顺序对照</label><select id="order-history"></select>
+<p id="order-history-summary" class="status" aria-live="polite"></p>
+<div class="table-wrap"><table id="order-history-values"><thead><tr><th>口径</th><th>累计差L1 / tokens</th><th>能回答什么</th></tr></thead><tbody></tbody></table></div>
+<p class="status">72个完整块的差没有包含两端块内排列；不能写成完整窗口实际读取差，更不能用它单独解释BPB。</p>
+<div class="table-wrap"><table id="order-window-table"><thead><tr><th>区域</th><th>更新索引区间</th><th>序列数</th><th>共同边缘设计</th></tr></thead><tbody><tr><td>恢复所在块尾部</td><td>[393,432)</td><td>39,936</td><td>各组相同</td></tr><tr><td>前段完整块</td><td>[432,3120)</td><td>56 × 49,152</td><td>承载前段扰动</td></tr><tr><td>后段完整块</td><td>[3120,3888)</td><td>16 × 49,152</td><td>补偿前段扰动</td></tr><tr><td>结束所在块头部</td><td>[3888,3930)</td><td>43,008</td><td>各组相同</td></tr></tbody></table></div>
+<h2>数学Q4与c26 Q4的前置/后置草案</h2><p>固定使用V7的c26供体M1Q1整数配方作计算锚点，尚未确认其能力。保持原3537次更新预算，数学Q4的累计量不变；只改变完整块中的先后，供体逐阶段反向补偿。</p>
+<div class="order-controls"><div><label for="order-amplitude">整数步幅k（0至19）</label><input id="order-amplitude" type="number" min="0" max="19" step="1" value="10"></div><div><label for="order-edge-mode">边缘块处理</label><select id="order-edge-mode"><option value="locked">共同边缘块：保留两端输入与游标</option><option value="changed">两端也更改：作为错误设计反例</option></select></div></div>
+<p id="order-error" class="status error" role="alert" hidden></p><div id="order-result">
+<div id="order-design-summary" class="decision-summary" aria-live="polite"></div>
+<div class="table-wrap"><table id="order-arm-table"><thead><tr><th>草案</th><th>前整块数学Q4</th><th>后整块数学Q4</th><th>整块累计差L1 / 序列</th><th>关闭shuffle诊断L1 / 序列</th></tr></thead><tbody></tbody></table></div>
+<p id="order-guarantee" class="status"></p><p class="status">诊断列使用未排列的桶ID，是构造反例；不代表Marin历史实际读取。条件匹配要求共同checkpoint、真实游标、shuffle key和数据映射；这些状态仍未确认。</p>
+<div class="actions"><button id="order-export" class="action">导出当前计数草案JSON</button><a href="templates/order_edge_locked.json">默认k10的完整权重草案</a></div><details><summary>查看当前计数草案</summary><textarea id="order-json" aria-label="顺序计数草案JSON" readonly></textarea></details></div>
+<p><a href="analysis/order_integer_cell_audit.csv">八组200桶整数审计</a> · <a href="analysis/order_loader_probe_python312.json">六段原方法与计数探针</a> · <a href="#rubrics">R05/R10/R14的检查范围</a></p>
+</section>

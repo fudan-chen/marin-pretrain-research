@@ -1,0 +1,1133 @@
+{
+  "version": "report-v8-2026-10-04",
+  "verified_utc": "2026-10-04T14:58:13.918706+00:00",
+  "errors": [],
+  "printTables": {
+    "count": 6,
+    "restored": true,
+    "allOpened": true
+  },
+  "histories": [
+    {
+      "pair": "r-stem high pre_vs_cool seed0",
+      "values": [
+        "2,523,148,148.148144",
+        "5.212e-8",
+        "20,971.52",
+        "2,293,760",
+        "未确认"
+      ]
+    },
+    {
+      "pair": "r-stem low pre_vs_cool seed0",
+      "values": [
+        "2,523,148,148.148148",
+        "4.093e-8",
+        "20,971.52",
+        "2,293,760",
+        "未确认"
+      ]
+    },
+    {
+      "pair": "r-stem swap_high_vs_low seed0",
+      "values": [
+        "5,046,296,296.296289",
+        "9.166e-8",
+        "41,943.04",
+        "4,456,448",
+        "未确认"
+      ]
+    },
+    {
+      "pair": "r-stem swap_high_vs_low seed1",
+      "values": [
+        "5,046,296,296.296289",
+        "9.166e-8",
+        "41,943.04",
+        "4,456,448",
+        "未确认"
+      ]
+    },
+    {
+      "pair": "u-math high pre_vs_cool seed0",
+      "values": [
+        "2,523,148,148.148146",
+        "4.019e-8",
+        "20,971.52",
+        "2,293,760",
+        "未确认"
+      ]
+    },
+    {
+      "pair": "u-math low pre_vs_cool seed0",
+      "values": [
+        "2,523,148,148.148136",
+        "5.387e-8",
+        "20,971.52",
+        "2,424,832",
+        "未确认"
+      ]
+    },
+    {
+      "pair": "u-math swap_high_vs_low seed0",
+      "values": [
+        "5,046,296,296.296282",
+        "9.453e-8",
+        "41,943.04",
+        "4,718,592",
+        "未确认"
+      ]
+    },
+    {
+      "pair": "u-math swap_high_vs_low seed1",
+      "values": [
+        "5,046,296,296.296282",
+        "9.453e-8",
+        "41,943.04",
+        "4,718,592",
+        "未确认"
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "k": 0,
+      "debugL1": [
+        "0",
+        "0",
+        "0"
+      ],
+      "lock": true,
+      "wholeMatch": true,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "112",
+          "139"
+        ],
+        [
+          "112",
+          "139"
+        ]
+      ]
+    },
+    {
+      "k": 0,
+      "debugL1": [
+        "0",
+        "0",
+        "0"
+      ],
+      "lock": false,
+      "wholeMatch": true,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "112",
+          "139"
+        ],
+        [
+          "112",
+          "139"
+        ]
+      ]
+    },
+    {
+      "k": 1,
+      "debugL1": [
+        "0",
+        "0",
+        "0"
+      ],
+      "lock": true,
+      "wholeMatch": true,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "114",
+          "132"
+        ],
+        [
+          "110",
+          "146"
+        ]
+      ]
+    },
+    {
+      "k": 1,
+      "debugL1": [
+        "0",
+        "14",
+        "14"
+      ],
+      "lock": false,
+      "wholeMatch": false,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "114",
+          "132"
+        ],
+        [
+          "110",
+          "146"
+        ]
+      ]
+    },
+    {
+      "k": 2,
+      "debugL1": [
+        "0",
+        "0",
+        "0"
+      ],
+      "lock": true,
+      "wholeMatch": true,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "116",
+          "125"
+        ],
+        [
+          "108",
+          "153"
+        ]
+      ]
+    },
+    {
+      "k": 2,
+      "debugL1": [
+        "0",
+        "28",
+        "28"
+      ],
+      "lock": false,
+      "wholeMatch": false,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "116",
+          "125"
+        ],
+        [
+          "108",
+          "153"
+        ]
+      ]
+    },
+    {
+      "k": 3,
+      "debugL1": [
+        "0",
+        "0",
+        "0"
+      ],
+      "lock": true,
+      "wholeMatch": true,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "118",
+          "118"
+        ],
+        [
+          "106",
+          "160"
+        ]
+      ]
+    },
+    {
+      "k": 3,
+      "debugL1": [
+        "0",
+        "42",
+        "42"
+      ],
+      "lock": false,
+      "wholeMatch": false,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "118",
+          "118"
+        ],
+        [
+          "106",
+          "160"
+        ]
+      ]
+    },
+    {
+      "k": 4,
+      "debugL1": [
+        "0",
+        "0",
+        "0"
+      ],
+      "lock": true,
+      "wholeMatch": true,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "120",
+          "111"
+        ],
+        [
+          "104",
+          "167"
+        ]
+      ]
+    },
+    {
+      "k": 4,
+      "debugL1": [
+        "0",
+        "56",
+        "56"
+      ],
+      "lock": false,
+      "wholeMatch": false,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "120",
+          "111"
+        ],
+        [
+          "104",
+          "167"
+        ]
+      ]
+    },
+    {
+      "k": 5,
+      "debugL1": [
+        "0",
+        "0",
+        "0"
+      ],
+      "lock": true,
+      "wholeMatch": true,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "122",
+          "104"
+        ],
+        [
+          "102",
+          "174"
+        ]
+      ]
+    },
+    {
+      "k": 5,
+      "debugL1": [
+        "0",
+        "70",
+        "70"
+      ],
+      "lock": false,
+      "wholeMatch": false,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "122",
+          "104"
+        ],
+        [
+          "102",
+          "174"
+        ]
+      ]
+    },
+    {
+      "k": 6,
+      "debugL1": [
+        "0",
+        "0",
+        "0"
+      ],
+      "lock": true,
+      "wholeMatch": true,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "124",
+          "97"
+        ],
+        [
+          "100",
+          "181"
+        ]
+      ]
+    },
+    {
+      "k": 6,
+      "debugL1": [
+        "0",
+        "84",
+        "84"
+      ],
+      "lock": false,
+      "wholeMatch": false,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "124",
+          "97"
+        ],
+        [
+          "100",
+          "181"
+        ]
+      ]
+    },
+    {
+      "k": 7,
+      "debugL1": [
+        "0",
+        "0",
+        "0"
+      ],
+      "lock": true,
+      "wholeMatch": true,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "126",
+          "90"
+        ],
+        [
+          "98",
+          "188"
+        ]
+      ]
+    },
+    {
+      "k": 7,
+      "debugL1": [
+        "0",
+        "98",
+        "98"
+      ],
+      "lock": false,
+      "wholeMatch": false,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "126",
+          "90"
+        ],
+        [
+          "98",
+          "188"
+        ]
+      ]
+    },
+    {
+      "k": 8,
+      "debugL1": [
+        "0",
+        "0",
+        "0"
+      ],
+      "lock": true,
+      "wholeMatch": true,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "128",
+          "83"
+        ],
+        [
+          "96",
+          "195"
+        ]
+      ]
+    },
+    {
+      "k": 8,
+      "debugL1": [
+        "0",
+        "112",
+        "112"
+      ],
+      "lock": false,
+      "wholeMatch": false,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "128",
+          "83"
+        ],
+        [
+          "96",
+          "195"
+        ]
+      ]
+    },
+    {
+      "k": 9,
+      "debugL1": [
+        "0",
+        "0",
+        "0"
+      ],
+      "lock": true,
+      "wholeMatch": true,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "130",
+          "76"
+        ],
+        [
+          "94",
+          "202"
+        ]
+      ]
+    },
+    {
+      "k": 9,
+      "debugL1": [
+        "0",
+        "126",
+        "126"
+      ],
+      "lock": false,
+      "wholeMatch": false,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "130",
+          "76"
+        ],
+        [
+          "94",
+          "202"
+        ]
+      ]
+    },
+    {
+      "k": 10,
+      "debugL1": [
+        "0",
+        "0",
+        "0"
+      ],
+      "lock": true,
+      "wholeMatch": true,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "132",
+          "69"
+        ],
+        [
+          "92",
+          "209"
+        ]
+      ]
+    },
+    {
+      "k": 10,
+      "debugL1": [
+        "0",
+        "140",
+        "140"
+      ],
+      "lock": false,
+      "wholeMatch": false,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "132",
+          "69"
+        ],
+        [
+          "92",
+          "209"
+        ]
+      ]
+    },
+    {
+      "k": 11,
+      "debugL1": [
+        "0",
+        "0",
+        "0"
+      ],
+      "lock": true,
+      "wholeMatch": true,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "134",
+          "62"
+        ],
+        [
+          "90",
+          "216"
+        ]
+      ]
+    },
+    {
+      "k": 11,
+      "debugL1": [
+        "0",
+        "154",
+        "154"
+      ],
+      "lock": false,
+      "wholeMatch": false,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "134",
+          "62"
+        ],
+        [
+          "90",
+          "216"
+        ]
+      ]
+    },
+    {
+      "k": 12,
+      "debugL1": [
+        "0",
+        "0",
+        "0"
+      ],
+      "lock": true,
+      "wholeMatch": true,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "136",
+          "55"
+        ],
+        [
+          "88",
+          "223"
+        ]
+      ]
+    },
+    {
+      "k": 12,
+      "debugL1": [
+        "0",
+        "168",
+        "168"
+      ],
+      "lock": false,
+      "wholeMatch": false,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "136",
+          "55"
+        ],
+        [
+          "88",
+          "223"
+        ]
+      ]
+    },
+    {
+      "k": 13,
+      "debugL1": [
+        "0",
+        "0",
+        "0"
+      ],
+      "lock": true,
+      "wholeMatch": true,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "138",
+          "48"
+        ],
+        [
+          "86",
+          "230"
+        ]
+      ]
+    },
+    {
+      "k": 13,
+      "debugL1": [
+        "0",
+        "182",
+        "182"
+      ],
+      "lock": false,
+      "wholeMatch": false,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "138",
+          "48"
+        ],
+        [
+          "86",
+          "230"
+        ]
+      ]
+    },
+    {
+      "k": 14,
+      "debugL1": [
+        "0",
+        "0",
+        "0"
+      ],
+      "lock": true,
+      "wholeMatch": true,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "140",
+          "41"
+        ],
+        [
+          "84",
+          "237"
+        ]
+      ]
+    },
+    {
+      "k": 14,
+      "debugL1": [
+        "0",
+        "196",
+        "196"
+      ],
+      "lock": false,
+      "wholeMatch": false,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "140",
+          "41"
+        ],
+        [
+          "84",
+          "237"
+        ]
+      ]
+    },
+    {
+      "k": 15,
+      "debugL1": [
+        "0",
+        "0",
+        "0"
+      ],
+      "lock": true,
+      "wholeMatch": true,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "142",
+          "34"
+        ],
+        [
+          "82",
+          "244"
+        ]
+      ]
+    },
+    {
+      "k": 15,
+      "debugL1": [
+        "0",
+        "210",
+        "210"
+      ],
+      "lock": false,
+      "wholeMatch": false,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "142",
+          "34"
+        ],
+        [
+          "82",
+          "244"
+        ]
+      ]
+    },
+    {
+      "k": 16,
+      "debugL1": [
+        "0",
+        "0",
+        "0"
+      ],
+      "lock": true,
+      "wholeMatch": true,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "144",
+          "27"
+        ],
+        [
+          "80",
+          "251"
+        ]
+      ]
+    },
+    {
+      "k": 16,
+      "debugL1": [
+        "0",
+        "224",
+        "224"
+      ],
+      "lock": false,
+      "wholeMatch": false,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "144",
+          "27"
+        ],
+        [
+          "80",
+          "251"
+        ]
+      ]
+    },
+    {
+      "k": 17,
+      "debugL1": [
+        "0",
+        "0",
+        "0"
+      ],
+      "lock": true,
+      "wholeMatch": true,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "146",
+          "20"
+        ],
+        [
+          "78",
+          "258"
+        ]
+      ]
+    },
+    {
+      "k": 17,
+      "debugL1": [
+        "0",
+        "238",
+        "238"
+      ],
+      "lock": false,
+      "wholeMatch": false,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "146",
+          "20"
+        ],
+        [
+          "78",
+          "258"
+        ]
+      ]
+    },
+    {
+      "k": 18,
+      "debugL1": [
+        "0",
+        "0",
+        "0"
+      ],
+      "lock": true,
+      "wholeMatch": true,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "148",
+          "13"
+        ],
+        [
+          "76",
+          "265"
+        ]
+      ]
+    },
+    {
+      "k": 18,
+      "debugL1": [
+        "0",
+        "252",
+        "252"
+      ],
+      "lock": false,
+      "wholeMatch": false,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "148",
+          "13"
+        ],
+        [
+          "76",
+          "265"
+        ]
+      ]
+    },
+    {
+      "k": 19,
+      "debugL1": [
+        "0",
+        "0",
+        "0"
+      ],
+      "lock": true,
+      "wholeMatch": true,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "150",
+          "6"
+        ],
+        [
+          "74",
+          "272"
+        ]
+      ]
+    },
+    {
+      "k": 19,
+      "debugL1": [
+        "0",
+        "266",
+        "266"
+      ],
+      "lock": false,
+      "wholeMatch": false,
+      "receiverCounts": [
+        [
+          "112",
+          "139"
+        ],
+        [
+          "150",
+          "6"
+        ],
+        [
+          "74",
+          "272"
+        ]
+      ]
+    }
+  ],
+  "functional": {
+    "unlockedCounterexampleVisible": true,
+    "invalidAmplitudeBlocksOutput": true,
+    "exportIsPlannedCountsOnly": true,
+    "existingLocalDataPreserved": true,
+    "fortyModeAmplitudeCasesMatch": true,
+    "eightHistoricalPairsMatch": true
+  },
+  "exportScope": "Actual button Blob checked; OS save not tested",
+  "exportedSummary": {
+    "status": "planned_not_executed",
+    "stageCounts": [
+      5,
+      5,
+      5
+    ],
+    "schema": "marin-count-order-review/1",
+    "generationResults": null
+  },
+  "desktop": {
+    "viewport": 1440,
+    "documentWidth": 1425
+  },
+  "mobile": {
+    "documentWidth": 375,
+    "tableContainerWidth": 297,
+    "viewport": 390,
+    "tableScrollWidth": 620
+  },
+  "standalone": {
+    "embeddedFigures": 14,
+    "controlsUpdated": true,
+    "errors": [],
+    "figureReadings": 14,
+    "historicalPairs": 8,
+    "externalHttpRequests": [],
+    "loadedFigures": 14
+  },
+  "screenshots": [
+    "analysis/browser_v8_order_desktop.png",
+    "analysis/browser_v8_order_mobile.png",
+    "analysis/browser_v8_order_counterexample.png"
+  ],
+  "visual_inspection": "All three exact artifacts viewed; desktop and 390px control text readable, wide tables scroll within the container.",
+  "not_verified": [
+    "OS download save",
+    "actual shuffle/checkpoint/token store",
+    "GPU training or generation outcomes",
+    "external reader comprehension"
+  ],
+  "final_task_release": {
+    "taskId": "task-73760abb-1f00-4d7c-b3ad-c419d69cf914",
+    "issues": [],
+    "finished": true,
+    "recommendedScreenshotLimit": 3,
+    "closedTabIds": [],
+    "downloads": [],
+    "keep": true,
+    "screenshotCount": 3,
+    "forcedCleanup": false,
+    "artifacts": [
+      {
+        "name": "screenshot-shot-4101df19-d90f-4675-b079-3f8b0254c0d1.png",
+        "path": "/Users/chen/Library/Application Support/Tabbit Browser/LocalAgent/Runtime/artifacts/task-73760abb-1f00-4d7c-b3ad-c419d69cf914/screenshot-shot-4101df19-d90f-4675-b079-3f8b0254c0d1.png",
+        "bytes": 87122
+      },
+      {
+        "name": "screenshot-shot-7311b812-c6f3-46b3-9ee7-4c13a3ec5807.png",
+        "path": "/Users/chen/Library/Application Support/Tabbit Browser/LocalAgent/Runtime/artifacts/task-73760abb-1f00-4d7c-b3ad-c419d69cf914/screenshot-shot-7311b812-c6f3-46b3-9ee7-4c13a3ec5807.png",
+        "bytes": 243336
+      },
+      {
+        "name": "screenshot-shot-ddcc9d1c-6fc0-4413-be75-447263983fd1.png",
+        "path": "/Users/chen/Library/Application Support/Tabbit Browser/LocalAgent/Runtime/artifacts/task-73760abb-1f00-4d7c-b3ad-c419d69cf914/screenshot-shot-ddcc9d1c-6fc0-4413-be75-447263983fd1.png",
+        "bytes": 239909
+      }
+    ],
+    "groupId": "888CAE7813D0A75AC670C76F94B9F79C"
+  }
+}

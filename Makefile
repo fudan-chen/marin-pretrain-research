@@ -11,15 +11,19 @@ report:
 	$(PYTHON) scripts/build_learning.py
 	$(PYTHON) scripts/build_decision.py
 	$(PYTHON) scripts/build_transfer.py > analysis/transfer_computation_log.txt
+	$(PYTHON) scripts/build_order.py
 	$(PYTHON) scripts/charts.py
 	$(PYTHON) scripts/charts_deepening.py
 	$(PYTHON) scripts/charts_practical.py
 	$(PYTHON) scripts/charts_findings.py
 	$(PYTHON) scripts/charts_transfer.py
+	$(PYTHON) scripts/charts_order.py
 	$(NODE) scripts/test_planner.cjs
 	$(NODE) scripts/test_review.cjs
 	$(NODE) scripts/test_decision.cjs
 	$(PYTHON) scripts/test_transfer.py
+	$(PYTHON) scripts/test_order.py
+	$(NODE) scripts/test_order.cjs
 	$(PYTHON) scripts/build_html.py
 	$(PYTHON) scripts/archive_manifest.py
 	$(PYTHON) scripts/validate.py

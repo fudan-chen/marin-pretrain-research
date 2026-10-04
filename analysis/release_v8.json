@@ -1,0 +1,33 @@
+{
+  "version": "report-v8-2026-10-04",
+  "report_checks": 707,
+  "python_order_boundary_groups": 12,
+  "javascript_order_groups": 7,
+  "native_loader_count_evaluations": {
+    "historical": 48,
+    "compiled": 480
+  },
+  "conditional_edge_index_checks": 20,
+  "mode_amplitude_cases": 40,
+  "source_files_unchanged_from_v7": 318,
+  "source_integrity_manifest_timestamp_regenerated": true,
+  "figure_count": 14,
+  "historical_order_pairs": 8,
+  "integer_amplitude_k_range": [
+    0,
+    19
+  ],
+  "training_status": "not_executed",
+  "actual_token_stream_verified": false,
+  "reader_comprehension_study_status": "not_conducted",
+  "next_local_milestone": "Create claim-scoped reader assessment with source-backed answer boundaries, reviewer disagreement handling and exportable unverified observations",
+  "artifacts": {
+    "analysis/order_workbench_data.json": "bba22dc48e9fb6903dca6b1e2853448e9b807a6e488154b8c69f43783b5cd19e",
+    "analysis/order_loader_probe_python312.json": "52817bd5b69f0830d3d1a21eb62e3094116668527da471c0cdbc315427a91ecc",
+    "analysis/order_integer_cell_audit.csv": "72ff53cffdf48d85876246d994defe1ce01e4ebf1bae6d59abe052b3d5a493f3",
+    "analysis/browser_validation_v8.json": "c7b3e9df924071c80cc5519dfd3e1feb46fc6bd292b4566a685476128f27196e",
+    "templates/order_edge_locked.json": "ab17a2628efac71ed6c196184bae9f10ae591537418d9bff19cbd8c829395b91",
+    "index.html": "1dfb3bfe00bb846ace682eee43075df06db32433ca55da8f51fb24e080dc2f04",
+    "report_standalone.html": "6dbc2f0227890c1278b9666ca04bdadd0574329de68075f2c4169741f25b9b08"
+  }
+}

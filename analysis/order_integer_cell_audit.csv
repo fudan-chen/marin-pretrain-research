@@ -1,0 +1,1601 @@
+pair,cell,complete_block_delta_sequences,whole_window_delta_lower_sequences,whole_window_delta_upper_sequences
+r-stem high pre_vs_cool seed0,c00q0,0,0,0
+r-stem high pre_vs_cool seed0,c00q1,0,-347,347
+r-stem high pre_vs_cool seed0,c00q2,0,-911,911
+r-stem high pre_vs_cool seed0,c00q3,0,-1361,1361
+r-stem high pre_vs_cool seed0,c00q4,0,-1250,1250
+r-stem high pre_vs_cool seed0,c01q0,0,-122,122
+r-stem high pre_vs_cool seed0,c01q1,0,-196,196
+r-stem high pre_vs_cool seed0,c01q2,0,-461,461
+r-stem high pre_vs_cool seed0,c01q3,0,-689,689
+r-stem high pre_vs_cool seed0,c01q4,0,-763,763
+r-stem high pre_vs_cool seed0,c02q0,0,0,0
+r-stem high pre_vs_cool seed0,c02q1,0,-59,59
+r-stem high pre_vs_cool seed0,c02q2,0,-207,207
+r-stem high pre_vs_cool seed0,c02q3,0,-306,306
+r-stem high pre_vs_cool seed0,c02q4,0,-307,307
+r-stem high pre_vs_cool seed0,c03q0,0,-92,92
+r-stem high pre_vs_cool seed0,c03q1,0,-602,602
+r-stem high pre_vs_cool seed0,c03q2,0,-633,633
+r-stem high pre_vs_cool seed0,c03q3,0,-982,982
+r-stem high pre_vs_cool seed0,c03q4,0,-683,683
+r-stem high pre_vs_cool seed0,c04q0,0,0,0
+r-stem high pre_vs_cool seed0,c04q1,0,-3,3
+r-stem high pre_vs_cool seed0,c04q2,0,-380,380
+r-stem high pre_vs_cool seed0,c04q3,0,-293,293
+r-stem high pre_vs_cool seed0,c04q4,0,-60,60
+r-stem high pre_vs_cool seed0,c05q0,0,-19,19
+r-stem high pre_vs_cool seed0,c05q1,0,-170,170
+r-stem high pre_vs_cool seed0,c05q2,0,-949,949
+r-stem high pre_vs_cool seed0,c05q3,0,-2212,2212
+r-stem high pre_vs_cool seed0,c05q4,0,-1537,1537
+r-stem high pre_vs_cool seed0,c06q0,0,0,0
+r-stem high pre_vs_cool seed0,c06q1,0,-15,15
+r-stem high pre_vs_cool seed0,c06q2,0,-72,72
+r-stem high pre_vs_cool seed0,c06q3,0,-216,216
+r-stem high pre_vs_cool seed0,c06q4,0,-177,177
+r-stem high pre_vs_cool seed0,c07q0,0,-11,11
+r-stem high pre_vs_cool seed0,c07q1,0,-159,159
+r-stem high pre_vs_cool seed0,c07q2,0,-330,330
+r-stem high pre_vs_cool seed0,c07q3,0,-286,286
+r-stem high pre_vs_cool seed0,c07q4,0,-68,68
+r-stem high pre_vs_cool seed0,c08q0,0,0,0
+r-stem high pre_vs_cool seed0,c08q1,0,-34,34
+r-stem high pre_vs_cool seed0,c08q2,0,-252,252
+r-stem high pre_vs_cool seed0,c08q3,0,-401,401
+r-stem high pre_vs_cool seed0,c08q4,0,-322,322
+r-stem high pre_vs_cool seed0,c09q0,0,-4,4
+r-stem high pre_vs_cool seed0,c09q1,0,-80,80
+r-stem high pre_vs_cool seed0,c09q2,0,-272,272
+r-stem high pre_vs_cool seed0,c09q3,0,-452,452
+r-stem high pre_vs_cool seed0,c09q4,0,-131,131
+r-stem high pre_vs_cool seed0,c10q0,0,-2,2
+r-stem high pre_vs_cool seed0,c10q1,0,-69,69
+r-stem high pre_vs_cool seed0,c10q2,0,-102,102
+r-stem high pre_vs_cool seed0,c10q3,0,-153,153
+r-stem high pre_vs_cool seed0,c10q4,0,-59,59
+r-stem high pre_vs_cool seed0,c11q0,0,-13,13
+r-stem high pre_vs_cool seed0,c11q1,0,-131,131
+r-stem high pre_vs_cool seed0,c11q2,0,-337,337
+r-stem high pre_vs_cool seed0,c11q3,0,-476,476
+r-stem high pre_vs_cool seed0,c11q4,0,-162,162
+r-stem high pre_vs_cool seed0,c12q0,0,-30,30
+r-stem high pre_vs_cool seed0,c12q1,0,-346,346
+r-stem high pre_vs_cool seed0,c12q2,0,-809,809
+r-stem high pre_vs_cool seed0,c12q3,0,-1244,1244
+r-stem high pre_vs_cool seed0,c12q4,0,-482,482
+r-stem high pre_vs_cool seed0,c13q0,0,0,0
+r-stem high pre_vs_cool seed0,c13q1,0,-242,242
+r-stem high pre_vs_cool seed0,c13q2,0,-904,904
+r-stem high pre_vs_cool seed0,c13q3,0,-2974,2974
+r-stem high pre_vs_cool seed0,c13q4,0,-1273,1273
+r-stem high pre_vs_cool seed0,c14q0,0,-42,42
+r-stem high pre_vs_cool seed0,c14q1,0,-569,569
+r-stem high pre_vs_cool seed0,c14q2,0,-1670,1670
+r-stem high pre_vs_cool seed0,c14q3,0,-2327,2327
+r-stem high pre_vs_cool seed0,c14q4,0,-719,719
+r-stem high pre_vs_cool seed0,c15q0,0,0,0
+r-stem high pre_vs_cool seed0,c15q1,0,-4,4
+r-stem high pre_vs_cool seed0,c15q2,0,-17,17
+r-stem high pre_vs_cool seed0,c15q3,0,-16,16
+r-stem high pre_vs_cool seed0,c15q4,0,-32,32
+r-stem high pre_vs_cool seed0,c16q0,0,-19,19
+r-stem high pre_vs_cool seed0,c16q1,0,-103,103
+r-stem high pre_vs_cool seed0,c16q2,0,-275,275
+r-stem high pre_vs_cool seed0,c16q3,0,-488,488
+r-stem high pre_vs_cool seed0,c16q4,0,-257,257
+r-stem high pre_vs_cool seed0,c17q0,0,-203,203
+r-stem high pre_vs_cool seed0,c17q1,0,-503,503
+r-stem high pre_vs_cool seed0,c17q2,0,-862,862
+r-stem high pre_vs_cool seed0,c17q3,0,-669,669
+r-stem high pre_vs_cool seed0,c17q4,0,-180,180
+r-stem high pre_vs_cool seed0,c18q0,0,-24,24
+r-stem high pre_vs_cool seed0,c18q1,0,-184,184
+r-stem high pre_vs_cool seed0,c18q2,0,-322,322
+r-stem high pre_vs_cool seed0,c18q3,0,-199,199
+r-stem high pre_vs_cool seed0,c18q4,0,-125,125
+r-stem high pre_vs_cool seed0,c19q0,0,-1,1
+r-stem high pre_vs_cool seed0,c19q1,0,-20,20
+r-stem high pre_vs_cool seed0,c19q2,0,-109,109
+r-stem high pre_vs_cool seed0,c19q3,0,-122,122
+r-stem high pre_vs_cool seed0,c19q4,0,-89,89
+r-stem high pre_vs_cool seed0,c20q0,0,-9,9
+r-stem high pre_vs_cool seed0,c20q1,0,-346,346
+r-stem high pre_vs_cool seed0,c20q2,0,-678,678
+r-stem high pre_vs_cool seed0,c20q3,0,-425,425
+r-stem high pre_vs_cool seed0,c20q4,0,-633,633
+r-stem high pre_vs_cool seed0,c21q0,0,-48,48
+r-stem high pre_vs_cool seed0,c21q1,0,-378,378
+r-stem high pre_vs_cool seed0,c21q2,0,-1103,1103
+r-stem high pre_vs_cool seed0,c21q3,0,-1297,1297
+r-stem high pre_vs_cool seed0,c21q4,0,-531,531
+r-stem high pre_vs_cool seed0,c22q0,0,0,0
+r-stem high pre_vs_cool seed0,c22q1,0,-35,35
+r-stem high pre_vs_cool seed0,c22q2,0,-301,301
+r-stem high pre_vs_cool seed0,c22q3,0,-629,629
+r-stem high pre_vs_cool seed0,c22q4,0,-214,214
+r-stem high pre_vs_cool seed0,c23q0,0,-33,33
+r-stem high pre_vs_cool seed0,c23q1,0,-307,307
+r-stem high pre_vs_cool seed0,c23q2,0,-608,608
+r-stem high pre_vs_cool seed0,c23q3,0,-794,794
+r-stem high pre_vs_cool seed0,c23q4,0,-916,916
+r-stem high pre_vs_cool seed0,c24q0,0,-233,233
+r-stem high pre_vs_cool seed0,c24q1,0,-1429,1429
+r-stem high pre_vs_cool seed0,c24q2,0,-2569,2569
+r-stem high pre_vs_cool seed0,c24q3,0,-1969,1969
+r-stem high pre_vs_cool seed0,c24q4,0,-987,987
+r-stem high pre_vs_cool seed0,c25q0,0,-293,293
+r-stem high pre_vs_cool seed0,c25q1,0,-838,838
+r-stem high pre_vs_cool seed0,c25q2,0,-1276,1276
+r-stem high pre_vs_cool seed0,c25q3,0,-906,906
+r-stem high pre_vs_cool seed0,c25q4,0,-588,588
+r-stem high pre_vs_cool seed0,c26q0,0,-3,3
+r-stem high pre_vs_cool seed0,c26q1,0,-26,26
+r-stem high pre_vs_cool seed0,c26q2,0,-133,133
+r-stem high pre_vs_cool seed0,c26q3,0,-226,226
+r-stem high pre_vs_cool seed0,c26q4,0,-337,337
+r-stem high pre_vs_cool seed0,c27q0,0,0,0
+r-stem high pre_vs_cool seed0,c27q1,0,-14,14
+r-stem high pre_vs_cool seed0,c27q2,0,-72,72
+r-stem high pre_vs_cool seed0,c27q3,0,-82,82
+r-stem high pre_vs_cool seed0,c27q4,0,-43,43
+r-stem high pre_vs_cool seed0,c28q0,0,0,0
+r-stem high pre_vs_cool seed0,c28q1,0,-447,447
+r-stem high pre_vs_cool seed0,c28q2,0,-1200,1200
+r-stem high pre_vs_cool seed0,c28q3,0,-1905,1905
+r-stem high pre_vs_cool seed0,c28q4,0,-965,965
+r-stem high pre_vs_cool seed0,c29q0,0,-265,265
+r-stem high pre_vs_cool seed0,c29q1,0,-394,394
+r-stem high pre_vs_cool seed0,c29q2,0,-1061,1061
+r-stem high pre_vs_cool seed0,c29q3,0,-1334,1334
+r-stem high pre_vs_cool seed0,c29q4,0,-1154,1154
+r-stem high pre_vs_cool seed0,c30q0,0,0,0
+r-stem high pre_vs_cool seed0,c30q1,8,-131,135
+r-stem high pre_vs_cool seed0,c30q2,24,-541,538
+r-stem high pre_vs_cool seed0,c30q3,120,-1607,1732
+r-stem high pre_vs_cool seed0,c30q4,128,-2972,3116
+r-stem high pre_vs_cool seed0,c31q0,0,-2,2
+r-stem high pre_vs_cool seed0,c31q1,0,-48,48
+r-stem high pre_vs_cool seed0,c31q2,0,-133,133
+r-stem high pre_vs_cool seed0,c31q3,0,-233,233
+r-stem high pre_vs_cool seed0,c31q4,0,-160,160
+r-stem high pre_vs_cool seed0,c32q0,0,-36,36
+r-stem high pre_vs_cool seed0,c32q1,0,-251,251
+r-stem high pre_vs_cool seed0,c32q2,0,-1324,1324
+r-stem high pre_vs_cool seed0,c32q3,0,-2432,2432
+r-stem high pre_vs_cool seed0,c32q4,0,-1015,1015
+r-stem high pre_vs_cool seed0,c33q0,0,0,0
+r-stem high pre_vs_cool seed0,c33q1,0,-23,23
+r-stem high pre_vs_cool seed0,c33q2,0,-65,65
+r-stem high pre_vs_cool seed0,c33q3,0,-103,103
+r-stem high pre_vs_cool seed0,c33q4,0,-158,158
+r-stem high pre_vs_cool seed0,c34q0,0,0,0
+r-stem high pre_vs_cool seed0,c34q1,0,-85,85
+r-stem high pre_vs_cool seed0,c34q2,0,-257,257
+r-stem high pre_vs_cool seed0,c34q3,0,-360,360
+r-stem high pre_vs_cool seed0,c34q4,0,-200,200
+r-stem high pre_vs_cool seed0,c35q0,0,-57,57
+r-stem high pre_vs_cool seed0,c35q1,0,-592,592
+r-stem high pre_vs_cool seed0,c35q2,0,-915,915
+r-stem high pre_vs_cool seed0,c35q3,0,-833,833
+r-stem high pre_vs_cool seed0,c35q4,0,-386,386
+r-stem high pre_vs_cool seed0,c36q0,0,-18,18
+r-stem high pre_vs_cool seed0,c36q1,0,-90,90
+r-stem high pre_vs_cool seed0,c36q2,0,-161,161
+r-stem high pre_vs_cool seed0,c36q3,0,-83,83
+r-stem high pre_vs_cool seed0,c36q4,0,-32,32
+r-stem high pre_vs_cool seed0,c37q0,0,-13,13
+r-stem high pre_vs_cool seed0,c37q1,0,-75,75
+r-stem high pre_vs_cool seed0,c37q2,0,-720,720
+r-stem high pre_vs_cool seed0,c37q3,0,-1132,1132
+r-stem high pre_vs_cool seed0,c37q4,0,-1680,1680
+r-stem high pre_vs_cool seed0,c38q0,0,-103,103
+r-stem high pre_vs_cool seed0,c38q1,0,-284,284
+r-stem high pre_vs_cool seed0,c38q2,0,-897,897
+r-stem high pre_vs_cool seed0,c38q3,0,-1127,1127
+r-stem high pre_vs_cool seed0,c38q4,0,-1126,1126
+r-stem high pre_vs_cool seed0,c39q0,0,-33,33
+r-stem high pre_vs_cool seed0,c39q1,-8,-532,528
+r-stem high pre_vs_cool seed0,c39q2,-80,-2763,2653
+r-stem high pre_vs_cool seed0,c39q3,-120,-1860,1735
+r-stem high pre_vs_cool seed0,c39q4,-72,-1788,1757
+r-stem low pre_vs_cool seed0,c00q0,0,0,0
+r-stem low pre_vs_cool seed0,c00q1,0,-347,347
+r-stem low pre_vs_cool seed0,c00q2,0,-911,911
+r-stem low pre_vs_cool seed0,c00q3,0,-1361,1361
+r-stem low pre_vs_cool seed0,c00q4,0,-1250,1250
+r-stem low pre_vs_cool seed0,c01q0,0,-122,122
+r-stem low pre_vs_cool seed0,c01q1,0,-196,196
+r-stem low pre_vs_cool seed0,c01q2,0,-461,461
+r-stem low pre_vs_cool seed0,c01q3,0,-689,689
+r-stem low pre_vs_cool seed0,c01q4,0,-763,763
+r-stem low pre_vs_cool seed0,c02q0,0,0,0
+r-stem low pre_vs_cool seed0,c02q1,0,-59,59
+r-stem low pre_vs_cool seed0,c02q2,0,-207,207
+r-stem low pre_vs_cool seed0,c02q3,0,-306,306
+r-stem low pre_vs_cool seed0,c02q4,0,-307,307
+r-stem low pre_vs_cool seed0,c03q0,0,-92,92
+r-stem low pre_vs_cool seed0,c03q1,0,-602,602
+r-stem low pre_vs_cool seed0,c03q2,0,-633,633
+r-stem low pre_vs_cool seed0,c03q3,0,-982,982
+r-stem low pre_vs_cool seed0,c03q4,0,-683,683
+r-stem low pre_vs_cool seed0,c04q0,0,0,0
+r-stem low pre_vs_cool seed0,c04q1,0,-3,3
+r-stem low pre_vs_cool seed0,c04q2,0,-380,380
+r-stem low pre_vs_cool seed0,c04q3,0,-293,293
+r-stem low pre_vs_cool seed0,c04q4,0,-60,60
+r-stem low pre_vs_cool seed0,c05q0,0,-19,19
+r-stem low pre_vs_cool seed0,c05q1,0,-170,170
+r-stem low pre_vs_cool seed0,c05q2,0,-949,949
+r-stem low pre_vs_cool seed0,c05q3,0,-2212,2212
+r-stem low pre_vs_cool seed0,c05q4,0,-1537,1537
+r-stem low pre_vs_cool seed0,c06q0,0,0,0
+r-stem low pre_vs_cool seed0,c06q1,0,-15,15
+r-stem low pre_vs_cool seed0,c06q2,0,-72,72
+r-stem low pre_vs_cool seed0,c06q3,0,-216,216
+r-stem low pre_vs_cool seed0,c06q4,0,-177,177
+r-stem low pre_vs_cool seed0,c07q0,0,-11,11
+r-stem low pre_vs_cool seed0,c07q1,0,-159,159
+r-stem low pre_vs_cool seed0,c07q2,0,-330,330
+r-stem low pre_vs_cool seed0,c07q3,0,-286,286
+r-stem low pre_vs_cool seed0,c07q4,0,-68,68
+r-stem low pre_vs_cool seed0,c08q0,0,0,0
+r-stem low pre_vs_cool seed0,c08q1,0,-34,34
+r-stem low pre_vs_cool seed0,c08q2,0,-252,252
+r-stem low pre_vs_cool seed0,c08q3,0,-401,401
+r-stem low pre_vs_cool seed0,c08q4,0,-322,322
+r-stem low pre_vs_cool seed0,c09q0,0,-4,4
+r-stem low pre_vs_cool seed0,c09q1,0,-80,80
+r-stem low pre_vs_cool seed0,c09q2,0,-272,272
+r-stem low pre_vs_cool seed0,c09q3,0,-452,452
+r-stem low pre_vs_cool seed0,c09q4,0,-131,131
+r-stem low pre_vs_cool seed0,c10q0,0,-2,2
+r-stem low pre_vs_cool seed0,c10q1,0,-69,69
+r-stem low pre_vs_cool seed0,c10q2,0,-102,102
+r-stem low pre_vs_cool seed0,c10q3,0,-153,153
+r-stem low pre_vs_cool seed0,c10q4,0,-59,59
+r-stem low pre_vs_cool seed0,c11q0,0,-13,13
+r-stem low pre_vs_cool seed0,c11q1,0,-131,131
+r-stem low pre_vs_cool seed0,c11q2,0,-337,337
+r-stem low pre_vs_cool seed0,c11q3,0,-476,476
+r-stem low pre_vs_cool seed0,c11q4,0,-162,162
+r-stem low pre_vs_cool seed0,c12q0,0,-30,30
+r-stem low pre_vs_cool seed0,c12q1,0,-346,346
+r-stem low pre_vs_cool seed0,c12q2,0,-809,809
+r-stem low pre_vs_cool seed0,c12q3,0,-1244,1244
+r-stem low pre_vs_cool seed0,c12q4,0,-482,482
+r-stem low pre_vs_cool seed0,c13q0,0,0,0
+r-stem low pre_vs_cool seed0,c13q1,0,-242,242
+r-stem low pre_vs_cool seed0,c13q2,0,-904,904
+r-stem low pre_vs_cool seed0,c13q3,0,-2974,2974
+r-stem low pre_vs_cool seed0,c13q4,0,-1273,1273
+r-stem low pre_vs_cool seed0,c14q0,0,-42,42
+r-stem low pre_vs_cool seed0,c14q1,0,-569,569
+r-stem low pre_vs_cool seed0,c14q2,0,-1670,1670
+r-stem low pre_vs_cool seed0,c14q3,0,-2327,2327
+r-stem low pre_vs_cool seed0,c14q4,0,-719,719
+r-stem low pre_vs_cool seed0,c15q0,0,0,0
+r-stem low pre_vs_cool seed0,c15q1,0,-4,4
+r-stem low pre_vs_cool seed0,c15q2,0,-17,17
+r-stem low pre_vs_cool seed0,c15q3,0,-16,16
+r-stem low pre_vs_cool seed0,c15q4,0,-32,32
+r-stem low pre_vs_cool seed0,c16q0,0,-19,19
+r-stem low pre_vs_cool seed0,c16q1,0,-103,103
+r-stem low pre_vs_cool seed0,c16q2,0,-275,275
+r-stem low pre_vs_cool seed0,c16q3,0,-488,488
+r-stem low pre_vs_cool seed0,c16q4,0,-257,257
+r-stem low pre_vs_cool seed0,c17q0,0,-203,203
+r-stem low pre_vs_cool seed0,c17q1,0,-503,503
+r-stem low pre_vs_cool seed0,c17q2,0,-862,862
+r-stem low pre_vs_cool seed0,c17q3,0,-669,669
+r-stem low pre_vs_cool seed0,c17q4,0,-180,180
+r-stem low pre_vs_cool seed0,c18q0,0,-24,24
+r-stem low pre_vs_cool seed0,c18q1,0,-184,184
+r-stem low pre_vs_cool seed0,c18q2,0,-322,322
+r-stem low pre_vs_cool seed0,c18q3,0,-199,199
+r-stem low pre_vs_cool seed0,c18q4,0,-125,125
+r-stem low pre_vs_cool seed0,c19q0,0,-1,1
+r-stem low pre_vs_cool seed0,c19q1,0,-20,20
+r-stem low pre_vs_cool seed0,c19q2,0,-109,109
+r-stem low pre_vs_cool seed0,c19q3,0,-122,122
+r-stem low pre_vs_cool seed0,c19q4,0,-89,89
+r-stem low pre_vs_cool seed0,c20q0,0,-9,9
+r-stem low pre_vs_cool seed0,c20q1,0,-346,346
+r-stem low pre_vs_cool seed0,c20q2,0,-678,678
+r-stem low pre_vs_cool seed0,c20q3,0,-425,425
+r-stem low pre_vs_cool seed0,c20q4,0,-633,633
+r-stem low pre_vs_cool seed0,c21q0,0,-48,48
+r-stem low pre_vs_cool seed0,c21q1,0,-378,378
+r-stem low pre_vs_cool seed0,c21q2,0,-1103,1103
+r-stem low pre_vs_cool seed0,c21q3,0,-1297,1297
+r-stem low pre_vs_cool seed0,c21q4,0,-531,531
+r-stem low pre_vs_cool seed0,c22q0,0,0,0
+r-stem low pre_vs_cool seed0,c22q1,0,-35,35
+r-stem low pre_vs_cool seed0,c22q2,0,-301,301
+r-stem low pre_vs_cool seed0,c22q3,0,-629,629
+r-stem low pre_vs_cool seed0,c22q4,0,-214,214
+r-stem low pre_vs_cool seed0,c23q0,0,-33,33
+r-stem low pre_vs_cool seed0,c23q1,0,-307,307
+r-stem low pre_vs_cool seed0,c23q2,0,-608,608
+r-stem low pre_vs_cool seed0,c23q3,0,-794,794
+r-stem low pre_vs_cool seed0,c23q4,0,-916,916
+r-stem low pre_vs_cool seed0,c24q0,0,-233,233
+r-stem low pre_vs_cool seed0,c24q1,0,-1429,1429
+r-stem low pre_vs_cool seed0,c24q2,0,-2569,2569
+r-stem low pre_vs_cool seed0,c24q3,0,-1969,1969
+r-stem low pre_vs_cool seed0,c24q4,0,-987,987
+r-stem low pre_vs_cool seed0,c25q0,0,-293,293
+r-stem low pre_vs_cool seed0,c25q1,0,-838,838
+r-stem low pre_vs_cool seed0,c25q2,0,-1276,1276
+r-stem low pre_vs_cool seed0,c25q3,0,-906,906
+r-stem low pre_vs_cool seed0,c25q4,0,-588,588
+r-stem low pre_vs_cool seed0,c26q0,0,-3,3
+r-stem low pre_vs_cool seed0,c26q1,0,-26,26
+r-stem low pre_vs_cool seed0,c26q2,0,-133,133
+r-stem low pre_vs_cool seed0,c26q3,0,-226,226
+r-stem low pre_vs_cool seed0,c26q4,0,-337,337
+r-stem low pre_vs_cool seed0,c27q0,0,0,0
+r-stem low pre_vs_cool seed0,c27q1,0,-14,14
+r-stem low pre_vs_cool seed0,c27q2,0,-72,72
+r-stem low pre_vs_cool seed0,c27q3,0,-82,82
+r-stem low pre_vs_cool seed0,c27q4,0,-43,43
+r-stem low pre_vs_cool seed0,c28q0,0,0,0
+r-stem low pre_vs_cool seed0,c28q1,0,-447,447
+r-stem low pre_vs_cool seed0,c28q2,0,-1200,1200
+r-stem low pre_vs_cool seed0,c28q3,0,-1905,1905
+r-stem low pre_vs_cool seed0,c28q4,0,-965,965
+r-stem low pre_vs_cool seed0,c29q0,0,-265,265
+r-stem low pre_vs_cool seed0,c29q1,0,-394,394
+r-stem low pre_vs_cool seed0,c29q2,0,-1061,1061
+r-stem low pre_vs_cool seed0,c29q3,0,-1334,1334
+r-stem low pre_vs_cool seed0,c29q4,0,-1154,1154
+r-stem low pre_vs_cool seed0,c30q0,0,0,0
+r-stem low pre_vs_cool seed0,c30q1,8,-141,170
+r-stem low pre_vs_cool seed0,c30q2,-24,-631,634
+r-stem low pre_vs_cool seed0,c30q3,-64,-1888,1876
+r-stem low pre_vs_cool seed0,c30q4,-184,-3381,3124
+r-stem low pre_vs_cool seed0,c31q0,0,-2,2
+r-stem low pre_vs_cool seed0,c31q1,0,-48,48
+r-stem low pre_vs_cool seed0,c31q2,0,-133,133
+r-stem low pre_vs_cool seed0,c31q3,0,-233,233
+r-stem low pre_vs_cool seed0,c31q4,0,-160,160
+r-stem low pre_vs_cool seed0,c32q0,0,-36,36
+r-stem low pre_vs_cool seed0,c32q1,0,-251,251
+r-stem low pre_vs_cool seed0,c32q2,0,-1324,1324
+r-stem low pre_vs_cool seed0,c32q3,0,-2432,2432
+r-stem low pre_vs_cool seed0,c32q4,0,-1015,1015
+r-stem low pre_vs_cool seed0,c33q0,0,0,0
+r-stem low pre_vs_cool seed0,c33q1,0,-23,23
+r-stem low pre_vs_cool seed0,c33q2,0,-65,65
+r-stem low pre_vs_cool seed0,c33q3,0,-103,103
+r-stem low pre_vs_cool seed0,c33q4,0,-158,158
+r-stem low pre_vs_cool seed0,c34q0,0,0,0
+r-stem low pre_vs_cool seed0,c34q1,0,-85,85
+r-stem low pre_vs_cool seed0,c34q2,0,-257,257
+r-stem low pre_vs_cool seed0,c34q3,0,-360,360
+r-stem low pre_vs_cool seed0,c34q4,0,-200,200
+r-stem low pre_vs_cool seed0,c35q0,0,-57,57
+r-stem low pre_vs_cool seed0,c35q1,0,-592,592
+r-stem low pre_vs_cool seed0,c35q2,0,-915,915
+r-stem low pre_vs_cool seed0,c35q3,0,-833,833
+r-stem low pre_vs_cool seed0,c35q4,0,-386,386
+r-stem low pre_vs_cool seed0,c36q0,0,-18,18
+r-stem low pre_vs_cool seed0,c36q1,0,-90,90
+r-stem low pre_vs_cool seed0,c36q2,0,-161,161
+r-stem low pre_vs_cool seed0,c36q3,0,-83,83
+r-stem low pre_vs_cool seed0,c36q4,0,-32,32
+r-stem low pre_vs_cool seed0,c37q0,0,-13,13
+r-stem low pre_vs_cool seed0,c37q1,0,-75,75
+r-stem low pre_vs_cool seed0,c37q2,0,-720,720
+r-stem low pre_vs_cool seed0,c37q3,0,-1132,1132
+r-stem low pre_vs_cool seed0,c37q4,0,-1680,1680
+r-stem low pre_vs_cool seed0,c38q0,0,-103,103
+r-stem low pre_vs_cool seed0,c38q1,0,-284,284
+r-stem low pre_vs_cool seed0,c38q2,0,-897,897
+r-stem low pre_vs_cool seed0,c38q3,0,-1127,1127
+r-stem low pre_vs_cool seed0,c38q4,0,-1126,1126
+r-stem low pre_vs_cool seed0,c39q0,0,-33,33
+r-stem low pre_vs_cool seed0,c39q1,-8,-522,493
+r-stem low pre_vs_cool seed0,c39q2,24,-2616,2613
+r-stem low pre_vs_cool seed0,c39q3,104,-1538,1630
+r-stem low pre_vs_cool seed0,c39q4,144,-1477,1654
+r-stem swap_high_vs_low seed0,c00q0,0,0,0
+r-stem swap_high_vs_low seed0,c00q1,0,-347,347
+r-stem swap_high_vs_low seed0,c00q2,0,-911,911
+r-stem swap_high_vs_low seed0,c00q3,0,-1361,1361
+r-stem swap_high_vs_low seed0,c00q4,0,-1250,1250
+r-stem swap_high_vs_low seed0,c01q0,0,-122,122
+r-stem swap_high_vs_low seed0,c01q1,0,-196,196
+r-stem swap_high_vs_low seed0,c01q2,0,-461,461
+r-stem swap_high_vs_low seed0,c01q3,0,-689,689
+r-stem swap_high_vs_low seed0,c01q4,0,-763,763
+r-stem swap_high_vs_low seed0,c02q0,0,0,0
+r-stem swap_high_vs_low seed0,c02q1,0,-59,59
+r-stem swap_high_vs_low seed0,c02q2,0,-207,207
+r-stem swap_high_vs_low seed0,c02q3,0,-306,306
+r-stem swap_high_vs_low seed0,c02q4,0,-307,307
+r-stem swap_high_vs_low seed0,c03q0,0,-92,92
+r-stem swap_high_vs_low seed0,c03q1,0,-602,602
+r-stem swap_high_vs_low seed0,c03q2,0,-633,633
+r-stem swap_high_vs_low seed0,c03q3,0,-982,982
+r-stem swap_high_vs_low seed0,c03q4,0,-683,683
+r-stem swap_high_vs_low seed0,c04q0,0,0,0
+r-stem swap_high_vs_low seed0,c04q1,0,-3,3
+r-stem swap_high_vs_low seed0,c04q2,0,-380,380
+r-stem swap_high_vs_low seed0,c04q3,0,-293,293
+r-stem swap_high_vs_low seed0,c04q4,0,-60,60
+r-stem swap_high_vs_low seed0,c05q0,0,-19,19
+r-stem swap_high_vs_low seed0,c05q1,0,-170,170
+r-stem swap_high_vs_low seed0,c05q2,0,-949,949
+r-stem swap_high_vs_low seed0,c05q3,0,-2212,2212
+r-stem swap_high_vs_low seed0,c05q4,0,-1537,1537
+r-stem swap_high_vs_low seed0,c06q0,0,0,0
+r-stem swap_high_vs_low seed0,c06q1,0,-15,15
+r-stem swap_high_vs_low seed0,c06q2,0,-72,72
+r-stem swap_high_vs_low seed0,c06q3,0,-216,216
+r-stem swap_high_vs_low seed0,c06q4,0,-177,177
+r-stem swap_high_vs_low seed0,c07q0,0,-11,11
+r-stem swap_high_vs_low seed0,c07q1,0,-159,159
+r-stem swap_high_vs_low seed0,c07q2,0,-330,330
+r-stem swap_high_vs_low seed0,c07q3,0,-286,286
+r-stem swap_high_vs_low seed0,c07q4,0,-68,68
+r-stem swap_high_vs_low seed0,c08q0,0,0,0
+r-stem swap_high_vs_low seed0,c08q1,0,-34,34
+r-stem swap_high_vs_low seed0,c08q2,0,-252,252
+r-stem swap_high_vs_low seed0,c08q3,0,-401,401
+r-stem swap_high_vs_low seed0,c08q4,0,-322,322
+r-stem swap_high_vs_low seed0,c09q0,0,-4,4
+r-stem swap_high_vs_low seed0,c09q1,0,-80,80
+r-stem swap_high_vs_low seed0,c09q2,0,-272,272
+r-stem swap_high_vs_low seed0,c09q3,0,-452,452
+r-stem swap_high_vs_low seed0,c09q4,0,-131,131
+r-stem swap_high_vs_low seed0,c10q0,0,-2,2
+r-stem swap_high_vs_low seed0,c10q1,0,-69,69
+r-stem swap_high_vs_low seed0,c10q2,0,-102,102
+r-stem swap_high_vs_low seed0,c10q3,0,-153,153
+r-stem swap_high_vs_low seed0,c10q4,0,-59,59
+r-stem swap_high_vs_low seed0,c11q0,0,-13,13
+r-stem swap_high_vs_low seed0,c11q1,0,-131,131
+r-stem swap_high_vs_low seed0,c11q2,0,-337,337
+r-stem swap_high_vs_low seed0,c11q3,0,-476,476
+r-stem swap_high_vs_low seed0,c11q4,0,-162,162
+r-stem swap_high_vs_low seed0,c12q0,0,-30,30
+r-stem swap_high_vs_low seed0,c12q1,0,-346,346
+r-stem swap_high_vs_low seed0,c12q2,0,-809,809
+r-stem swap_high_vs_low seed0,c12q3,0,-1244,1244
+r-stem swap_high_vs_low seed0,c12q4,0,-482,482
+r-stem swap_high_vs_low seed0,c13q0,0,0,0
+r-stem swap_high_vs_low seed0,c13q1,0,-242,242
+r-stem swap_high_vs_low seed0,c13q2,0,-904,904
+r-stem swap_high_vs_low seed0,c13q3,0,-2974,2974
+r-stem swap_high_vs_low seed0,c13q4,0,-1273,1273
+r-stem swap_high_vs_low seed0,c14q0,0,-42,42
+r-stem swap_high_vs_low seed0,c14q1,0,-569,569
+r-stem swap_high_vs_low seed0,c14q2,0,-1670,1670
+r-stem swap_high_vs_low seed0,c14q3,0,-2327,2327
+r-stem swap_high_vs_low seed0,c14q4,0,-719,719
+r-stem swap_high_vs_low seed0,c15q0,0,0,0
+r-stem swap_high_vs_low seed0,c15q1,0,-4,4
+r-stem swap_high_vs_low seed0,c15q2,0,-17,17
+r-stem swap_high_vs_low seed0,c15q3,0,-16,16
+r-stem swap_high_vs_low seed0,c15q4,0,-32,32
+r-stem swap_high_vs_low seed0,c16q0,0,-19,19
+r-stem swap_high_vs_low seed0,c16q1,0,-103,103
+r-stem swap_high_vs_low seed0,c16q2,0,-275,275
+r-stem swap_high_vs_low seed0,c16q3,0,-488,488
+r-stem swap_high_vs_low seed0,c16q4,0,-257,257
+r-stem swap_high_vs_low seed0,c17q0,0,-203,203
+r-stem swap_high_vs_low seed0,c17q1,0,-503,503
+r-stem swap_high_vs_low seed0,c17q2,0,-862,862
+r-stem swap_high_vs_low seed0,c17q3,0,-669,669
+r-stem swap_high_vs_low seed0,c17q4,0,-180,180
+r-stem swap_high_vs_low seed0,c18q0,0,-24,24
+r-stem swap_high_vs_low seed0,c18q1,0,-184,184
+r-stem swap_high_vs_low seed0,c18q2,0,-322,322
+r-stem swap_high_vs_low seed0,c18q3,0,-199,199
+r-stem swap_high_vs_low seed0,c18q4,0,-125,125
+r-stem swap_high_vs_low seed0,c19q0,0,-1,1
+r-stem swap_high_vs_low seed0,c19q1,0,-20,20
+r-stem swap_high_vs_low seed0,c19q2,0,-109,109
+r-stem swap_high_vs_low seed0,c19q3,0,-122,122
+r-stem swap_high_vs_low seed0,c19q4,0,-89,89
+r-stem swap_high_vs_low seed0,c20q0,0,-9,9
+r-stem swap_high_vs_low seed0,c20q1,0,-346,346
+r-stem swap_high_vs_low seed0,c20q2,0,-678,678
+r-stem swap_high_vs_low seed0,c20q3,0,-425,425
+r-stem swap_high_vs_low seed0,c20q4,0,-633,633
+r-stem swap_high_vs_low seed0,c21q0,0,-48,48
+r-stem swap_high_vs_low seed0,c21q1,0,-378,378
+r-stem swap_high_vs_low seed0,c21q2,0,-1103,1103
+r-stem swap_high_vs_low seed0,c21q3,0,-1297,1297
+r-stem swap_high_vs_low seed0,c21q4,0,-531,531
+r-stem swap_high_vs_low seed0,c22q0,0,0,0
+r-stem swap_high_vs_low seed0,c22q1,0,-35,35
+r-stem swap_high_vs_low seed0,c22q2,0,-301,301
+r-stem swap_high_vs_low seed0,c22q3,0,-629,629
+r-stem swap_high_vs_low seed0,c22q4,0,-214,214
+r-stem swap_high_vs_low seed0,c23q0,0,-33,33
+r-stem swap_high_vs_low seed0,c23q1,0,-307,307
+r-stem swap_high_vs_low seed0,c23q2,0,-608,608
+r-stem swap_high_vs_low seed0,c23q3,0,-794,794
+r-stem swap_high_vs_low seed0,c23q4,0,-916,916
+r-stem swap_high_vs_low seed0,c24q0,0,-233,233
+r-stem swap_high_vs_low seed0,c24q1,0,-1429,1429
+r-stem swap_high_vs_low seed0,c24q2,0,-2569,2569
+r-stem swap_high_vs_low seed0,c24q3,0,-1969,1969
+r-stem swap_high_vs_low seed0,c24q4,0,-987,987
+r-stem swap_high_vs_low seed0,c25q0,0,-293,293
+r-stem swap_high_vs_low seed0,c25q1,0,-838,838
+r-stem swap_high_vs_low seed0,c25q2,0,-1276,1276
+r-stem swap_high_vs_low seed0,c25q3,0,-906,906
+r-stem swap_high_vs_low seed0,c25q4,0,-588,588
+r-stem swap_high_vs_low seed0,c26q0,0,-3,3
+r-stem swap_high_vs_low seed0,c26q1,0,-26,26
+r-stem swap_high_vs_low seed0,c26q2,0,-133,133
+r-stem swap_high_vs_low seed0,c26q3,0,-226,226
+r-stem swap_high_vs_low seed0,c26q4,0,-337,337
+r-stem swap_high_vs_low seed0,c27q0,0,0,0
+r-stem swap_high_vs_low seed0,c27q1,0,-14,14
+r-stem swap_high_vs_low seed0,c27q2,0,-72,72
+r-stem swap_high_vs_low seed0,c27q3,0,-82,82
+r-stem swap_high_vs_low seed0,c27q4,0,-43,43
+r-stem swap_high_vs_low seed0,c28q0,0,0,0
+r-stem swap_high_vs_low seed0,c28q1,0,-447,447
+r-stem swap_high_vs_low seed0,c28q2,0,-1200,1200
+r-stem swap_high_vs_low seed0,c28q3,0,-1905,1905
+r-stem swap_high_vs_low seed0,c28q4,0,-965,965
+r-stem swap_high_vs_low seed0,c29q0,0,-265,265
+r-stem swap_high_vs_low seed0,c29q1,0,-394,394
+r-stem swap_high_vs_low seed0,c29q2,0,-1061,1061
+r-stem swap_high_vs_low seed0,c29q3,0,-1334,1334
+r-stem swap_high_vs_low seed0,c29q4,0,-1154,1154
+r-stem swap_high_vs_low seed0,c30q0,0,0,0
+r-stem swap_high_vs_low seed0,c30q1,0,-157,132
+r-stem swap_high_vs_low seed0,c30q2,48,-589,583
+r-stem swap_high_vs_low seed0,c30q3,184,-1707,1844
+r-stem swap_high_vs_low seed0,c30q4,312,-2948,3349
+r-stem swap_high_vs_low seed0,c31q0,0,-2,2
+r-stem swap_high_vs_low seed0,c31q1,0,-48,48
+r-stem swap_high_vs_low seed0,c31q2,0,-133,133
+r-stem swap_high_vs_low seed0,c31q3,0,-233,233
+r-stem swap_high_vs_low seed0,c31q4,0,-160,160
+r-stem swap_high_vs_low seed0,c32q0,0,-36,36
+r-stem swap_high_vs_low seed0,c32q1,0,-251,251
+r-stem swap_high_vs_low seed0,c32q2,0,-1324,1324
+r-stem swap_high_vs_low seed0,c32q3,0,-2432,2432
+r-stem swap_high_vs_low seed0,c32q4,0,-1015,1015
+r-stem swap_high_vs_low seed0,c33q0,0,0,0
+r-stem swap_high_vs_low seed0,c33q1,0,-23,23
+r-stem swap_high_vs_low seed0,c33q2,0,-65,65
+r-stem swap_high_vs_low seed0,c33q3,0,-103,103
+r-stem swap_high_vs_low seed0,c33q4,0,-158,158
+r-stem swap_high_vs_low seed0,c34q0,0,0,0
+r-stem swap_high_vs_low seed0,c34q1,0,-85,85
+r-stem swap_high_vs_low seed0,c34q2,0,-257,257
+r-stem swap_high_vs_low seed0,c34q3,0,-360,360
+r-stem swap_high_vs_low seed0,c34q4,0,-200,200
+r-stem swap_high_vs_low seed0,c35q0,0,-57,57
+r-stem swap_high_vs_low seed0,c35q1,0,-592,592
+r-stem swap_high_vs_low seed0,c35q2,0,-915,915
+r-stem swap_high_vs_low seed0,c35q3,0,-833,833
+r-stem swap_high_vs_low seed0,c35q4,0,-386,386
+r-stem swap_high_vs_low seed0,c36q0,0,-18,18
+r-stem swap_high_vs_low seed0,c36q1,0,-90,90
+r-stem swap_high_vs_low seed0,c36q2,0,-161,161
+r-stem swap_high_vs_low seed0,c36q3,0,-83,83
+r-stem swap_high_vs_low seed0,c36q4,0,-32,32
+r-stem swap_high_vs_low seed0,c37q0,0,-13,13
+r-stem swap_high_vs_low seed0,c37q1,0,-75,75
+r-stem swap_high_vs_low seed0,c37q2,0,-720,720
+r-stem swap_high_vs_low seed0,c37q3,0,-1132,1132
+r-stem swap_high_vs_low seed0,c37q4,0,-1680,1680
+r-stem swap_high_vs_low seed0,c38q0,0,-103,103
+r-stem swap_high_vs_low seed0,c38q1,0,-284,284
+r-stem swap_high_vs_low seed0,c38q2,0,-897,897
+r-stem swap_high_vs_low seed0,c38q3,0,-1127,1127
+r-stem swap_high_vs_low seed0,c38q4,0,-1126,1126
+r-stem swap_high_vs_low seed0,c39q0,0,-33,33
+r-stem swap_high_vs_low seed0,c39q1,0,-506,531
+r-stem swap_high_vs_low seed0,c39q2,-104,-2715,2608
+r-stem swap_high_vs_low seed0,c39q3,-224,-1799,1582
+r-stem swap_high_vs_low seed0,c39q4,-216,-1773,1565
+r-stem swap_high_vs_low seed1,c00q0,0,0,0
+r-stem swap_high_vs_low seed1,c00q1,0,-347,347
+r-stem swap_high_vs_low seed1,c00q2,0,-911,911
+r-stem swap_high_vs_low seed1,c00q3,0,-1361,1361
+r-stem swap_high_vs_low seed1,c00q4,0,-1250,1250
+r-stem swap_high_vs_low seed1,c01q0,0,-122,122
+r-stem swap_high_vs_low seed1,c01q1,0,-196,196
+r-stem swap_high_vs_low seed1,c01q2,0,-461,461
+r-stem swap_high_vs_low seed1,c01q3,0,-689,689
+r-stem swap_high_vs_low seed1,c01q4,0,-763,763
+r-stem swap_high_vs_low seed1,c02q0,0,0,0
+r-stem swap_high_vs_low seed1,c02q1,0,-59,59
+r-stem swap_high_vs_low seed1,c02q2,0,-207,207
+r-stem swap_high_vs_low seed1,c02q3,0,-306,306
+r-stem swap_high_vs_low seed1,c02q4,0,-307,307
+r-stem swap_high_vs_low seed1,c03q0,0,-92,92
+r-stem swap_high_vs_low seed1,c03q1,0,-602,602
+r-stem swap_high_vs_low seed1,c03q2,0,-633,633
+r-stem swap_high_vs_low seed1,c03q3,0,-982,982
+r-stem swap_high_vs_low seed1,c03q4,0,-683,683
+r-stem swap_high_vs_low seed1,c04q0,0,0,0
+r-stem swap_high_vs_low seed1,c04q1,0,-3,3
+r-stem swap_high_vs_low seed1,c04q2,0,-380,380
+r-stem swap_high_vs_low seed1,c04q3,0,-293,293
+r-stem swap_high_vs_low seed1,c04q4,0,-60,60
+r-stem swap_high_vs_low seed1,c05q0,0,-19,19
+r-stem swap_high_vs_low seed1,c05q1,0,-170,170
+r-stem swap_high_vs_low seed1,c05q2,0,-949,949
+r-stem swap_high_vs_low seed1,c05q3,0,-2212,2212
+r-stem swap_high_vs_low seed1,c05q4,0,-1537,1537
+r-stem swap_high_vs_low seed1,c06q0,0,0,0
+r-stem swap_high_vs_low seed1,c06q1,0,-15,15
+r-stem swap_high_vs_low seed1,c06q2,0,-72,72
+r-stem swap_high_vs_low seed1,c06q3,0,-216,216
+r-stem swap_high_vs_low seed1,c06q4,0,-177,177
+r-stem swap_high_vs_low seed1,c07q0,0,-11,11
+r-stem swap_high_vs_low seed1,c07q1,0,-159,159
+r-stem swap_high_vs_low seed1,c07q2,0,-330,330
+r-stem swap_high_vs_low seed1,c07q3,0,-286,286
+r-stem swap_high_vs_low seed1,c07q4,0,-68,68
+r-stem swap_high_vs_low seed1,c08q0,0,0,0
+r-stem swap_high_vs_low seed1,c08q1,0,-34,34
+r-stem swap_high_vs_low seed1,c08q2,0,-252,252
+r-stem swap_high_vs_low seed1,c08q3,0,-401,401
+r-stem swap_high_vs_low seed1,c08q4,0,-322,322
+r-stem swap_high_vs_low seed1,c09q0,0,-4,4
+r-stem swap_high_vs_low seed1,c09q1,0,-80,80
+r-stem swap_high_vs_low seed1,c09q2,0,-272,272
+r-stem swap_high_vs_low seed1,c09q3,0,-452,452
+r-stem swap_high_vs_low seed1,c09q4,0,-131,131
+r-stem swap_high_vs_low seed1,c10q0,0,-2,2
+r-stem swap_high_vs_low seed1,c10q1,0,-69,69
+r-stem swap_high_vs_low seed1,c10q2,0,-102,102
+r-stem swap_high_vs_low seed1,c10q3,0,-153,153
+r-stem swap_high_vs_low seed1,c10q4,0,-59,59
+r-stem swap_high_vs_low seed1,c11q0,0,-13,13
+r-stem swap_high_vs_low seed1,c11q1,0,-131,131
+r-stem swap_high_vs_low seed1,c11q2,0,-337,337
+r-stem swap_high_vs_low seed1,c11q3,0,-476,476
+r-stem swap_high_vs_low seed1,c11q4,0,-162,162
+r-stem swap_high_vs_low seed1,c12q0,0,-30,30
+r-stem swap_high_vs_low seed1,c12q1,0,-346,346
+r-stem swap_high_vs_low seed1,c12q2,0,-809,809
+r-stem swap_high_vs_low seed1,c12q3,0,-1244,1244
+r-stem swap_high_vs_low seed1,c12q4,0,-482,482
+r-stem swap_high_vs_low seed1,c13q0,0,0,0
+r-stem swap_high_vs_low seed1,c13q1,0,-242,242
+r-stem swap_high_vs_low seed1,c13q2,0,-904,904
+r-stem swap_high_vs_low seed1,c13q3,0,-2974,2974
+r-stem swap_high_vs_low seed1,c13q4,0,-1273,1273
+r-stem swap_high_vs_low seed1,c14q0,0,-42,42
+r-stem swap_high_vs_low seed1,c14q1,0,-569,569
+r-stem swap_high_vs_low seed1,c14q2,0,-1670,1670
+r-stem swap_high_vs_low seed1,c14q3,0,-2327,2327
+r-stem swap_high_vs_low seed1,c14q4,0,-719,719
+r-stem swap_high_vs_low seed1,c15q0,0,0,0
+r-stem swap_high_vs_low seed1,c15q1,0,-4,4
+r-stem swap_high_vs_low seed1,c15q2,0,-17,17
+r-stem swap_high_vs_low seed1,c15q3,0,-16,16
+r-stem swap_high_vs_low seed1,c15q4,0,-32,32
+r-stem swap_high_vs_low seed1,c16q0,0,-19,19
+r-stem swap_high_vs_low seed1,c16q1,0,-103,103
+r-stem swap_high_vs_low seed1,c16q2,0,-275,275
+r-stem swap_high_vs_low seed1,c16q3,0,-488,488
+r-stem swap_high_vs_low seed1,c16q4,0,-257,257
+r-stem swap_high_vs_low seed1,c17q0,0,-203,203
+r-stem swap_high_vs_low seed1,c17q1,0,-503,503
+r-stem swap_high_vs_low seed1,c17q2,0,-862,862
+r-stem swap_high_vs_low seed1,c17q3,0,-669,669
+r-stem swap_high_vs_low seed1,c17q4,0,-180,180
+r-stem swap_high_vs_low seed1,c18q0,0,-24,24
+r-stem swap_high_vs_low seed1,c18q1,0,-184,184
+r-stem swap_high_vs_low seed1,c18q2,0,-322,322
+r-stem swap_high_vs_low seed1,c18q3,0,-199,199
+r-stem swap_high_vs_low seed1,c18q4,0,-125,125
+r-stem swap_high_vs_low seed1,c19q0,0,-1,1
+r-stem swap_high_vs_low seed1,c19q1,0,-20,20
+r-stem swap_high_vs_low seed1,c19q2,0,-109,109
+r-stem swap_high_vs_low seed1,c19q3,0,-122,122
+r-stem swap_high_vs_low seed1,c19q4,0,-89,89
+r-stem swap_high_vs_low seed1,c20q0,0,-9,9
+r-stem swap_high_vs_low seed1,c20q1,0,-346,346
+r-stem swap_high_vs_low seed1,c20q2,0,-678,678
+r-stem swap_high_vs_low seed1,c20q3,0,-425,425
+r-stem swap_high_vs_low seed1,c20q4,0,-633,633
+r-stem swap_high_vs_low seed1,c21q0,0,-48,48
+r-stem swap_high_vs_low seed1,c21q1,0,-378,378
+r-stem swap_high_vs_low seed1,c21q2,0,-1103,1103
+r-stem swap_high_vs_low seed1,c21q3,0,-1297,1297
+r-stem swap_high_vs_low seed1,c21q4,0,-531,531
+r-stem swap_high_vs_low seed1,c22q0,0,0,0
+r-stem swap_high_vs_low seed1,c22q1,0,-35,35
+r-stem swap_high_vs_low seed1,c22q2,0,-301,301
+r-stem swap_high_vs_low seed1,c22q3,0,-629,629
+r-stem swap_high_vs_low seed1,c22q4,0,-214,214
+r-stem swap_high_vs_low seed1,c23q0,0,-33,33
+r-stem swap_high_vs_low seed1,c23q1,0,-307,307
+r-stem swap_high_vs_low seed1,c23q2,0,-608,608
+r-stem swap_high_vs_low seed1,c23q3,0,-794,794
+r-stem swap_high_vs_low seed1,c23q4,0,-916,916
+r-stem swap_high_vs_low seed1,c24q0,0,-233,233
+r-stem swap_high_vs_low seed1,c24q1,0,-1429,1429
+r-stem swap_high_vs_low seed1,c24q2,0,-2569,2569
+r-stem swap_high_vs_low seed1,c24q3,0,-1969,1969
+r-stem swap_high_vs_low seed1,c24q4,0,-987,987
+r-stem swap_high_vs_low seed1,c25q0,0,-293,293
+r-stem swap_high_vs_low seed1,c25q1,0,-838,838
+r-stem swap_high_vs_low seed1,c25q2,0,-1276,1276
+r-stem swap_high_vs_low seed1,c25q3,0,-906,906
+r-stem swap_high_vs_low seed1,c25q4,0,-588,588
+r-stem swap_high_vs_low seed1,c26q0,0,-3,3
+r-stem swap_high_vs_low seed1,c26q1,0,-26,26
+r-stem swap_high_vs_low seed1,c26q2,0,-133,133
+r-stem swap_high_vs_low seed1,c26q3,0,-226,226
+r-stem swap_high_vs_low seed1,c26q4,0,-337,337
+r-stem swap_high_vs_low seed1,c27q0,0,0,0
+r-stem swap_high_vs_low seed1,c27q1,0,-14,14
+r-stem swap_high_vs_low seed1,c27q2,0,-72,72
+r-stem swap_high_vs_low seed1,c27q3,0,-82,82
+r-stem swap_high_vs_low seed1,c27q4,0,-43,43
+r-stem swap_high_vs_low seed1,c28q0,0,0,0
+r-stem swap_high_vs_low seed1,c28q1,0,-447,447
+r-stem swap_high_vs_low seed1,c28q2,0,-1200,1200
+r-stem swap_high_vs_low seed1,c28q3,0,-1905,1905
+r-stem swap_high_vs_low seed1,c28q4,0,-965,965
+r-stem swap_high_vs_low seed1,c29q0,0,-265,265
+r-stem swap_high_vs_low seed1,c29q1,0,-394,394
+r-stem swap_high_vs_low seed1,c29q2,0,-1061,1061
+r-stem swap_high_vs_low seed1,c29q3,0,-1334,1334
+r-stem swap_high_vs_low seed1,c29q4,0,-1154,1154
+r-stem swap_high_vs_low seed1,c30q0,0,0,0
+r-stem swap_high_vs_low seed1,c30q1,0,-157,132
+r-stem swap_high_vs_low seed1,c30q2,48,-589,583
+r-stem swap_high_vs_low seed1,c30q3,184,-1707,1844
+r-stem swap_high_vs_low seed1,c30q4,312,-2948,3349
+r-stem swap_high_vs_low seed1,c31q0,0,-2,2
+r-stem swap_high_vs_low seed1,c31q1,0,-48,48
+r-stem swap_high_vs_low seed1,c31q2,0,-133,133
+r-stem swap_high_vs_low seed1,c31q3,0,-233,233
+r-stem swap_high_vs_low seed1,c31q4,0,-160,160
+r-stem swap_high_vs_low seed1,c32q0,0,-36,36
+r-stem swap_high_vs_low seed1,c32q1,0,-251,251
+r-stem swap_high_vs_low seed1,c32q2,0,-1324,1324
+r-stem swap_high_vs_low seed1,c32q3,0,-2432,2432
+r-stem swap_high_vs_low seed1,c32q4,0,-1015,1015
+r-stem swap_high_vs_low seed1,c33q0,0,0,0
+r-stem swap_high_vs_low seed1,c33q1,0,-23,23
+r-stem swap_high_vs_low seed1,c33q2,0,-65,65
+r-stem swap_high_vs_low seed1,c33q3,0,-103,103
+r-stem swap_high_vs_low seed1,c33q4,0,-158,158
+r-stem swap_high_vs_low seed1,c34q0,0,0,0
+r-stem swap_high_vs_low seed1,c34q1,0,-85,85
+r-stem swap_high_vs_low seed1,c34q2,0,-257,257
+r-stem swap_high_vs_low seed1,c34q3,0,-360,360
+r-stem swap_high_vs_low seed1,c34q4,0,-200,200
+r-stem swap_high_vs_low seed1,c35q0,0,-57,57
+r-stem swap_high_vs_low seed1,c35q1,0,-592,592
+r-stem swap_high_vs_low seed1,c35q2,0,-915,915
+r-stem swap_high_vs_low seed1,c35q3,0,-833,833
+r-stem swap_high_vs_low seed1,c35q4,0,-386,386
+r-stem swap_high_vs_low seed1,c36q0,0,-18,18
+r-stem swap_high_vs_low seed1,c36q1,0,-90,90
+r-stem swap_high_vs_low seed1,c36q2,0,-161,161
+r-stem swap_high_vs_low seed1,c36q3,0,-83,83
+r-stem swap_high_vs_low seed1,c36q4,0,-32,32
+r-stem swap_high_vs_low seed1,c37q0,0,-13,13
+r-stem swap_high_vs_low seed1,c37q1,0,-75,75
+r-stem swap_high_vs_low seed1,c37q2,0,-720,720
+r-stem swap_high_vs_low seed1,c37q3,0,-1132,1132
+r-stem swap_high_vs_low seed1,c37q4,0,-1680,1680
+r-stem swap_high_vs_low seed1,c38q0,0,-103,103
+r-stem swap_high_vs_low seed1,c38q1,0,-284,284
+r-stem swap_high_vs_low seed1,c38q2,0,-897,897
+r-stem swap_high_vs_low seed1,c38q3,0,-1127,1127
+r-stem swap_high_vs_low seed1,c38q4,0,-1126,1126
+r-stem swap_high_vs_low seed1,c39q0,0,-33,33
+r-stem swap_high_vs_low seed1,c39q1,0,-506,531
+r-stem swap_high_vs_low seed1,c39q2,-104,-2715,2608
+r-stem swap_high_vs_low seed1,c39q3,-224,-1799,1582
+r-stem swap_high_vs_low seed1,c39q4,-216,-1773,1565
+u-math high pre_vs_cool seed0,c00q0,0,0,0
+u-math high pre_vs_cool seed0,c00q1,0,-347,347
+u-math high pre_vs_cool seed0,c00q2,0,-911,911
+u-math high pre_vs_cool seed0,c00q3,0,-1361,1361
+u-math high pre_vs_cool seed0,c00q4,0,-1250,1250
+u-math high pre_vs_cool seed0,c01q0,0,-122,122
+u-math high pre_vs_cool seed0,c01q1,0,-196,196
+u-math high pre_vs_cool seed0,c01q2,0,-461,461
+u-math high pre_vs_cool seed0,c01q3,0,-689,689
+u-math high pre_vs_cool seed0,c01q4,0,-763,763
+u-math high pre_vs_cool seed0,c02q0,0,0,0
+u-math high pre_vs_cool seed0,c02q1,0,-59,59
+u-math high pre_vs_cool seed0,c02q2,0,-207,207
+u-math high pre_vs_cool seed0,c02q3,0,-306,306
+u-math high pre_vs_cool seed0,c02q4,0,-307,307
+u-math high pre_vs_cool seed0,c03q0,0,-92,92
+u-math high pre_vs_cool seed0,c03q1,0,-602,602
+u-math high pre_vs_cool seed0,c03q2,0,-633,633
+u-math high pre_vs_cool seed0,c03q3,0,-982,982
+u-math high pre_vs_cool seed0,c03q4,0,-683,683
+u-math high pre_vs_cool seed0,c04q0,0,0,0
+u-math high pre_vs_cool seed0,c04q1,0,-3,3
+u-math high pre_vs_cool seed0,c04q2,0,-380,380
+u-math high pre_vs_cool seed0,c04q3,0,-293,293
+u-math high pre_vs_cool seed0,c04q4,0,-60,60
+u-math high pre_vs_cool seed0,c05q0,0,-19,19
+u-math high pre_vs_cool seed0,c05q1,0,-170,170
+u-math high pre_vs_cool seed0,c05q2,0,-949,949
+u-math high pre_vs_cool seed0,c05q3,0,-2212,2212
+u-math high pre_vs_cool seed0,c05q4,0,-1537,1537
+u-math high pre_vs_cool seed0,c06q0,0,0,0
+u-math high pre_vs_cool seed0,c06q1,0,-15,15
+u-math high pre_vs_cool seed0,c06q2,0,-72,72
+u-math high pre_vs_cool seed0,c06q3,0,-216,216
+u-math high pre_vs_cool seed0,c06q4,0,-177,177
+u-math high pre_vs_cool seed0,c07q0,0,-11,11
+u-math high pre_vs_cool seed0,c07q1,0,-159,159
+u-math high pre_vs_cool seed0,c07q2,0,-330,330
+u-math high pre_vs_cool seed0,c07q3,0,-286,286
+u-math high pre_vs_cool seed0,c07q4,0,-68,68
+u-math high pre_vs_cool seed0,c08q0,0,0,0
+u-math high pre_vs_cool seed0,c08q1,0,-34,34
+u-math high pre_vs_cool seed0,c08q2,0,-252,252
+u-math high pre_vs_cool seed0,c08q3,0,-401,401
+u-math high pre_vs_cool seed0,c08q4,0,-322,322
+u-math high pre_vs_cool seed0,c09q0,0,-4,4
+u-math high pre_vs_cool seed0,c09q1,0,-80,80
+u-math high pre_vs_cool seed0,c09q2,0,-272,272
+u-math high pre_vs_cool seed0,c09q3,0,-452,452
+u-math high pre_vs_cool seed0,c09q4,0,-131,131
+u-math high pre_vs_cool seed0,c10q0,0,-2,2
+u-math high pre_vs_cool seed0,c10q1,0,-69,69
+u-math high pre_vs_cool seed0,c10q2,0,-102,102
+u-math high pre_vs_cool seed0,c10q3,0,-153,153
+u-math high pre_vs_cool seed0,c10q4,0,-59,59
+u-math high pre_vs_cool seed0,c11q0,0,-13,13
+u-math high pre_vs_cool seed0,c11q1,0,-131,131
+u-math high pre_vs_cool seed0,c11q2,0,-337,337
+u-math high pre_vs_cool seed0,c11q3,0,-476,476
+u-math high pre_vs_cool seed0,c11q4,0,-162,162
+u-math high pre_vs_cool seed0,c12q0,0,-30,30
+u-math high pre_vs_cool seed0,c12q1,0,-346,346
+u-math high pre_vs_cool seed0,c12q2,0,-809,809
+u-math high pre_vs_cool seed0,c12q3,0,-1244,1244
+u-math high pre_vs_cool seed0,c12q4,0,-482,482
+u-math high pre_vs_cool seed0,c13q0,0,0,0
+u-math high pre_vs_cool seed0,c13q1,0,-242,242
+u-math high pre_vs_cool seed0,c13q2,0,-904,904
+u-math high pre_vs_cool seed0,c13q3,0,-2974,2974
+u-math high pre_vs_cool seed0,c13q4,0,-1273,1273
+u-math high pre_vs_cool seed0,c14q0,0,-42,42
+u-math high pre_vs_cool seed0,c14q1,0,-569,569
+u-math high pre_vs_cool seed0,c14q2,0,-1670,1670
+u-math high pre_vs_cool seed0,c14q3,0,-2327,2327
+u-math high pre_vs_cool seed0,c14q4,0,-719,719
+u-math high pre_vs_cool seed0,c15q0,0,0,0
+u-math high pre_vs_cool seed0,c15q1,0,-4,4
+u-math high pre_vs_cool seed0,c15q2,0,-17,17
+u-math high pre_vs_cool seed0,c15q3,0,-16,16
+u-math high pre_vs_cool seed0,c15q4,0,-32,32
+u-math high pre_vs_cool seed0,c16q0,0,-19,19
+u-math high pre_vs_cool seed0,c16q1,0,-103,103
+u-math high pre_vs_cool seed0,c16q2,0,-275,275
+u-math high pre_vs_cool seed0,c16q3,0,-488,488
+u-math high pre_vs_cool seed0,c16q4,0,-257,257
+u-math high pre_vs_cool seed0,c17q0,0,-203,203
+u-math high pre_vs_cool seed0,c17q1,0,-503,503
+u-math high pre_vs_cool seed0,c17q2,0,-862,862
+u-math high pre_vs_cool seed0,c17q3,0,-669,669
+u-math high pre_vs_cool seed0,c17q4,0,-180,180
+u-math high pre_vs_cool seed0,c18q0,0,-24,24
+u-math high pre_vs_cool seed0,c18q1,0,-184,184
+u-math high pre_vs_cool seed0,c18q2,0,-322,322
+u-math high pre_vs_cool seed0,c18q3,0,-199,199
+u-math high pre_vs_cool seed0,c18q4,0,-125,125
+u-math high pre_vs_cool seed0,c19q0,0,-1,1
+u-math high pre_vs_cool seed0,c19q1,0,-20,20
+u-math high pre_vs_cool seed0,c19q2,0,-109,109
+u-math high pre_vs_cool seed0,c19q3,0,-122,122
+u-math high pre_vs_cool seed0,c19q4,0,-89,89
+u-math high pre_vs_cool seed0,c20q0,0,-9,9
+u-math high pre_vs_cool seed0,c20q1,0,-346,346
+u-math high pre_vs_cool seed0,c20q2,0,-678,678
+u-math high pre_vs_cool seed0,c20q3,0,-425,425
+u-math high pre_vs_cool seed0,c20q4,0,-633,633
+u-math high pre_vs_cool seed0,c21q0,8,-39,53
+u-math high pre_vs_cool seed0,c21q1,40,-325,375
+u-math high pre_vs_cool seed0,c21q2,104,-950,1042
+u-math high pre_vs_cool seed0,c21q3,64,-1197,1239
+u-math high pre_vs_cool seed0,c21q4,64,-443,515
+u-math high pre_vs_cool seed0,c22q0,0,0,0
+u-math high pre_vs_cool seed0,c22q1,0,-35,35
+u-math high pre_vs_cool seed0,c22q2,0,-301,301
+u-math high pre_vs_cool seed0,c22q3,0,-629,629
+u-math high pre_vs_cool seed0,c22q4,0,-214,214
+u-math high pre_vs_cool seed0,c23q0,0,-33,33
+u-math high pre_vs_cool seed0,c23q1,0,-307,307
+u-math high pre_vs_cool seed0,c23q2,0,-608,608
+u-math high pre_vs_cool seed0,c23q3,0,-794,794
+u-math high pre_vs_cool seed0,c23q4,0,-916,916
+u-math high pre_vs_cool seed0,c24q0,0,-233,233
+u-math high pre_vs_cool seed0,c24q1,0,-1429,1429
+u-math high pre_vs_cool seed0,c24q2,0,-2569,2569
+u-math high pre_vs_cool seed0,c24q3,0,-1969,1969
+u-math high pre_vs_cool seed0,c24q4,0,-987,987
+u-math high pre_vs_cool seed0,c25q0,0,-293,293
+u-math high pre_vs_cool seed0,c25q1,0,-838,838
+u-math high pre_vs_cool seed0,c25q2,0,-1276,1276
+u-math high pre_vs_cool seed0,c25q3,0,-906,906
+u-math high pre_vs_cool seed0,c25q4,0,-588,588
+u-math high pre_vs_cool seed0,c26q0,0,-3,3
+u-math high pre_vs_cool seed0,c26q1,0,-26,26
+u-math high pre_vs_cool seed0,c26q2,0,-133,133
+u-math high pre_vs_cool seed0,c26q3,0,-226,226
+u-math high pre_vs_cool seed0,c26q4,0,-337,337
+u-math high pre_vs_cool seed0,c27q0,0,0,0
+u-math high pre_vs_cool seed0,c27q1,0,-14,14
+u-math high pre_vs_cool seed0,c27q2,0,-72,72
+u-math high pre_vs_cool seed0,c27q3,0,-82,82
+u-math high pre_vs_cool seed0,c27q4,0,-43,43
+u-math high pre_vs_cool seed0,c28q0,0,0,0
+u-math high pre_vs_cool seed0,c28q1,0,-447,447
+u-math high pre_vs_cool seed0,c28q2,0,-1200,1200
+u-math high pre_vs_cool seed0,c28q3,0,-1905,1905
+u-math high pre_vs_cool seed0,c28q4,0,-965,965
+u-math high pre_vs_cool seed0,c29q0,0,-265,265
+u-math high pre_vs_cool seed0,c29q1,0,-394,394
+u-math high pre_vs_cool seed0,c29q2,0,-1061,1061
+u-math high pre_vs_cool seed0,c29q3,0,-1334,1334
+u-math high pre_vs_cool seed0,c29q4,0,-1154,1154
+u-math high pre_vs_cool seed0,c30q0,0,0,0
+u-math high pre_vs_cool seed0,c30q1,0,-144,144
+u-math high pre_vs_cool seed0,c30q2,0,-586,586
+u-math high pre_vs_cool seed0,c30q3,0,-1776,1776
+u-math high pre_vs_cool seed0,c30q4,0,-3148,3148
+u-math high pre_vs_cool seed0,c31q0,0,-2,2
+u-math high pre_vs_cool seed0,c31q1,0,-48,48
+u-math high pre_vs_cool seed0,c31q2,0,-133,133
+u-math high pre_vs_cool seed0,c31q3,0,-233,233
+u-math high pre_vs_cool seed0,c31q4,0,-160,160
+u-math high pre_vs_cool seed0,c32q0,0,-36,36
+u-math high pre_vs_cool seed0,c32q1,0,-251,251
+u-math high pre_vs_cool seed0,c32q2,0,-1324,1324
+u-math high pre_vs_cool seed0,c32q3,0,-2432,2432
+u-math high pre_vs_cool seed0,c32q4,0,-1015,1015
+u-math high pre_vs_cool seed0,c33q0,0,0,0
+u-math high pre_vs_cool seed0,c33q1,0,-23,23
+u-math high pre_vs_cool seed0,c33q2,0,-65,65
+u-math high pre_vs_cool seed0,c33q3,0,-103,103
+u-math high pre_vs_cool seed0,c33q4,0,-158,158
+u-math high pre_vs_cool seed0,c34q0,0,0,0
+u-math high pre_vs_cool seed0,c34q1,0,-85,85
+u-math high pre_vs_cool seed0,c34q2,0,-257,257
+u-math high pre_vs_cool seed0,c34q3,0,-360,360
+u-math high pre_vs_cool seed0,c34q4,0,-200,200
+u-math high pre_vs_cool seed0,c35q0,0,-57,57
+u-math high pre_vs_cool seed0,c35q1,0,-592,592
+u-math high pre_vs_cool seed0,c35q2,0,-915,915
+u-math high pre_vs_cool seed0,c35q3,0,-833,833
+u-math high pre_vs_cool seed0,c35q4,0,-386,386
+u-math high pre_vs_cool seed0,c36q0,0,-18,18
+u-math high pre_vs_cool seed0,c36q1,0,-90,90
+u-math high pre_vs_cool seed0,c36q2,0,-161,161
+u-math high pre_vs_cool seed0,c36q3,0,-83,83
+u-math high pre_vs_cool seed0,c36q4,0,-32,32
+u-math high pre_vs_cool seed0,c37q0,0,-13,13
+u-math high pre_vs_cool seed0,c37q1,0,-75,75
+u-math high pre_vs_cool seed0,c37q2,0,-720,720
+u-math high pre_vs_cool seed0,c37q3,0,-1132,1132
+u-math high pre_vs_cool seed0,c37q4,0,-1680,1680
+u-math high pre_vs_cool seed0,c38q0,0,-103,103
+u-math high pre_vs_cool seed0,c38q1,0,-284,284
+u-math high pre_vs_cool seed0,c38q2,0,-897,897
+u-math high pre_vs_cool seed0,c38q3,0,-1127,1127
+u-math high pre_vs_cool seed0,c38q4,0,-1126,1126
+u-math high pre_vs_cool seed0,c39q0,-8,-42,28
+u-math high pre_vs_cool seed0,c39q1,-56,-588,505
+u-math high pre_vs_cool seed0,c39q2,-144,-2855,2683
+u-math high pre_vs_cool seed0,c39q3,-64,-1791,1749
+u-math high pre_vs_cool seed0,c39q4,-8,-1700,1741
+u-math low pre_vs_cool seed0,c00q0,0,0,0
+u-math low pre_vs_cool seed0,c00q1,0,-347,347
+u-math low pre_vs_cool seed0,c00q2,0,-911,911
+u-math low pre_vs_cool seed0,c00q3,0,-1361,1361
+u-math low pre_vs_cool seed0,c00q4,0,-1250,1250
+u-math low pre_vs_cool seed0,c01q0,0,-122,122
+u-math low pre_vs_cool seed0,c01q1,0,-196,196
+u-math low pre_vs_cool seed0,c01q2,0,-461,461
+u-math low pre_vs_cool seed0,c01q3,0,-689,689
+u-math low pre_vs_cool seed0,c01q4,0,-763,763
+u-math low pre_vs_cool seed0,c02q0,0,0,0
+u-math low pre_vs_cool seed0,c02q1,0,-59,59
+u-math low pre_vs_cool seed0,c02q2,0,-207,207
+u-math low pre_vs_cool seed0,c02q3,0,-306,306
+u-math low pre_vs_cool seed0,c02q4,0,-307,307
+u-math low pre_vs_cool seed0,c03q0,0,-92,92
+u-math low pre_vs_cool seed0,c03q1,0,-602,602
+u-math low pre_vs_cool seed0,c03q2,0,-633,633
+u-math low pre_vs_cool seed0,c03q3,0,-982,982
+u-math low pre_vs_cool seed0,c03q4,0,-683,683
+u-math low pre_vs_cool seed0,c04q0,0,0,0
+u-math low pre_vs_cool seed0,c04q1,0,-3,3
+u-math low pre_vs_cool seed0,c04q2,0,-380,380
+u-math low pre_vs_cool seed0,c04q3,0,-293,293
+u-math low pre_vs_cool seed0,c04q4,0,-60,60
+u-math low pre_vs_cool seed0,c05q0,0,-19,19
+u-math low pre_vs_cool seed0,c05q1,0,-170,170
+u-math low pre_vs_cool seed0,c05q2,0,-949,949
+u-math low pre_vs_cool seed0,c05q3,0,-2212,2212
+u-math low pre_vs_cool seed0,c05q4,0,-1537,1537
+u-math low pre_vs_cool seed0,c06q0,0,0,0
+u-math low pre_vs_cool seed0,c06q1,0,-15,15
+u-math low pre_vs_cool seed0,c06q2,0,-72,72
+u-math low pre_vs_cool seed0,c06q3,0,-216,216
+u-math low pre_vs_cool seed0,c06q4,0,-177,177
+u-math low pre_vs_cool seed0,c07q0,0,-11,11
+u-math low pre_vs_cool seed0,c07q1,0,-159,159
+u-math low pre_vs_cool seed0,c07q2,0,-330,330
+u-math low pre_vs_cool seed0,c07q3,0,-286,286
+u-math low pre_vs_cool seed0,c07q4,0,-68,68
+u-math low pre_vs_cool seed0,c08q0,0,0,0
+u-math low pre_vs_cool seed0,c08q1,0,-34,34
+u-math low pre_vs_cool seed0,c08q2,0,-252,252
+u-math low pre_vs_cool seed0,c08q3,0,-401,401
+u-math low pre_vs_cool seed0,c08q4,0,-322,322
+u-math low pre_vs_cool seed0,c09q0,0,-4,4
+u-math low pre_vs_cool seed0,c09q1,0,-80,80
+u-math low pre_vs_cool seed0,c09q2,0,-272,272
+u-math low pre_vs_cool seed0,c09q3,0,-452,452
+u-math low pre_vs_cool seed0,c09q4,0,-131,131
+u-math low pre_vs_cool seed0,c10q0,0,-2,2
+u-math low pre_vs_cool seed0,c10q1,0,-69,69
+u-math low pre_vs_cool seed0,c10q2,0,-102,102
+u-math low pre_vs_cool seed0,c10q3,0,-153,153
+u-math low pre_vs_cool seed0,c10q4,0,-59,59
+u-math low pre_vs_cool seed0,c11q0,0,-13,13
+u-math low pre_vs_cool seed0,c11q1,0,-131,131
+u-math low pre_vs_cool seed0,c11q2,0,-337,337
+u-math low pre_vs_cool seed0,c11q3,0,-476,476
+u-math low pre_vs_cool seed0,c11q4,0,-162,162
+u-math low pre_vs_cool seed0,c12q0,0,-30,30
+u-math low pre_vs_cool seed0,c12q1,0,-346,346
+u-math low pre_vs_cool seed0,c12q2,0,-809,809
+u-math low pre_vs_cool seed0,c12q3,0,-1244,1244
+u-math low pre_vs_cool seed0,c12q4,0,-482,482
+u-math low pre_vs_cool seed0,c13q0,0,0,0
+u-math low pre_vs_cool seed0,c13q1,0,-242,242
+u-math low pre_vs_cool seed0,c13q2,0,-904,904
+u-math low pre_vs_cool seed0,c13q3,32,-2942,3008
+u-math low pre_vs_cool seed0,c13q4,0,-1273,1273
+u-math low pre_vs_cool seed0,c14q0,0,-42,42
+u-math low pre_vs_cool seed0,c14q1,0,-569,569
+u-math low pre_vs_cool seed0,c14q2,0,-1670,1670
+u-math low pre_vs_cool seed0,c14q3,0,-2327,2327
+u-math low pre_vs_cool seed0,c14q4,0,-719,719
+u-math low pre_vs_cool seed0,c15q0,0,0,0
+u-math low pre_vs_cool seed0,c15q1,0,-4,4
+u-math low pre_vs_cool seed0,c15q2,0,-17,17
+u-math low pre_vs_cool seed0,c15q3,0,-16,16
+u-math low pre_vs_cool seed0,c15q4,0,-32,32
+u-math low pre_vs_cool seed0,c16q0,0,-19,19
+u-math low pre_vs_cool seed0,c16q1,0,-103,103
+u-math low pre_vs_cool seed0,c16q2,0,-275,275
+u-math low pre_vs_cool seed0,c16q3,0,-488,488
+u-math low pre_vs_cool seed0,c16q4,0,-257,257
+u-math low pre_vs_cool seed0,c17q0,0,-203,203
+u-math low pre_vs_cool seed0,c17q1,0,-503,503
+u-math low pre_vs_cool seed0,c17q2,0,-862,862
+u-math low pre_vs_cool seed0,c17q3,0,-669,669
+u-math low pre_vs_cool seed0,c17q4,0,-180,180
+u-math low pre_vs_cool seed0,c18q0,0,-24,24
+u-math low pre_vs_cool seed0,c18q1,0,-184,184
+u-math low pre_vs_cool seed0,c18q2,0,-322,322
+u-math low pre_vs_cool seed0,c18q3,0,-199,199
+u-math low pre_vs_cool seed0,c18q4,0,-125,125
+u-math low pre_vs_cool seed0,c19q0,0,-1,1
+u-math low pre_vs_cool seed0,c19q1,0,-20,20
+u-math low pre_vs_cool seed0,c19q2,0,-109,109
+u-math low pre_vs_cool seed0,c19q3,0,-122,122
+u-math low pre_vs_cool seed0,c19q4,0,-89,89
+u-math low pre_vs_cool seed0,c20q0,0,-9,9
+u-math low pre_vs_cool seed0,c20q1,0,-346,346
+u-math low pre_vs_cool seed0,c20q2,0,-678,678
+u-math low pre_vs_cool seed0,c20q3,0,-425,425
+u-math low pre_vs_cool seed0,c20q4,0,-633,633
+u-math low pre_vs_cool seed0,c21q0,-8,-57,43
+u-math low pre_vs_cool seed0,c21q1,-56,-447,364
+u-math low pre_vs_cool seed0,c21q2,-88,-1240,1181
+u-math low pre_vs_cool seed0,c21q3,-64,-1397,1355
+u-math low pre_vs_cool seed0,c21q4,-80,-635,530
+u-math low pre_vs_cool seed0,c22q0,0,0,0
+u-math low pre_vs_cool seed0,c22q1,0,-35,35
+u-math low pre_vs_cool seed0,c22q2,0,-301,301
+u-math low pre_vs_cool seed0,c22q3,0,-629,629
+u-math low pre_vs_cool seed0,c22q4,0,-214,214
+u-math low pre_vs_cool seed0,c23q0,0,-33,33
+u-math low pre_vs_cool seed0,c23q1,0,-307,307
+u-math low pre_vs_cool seed0,c23q2,0,-608,608
+u-math low pre_vs_cool seed0,c23q3,0,-794,794
+u-math low pre_vs_cool seed0,c23q4,0,-916,916
+u-math low pre_vs_cool seed0,c24q0,0,-233,233
+u-math low pre_vs_cool seed0,c24q1,0,-1429,1429
+u-math low pre_vs_cool seed0,c24q2,0,-2569,2569
+u-math low pre_vs_cool seed0,c24q3,0,-1969,1969
+u-math low pre_vs_cool seed0,c24q4,0,-987,987
+u-math low pre_vs_cool seed0,c25q0,0,-293,293
+u-math low pre_vs_cool seed0,c25q1,0,-838,838
+u-math low pre_vs_cool seed0,c25q2,0,-1276,1276
+u-math low pre_vs_cool seed0,c25q3,0,-906,906
+u-math low pre_vs_cool seed0,c25q4,0,-588,588
+u-math low pre_vs_cool seed0,c26q0,0,-3,3
+u-math low pre_vs_cool seed0,c26q1,0,-26,26
+u-math low pre_vs_cool seed0,c26q2,0,-133,133
+u-math low pre_vs_cool seed0,c26q3,0,-226,226
+u-math low pre_vs_cool seed0,c26q4,0,-337,337
+u-math low pre_vs_cool seed0,c27q0,0,0,0
+u-math low pre_vs_cool seed0,c27q1,0,-14,14
+u-math low pre_vs_cool seed0,c27q2,0,-72,72
+u-math low pre_vs_cool seed0,c27q3,0,-82,82
+u-math low pre_vs_cool seed0,c27q4,0,-43,43
+u-math low pre_vs_cool seed0,c28q0,0,0,0
+u-math low pre_vs_cool seed0,c28q1,0,-447,447
+u-math low pre_vs_cool seed0,c28q2,0,-1200,1200
+u-math low pre_vs_cool seed0,c28q3,0,-1905,1905
+u-math low pre_vs_cool seed0,c28q4,0,-965,965
+u-math low pre_vs_cool seed0,c29q0,0,-265,265
+u-math low pre_vs_cool seed0,c29q1,0,-394,394
+u-math low pre_vs_cool seed0,c29q2,0,-1061,1061
+u-math low pre_vs_cool seed0,c29q3,0,-1334,1334
+u-math low pre_vs_cool seed0,c29q4,0,-1154,1154
+u-math low pre_vs_cool seed0,c30q0,0,0,0
+u-math low pre_vs_cool seed0,c30q1,0,-144,144
+u-math low pre_vs_cool seed0,c30q2,0,-586,586
+u-math low pre_vs_cool seed0,c30q3,0,-1776,1776
+u-math low pre_vs_cool seed0,c30q4,0,-3148,3148
+u-math low pre_vs_cool seed0,c31q0,0,-2,2
+u-math low pre_vs_cool seed0,c31q1,0,-48,48
+u-math low pre_vs_cool seed0,c31q2,0,-133,133
+u-math low pre_vs_cool seed0,c31q3,0,-233,233
+u-math low pre_vs_cool seed0,c31q4,0,-160,160
+u-math low pre_vs_cool seed0,c32q0,0,-36,36
+u-math low pre_vs_cool seed0,c32q1,0,-251,251
+u-math low pre_vs_cool seed0,c32q2,0,-1324,1324
+u-math low pre_vs_cool seed0,c32q3,0,-2432,2432
+u-math low pre_vs_cool seed0,c32q4,0,-1015,1015
+u-math low pre_vs_cool seed0,c33q0,0,0,0
+u-math low pre_vs_cool seed0,c33q1,0,-23,23
+u-math low pre_vs_cool seed0,c33q2,0,-65,65
+u-math low pre_vs_cool seed0,c33q3,0,-103,103
+u-math low pre_vs_cool seed0,c33q4,0,-158,158
+u-math low pre_vs_cool seed0,c34q0,0,0,0
+u-math low pre_vs_cool seed0,c34q1,0,-85,85
+u-math low pre_vs_cool seed0,c34q2,0,-257,257
+u-math low pre_vs_cool seed0,c34q3,0,-360,360
+u-math low pre_vs_cool seed0,c34q4,0,-200,200
+u-math low pre_vs_cool seed0,c35q0,0,-57,57
+u-math low pre_vs_cool seed0,c35q1,0,-592,592
+u-math low pre_vs_cool seed0,c35q2,0,-915,915
+u-math low pre_vs_cool seed0,c35q3,0,-833,833
+u-math low pre_vs_cool seed0,c35q4,0,-386,386
+u-math low pre_vs_cool seed0,c36q0,0,-18,18
+u-math low pre_vs_cool seed0,c36q1,0,-90,90
+u-math low pre_vs_cool seed0,c36q2,0,-161,161
+u-math low pre_vs_cool seed0,c36q3,0,-83,83
+u-math low pre_vs_cool seed0,c36q4,0,-32,32
+u-math low pre_vs_cool seed0,c37q0,0,-13,13
+u-math low pre_vs_cool seed0,c37q1,0,-75,75
+u-math low pre_vs_cool seed0,c37q2,0,-720,720
+u-math low pre_vs_cool seed0,c37q3,0,-1132,1132
+u-math low pre_vs_cool seed0,c37q4,0,-1680,1680
+u-math low pre_vs_cool seed0,c38q0,0,-103,103
+u-math low pre_vs_cool seed0,c38q1,0,-284,284
+u-math low pre_vs_cool seed0,c38q2,0,-897,897
+u-math low pre_vs_cool seed0,c38q3,0,-1127,1127
+u-math low pre_vs_cool seed0,c38q4,0,-1126,1126
+u-math low pre_vs_cool seed0,c39q0,8,-24,38
+u-math low pre_vs_cool seed0,c39q1,40,-466,516
+u-math low pre_vs_cool seed0,c39q2,88,-2524,2583
+u-math low pre_vs_cool seed0,c39q3,48,-1607,1616
+u-math low pre_vs_cool seed0,c39q4,80,-1565,1670
+u-math swap_high_vs_low seed0,c00q0,0,0,0
+u-math swap_high_vs_low seed0,c00q1,0,-347,347
+u-math swap_high_vs_low seed0,c00q2,0,-911,911
+u-math swap_high_vs_low seed0,c00q3,0,-1361,1361
+u-math swap_high_vs_low seed0,c00q4,0,-1250,1250
+u-math swap_high_vs_low seed0,c01q0,0,-122,122
+u-math swap_high_vs_low seed0,c01q1,0,-196,196
+u-math swap_high_vs_low seed0,c01q2,0,-461,461
+u-math swap_high_vs_low seed0,c01q3,0,-689,689
+u-math swap_high_vs_low seed0,c01q4,0,-763,763
+u-math swap_high_vs_low seed0,c02q0,0,0,0
+u-math swap_high_vs_low seed0,c02q1,0,-59,59
+u-math swap_high_vs_low seed0,c02q2,0,-207,207
+u-math swap_high_vs_low seed0,c02q3,0,-306,306
+u-math swap_high_vs_low seed0,c02q4,0,-307,307
+u-math swap_high_vs_low seed0,c03q0,0,-92,92
+u-math swap_high_vs_low seed0,c03q1,0,-602,602
+u-math swap_high_vs_low seed0,c03q2,0,-633,633
+u-math swap_high_vs_low seed0,c03q3,0,-982,982
+u-math swap_high_vs_low seed0,c03q4,0,-683,683
+u-math swap_high_vs_low seed0,c04q0,0,0,0
+u-math swap_high_vs_low seed0,c04q1,0,-3,3
+u-math swap_high_vs_low seed0,c04q2,0,-380,380
+u-math swap_high_vs_low seed0,c04q3,0,-293,293
+u-math swap_high_vs_low seed0,c04q4,0,-60,60
+u-math swap_high_vs_low seed0,c05q0,0,-19,19
+u-math swap_high_vs_low seed0,c05q1,0,-170,170
+u-math swap_high_vs_low seed0,c05q2,0,-949,949
+u-math swap_high_vs_low seed0,c05q3,0,-2212,2212
+u-math swap_high_vs_low seed0,c05q4,0,-1537,1537
+u-math swap_high_vs_low seed0,c06q0,0,0,0
+u-math swap_high_vs_low seed0,c06q1,0,-15,15
+u-math swap_high_vs_low seed0,c06q2,0,-72,72
+u-math swap_high_vs_low seed0,c06q3,0,-216,216
+u-math swap_high_vs_low seed0,c06q4,0,-177,177
+u-math swap_high_vs_low seed0,c07q0,0,-11,11
+u-math swap_high_vs_low seed0,c07q1,0,-159,159
+u-math swap_high_vs_low seed0,c07q2,0,-330,330
+u-math swap_high_vs_low seed0,c07q3,0,-286,286
+u-math swap_high_vs_low seed0,c07q4,0,-68,68
+u-math swap_high_vs_low seed0,c08q0,0,0,0
+u-math swap_high_vs_low seed0,c08q1,0,-34,34
+u-math swap_high_vs_low seed0,c08q2,0,-252,252
+u-math swap_high_vs_low seed0,c08q3,0,-401,401
+u-math swap_high_vs_low seed0,c08q4,0,-322,322
+u-math swap_high_vs_low seed0,c09q0,0,-4,4
+u-math swap_high_vs_low seed0,c09q1,0,-80,80
+u-math swap_high_vs_low seed0,c09q2,0,-272,272
+u-math swap_high_vs_low seed0,c09q3,0,-452,452
+u-math swap_high_vs_low seed0,c09q4,0,-131,131
+u-math swap_high_vs_low seed0,c10q0,0,-2,2
+u-math swap_high_vs_low seed0,c10q1,0,-69,69
+u-math swap_high_vs_low seed0,c10q2,0,-102,102
+u-math swap_high_vs_low seed0,c10q3,0,-153,153
+u-math swap_high_vs_low seed0,c10q4,0,-59,59
+u-math swap_high_vs_low seed0,c11q0,0,-13,13
+u-math swap_high_vs_low seed0,c11q1,0,-131,131
+u-math swap_high_vs_low seed0,c11q2,0,-337,337
+u-math swap_high_vs_low seed0,c11q3,0,-476,476
+u-math swap_high_vs_low seed0,c11q4,0,-162,162
+u-math swap_high_vs_low seed0,c12q0,0,-30,30
+u-math swap_high_vs_low seed0,c12q1,0,-346,346
+u-math swap_high_vs_low seed0,c12q2,0,-809,809
+u-math swap_high_vs_low seed0,c12q3,0,-1244,1244
+u-math swap_high_vs_low seed0,c12q4,0,-482,482
+u-math swap_high_vs_low seed0,c13q0,0,0,0
+u-math swap_high_vs_low seed0,c13q1,0,-242,242
+u-math swap_high_vs_low seed0,c13q2,0,-904,904
+u-math swap_high_vs_low seed0,c13q3,-32,-3008,2942
+u-math swap_high_vs_low seed0,c13q4,0,-1273,1273
+u-math swap_high_vs_low seed0,c14q0,0,-42,42
+u-math swap_high_vs_low seed0,c14q1,0,-569,569
+u-math swap_high_vs_low seed0,c14q2,0,-1670,1670
+u-math swap_high_vs_low seed0,c14q3,0,-2327,2327
+u-math swap_high_vs_low seed0,c14q4,0,-719,719
+u-math swap_high_vs_low seed0,c15q0,0,0,0
+u-math swap_high_vs_low seed0,c15q1,0,-4,4
+u-math swap_high_vs_low seed0,c15q2,0,-17,17
+u-math swap_high_vs_low seed0,c15q3,0,-16,16
+u-math swap_high_vs_low seed0,c15q4,0,-32,32
+u-math swap_high_vs_low seed0,c16q0,0,-19,19
+u-math swap_high_vs_low seed0,c16q1,0,-103,103
+u-math swap_high_vs_low seed0,c16q2,0,-275,275
+u-math swap_high_vs_low seed0,c16q3,0,-488,488
+u-math swap_high_vs_low seed0,c16q4,0,-257,257
+u-math swap_high_vs_low seed0,c17q0,0,-203,203
+u-math swap_high_vs_low seed0,c17q1,0,-503,503
+u-math swap_high_vs_low seed0,c17q2,0,-862,862
+u-math swap_high_vs_low seed0,c17q3,0,-669,669
+u-math swap_high_vs_low seed0,c17q4,0,-180,180
+u-math swap_high_vs_low seed0,c18q0,0,-24,24
+u-math swap_high_vs_low seed0,c18q1,0,-184,184
+u-math swap_high_vs_low seed0,c18q2,0,-322,322
+u-math swap_high_vs_low seed0,c18q3,0,-199,199
+u-math swap_high_vs_low seed0,c18q4,0,-125,125
+u-math swap_high_vs_low seed0,c19q0,0,-1,1
+u-math swap_high_vs_low seed0,c19q1,0,-20,20
+u-math swap_high_vs_low seed0,c19q2,0,-109,109
+u-math swap_high_vs_low seed0,c19q3,0,-122,122
+u-math swap_high_vs_low seed0,c19q4,0,-89,89
+u-math swap_high_vs_low seed0,c20q0,0,-9,9
+u-math swap_high_vs_low seed0,c20q1,0,-346,346
+u-math swap_high_vs_low seed0,c20q2,0,-678,678
+u-math swap_high_vs_low seed0,c20q3,0,-425,425
+u-math swap_high_vs_low seed0,c20q4,0,-633,633
+u-math swap_high_vs_low seed0,c21q0,16,-34,62
+u-math swap_high_vs_low seed0,c21q1,96,-311,444
+u-math swap_high_vs_low seed0,c21q2,192,-1028,1179
+u-math swap_high_vs_low seed0,c21q3,128,-1255,1339
+u-math swap_high_vs_low seed0,c21q4,144,-442,619
+u-math swap_high_vs_low seed0,c22q0,0,0,0
+u-math swap_high_vs_low seed0,c22q1,0,-35,35
+u-math swap_high_vs_low seed0,c22q2,0,-301,301
+u-math swap_high_vs_low seed0,c22q3,0,-629,629
+u-math swap_high_vs_low seed0,c22q4,0,-214,214
+u-math swap_high_vs_low seed0,c23q0,0,-33,33
+u-math swap_high_vs_low seed0,c23q1,0,-307,307
+u-math swap_high_vs_low seed0,c23q2,0,-608,608
+u-math swap_high_vs_low seed0,c23q3,0,-794,794
+u-math swap_high_vs_low seed0,c23q4,0,-916,916
+u-math swap_high_vs_low seed0,c24q0,0,-233,233
+u-math swap_high_vs_low seed0,c24q1,0,-1429,1429
+u-math swap_high_vs_low seed0,c24q2,0,-2569,2569
+u-math swap_high_vs_low seed0,c24q3,0,-1969,1969
+u-math swap_high_vs_low seed0,c24q4,0,-987,987
+u-math swap_high_vs_low seed0,c25q0,0,-293,293
+u-math swap_high_vs_low seed0,c25q1,0,-838,838
+u-math swap_high_vs_low seed0,c25q2,0,-1276,1276
+u-math swap_high_vs_low seed0,c25q3,0,-906,906
+u-math swap_high_vs_low seed0,c25q4,0,-588,588
+u-math swap_high_vs_low seed0,c26q0,0,-3,3
+u-math swap_high_vs_low seed0,c26q1,0,-26,26
+u-math swap_high_vs_low seed0,c26q2,0,-133,133
+u-math swap_high_vs_low seed0,c26q3,0,-226,226
+u-math swap_high_vs_low seed0,c26q4,0,-337,337
+u-math swap_high_vs_low seed0,c27q0,0,0,0
+u-math swap_high_vs_low seed0,c27q1,0,-14,14
+u-math swap_high_vs_low seed0,c27q2,0,-72,72
+u-math swap_high_vs_low seed0,c27q3,0,-82,82
+u-math swap_high_vs_low seed0,c27q4,0,-43,43
+u-math swap_high_vs_low seed0,c28q0,0,0,0
+u-math swap_high_vs_low seed0,c28q1,0,-447,447
+u-math swap_high_vs_low seed0,c28q2,0,-1200,1200
+u-math swap_high_vs_low seed0,c28q3,0,-1905,1905
+u-math swap_high_vs_low seed0,c28q4,0,-965,965
+u-math swap_high_vs_low seed0,c29q0,0,-265,265
+u-math swap_high_vs_low seed0,c29q1,0,-394,394
+u-math swap_high_vs_low seed0,c29q2,0,-1061,1061
+u-math swap_high_vs_low seed0,c29q3,0,-1334,1334
+u-math swap_high_vs_low seed0,c29q4,0,-1154,1154
+u-math swap_high_vs_low seed0,c30q0,0,0,0
+u-math swap_high_vs_low seed0,c30q1,0,-144,144
+u-math swap_high_vs_low seed0,c30q2,0,-586,586
+u-math swap_high_vs_low seed0,c30q3,0,-1776,1776
+u-math swap_high_vs_low seed0,c30q4,0,-3148,3148
+u-math swap_high_vs_low seed0,c31q0,0,-2,2
+u-math swap_high_vs_low seed0,c31q1,0,-48,48
+u-math swap_high_vs_low seed0,c31q2,0,-133,133
+u-math swap_high_vs_low seed0,c31q3,0,-233,233
+u-math swap_high_vs_low seed0,c31q4,0,-160,160
+u-math swap_high_vs_low seed0,c32q0,0,-36,36
+u-math swap_high_vs_low seed0,c32q1,0,-251,251
+u-math swap_high_vs_low seed0,c32q2,0,-1324,1324
+u-math swap_high_vs_low seed0,c32q3,0,-2432,2432
+u-math swap_high_vs_low seed0,c32q4,0,-1015,1015
+u-math swap_high_vs_low seed0,c33q0,0,0,0
+u-math swap_high_vs_low seed0,c33q1,0,-23,23
+u-math swap_high_vs_low seed0,c33q2,0,-65,65
+u-math swap_high_vs_low seed0,c33q3,0,-103,103
+u-math swap_high_vs_low seed0,c33q4,0,-158,158
+u-math swap_high_vs_low seed0,c34q0,0,0,0
+u-math swap_high_vs_low seed0,c34q1,0,-85,85
+u-math swap_high_vs_low seed0,c34q2,0,-257,257
+u-math swap_high_vs_low seed0,c34q3,0,-360,360
+u-math swap_high_vs_low seed0,c34q4,0,-200,200
+u-math swap_high_vs_low seed0,c35q0,0,-57,57
+u-math swap_high_vs_low seed0,c35q1,0,-592,592
+u-math swap_high_vs_low seed0,c35q2,0,-915,915
+u-math swap_high_vs_low seed0,c35q3,0,-833,833
+u-math swap_high_vs_low seed0,c35q4,0,-386,386
+u-math swap_high_vs_low seed0,c36q0,0,-18,18
+u-math swap_high_vs_low seed0,c36q1,0,-90,90
+u-math swap_high_vs_low seed0,c36q2,0,-161,161
+u-math swap_high_vs_low seed0,c36q3,0,-83,83
+u-math swap_high_vs_low seed0,c36q4,0,-32,32
+u-math swap_high_vs_low seed0,c37q0,0,-13,13
+u-math swap_high_vs_low seed0,c37q1,0,-75,75
+u-math swap_high_vs_low seed0,c37q2,0,-720,720
+u-math swap_high_vs_low seed0,c37q3,0,-1132,1132
+u-math swap_high_vs_low seed0,c37q4,0,-1680,1680
+u-math swap_high_vs_low seed0,c38q0,0,-103,103
+u-math swap_high_vs_low seed0,c38q1,0,-284,284
+u-math swap_high_vs_low seed0,c38q2,0,-897,897
+u-math swap_high_vs_low seed0,c38q3,0,-1127,1127
+u-math swap_high_vs_low seed0,c38q4,0,-1126,1126
+u-math swap_high_vs_low seed0,c39q0,-16,-47,19
+u-math swap_high_vs_low seed0,c39q1,-96,-585,452
+u-math swap_high_vs_low seed0,c39q2,-232,-2777,2546
+u-math swap_high_vs_low seed0,c39q3,-112,-1716,1665
+u-math swap_high_vs_low seed0,c39q4,-88,-1701,1637
+u-math swap_high_vs_low seed1,c00q0,0,0,0
+u-math swap_high_vs_low seed1,c00q1,0,-347,347
+u-math swap_high_vs_low seed1,c00q2,0,-911,911
+u-math swap_high_vs_low seed1,c00q3,0,-1361,1361
+u-math swap_high_vs_low seed1,c00q4,0,-1250,1250
+u-math swap_high_vs_low seed1,c01q0,0,-122,122
+u-math swap_high_vs_low seed1,c01q1,0,-196,196
+u-math swap_high_vs_low seed1,c01q2,0,-461,461
+u-math swap_high_vs_low seed1,c01q3,0,-689,689
+u-math swap_high_vs_low seed1,c01q4,0,-763,763
+u-math swap_high_vs_low seed1,c02q0,0,0,0
+u-math swap_high_vs_low seed1,c02q1,0,-59,59
+u-math swap_high_vs_low seed1,c02q2,0,-207,207
+u-math swap_high_vs_low seed1,c02q3,0,-306,306
+u-math swap_high_vs_low seed1,c02q4,0,-307,307
+u-math swap_high_vs_low seed1,c03q0,0,-92,92
+u-math swap_high_vs_low seed1,c03q1,0,-602,602
+u-math swap_high_vs_low seed1,c03q2,0,-633,633
+u-math swap_high_vs_low seed1,c03q3,0,-982,982
+u-math swap_high_vs_low seed1,c03q4,0,-683,683
+u-math swap_high_vs_low seed1,c04q0,0,0,0
+u-math swap_high_vs_low seed1,c04q1,0,-3,3
+u-math swap_high_vs_low seed1,c04q2,0,-380,380
+u-math swap_high_vs_low seed1,c04q3,0,-293,293
+u-math swap_high_vs_low seed1,c04q4,0,-60,60
+u-math swap_high_vs_low seed1,c05q0,0,-19,19
+u-math swap_high_vs_low seed1,c05q1,0,-170,170
+u-math swap_high_vs_low seed1,c05q2,0,-949,949
+u-math swap_high_vs_low seed1,c05q3,0,-2212,2212
+u-math swap_high_vs_low seed1,c05q4,0,-1537,1537
+u-math swap_high_vs_low seed1,c06q0,0,0,0
+u-math swap_high_vs_low seed1,c06q1,0,-15,15
+u-math swap_high_vs_low seed1,c06q2,0,-72,72
+u-math swap_high_vs_low seed1,c06q3,0,-216,216
+u-math swap_high_vs_low seed1,c06q4,0,-177,177
+u-math swap_high_vs_low seed1,c07q0,0,-11,11
+u-math swap_high_vs_low seed1,c07q1,0,-159,159
+u-math swap_high_vs_low seed1,c07q2,0,-330,330
+u-math swap_high_vs_low seed1,c07q3,0,-286,286
+u-math swap_high_vs_low seed1,c07q4,0,-68,68
+u-math swap_high_vs_low seed1,c08q0,0,0,0
+u-math swap_high_vs_low seed1,c08q1,0,-34,34
+u-math swap_high_vs_low seed1,c08q2,0,-252,252
+u-math swap_high_vs_low seed1,c08q3,0,-401,401
+u-math swap_high_vs_low seed1,c08q4,0,-322,322
+u-math swap_high_vs_low seed1,c09q0,0,-4,4
+u-math swap_high_vs_low seed1,c09q1,0,-80,80
+u-math swap_high_vs_low seed1,c09q2,0,-272,272
+u-math swap_high_vs_low seed1,c09q3,0,-452,452
+u-math swap_high_vs_low seed1,c09q4,0,-131,131
+u-math swap_high_vs_low seed1,c10q0,0,-2,2
+u-math swap_high_vs_low seed1,c10q1,0,-69,69
+u-math swap_high_vs_low seed1,c10q2,0,-102,102
+u-math swap_high_vs_low seed1,c10q3,0,-153,153
+u-math swap_high_vs_low seed1,c10q4,0,-59,59
+u-math swap_high_vs_low seed1,c11q0,0,-13,13
+u-math swap_high_vs_low seed1,c11q1,0,-131,131
+u-math swap_high_vs_low seed1,c11q2,0,-337,337
+u-math swap_high_vs_low seed1,c11q3,0,-476,476
+u-math swap_high_vs_low seed1,c11q4,0,-162,162
+u-math swap_high_vs_low seed1,c12q0,0,-30,30
+u-math swap_high_vs_low seed1,c12q1,0,-346,346
+u-math swap_high_vs_low seed1,c12q2,0,-809,809
+u-math swap_high_vs_low seed1,c12q3,0,-1244,1244
+u-math swap_high_vs_low seed1,c12q4,0,-482,482
+u-math swap_high_vs_low seed1,c13q0,0,0,0
+u-math swap_high_vs_low seed1,c13q1,0,-242,242
+u-math swap_high_vs_low seed1,c13q2,0,-904,904
+u-math swap_high_vs_low seed1,c13q3,-32,-3008,2942
+u-math swap_high_vs_low seed1,c13q4,0,-1273,1273
+u-math swap_high_vs_low seed1,c14q0,0,-42,42
+u-math swap_high_vs_low seed1,c14q1,0,-569,569
+u-math swap_high_vs_low seed1,c14q2,0,-1670,1670
+u-math swap_high_vs_low seed1,c14q3,0,-2327,2327
+u-math swap_high_vs_low seed1,c14q4,0,-719,719
+u-math swap_high_vs_low seed1,c15q0,0,0,0
+u-math swap_high_vs_low seed1,c15q1,0,-4,4
+u-math swap_high_vs_low seed1,c15q2,0,-17,17
+u-math swap_high_vs_low seed1,c15q3,0,-16,16
+u-math swap_high_vs_low seed1,c15q4,0,-32,32
+u-math swap_high_vs_low seed1,c16q0,0,-19,19
+u-math swap_high_vs_low seed1,c16q1,0,-103,103
+u-math swap_high_vs_low seed1,c16q2,0,-275,275
+u-math swap_high_vs_low seed1,c16q3,0,-488,488
+u-math swap_high_vs_low seed1,c16q4,0,-257,257
+u-math swap_high_vs_low seed1,c17q0,0,-203,203
+u-math swap_high_vs_low seed1,c17q1,0,-503,503
+u-math swap_high_vs_low seed1,c17q2,0,-862,862
+u-math swap_high_vs_low seed1,c17q3,0,-669,669
+u-math swap_high_vs_low seed1,c17q4,0,-180,180
+u-math swap_high_vs_low seed1,c18q0,0,-24,24
+u-math swap_high_vs_low seed1,c18q1,0,-184,184
+u-math swap_high_vs_low seed1,c18q2,0,-322,322
+u-math swap_high_vs_low seed1,c18q3,0,-199,199
+u-math swap_high_vs_low seed1,c18q4,0,-125,125
+u-math swap_high_vs_low seed1,c19q0,0,-1,1
+u-math swap_high_vs_low seed1,c19q1,0,-20,20
+u-math swap_high_vs_low seed1,c19q2,0,-109,109
+u-math swap_high_vs_low seed1,c19q3,0,-122,122
+u-math swap_high_vs_low seed1,c19q4,0,-89,89
+u-math swap_high_vs_low seed1,c20q0,0,-9,9
+u-math swap_high_vs_low seed1,c20q1,0,-346,346
+u-math swap_high_vs_low seed1,c20q2,0,-678,678
+u-math swap_high_vs_low seed1,c20q3,0,-425,425
+u-math swap_high_vs_low seed1,c20q4,0,-633,633
+u-math swap_high_vs_low seed1,c21q0,16,-34,62
+u-math swap_high_vs_low seed1,c21q1,96,-311,444
+u-math swap_high_vs_low seed1,c21q2,192,-1028,1179
+u-math swap_high_vs_low seed1,c21q3,128,-1255,1339
+u-math swap_high_vs_low seed1,c21q4,144,-442,619
+u-math swap_high_vs_low seed1,c22q0,0,0,0
+u-math swap_high_vs_low seed1,c22q1,0,-35,35
+u-math swap_high_vs_low seed1,c22q2,0,-301,301
+u-math swap_high_vs_low seed1,c22q3,0,-629,629
+u-math swap_high_vs_low seed1,c22q4,0,-214,214
+u-math swap_high_vs_low seed1,c23q0,0,-33,33
+u-math swap_high_vs_low seed1,c23q1,0,-307,307
+u-math swap_high_vs_low seed1,c23q2,0,-608,608
+u-math swap_high_vs_low seed1,c23q3,0,-794,794
+u-math swap_high_vs_low seed1,c23q4,0,-916,916
+u-math swap_high_vs_low seed1,c24q0,0,-233,233
+u-math swap_high_vs_low seed1,c24q1,0,-1429,1429
+u-math swap_high_vs_low seed1,c24q2,0,-2569,2569
+u-math swap_high_vs_low seed1,c24q3,0,-1969,1969
+u-math swap_high_vs_low seed1,c24q4,0,-987,987
+u-math swap_high_vs_low seed1,c25q0,0,-293,293
+u-math swap_high_vs_low seed1,c25q1,0,-838,838
+u-math swap_high_vs_low seed1,c25q2,0,-1276,1276
+u-math swap_high_vs_low seed1,c25q3,0,-906,906
+u-math swap_high_vs_low seed1,c25q4,0,-588,588
+u-math swap_high_vs_low seed1,c26q0,0,-3,3
+u-math swap_high_vs_low seed1,c26q1,0,-26,26
+u-math swap_high_vs_low seed1,c26q2,0,-133,133
+u-math swap_high_vs_low seed1,c26q3,0,-226,226
+u-math swap_high_vs_low seed1,c26q4,0,-337,337
+u-math swap_high_vs_low seed1,c27q0,0,0,0
+u-math swap_high_vs_low seed1,c27q1,0,-14,14
+u-math swap_high_vs_low seed1,c27q2,0,-72,72
+u-math swap_high_vs_low seed1,c27q3,0,-82,82
+u-math swap_high_vs_low seed1,c27q4,0,-43,43
+u-math swap_high_vs_low seed1,c28q0,0,0,0
+u-math swap_high_vs_low seed1,c28q1,0,-447,447
+u-math swap_high_vs_low seed1,c28q2,0,-1200,1200
+u-math swap_high_vs_low seed1,c28q3,0,-1905,1905
+u-math swap_high_vs_low seed1,c28q4,0,-965,965
+u-math swap_high_vs_low seed1,c29q0,0,-265,265
+u-math swap_high_vs_low seed1,c29q1,0,-394,394
+u-math swap_high_vs_low seed1,c29q2,0,-1061,1061
+u-math swap_high_vs_low seed1,c29q3,0,-1334,1334
+u-math swap_high_vs_low seed1,c29q4,0,-1154,1154
+u-math swap_high_vs_low seed1,c30q0,0,0,0
+u-math swap_high_vs_low seed1,c30q1,0,-144,144
+u-math swap_high_vs_low seed1,c30q2,0,-586,586
+u-math swap_high_vs_low seed1,c30q3,0,-1776,1776
+u-math swap_high_vs_low seed1,c30q4,0,-3148,3148
+u-math swap_high_vs_low seed1,c31q0,0,-2,2
+u-math swap_high_vs_low seed1,c31q1,0,-48,48
+u-math swap_high_vs_low seed1,c31q2,0,-133,133
+u-math swap_high_vs_low seed1,c31q3,0,-233,233
+u-math swap_high_vs_low seed1,c31q4,0,-160,160
+u-math swap_high_vs_low seed1,c32q0,0,-36,36
+u-math swap_high_vs_low seed1,c32q1,0,-251,251
+u-math swap_high_vs_low seed1,c32q2,0,-1324,1324
+u-math swap_high_vs_low seed1,c32q3,0,-2432,2432
+u-math swap_high_vs_low seed1,c32q4,0,-1015,1015
+u-math swap_high_vs_low seed1,c33q0,0,0,0
+u-math swap_high_vs_low seed1,c33q1,0,-23,23
+u-math swap_high_vs_low seed1,c33q2,0,-65,65
+u-math swap_high_vs_low seed1,c33q3,0,-103,103
+u-math swap_high_vs_low seed1,c33q4,0,-158,158
+u-math swap_high_vs_low seed1,c34q0,0,0,0
+u-math swap_high_vs_low seed1,c34q1,0,-85,85
+u-math swap_high_vs_low seed1,c34q2,0,-257,257
+u-math swap_high_vs_low seed1,c34q3,0,-360,360
+u-math swap_high_vs_low seed1,c34q4,0,-200,200
+u-math swap_high_vs_low seed1,c35q0,0,-57,57
+u-math swap_high_vs_low seed1,c35q1,0,-592,592
+u-math swap_high_vs_low seed1,c35q2,0,-915,915
+u-math swap_high_vs_low seed1,c35q3,0,-833,833
+u-math swap_high_vs_low seed1,c35q4,0,-386,386
+u-math swap_high_vs_low seed1,c36q0,0,-18,18
+u-math swap_high_vs_low seed1,c36q1,0,-90,90
+u-math swap_high_vs_low seed1,c36q2,0,-161,161
+u-math swap_high_vs_low seed1,c36q3,0,-83,83
+u-math swap_high_vs_low seed1,c36q4,0,-32,32
+u-math swap_high_vs_low seed1,c37q0,0,-13,13
+u-math swap_high_vs_low seed1,c37q1,0,-75,75
+u-math swap_high_vs_low seed1,c37q2,0,-720,720
+u-math swap_high_vs_low seed1,c37q3,0,-1132,1132
+u-math swap_high_vs_low seed1,c37q4,0,-1680,1680
+u-math swap_high_vs_low seed1,c38q0,0,-103,103
+u-math swap_high_vs_low seed1,c38q1,0,-284,284
+u-math swap_high_vs_low seed1,c38q2,0,-897,897
+u-math swap_high_vs_low seed1,c38q3,0,-1127,1127
+u-math swap_high_vs_low seed1,c38q4,0,-1126,1126
+u-math swap_high_vs_low seed1,c39q0,-16,-47,19
+u-math swap_high_vs_low seed1,c39q1,-96,-585,452
+u-math swap_high_vs_low seed1,c39q2,-232,-2777,2546
+u-math swap_high_vs_low seed1,c39q3,-112,-1716,1665
+u-math swap_high_vs_low seed1,c39q4,-88,-1701,1637

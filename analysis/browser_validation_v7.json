@@ -1,0 +1,178 @@
+{
+  "version": "report-v7-2026-10-04",
+  "verified_utc": "2026-10-04T14:11:15.429791+00:00",
+  "functional": {
+    "fiveQualityRowsMatch": true,
+    "threePlansMatch": true,
+    "exportRetainsPlannedNullState": true,
+    "existingLocalDataPreserved": true,
+    "eightProfileBudgetCasesMatch": true
+  },
+  "errors": [],
+  "plans": [
+    {
+      "donor": 26,
+      "status": "planned_not_executed",
+      "arms": 4,
+      "launchable": false,
+      "resultsNull": true
+    },
+    {
+      "donor": 37,
+      "status": "planned_not_executed",
+      "arms": 4,
+      "launchable": false,
+      "resultsNull": true
+    },
+    {
+      "donor": 14,
+      "status": "planned_not_executed",
+      "arms": 4,
+      "launchable": false,
+      "resultsNull": true
+    }
+  ],
+  "matrix": [
+    {
+      "qualityRows": 5,
+      "candidate": "197c9f5ceff6b9ee",
+      "budget": "nominal",
+      "summary": [
+        "195 / 200",
+        "1472.893 B",
+        "714.226 B",
+        "758.667 B"
+      ]
+    },
+    {
+      "qualityRows": 5,
+      "candidate": "197c9f5ceff6b9ee",
+      "budget": "recorded_physical",
+      "summary": [
+        "195 / 200",
+        "1.293 B",
+        "0.627 B",
+        "0.666 B"
+      ]
+    },
+    {
+      "qualityRows": 5,
+      "candidate": "b100ad1935c71002",
+      "budget": "nominal",
+      "summary": [
+        "169 / 200",
+        "247.955 B",
+        "169.754 B",
+        "78.201 B"
+      ]
+    },
+    {
+      "qualityRows": 5,
+      "candidate": "b100ad1935c71002",
+      "budget": "recorded_physical",
+      "summary": [
+        "169 / 200",
+        "0.218 B",
+        "0.149 B",
+        "0.069 B"
+      ]
+    },
+    {
+      "qualityRows": 5,
+      "candidate": "4602cace15312bd4",
+      "budget": "nominal",
+      "summary": [
+        "199 / 200",
+        "6213.493 B",
+        "3708.420 B",
+        "2505.074 B"
+      ]
+    },
+    {
+      "qualityRows": 5,
+      "candidate": "4602cace15312bd4",
+      "budget": "recorded_physical",
+      "summary": [
+        "199 / 200",
+        "5.450 B",
+        "3.249 B",
+        "2.201 B"
+      ]
+    },
+    {
+      "qualityRows": 5,
+      "candidate": "44bfd83cf7199b40",
+      "budget": "nominal",
+      "summary": [
+        "198 / 200",
+        "5317.001 B",
+        "2801.285 B",
+        "2515.717 B"
+      ]
+    },
+    {
+      "qualityRows": 5,
+      "candidate": "44bfd83cf7199b40",
+      "budget": "recorded_physical",
+      "summary": [
+        "198 / 200",
+        "4.671 B",
+        "2.462 B",
+        "2.209 B"
+      ]
+    }
+  ],
+  "printTables": {
+    "count": 6,
+    "restored": true,
+    "allOpened": true
+  },
+  "exportScope": "Observed Blob from real button; OS file save not tested",
+  "desktop": {
+    "viewport": 1440,
+    "sectionTop": 15.921875,
+    "documentWidth": 1425
+  },
+  "mobile": {
+    "documentWidth": 375,
+    "tableContainerWidth": 297,
+    "sectionTop": 15.8046875,
+    "summaryCards": 4,
+    "viewport": 390,
+    "tableScrollWidth": 781
+  },
+  "standalone": {
+    "embeddedFigures": 13,
+    "profileCount": 4,
+    "errors": [],
+    "scratchClosed": true,
+    "figureReadings": 13,
+    "standaloneControlsUpdated": true,
+    "externalHttpRequests": [],
+    "armRecords": 12,
+    "loadedFigures": 13
+  },
+  "screenshots": [
+    "analysis/browser_v7_transfer_desktop.png",
+    "analysis/browser_v7_transfer_mobile.png",
+    "analysis/browser_v7_transfer_plan.png"
+  ],
+  "visual_inspection": "All three exact screenshot artifacts viewed; controls and tables readable; wide tables stay within scroll containers.",
+  "not_verified": [
+    "OS download save",
+    "GPU factorial outcomes",
+    "actual token IDs / cursor / inner shuffle",
+    "external reader comprehension or rubric validity"
+  ],
+  "recovery_notes": [
+    "Task executor expired; a replacement blank page produced a visibility failure before any report control mutation.",
+    "Entry tab attachment failed; task finished and exact retained group resumed, then visible state inspected.",
+    "Cross-realm array prototype assertion failed with identical text; comparison changed to serialized values after reading current state. No product value correction was needed."
+  ],
+  "final_task_release": {
+    "finished": true,
+    "keep": true,
+    "forcedCleanup": false,
+    "closedTabIds": []
+  }
+}

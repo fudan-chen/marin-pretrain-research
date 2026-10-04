@@ -1,0 +1,22 @@
+{
+  "version": "report-v7-2026-10-04",
+  "report_checks": 622,
+  "transfer_boundary_groups": 13,
+  "native_loader_count_evaluations": {
+    "integer_controlled": 24,
+    "original_continuous": 24
+  },
+  "source_files_unchanged_from_v6": 318,
+  "source_integrity_manifest_timestamp_regenerated": true,
+  "figure_count": 13,
+  "independent_integer_recipes": 8,
+  "planned_arm_records": 12,
+  "training_status": "not_executed",
+  "next_local_milestone": "Compile matched cumulative exposure schedules into integer phase ledger with residual and feasibility checks",
+  "artifacts": {
+    "analysis/transfer_data.json": "3ca1c06e987a277759581fb7483977d549bf1cc51b4d3a502c89281f1d70008b",
+    "analysis/transfer_loader_probe_python312.json": "b7f2eccbedb3bf228b2a8054c5ff0345efd21806c47995d38d032b091d42eec5",
+    "index.html": "ceb1e4f31ce256927ed7429f43b29126f959c03a25cacbef9f32dbbfc4567b36",
+    "report_standalone.html": "5b9f0b22381711a216a3bc252866b2dacaca9334363ab51d015cd20f30579c95"
+  }
+}

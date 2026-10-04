@@ -1,0 +1,17 @@
+<section class="chapter transfer-lab" id="transfer-lab">
+<h1>从候选差值走到供体交换</h1>
+<p>先找预算到底挪到哪里，再把可检验的变化拆开。数值来自固定权重；方案由本报告编制，全部未执行。<a href="#transfer-guide">阅读机制、公式与实验草案</a></p>
+<div class="transfer-controls"><div><label for="transfer-candidate">相对996f的候选</label><select id="transfer-candidate"><option value="197c9f5ceff6b9ee">197c：三指标反例</option><option value="b100ad1935c71002">b100：比例参照下代码情景</option><option value="4602cace15312bd4">4602：纯Paloma最小终点</option><option value="44bfd83cf7199b40">44bf：旧参照下风险情景</option></select></div><div><label for="transfer-budget">候选差值的预算口径</label><select id="transfer-budget"><option value="nominal">名义模拟：13.125T + 3.75T</option><option value="recorded_physical">按已核对代理步数折算：2727 + 810更新</option></select></div></div>
+<p class="status">代理步数口径是对照预算演示，未逐一证明四个候选实际读取量。名义模拟tokens不能写成535B或d512实际消费量。</p>
+<div id="transfer-summary" class="decision-summary" aria-live="polite"></div><p id="transfer-boundary" class="status"></p>
+<label for="transfer-domain">查看一个域内部的五档</label><select id="transfer-domain"></select><div class="table-wrap"><table id="transfer-quality-table"><thead><tr><th>桶</th><th>996f预算/B</th><th>候选预算/B</th><th>变化/B</th></tr></thead><tbody></tbody></table></div>
+<details class="large-table-details"><summary>展开全部40域净差，完整200桶可下载CSV</summary><div class="table-wrap"><table id="transfer-domain-table"><thead><tr><th>域</th><th>预算变化/B</th></tr></thead><tbody></tbody></table></div></details>
+<p><a href="analysis/transfer_cell_differences.csv">全部200桶 × 四候选 × 两口径CSV</a> · <a href="analysis/transfer_domain_differences.csv">域净差CSV</a></p>
+<h2>数学例子：累计加量与时序同时改变</h2><p>以下固定使用13.125T/3.75T名义预算，比较197c与996f。恒定增量列把相同累计增量按阶段长度分配；最后一列是额外前移/后移。</p><div class="table-wrap"><table id="transfer-timing-table"><thead><tr><th>阶段</th><th>197c数学变化/B</th><th>相同累计量的恒定增量/B</th><th>时序余量/B</th></tr></thead><tbody></tbody></table></div>
+<h2>四臂实验草案：数学总量 × 数学内部Q档安排</h2><p>只固定总预算和阶段边界，选择一个明确供体。数学累计量和Q档比例以两个候选的观测作教学锚点；每个桶在两阶段施加相同增量，不复制197c的时序。其他38域在连续方案里保持不变。</p>
+<label for="transfer-donor">数学加量的供体</label><select id="transfer-donor"><option value="26">c26 议会与董事会记录</option><option value="37">c37 法律、法院与监管</option><option value="14">c14 软件开发与Web代码</option></select>
+<div id="transfer-plan-summary" aria-live="polite"></div><div class="table-wrap"><table id="transfer-arms"><thead><tr><th>方案</th><th>累计数学量/B（连续）</th><th>整数块数学量/B</th><th>原取整L1误差/B</th><th>域内修正L1误差/B</th><th>额外改动桶</th></tr></thead><tbody></tbody></table></div>
+<p class="status">整数修正把余数限制在声明域，并使用可回查的权重编码；归档加载器两段方法在Python3.12核对24组整块计数。修正后仍有有限精度误差，不能把连续目标当成实际数据流。12条记录包含8套不同整数方案；重复基线不算独立实验。</p>
+<p id="transfer-execution-boundary" class="status"></p><div class="actions"><button class="action" id="transfer-plan-export">导出当前四臂草案JSON</button></div><details><summary>查看当前草案JSON</summary><textarea id="transfer-plan-json" aria-label="数学交换草案JSON" readonly></textarea></details>
+<p><a href="analysis/transfer_plan_quantization.csv">原取整误差逐桶表</a> · <a href="analysis/transfer_plan_integer_controlled.csv">修正后计数与误差表</a> · <a href="analysis/transfer_loader_probe_python312.json">原加载器计数探针</a> · <a href="#rubrics">对应R05/R08/R09/R10/R14</a></p>
+</section>

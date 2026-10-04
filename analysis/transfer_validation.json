@@ -1,0 +1,19 @@
+{
+  "test_groups_passed": 13,
+  "tests": [
+    "Cumulative shift conserves budget and separates cancellation",
+    "Math cumulative gain and time redistribution are distinct",
+    "All twelve arms preserve continuous normalization and exact factor targets",
+    "Donor losses match receiver amount gains and other 38 domains stay fixed",
+    "Every changed bucket receives same additive delta in both phases",
+    "Invalid donor or negative capacity fails without clipping",
+    "Full-block totals conserve units but leave explicit extra-bucket audit",
+    "Compiled weight contracts cannot claim experiment results or launch readiness",
+    "Prospective math experiment does not reproduce the global 197c recipe",
+    "Integer repair confines changes to declared receiver and donor",
+    "Baseline and Q-only preserve every domain total after integer compilation",
+    "Integer amount transfer is 61 units and all 24 encoded blocks roundtrip",
+    "Repeated controls are eight unique recipes and finite-stream status stays false"
+  ],
+  "scope": "Prospective continuous contrasts and full-block arithmetic, not model training."
+}

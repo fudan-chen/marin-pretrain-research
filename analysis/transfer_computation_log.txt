@@ -1,0 +1,118 @@
+{
+  "profiles": [
+    {
+      "id": "197c9f5ceff6b9ee",
+      "changed_phase_cells": 195,
+      "budget_tokens": [
+        13125000000000,
+        3750000000000
+      ],
+      "total_tokens": 16875000000000,
+      "moved_tokens": 1472892761230.4688,
+      "cross_domain_net_tokens": 714225769042.9688,
+      "within_domain_cancellation_tokens": 758666992187.5,
+      "phase_moved_sum_tokens": 1540412902832.0312,
+      "temporal_cancellation_tokens": 67520141601.5625,
+      "net_difference_tokens": 0.0,
+      "quality_net_tokens": [
+        56877136230.46875,
+        -61950683593.75,
+        54244995117.1875,
+        -165977478027.34375,
+        116806030273.4375
+      ]
+    },
+    {
+      "id": "b100ad1935c71002",
+      "changed_phase_cells": 169,
+      "budget_tokens": [
+        13125000000000,
+        3750000000000
+      ],
+      "total_tokens": 16875000000000,
+      "moved_tokens": 247955322265.625,
+      "cross_domain_net_tokens": 169754028320.3125,
+      "within_domain_cancellation_tokens": 78201293945.3125,
+      "phase_moved_sum_tokens": 267906188964.84378,
+      "temporal_cancellation_tokens": 19950866699.21878,
+      "net_difference_tokens": 0.0,
+      "quality_net_tokens": [
+        -2746582031.25,
+        3776550292.96875,
+        -24528503417.96875,
+        -25711059570.3125,
+        49209594726.5625
+      ]
+    },
+    {
+      "id": "4602cace15312bd4",
+      "changed_phase_cells": 199,
+      "budget_tokens": [
+        13125000000000,
+        3750000000000
+      ],
+      "total_tokens": 16875000000000,
+      "moved_tokens": 6213493347167.969,
+      "cross_domain_net_tokens": 3708419799804.6875,
+      "within_domain_cancellation_tokens": 2505073547363.2812,
+      "phase_moved_sum_tokens": 6652145385742.1875,
+      "temporal_cancellation_tokens": 438652038574.21875,
+      "net_difference_tokens": -1.430511474609375e-06,
+      "quality_net_tokens": [
+        212593078613.28125,
+        299911499023.4375,
+        91209411621.09375,
+        101623535156.25,
+        -705337524414.0625
+      ]
+    },
+    {
+      "id": "44bfd83cf7199b40",
+      "changed_phase_cells": 198,
+      "budget_tokens": [
+        13125000000000,
+        3750000000000
+      ],
+      "total_tokens": 16875000000000,
+      "moved_tokens": 5317001342773.4375,
+      "cross_domain_net_tokens": 2801284790039.0625,
+      "within_domain_cancellation_tokens": 2515716552734.375,
+      "phase_moved_sum_tokens": 5519943237304.6875,
+      "temporal_cancellation_tokens": 202941894531.25,
+      "net_difference_tokens": 0.0,
+      "quality_net_tokens": [
+        -57830810546.875,
+        317344665527.34375,
+        477447509765.625,
+        -31433105468.75,
+        -705528259277.3438
+      ]
+    }
+  ],
+  "math_timing": {
+    "stage_delta_tokens": [
+      24299621582.031242,
+      -3433227539.0625033
+    ],
+    "cumulative_delta_tokens": 20866394042.96875,
+    "constant_same_total_stage_delta_tokens": [
+      16229417588.975695,
+      4636976453.993055
+    ],
+    "timing_residual_tokens": [
+      8070203993.055548,
+      -8070203993.055559
+    ]
+  },
+  "plan_count": 3,
+  "arm_records": 12,
+  "unique_integer_recipes": 8,
+  "plan_status": "planned_not_executed",
+  "not_verified": [
+    "causal bucket contributions",
+    "GPU factorial outcomes",
+    "actual training token stream",
+    "historical exposure capacity",
+    "optimal math share or order"
+  ]
+}

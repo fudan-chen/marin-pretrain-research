@@ -94,5 +94,13 @@
     "boundary": "观察前沿不是确认或部署推荐；197c还有其他任务退步。",
     "values": "analysis/observed_pareto_frontiers.csv",
     "chapter": "CONCLUSIONS_ZH.md"
+  },
+  {
+    "file": "assets/candidate_budget_decomposition.png",
+    "question": "看域净差会漏掉多少Q档变化？",
+    "reading": "四候选均相对996f；条形全长为桶累计半L1，蓝色为域净差半L1，棕色为域内相抵。",
+    "boundary": "预算为13.125T/3.75T名义模拟；不指定实际供体路径，不估计Loss或桶因果贡献。",
+    "values": "analysis/transfer_cell_differences.csv",
+    "chapter": "TRANSFER_GUIDE_ZH.md"
   }
 ]

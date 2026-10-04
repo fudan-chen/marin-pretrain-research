@@ -1,0 +1,268 @@
+{
+  "snapshot": "2026-10-04约05:38，曲线未刷新",
+  "scope": "d512续训指标为BPB；图中三点为seed0/1/2，均值点不是置信区间。",
+  "metrics": [
+    {
+      "key": "eval_dropless/paloma/macro_bpb",
+      "label": "通用文本平均",
+      "means": {
+        "old": 1.1933826208114624,
+        "proportional": 1.1865977048873901,
+        "selected": 1.1860119501749675
+      },
+      "seeds": [
+        {
+          "seed": 0,
+          "old": 1.193233847618103,
+          "proportional": 1.1864715814590454,
+          "selected": 1.1864409446716309
+        },
+        {
+          "seed": 1,
+          "old": 1.193894624710083,
+          "proportional": 1.1868433952331543,
+          "selected": 1.186340570449829
+        },
+        {
+          "seed": 2,
+          "old": 1.1930193901062012,
+          "proportional": 1.1864781379699707,
+          "selected": 1.1852543354034424
+        }
+      ]
+    },
+    {
+      "key": "eval_dropless/paloma/dolma_100_programing_languages-llama3/bpb",
+      "label": "编程语言文本",
+      "means": {
+        "old": 0.7044887542724609,
+        "proportional": 0.6915642619132996,
+        "selected": 0.6789210438728333
+      },
+      "seeds": [
+        {
+          "seed": 0,
+          "old": 0.7062650322914124,
+          "proportional": 0.6924722790718079,
+          "selected": 0.6794255375862122
+        },
+        {
+          "seed": 1,
+          "old": 0.7051947712898254,
+          "proportional": 0.692243218421936,
+          "selected": 0.6791086196899414
+        },
+        {
+          "seed": 2,
+          "old": 0.702006459236145,
+          "proportional": 0.6899772882461548,
+          "selected": 0.6782289743423462
+        }
+      ]
+    },
+    {
+      "key": "logprob_humaneval_10shot",
+      "label": "HumanEval目标文本",
+      "means": {
+        "old": 0.5176012245548983,
+        "proportional": 0.5370011142126808,
+        "selected": 0.49672331175246504
+      },
+      "seeds": [
+        {
+          "seed": 0,
+          "old": 0.5135216415621722,
+          "proportional": 0.5364480372544744,
+          "selected": 0.4979298909485227
+        },
+        {
+          "seed": 1,
+          "old": 0.5229141244398361,
+          "proportional": 0.5401764709964223,
+          "selected": 0.4901367034803909
+        },
+        {
+          "seed": 2,
+          "old": 0.5163679076626866,
+          "proportional": 0.5343788343871457,
+          "selected": 0.5021033408284815
+        }
+      ]
+    },
+    {
+      "key": "logprob_gsm8k_5shot",
+      "label": "GSM8K目标文本",
+      "means": {
+        "old": 0.7038808875598414,
+        "proportional": 0.7688293388233775,
+        "selected": 0.7802076989485478
+      },
+      "seeds": [
+        {
+          "seed": 0,
+          "old": 0.7412256027791492,
+          "proportional": 0.7830996624184536,
+          "selected": 0.8197130247236325
+        },
+        {
+          "seed": 1,
+          "old": 0.6446185418163565,
+          "proportional": 0.7482157394742247,
+          "selected": 0.7418909158742591
+        },
+        {
+          "seed": 2,
+          "old": 0.7257985180840185,
+          "proportional": 0.7751726145774539,
+          "selected": 0.7790191562477518
+        }
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "id": "distribution",
+      "label": "108k：换配比后训练CE上升",
+      "nodes": [
+        {
+          "text": "配置权重切换",
+          "kind": "observed"
+        },
+        {
+          "text": "抽到的文本分布改变",
+          "kind": "mechanism"
+        },
+        {
+          "text": "训练CE约1.210→1.235",
+          "kind": "observed"
+        }
+      ],
+      "reading": "训练批次的题材和难度分布改变了。这个跳变本身无法判断同一固定任务上的预测变好还是变坏。",
+      "allowed": "配比切换附近，训练CE的观察值上升。",
+      "forbidden": "据此判断模型能力倒退，或用CE跳幅计算配比收益。",
+      "next": "比较固定验证并保留代码/数学等退步项；核对路由口径和参照条件。",
+      "source": "REPORT_ZH.md",
+      "rules": [
+        "R02",
+        "R03",
+        "R06",
+        "R08"
+      ]
+    },
+    {
+      "id": "ep",
+      "label": "81k：drop减少，CE下降",
+      "nodes": [
+        {
+          "text": "Ragged EP与轮包切换",
+          "kind": "observed"
+        },
+        {
+          "text": "容量丢弃显著减少",
+          "kind": "observed"
+        },
+        {
+          "text": "同step CE均差 -0.0064983",
+          "kind": "observed"
+        }
+      ],
+      "reading": "路由容量影响哪些token能经过专家。路径变了，训练目标的有效计算也可能改变。200个配对step显示CE下降，同时吞吐中位数比约1.082。",
+      "allowed": "这组配对窗口中，drop、CE和吞吐同时变化。",
+      "forbidden": "把训练CE降幅全归给模型能力，或混用dropless评估。",
+      "next": "在固定评估路径上看效果；同时区分路由机制变化和系统吞吐收益。",
+      "source": "analysis/summary.json",
+      "rules": [
+        "R03",
+        "R05",
+        "R13"
+      ]
+    },
+    {
+      "id": "kernel",
+      "label": "146k：吞吐提升，CE近似不变",
+      "nodes": [
+        {
+          "text": "FA4、mask、GC一起调整",
+          "kind": "observed"
+        },
+        {
+          "text": "吞吐中位数比 1.108",
+          "kind": "observed"
+        },
+        {
+          "text": "同step CE均差 +0.0003601",
+          "kind": "observed"
+        }
+      ],
+      "reading": "这是组合部署窗口：可以核对整组调整的速度和数值表现，不能从这一组数据单独分出FA4的贡献。",
+      "allowed": "200个配对step里吞吐提高约10.82%，CE差很小。",
+      "forbidden": "声称FA4单独带来全部收益，或称能力提高10.82%。",
+      "next": "分别记录固定token与固定时间预算；需要单组件归因时做拆分对照。",
+      "source": "analysis/summary.json",
+      "rules": [
+        "R03",
+        "R05",
+        "R08",
+        "R13"
+      ]
+    },
+    {
+      "id": "gate",
+      "label": "Gate接近零：早期层真的没用了吗？",
+      "nodes": [
+        {
+          "text": "部分gate范数异常增大",
+          "kind": "observed"
+        },
+        {
+          "text": "怀疑早期层没作用",
+          "kind": "hypothesis"
+        },
+        {
+          "text": "删除前10层：loss 2.093→6.584",
+          "kind": "observed"
+        }
+      ],
+      "reading": "小幅残差修改仍可能被后续层依赖。这组敲除使用dropless global macro loss，数值不是BPB。参数或门值的外观，不能直接替代功能敲除实验。",
+      "allowed": "敲除反例说明前10层仍影响该评估结果。",
+      "forbidden": "门接近零就断言整层已经无用，或把敲除loss当作实际部署结果。",
+      "next": "区分attention与FFN敲除、模型状态和评估路径，检验具体机制。",
+      "source": "REPORT_ZH.md",
+      "rules": [
+        "R02",
+        "R03",
+        "R13"
+      ]
+    },
+    {
+      "id": "cursor",
+      "label": "4K换16K：配比相同，数据位置也相同吗？",
+      "nodes": [
+        {
+          "text": "序列/混合块设置改变",
+          "kind": "observed"
+        },
+        {
+          "text": "完整块计数与阶段边界改变",
+          "kind": "mechanism"
+        },
+        {
+          "text": "重算cursor可前进也可后退",
+          "kind": "computed"
+        }
+      ],
+      "reading": "step不是绝对的数据身份。权重、混合块、边界对齐和恢复计数一起决定读取位置。2.951B或108.907B是两种设置下的完整块L1游标差。",
+      "allowed": "本地复算证明这些设置下逻辑位置会不同。",
+      "forbidden": "把游标差直接叫作已经重复或遗漏的实际token数量。",
+      "next": "重放真实token ID与桶内顺序；先匹配累计量，再谈先后作用。",
+      "source": "DEEP_DIVE_ZH.md",
+      "rules": [
+        "R05",
+        "R09",
+        "R10",
+        "R14"
+      ]
+    }
+  ],
+  "gap_fraction": 0.9205289801551667
+}

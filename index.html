@@ -5,7 +5,956 @@
 @media(max-width:980px){.layout{display:block;padding:15px}.sidebar{position:static;height:auto;max-height:none;padding:10px 5px 18px}.sidebar nav{display:flex;gap:6px;flex-wrap:wrap}.sidebar nav a.major{margin:0;padding:5px 10px;border-left:0;border-bottom:2px solid #729dbd}.sidebar details,.sidebar input{display:none}.intro,.chapter{padding:23px}.chapter{margin-top:15px}.intro h1{font-size:25px}.facts{gap:12px}.chapter h1{font-size:23px}body{font-size:15px}.chapter img{margin:18px auto}.top-link{right:12px}}
 @media print{body{background:white;font-size:11pt}.layout{display:block;padding:0}.sidebar,.intro .actions,.top-link,.filters,.notes,.footer{display:none}.intro{background:white;border:none;padding:0}.chapter{border:0;padding:0;margin:25pt 0;break-before:page}.chapter h2,.chapter h3{break-after:avoid}.chapter p{max-width:none}.table-wrap,.bucket-scroll{overflow:visible;max-height:none}table{font-size:9pt;min-width:0}.chapter img{max-height:245mm;object-fit:contain}pre{white-space:pre-wrap}a{color:inherit}}
 .planner .filters input{width:150px}.plan-input{min-width:850px}.plan-input input{width:100%;min-width:75px;border:1px solid #b9cad5;border-radius:3px;padding:7px;font:13px inherit}.plan-input td:first-child{min-width:150px}.plan-error{padding:12px 16px;background:#fff1ed;color:#9c3820;border-left:3px solid #bd6c4a}.planner textarea{width:100%;min-height:320px;font:13px/1.7 ui-monospace,monospace;padding:12px;border:1px solid #bccad3}.planner details{margin:24px 0}.plan-bar-row{display:grid;grid-template-columns:95px minmax(0,1fr) 130px;gap:10px;align-items:center;font-size:12px;margin:10px 0}.plan-bar-track i{display:block;height:10px;min-width:0}.plan-bar-track .early{background:#225a83;margin-bottom:3px}.plan-bar-track .late{background:#c47f2f}.plan-bar-row span:last-child{text-align:right;font-variant-numeric:tabular-nums}@media(max-width:600px){.plan-bar-row{grid-template-columns:65px minmax(0,1fr) 105px;gap:6px;font-size:11px}.planner .filters{display:grid}.planner .filters label{display:flex;justify-content:space-between;gap:8px}.planner .filters input{width:125px}.planner .actions{gap:10px}}@media print{.planner details,.planner .actions,.plan-input{display:none}}
-</style></head><body id="top"><div class="layout"><aside class="sidebar"><div class="brand">Marin 535B<br>预训练研究</div><div class="meta">公开快照：2026-10-04<br>重点：故障机制、Loss、数据顺序</div><input id="toc-search" aria-label="筛选章节目录" placeholder="筛选章节标题"><nav><a class="major" href="#conclusions">第四轮：结论与判断</a><a class="major" href="#report">研究主报告</a><a class="major" href="#data">数据配比与顺序</a><a class="major" href="#deep">第二轮：搜索、取舍与游标</a><a class="major" href="#practical">第三轮：删域、曝光与顺序</a><a class="major" href="#translation">#8435逐条中文解读</a><a class="major" href="#operations">58条运行记录</a><a class="major" href="#provenance">来源与复核</a><a class="major" href="#planner">自己的配比预算工具</a><a class="major" href="#explorer">200桶查询</a><a class="major" href="#notes">我的研究笔记</a></nav><details open><summary>第四轮：结论与判断 · 章节</summary><a class="" href="#conclusions-1">1. 补上简单基线，才知道搜索额外买到了什么</a><a class="" href="#conclusions-2">2. 平均值在隐藏什么：代码、学术收益被其他文本退步抵消</a><a class="" href="#conclusions-3-seed">3. 三seed告诉了什么，又没有告诉什么</a><a class="" href="#conclusions-4">4. “最终选中”不等于在所有公开指标上最好</a><a class="" href="#conclusions-5">5. 小模型告诉你方向的可能性，大模型负责确认方向是否成立</a><a class="" href="#conclusions-6">6. 关于质量、配比与顺序，我现在更相信哪些解释</a><a class="minor" href="#conclusions-61-q">6.1 Q档提供质量线索，训练价值还取决于缺了什么</a><a class="minor" href="#conclusions-62-bpb">6.2 数学份额降低与数学BPB变差相关，但还没定位到纯效应</a><a class="minor" href="#conclusions-63">6.3 删域实验测的是“删除再分配”，应据此做局部交换</a><a class="minor" href="#conclusions-64">6.4 顺序可能有作用，先排除“总量其实不同”</a><a class="" href="#conclusions-7">7. 如果是我自己的预训练，下一轮会怎样做</a><a class="minor" href="#conclusions-71-token">7.1 用边际交换回答“下一批token给谁”</a><a class="minor" href="#conclusions-72">7.2 什么时候停止搜索</a><a class="" href="#conclusions-8">8. 工程问题给数据研究补上的一课</a><a class="" href="#conclusions-9">9. 最后我会怎样评价这次训练</a><a class="" href="#conclusions-10">10. 本章的证据边界与可复算入口</a><a class="" href="#conclusions-54seed">附录：54项任务相对比例基线的逐seed结果</a></details><details><summary>研究主报告 · 章节</summary><a class="" href="#report-1">1. 先把最容易误读的三个地方说清楚</a><a class="minor" href="#report-11-loss">1.1 通信实现改变，也会让 Loss 下降</a><a class="minor" href="#report-12-loss">1.2 配比改变以后，训练 Loss 上升，也可能是合理的</a><a class="minor" href="#report-13">1.3 某层输出很小，不能据此说它没用</a><a class="" href="#report-2">2. 模型与训练的实际结构</a><a class="minor" href="#report-21-535b-token-23b">2.1 为什么是 535B，但每个 token 只激活约 23B</a><a class="minor" href="#report-22">2.2 专家并行与数据并行分别跨哪里</a><a class="minor" href="#report-23">2.3 注意力的局部层与全局层</a><a class="minor" href="#report-24">2.4 为什么训练中参数范数不动，并不奇怪</a><a class="" href="#report-3">3. 工程问题逐项对应：做了什么、解决了什么、为什么</a><a class="minor" href="#report-31-checkpoint">3.1 Checkpoint 写得出来，却读不回来</a><a class="minor" href="#report-32-host-ram">3.2 一味加 host RAM，仍然在恢复后被杀</a><a class="minor" href="#report-33-host-rss">3.3 每隔几次保存，host RSS 的地板抬高</a><a class="minor" href="#report-34-loader">3.4 Loader 缓存不是越大越好</a><a class="minor" href="#report-35-nvlinkib">3.5 NVLink、IB 与节点掉线，不能混为训练数值不稳定</a><a class="minor" href="#report-36-ragged-ep">3.6 Ragged EP 第一次切换：质量和速度通过，稳定性没通过</a><a class="minor" href="#report-37-executable">3.7 “两个 executable 交替”是曾经的解释，后来被排除</a><a class="minor" href="#report-38-nccl-headers-runtime">3.8 NCCL 编译 headers 与 runtime 不一致：实在的缺陷，但不是全部解释</a><a class="minor" href="#report-39-gpu-pdl-warp">3.9 真正把 GPU 内部卡在哪里抓出来：PDL 与 warp 读取不一致</a><a class="minor" href="#report-310-checkpoint">3.10 存储策略不让删 checkpoint，却误伤了原子提交</a><a class="minor" href="#report-311-checkpoint">3.11 Checkpoint 留得多，反而把训练拖停</a><a class="minor" href="#report-312">3.12 正确的提速改动也需要数值对照</a><a class="minor" href="#report-313-router">3.13 Router “提高精度”改变的是路由策略</a><a class="minor" href="#report-314">3.14 参数存了，不代表评估用了完整状态</a><a class="minor" href="#report-315-drop">3.15 拉长上下文：drop 变多，先看分母与数据相关性</a><a class="" href="#report-4-scaling-ladder">4. 怎样使用 Scaling Ladder，而不把它当承诺</a><a class="" href="#report-5">5. 一张曲线至少对应四种不同量</a><a class="" href="#report-6-pretrain">6. 旧 pretrain 仓库究竟缺了什么</a><a class="" href="#report-7">7. 资料可信到哪一步</a></details><details><summary>数据配比与顺序 · 章节</summary><a class="" href="#data-1">1. 先区分库存、抽样配比和训练顺序</a><a class="" href="#data-2">2. 实际配比改变了什么</a><a class="minor" href="#data-21-agent">2.1 加了 Agent、法律、新闻，减少了一部分代码、数学和历史</a><a class="minor" href="#data-22">2.2 新配比并不是简单地“越高质量越多”</a><a class="minor" href="#data-23">2.3 桶名称为什么只能当导航</a><a class="" href="#data-3-loss">3. 数据与 Loss 的关联：现有证据能走多远</a><a class="minor" href="#data-31-ce">3.1 为什么新配比的训练CE会升高</a><a class="minor" href="#data-32">3.2 固定验证集上，哪些分布改善了</a><a class="minor" href="#data-33-20">3.3 “等效算力提高20%”怎样算，为什么容易夸大</a><a class="" href="#data-4">4. 怎样为自己的模型精心调配比</a><a class="minor" href="#data-41">4.1 第一步不是选百分比，而是固定目标与对照</a><a class="minor" href="#data-42-200">4.2 先把200桶压成几个可解释的方向</a><a class="minor" href="#data-43">4.3 一次改变一个方向，并说清从哪里拿预算</a><a class="minor" href="#data-44-checkpoint">4.4 先做同checkpoint分叉，再做规模确认</a><a class="minor" href="#data-45-ce">4.5 用验证变化决定下一轮，别用训练CE决定</a><a class="" href="#data-5">5. 怎样安排数据顺序</a><a class="minor" href="#data-51">5.1 把“总量”和“何时使用”分成两项实验</a><a class="minor" href="#data-52">5.2 切换后观察多久，取决于要观察什么</a><a class="minor" href="#data-53-token">5.3 上下文变长，会改变顺序，即便每步token数不变</a><a class="minor" href="#data-54">5.4 长上下文需要两套验证口径</a><a class="" href="#data-6">6. 一份可以直接用于你项目的实验记录</a><a class="" href="#data-7">7. 完整配比与曝光附表</a><a class="minor" href="#data-71-40">7.1 40个语义域的全部比例</a><a class="minor" href="#data-72">7.2 计划曝光轮数最高的十个桶</a><a class="minor" href="#data-73-d1536palomabpb">7.3 d1536固定Paloma的全部子集BPB结果</a></details><details><summary>第二轮：搜索、取舍与游标 · 章节</summary><a class="" href="#deep-1-run934915">1. 六个run背后，是934条观测与915对不同权重</a><a class="minor" href="#deep-11">1.1 搜索范围可以数清，选中规则还不能完整复现</a><a class="minor" href="#deep-12-2001000">1.2 他们还保存了200×1000的内容特征，域标签不是全部输入信息</a><a class="" href="#deep-2-token">2. 小模型怎么模拟十几万亿token的重复曝光</a><a class="" href="#deep-3-bpb">3. 代码改善的同时，数学任务BPB怎样变了</a><a class="minor" href="#deep-31-seed">3.1 三个seed里的改善与退化同时存在</a><a class="minor" href="#deep-32-seed">3.2 收益超过seed波动，不等于已经通过独立检验</a><a class="" href="#deep-4">4. 域总比例隐藏了怎样的质量档迁移</a><a class="" href="#deep-5">5. 配置里非零，不代表加载器真的抽到</a><a class="minor" href="#deep-51-49152sequence200">5.1 49152条sequence如何分给200桶</a><a class="minor" href="#deep-52">5.2 一次本地误诊怎样被排除</a><a class="" href="#deep-6-108907b2951b">6. 108.907B与2.951B，已经独立对上了</a><a class="minor" href="#deep-61">6.1 为什么改长度会改历史游标</a><a class="minor" href="#deep-62">6.2 两种方案的逐桶差异</a><a class="minor" href="#deep-63">6.3 工程调整顺序</a><a class="" href="#deep-7">7. 把这些发现落实成下一轮配比实验</a><a class="" href="#deep-54bpb">附录：54项任务BPB完整对照</a></details><details><summary>第三轮：删域、曝光与顺序 · 章节</summary><a class="" href="#practical-_2">一、先找正确参照，再解释删域结果</a><a class="minor" href="#practical-11-80">1.1 80个实验实际上有两套参照</a><a class="minor" href="#practical-12">1.2 删数学：通用文本与数学文本可以方向相反</a><a class="minor" href="#practical-13">1.3 删域后的改善，不等于这个域毫无价值</a><a class="" href="#practical-q4">二、Q4与多轮曝光：为什么不能只按质量标签排序</a><a class="minor" href="#practical-21-q4">2.1 只保留Q4，代理结果反而更差</a><a class="minor" href="#practical-22-q4">2.2 加数学Q4，收益没有单调增长</a><a class="" href="#practical-_3">三、顺序实验：先把阶段曝光账算清楚</a><a class="minor" href="#practical-31">3.1 权重里能读出怎样的补偿</a><a class="minor" href="#practical-32">3.2 终点没有给出一个普遍最好的顺序</a><a class="minor" href="#practical-33">3.3 怎样构造真正匹配预算的顺序对照</a><a class="" href="#practical-loss">四、拿到每域Loss后，到底怎样决定下一次增减</a><a class="minor" href="#practical-41-loss">4.1 先定义目标，避免训练Loss自己当裁判</a><a class="minor" href="#practical-42-1b">4.2 用局部替代试验回答“再给1B是否值得”</a><a class="" href="#practical-_4">五、库存、保底与曝光上限怎样一起约束配比</a><a class="" href="#practical-_5">六、建议怎样安排自己的下一批实验</a><a class="" href="#practical-_6">本轮来源与计算边界</a><a class="" href="#practical-80">附录：80个删域实验的对照与终点评估</a></details><details><summary>#8435逐条中文解读 · 章节</summary><a class="" href="#translation-1-scaling-ladder">主帖｜为什么先花约1%算力做 Scaling Ladder</a><a class="" href="#translation-c001">C001｜完整初始配方与系统设计</a><a class="" href="#translation-c002">C002｜数据从哪里来，怎样去重、分桶</a><a class="" href="#translation-c003-scaling-ladder-wb-report">C003｜贴出 Scaling Ladder 的 W&amp;B report</a><a class="" href="#translation-c004204">C004｜拟合出的终点约2.04，来自条件外推</a><a class="" href="#translation-c005-scaling-law">C005｜怎样和旧模型的 scaling law 比</a><a class="" href="#translation-c006d2048">C006｜d2048崩了，为什么不重跑</a><a class="" href="#translation-c007">C007｜四个风险窗口，十二项健康检查</a><a class="" href="#translation-c008">C008｜初期参数范数检查为健康</a><a class="" href="#translation-c009rms_attn">C009｜rms_attn不动，也可能正常</a><a class="" href="#translation-c010">C010｜预测的适用条件被明确限定</a><a class="" href="#translation-c011">C011｜读者请求补工程代码链接</a><a class="" href="#translation-c012">C012｜作者已经补上链接</a><a class="" href="#translation-c013token-store">C013｜公开组成报告不等于token store能下载</a><a class="" href="#translation-c0143">C014｜读者认为前3%风险已过去</a><a class="" href="#translation-c015nvlink-racklatentmoe">C015｜为什么在NVLink rack内还要LatentMoE</a><a class="" href="#translation-c016">C016｜作者明确不开放完整数据</a><a class="" href="#translation-c017latentmoelearnable-rmsnorm">C017｜LatentMoE需要learnable RMSNorm</a><a class="" href="#translation-c018denserelative-peadamh-embedding">C018｜三个架构问题：dense交替、relative PE、AdamH embedding</a><a class="" href="#translation-c019token">C019｜三项答复，尤其是稀有token的梯度尖峰</a><a class="" href="#translation-c020">C020｜读者补充自己的设计动机</a><a class="" href="#translation-c021">C021｜希望看中途模型生成</a><a class="" href="#translation-c022classifiercluster-weights">C022｜复现分桶还需要classifier与cluster weights</a><a class="" href="#translation-c023weightshf">C023｜相关weights已经给出HF版本</a><a class="" href="#translation-c024generations8827">C024｜中途generations跟踪在#8827</a><a class="" href="#translation-c025router">C025｜Router精度实验：建议保持现状</a><a class="" href="#translation-c026">C026｜无技术信息的中文回复</a><a class="" href="#translation-c0274k8k16krack">C027｜4K/8K/16K的单rack测量</a></details><details><summary>58条运行记录 · 章节</summary></details><details><summary>来源与复核 · 章节</summary><a class="" href="#provenance-1">1. 这次实际读取了哪些材料</a><a class="" href="#provenance-2-run">2. 生产曲线为什么必须按run拼接</a><a class="" href="#provenance-3">3. 配比表与曝光怎样计算</a><a class="" href="#provenance-4">4. 怎样重建和检查</a><a class="" href="#provenance-5">5. 仍然需要额外实验才能回答的问题</a></details></aside><main><header class="intro"><h1>从一次大规模预训练里，学会定位问题与调整数据</h1><p>逐条读工程记录，把改动、症状、原因和验证对应起来；重新计算配比和曲线，明确哪里仍缺少因果证据。</p><div class="facts"><span>主帖 + 27条评论</span><span>58条生产事件</span><span>40域 × 5质量档</span><span>7段生产run</span><span>934条配比观测</span><span>129个运行配置复核</span></div><div class="actions"><a href="#conclusions">先读最新结论与判断</a><a href="#report">从三个案例开始</a><a href="#data">直接看数据分析</a><a href="#deep">第二轮新增结论</a><a href="#practical">第三轮：如何设计自己的实验</a><a href="#planner">输入自己的预算</a><a href="REPORT_ZH.md" download>Markdown主报告</a><a href="report_standalone.html" download>下载单文件HTML</a><button class="action" id="print-report">打印 / 保存PDF</button></div></header><section class="chapter" id="conclusions"><h1 id="conclusions-_1">第四轮：这套配比值得学什么，哪些结论还不能照搬</h1>
+
+.study-routes{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:20px 0}.study-routes a{padding:12px;border:1px solid #bdcdd8;background:#eff5f8;text-align:center;font-size:14px}.learning-card{border-top:1px solid var(--line);padding-top:15px;margin:32px 0}.workbench label{display:block;font-size:13px;margin:10px 0}.workbench select,.workbench input{max-width:100%;font-family:inherit;font-size:14px;line-height:1.6;border:1px solid #b4c6d2;border-radius:4px;padding:8px;background:white}.workbench #review-target{width:100%}.mechanism-chain{display:flex;align-items:center;gap:12px;margin:22px 0}.mechanism-node{flex:1;min-width:0;padding:14px;border:1px solid #9eb6c8;background:#eef5f8;font-size:14px;overflow-wrap:anywhere}.mechanism-node small{display:block;color:#536c7b;font-size:11px;margin-bottom:7px}.mechanism-node span{display:block}.mechanism-node.mechanism{border-style:dashed;background:#fcf5e9}.mechanism-node.hypothesis{border-style:dashed;background:#faf1f2}.mechanism-node.computed{background:#edf5f1}.chain-arrow{color:#688292}.interpretation-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;font-size:14px}.interpretation-grid>div{padding:13px;background:#f5f7f8}.metric-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}.metric-card{border:1px solid #d0dde5;padding:15px;min-width:0}.metric-card h3{font-size:16px;margin:0 0 8px}.metric-card p{margin:4px 0}.metric-card svg{display:block;width:100%;max-width:400px;margin:auto}.metric-card .status{font-size:11px}.rule-card{border:1px solid #d0dde5;padding:16px;margin:16px 0}.rule-card h3{margin:0 0 8px;font-size:17px}.rule-card h3 small{font-size:12px;color:#72818b;font-weight:400}.rule-card details{font-size:13px;margin:12px 0}.rule-card details p{margin:8px 0}.rule-card textarea{width:100%;min-height:88px;resize:vertical;border:1px solid #bccbd5;padding:10px;font-family:inherit;font-size:13px;line-height:1.7}.rule-card label{margin:12px 0}.pipeline-steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:20px 0}.pipeline-step{border:1px solid #b7cbd8;background:#f8fbfc;padding:12px;text-align:left;color:#284c65;font-family:inherit;font-size:13px;line-height:1.7;cursor:pointer;min-width:0}.pipeline-step strong,.pipeline-step span{display:block}.pipeline-step span{font-size:12px;color:#6b7983}.pipeline-step.selected{outline:2px solid #658ca5;background:#eaf2f7}.pipeline-result{padding:15px;border-left:3px solid #b48a58;background:#faf6ef}.pipeline-result.ready{border-left-color:#47766c;background:#edf5f2}.pipeline-result h3{margin:0}.pipeline-result p{font-size:14px}.workbench #review-json{display:block;width:100%;min-height:210px;resize:vertical;font:12px/1.7 ui-monospace,monospace;padding:12px;border:1px solid #b9cad5;margin:14px 0}.large-table-details{margin:20px 0}.large-table-details summary{cursor:pointer;color:#225a83;font-size:13px;padding:10px;background:#edf3f7}.large-table-details .table-wrap{margin-top:0}.figure-reading{font-size:13px;padding:12px 15px;border-left:3px solid #9cb5c8;background:#f6f9fb;margin:-10px 0 25px}.figure-reading p{margin:5px 0}.figure-reading a{margin-right:14px}
+@media(max-width:700px){.study-routes,.metric-grid,.interpretation-grid,.pipeline-steps{grid-template-columns:1fr}.study-routes{grid-template-columns:repeat(2,minmax(0,1fr))}.mechanism-chain{flex-direction:column;align-items:stretch}.chain-arrow{text-align:center;transform:rotate(90deg)}.workbench .filters{display:block}.rule-card{padding:12px}.workbench .actions{display:flex;flex-wrap:wrap;gap:8px}.pipeline-step{width:100%}}
+@media print{.workbench .filters,.workbench select,.workbench input,.workbench .actions,#review-board,#pipeline-steps{display:none}.large-table-details>.table-wrap{display:block!important}.large-table-details>summary{display:none}.metric-grid,.interpretation-grid{grid-template-columns:1fr 1fr}.figure-reading{break-inside:avoid}}
+</style></head><body id="top"><div class="layout"><aside class="sidebar"><div class="brand">Marin 535B<br>预训练研究</div><div class="meta">公开快照：2026-10-04<br>重点：故障机制、Loss、数据顺序</div><input id="toc-search" aria-label="筛选章节目录" placeholder="筛选章节标题"><nav><a class="major" href="#workbench">理解与评审工作台</a><a class="major" href="#learning">理解文档与自测</a><a class="major" href="#rubrics">18条判断规则</a><a class="major" href="#pipeline">七阶段决策管线</a><a class="major" href="#improvement">持续改进队列</a><a class="major" href="#conclusions">第四轮：结论与判断</a><a class="major" href="#report">研究主报告</a><a class="major" href="#data">数据配比与顺序</a><a class="major" href="#deep">第二轮：搜索、取舍与游标</a><a class="major" href="#practical">第三轮：删域、曝光与顺序</a><a class="major" href="#translation">#8435逐条中文解读</a><a class="major" href="#operations">58条运行记录</a><a class="major" href="#provenance">来源与复核</a><a class="major" href="#planner">自己的配比预算工具</a><a class="major" href="#explorer">200桶查询</a><a class="major" href="#notes">我的研究笔记</a></nav><details open><summary>理解文档与自测 · 章节</summary><a class="" href="#learning-1">1. 三条阅读路线</a><a class="" href="#learning-2-ce">2. 训练CE与固定验证为什么可能朝相反方向走</a><a class="" href="#learning-3-bpb">3. BPB更好，为什么还不能说题做得更好</a><a class="" href="#learning-4">4. 怎么读工作台里的三点图</a><a class="" href="#learning-5">5. 库存、权重、曝光：三个不同的账本</a><a class="" href="#learning-6">6. 为什么“把高质量放在最后”需要额外实验</a><a class="" href="#learning-7">7. 常见术语，用本次研究里的对象解释</a><a class="" href="#learning-8">8. 五个自测：能解释反例，比背数字更重要</a><a class="" href="#learning-9">9. 读完以后，把理解写成可检验的问题</a></details><details><summary>18条判断规则 · 章节</summary><a class="" href="#rubrics-1">1. 怎样使用规则</a><a class="" href="#rubrics-2-100">2. 为什么不做一个100分排名</a><a class="" href="#rubrics-3">3. 两个实际练习</a><a class="" href="#rubrics-4">4. 规则如何持续改进</a><a class="" href="#rubrics-_1">完整规则与判断锚点</a><a class="minor" href="#rubrics-r01">R01 · 来源和版本能回查</a><a class="minor" href="#rubrics-r02">R02 · 结论范围写清</a><a class="minor" href="#rubrics-r03">R03 · 指标含义和评估路径一致</a><a class="minor" href="#rubrics-r04">R04 · 包含有竞争力的简单参照</a><a class="minor" href="#rubrics-r05">R05 · 预算从实际区间计算</a><a class="minor" href="#rubrics-r06">R06 · 平均指标可拆回组成项</a><a class="minor" href="#rubrics-r07">R07 · 选择后有独立确认</a><a class="minor" href="#rubrics-r08">R08 · 每次加量都写供体</a><a class="minor" href="#rubrics-r09">R09 · 库存、历史与重复分开</a><a class="minor" href="#rubrics-r10">R10 · 顺序比较匹配累计量和游标</a><a class="minor" href="#rubrics-r11">R11 · 跨规模结论有对应对照</a><a class="minor" href="#rubrics-r12">R12 · 目标和能力保底预先冻结</a><a class="minor" href="#rubrics-r13">R13 · 根因证据和缓解效果分开</a><a class="minor" href="#rubrics-r14">R14 · 执行状态不只看配置路径</a><a class="minor" href="#rubrics-r15">R15 · 能力主张有实际任务验证</a><a class="minor" href="#rubrics-r16">R16 · 图表能被读者正确复述</a><a class="minor" href="#rubrics-r17">R17 · 结论可离线复算</a><a class="minor" href="#rubrics-r18">R18 · 未解决问题有下一步和退出条件</a></details><details><summary>七阶段决策管线 · 章节</summary><a class="" href="#pipeline-1">1. 七个阶段的输入和产物</a><a class="" href="#pipeline-2">2. 用第四轮发现跑一遍</a><a class="" href="#pipeline-3">3. 对自己的训练，先提交一份实验记录</a><a class="" href="#pipeline-4">4. 管线中的回退分支</a><a class="" href="#pipeline-5">5. 报告自身也走一条构建管线</a><a class="" href="#pipeline-6">6. 如何选择下一项改进</a></details><details><summary>持续改进队列 · 章节</summary><a class="" href="#improvement-1">1. 本轮已经处理的问题</a><a class="" href="#improvement-2">2. 下一轮按结论价值排列</a><a class="" href="#improvement-3">3. 每轮记录格式</a><a class="" href="#improvement-4">4. 版本纪律</a><a class="" href="#improvement-5">5. 本轮回放规则后，实际修正了什么</a></details><details><summary>第四轮：结论与判断 · 章节</summary><a class="" href="#conclusions-1">1. 补上简单基线，才知道搜索额外买到了什么</a><a class="" href="#conclusions-2">2. 平均值在隐藏什么：代码、学术收益被其他文本退步抵消</a><a class="" href="#conclusions-3-seed">3. 三seed告诉了什么，又没有告诉什么</a><a class="" href="#conclusions-4">4. “最终选中”不等于在所有公开指标上最好</a><a class="" href="#conclusions-5">5. 小模型告诉你方向的可能性，大模型负责确认方向是否成立</a><a class="" href="#conclusions-6">6. 关于质量、配比与顺序，我现在更相信哪些解释</a><a class="minor" href="#conclusions-61-q">6.1 Q档提供质量线索，训练价值还取决于缺了什么</a><a class="minor" href="#conclusions-62-bpb">6.2 数学份额降低与数学BPB变差相关，但还没定位到纯效应</a><a class="minor" href="#conclusions-63">6.3 删域实验测的是“删除再分配”，应据此做局部交换</a><a class="minor" href="#conclusions-64">6.4 顺序可能有作用，先排除“总量其实不同”</a><a class="" href="#conclusions-7">7. 如果是我自己的预训练，下一轮会怎样做</a><a class="minor" href="#conclusions-71-token">7.1 用边际交换回答“下一批token给谁”</a><a class="minor" href="#conclusions-72">7.2 什么时候停止搜索</a><a class="" href="#conclusions-8">8. 工程问题给数据研究补上的一课</a><a class="" href="#conclusions-9">9. 最后我会怎样评价这次训练</a><a class="" href="#conclusions-10">10. 本章的证据边界与可复算入口</a><a class="" href="#conclusions-54seed">附录：54项任务相对比例基线的逐seed结果</a></details><details><summary>研究主报告 · 章节</summary><a class="" href="#report-1">1. 先把最容易误读的三个地方说清楚</a><a class="minor" href="#report-11-loss">1.1 通信实现改变，也会让 Loss 下降</a><a class="minor" href="#report-12-loss">1.2 配比改变以后，训练 Loss 上升，也可能是合理的</a><a class="minor" href="#report-13">1.3 某层输出很小，不能据此说它没用</a><a class="" href="#report-2">2. 模型与训练的实际结构</a><a class="minor" href="#report-21-535b-token-23b">2.1 为什么是 535B，但每个 token 只激活约 23B</a><a class="minor" href="#report-22">2.2 专家并行与数据并行分别跨哪里</a><a class="minor" href="#report-23">2.3 注意力的局部层与全局层</a><a class="minor" href="#report-24">2.4 为什么训练中参数范数不动，并不奇怪</a><a class="" href="#report-3">3. 工程问题逐项对应：做了什么、解决了什么、为什么</a><a class="minor" href="#report-31-checkpoint">3.1 Checkpoint 写得出来，却读不回来</a><a class="minor" href="#report-32-host-ram">3.2 一味加 host RAM，仍然在恢复后被杀</a><a class="minor" href="#report-33-host-rss">3.3 每隔几次保存，host RSS 的地板抬高</a><a class="minor" href="#report-34-loader">3.4 Loader 缓存不是越大越好</a><a class="minor" href="#report-35-nvlinkib">3.5 NVLink、IB 与节点掉线，不能混为训练数值不稳定</a><a class="minor" href="#report-36-ragged-ep">3.6 Ragged EP 第一次切换：质量和速度通过，稳定性没通过</a><a class="minor" href="#report-37-executable">3.7 “两个 executable 交替”是曾经的解释，后来被排除</a><a class="minor" href="#report-38-nccl-headers-runtime">3.8 NCCL 编译 headers 与 runtime 不一致：实在的缺陷，但不是全部解释</a><a class="minor" href="#report-39-gpu-pdl-warp">3.9 真正把 GPU 内部卡在哪里抓出来：PDL 与 warp 读取不一致</a><a class="minor" href="#report-310-checkpoint">3.10 存储策略不让删 checkpoint，却误伤了原子提交</a><a class="minor" href="#report-311-checkpoint">3.11 Checkpoint 留得多，反而把训练拖停</a><a class="minor" href="#report-312">3.12 正确的提速改动也需要数值对照</a><a class="minor" href="#report-313-router">3.13 Router “提高精度”改变的是路由策略</a><a class="minor" href="#report-314">3.14 参数存了，不代表评估用了完整状态</a><a class="minor" href="#report-315-drop">3.15 拉长上下文：drop 变多，先看分母与数据相关性</a><a class="" href="#report-4-scaling-ladder">4. 怎样使用 Scaling Ladder，而不把它当承诺</a><a class="" href="#report-5">5. 一张曲线至少对应四种不同量</a><a class="" href="#report-6-pretrain">6. 旧 pretrain 仓库究竟缺了什么</a><a class="" href="#report-7">7. 资料可信到哪一步</a></details><details><summary>数据配比与顺序 · 章节</summary><a class="" href="#data-1">1. 先区分库存、抽样配比和训练顺序</a><a class="" href="#data-2">2. 实际配比改变了什么</a><a class="minor" href="#data-21-agent">2.1 加了 Agent、法律、新闻，减少了一部分代码、数学和历史</a><a class="minor" href="#data-22">2.2 新配比并不是简单地“越高质量越多”</a><a class="minor" href="#data-23">2.3 桶名称为什么只能当导航</a><a class="" href="#data-3-loss">3. 数据与 Loss 的关联：现有证据能走多远</a><a class="minor" href="#data-31-ce">3.1 为什么新配比的训练CE会升高</a><a class="minor" href="#data-32">3.2 固定验证集上，哪些分布改善了</a><a class="minor" href="#data-33-20">3.3 “等效算力提高20%”怎样算，为什么容易夸大</a><a class="" href="#data-4">4. 怎样为自己的模型精心调配比</a><a class="minor" href="#data-41">4.1 第一步不是选百分比，而是固定目标与对照</a><a class="minor" href="#data-42-200">4.2 先把200桶压成几个可解释的方向</a><a class="minor" href="#data-43">4.3 一次改变一个方向，并说清从哪里拿预算</a><a class="minor" href="#data-44-checkpoint">4.4 先做同checkpoint分叉，再做规模确认</a><a class="minor" href="#data-45-ce">4.5 用验证变化决定下一轮，别用训练CE决定</a><a class="" href="#data-5">5. 怎样安排数据顺序</a><a class="minor" href="#data-51">5.1 把“总量”和“何时使用”分成两项实验</a><a class="minor" href="#data-52">5.2 切换后观察多久，取决于要观察什么</a><a class="minor" href="#data-53-token">5.3 上下文变长，会改变顺序，即便每步token数不变</a><a class="minor" href="#data-54">5.4 长上下文需要两套验证口径</a><a class="" href="#data-6">6. 一份可以直接用于你项目的实验记录</a><a class="" href="#data-7">7. 完整配比与曝光附表</a><a class="minor" href="#data-71-40">7.1 40个语义域的全部比例</a><a class="minor" href="#data-72">7.2 计划曝光轮数最高的十个桶</a><a class="minor" href="#data-73-d1536palomabpb">7.3 d1536固定Paloma的全部子集BPB结果</a></details><details><summary>第二轮：搜索、取舍与游标 · 章节</summary><a class="" href="#deep-1-run934915">1. 六个run背后，是934条观测与915对不同权重</a><a class="minor" href="#deep-11">1.1 搜索范围可以数清，选中规则还不能完整复现</a><a class="minor" href="#deep-12-2001000">1.2 他们还保存了200×1000的内容特征，域标签不是全部输入信息</a><a class="" href="#deep-2-token">2. 小模型怎么模拟十几万亿token的重复曝光</a><a class="" href="#deep-3-bpb">3. 代码改善的同时，数学任务BPB怎样变了</a><a class="minor" href="#deep-31-seed">3.1 三个seed里的改善与退化同时存在</a><a class="minor" href="#deep-32-seed">3.2 收益超过seed波动，不等于已经通过独立检验</a><a class="" href="#deep-4">4. 域总比例隐藏了怎样的质量档迁移</a><a class="" href="#deep-5">5. 配置里非零，不代表加载器真的抽到</a><a class="minor" href="#deep-51-49152sequence200">5.1 49152条sequence如何分给200桶</a><a class="minor" href="#deep-52">5.2 一次本地误诊怎样被排除</a><a class="" href="#deep-6-108907b2951b">6. 108.907B与2.951B，已经独立对上了</a><a class="minor" href="#deep-61">6.1 为什么改长度会改历史游标</a><a class="minor" href="#deep-62">6.2 两种方案的逐桶差异</a><a class="minor" href="#deep-63">6.3 工程调整顺序</a><a class="" href="#deep-7">7. 把这些发现落实成下一轮配比实验</a><a class="" href="#deep-54bpb">附录：54项任务BPB完整对照</a></details><details><summary>第三轮：删域、曝光与顺序 · 章节</summary><a class="" href="#practical-_2">一、先找正确参照，再解释删域结果</a><a class="minor" href="#practical-11-80">1.1 80个实验实际上有两套参照</a><a class="minor" href="#practical-12">1.2 删数学：通用文本与数学文本可以方向相反</a><a class="minor" href="#practical-13">1.3 删域后的改善，不等于这个域毫无价值</a><a class="" href="#practical-q4">二、Q4与多轮曝光：为什么不能只按质量标签排序</a><a class="minor" href="#practical-21-q4">2.1 只保留Q4，代理结果反而更差</a><a class="minor" href="#practical-22-q4">2.2 加数学Q4，收益没有单调增长</a><a class="" href="#practical-_3">三、顺序实验：先把阶段曝光账算清楚</a><a class="minor" href="#practical-31">3.1 权重里能读出怎样的补偿</a><a class="minor" href="#practical-32">3.2 终点没有给出一个普遍最好的顺序</a><a class="minor" href="#practical-33">3.3 怎样构造真正匹配预算的顺序对照</a><a class="" href="#practical-loss">四、拿到每域Loss后，到底怎样决定下一次增减</a><a class="minor" href="#practical-41-loss">4.1 先定义目标，避免训练Loss自己当裁判</a><a class="minor" href="#practical-42-1b">4.2 用局部替代试验回答“再给1B是否值得”</a><a class="" href="#practical-_4">五、库存、保底与曝光上限怎样一起约束配比</a><a class="" href="#practical-_5">六、建议怎样安排自己的下一批实验</a><a class="" href="#practical-_6">本轮来源与计算边界</a><a class="" href="#practical-80">附录：80个删域实验的对照与终点评估</a></details><details><summary>#8435逐条中文解读 · 章节</summary><a class="" href="#translation-1-scaling-ladder">主帖｜为什么先花约1%算力做 Scaling Ladder</a><a class="" href="#translation-c001">C001｜完整初始配方与系统设计</a><a class="" href="#translation-c002">C002｜数据从哪里来，怎样去重、分桶</a><a class="" href="#translation-c003-scaling-ladder-wb-report">C003｜贴出 Scaling Ladder 的 W&amp;B report</a><a class="" href="#translation-c004204">C004｜拟合出的终点约2.04，来自条件外推</a><a class="" href="#translation-c005-scaling-law">C005｜怎样和旧模型的 scaling law 比</a><a class="" href="#translation-c006d2048">C006｜d2048崩了，为什么不重跑</a><a class="" href="#translation-c007">C007｜四个风险窗口，十二项健康检查</a><a class="" href="#translation-c008">C008｜初期参数范数检查为健康</a><a class="" href="#translation-c009rms_attn">C009｜rms_attn不动，也可能正常</a><a class="" href="#translation-c010">C010｜预测的适用条件被明确限定</a><a class="" href="#translation-c011">C011｜读者请求补工程代码链接</a><a class="" href="#translation-c012">C012｜作者已经补上链接</a><a class="" href="#translation-c013token-store">C013｜公开组成报告不等于token store能下载</a><a class="" href="#translation-c0143">C014｜读者认为前3%风险已过去</a><a class="" href="#translation-c015nvlink-racklatentmoe">C015｜为什么在NVLink rack内还要LatentMoE</a><a class="" href="#translation-c016">C016｜作者明确不开放完整数据</a><a class="" href="#translation-c017latentmoelearnable-rmsnorm">C017｜LatentMoE需要learnable RMSNorm</a><a class="" href="#translation-c018denserelative-peadamh-embedding">C018｜三个架构问题：dense交替、relative PE、AdamH embedding</a><a class="" href="#translation-c019token">C019｜三项答复，尤其是稀有token的梯度尖峰</a><a class="" href="#translation-c020">C020｜读者补充自己的设计动机</a><a class="" href="#translation-c021">C021｜希望看中途模型生成</a><a class="" href="#translation-c022classifiercluster-weights">C022｜复现分桶还需要classifier与cluster weights</a><a class="" href="#translation-c023weightshf">C023｜相关weights已经给出HF版本</a><a class="" href="#translation-c024generations8827">C024｜中途generations跟踪在#8827</a><a class="" href="#translation-c025router">C025｜Router精度实验：建议保持现状</a><a class="" href="#translation-c026">C026｜无技术信息的中文回复</a><a class="" href="#translation-c0274k8k16krack">C027｜4K/8K/16K的单rack测量</a></details><details><summary>58条运行记录 · 章节</summary></details><details><summary>来源与复核 · 章节</summary><a class="" href="#provenance-1">1. 这次实际读取了哪些材料</a><a class="" href="#provenance-2-run">2. 生产曲线为什么必须按run拼接</a><a class="" href="#provenance-3">3. 配比表与曝光怎样计算</a><a class="" href="#provenance-4">4. 怎样重建和检查</a><a class="" href="#provenance-5">5. 仍然需要额外实验才能回答的问题</a></details></aside><main><header class="intro"><h1>从一次大规模预训练里，学会定位问题与调整数据</h1><p>逐条读工程记录，把改动、症状、原因和验证对应起来；重新计算配比和曲线，明确哪里仍缺少因果证据。</p><div class="facts"><span>主帖 + 27条评论</span><span>58条生产事件</span><span>40域 × 5质量档</span><span>7段生产run</span><span>934条配比观测</span><span>129个运行配置复核</span></div><div class="actions"><a href="#workbench">从理解与评审工作台开始</a><a href="#learning">理解文档与自测</a><a href="#pipeline">决策管线</a><a href="#conclusions">最新研究结论</a><a href="#report">从三个案例开始</a><a href="#data">直接看数据分析</a><a href="#deep">第二轮新增结论</a><a href="#practical">第三轮：如何设计自己的实验</a><a href="#planner">输入自己的预算</a><a href="REPORT_ZH.md" download>Markdown主报告</a><a href="report_standalone.html" download>下载单文件HTML</a><button class="action" id="print-report">打印 / 保存PDF</button></div></header><section class="chapter workbench" id="workbench">
+<h1>理解与评审工作台</h1>
+<p>先看懂变化，再决定证据支持哪一层结论。演示只使用固定公开快照；自己的评审可以保存和导出。<a href="#learning">阅读理解文档</a> · <a href="#rubrics">完整Rubrics</a> · <a href="#pipeline">决策管线</a></p>
+<div class="study-routes"><a href="#curve-clinic">看懂Loss变化</a><a href="#mix-reading">比较配比取舍</a><a href="#review-board">记录证据判断</a><a href="#pipeline-view">决定下一步</a></div>
+<div class="learning-card" id="curve-clinic"><h2>曲线变化：先辨认变的是哪一层</h2><label for="case-select">选择一个案例</label><select id="case-select"></select><div id="case-reading" aria-live="polite"></div><p class="status">标签含义：公开观察 / 本地复算 / 机制解释 / 待检验假设。图里的箭头用于理解，不能替代因果干预。</p></div>
+<div class="learning-card" id="mix-reading"><h2>配比取舍：换一个参照，判断也会变</h2><label for="reference-select">参照配比</label><select id="reference-select"><option value="proportional">库存比例基线</option><option value="old">旧Harrier配比</option></select><p id="reference-reading" aria-live="polite"></p><div id="metric-cards" class="metric-grid"></div><div class="table-wrap"><table id="metric-reading-table"><thead><tr><th>固定评估（BPB）</th><th>参照三seed均值</th><th>选中三seed均值</th><th>均值相对变化</th></tr></thead><tbody></tbody></table></div><p class="status">每个小图用自己的刻度范围；负值更好。圆点是各seed，方块是均值之比，没有置信区间。HumanEval、GSM8K为目标文本BPB，不是pass@1或答题准确率。<a href="analysis/strong_baseline_paired.csv">下载逐seed原值</a></p></div>
+<div class="learning-card" id="review-board"><h2>Rubrics：为每项判断留下证据</h2><p>这套规则由报告提炼，不是Marin官方标准。当前示例评的是公开证据支持的结论范围。选择“证据齐全”仍需要填写证据；阶段通过只是输入的自评，不会自动核验链接或内容。</p><label for="review-target">评审目标</label><input id="review-target" type="text" maxlength="2000"><div class="filters"><label for="rule-filter">显示规则</label><select id="rule-filter"><option value="all">全部18条</option><option value="gaps" selected>尚缺证据</option><option value="conflicts">有反证/口径冲突</option><option value="accepted">证据齐全/不适用</option></select><label>关键词 <input id="rule-search" placeholder="如顺序、数学、checkpoint"></label></div><p id="review-status" class="status" aria-live="polite"></p><div id="rule-cards"></div><div class="actions"><button class="action" id="reset-review">载入公开示例</button><button class="action" id="blank-review">新建空白评审</button><button class="action" id="export-review">导出评审JSON</button></div><details><summary>用JSON导入或复制评审</summary><p>导入只读取评审规则，不执行训练。无效格式不会覆盖当前判断；JSON可以复制到其他浏览器。</p><textarea id="review-json" aria-label="评审JSON"></textarea><button class="action" id="copy-review-json">填入当前评审JSON</button> <button class="action" id="import-review">导入评审JSON</button><p id="review-import-status" class="status" aria-live="polite"></p></details></div>
+<div class="learning-card" id="pipeline-view"><h2>下一步：按缺口推进，不把材料数量当总分</h2><p>选择阶段，查看需要的规则、产物和返回路径。顺序阶段可按项目范围跳过，但要记录理由。当前示例的后续缺口代表未确认，不代表训练失败。</p><div id="pipeline-steps" class="pipeline-steps"></div><div id="pipeline-detail" aria-live="polite"></div><p><a href="templates/experiment_record.md" download>下载实验记录模板</a> · <a href="templates/experiment_plan.json" download>下载实验计划JSON</a> · <a href="#improvement">查看持续改进队列</a></p></div>
+</section>
+ <section class="chapter" id="learning"><h1 id="learning-_1">理解这份研究：先学会问对曲线的问题</h1>
+<p>如果只记住一件事，请记住：<strong>看到Loss变化，先确认变的是模型、数据、评估路径，还是计算速度。</strong> 这四类变化都可能出现在同一条训练曲线上，却需要不同的验证。</p>
+<p>这份报告逐轮增加了很多材料。现在补一条阅读路线，让你能够先形成判断，再按需要追到原值。网页前面的“理解与评审工作台”可以切换案例、比较两种参照、查看规则和记录自己的证据判断。所有演示使用已归档结果，没有补造新训练。</p>
+<h2 id="learning-1">1. 三条阅读路线</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>你想解决什么</th>
+<th>建议顺序</th>
+<th>阅读后应能回答</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>看懂训练曲线</td>
+<td>工作台“曲线变化”→主报告三个案例→运行索引</td>
+<td>CE下降来自什么变化？还缺哪个固定对照？</td>
+</tr>
+<tr>
+<td>调整自己的数据</td>
+<td>工作台“配比取舍”→第四轮结论→第三轮实验设计→预算工具</td>
+<td>从谁移走多少token？数学与代码各付出什么代价？</td>
+</tr>
+<tr>
+<td>做研究或生产评审</td>
+<td>Rubrics→决策管线→实验记录模板→来源与复核</td>
+<td>目前能描述观察、推荐候选，还是声称稳定能力收益？</td>
+</tr>
+</tbody>
+</table></div>
+<p>第一次阅读不必逐行看200桶或54项任务。完整表保留并可展开，作用是追查和反驳摘要。先读指标定义、比较范围和退步项，再决定需要查哪一桶。</p>
+<h2 id="learning-2-ce">2. 训练CE与固定验证为什么可能朝相反方向走</h2>
+<p>假设一种文本A更容易预测，另一种B更难。你把B的抽样量提高，下一批训练数据的平均Loss就可能上升，即使模型在相同验证集上的预测没有变差。这时训练CE的变化，同时包含模型变化和批次分布变化。</p>
+<p>Marin的108k切换提供了实际案例：训练CE附近的观察值约1.210→1.235。它不能单独证明模型变差。固定验证比较保持评估对象稳定，但也要检查评估是否dropless、是否用了相同状态和同一分母。</p>
+<p>81k的EP调整则是另一种机制。容量丢弃减少后，token经过专家的有效路径变了，CE也会变。146k组合kernel调整主要提高吞吐，200步配对窗口里的CE均差很小。三个案例的训练曲线都“变了”，三个推论却不同。<a href="#report">主报告</a></p>
+<p>工作台图中的实测、机制解释、待检验假设使用不同标签。箭头只帮助你理解可能的链条；有机制解释不等于这条链已经被独立干预验证。</p>
+<h2 id="learning-3-bpb">3. BPB更好，为什么还不能说题做得更好</h2>
+<p>BPB衡量预测指定文本的代价，按byte计量，越小越好。GSM8K/HumanEval目标文本BPB改善，说明模型更倾向于给定的目标文本。真正使用模型时，它需要自己生成答案或程序，还会受到解码、错误累积、格式和执行约束影响。</p>
+<p>因此本报告把目标文本BPB视为能力线索。它和生成正确率应该并列评估，不能互换名称。<code>HumanEval BPB −7.50%</code>不能写成<code>pass@1 +7.50%</code>；也没有公式能把两者直接换算。</p>
+<p>“dropless”说明这条评估路径没有容量丢弃，不说明它天然代表所有部署路径。要追问：训练与评估是否使用相同路由策略，实际部署又采用什么路径。</p>
+<h2 id="learning-4">4. 怎么读工作台里的三点图</h2>
+<p>工作台可以选择旧配比或库存比例基线。每张图画三组同seed相对变化，方块标记“三seed均值之比”。点是观察值，没有画成置信区间。</p>
+<p>参照换了，结论也会换。相对旧配比，选中方案GSM8K BPB三组都变差；相对库存比例基线，则两组变差、一组改善。图中每张小图单独标出自己的刻度范围，不能跨小图用长度比较收益大小。</p>
+<p>三组共享恢复之前的历史。它们不是三个独立从头初始化模型，也没有消除候选选择的偏差。三个点同方向，是复验的线索；“在未参与选择的重复中稳定改善”需要更多证据。<a href="analysis/strong_baseline_comparison.csv">完整均值与逐seed表</a></p>
+<h2 id="learning-5">5. 库存、权重、曝光：三个不同的账本</h2>
+<p>设桶i库存为Nᵢ，某阶段预算为B，抽样权重为wᵢ。计划抽样量约为Bwᵢ，名义曝光轮数约为Bwᵢ/Nᵢ。库存比例描述仓库里有什么，抽样权重描述接下来取什么，曝光描述这份计划会读多少次。</p>
+<p>例如两桶权重同为1%，小库存桶的名义轮数可以高很多。新增比例可能增加独立覆盖，也可能主要重复已经看过的内容。决定是否加量前，应该看有效去重库存、已有历史量和后续预算。</p>
+<p>这里的库存和轮数来自公开规格与名义计划。没有真实token流时，不能把名义epochs写成每个文档实际重复的次数。质量档Q4也不是独立覆盖的保证。<a href="#data">200桶预算与曝光</a></p>
+<h2 id="learning-6">6. 为什么“把高质量放在最后”需要额外实验</h2>
+<p>顺序问题同时涉及时机和总量。若前一阶段占70%、后一阶段占30%，直接把两套权重交换，某类数据的累计抽样量往往也会改变。你以为只改了先后，实际还改了这类数据读了多少。</p>
+<p>连续权重下，若全程目标是w，早期增加δ，早期预算占f，则晚期要改成w−fδ/(1−f)，才能补偿总量。补偿后的权重还必须非负，保底和容量约束也要成立。</p>
+<p>实际加载器会按完整混合块分配整数样本，还涉及边界、cursor与桶内shuffle。因此连续总量匹配是第一层检查，真实token流重放是更强的一层。现有公开顺序配置存在三种预算口径，工作台和报告没有据此推荐统一前置或后置策略。<a href="#practical">第三轮顺序审计</a></p>
+<h2 id="learning-7">7. 常见术语，用本次研究里的对象解释</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>术语</th>
+<th>在这里是什么意思</th>
+<th>容易误读成什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>535B-A23B</td>
+<td>总参数与每token激活参数的两个口径</td>
+<td>每token都计算535B参数</td>
+</tr>
+<tr>
+<td>d512 proxy</td>
+<td>较小规模的代理实验</td>
+<td>535B已经得到同样结果</td>
+</tr>
+<tr>
+<td>continuation</td>
+<td>从共同恢复点继续训练</td>
+<td>每组都是独立从零开始</td>
+</tr>
+<tr>
+<td>token/update</td>
+<td>一次更新实际计划的token数</td>
+<td>序列数或墙钟时间</td>
+</tr>
+<tr>
+<td>macro</td>
+<td>各固定子集等权平均</td>
+<td>按训练池库存加权</td>
+</tr>
+<tr>
+<td>BPB</td>
+<td>每byte的预测代价</td>
+<td>题目正确率</td>
+</tr>
+<tr>
+<td>dropless</td>
+<td>评估时无容量丢弃的路由路径</td>
+<td>与任何训练路径相同</td>
+</tr>
+<tr>
+<td>EP</td>
+<td>专家分散到设备，路由与通信共同影响计算</td>
+<td>仅仅更换通信库</td>
+</tr>
+<tr>
+<td>token drop</td>
+<td>受容量约束，部分专家计算被丢弃</td>
+<td>文档从训练池永久删除</td>
+</tr>
+<tr>
+<td>Q0—Q4</td>
+<td>公开分桶的质量档标签</td>
+<td>可直接跨任务使用的训练价值排序</td>
+</tr>
+<tr>
+<td>c39</td>
+<td>数学语义域，含五个Q档</td>
+<td>所有数学能力的唯一来源</td>
+</tr>
+<tr>
+<td>epochs</td>
+<td>抽样量除以库存的名义曝光口径</td>
+<td>实际文档逐条重复次数</td>
+</tr>
+<tr>
+<td>donor/供体</td>
+<td>加量时贡献被移出预算的桶或域</td>
+<td>没有成本的额外数据</td>
+</tr>
+<tr>
+<td>checkpoint fallback</td>
+<td>配置里最后可尝试的恢复路径</td>
+<td>实际恢复内容已核验</td>
+</tr>
+<tr>
+<td>cursor</td>
+<td>当前混合计划下的读取位置/计数</td>
+<td>不依赖序列和混合块设置的绝对身份</td>
+</tr>
+<tr>
+<td>观察前沿</td>
+<td>在指定指标中未发现被其他终点支配的候选</td>
+<td>已复验、可部署的最优名单</td>
+</tr>
+<tr>
+<td>独立确认</td>
+<td>候选冻结后的新重复和确认评估</td>
+<td>搜索时看过的同一批结果</td>
+</tr>
+<tr>
+<td>compute-equivalent</td>
+<td>按拟合换算达到同Loss所需算力</td>
+<td>tokens/s实测提升</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="learning-8">8. 五个自测：能解释反例，比背数字更重要</h2>
+<p>先自己回答，再展开。答案需要包含比较范围和缺失证据。</p>
+<details><summary>训练CE变高，为什么不能直接判定配比变差？</summary>
+<p>切换权重后训练批次分布改变；更难文本会提高平均CE。需要同一固定验证对象，并核对路由、状态与预算。108k是观察例子，不是“CE高就更好”的反向规律。</p>
+</details>
+<details><summary>92.05%究竟是什么，不能解释成什么？</summary>
+<p>它是三个d512续训终点均值之间的差值比例，描述简单基线已经取得多少观察macro改善。不能解释成库存分布的因果贡献率，也不能套到535B。</p>
+</details>
+<details><summary>597个候选为什么不比3个seed更能证明稳定收益？</summary>
+<p>它们大多是不同方案的单seed终点，用来搜索；不是同一个冻结候选的独立重复。多试方案会增加遇到乐观噪声的机会。确认需要明确重复和未参与选择的评估。</p>
+</details>
+<details><summary>删掉数学域后macro更好，为什么还不能说数学数据没用？</summary>
+<p>删除同时把预算分给别的域；macro与数学任务的权重也不同。需要看GSM8K等固定评估、实际解题，以及采用了什么替代策略。第三轮数学域删除有macro改善、GSM8K BPB明显变差的例子。</p>
+</details>
+<details><summary>顺序总量已经按浮点权重匹配，为什么还要查cursor？</summary>
+<p>加载器使用整数混合块；阶段对齐、序列长度和块大小会改变有效计数与位置。还要核对恢复历史和桶内shuffle。逻辑L1游标差本身不证明真实token重复。</p>
+</details>
+<h2 id="learning-9">9. 读完以后，把理解写成可检验的问题</h2>
+<p>建议用四句话记录一次判断：我看到了哪个范围的变化；哪一项可比证据支持它；哪一个反例或混杂尚未排除；下一次最少需要补什么材料。</p>
+<p>例如：“选中相对比例基线的代码目标文本BPB在三组续训都改善。我把它保留为代码候选。尚缺独立确认与程序执行评估。下一步冻结候选和任务保底，补生成评估后再决定是否放大。”</p>
+<p>这四句话有明确对象和后续动作，比“高质量数据很重要”“需要更多研究”更容易指导训练。<a href="#rubrics">规则清单</a>和<a href="#pipeline">决策管线</a>把它进一步变成可保存的评审记录。</p></section>
+<section class="chapter" id="rubrics"><h1 id="rubrics-rubrics">Rubrics：证据允许我们把结论推进到哪一步</h1>
+<p>这些规则由本报告的误读、反例与复算提炼，服务于理解和实验评审。<strong>它们是本地工作方法，不是Marin官方标准，也不是经外部验证的评分量表。</strong></p>
+<p>最重要的原则是：分别评“材料够不够支持这层结论”和“方案实际表现好不好”。公开材料缺checkpoint内容，不证明训练失败；BPB改善但没有生成评估，只能保留能力线索。也不能用十个格式项通过来抵消一个关键预算错误。</p>
+<h2 id="rubrics-1">1. 怎样使用规则</h2>
+<p>先写评审目标，例如“描述配比切换的观察”“推荐一个代码候选”“声称稳定能力收益”或“准备更大模型切换”。再对相关规则填状态和证据入口。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>代表什么</th>
+<th>如何处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>在明确范围内达到该项锚点</td>
+<td>保存可回查的证据，不自动推广到别的范围</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>有线索，但仍有明确缺口</td>
+<td>写出缺什么；限制当前陈述</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>已发现与当前主张冲突的证据</td>
+<td>修正主张或实验设计，保留反例</td>
+</tr>
+<tr>
+<td>未确认</td>
+<td>尚未核对所需证据</td>
+<td>补材料或保留未知，不能当作已经失败</td>
+</tr>
+<tr>
+<td>本阶段不适用</td>
+<td>问题在当前范围不涉及这一项</td>
+<td>写理由；换阶段后重新判断</td>
+</tr>
+</tbody>
+</table></div>
+<p>工作台的“下一步”状态按阶段要求检查，不计算总分。关键项缺失会留下明确缺口；单击“证据齐全”但不填写证据，仍不能使阶段通过。不适用也需要理由，并不能替代所选阶段的必备项。静态方案可以有理由跳过顺序阶段，不能称其已验证。这些是自评输入的完整性检查，不会自动验证你输入的链接或推断内容是否真实。</p>
+<h2 id="rubrics-2-100">2. 为什么不做一个100分排名</h2>
+<p>图表清楚、资料很多与因果证据充分，是不同的质量维度。597个seed0候选不能替代选择后的独立重复；完整CSV也不能证明实际恢复内容一致。总分会掩盖这种不互相替代的缺口。</p>
+<p>因此本规则保留每项判断、范围和证据。对“提出候选”可以有足够材料，对“稳定提升实际能力”仍可能缺生成评估；两者可以同时成立。当前公开示例能够进入观察与候选讨论，不能据此宣称535B能力与生产切换已经被本地验证。</p>
+<h2 id="rubrics-3">3. 两个实际练习</h2>
+<p><strong>练习A：声称“新配比让通用能力全面提升”。</strong> 先查R03指标是否支持能力表述，R04是否补齐比例基线，R06是否保留退步项，R07是否独立确认，R12是否预先定义全面提升，R15是否实际任务验证。当前公开材料支持有取舍的BPB候选结论，不支持这句全面能力主张。</p>
+<p><strong>练习B：声称“高质量统一后置有效”。</strong> 先查R05阶段预算、R09已有曝光、R10累计量和cursor。只互换阶段权重通常改变总量；连续补偿通过也不等于完整token流匹配。未匹配以前，应把结果写成“这套整体安排的观察差异”。</p>
+<h2 id="rubrics-4">4. 规则如何持续改进</h2>
+<p>规则可以被新证据修改。发现一项规则过宽、过严或无法指导行动时，记录具体案例：哪条判断被误放行或误阻挡，缺了什么证据，修改后的锚点如何避免同类问题。版本变化保存在<a href="#improvement">持续改进记录</a>。</p>
+<p>本轮没有用虚构训练来验证规则效度。已经验证的是规则格式、阶段判定的边界、公开数据引用、交互导入导出与离线阅读；GPU实验、实际能力和完整token流仍属未完成工作。</p>
+<!-- GENERATED_RULES -->
+<h2 id="rubrics-_1">完整规则与判断锚点</h2>
+<p>状态评的是所选范围的证据。缺证据不等于实验失败；有反证也不等于一个域永远无用。以下规则由本报告提炼，未经外部评分效度验证。</p>
+<h3 id="rubrics-r01">R01 · 来源和版本能回查</h3>
+<p>这个数字来自哪个版本、时点和原文件？ 线上run会变；没有版本就无法分清新事实与旧结论。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>原文件、版本/时间、计算入口可以互相对应。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>只有原链接或截图，版本/计算入口缺一项。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>不同快照混用，或原值无法对应。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="#provenance">来源说明</a> · <a href="sources/archive_manifest.json">313文件完整性清单</a></p>
+<h3 id="rubrics-r02">R02 · 结论范围写清</h3>
+<p>这是哪个模型、训练阶段、任务和实验？ 同一个权重在不同历史和模型上不是同一干预。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>模型规模、恢复阶段、参照和适用范围明确。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>信息可追溯，但正文省略关键范围。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>把代理实验写成535B已验证结果。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="#conclusions">代理与放大边界</a> · <a href="analysis/swarm_audit.json">swarm审计</a></p>
+<h3 id="rubrics-r03">R03 · 指标含义和评估路径一致</h3>
+<p>Loss、BPB、正确率与drop口径是否分清？ 度量对象变了，曲线就不能按原含义解读。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>指标分母、方向、dropless/有drop路径和能力边界明确。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>指标名称有了，分母或路由路径不明。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>BPB当准确率，或训练CE与固定验证混作同一种证据。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="#report">三种Loss误读</a> · <a href="analysis/summary.json">配对窗口</a></p>
+<h3 id="rubrics-r04">R04 · 包含有竞争力的简单参照</h3>
+<p>候选优于旧方案，还是也优于简单方案？ 92.05%的观察macro差值已由比例基线取得，参照影响结论。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>旧方案与库存比例等简单基线均纳入相同范围对照。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>只有旧方案对照，或简单基线条件不同。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>把所有旧→新差值都归给复杂搜索。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="analysis/strong_baseline_comparison.csv">强基线对照</a> · <a href="#conclusions">第四轮判断</a></p>
+<h3 id="rubrics-r05">R05 · 预算从实际区间计算</h3>
+<p>相同预算指token、更新、时间中的哪一种？ 一步差与模拟预算差是不同的问题。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>恢复起止、tokens/update和预算口径明确；比较使用匹配口径。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>名义预算明确，但真实恢复边界或执行量未确认。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>把13.125T/3.75T与2726/810更新口径直接混用。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="analysis/order_budget_audit.csv">三种顺序预算</a> · <a href="analysis/findings_audit.json">恢复窗口核对</a></p>
+<h3 id="rubrics-r06">R06 · 平均指标可拆回组成项</h3>
+<p>总平均的收益由哪些子集贡献？ 16项macro里代码/学术收益和其他文本退步同时存在。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>组成项、聚合方式和退步项全部列出，能重建平均。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>只有平均与部分有利子集。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>把整体汇总再当一个子集，或把重叠任务当独立投票。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="analysis/macro_contributions.csv">16项贡献</a> · <a href="analysis/strong_baseline_paired.csv">54项任务原值</a></p>
+<h3 id="rubrics-r07">R07 · 选择后有独立确认</h3>
+<p>这份结果是用来选候选，还是用来确认候选？ 搜索极值容易含有噪声；确认预算不能被搜索预算替代。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>候选先冻结，再做未参与选择的重复与确认评估，报告波动。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>有多seed，但参与选择，或共享历史的依赖未处理。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>把597个单seed候选当成597次独立复验。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="analysis/findings_audit.json">候选seed分布</a> · <a href="#conclusions">配对重复边界</a></p>
+<h3 id="rubrics-r08">R08 · 每次加量都写供体</h3>
+<p>给B加量时，A失去了多少？ 混合权重总和为1；收益包含替代关系。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>接收域、供体、转移量、其余变化和替代策略明确。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>加量或删域已知，空出预算分给谁不明。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>把删域再分配结果当成该域自身的纯贡献。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="analysis/domain_ablation_audit.csv">80个删除干预</a> · <a href="#practical">第三轮实验方案</a></p>
+<h3 id="rubrics-r09">R09 · 库存、历史与重复分开</h3>
+<p>增加比例后，独立覆盖和累计曝光各变多少？ 相同百分比在小库存上可能意味着高重复。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>有效库存、已有曝光、后续计划和上限有定义，并检查容量可行性。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>只有公开名义库存与计划，真实去重/历史量未确认。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>把库存占比当抽样权重，或把名义epochs当实际文档重复证明。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="analysis/cell_weights.csv">200桶库存与计划</a> · <a href="analysis/planner_example.json">预算工具例子</a></p>
+<h3 id="rubrics-r10">R10 · 顺序比较匹配累计量和游标</h3>
+<p>两种顺序真的只差先后吗？ 时序和总量一起变，就无法归因到先后。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>逐桶累计量、完整块计数、恢复cursor和token流重放可对应。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>连续补偿或完整块计算已做，token ID/内部shuffle未重放。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>互换不同长度阶段却宣称曝光相同。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="analysis/cursor_audit.csv">完整块游标</a> · <a href="analysis/order_budget_audit.csv">顺序预算审计</a></p>
+<h3 id="rubrics-r11">R11 · 跨规模结论有对应对照</h3>
+<p>放大后是否仍保留强基线和关键风险对照？ 代码收益的方向在ladder上并非一致。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>更大模型同范围确认方向，并说明阶段/系统差异。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>有放大结果，但缺简单基线或条件不同。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>直接把d512收益幅度写成535B收益。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="analysis/proxy_scale_effects.csv">跨规模终点</a> · <a href="https://github.com/marin-community/marin/issues/9126" rel="noopener" target="_blank">公开配比研究</a></p>
+<h3 id="rubrics-r12">R12 · 目标和能力保底预先冻结</h3>
+<p>选配比究竟要优化什么，允许牺牲什么？ 观察前沿随任务组合改变；未知selector不能靠猜测补齐。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>主目标、独立确认集、能力退步界限和停止条件在看结果前规定。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>目标大致明确，约束或冻结时间缺失。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>看完结果再换目标，把最终哈希当作全面最优证明。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="analysis/observed_pareto_frontiers.csv">观察前沿</a> · <a href="analysis/candidate_197c_counterexample.csv">197c反例</a></p>
+<h3 id="rubrics-r13">R13 · 根因证据和缓解效果分开</h3>
+<p>恢复运行能证明哪个假设，排除了什么？ silent hang、存储故障和数值异常需要不同证据。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>根因证据、排除实验、缓解动作和残余未知分别归档。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>有恢复和可行解释，但关键排除或底层证据不足。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>恢复成功就写成根因已确认。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="#operations">58条运行记录</a> · <a href="#report">15类工程机制</a></p>
+<h3 id="rubrics-r14">R14 · 执行状态不只看配置路径</h3>
+<p>实际加载的代码、checkpoint和数据状态是什么？ 配置相同能减少混杂，但不能保证每次启动执行相同。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>代码/环境、checkpoint内容、随机与数据状态可核对，回退点明确。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>记录配置与fallback相同，实际恢复内容尚未确认。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>相同路径就断言状态逐字节一致。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="analysis/strong_baseline_config_audit.csv">原始配置对照</a> · <a href="#deep">恢复与游标边界</a></p>
+<h3 id="rubrics-r15">R15 · 能力主张有实际任务验证</h3>
+<p>目标文本概率的变化是否转化为任务表现？ 预测指定答案与自己生成正确答案不是同一个测试。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>生成正确率/执行测试与BPB并列，题目、解码和污染检查有记录。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>只有BPB线索，能力主张保持为候选假设。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>HumanEval BPB写成pass@1，GSM8K BPB写成正确率。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="#conclusions">任务BPB边界</a> · <a href="analysis/strong_baseline_paired.csv">逐seed任务表</a></p>
+<h3 id="rubrics-r16">R16 · 图表能被读者正确复述</h3>
+<p>读者能说清横纵轴、参照、样本数和不能推出什么吗？ 图要帮助判断，不应替代证据限定。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>图包含单位、参照、范围、样本数、原值入口和解释；窄屏可读。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>数值正确但解释/分母/可访问替代缺失。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>截断差结果、混用参照，或把图中的相关性画成因果证明。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="#learning">理解文档</a> · <a href="analysis/browser_validation_v5.json">图与交互复核</a></p>
+<h3 id="rubrics-r17">R17 · 结论可离线复算</h3>
+<p>分享包能从固定材料重建关键结果吗？ 复算不等于重训；两者的验证范围都应写清。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>归档、计算脚本、数字检查、链接和离线阅读验证齐全。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>报告可读，但部分计算需未知在线状态。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>只有截图/结论，关键原值或公式丢失。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="Makefile">离线构建</a> · <a href="analysis/validation.json">计算验证</a></p>
+<h3 id="rubrics-r18">R18 · 未解决问题有下一步和退出条件</h3>
+<p>下一次工作会消除哪个不确定性？ 持续改进应降低具体不确定性。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>缺口、下一步、所需资源、验收/推翻条件和变更记录明确。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>有待办，但只写“继续深入”或缺验收。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>抓取条数/美化数量当作研究收益，反例被删除。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="#improvement">持续改进记录</a> · <a href="#pipeline">决策管线</a></p></section>
+<section class="chapter" id="pipeline"><h1 id="pipeline-_1">把研究做成能反复运行的决策管线</h1>
+<p>这条管线的输出是带证据范围的决定：补材料、保留候选、做独立确认、放大或回退。<strong>它不会自动训练模型，也不会因报告写得完整就允许声称生产收益。</strong> 每个阶段都留下文件，后续能复查为什么推进或停止。</p>
+<h2 id="pipeline-1">1. 七个阶段的输入和产物</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>输入与问题</th>
+<th>留下什么</th>
+<th>哪些缺口需要先处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P0 冻结来源与问题</td>
+<td>一个明确的变化、固定材料、指标定义</td>
+<td>来源manifest、版本、研究问题</td>
+<td>来源漂移、指标分母不明</td>
+</tr>
+<tr>
+<td>P1 诊断与筛选候选</td>
+<td>可比终点、旧/比例等参照、替代策略</td>
+<td>子集贡献、退步表、候选与陈述边界</td>
+<td>参照弱、预算不一致、只看平均</td>
+</tr>
+<tr>
+<td>P2 设计局部交换</td>
+<td>自己的库存、历史、目标与实际恢复点</td>
+<td>供体/接收域、容量账本、冻结实验清单</td>
+<td>容量不可行、目标事后改变、状态未核对</td>
+</tr>
+<tr>
+<td>P3 独立确认能力</td>
+<td>冻结候选、新重复与确认评估</td>
+<td>波动、实际任务结果、能力保底决定</td>
+<td>选择偏差、只有BPB、退步不受控</td>
+</tr>
+<tr>
+<td>P4 顺序与恢复</td>
+<td>已确认累计配比、两种时序、加载器</td>
+<td>逐桶总量、整数块/cursor重放、中间与末期结果</td>
+<td>顺序与总量混杂、实际token流未匹配</td>
+</tr>
+<tr>
+<td>P5 放大与切换</td>
+<td>强基线、候选、风险对照、执行状态</td>
+<td>更大代理结果、回退点、切换状态记录</td>
+<td>方向不迁移、状态或评估路径不同</td>
+</tr>
+<tr>
+<td>P6 复盘与下一轮</td>
+<td>结果、失败假设、残余未知</td>
+<td>版本差异、反例、下一问题与验收</td>
+<td>只增加抓取量，旧证据被覆盖</td>
+</tr>
+</tbody>
+</table></div>
+<p>P4只有在研究顺序时才需要执行；若采用已经确认的静态方案，可明确写出跳过理由。某项数据在P1作为线索可用，不意味着已经满足P3/P5。工作台展示的当前公开示例就是这种情况。</p>
+<h2 id="pipeline-2">2. 用第四轮发现跑一遍</h2>
+<p>P0固定已有公开快照、HF revision、d512范围与BPB口径。P1补上库存比例基线，分解16项macro，保留数学风险与197c的反例。得到的决定是：选中方案可以作为代码/学术方向候选，比例基线也应继续保留。</p>
+<p>要进入P2，需要自己的库存、历史曝光、供体、目标与实际恢复状态。现有Marin公开材料不能替代这些输入。P3还缺冻结后的独立确认和生成评估；P4缺完整token ID重放；P5缺更大尺度的相同强基线与关键风险验证。</p>
+<p>这个例子不是“全部完成”。它说明证据足够支持候选判断时，就把下一步需要的材料写清，而不把后续阶段的结果代填。<a href="#conclusions">第四轮结论</a></p>
+<h2 id="pipeline-3">3. 对自己的训练，先提交一份实验记录</h2>
+<p>可复制<a href="templates/experiment_record.md">实验记录Markdown模板</a>或<a href="templates/experiment_plan.json">JSON模板</a>。空字段代表待填，不是默认通过。</p>
+<p>最小记录应包含：研究问题和目标能力；共同checkpoint与实际恢复内容；模型和优化/路由设置；token与时间预算口径；旧方案、比例基线与候选；供体/接收域与阶段权重；已有曝光和有效库存；确认题目、重复与解码；能力退步限制；结果会怎样改变决定。</p>
+<p>建议第一轮使用4套配比×3个续训重复：旧配比、比例基线、候选、候选加数学局部交换。这是12次的起步设计，不保证统计充分。供体和增量由库存、预算与目标决定，本报告没有给出通用最优百分比。顺序研究等累计配比确认以后再做。</p>
+<h2 id="pipeline-4">4. 管线中的回退分支</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>发生什么</th>
+<th>返回哪里</th>
+<th>具体动作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>平均改善但关键任务退步</td>
+<td>P1/P2</td>
+<td>保留取舍候选；调整目标或做明确供体的局部交换</td>
+</tr>
+<tr>
+<td>名义容量不足</td>
+<td>P2</td>
+<td>减预算、补独立库存或修改经解释的曝光上限</td>
+</tr>
+<tr>
+<td>只有搜索评估改善</td>
+<td>P3→P1</td>
+<td>检查选择目标与评估污染，冻结新候选再确认</td>
+</tr>
+<tr>
+<td>顺序两组总量不同</td>
+<td>P4</td>
+<td>修补偿、边界与整数块；暂不归因到先后</td>
+</tr>
+<tr>
+<td>放大收益方向不稳定</td>
+<td>P5→P1/P2</td>
+<td>核对阶段和系统差异；不要原样上线小模型比例</td>
+</tr>
+<tr>
+<td>CE突然跳变</td>
+<td>P0/P1</td>
+<td>分清数据分布、drop、恢复状态与数值问题，补固定对照</td>
+</tr>
+<tr>
+<td>运行恢复但根因不明</td>
+<td>P6</td>
+<td>保存缓解、排除与未知，不删除故障记录</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="pipeline-5">5. 报告自身也走一条构建管线</h2>
+<p>离线命令<code>make report</code>依次执行：归档重算→附录→代理/删域/强基线分析→规则和理解数据生成→科学图→数值验证→HTML→源归档哈希→报告检查。它只消费已归档材料，不读取在线最新run。</p>
+<p>浏览器复核是另一项人工可见的检查：选择参照后数值更新、五个曲线案例能切换、规则缺证据不会通过、导入失败不覆盖现有记录、JSON导出可还原、窄屏布局无页面横溢、单文件无远程资源请求。验证结果和截图保存在analysis目录。</p>
+<p>采集更新必须用新快照目录，先重建来源范围与run生效区间，再修改数字和结论。旧曲线不应在没有说明的情况下刷新。完整token流与新GPU实验不属于这条本地构建管线。</p>
+<h2 id="pipeline-6">6. 如何选择下一项改进</h2>
+<p>优先处理会改变结论的缺口，其次处理会造成误读的表达，再补操作便利。每条待办写明：当前判断、可能的反例、最小追加证据、所需资源、完成/推翻条件。</p>
+<p>例如“找到完整selector目标”可能改变候选选择解释；“扩大一个图的字号”改善阅读，但不增加因果证据。两者都可以做，记录中不要把它们当成同一种研究进展。最新队列见<a href="#improvement">持续改进记录</a>。</p></section>
+<section class="chapter" id="improvement"><h1 id="improvement-_1">持续改进记录：下一步要减少哪种不确定性</h1>
+<p>用户本轮目标是完善可视化和理解文档，并把判断规则与管线提炼出来用于持续改进。本轮首先交付规则1.0和理解/评审工作台，让已有证据能被读懂、复查和用于规划。</p>
+<h2 id="improvement-1">1. 本轮已经处理的问题</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>原来的问题</th>
+<th>本轮处理</th>
+<th>验收依据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>图很多，读者难判断每种Loss变化</td>
+<td>五个可切换案例，区分实测、机制和假设</td>
+<td>每例给出允许的陈述、缺失验证与证据入口</td>
+</tr>
+<tr>
+<td>参照变化藏在不同章节</td>
+<td>旧/比例参照切换，四项指标三seed图与原值表</td>
+<td>与归档逐seedCSV逐值对应</td>
+</tr>
+<tr>
+<td>结论边界难转成评审动作</td>
+<td>18条规则与判断锚点</td>
+<td>不用格式项抵消关键证据缺口</td>
+</tr>
+<tr>
+<td>“继续深入”缺少产物和退出条件</td>
+<td>七阶段管线、实验模板和缺口队列</td>
+<td>每阶段有文件产物、返回分支和所需证据</td>
+</tr>
+<tr>
+<td>长表淹没阅读主线</td>
+<td>完整长表默认收起，原值保留可展开</td>
+<td>行数、链接和复算不变</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="improvement-2">2. 下一轮按结论价值排列</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>优先级 / 关联规则</th>
+<th>当前缺口</th>
+<th>下一步</th>
+<th>什么算完成</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>高 · R12</td>
+<td>完整selector目标与约束没有恢复</td>
+<td>追查固定版本选择产物/脚本或公开说明；未知条件保持未知</td>
+<td>找到可回查的真实目标与约束，或明确公共材料的访问边界</td>
+</tr>
+<tr>
+<td>高 · R07/R15</td>
+<td>独立重复与生成评估未公开确认</td>
+<td>若有新公共结果，建立新快照；若自行训练，先填实验模板和预算</td>
+<td>冻结后的重复及实际任务评估可对应，而不是新增BPB解释</td>
+</tr>
+<tr>
+<td>高 · R09/R10/R14</td>
+<td>实际历史与token流未重放</td>
+<td>获得合法可用的token store/恢复状态后逐块重放</td>
+<td>实际读取ID、整数块、cursor与累计量对应</td>
+</tr>
+<tr>
+<td>中 · R11</td>
+<td>更大代理缺相同强基线</td>
+<td>搜集或设计同范围的比例/候选/风险对照</td>
+<td>方向、波动、任务保底和条件差异可核验</td>
+</tr>
+<tr>
+<td>中 · R16</td>
+<td>读者能否正确复述尚未外部测试</td>
+<td>用理解文档五题收集误读，再修标题/图解</td>
+<td>记录具体误读与修改；不能只统计“喜欢”</td>
+</tr>
+<tr>
+<td>中 · R18</td>
+<td>规则可能过宽或过严</td>
+<td>用新的真实案例回放规则判定</td>
+<td>有误放行/误阻挡例子，并修改判断锚点</td>
+</tr>
+</tbody>
+</table></div>
+<p>前三项可能需要公开之外的训练资源。本地报告不会把资源未具备时的建议写成已执行。当前已有资料足以继续改进表达与评审方法，但不能用更多页面替代这些实验缺口。</p>
+<h2 id="improvement-3">3. 每轮记录格式</h2>
+<pre><code class="language-text">问题：哪条现有判断可能不成立？
+证据：固定来源、原值、模型与预算范围。
+动作：新增材料/复算/实验/表达修正中的哪一种。
+结果：支持、反例、仍未知；保留失败路线。
+规则：影响哪个R编号，是否要改锚点。
+下一步：最小所需证据与完成/推翻条件。
+</code></pre>
+<h2 id="improvement-4">4. 版本纪律</h2>
+<p>规则和管线是本报告自拟方法，版本1.0。评审JSON保存规则版本；不同版本需要人工核对锚点，不能直接继承旧的通过判断。旧V1—V4研究结论与来源保留；本轮不刷新线上训练曲线。后续有新结果时建立新版本，记录哪些结论改变、哪些只是表述更清楚。浏览器里的评审记录是用户自评，可以导出JSON；它不等同于独立审稿或真实训练确认。</p>
+<h2 id="improvement-5">5. 本轮回放规则后，实际修正了什么</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>关联规则</th>
+<th>回放发现</th>
+<th>修正与验证</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R03</td>
+<td>Gate敲除案例只写loss，容易与BPB混读</td>
+<td>补dropless global macro loss，保留敲除与生产路径区别</td>
+</tr>
+<tr>
+<td>R07/R12</td>
+<td>“不适用”如果算作必备证据通过，可能绕过独立确认</td>
+<td>不适用保留理由，但不能替代所选阶段必备项；数值判定检查覆盖该反例</td>
+</tr>
+<tr>
+<td>R16</td>
+<td>规则筛选的label包含选项文字，精确语义定位失败</td>
+<td>改为明确label关联，浏览器重新完成筛选、输入和导入检查</td>
+</tr>
+<tr>
+<td>R17</td>
+<td>一条cursor原值入口使用了不存在的文件名</td>
+<td>指向实际cursor_audit.csv，全部18条来源和HTML链接检查</td>
+</tr>
+<tr>
+<td>R16/R17</td>
+<td>收起长表后，打印可能看不到完整原值</td>
+<td>打印前展开，打印后恢复；五张长表的状态回放通过</td>
+</tr>
+</tbody>
+</table></div>
+<p>这些修正验证的是表达与工作台行为。它们没有补齐独立训练确认、真实token流或外部读者理解测试。</p></section>
+<section class="chapter" id="conclusions"><h1 id="conclusions-_1">第四轮：这套配比值得学什么，哪些结论还不能照搬</h1>
 <p>我现在的判断是：<strong>选中配比值得作为代码和学术文本方向的候选方案；公开实验不足以证明它是通用能力最优、数学能力安全、可以直接迁移到535B的配方。</strong> 它相对旧配比的收益是真实的公开观测，但把简单的库存比例基线补上以后，收益的性质发生了变化：通用文本平均值的额外改善很小，代码和学术文本的改善更突出。</p>
 <p>这也改变了我对“该怎样学这次预训练”的回答。最值得复制的是比较方法：把便宜但有竞争力的基线放进来，拆开平均值，核算每桶累计曝光，保留能力退步，并在更大规模上确认候选。200个权重可以作为实验起点，却不能替代这些步骤。</p>
 <p>本章补查了4个原始W&amp;B配置和6个恢复初期窗口，重新比较旧配比、库存比例基线和选中配比的三组continuation seed，并分析固定HF版本中全部597个seed0搜索候选。生产曲线仍沿用10月4日约05:38的归档；下面的BPB比较来自d512代理实验，不是535B正确率。BPB越小越好。</p>
@@ -92,7 +1041,7 @@
 </tbody>
 </table></div>
 <p>前两项收益之和超过净收益，其他14项合计抵消了一部分改善。去掉代码这一项，剩余15项均值从1.219600变成1.219818，微幅变差0.0179%。这不意味着“所有非代码能力变差”：学术文本仍有改善，其他子集也有改善。它说明总体优势包含清楚的取舍。</p>
-<p><img alt="16个子集的macro贡献，负数表示选中配比更好" src="assets/macro_contribution_findings.png"/></p>
+<p><img alt="16个子集的macro贡献，负数表示选中配比更好" src="assets/macro_contribution_findings.png"/></p><div class="figure-reading"><p><strong>看什么：</strong>相对强基线的净改善被哪些子集支撑？</p><p><strong>怎么读：</strong>16项绝对BPB差除以16；负贡献改善macro。</p><p><strong>边界：</strong>宏观分解不是训练桶因果归因；整体汇总不当第17项。</p><p><a href="analysis/macro_contributions.csv">原值/计算入口</a><a href="#conclusions">完整解释</a></p></div>
 <p>因此我会把这套方案描述为<strong>代码和学术文本收益较突出的配比</strong>，并保留一般文本和数学的风险项。把它写成“全面提升”，会丢掉真正决定训练方向的信息。这个判断来自固定评估文本，尚不等同于代码推理、科研问答或数学解题能力的完整画像。</p>
 <p>还有一个容易忽略的问题：等权macro本身已经表达了偏好。一个小子集与一个大子集可以得到相同的投票权；换成按token汇总的BPB，数值和收益幅度又不同。指标名称没有替团队作出产品决策。应先说明哪些任务必须保住，再决定哪些平均值可以用来搜索。</p>
 <p><a href="analysis/macro_contributions.csv">完整16项贡献CSV</a></p>
@@ -164,7 +1113,7 @@ seed2：−0.001223803
 </tbody>
 </table></div>
 <p>这张表足以反驳“选中方案在这三项公开seed0指标上已经无可改善”。它不足以推荐197c直接上线。197c只公开了一个seed；同样查看54项任务，它有23项更好、31项更差。其中MedQA BPB恶化约10.36%，Belebele约1.81%，Include约1.57%，而MMLU-Pro改善约6.62%。语言汇总与组成项有重叠，23/31不是独立任务的多数投票。</p>
-<p><img alt="597个单seed候选的观察前沿与两个候选位置" src="assets/observed_frontier_findings.png"/></p>
+<p><img alt="597个单seed候选的观察前沿与两个候选位置" src="assets/observed_frontier_findings.png"/></p><div class="figure-reading"><p><strong>看什么：</strong>为什么不同目标会选出不同候选？</p><p><strong>怎么读：</strong>上排全部597个seed0，下排局部放大；两个轴均越小越好。</p><p><strong>边界：</strong>观察前沿不是确认或部署推荐；197c还有其他任务退步。</p><p><a href="analysis/observed_pareto_frontiers.csv">原值/计算入口</a><a href="#conclusions">完整解释</a></p></div>
 <p>这也不能据此断言作者选错了。完整选择目标、代理预测模型、约束和实际决策过程没有恢复；作者可能考虑了本章未纳入的条件，但我们不能替未知条件编理由。公开材料能支持的说法是：<strong>“最佳”依赖指标、约束与重复验证，最终选中的哈希本身不是最优性的证明。</strong></p>
 <p>对自己的实验，这个检查很实用。与其只列第一名，不如保存一小组取舍不同的候选：通用文本较好、代码较好、数学较稳、曝光更均衡。再花确认预算决定使用哪一个。看到一个单次结果在三指标上同时更好，也应把它作为待确认候选，而不是把观察前沿当成部署名单。</p>
 <p><a href="analysis/observed_pareto_frontiers.csv">597候选、三种指标组合CSV</a> · <a href="analysis/candidate_197c_counterexample.csv">197c对全部指标的反例表</a></p>
@@ -289,7 +1238,7 @@ seed2：−0.001223803
 <!-- GENERATED_FINDINGS_TABLES -->
 <h2 id="conclusions-54seed">附录：54项任务相对比例基线的逐seed结果</h2>
 <p>全部为BPB。每个Δ按同seed的比例基线为分母，均值列使用三seed均值之比。语言平均与组成项不能当成独立的54次投票。</p>
-<div class="table-wrap"><table>
+<details class="large-table-details"><summary>展开完整表：54行，原值与来源保留</summary><div class="table-wrap"><table>
 <thead>
 <tr>
 <th>指标</th>
@@ -789,7 +1738,7 @@ seed2：−0.001223803
 <td style="text-align: right;">+0.576%</td>
 </tr>
 </tbody>
-</table></div>
+</table></div></details>
 <p><a href="analysis/strong_baseline_comparison.csv">全部固定文本与任务均值CSV</a> · <a href="analysis/strong_baseline_paired.csv">逐seed原值CSV</a></p></section>
 <section class="chapter" id="report"><h1 id="report-marin-535b-loss">Marin 535B 预训练：读懂故障、Loss 与数据配比</h1>
 <p>这份报告研究的是 Marin 的 <strong>535.3B 总参数、22.76B 激活参数（通常写作 A23B）</strong> Hero Run。18T 是训练目标，不是已经完成的训练量。资料截止北京时间 <strong>2026 年 10 月 4 日约 05:38</strong>：最新公开 W&amp;B 快照在 step 199174、约 51% 进度，配置仍是 4K 上下文。后面的 cooldown 与 16K/65K/262K 扩展不能写成已完成结果。</p>
@@ -923,8 +1872,8 @@ seed2：−0.001223803
 </table></div>
 <p>Paloma macro 是子集平均，领域权重与训练池占比不是一回事。固定评测的多领域macro提高，不意味着每个下游任务都提高：新mix在d1536的Wikipedia BPB仍回退约0.50%；d768/d1024的code BPB略退，d1536才转为改善。<a href="sources/mix_study_final-2026.09.15.1_final_results.csv">各子集最终结果</a></p>
 <p>W&amp;B 图表在本报告中按七条实际 lineage 的有效区间拼接，避免把回退 trial 或父run的重复历史加进训练主轨迹。原始 GraphQL response 保留；长时间序列每个metric请求至多1500采样点，图中1000-step中位数只用于读趋势，不能检出所有单步尖峰。专项200步窗口单独抓取，逐点范围和数量核验。重复eval同step、同值已去重，未发现数值冲突。</p>
-<p><img alt="训练CE、固定Paloma评估、专家丢弃和吞吐的不同变化" src="assets/training_signals.png"/></p>
-<p><img alt="81k与146k的同批次对照，以及108k的分布变化" src="assets/intervention_windows.png"/></p>
+<p><img alt="训练CE、固定Paloma评估、专家丢弃和吞吐的不同变化" src="assets/training_signals.png"/></p><div class="figure-reading"><p><strong>看什么：</strong>这次曲线变化发生在哪一层？</p><p><strong>怎么读：</strong>逐项看训练CE、固定评估、drop和吞吐，先核对各自分母。</p><p><strong>边界：</strong>跨run拼接和抽样窗口有边界；不据训练CE单独判断能力。</p><p><a href="analysis/series.json">原值/计算入口</a><a href="#report">完整解释</a></p></div>
+<p><img alt="81k与146k的同批次对照，以及108k的分布变化" src="assets/intervention_windows.png"/></p><div class="figure-reading"><p><strong>看什么：</strong>系统、数据两类切换能否按同一方式比较？</p><p><strong>怎么读：</strong>81k和146k看200步同step配对；108k看分布切换。</p><p><strong>边界：</strong>组合部署不能给单组件归因；配比切换不是相同批次。</p><p><a href="analysis/summary.json">原值/计算入口</a><a href="#report">完整解释</a></p></div>
 <h2 id="report-6-pretrain">6. 旧 pretrain 仓库究竟缺了什么</h2>
 <p>我检查了旧仓库固定tree snapshot中的README、信号阅读章、step32999算例、9月3日生成报告、10月2日日志和数据拉取实现。它的来源区分、matched-progress方法、可重算输入是有用的，不能为了重写而丢掉。</p>
 <p>但README自己也承认，v2第一阶段主要覆盖Scaling Ladder，router/datamix是后续内容。日报列出“19个updated issues、158条comments”，只证明收集到资料，没有回答这些问题：起初怀疑什么、哪个实验排除了它、后来原因怎样改变、生产到底接受还是回退。old repo对单条hero run的追踪也不能直接覆盖后续七段 lineage。<a href="https://github.com/fudan-chen/pretrain" rel="noopener" target="_blank">旧仓库README</a></p>
@@ -1084,7 +2033,7 @@ Eᵢ = Tᵢ / Aᵢ
 </table></div>
 <p><strong>可以确定的是他们改变了哪些桶，不能确定的是哪一个桶造成了改善。</strong>一次同时改了 200 个权重，固定评估改善只支持这整个配比；没有“只加 Agent、其他都不变”的对照，就不能说 macro BPB 的改善由 Agent 数据造成。数学份额下降也不等于数学能力更强或更弱，Paloma 是文本分布评估，不是数学解题准确率。</p>
 <p>一个容易漏掉的变化是 c30：主阶段降低，cooldown 又明显提高。阶段顺序不能只用一张最终饼图表达。同一份高价值数据提前使用与最后集中使用，效果取决于模型是否能学会、是否会遗忘、还剩多少更新、学习率是否已经太低；公开配比本身不提供这四项的单因素因果答案。</p>
-<p><img alt="40个domain的三阶段实际抽样比例" src="assets/domain_mixture.png"/></p>
+<p><img alt="40个domain的三阶段实际抽样比例" src="assets/domain_mixture.png"/></p><div class="figure-reading"><p><strong>看什么：</strong>哪个语义域在什么阶段获得预算？</p><p><strong>怎么读：</strong>每个条形使用实际阶段抽样权重，同域五个Q档求和。</p><p><strong>边界：</strong>阶段比例不是全程累计量，也不是该域的因果价值。</p><p><a href="analysis/domain_weights.csv">原值/计算入口</a><a href="#data">完整解释</a></p></div>
 <h3 id="data-22">2.2 新配比并不是简单地“越高质量越多”</h3>
 <div class="table-wrap"><table>
 <thead>
@@ -1135,7 +2084,7 @@ Eᵢ = Tᵢ / Aᵢ
 </tbody>
 </table></div>
 <p>新主阶段的 Q0、Q1 反而增加，Q4 只增加约 0.218 个百分点。Cooldown 的 Q4 才明显提高。这说明他们优化的是 <strong>domain×quality 的组合</strong>，并非按质量档单调调高。Q0 里可能有某些域欠缺的文本；Q4 里也可能有过度重复、模板化、任务不匹配的内容。分类器分数不是训练效用的直接测量。<a href="https://github.com/marin-community/marin/issues/8435#issuecomment-5336301526" rel="noopener" target="_blank">分桶与质量说明</a></p>
-<p><img alt="库存与三个训练阶段的质量档占比" src="assets/quality_mixture.png"/></p>
+<p><img alt="库存与三个训练阶段的质量档占比" src="assets/quality_mixture.png"/></p><div class="figure-reading"><p><strong>看什么：</strong>库存与抽样的质量档分布差多少？</p><p><strong>怎么读：</strong>库存和三阶段分别使用自己的分母；Q档内覆盖仍不同。</p><p><strong>边界：</strong>Q4比例不等于质量收益，未来cooldown还是计划。</p><p><a href="analysis/quality_weights.csv">原值/计算入口</a><a href="#data">完整解释</a></p></div>
 <h3 id="data-23">2.3 桶名称为什么只能当导航</h3>
 <p>本报告从原页面提取了 <strong>200 桶、每桶两个公开样本</strong>，保存为<a href="analysis/sample_texts.json">样本索引</a>。人工抽看几个关键桶，能看出标签和实际内容之间的距离：</p>
 <div class="table-wrap"><table>
@@ -1202,7 +2151,7 @@ Eᵢ = Tᵢ / Aᵢ
 <p>进一步把切换前后的学习分开：先在同一 checkpoint 用旧/新抽样权重重加权评估，测“分布效应”；再分别训练相同token量，在不变验证集上比较，测“学习效应”。生产线的前后曲线把两种效应、学习进度以及其他系统变更混在一起。</p>
 <h3 id="data-32">3.2 固定验证集上，哪些分布改善了</h3>
 <p>d1536 最终结果的 Paloma macro BPB 改善约0.716%，16个子集15个改善。Wikipedia分布反而恶化约0.500%。下图展示全部子集；负值表示更好。macro是子集宏平均，不代表按真实用户请求分布加权的质量。</p>
-<p><img alt="新配比相对旧配比的固定Paloma子集BPB变化" src="assets/mixture_eval.png"/></p>
+<p><img alt="新配比相对旧配比的固定Paloma子集BPB变化" src="assets/mixture_eval.png"/></p><div class="figure-reading"><p><strong>看什么：</strong>更大ladder的固定文本收益是否全面？</p><p><strong>怎么读：</strong>分别看规模和子集，保留代码/Wikipedia退步。</p><p><strong>边界：</strong>旧新设置存在混杂，不能直接当535B能力结论。</p><p><a href="sources/mix_study_final-2026.09.15.1_final_results.csv">原值/计算入口</a><a href="#data">完整解释</a></p></div>
 <p>代码子集在 d768、d1024 略差，在 d1536 转为改善，说明小代理排序也存在规模依赖。d1536代码BPB改善约0.463%，比macro的改善小；不能把macro的“等效算力约20%”移植到代码能力。d512同checkpoint、三seed实验的Uncheatable代码改善支持继续尝试，但没有消除最终535B收益的不确定性。<a href="https://github.com/marin-community/marin/issues/9126" rel="noopener" target="_blank">实验细节和限制</a></p>
 <p>第二轮读取完整registry后发现：d512新配比的GSM8K任务BPB在三个seed上均退化，均值约+10.844%；HumanEval任务BPB均值约−4.034%，三个seed均改善。这些是文本BPB，不能换算为解题准确率或pass@1。数学域削减与退化同时发生，尚无单桶因果证据。<a href="#deep">完整54项任务与选择偏差分析</a></p>
 <h3 id="data-33-20">3.3 “等效算力提高20%”怎样算，为什么容易夸大</h3>
@@ -1361,7 +2310,7 @@ decision: "接受/继续确认/回退，写具体证据"
 <p>下面的附表由脚本从原始配置与库存自动生成。HTML另有200桶筛选器，可查各桶三个阶段比例、库存和计划曝光；<a href="analysis/domain_weights.csv">40域CSV</a>、<a href="analysis/cell_weights.csv">200桶CSV</a>、<a href="analysis/summary.json">计算摘要</a>均保留精确值。</p>
 <!-- GENERATED_TABLES -->
 <h3 id="data-71-40">7.1 40个语义域的全部比例</h3>
-<div class="table-wrap"><table>
+<details class="large-table-details"><summary>展开完整表：40行，原值与来源保留</summary><div class="table-wrap"><table>
 <thead>
 <tr>
 <th>ID</th>
@@ -1735,7 +2684,7 @@ decision: "接受/继续确认/回退，写具体证据"
 <td style="text-align: right;">1.404%</td>
 </tr>
 </tbody>
-</table></div>
+</table></div></details>
 <h3 id="data-72">7.2 计划曝光轮数最高的十个桶</h3>
 <p>仅按当前三阶段计划计算；未来配比、长度与cursor改变会使实际曝光不同。极小桶的高轮数不能按绝对影响排名。</p>
 <div class="table-wrap"><table>
@@ -2160,7 +3109,7 @@ decision: "接受/继续确认/回退，写具体证据"
 </tbody>
 </table></div>
 <p>完整54行中，5行在三个seed上均改善，11行均变差，其余38行方向混合。部分行是语言平均与组成语言，这些不是54份独立投票；医学等高波动行也提醒我们不能只按均值排名。附录保留全部54行，避免只挑代码或数学说故事。</p>
-<p><img alt="代码、数学、新闻与语言BPB的逐seed变化" src="assets/paired_seed_tradeoffs.png"/></p>
+<p><img alt="代码、数学、新闻与语言BPB的逐seed变化" src="assets/paired_seed_tradeoffs.png"/></p><div class="figure-reading"><p><strong>看什么：</strong>旧与选中在三组续训里有什么取舍？</p><p><strong>怎么读：</strong>看每个seed和不同任务，负BPB变化更好。</p><p><strong>边界：</strong>共享恢复历史且参与选择；BPB不是生成正确率。</p><p><a href="analysis/paired_seed_tasks_bpb.csv">原值/计算入口</a><a href="#deep">完整解释</a></p></div>
 <p>GSM8K三seed都变差，和c39数学域份额降低同时发生，值得把“数学是否受损”列为扩规模前的保留条件。但200桶、两个阶段同时改变，而且代理覆盖内容更少，所以这里<strong>无法把10.844%的变化全归因于c39减少</strong>。其他数据迁移、顺序和能力权衡都可能参与。更不能说535B的GSM8K准确率已经下降10.844%。</p>
 <p>对代码/Agent模型，可以接受某些非目标文本指标退化，但应在实验前写明允许多少、以什么独立任务衡量。对于兼顾数学的通用模型，这组结果支持保留数学约束、增设解题评估和反向消融；它不支持直接照抄最终200桶权重。</p>
 <h3 id="deep-32-seed">3.2 收益超过seed波动，不等于已经通过独立检验</h3>
@@ -2245,7 +3194,7 @@ decision: "接受/继续确认/回退，写具体证据"
 </tr>
 </tbody>
 </table></div>
-<p><img alt="200桶的新主阶段权重变化" src="assets/cell_weight_shifts.png"/></p>
+<p><img alt="200桶的新主阶段权重变化" src="assets/cell_weight_shifts.png"/></p><div class="figure-reading"><p><strong>看什么：</strong>同一语义域内部Q档怎样迁移？</p><p><strong>怎么读：</strong>200桶逐项看新主阶段减旧权重的百分点变化。</p><p><strong>边界：</strong>权重变动不是该桶自身贡献；还要乘阶段预算并除库存。</p><p><a href="analysis/cell_main_shifts.csv">原值/计算入口</a><a href="#deep">完整解释</a></p></div>
 <p>c13的Q4绝对占比增加，域内Q4占比却从约22.85%降至16.53%。两个结论同时成立。对你自己的配比，既要看全局有效token比例，也要看域内质量构成；否则“增加高质量Agent”可能实际变成主要增加某类Q3项目文本。原页面两个样本已说明Agent桶包含README和代码问答，不能据标签推定新增了真实多步工具轨迹。</p>
 <p>这些分解提供更具体的下一步实验方向：保持c13域总量不变，交换Q3/Q4验证轨迹质量；保持c28域总量不变，验证高档替换是否改善执行通过率；恢复部分c39q2/q4，从事先指定的非目标桶扣回预算，检查数学任务和代码是否出现可接受的折中。它们都是待验证假设。整包比较无法替代这些局部对照。</p>
 <h2 id="deep-5">5. 配置里非零，不代表加载器真的抽到</h2>
@@ -2322,7 +3271,7 @@ R  = K − Σᵢ Nᵢ
 <p>原讨论在195125附近给出的约2.95B与108.9B，均被独立复算到相应数值。前一方案只有历史96步被归到另一阶段，差异在后续当前阶段保持不变；后一方案改变每个块的分配，差异随后续步数增长。在195125步，改K方案最大单桶偏移发生在c30q4，约+28.506B tokens；216000步最大改为c28q4，约+32.238B。</p>
 <p>这里的108.907B是绝对差之和，包含54.454B向前和54.454B向后，不是108.907B“重复token”。向后游标有重复风险，向前游标有漏读风险；是否对应原始数据同一token，还取决于序列重新packing、桶内permutation、restart取模和窗口处理。若要确认实际数据损失，需要token ID或可审计的区间映射。</p>
 <p>195125步两种长度路径各有29,360,128 tokens尚处于部分混合块，不在这张完整块表内；216000步两条路径恰好都没有部分块。所以完整块差异对上原估算，不等于全部加载器语义已验证。</p>
-<p><img alt="两种16K方案的完整块游标差异" src="assets/cursor_differences.png"/></p>
+<p><img alt="两种16K方案的完整块游标差异" src="assets/cursor_differences.png"/></p><div class="figure-reading"><p><strong>看什么：</strong>改序列与混合块后，逻辑位置偏到哪里？</p><p><strong>怎么读：</strong>比较两种设置的正负偏移与L1，整数块口径单列。</p><p><strong>边界：</strong>游标差不能直接称为实际重复/遗漏token，未重放token ID。</p><p><a href="analysis/cursor_audit.csv">原值/计算入口</a><a href="#deep">完整解释</a></p></div>
 <h3 id="deep-63">6.3 工程调整顺序</h3>
 <p>从这些结果出发，迁移长度时应先冻结并记录有效整数配比，再明确历史边界怎样换算，最后处理桶内序列顺序。三个问题独立检查，不能通过“全局tokens相同”一次性带过。</p>
 <p>优先保留混合块大小，能避免这一组权重被重新取整的较大偏移；但历史边界移动与内部sequence级shuffle仍要处理。更稳妥的长期实现是checkpoint保存每桶已消费的逻辑token游标、shuffle种子和窗口状态，长度切换按这些状态恢复。若明确选择跳过不完整窗口，把跳过区间写进审计文件，实际曝光预算据此更新。原讨论的固定1Mi-token I/O块、窗口跳过等仍是迁移方案；本报告没有宣称生产已部署16K。</p>
@@ -2369,7 +3318,7 @@ R  = K − Σᵢ Nᵢ
 <!-- GENERATED_DEEP_TABLES -->
 <h2 id="deep-54bpb">附录：54项任务BPB完整对照</h2>
 <p>这里全部是registry里的<code>grouped_bpb</code>，不是答题准确率。部分行是语言平均与其组成项，不能再把54行平均当独立macro。列中变化分别按每个seed的旧值作分母，汇总列使用三seed均值之比。</p>
-<div class="table-wrap"><table>
+<details class="large-table-details"><summary>展开完整表：54行，原值与来源保留</summary><div class="table-wrap"><table>
 <thead>
 <tr>
 <th>指标</th>
@@ -2869,7 +3818,7 @@ R  = K − Σᵢ Nᵢ
 <td style="text-align: right;">+0.859%</td>
 </tr>
 </tbody>
-</table></div>
+</table></div></details>
 <p><a href="analysis/paired_seed_tasks_bpb.csv">完整逐seed差值与条件区间CSV</a> · <a href="analysis/paired_seed_fixed.csv">固定文本逐seedCSV</a></p></section>
 <section class="chapter" id="practical"><h1 id="practical-_1">第三轮：从删域实验，走到自己的配比与顺序方案</h1>
 <p>这一轮不再只读被选中的最佳配比。我重新核对了80个删域实验、10个质量档实验和数学Q4增量实验，并取到了125个对应的原始W&amp;B配置。目的很具体：弄清楚“加哪类数据”“加多少”“什么时候加”分别有多强的证据，以及怎样把这些问题拆成自己能做的实验。</p>
@@ -2934,7 +3883,7 @@ R  = K − Σᵢ Nᵢ
 <p>在语义配比里，删除数学后，Paloma略好，GSM8K文本建模明显变差。一个合理解释是：有限预算被转给了对Paloma更合适的内容，同时数学覆盖减少了。但“合理解释”还不是机制证据：c39包含什么、被补给哪些桶、数学题是否重复、文本BPB是否主要由答案或提示部分主导，都还需要进一步检查。</p>
 <p>对自己的模型，实际含义是：如果需求里有数学能力，不能只让一个通用文本macro决定是否减少数学。至少应同时约束数学固定文本BPB与真实解题准确率；前者便于诊断语言建模，后者检验使用效果。把c39减少到零的干预，也不能替代在当前配比附近减少1个百分点的局部试验。</p>
 <p>同样，删除Agent记录在两种参照下对GSM8K的方向不同。这不支持“Agent数据促进数学”或“Agent数据伤害数学”的普遍判断；它说明结果依赖其余配比与预算替代方式。<a href="analysis/ablation_task_endpoints.csv">完整80项及54个任务终点</a></p>
-<p><img alt="80个删域实验：通用文本与数学文本可以方向不同" src="assets/domain_ablation_response.png"/></p>
+<p><img alt="80个删域实验：通用文本与数学文本可以方向不同" src="assets/domain_ablation_response.png"/></p><div class="figure-reading"><p><strong>看什么：</strong>删除再分配对通用文本和数学是否一致？</p><p><strong>怎么读：</strong>两组用各自参照；每个删除干预只有seed0。</p><p><strong>边界：</strong>不是单域纯贡献，语义参照和比例参照不能混用。</p><p><a href="analysis/domain_ablation_audit.csv">原值/计算入口</a><a href="#practical">完整解释</a></p></div>
 <h3 id="practical-13">1.3 删域后的改善，不等于这个域毫无价值</h3>
 <p>假设配比为w，删除领域i后，其余领域变为<code>w_j / (1−w_i)</code>。测量到的变化同时包含：失去i，增加所有其他j，改变重复曝光，以及可能的优化器路径变化。删除大域与删除小域的干预幅度也不同。</p>
 <p>例如，c25幻想与同人写作在两套参照里被删除后，Paloma分别变差0.609%和0.746%；c26议会与董事会记录被删除后，分别改善0.123%和0.323%。可以把前者列为保留覆盖、后者列为局部减量的候选，但不能直接把整个cluster当成干净的“幻想文学”或“会议记录”。第一版已经展示过cluster标签与样本不完全一致。</p>
@@ -3048,7 +3997,7 @@ R  = K − Σᵢ Nᵢ
 </table></div>
 <p>“4x/6x/8x”是运行标签，不是实际权重相对基线的倍数。横轴使用registry的13.125T与3.75T预算，并除以c39q4库存；它表示恢复后的名义模拟曝光，不包含共同前10%的历史。有限代理数据的模拟轮数也不是535B已实际看过的轮数。</p>
 <p>在seed0里，6x的GSM8K文本BPB比8x低；8x比4x低，却没有改善Paloma或HumanEval文本。可确认的是这些终点并非单调。不能确认的是6x“最优”、8x“过拟合”，或数学Q4天然排挤代码能力：每个点只一个seed，而且其余桶权重也被扣回。要判断过拟合，至少还需要独立数学验证、训练与验证差距、重复文档检测及更多种子。<a href="analysis/math_q4_response.csv">实际权重与曝光计算CSV</a></p>
-<p><img alt="数学Q4曝光量与三个固定指标的实际终点" src="assets/math_q4_response.png"/></p>
+<p><img alt="数学Q4曝光量与三个固定指标的实际终点" src="assets/math_q4_response.png"/></p><div class="figure-reading"><p><strong>看什么：</strong>数学Q4加量是否单调改善？</p><p><strong>怎么读：</strong>横轴为恢复后名义模拟曝光，点为单seed终点。</p><p><strong>边界：</strong>连线不是拟合；其他桶预算同时减少，标签不等于权重倍数。</p><p><a href="analysis/math_q4_response.csv">原值/计算入口</a><a href="#practical">完整解释</a></p></div>
 <p>重复数据本身不等于浪费。一项数据受限预训练研究在其固定算力设置下发现，少量多轮重复可以接近用更多唯一数据训练的效果；继续增加重复后，收益会减弱。这支持估计自己的重复收益曲线，不支持把“最多4轮”或“最多8轮”当作所有领域、模型和训练阶段的规则。<a href="https://arxiv.org/abs/2305.16264" rel="noopener" target="_blank">Scaling Data-Constrained Language Models</a></p>
 <h2 id="practical-_3">三、顺序实验：先把阶段曝光账算清楚</h2>
 <h3 id="practical-31">3.1 权重里能读出怎样的补偿</h3>
@@ -3201,7 +4150,7 @@ R  = K − Σᵢ Nᵢ
 <!-- GENERATED_PRACTICAL_TABLES -->
 <h2 id="practical-80">附录：80个删域实验的对照与终点评估</h2>
 <p>每行是一个seed0实验。语义配比组的参照是broad-technical-capped；比例配比组的参照是proportional seed0。Δ以各自参照为分母，负值表示BPB降低。80项与对应参照的记录配置在去掉配比和运行路径后相同；代码SHA、实际加载的checkpoint及token ID未逐一验证。这是删掉领域并把预算分给其余领域的联合干预。</p>
-<div class="table-wrap"><table>
+<details class="large-table-details"><summary>展开完整表：80行，原值与来源保留</summary><div class="table-wrap"><table>
 <thead>
 <tr>
 <th>配比组</th>
@@ -3935,7 +4884,7 @@ R  = K − Σᵢ Nᵢ
 <td style="text-align: right;">-2.054%</td>
 </tr>
 </tbody>
-</table></div>
+</table></div></details>
 <p><a href="analysis/domain_ablation_audit.csv">80行权重与参照审计CSV</a> · <a href="analysis/ablation_task_endpoints.csv">全部54项任务终点CSV</a> · <a href="analysis/order_cell_exposures.csv">逐桶顺序曝光差CSV</a></p></section>
 <section class="chapter" id="translation"><h1 id="translation-8435-27">#8435 主帖及27条评论：逐条中文解读</h1>
 <p>本章按原顺序覆盖主帖及27条评论。每条保留原文入口和作者身份；“原意”是中文转述，保留数字、条件和判断强度；“读法”是本报告的解释。重复引用上一条的英文段落不再重复，代码路径与数学符号保持原样。原始英文全文保存在 <code>sources/issue_thread.md</code>，可对照检查。本章不能用“已解决”概括全部条目：评论中有计划、问题、实验、否定结论和社交回复。</p>
@@ -4240,7 +5189,7 @@ R  = K − Σᵢ Nᵢ
 <p><strong>读法。</strong> drop分母是top-k专家分配，并非删除整条文本。#9615随后解释实际clipping发生在receiving shard per-chunk capacity，sender是记账名称。作者后来更倾向4K→16K，但截至本报告抓取未看到live switch，不能把测量写成部署结果。</p></section>
 <section class="chapter" id="operations"><h1 id="operations-8506-58">#8506 生产运行时间线：58条记录逐条索引</h1>
 <p>这里按公开评论顺序保留全部58条事件。中文栏概括事件、处理和证据边界；完整英文与元数据保存在<a href="sources/issue_8506_comments.json">sources/issue_8506_comments.json</a>。工程机制的详细解释见主报告第三部分。日期为UTC，避免把原记录时区隐式改掉。公开评论大量由agent生成，后续的人工纠正和反例优先；内部Echo/Iris链接未被当作已读取证据。</p>
-<div class="table-wrap"><table>
+<details class="large-table-details"><summary>展开完整表：58行，原值与来源保留</summary><div class="table-wrap"><table>
 <thead>
 <tr>
 <th>序号</th>
@@ -4599,7 +5548,7 @@ R  = K − Σᵢ Nᵢ
 <td><a href="https://github.com/marin-community/marin/issues/8506#issuecomment-5968715246" rel="noopener" target="_blank">定位</a></td>
 </tr>
 </tbody>
-</table></div></section>
+</table></div></details></section>
 <section class="chapter" id="provenance"><h1 id="provenance-_1">来源、计算方法与复核边界</h1>
 <p>本报告的公共训练快照截止北京时间2026年10月4日约05:38。GitHub评论、代码和W&amp;B历史在数分钟内分别抓取，属于一组归档快照，并非同一毫秒的原子快照。后续线上曲线会继续变化。</p>
 <h2 id="provenance-1">1. 这次实际读取了哪些材料</h2>
@@ -4675,6 +5624,7 @@ R  = K − Σᵢ Nᵢ
 <p>第三轮预算工具使用用户输入的库存与历史量，只计算计划曝光和整数取整后的约束。默认100B是自拟教学示例；它不推断真实库存、不预测Loss、不自动决定最优比例。连续权重下的阶段补偿不替代完整混合块与checkpoint游标重放。</p>
 <p>第四轮新增材料位于<code>sources/findings_2026_10_04/</code>：选中配比三seed和197c替代候选的4个W&amp;B配置、选中与比例基线的6个step393—430窗口。三个强基线组取同一固定HF版本的终点，与原始W&amp;B记录交叉核对。观察前沿只比较597个mixprior seed0，不混入多seed均值。16项macro分解排除整体token汇总指标；“92.05%”仅为观察差值比例。<a href="#conclusions">第四轮结论与原值入口</a></p>
 <p>四组新增配置在声明移除权重和运行专属路径后相同，最终checkpoint fallback一致；这减少记录配置混杂，不能确认实际恢复文件及启动代码相同。3对continuation重复不是3个独立初始化模型。小样本t区间忽略候选选择，只用于敏感性分析；前沿未包含未知选择目标和约束，不解释作者真实决策。</p>
+<p>第五轮是理解与工作方法改进，没有新增公共训练快照。<code>analysis/workbench_data.json</code>由已归档配对结果计算，<code>rubrics.json</code>和<code>figure_readings.json</code>是本报告编写的方法与读图说明。规则1.0不是Marin官方标准，也未做外部评分效度/读者理解研究；浏览器自评只检查输入状态与证据文本是否完整，不核验证据内容。记录中明确保留独立确认、生成评估、真实token流和selector目标缺口。</p>
 <h2 id="provenance-2-run">2. 生产曲线为什么必须按run拼接</h2>
 <p>新W&amp;B run继承旧历史，试部署也会重放一段步骤。如果把它们简单合并，某些step会出现多个值，某次失败试验还可能被画成生产继续训练。这里按公开handoff记录规定生产run的生效区间：</p>
 <div class="table-wrap"><table>
@@ -4873,5 +5823,116 @@ $('#print-report').addEventListener('click',()=>window.print());
  q('#plan-show-json').addEventListener('click',()=>{try{q('#plan-json').value=JSON.stringify(read(),null,2);}catch(e){q('#plan-error').hidden=false;q('#plan-error').textContent=e.message;}});
  q('#plan-export').addEventListener('click',()=>{try{const input=read(),result=MixPlanner.analyze(input),url=URL.createObjectURL(new Blob([JSON.stringify({input,result,scope:'预算与曝光算术，不预测Loss；实际loader、token流、checkpoint需另行验证。'},null,2)],{type:'application/json;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='配比与顺序预算审计.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}catch(e){q('#plan-error').hidden=false;q('#plan-error').textContent=e.message;}});
  load(example);
+})();
+</script><script type="application/json" id="workbench-data">{"snapshot": "2026-10-04约05:38，曲线未刷新", "scope": "d512续训指标为BPB；图中三点为seed0/1/2，均值点不是置信区间。", "metrics": [{"key": "eval_dropless/paloma/macro_bpb", "label": "通用文本平均", "means": {"old": 1.1933826208114624, "proportional": 1.1865977048873901, "selected": 1.1860119501749675}, "seeds": [{"seed": 0, "old": 1.193233847618103, "proportional": 1.1864715814590454, "selected": 1.1864409446716309}, {"seed": 1, "old": 1.193894624710083, "proportional": 1.1868433952331543, "selected": 1.186340570449829}, {"seed": 2, "old": 1.1930193901062012, "proportional": 1.1864781379699707, "selected": 1.1852543354034424}]}, {"key": "eval_dropless/paloma/dolma_100_programing_languages-llama3/bpb", "label": "编程语言文本", "means": {"old": 0.7044887542724609, "proportional": 0.6915642619132996, "selected": 0.6789210438728333}, "seeds": [{"seed": 0, "old": 0.7062650322914124, "proportional": 0.6924722790718079, "selected": 0.6794255375862122}, {"seed": 1, "old": 0.7051947712898254, "proportional": 0.692243218421936, "selected": 0.6791086196899414}, {"seed": 2, "old": 0.702006459236145, "proportional": 0.6899772882461548, "selected": 0.6782289743423462}]}, {"key": "logprob_humaneval_10shot", "label": "HumanEval目标文本", "means": {"old": 0.5176012245548983, "proportional": 0.5370011142126808, "selected": 0.49672331175246504}, "seeds": [{"seed": 0, "old": 0.5135216415621722, "proportional": 0.5364480372544744, "selected": 0.4979298909485227}, {"seed": 1, "old": 0.5229141244398361, "proportional": 0.5401764709964223, "selected": 0.4901367034803909}, {"seed": 2, "old": 0.5163679076626866, "proportional": 0.5343788343871457, "selected": 0.5021033408284815}]}, {"key": "logprob_gsm8k_5shot", "label": "GSM8K目标文本", "means": {"old": 0.7038808875598414, "proportional": 0.7688293388233775, "selected": 0.7802076989485478}, "seeds": [{"seed": 0, "old": 0.7412256027791492, "proportional": 0.7830996624184536, "selected": 0.8197130247236325}, {"seed": 1, "old": 0.6446185418163565, "proportional": 0.7482157394742247, "selected": 0.7418909158742591}, {"seed": 2, "old": 0.7257985180840185, "proportional": 0.7751726145774539, "selected": 0.7790191562477518}]}], "cases": [{"id": "distribution", "label": "108k：换配比后训练CE上升", "nodes": [{"text": "配置权重切换", "kind": "observed"}, {"text": "抽到的文本分布改变", "kind": "mechanism"}, {"text": "训练CE约1.210→1.235", "kind": "observed"}], "reading": "训练批次的题材和难度分布改变了。这个跳变本身无法判断同一固定任务上的预测变好还是变坏。", "allowed": "配比切换附近，训练CE的观察值上升。", "forbidden": "据此判断模型能力倒退，或用CE跳幅计算配比收益。", "next": "比较固定验证并保留代码/数学等退步项；核对路由口径和参照条件。", "source": "#report", "rules": ["R02", "R03", "R06", "R08"]}, {"id": "ep", "label": "81k：drop减少，CE下降", "nodes": [{"text": "Ragged EP与轮包切换", "kind": "observed"}, {"text": "容量丢弃显著减少", "kind": "observed"}, {"text": "同step CE均差 -0.0064983", "kind": "observed"}], "reading": "路由容量影响哪些token能经过专家。路径变了，训练目标的有效计算也可能改变。200个配对step显示CE下降，同时吞吐中位数比约1.082。", "allowed": "这组配对窗口中，drop、CE和吞吐同时变化。", "forbidden": "把训练CE降幅全归给模型能力，或混用dropless评估。", "next": "在固定评估路径上看效果；同时区分路由机制变化和系统吞吐收益。", "source": "analysis/summary.json", "rules": ["R03", "R05", "R13"]}, {"id": "kernel", "label": "146k：吞吐提升，CE近似不变", "nodes": [{"text": "FA4、mask、GC一起调整", "kind": "observed"}, {"text": "吞吐中位数比 1.108", "kind": "observed"}, {"text": "同step CE均差 +0.0003601", "kind": "observed"}], "reading": "这是组合部署窗口：可以核对整组调整的速度和数值表现，不能从这一组数据单独分出FA4的贡献。", "allowed": "200个配对step里吞吐提高约10.82%，CE差很小。", "forbidden": "声称FA4单独带来全部收益，或称能力提高10.82%。", "next": "分别记录固定token与固定时间预算；需要单组件归因时做拆分对照。", "source": "analysis/summary.json", "rules": ["R03", "R05", "R08", "R13"]}, {"id": "gate", "label": "Gate接近零：早期层真的没用了吗？", "nodes": [{"text": "部分gate范数异常增大", "kind": "observed"}, {"text": "怀疑早期层没作用", "kind": "hypothesis"}, {"text": "删除前10层：loss 2.093→6.584", "kind": "observed"}], "reading": "小幅残差修改仍可能被后续层依赖。这组敲除使用dropless global macro loss，数值不是BPB。参数或门值的外观，不能直接替代功能敲除实验。", "allowed": "敲除反例说明前10层仍影响该评估结果。", "forbidden": "门接近零就断言整层已经无用，或把敲除loss当作实际部署结果。", "next": "区分attention与FFN敲除、模型状态和评估路径，检验具体机制。", "source": "#report", "rules": ["R02", "R03", "R13"]}, {"id": "cursor", "label": "4K换16K：配比相同，数据位置也相同吗？", "nodes": [{"text": "序列/混合块设置改变", "kind": "observed"}, {"text": "完整块计数与阶段边界改变", "kind": "mechanism"}, {"text": "重算cursor可前进也可后退", "kind": "computed"}], "reading": "step不是绝对的数据身份。权重、混合块、边界对齐和恢复计数一起决定读取位置。2.951B或108.907B是两种设置下的完整块L1游标差。", "allowed": "本地复算证明这些设置下逻辑位置会不同。", "forbidden": "把游标差直接叫作已经重复或遗漏的实际token数量。", "next": "重放真实token ID与桶内顺序；先匹配累计量，再谈先后作用。", "source": "#deep", "rules": ["R05", "R09", "R10", "R14"]}], "gap_fraction": 0.9205289801551667}</script><script type="application/json" id="rubric-data">{"version": "1.0", "authorship": "本报告提炼的工作规则，不是Marin官方标准或经外部验证的评分量表。", "status_labels": {"pass": "证据齐全", "partial": "部分证据", "fail": "有反证/口径冲突", "unassessed": "未确认", "na": "本阶段不适用"}, "rules": [{"id": "R01", "title": "来源和版本能回查", "area": "来源", "question": "这个数字来自哪个版本、时点和原文件？", "anchors": {"pass": "原文件、版本/时间、计算入口可以互相对应。", "partial": "只有原链接或截图，版本/计算入口缺一项。", "fail": "不同快照混用，或原值无法对应。"}, "why": "线上run会变；没有版本就无法分清新事实与旧结论。", "evidence_links": [{"label": "来源说明", "href": "#provenance"}, {"label": "313文件完整性清单", "href": "sources/archive_manifest.json"}]}, {"id": "R02", "title": "结论范围写清", "area": "范围", "question": "这是哪个模型、训练阶段、任务和实验？", "anchors": {"pass": "模型规模、恢复阶段、参照和适用范围明确。", "partial": "信息可追溯，但正文省略关键范围。", "fail": "把代理实验写成535B已验证结果。"}, "why": "同一个权重在不同历史和模型上不是同一干预。", "evidence_links": [{"label": "代理与放大边界", "href": "#conclusions"}, {"label": "swarm审计", "href": "analysis/swarm_audit.json"}]}, {"id": "R03", "title": "指标含义和评估路径一致", "area": "评估", "question": "Loss、BPB、正确率与drop口径是否分清？", "anchors": {"pass": "指标分母、方向、dropless/有drop路径和能力边界明确。", "partial": "指标名称有了，分母或路由路径不明。", "fail": "BPB当准确率，或训练CE与固定验证混作同一种证据。"}, "why": "度量对象变了，曲线就不能按原含义解读。", "evidence_links": [{"label": "三种Loss误读", "href": "#report"}, {"label": "配对窗口", "href": "analysis/summary.json"}]}, {"id": "R04", "title": "包含有竞争力的简单参照", "area": "实验", "question": "候选优于旧方案，还是也优于简单方案？", "anchors": {"pass": "旧方案与库存比例等简单基线均纳入相同范围对照。", "partial": "只有旧方案对照，或简单基线条件不同。", "fail": "把所有旧→新差值都归给复杂搜索。"}, "why": "92.05%的观察macro差值已由比例基线取得，参照影响结论。", "evidence_links": [{"label": "强基线对照", "href": "analysis/strong_baseline_comparison.csv"}, {"label": "第四轮判断", "href": "#conclusions"}]}, {"id": "R05", "title": "预算从实际区间计算", "area": "实验", "question": "相同预算指token、更新、时间中的哪一种？", "anchors": {"pass": "恢复起止、tokens/update和预算口径明确；比较使用匹配口径。", "partial": "名义预算明确，但真实恢复边界或执行量未确认。", "fail": "把13.125T/3.75T与2726/810更新口径直接混用。"}, "why": "一步差与模拟预算差是不同的问题。", "evidence_links": [{"label": "三种顺序预算", "href": "analysis/order_budget_audit.csv"}, {"label": "恢复窗口核对", "href": "analysis/findings_audit.json"}]}, {"id": "R06", "title": "平均指标可拆回组成项", "area": "评估", "question": "总平均的收益由哪些子集贡献？", "anchors": {"pass": "组成项、聚合方式和退步项全部列出，能重建平均。", "partial": "只有平均与部分有利子集。", "fail": "把整体汇总再当一个子集，或把重叠任务当独立投票。"}, "why": "16项macro里代码/学术收益和其他文本退步同时存在。", "evidence_links": [{"label": "16项贡献", "href": "analysis/macro_contributions.csv"}, {"label": "54项任务原值", "href": "analysis/strong_baseline_paired.csv"}]}, {"id": "R07", "title": "选择后有独立确认", "area": "确认", "question": "这份结果是用来选候选，还是用来确认候选？", "anchors": {"pass": "候选先冻结，再做未参与选择的重复与确认评估，报告波动。", "partial": "有多seed，但参与选择，或共享历史的依赖未处理。", "fail": "把597个单seed候选当成597次独立复验。"}, "why": "搜索极值容易含有噪声；确认预算不能被搜索预算替代。", "evidence_links": [{"label": "候选seed分布", "href": "analysis/findings_audit.json"}, {"label": "配对重复边界", "href": "#conclusions"}]}, {"id": "R08", "title": "每次加量都写供体", "area": "数据", "question": "给B加量时，A失去了多少？", "anchors": {"pass": "接收域、供体、转移量、其余变化和替代策略明确。", "partial": "加量或删域已知，空出预算分给谁不明。", "fail": "把删域再分配结果当成该域自身的纯贡献。"}, "why": "混合权重总和为1；收益包含替代关系。", "evidence_links": [{"label": "80个删除干预", "href": "analysis/domain_ablation_audit.csv"}, {"label": "第三轮实验方案", "href": "#practical"}]}, {"id": "R09", "title": "库存、历史与重复分开", "area": "数据", "question": "增加比例后，独立覆盖和累计曝光各变多少？", "anchors": {"pass": "有效库存、已有曝光、后续计划和上限有定义，并检查容量可行性。", "partial": "只有公开名义库存与计划，真实去重/历史量未确认。", "fail": "把库存占比当抽样权重，或把名义epochs当实际文档重复证明。"}, "why": "相同百分比在小库存上可能意味着高重复。", "evidence_links": [{"label": "200桶库存与计划", "href": "analysis/cell_weights.csv"}, {"label": "预算工具例子", "href": "analysis/planner_example.json"}]}, {"id": "R10", "title": "顺序比较匹配累计量和游标", "area": "顺序", "question": "两种顺序真的只差先后吗？", "anchors": {"pass": "逐桶累计量、完整块计数、恢复cursor和token流重放可对应。", "partial": "连续补偿或完整块计算已做，token ID/内部shuffle未重放。", "fail": "互换不同长度阶段却宣称曝光相同。"}, "why": "时序和总量一起变，就无法归因到先后。", "evidence_links": [{"label": "完整块游标", "href": "analysis/cursor_audit.csv"}, {"label": "顺序预算审计", "href": "analysis/order_budget_audit.csv"}]}, {"id": "R11", "title": "跨规模结论有对应对照", "area": "确认", "question": "放大后是否仍保留强基线和关键风险对照？", "anchors": {"pass": "更大模型同范围确认方向，并说明阶段/系统差异。", "partial": "有放大结果，但缺简单基线或条件不同。", "fail": "直接把d512收益幅度写成535B收益。"}, "why": "代码收益的方向在ladder上并非一致。", "evidence_links": [{"label": "跨规模终点", "href": "analysis/proxy_scale_effects.csv"}, {"label": "公开配比研究", "href": "https://github.com/marin-community/marin/issues/9126"}]}, {"id": "R12", "title": "目标和能力保底预先冻结", "area": "决策", "question": "选配比究竟要优化什么，允许牺牲什么？", "anchors": {"pass": "主目标、独立确认集、能力退步界限和停止条件在看结果前规定。", "partial": "目标大致明确，约束或冻结时间缺失。", "fail": "看完结果再换目标，把最终哈希当作全面最优证明。"}, "why": "观察前沿随任务组合改变；未知selector不能靠猜测补齐。", "evidence_links": [{"label": "观察前沿", "href": "analysis/observed_pareto_frontiers.csv"}, {"label": "197c反例", "href": "analysis/candidate_197c_counterexample.csv"}]}, {"id": "R13", "title": "根因证据和缓解效果分开", "area": "工程", "question": "恢复运行能证明哪个假设，排除了什么？", "anchors": {"pass": "根因证据、排除实验、缓解动作和残余未知分别归档。", "partial": "有恢复和可行解释，但关键排除或底层证据不足。", "fail": "恢复成功就写成根因已确认。"}, "why": "silent hang、存储故障和数值异常需要不同证据。", "evidence_links": [{"label": "58条运行记录", "href": "#operations"}, {"label": "15类工程机制", "href": "#report"}]}, {"id": "R14", "title": "执行状态不只看配置路径", "area": "工程", "question": "实际加载的代码、checkpoint和数据状态是什么？", "anchors": {"pass": "代码/环境、checkpoint内容、随机与数据状态可核对，回退点明确。", "partial": "记录配置与fallback相同，实际恢复内容尚未确认。", "fail": "相同路径就断言状态逐字节一致。"}, "why": "配置相同能减少混杂，但不能保证每次启动执行相同。", "evidence_links": [{"label": "原始配置对照", "href": "analysis/strong_baseline_config_audit.csv"}, {"label": "恢复与游标边界", "href": "#deep"}]}, {"id": "R15", "title": "能力主张有实际任务验证", "area": "评估", "question": "目标文本概率的变化是否转化为任务表现？", "anchors": {"pass": "生成正确率/执行测试与BPB并列，题目、解码和污染检查有记录。", "partial": "只有BPB线索，能力主张保持为候选假设。", "fail": "HumanEval BPB写成pass@1，GSM8K BPB写成正确率。"}, "why": "预测指定答案与自己生成正确答案不是同一个测试。", "evidence_links": [{"label": "任务BPB边界", "href": "#conclusions"}, {"label": "逐seed任务表", "href": "analysis/strong_baseline_paired.csv"}]}, {"id": "R16", "title": "图表能被读者正确复述", "area": "表达", "question": "读者能说清横纵轴、参照、样本数和不能推出什么吗？", "anchors": {"pass": "图包含单位、参照、范围、样本数、原值入口和解释；窄屏可读。", "partial": "数值正确但解释/分母/可访问替代缺失。", "fail": "截断差结果、混用参照，或把图中的相关性画成因果证明。"}, "why": "图要帮助判断，不应替代证据限定。", "evidence_links": [{"label": "理解文档", "href": "#learning"}, {"label": "图与交互复核", "href": "analysis/browser_validation_v5.json"}]}, {"id": "R17", "title": "结论可离线复算", "area": "复现", "question": "分享包能从固定材料重建关键结果吗？", "anchors": {"pass": "归档、计算脚本、数字检查、链接和离线阅读验证齐全。", "partial": "报告可读，但部分计算需未知在线状态。", "fail": "只有截图/结论，关键原值或公式丢失。"}, "why": "复算不等于重训；两者的验证范围都应写清。", "evidence_links": [{"label": "离线构建", "href": "Makefile"}, {"label": "计算验证", "href": "analysis/validation.json"}]}, {"id": "R18", "title": "未解决问题有下一步和退出条件", "area": "改进", "question": "下一次工作会消除哪个不确定性？", "anchors": {"pass": "缺口、下一步、所需资源、验收/推翻条件和变更记录明确。", "partial": "有待办，但只写“继续深入”或缺验收。", "fail": "抓取条数/美化数量当作研究收益，反例被删除。"}, "why": "持续改进应降低具体不确定性。", "evidence_links": [{"label": "持续改进记录", "href": "#improvement"}, {"label": "决策管线", "href": "#pipeline"}]}], "pipeline": [{"id": "P0", "title": "冻结来源与问题", "question": "这次要解释哪一个变化？", "required": ["R01", "R02", "R03", "R17"], "outputs": ["source_manifest与版本", "一个范围明确的研究问题", "指标定义表"], "next": "缺来源先补来源；已有材料固定后进入比较。"}, {"id": "P1", "title": "诊断与筛选候选", "question": "可比的观察支持哪些候选？", "required": ["R04", "R05", "R06", "R08", "R16"], "outputs": ["旧/比例/候选对照", "退步与组成项表", "候选名单和陈述边界"], "next": "缺参照先补参照；有取舍就保留多个候选。"}, {"id": "P2", "title": "设计局部交换实验", "question": "下一批token从谁移给谁？", "required": ["R09", "R12", "R14"], "outputs": ["供体与接收域", "库存/历史/容量账本", "冻结目标和实验清单"], "next": "容量冲突先改方案；缺真实状态先核对恢复点。"}, {"id": "P3", "title": "独立确认能力收益", "question": "候选冻结以后，是否稳定且满足任务保底？", "required": ["R07", "R12", "R15"], "outputs": ["未参与选择的确认结果", "重复波动与退步限制", "通过/重做/放弃决定"], "next": "只有BPB就保留线索；能力没确认先补任务评估。"}, {"id": "P4", "title": "检验顺序与恢复", "question": "累计量相同后，先后还有作用吗？", "required": ["R05", "R09", "R10", "R14"], "outputs": ["逐桶曝光匹配", "整数混合块与cursor重放", "中途及末期评估"], "next": "总量不匹配先修补偿；没做顺序实验可有理由跳过整个阶段。"}, {"id": "P5", "title": "放大与生产切换", "question": "更大模型确认后，实际切换状态是否可复验？", "required": ["R07", "R11", "R12", "R14", "R15"], "outputs": ["更大代理与强基线", "固定评估和回退点", "切换前后状态清单"], "next": "方向不稳定返回候选；状态不可核对先处理工程问题。"}, {"id": "P6", "title": "复盘与下一轮", "question": "哪条判断被推翻，下一步最值得做什么？", "required": ["R01", "R17", "R18"], "outputs": ["版本差异与反例", "缺口优先级", "下一轮可检验问题"], "next": "保留旧快照；新信息建立新版本，再回到P0。"}], "example_audit": {"scope": "固定公开快照支持的结论范围；不是给Marin团队打分，也不是已完成的新训练。", "schema": "marin-review/1", "framework_version": "1.0", "target": "用公开材料评估选中配比能被推荐到哪一步", "judgments": {"R01": {"status": "pass", "evidence": "报告对应材料：PROVENANCE_ZH.md。此通过项只覆盖其已声明的公开/本地复算范围。"}, "R02": {"status": "pass", "evidence": "报告对应材料：CONCLUSIONS_ZH.md。此通过项只覆盖其已声明的公开/本地复算范围。"}, "R03": {"status": "pass", "evidence": "报告对应材料：REPORT_ZH.md。此通过项只覆盖其已声明的公开/本地复算范围。"}, "R04": {"status": "pass", "evidence": "报告对应材料：analysis/strong_baseline_comparison.csv。此通过项只覆盖其已声明的公开/本地复算范围。"}, "R05": {"status": "pass", "evidence": "报告对应材料：analysis/order_budget_audit.csv。此通过项只覆盖其已声明的公开/本地复算范围。"}, "R06": {"status": "pass", "evidence": "报告对应材料：analysis/macro_contributions.csv。此通过项只覆盖其已声明的公开/本地复算范围。"}, "R07": {"status": "partial", "evidence": "三组continuation参与过候选研究，共同历史依赖仍在；无选择后独立确认。"}, "R08": {"status": "pass", "evidence": "报告对应材料：analysis/domain_ablation_audit.csv。此通过项只覆盖其已声明的公开/本地复算范围。"}, "R09": {"status": "partial", "evidence": "库存与名义计划已重算；去重后独立库存和真实历史token流未恢复。"}, "R10": {"status": "partial", "evidence": "连续补偿与完整块cursor已算；桶内shuffle与token ID未重放。"}, "R11": {"status": "partial", "evidence": "有ladder结果，但阶段/系统不同，未补上更大模型比例基线。"}, "R12": {"status": "unassessed", "evidence": "完整selector目标和约束未知；不能替作者补造预先冻结的guardrail。"}, "R13": {"status": "partial", "evidence": "公开时间线区分缓解与猜测，部分底层日志与根因证据不可访问。"}, "R14": {"status": "partial", "evidence": "4组记录配置可比，fallback相同；实际恢复文件与启动环境未核对。"}, "R15": {"status": "partial", "evidence": "54项任务为BPB；新535B生成正确率尚未验证。"}, "R16": {"status": "pass", "evidence": "报告对应材料：LEARNING_GUIDE_ZH.md。此通过项只覆盖其已声明的公开/本地复算范围。"}, "R17": {"status": "pass", "evidence": "报告对应材料：Makefile。此通过项只覆盖其已声明的公开/本地复算范围。"}, "R18": {"status": "pass", "evidence": "报告对应材料：IMPROVEMENT_LOG_ZH.md。此通过项只覆盖其已声明的公开/本地复算范围。"}}}}</script><script>(function(root){
+ 'use strict';
+ const statuses=new Set(['pass','partial','fail','unassessed','na']);
+ function normalizeAudit(raw,rules){
+  if(!raw||typeof raw!=='object'||Array.isArray(raw)||raw.schema!=='marin-review/1')throw new Error('格式应为marin-review/1评审JSON。');
+  if(raw.framework_version!==undefined&&raw.framework_version!=='1.0')throw new Error('规则版本不同，需要先人工核对判断锚点。');
+  if(typeof raw.target!=='string'||!raw.target.trim()||raw.target.length>2000)throw new Error('请填写2000字符以内的评审目标。');
+  if(!raw.judgments||typeof raw.judgments!=='object'||Array.isArray(raw.judgments))throw new Error('judgments应为规则对象。');
+  const ids=new Set(rules.map(r=>r.id));
+  for(const id of Object.keys(raw.judgments))if(!ids.has(id))throw new Error('未知规则编号：'+id);
+  const result={schema:'marin-review/1',framework_version:'1.0',target:raw.target.trim(),scope:typeof raw.scope==='string'?raw.scope.slice(0,4000):'',judgments:{}};
+  for(const rule of rules){
+   const row=raw.judgments[rule.id]||{status:'unassessed',evidence:''};
+   if(!row||typeof row!=='object'||Array.isArray(row)||!statuses.has(row.status)||typeof row.evidence!=='string'||row.evidence.length>10000)throw new Error(rule.id+'的状态或证据格式不正确。');
+   result.judgments[rule.id]={status:row.status,evidence:row.evidence};
+  }
+  return result;
+ }
+ function effectiveStatus(row){
+  if(!row)return 'unassessed';
+  if((row.status==='pass'||row.status==='na')&&!row.evidence.trim())return 'unassessed';
+  return row.status;
+ }
+ function evaluateStage(stage,audit){
+  const missing=[],conflicts=[],accepted=[];
+  for(const id of stage.required){
+   const row=audit.judgments[id],s=effectiveStatus(row);
+   if(s==='fail')conflicts.push(id);else if(s==='pass')accepted.push(id);else missing.push(id);
+  }
+  return {id:stage.id,label:conflicts.length?'需修正当前主张':missing.length?'需补证据':'材料齐全（自评）',ready:missing.length===0&&conflicts.length===0,missing,conflicts,accepted};
+ }
+ function compareMetric(metric,reference){
+  if(!['old','proportional'].includes(reference))throw new Error('参照只能是旧配比或库存比例。');
+  if(!metric.means||!Array.isArray(metric.seeds)||metric.seeds.length!==3)throw new Error('指标缺少三组原值。');
+  const baseline=metric.means[reference],selected=metric.means.selected;
+  if(!Number.isFinite(baseline)||baseline<=0||!Number.isFinite(selected))throw new Error('BPB均值必须为有限数且参照为正。');
+  const points=metric.seeds.map(r=>{
+   if(!Number.isFinite(r[reference])||r[reference]<=0||!Number.isFinite(r.selected))throw new Error('BPB原值不正确。');
+   return {seed:r.seed,changePct:100*(r.selected/r[reference]-1)};
+  });
+  return {baseline,selected,meanChangePct:100*(selected/baseline-1),points};
+ }
+ const api={normalizeAudit,effectiveStatus,evaluateStage,compareMetric};
+ if(typeof module!=='undefined'&&module.exports)module.exports=api;
+ root.ReviewCore=api;
+})(typeof globalThis!=='undefined'?globalThis:this);
+</script><script>(function(){
+ 'use strict';
+ const input=JSON.parse(document.getElementById('workbench-data').textContent),framework=JSON.parse(document.getElementById('rubric-data').textContent),C=ReviewCore;
+ const q=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])),pct=n=>(n>0?'+':'')+n.toFixed(3)+'%';
+ const labels=framework.status_labels,key='marin-review-framework-v1';let selectedStage='P1',audit=C.normalizeAudit(framework.example_audit,framework.rules),storageMessage='';
+ try{const saved=localStorage.getItem(key);if(saved)audit=C.normalizeAudit(JSON.parse(saved),framework.rules);}catch(e){storageMessage='本地记录未读取；可用JSON保存。';}
+ function save(){
+  let normalized;
+  try{normalized=C.normalizeAudit(audit,framework.rules);}catch(e){storageMessage='目标尚未填写完整，当前编辑暂未保存。';return;}
+  try{localStorage.setItem(key,JSON.stringify(normalized));storageMessage='已保存到本浏览器；不会上传。';}catch(e){storageMessage='本地存储不可用，请导出JSON。';}
+ }
+ q('#case-select').innerHTML=input.cases.map(c=>`<option value="${c.id}">${esc(c.label)}</option>`).join('');
+ function renderCase(){
+  const c=input.cases.find(c=>c.id===q('#case-select').value),names={observed:'公开观察',computed:'本地复算',mechanism:'机制解释',hypothesis:'待检验假设'};
+  q('#case-reading').innerHTML=`<div class="mechanism-chain" role="group" aria-label="案例解释链">${c.nodes.map((n,i)=>`${i?'<span class="chain-arrow" aria-hidden="true">→</span>':''}<div class="mechanism-node ${n.kind}"><small>${names[n.kind]}</small><span>${esc(n.text)}</span></div>`).join('')}</div><p>${esc(c.reading)}</p><div class="interpretation-grid"><div><strong>当前证据支持</strong><p>${esc(c.allowed)}</p></div><div><strong>尚不能推出</strong><p>${esc(c.forbidden)}</p></div><div><strong>下一项验证</strong><p>${esc(c.next)}</p></div></div><p class="status">相关规则：${c.rules.map(id=>`<a href="#review-board" data-rule-jump="${id}">${id}</a>`).join(' · ')} · <a href="${esc(c.source)}">来源与完整解释</a></p>`;
+ }
+ q('#case-select').addEventListener('change',renderCase);renderCase();
+ function plot(m,r){
+  const v=C.compareMetric(m,r),bound=Math.max(.01,Math.ceil(Math.max(Math.abs(v.meanChangePct),...v.points.map(p=>Math.abs(p.changePct)))*1.15*100)/100),X=n=>160+140*n/bound;
+  const marks=v.points.map((p,i)=>`<circle cx="${X(p.changePct)}" cy="${25+i*17}" r="4" fill="${p.changePct<0?'#286a70':'#ad662e'}"/><text x="6" y="${29+i*17}" font-size="9">s${p.seed}</text>`).join('');
+  return {v,html:`<article class="metric-card"><h3>${esc(m.label)}</h3><p><strong>${pct(v.meanChangePct)}</strong> <span class="status">均值之比</span></p><svg viewBox="0 0 320 107" role="img" aria-label="${esc(m.label)}，三seed变化${esc(v.points.map(p=>pct(p.changePct)).join('、'))}。刻度范围正负${bound.toFixed(2)}%。"><line x1="20" y1="82" x2="300" y2="82" stroke="#a4afb5"/><line x1="160" y1="10" x2="160" y2="85" stroke="#a4afb5" stroke-dasharray="3 3"/>${marks}<rect x="${X(v.meanChangePct)-4}" y="72" width="8" height="8" fill="#225a83"/><text x="20" y="101" text-anchor="start" font-size="9">−${bound.toFixed(2)}%</text><text x="160" y="101" text-anchor="middle" font-size="9">0</text><text x="300" y="101" text-anchor="end" font-size="9">+${bound.toFixed(2)}%</text></svg><p class="status">${v.points.map(p=>'seed'+p.seed+' '+pct(p.changePct)).join('；')}</p></article>`};
+ }
+ function renderMetrics(){
+  const r=q('#reference-select').value,all=input.metrics.map(m=>plot(m,r));
+  q('#metric-cards').innerHTML=all.map(x=>x.html).join('');
+  q('#metric-reading-table tbody').innerHTML=all.map((x,i)=>`<tr><td>${esc(input.metrics[i].label)}</td><td>${x.v.baseline.toFixed(6)}</td><td>${x.v.selected.toFixed(6)}</td><td>${pct(x.v.meanChangePct)}</td></tr>`).join('');
+  q('#reference-reading').textContent=r==='proportional'?'相对库存比例基线：代码相关BPB收益更一致；通用文本额外均值改善很小，数学两组退步、一组改善。':'相对旧Harrier：通用文本与代码均值改善；GSM8K BPB三组都退步。这里的参照与模型范围必须一起写出。';
+ }
+ q('#reference-select').addEventListener('change',renderMetrics);renderMetrics();
+ function statusText(row){return labels[C.effectiveStatus(row)];}
+ function renderRules(){
+  const filter=q('#rule-filter').value,term=q('#rule-search').value.trim().toLowerCase();
+  const visible=framework.rules.filter(r=>{
+   const s=C.effectiveStatus(audit.judgments[r.id]);return (filter==='all'||filter==='gaps'&&['partial','unassessed'].includes(s)||filter==='conflicts'&&s==='fail'||filter==='accepted'&&['pass','na'].includes(s))&&[r.id,r.title,r.area,r.question,r.why].join(' ').toLowerCase().includes(term);
+  });
+  q('#rule-cards').innerHTML=visible.map(r=>{const row=audit.judgments[r.id];return `<article class="rule-card" id="review-${r.id}" data-rule="${r.id}"><h3>${r.id} · ${esc(r.title)} <small>${esc(r.area)}</small></h3><p>${esc(r.question)}</p><details><summary>查看判断锚点与依据</summary><p>${esc(r.why)}</p><ul>${['pass','partial','fail'].map(s=>`<li><strong>${labels[s]}：</strong>${esc(r.anchors[s])}</li>`).join('')}</ul><p>${r.evidence_links.map(l=>`<a href="${esc(l.href)}">${esc(l.label)}</a>`).join(' · ')}</p></details><label>${r.id}证据状态 <select data-status="${r.id}" aria-label="${r.id}证据状态">${Object.entries(labels).map(([s,l])=>`<option value="${s}"${s===row.status?' selected':''}>${l}</option>`).join('')}</select></label><label>${r.id}证据或不适用理由 <textarea data-evidence="${r.id}" aria-label="${r.id}证据或不适用理由" maxlength="10000">${esc(row.evidence)}</textarea></label><p class="status rule-effective" id="effective-${r.id}">有效状态：${statusText(row)}</p></article>`;}).join('');
+  q('#review-status').textContent=`显示${visible.length}/18条规则。${storageMessage||'修改后保存到本浏览器，可导出。'}`;
+ }
+ function renderPipeline(){
+  const states=framework.pipeline.map(s=>C.evaluateStage(s,audit));
+  q('#pipeline-steps').innerHTML=framework.pipeline.map((s,i)=>`<button class="pipeline-step${s.id===selectedStage?' selected':''}" data-stage="${s.id}" aria-pressed="${s.id===selectedStage}"><strong>${s.id} ${esc(s.title)}</strong><span>${esc(states[i].label)}</span></button>`).join('');
+  const stage=framework.pipeline.find(s=>s.id===selectedStage),state=states.find(s=>s.id===selectedStage);
+  q('#pipeline-detail').innerHTML=`<div class="pipeline-result ${state.ready?'ready':'pending'}"><h3>${stage.id} · ${esc(stage.title)}</h3><p><strong>${esc(state.label)}</strong> · ${esc(stage.question)}</p><p>所需规则：${stage.required.map(id=>`<a href="#review-board" data-rule-jump="${id}">${id}</a>`).join(' · ')}</p>${state.conflicts.length?`<p>需修正：${state.conflicts.join('、')}</p>`:''}${state.missing.length?`<p>待补证据：${state.missing.join('、')}</p>`:''}<p>产物：${stage.outputs.map(esc).join('；')}。</p><p>${esc(stage.next)}</p><p class="status">所选阶段的必备项不能用“不适用”代替。若项目不研究顺序，可有理由跳过P4，不能称该阶段已验证。“材料齐全”仅根据自评输入判定，实际内容仍需核验。</p></div>`;
+ }
+ function refresh(){q('#review-target').value=audit.target;renderRules();renderPipeline();}
+ q('#review-target').addEventListener('input',()=>{audit.target=q('#review-target').value;save();q('#review-status').textContent=storageMessage;});
+ q('#rule-filter').addEventListener('change',renderRules);q('#rule-search').addEventListener('input',renderRules);
+ q('#rule-cards').addEventListener('change',e=>{const id=e.target.dataset.status;if(!id)return;audit.judgments[id].status=e.target.value;save();renderRules();renderPipeline();});
+ q('#rule-cards').addEventListener('input',e=>{const id=e.target.dataset.evidence;if(!id)return;audit.judgments[id].evidence=e.target.value;save();q('#effective-'+id).textContent='有效状态：'+statusText(audit.judgments[id]);renderPipeline();});
+ q('#pipeline-steps').addEventListener('click',e=>{const b=e.target.closest('[data-stage]');if(!b)return;selectedStage=b.dataset.stage;renderPipeline();});
+ document.getElementById('workbench').addEventListener('click',e=>{const link=e.target.closest('[data-rule-jump]');if(!link)return;q('#rule-filter').value='all';q('#rule-search').value=link.dataset.ruleJump;renderRules();});
+ q('#reset-review').addEventListener('click',()=>{audit=C.normalizeAudit(framework.example_audit,framework.rules);q('#rule-filter').value='all';q('#rule-search').value='';save();refresh();});
+ q('#blank-review').addEventListener('click',()=>{audit=C.normalizeAudit({schema:'marin-review/1',target:'待填写自己的问题与结论范围',scope:'自己的计划，尚未核验。',judgments:{}},framework.rules);q('#rule-filter').value='all';q('#rule-search').value='';save();refresh();});
+ function serialize(){audit.target=q('#review-target').value;return JSON.stringify(C.normalizeAudit(audit,framework.rules),null,2);}
+ q('#copy-review-json').addEventListener('click',()=>{try{q('#review-json').value=serialize();q('#review-import-status').textContent='已填入当前评审，可复制。';}catch(e){q('#review-import-status').textContent=e.message;}});
+ q('#import-review').addEventListener('click',()=>{try{const next=C.normalizeAudit(JSON.parse(q('#review-json').value),framework.rules);audit=next;save();refresh();q('#review-import-status').textContent='导入成功；当前评审已更新。';}catch(e){q('#review-import-status').textContent='导入未完成：'+e.message+' 当前判断保留。';}});
+ q('#export-review').addEventListener('click',()=>{try{const url=URL.createObjectURL(new Blob([serialize()],{type:'application/json;charset=utf-8'}));const a=document.createElement('a');a.href=url;a.download='marin-证据评审.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}catch(e){q('#review-status').textContent=e.message;}});
+ refresh();
+ // Opening a fragment inside a collapsed appendix should reveal its enclosing details.
+ function revealHash(){const id=decodeURIComponent(location.hash.slice(1));const target=document.getElementById(id);if(!target)return;for(let p=target.parentElement;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;}
+ window.addEventListener('hashchange',revealHash);revealHash();
+ let printState=[];
+ window.addEventListener('beforeprint',()=>{printState=Array.from(document.querySelectorAll('.large-table-details')).map(d=>[d,d.open]);printState.forEach(([d])=>{d.open=true;});});
+ window.addEventListener('afterprint',()=>{printState.forEach(([d,open])=>{d.open=open;});printState=[];});
 })();
 </script></body></html>

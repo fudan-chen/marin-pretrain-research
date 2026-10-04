@@ -1,0 +1,51 @@
+{
+  "standalone": {
+    "embeddedFigures": 12,
+    "figureReadings": 12,
+    "rubricCount": 18,
+    "metricCards": 4,
+    "externalHttpRequests": [],
+    "loadedFigures": 12,
+    "taskAppendixRows": 54
+  },
+  "mobile": {
+    "tableScrollWidth": 620,
+    "chainWidth": 297,
+    "tableWrapWidth": 297,
+    "documentWidth": 375,
+    "metricCards": 4,
+    "metricSvgMaxWidth": 265,
+    "viewport": 390
+  },
+  "printTables": {
+    "count": 5,
+    "restored": true,
+    "allOpened": true
+  },
+  "errors": [],
+  "scope": "Browser presentation and interaction tests. No model training or external rubric efficacy study.",
+  "functional": {
+    "conflictPreserved": true,
+    "persistedAfterReload": true,
+    "proportionalBaseline": "通用文本平均\t1.186598\t1.186012\t-0.049%\n编程语言文本\t0.691564\t0.678921\t-1.828%\nHumanEval目标文本\t0.537001\t0.496723\t-7.501%\nGSM8K目标文本\t0.768829\t0.780208\t+1.480%",
+    "oldBaseline": "通用文本平均\t1.193383\t1.186012\t-0.618%\n编程语言文本\t0.704489\t0.678921\t-3.629%\nHumanEval目标文本\t0.517601\t0.496723\t-4.034%\nGSM8K目标文本\t0.703881\t0.780208\t+10.844%",
+    "blankEvidenceBlocked": true,
+    "jsonRoundtrip": true,
+    "originalLocalAuditRestored": true,
+    "fiveCases": true,
+    "invalidImportRetainsAudit": true
+  },
+  "desktop": {
+    "documentWidth": 1425,
+    "metricCards": 4,
+    "figureReadings": 12,
+    "collapsedLongTables": 5,
+    "viewport": 1440,
+    "caseOptions": 5
+  },
+  "screenshots": [
+    "analysis/screenshots/workbench_desktop_v5.png",
+    "analysis/screenshots/workbench_mobile_v5.png"
+  ],
+  "checkedUtc": "2026-10-04T07:24:17.396Z"
+}

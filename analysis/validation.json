@@ -1,5 +1,5 @@
 {
-  "checks_passed": 479,
+  "checks_passed": 521,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -18,7 +18,13 @@
     "four new config contrasts / six step393 resume windows",
     "twelve embedded figures",
     "all relative HTML links valid",
-    "313 source archive checksums valid"
+    "313 source archive checksums valid",
+    "18 authored rubrics / seven claim-stage decisions",
+    "five interpretation cases / four metrics with switchable baselines",
+    "12 figure-reading entries / five preserved collapsed tables",
+    "18 terms / five reading exercises",
+    "nine review logic and arithmetic checks",
+    "browser import/persistence/print and offline workbench checks"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",
@@ -27,6 +33,8 @@
     "535B task accuracy or long-context outcomes",
     "full token ID / inner shuffle replay",
     "all original experiment launch code SHAs and actual restored checkpoint contents",
-    "full selector objective, fitted model and hidden constraints"
+    "full selector objective, fitted model and hidden constraints",
+    "external rubric scoring validity or actual reader comprehension study",
+    "truth of user-entered self-assessment evidence"
   ]
 }

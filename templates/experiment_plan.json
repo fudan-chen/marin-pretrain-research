@@ -1,0 +1,13 @@
+{
+  "schema": "marin-experiment-plan/1",
+  "status": "planned_not_executed",
+  "question": null,
+  "scope": {"model": null, "training_stage": null, "checkpoint_content_digest": null, "code_sha": null, "runtime": null, "rng_and_data_state": null},
+  "budget": {"update_start": null, "update_end_exclusive": null, "tokens_per_update": null, "token_budget": null, "wallclock_budget_seconds": null, "convention": null},
+  "data": {"inventory_revision": null, "effective_unique_tokens_by_bucket": {}, "historical_exposure_by_bucket": {}, "donors": [], "receivers": [], "transfer_tokens": null, "phase_weights": [], "exposure_caps": {}, "floors": {}},
+  "comparisons": ["old_baseline", "inventory_proportional_baseline", "frozen_candidate", "candidate_with_declared_math_transfer"],
+  "confirmation": {"candidate_freeze_time": null, "search_eval": null, "heldout_confirmation_eval": null, "continuation_seeds": [], "generation_metrics": [], "decoding": null, "contamination_checks": null, "guardrails": {}, "stop_conditions": []},
+  "order_if_applicable": {"reason_to_skip": null, "matched_cumulative_exposure": null, "integer_block_counts": null, "cursor_and_token_id_replay": null},
+  "decision": {"promote_when": [], "reject_when": [], "rollback_point": null},
+  "evidence": []
+}

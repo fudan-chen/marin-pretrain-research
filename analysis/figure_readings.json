@@ -1,0 +1,98 @@
+[
+  {
+    "file": "assets/training_signals.png",
+    "question": "这次曲线变化发生在哪一层？",
+    "reading": "逐项看训练CE、固定评估、drop和吞吐，先核对各自分母。",
+    "boundary": "跨run拼接和抽样窗口有边界；不据训练CE单独判断能力。",
+    "values": "analysis/series.json",
+    "chapter": "REPORT_ZH.md"
+  },
+  {
+    "file": "assets/intervention_windows.png",
+    "question": "系统、数据两类切换能否按同一方式比较？",
+    "reading": "81k和146k看200步同step配对；108k看分布切换。",
+    "boundary": "组合部署不能给单组件归因；配比切换不是相同批次。",
+    "values": "analysis/summary.json",
+    "chapter": "REPORT_ZH.md"
+  },
+  {
+    "file": "assets/domain_mixture.png",
+    "question": "哪个语义域在什么阶段获得预算？",
+    "reading": "每个条形使用实际阶段抽样权重，同域五个Q档求和。",
+    "boundary": "阶段比例不是全程累计量，也不是该域的因果价值。",
+    "values": "analysis/domain_weights.csv",
+    "chapter": "DATA_GUIDE_ZH.md"
+  },
+  {
+    "file": "assets/quality_mixture.png",
+    "question": "库存与抽样的质量档分布差多少？",
+    "reading": "库存和三阶段分别使用自己的分母；Q档内覆盖仍不同。",
+    "boundary": "Q4比例不等于质量收益，未来cooldown还是计划。",
+    "values": "analysis/quality_weights.csv",
+    "chapter": "DATA_GUIDE_ZH.md"
+  },
+  {
+    "file": "assets/mixture_eval.png",
+    "question": "更大ladder的固定文本收益是否全面？",
+    "reading": "分别看规模和子集，保留代码/Wikipedia退步。",
+    "boundary": "旧新设置存在混杂，不能直接当535B能力结论。",
+    "values": "sources/mix_study_final-2026.09.15.1_final_results.csv",
+    "chapter": "DATA_GUIDE_ZH.md"
+  },
+  {
+    "file": "assets/paired_seed_tradeoffs.png",
+    "question": "旧与选中在三组续训里有什么取舍？",
+    "reading": "看每个seed和不同任务，负BPB变化更好。",
+    "boundary": "共享恢复历史且参与选择；BPB不是生成正确率。",
+    "values": "analysis/paired_seed_tasks_bpb.csv",
+    "chapter": "DEEP_DIVE_ZH.md"
+  },
+  {
+    "file": "assets/cell_weight_shifts.png",
+    "question": "同一语义域内部Q档怎样迁移？",
+    "reading": "200桶逐项看新主阶段减旧权重的百分点变化。",
+    "boundary": "权重变动不是该桶自身贡献；还要乘阶段预算并除库存。",
+    "values": "analysis/cell_main_shifts.csv",
+    "chapter": "DEEP_DIVE_ZH.md"
+  },
+  {
+    "file": "assets/cursor_differences.png",
+    "question": "改序列与混合块后，逻辑位置偏到哪里？",
+    "reading": "比较两种设置的正负偏移与L1，整数块口径单列。",
+    "boundary": "游标差不能直接称为实际重复/遗漏token，未重放token ID。",
+    "values": "analysis/cursor_audit.csv",
+    "chapter": "DEEP_DIVE_ZH.md"
+  },
+  {
+    "file": "assets/domain_ablation_response.png",
+    "question": "删除再分配对通用文本和数学是否一致？",
+    "reading": "两组用各自参照；每个删除干预只有seed0。",
+    "boundary": "不是单域纯贡献，语义参照和比例参照不能混用。",
+    "values": "analysis/domain_ablation_audit.csv",
+    "chapter": "PRACTICAL_ZH.md"
+  },
+  {
+    "file": "assets/math_q4_response.png",
+    "question": "数学Q4加量是否单调改善？",
+    "reading": "横轴为恢复后名义模拟曝光，点为单seed终点。",
+    "boundary": "连线不是拟合；其他桶预算同时减少，标签不等于权重倍数。",
+    "values": "analysis/math_q4_response.csv",
+    "chapter": "PRACTICAL_ZH.md"
+  },
+  {
+    "file": "assets/macro_contribution_findings.png",
+    "question": "相对强基线的净改善被哪些子集支撑？",
+    "reading": "16项绝对BPB差除以16；负贡献改善macro。",
+    "boundary": "宏观分解不是训练桶因果归因；整体汇总不当第17项。",
+    "values": "analysis/macro_contributions.csv",
+    "chapter": "CONCLUSIONS_ZH.md"
+  },
+  {
+    "file": "assets/observed_frontier_findings.png",
+    "question": "为什么不同目标会选出不同候选？",
+    "reading": "上排全部597个seed0，下排局部放大；两个轴均越小越好。",
+    "boundary": "观察前沿不是确认或部署推荐；197c还有其他任务退步。",
+    "values": "analysis/observed_pareto_frontiers.csv",
+    "chapter": "CONCLUSIONS_ZH.md"
+  }
+]

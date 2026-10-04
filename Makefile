@@ -8,11 +8,13 @@ report:
 	$(PYTHON) scripts/analyze_deepening.py > analysis/deepening_computation_log.txt
 	$(PYTHON) scripts/analyze_practical.py > analysis/practical_computation_log.txt
 	$(PYTHON) scripts/analyze_findings.py > analysis/findings_computation_log.txt
+	$(PYTHON) scripts/build_learning.py
 	$(PYTHON) scripts/charts.py
 	$(PYTHON) scripts/charts_deepening.py
 	$(PYTHON) scripts/charts_practical.py
 	$(PYTHON) scripts/charts_findings.py
 	$(NODE) scripts/test_planner.cjs
+	$(NODE) scripts/test_review.cjs
 	$(PYTHON) scripts/build_html.py
 	$(PYTHON) scripts/archive_manifest.py
 	$(PYTHON) scripts/validate.py

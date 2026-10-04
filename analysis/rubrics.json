@@ -1,0 +1,609 @@
+{
+  "version": "1.0",
+  "authorship": "本报告提炼的工作规则，不是Marin官方标准或经外部验证的评分量表。",
+  "status_labels": {
+    "pass": "证据齐全",
+    "partial": "部分证据",
+    "fail": "有反证/口径冲突",
+    "unassessed": "未确认",
+    "na": "本阶段不适用"
+  },
+  "rules": [
+    {
+      "id": "R01",
+      "title": "来源和版本能回查",
+      "area": "来源",
+      "question": "这个数字来自哪个版本、时点和原文件？",
+      "anchors": {
+        "pass": "原文件、版本/时间、计算入口可以互相对应。",
+        "partial": "只有原链接或截图，版本/计算入口缺一项。",
+        "fail": "不同快照混用，或原值无法对应。"
+      },
+      "why": "线上run会变；没有版本就无法分清新事实与旧结论。",
+      "evidence_links": [
+        {
+          "label": "来源说明",
+          "href": "PROVENANCE_ZH.md"
+        },
+        {
+          "label": "313文件完整性清单",
+          "href": "sources/archive_manifest.json"
+        }
+      ]
+    },
+    {
+      "id": "R02",
+      "title": "结论范围写清",
+      "area": "范围",
+      "question": "这是哪个模型、训练阶段、任务和实验？",
+      "anchors": {
+        "pass": "模型规模、恢复阶段、参照和适用范围明确。",
+        "partial": "信息可追溯，但正文省略关键范围。",
+        "fail": "把代理实验写成535B已验证结果。"
+      },
+      "why": "同一个权重在不同历史和模型上不是同一干预。",
+      "evidence_links": [
+        {
+          "label": "代理与放大边界",
+          "href": "CONCLUSIONS_ZH.md"
+        },
+        {
+          "label": "swarm审计",
+          "href": "analysis/swarm_audit.json"
+        }
+      ]
+    },
+    {
+      "id": "R03",
+      "title": "指标含义和评估路径一致",
+      "area": "评估",
+      "question": "Loss、BPB、正确率与drop口径是否分清？",
+      "anchors": {
+        "pass": "指标分母、方向、dropless/有drop路径和能力边界明确。",
+        "partial": "指标名称有了，分母或路由路径不明。",
+        "fail": "BPB当准确率，或训练CE与固定验证混作同一种证据。"
+      },
+      "why": "度量对象变了，曲线就不能按原含义解读。",
+      "evidence_links": [
+        {
+          "label": "三种Loss误读",
+          "href": "REPORT_ZH.md"
+        },
+        {
+          "label": "配对窗口",
+          "href": "analysis/summary.json"
+        }
+      ]
+    },
+    {
+      "id": "R04",
+      "title": "包含有竞争力的简单参照",
+      "area": "实验",
+      "question": "候选优于旧方案，还是也优于简单方案？",
+      "anchors": {
+        "pass": "旧方案与库存比例等简单基线均纳入相同范围对照。",
+        "partial": "只有旧方案对照，或简单基线条件不同。",
+        "fail": "把所有旧→新差值都归给复杂搜索。"
+      },
+      "why": "92.05%的观察macro差值已由比例基线取得，参照影响结论。",
+      "evidence_links": [
+        {
+          "label": "强基线对照",
+          "href": "analysis/strong_baseline_comparison.csv"
+        },
+        {
+          "label": "第四轮判断",
+          "href": "CONCLUSIONS_ZH.md"
+        }
+      ]
+    },
+    {
+      "id": "R05",
+      "title": "预算从实际区间计算",
+      "area": "实验",
+      "question": "相同预算指token、更新、时间中的哪一种？",
+      "anchors": {
+        "pass": "恢复起止、tokens/update和预算口径明确；比较使用匹配口径。",
+        "partial": "名义预算明确，但真实恢复边界或执行量未确认。",
+        "fail": "把13.125T/3.75T与2726/810更新口径直接混用。"
+      },
+      "why": "一步差与模拟预算差是不同的问题。",
+      "evidence_links": [
+        {
+          "label": "三种顺序预算",
+          "href": "analysis/order_budget_audit.csv"
+        },
+        {
+          "label": "恢复窗口核对",
+          "href": "analysis/findings_audit.json"
+        }
+      ]
+    },
+    {
+      "id": "R06",
+      "title": "平均指标可拆回组成项",
+      "area": "评估",
+      "question": "总平均的收益由哪些子集贡献？",
+      "anchors": {
+        "pass": "组成项、聚合方式和退步项全部列出，能重建平均。",
+        "partial": "只有平均与部分有利子集。",
+        "fail": "把整体汇总再当一个子集，或把重叠任务当独立投票。"
+      },
+      "why": "16项macro里代码/学术收益和其他文本退步同时存在。",
+      "evidence_links": [
+        {
+          "label": "16项贡献",
+          "href": "analysis/macro_contributions.csv"
+        },
+        {
+          "label": "54项任务原值",
+          "href": "analysis/strong_baseline_paired.csv"
+        }
+      ]
+    },
+    {
+      "id": "R07",
+      "title": "选择后有独立确认",
+      "area": "确认",
+      "question": "这份结果是用来选候选，还是用来确认候选？",
+      "anchors": {
+        "pass": "候选先冻结，再做未参与选择的重复与确认评估，报告波动。",
+        "partial": "有多seed，但参与选择，或共享历史的依赖未处理。",
+        "fail": "把597个单seed候选当成597次独立复验。"
+      },
+      "why": "搜索极值容易含有噪声；确认预算不能被搜索预算替代。",
+      "evidence_links": [
+        {
+          "label": "候选seed分布",
+          "href": "analysis/findings_audit.json"
+        },
+        {
+          "label": "配对重复边界",
+          "href": "CONCLUSIONS_ZH.md"
+        }
+      ]
+    },
+    {
+      "id": "R08",
+      "title": "每次加量都写供体",
+      "area": "数据",
+      "question": "给B加量时，A失去了多少？",
+      "anchors": {
+        "pass": "接收域、供体、转移量、其余变化和替代策略明确。",
+        "partial": "加量或删域已知，空出预算分给谁不明。",
+        "fail": "把删域再分配结果当成该域自身的纯贡献。"
+      },
+      "why": "混合权重总和为1；收益包含替代关系。",
+      "evidence_links": [
+        {
+          "label": "80个删除干预",
+          "href": "analysis/domain_ablation_audit.csv"
+        },
+        {
+          "label": "第三轮实验方案",
+          "href": "PRACTICAL_ZH.md"
+        }
+      ]
+    },
+    {
+      "id": "R09",
+      "title": "库存、历史与重复分开",
+      "area": "数据",
+      "question": "增加比例后，独立覆盖和累计曝光各变多少？",
+      "anchors": {
+        "pass": "有效库存、已有曝光、后续计划和上限有定义，并检查容量可行性。",
+        "partial": "只有公开名义库存与计划，真实去重/历史量未确认。",
+        "fail": "把库存占比当抽样权重，或把名义epochs当实际文档重复证明。"
+      },
+      "why": "相同百分比在小库存上可能意味着高重复。",
+      "evidence_links": [
+        {
+          "label": "200桶库存与计划",
+          "href": "analysis/cell_weights.csv"
+        },
+        {
+          "label": "预算工具例子",
+          "href": "analysis/planner_example.json"
+        }
+      ]
+    },
+    {
+      "id": "R10",
+      "title": "顺序比较匹配累计量和游标",
+      "area": "顺序",
+      "question": "两种顺序真的只差先后吗？",
+      "anchors": {
+        "pass": "逐桶累计量、完整块计数、恢复cursor和token流重放可对应。",
+        "partial": "连续补偿或完整块计算已做，token ID/内部shuffle未重放。",
+        "fail": "互换不同长度阶段却宣称曝光相同。"
+      },
+      "why": "时序和总量一起变，就无法归因到先后。",
+      "evidence_links": [
+        {
+          "label": "完整块游标",
+          "href": "analysis/cursor_audit.csv"
+        },
+        {
+          "label": "顺序预算审计",
+          "href": "analysis/order_budget_audit.csv"
+        }
+      ]
+    },
+    {
+      "id": "R11",
+      "title": "跨规模结论有对应对照",
+      "area": "确认",
+      "question": "放大后是否仍保留强基线和关键风险对照？",
+      "anchors": {
+        "pass": "更大模型同范围确认方向，并说明阶段/系统差异。",
+        "partial": "有放大结果，但缺简单基线或条件不同。",
+        "fail": "直接把d512收益幅度写成535B收益。"
+      },
+      "why": "代码收益的方向在ladder上并非一致。",
+      "evidence_links": [
+        {
+          "label": "跨规模终点",
+          "href": "analysis/proxy_scale_effects.csv"
+        },
+        {
+          "label": "公开配比研究",
+          "href": "https://github.com/marin-community/marin/issues/9126"
+        }
+      ]
+    },
+    {
+      "id": "R12",
+      "title": "目标和能力保底预先冻结",
+      "area": "决策",
+      "question": "选配比究竟要优化什么，允许牺牲什么？",
+      "anchors": {
+        "pass": "主目标、独立确认集、能力退步界限和停止条件在看结果前规定。",
+        "partial": "目标大致明确，约束或冻结时间缺失。",
+        "fail": "看完结果再换目标，把最终哈希当作全面最优证明。"
+      },
+      "why": "观察前沿随任务组合改变；未知selector不能靠猜测补齐。",
+      "evidence_links": [
+        {
+          "label": "观察前沿",
+          "href": "analysis/observed_pareto_frontiers.csv"
+        },
+        {
+          "label": "197c反例",
+          "href": "analysis/candidate_197c_counterexample.csv"
+        }
+      ]
+    },
+    {
+      "id": "R13",
+      "title": "根因证据和缓解效果分开",
+      "area": "工程",
+      "question": "恢复运行能证明哪个假设，排除了什么？",
+      "anchors": {
+        "pass": "根因证据、排除实验、缓解动作和残余未知分别归档。",
+        "partial": "有恢复和可行解释，但关键排除或底层证据不足。",
+        "fail": "恢复成功就写成根因已确认。"
+      },
+      "why": "silent hang、存储故障和数值异常需要不同证据。",
+      "evidence_links": [
+        {
+          "label": "58条运行记录",
+          "href": "OPERATIONS_ZH.md"
+        },
+        {
+          "label": "15类工程机制",
+          "href": "REPORT_ZH.md"
+        }
+      ]
+    },
+    {
+      "id": "R14",
+      "title": "执行状态不只看配置路径",
+      "area": "工程",
+      "question": "实际加载的代码、checkpoint和数据状态是什么？",
+      "anchors": {
+        "pass": "代码/环境、checkpoint内容、随机与数据状态可核对，回退点明确。",
+        "partial": "记录配置与fallback相同，实际恢复内容尚未确认。",
+        "fail": "相同路径就断言状态逐字节一致。"
+      },
+      "why": "配置相同能减少混杂，但不能保证每次启动执行相同。",
+      "evidence_links": [
+        {
+          "label": "原始配置对照",
+          "href": "analysis/strong_baseline_config_audit.csv"
+        },
+        {
+          "label": "恢复与游标边界",
+          "href": "DEEP_DIVE_ZH.md"
+        }
+      ]
+    },
+    {
+      "id": "R15",
+      "title": "能力主张有实际任务验证",
+      "area": "评估",
+      "question": "目标文本概率的变化是否转化为任务表现？",
+      "anchors": {
+        "pass": "生成正确率/执行测试与BPB并列，题目、解码和污染检查有记录。",
+        "partial": "只有BPB线索，能力主张保持为候选假设。",
+        "fail": "HumanEval BPB写成pass@1，GSM8K BPB写成正确率。"
+      },
+      "why": "预测指定答案与自己生成正确答案不是同一个测试。",
+      "evidence_links": [
+        {
+          "label": "任务BPB边界",
+          "href": "CONCLUSIONS_ZH.md"
+        },
+        {
+          "label": "逐seed任务表",
+          "href": "analysis/strong_baseline_paired.csv"
+        }
+      ]
+    },
+    {
+      "id": "R16",
+      "title": "图表能被读者正确复述",
+      "area": "表达",
+      "question": "读者能说清横纵轴、参照、样本数和不能推出什么吗？",
+      "anchors": {
+        "pass": "图包含单位、参照、范围、样本数、原值入口和解释；窄屏可读。",
+        "partial": "数值正确但解释/分母/可访问替代缺失。",
+        "fail": "截断差结果、混用参照，或把图中的相关性画成因果证明。"
+      },
+      "why": "图要帮助判断，不应替代证据限定。",
+      "evidence_links": [
+        {
+          "label": "理解文档",
+          "href": "LEARNING_GUIDE_ZH.md"
+        },
+        {
+          "label": "图与交互复核",
+          "href": "analysis/browser_validation_v5.json"
+        }
+      ]
+    },
+    {
+      "id": "R17",
+      "title": "结论可离线复算",
+      "area": "复现",
+      "question": "分享包能从固定材料重建关键结果吗？",
+      "anchors": {
+        "pass": "归档、计算脚本、数字检查、链接和离线阅读验证齐全。",
+        "partial": "报告可读，但部分计算需未知在线状态。",
+        "fail": "只有截图/结论，关键原值或公式丢失。"
+      },
+      "why": "复算不等于重训；两者的验证范围都应写清。",
+      "evidence_links": [
+        {
+          "label": "离线构建",
+          "href": "Makefile"
+        },
+        {
+          "label": "计算验证",
+          "href": "analysis/validation.json"
+        }
+      ]
+    },
+    {
+      "id": "R18",
+      "title": "未解决问题有下一步和退出条件",
+      "area": "改进",
+      "question": "下一次工作会消除哪个不确定性？",
+      "anchors": {
+        "pass": "缺口、下一步、所需资源、验收/推翻条件和变更记录明确。",
+        "partial": "有待办，但只写“继续深入”或缺验收。",
+        "fail": "抓取条数/美化数量当作研究收益，反例被删除。"
+      },
+      "why": "持续改进应降低具体不确定性。",
+      "evidence_links": [
+        {
+          "label": "持续改进记录",
+          "href": "IMPROVEMENT_LOG_ZH.md"
+        },
+        {
+          "label": "决策管线",
+          "href": "PIPELINE_ZH.md"
+        }
+      ]
+    }
+  ],
+  "pipeline": [
+    {
+      "id": "P0",
+      "title": "冻结来源与问题",
+      "question": "这次要解释哪一个变化？",
+      "required": [
+        "R01",
+        "R02",
+        "R03",
+        "R17"
+      ],
+      "outputs": [
+        "source_manifest与版本",
+        "一个范围明确的研究问题",
+        "指标定义表"
+      ],
+      "next": "缺来源先补来源；已有材料固定后进入比较。"
+    },
+    {
+      "id": "P1",
+      "title": "诊断与筛选候选",
+      "question": "可比的观察支持哪些候选？",
+      "required": [
+        "R04",
+        "R05",
+        "R06",
+        "R08",
+        "R16"
+      ],
+      "outputs": [
+        "旧/比例/候选对照",
+        "退步与组成项表",
+        "候选名单和陈述边界"
+      ],
+      "next": "缺参照先补参照；有取舍就保留多个候选。"
+    },
+    {
+      "id": "P2",
+      "title": "设计局部交换实验",
+      "question": "下一批token从谁移给谁？",
+      "required": [
+        "R09",
+        "R12",
+        "R14"
+      ],
+      "outputs": [
+        "供体与接收域",
+        "库存/历史/容量账本",
+        "冻结目标和实验清单"
+      ],
+      "next": "容量冲突先改方案；缺真实状态先核对恢复点。"
+    },
+    {
+      "id": "P3",
+      "title": "独立确认能力收益",
+      "question": "候选冻结以后，是否稳定且满足任务保底？",
+      "required": [
+        "R07",
+        "R12",
+        "R15"
+      ],
+      "outputs": [
+        "未参与选择的确认结果",
+        "重复波动与退步限制",
+        "通过/重做/放弃决定"
+      ],
+      "next": "只有BPB就保留线索；能力没确认先补任务评估。"
+    },
+    {
+      "id": "P4",
+      "title": "检验顺序与恢复",
+      "question": "累计量相同后，先后还有作用吗？",
+      "required": [
+        "R05",
+        "R09",
+        "R10",
+        "R14"
+      ],
+      "outputs": [
+        "逐桶曝光匹配",
+        "整数混合块与cursor重放",
+        "中途及末期评估"
+      ],
+      "next": "总量不匹配先修补偿；没做顺序实验可有理由跳过整个阶段。"
+    },
+    {
+      "id": "P5",
+      "title": "放大与生产切换",
+      "question": "更大模型确认后，实际切换状态是否可复验？",
+      "required": [
+        "R07",
+        "R11",
+        "R12",
+        "R14",
+        "R15"
+      ],
+      "outputs": [
+        "更大代理与强基线",
+        "固定评估和回退点",
+        "切换前后状态清单"
+      ],
+      "next": "方向不稳定返回候选；状态不可核对先处理工程问题。"
+    },
+    {
+      "id": "P6",
+      "title": "复盘与下一轮",
+      "question": "哪条判断被推翻，下一步最值得做什么？",
+      "required": [
+        "R01",
+        "R17",
+        "R18"
+      ],
+      "outputs": [
+        "版本差异与反例",
+        "缺口优先级",
+        "下一轮可检验问题"
+      ],
+      "next": "保留旧快照；新信息建立新版本，再回到P0。"
+    }
+  ],
+  "example_audit": {
+    "scope": "固定公开快照支持的结论范围；不是给Marin团队打分，也不是已完成的新训练。",
+    "schema": "marin-review/1",
+    "framework_version": "1.0",
+    "target": "用公开材料评估选中配比能被推荐到哪一步",
+    "judgments": {
+      "R01": {
+        "status": "pass",
+        "evidence": "报告对应材料：PROVENANCE_ZH.md。此通过项只覆盖其已声明的公开/本地复算范围。"
+      },
+      "R02": {
+        "status": "pass",
+        "evidence": "报告对应材料：CONCLUSIONS_ZH.md。此通过项只覆盖其已声明的公开/本地复算范围。"
+      },
+      "R03": {
+        "status": "pass",
+        "evidence": "报告对应材料：REPORT_ZH.md。此通过项只覆盖其已声明的公开/本地复算范围。"
+      },
+      "R04": {
+        "status": "pass",
+        "evidence": "报告对应材料：analysis/strong_baseline_comparison.csv。此通过项只覆盖其已声明的公开/本地复算范围。"
+      },
+      "R05": {
+        "status": "pass",
+        "evidence": "报告对应材料：analysis/order_budget_audit.csv。此通过项只覆盖其已声明的公开/本地复算范围。"
+      },
+      "R06": {
+        "status": "pass",
+        "evidence": "报告对应材料：analysis/macro_contributions.csv。此通过项只覆盖其已声明的公开/本地复算范围。"
+      },
+      "R07": {
+        "status": "partial",
+        "evidence": "三组continuation参与过候选研究，共同历史依赖仍在；无选择后独立确认。"
+      },
+      "R08": {
+        "status": "pass",
+        "evidence": "报告对应材料：analysis/domain_ablation_audit.csv。此通过项只覆盖其已声明的公开/本地复算范围。"
+      },
+      "R09": {
+        "status": "partial",
+        "evidence": "库存与名义计划已重算；去重后独立库存和真实历史token流未恢复。"
+      },
+      "R10": {
+        "status": "partial",
+        "evidence": "连续补偿与完整块cursor已算；桶内shuffle与token ID未重放。"
+      },
+      "R11": {
+        "status": "partial",
+        "evidence": "有ladder结果，但阶段/系统不同，未补上更大模型比例基线。"
+      },
+      "R12": {
+        "status": "unassessed",
+        "evidence": "完整selector目标和约束未知；不能替作者补造预先冻结的guardrail。"
+      },
+      "R13": {
+        "status": "partial",
+        "evidence": "公开时间线区分缓解与猜测，部分底层日志与根因证据不可访问。"
+      },
+      "R14": {
+        "status": "partial",
+        "evidence": "4组记录配置可比，fallback相同；实际恢复文件与启动环境未核对。"
+      },
+      "R15": {
+        "status": "partial",
+        "evidence": "54项任务为BPB；新535B生成正确率尚未验证。"
+      },
+      "R16": {
+        "status": "pass",
+        "evidence": "报告对应材料：LEARNING_GUIDE_ZH.md。此通过项只覆盖其已声明的公开/本地复算范围。"
+      },
+      "R17": {
+        "status": "pass",
+        "evidence": "报告对应材料：Makefile。此通过项只覆盖其已声明的公开/本地复算范围。"
+      },
+      "R18": {
+        "status": "pass",
+        "evidence": "报告对应材料：IMPROVEMENT_LOG_ZH.md。此通过项只覆盖其已声明的公开/本地复算范围。"
+      }
+    }
+  }
+}

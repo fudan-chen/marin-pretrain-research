@@ -141,7 +141,7 @@ alt=all_rows[f['counterexample_run']]
 ok('197c dominates selected seed0 on three axes but not all tasks',all(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in [PM,HE,GM]) and sum(metric_value(alt,k)>metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==31 and sum(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==23)
 ok('197c has no independent seed1 or seed2 counterpart in this registry',sum('197c9f5ceff6b9ee-' in r['run_name'] for r in rows)==1)
 F=S/'findings_2026_10_04'
-ok('Four new configurations and six resume windows archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and len(manifest['files'])==313)
+ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith('decision_2026_10_04/') for x in manifest['files'])==313)
 for i,row in enumerate(f['configs']):
     def source_run(name):return read((F if 'mixprior-' in name else P)/('config_'+name+'.json'))['data']['project']['run']
     ra,rb=source_run(row['run_a']),source_run(row['run_b']);ca,cb=json.loads(ra['config']),json.loads(rb['config'])
@@ -173,6 +173,30 @@ ok('All five long tables are retained but initially collapsed',len(long_tables)=
 ok('Learning guide includes eighteen terms and five expandable exercises',len(soup.select('#learning table')[1].select('tbody tr'))==18 and len(soup.select('#learning details'))==5)
 plan=read(ROOT/'templates/experiment_plan.json')
 ok('Experiment template preserves planned status and unknown execution inputs',plan['status']=='planned_not_executed' and plan['scope']['checkpoint_content_digest'] is None and plan['budget']['token_budget'] is None and not plan['evidence'] and len(plan['comparisons'])==4)
+decision=read(A/'decision_data.json');decision_checks=read(A/'decision_validation.json');trace=read(A/'selector_provenance_audit.json')
+ok('597 seed0 candidates retain exact seven raw BPB metrics',len(decision['candidates'])==597 and len(decision['metrics'])==7 and all(all(metric_value(all_rows[r['run']],m['source_key'])==r['values'][m['id']] for m in decision['metrics']) for r in decision['candidates']))
+ok('Only actual mixprior seed0 runs enter decision candidate set',{r['run'] for r in decision['candidates']}=={r['run_name'] for r in candidates})
+for name,b in decision['baselines'].items():
+    ok('Decision baseline retains original seed0 endpoints '+name,'seed0-' in b['run'] and all(metric_value(all_rows[b['run']],m['source_key'])==b['values'][m['id']] for m in decision['metrics']))
+canonical={k:v for k,v in decision.items() if k!='dataset_sha256'}
+ok('Decision source and canonical data digests match',hashlib.sha256((ROOT/decision['source']).read_bytes()).hexdigest()==decision['source_sha256'] and hashlib.sha256(json.dumps(canonical,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode()).hexdigest()==decision['dataset_sha256'])
+ok('Nine decision boundary test groups pass without claiming training',decision_checks['test_groups_passed']==9 and decision_checks['not_verified'])
+for scenario in decision_checks['scenarios']:
+    b=decision['baselines'][scenario['baseline']]['values'];caps=scenario['caps'];primary=scenario['primary']
+    eligible=[]
+    for raw in candidates:
+        v={m['id']:metric_value(raw,m['source_key']) for m in decision['metrics']}
+        if all(100*(v[k]/b[k]-1)<=cap+1e-10 for k,cap in caps.items()):eligible.append((v[primary],re.search(r'mixprior-([0-9a-f]+)-',raw['run_name'])[1]))
+    best=min(eligible)[1] if eligible else None
+    ok('Independent hard-constraint intersection '+scenario['baseline']+' '+scenario['name'],len(eligible)==scenario['eligible'] and best==scenario['best'])
+doc_tables=soup.select('#decision-guide table')
+ok('Decision documentation preserves nine scenarios and six rule counterexamples',len(doc_tables)==3 and len(doc_tables[1].select('tbody tr'))==9 and len(doc_tables[2].select('tbody tr'))==6 and all(int(t.select('td')[2].text)==s['eligible'] and (s['best'] is None or s['best']==t.select('td')[3].text) for s,t in zip(decision_checks['scenarios'],doc_tables[1].select('tbody tr'))))
+ok('Selector trace reports bounded search rather than universal absence',trace['status']=='not_recovered_in_checked_public_entries' and trace['tree_truncated'] is False and len(trace['limitations'])==4 and all(q['total_count']==q['items_returned']==1 and q['issue_numbers']==[9126] and q['incomplete_results'] is False for q in trace['issue_queries']) and trace['issue_9126_body_unchanged_from_prior_archive'])
+ok('Five new provenance files have fixed revision and source hashes',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==318 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
+contract=read(ROOT/'templates/selection_contract.json')
+ok('Confirmation contract cannot retroactively assert prior registration',contract['status']=='planned_not_executed' and contract['prior_search_results_already_seen'] is True and contract['contract_frozen_utc'] is None and contract['results'] is None and contract['independent_confirmation']['used_during_search'] is None)
+embedded=json.loads(soup.select_one('#decision-data').text)
+ok('Offline decision input embeds exact frozen candidate values',embedded==decision and soup.select_one('#decision-lab') is not None and 'exploratory_reanalysis_not_preregistered' in soup.text)
 browser=read(A/'browser_validation_v5.json')
 ok('Browser review covers controls and preserves existing local data',all(browser['functional'][k] is True for k in ['fiveCases','blankEvidenceBlocked','conflictPreserved','invalidImportRetainsAudit','jsonRoundtrip','persistedAfterReload','originalLocalAuditRestored']) and not browser['errors'])
 ok('Print reveals full tables then restores collapse state',browser['printTables']['count']==5 and browser['printTables']['allOpened'] and browser['printTables']['restored'])
@@ -181,5 +205,12 @@ ok('Narrow screen has no page-wide overflow',browser['mobile']['documentWidth']<
 report={'checks_passed':len(checks),'highlights':['27 comments translated and anchored','58 operations entries','200 buckets x 3 normalized phases','400 public examples','200-step EP and kernel paired windows','934 swarm observations / 915 exact weight pairs','54 task BPB comparisons','1200 counts match native 3.12 arithmetic and 1200 match legacy sensitivity','complete-block cursor differences independently totaled','80 domain interventions / 129 source configs','8 order comparisons / 3 token budget conventions','12 planner numeric test groups / 100 random schedules','strong proportional baseline / 16 macro contributions','597 seed0 endpoints / three independently checked observed frontiers','four new config contrasts / six step393 resume windows','twelve embedded figures','all relative HTML links valid','313 source archive checksums valid'],'not_verified':['GPU training/kernel reproduction','causality of individual mixture buckets','independent confirmation after candidate selection','535B task accuracy or long-context outcomes','full token ID / inner shuffle replay','all original experiment launch code SHAs and actual restored checkpoint contents','full selector objective, fitted model and hidden constraints']}
 report['highlights']+=['18 authored rubrics / seven claim-stage decisions','five interpretation cases / four metrics with switchable baselines','12 figure-reading entries / five preserved collapsed tables','18 terms / five reading exercises','nine review logic and arithmetic checks','browser import/persistence/print and offline workbench checks']
 report['not_verified']+=['external rubric scoring validity or actual reader comprehension study','truth of user-entered self-assessment evidence']
+browser6=read(A/'browser_validation_v6.json')
+ok('Decision browser covers reference, constraints, infeasibility and invalid inputs',all(browser6['functional'][k] for k in ['nineScenariosMatch','infeasibleNotRelaxed','invalidInputBlocksOutput','jsonRetainsExploratoryState','completeCSVExport','existingLocalNotesPreserved']) and not browser6['errors'])
+ok('Decision browser mobile and standalone retain full data without remote requests',browser6['mobile']['documentWidth']<=browser6['mobile']['viewport'] and browser6['standalone']['candidateCount']==597 and browser6['standalone']['externalHttpRequests']==[] and browser6['standalone']['embeddedFigures']==browser6['standalone']['loadedFigures']==12)
+ok('Local zoom keeps all candidates in ranking and declares outside count',browser6['functional']['zoomPreservesRanking'] and browser6['zoom']['visible']+browser6['zoom']['outside']==597 and browser6['zoom']['markers']==browser6['zoom']['visible'] and browser6['mobile']['chartScrollWidth']>browser6['mobile']['chartContainerWidth'])
+report['checks_passed']=len(checks)
+report['highlights']=[x.replace('313 source archive checksums valid','318 source archive checksums valid') for x in report['highlights']]
+report['highlights']+=['597 seed0 candidates / seven exact BPB inputs / nine constrained-selection scenarios','bounded selector provenance audit / five new source files','six rubric counterexample replays / confirmation selection contract','nine decision boundary test groups / separate raw-source recomputation','decision browser baseline, constraint, invalid-input, CSV and offline checks']
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

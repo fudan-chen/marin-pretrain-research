@@ -6,7 +6,7 @@ def save(name,obj):(A/name).write_text(json.dumps(obj,ensure_ascii=False,indent=
 def rule(i,title,area,question,pass_,partial,fail,why,links):
     return {'id':'R%02d'%i,'title':title,'area':area,'question':question,'anchors':{'pass':pass_,'partial':partial,'fail':fail},'why':why,'evidence_links':[{'label':label,'href':href} for label,href in links]}
 rules=[
-rule(1,'来源和版本能回查','来源','这个数字来自哪个版本、时点和原文件？','原文件、版本/时间、计算入口可以互相对应。','只有原链接或截图，版本/计算入口缺一项。','不同快照混用，或原值无法对应。','线上run会变；没有版本就无法分清新事实与旧结论。',[('来源说明','PROVENANCE_ZH.md'),('313文件完整性清单','sources/archive_manifest.json')]),
+rule(1,'来源和版本能回查','来源','这个数字来自哪个版本、时点和原文件？','原文件、版本/时间、计算入口可以互相对应。','只有原链接或截图，版本/计算入口缺一项。','不同快照混用，或原值无法对应。','线上run会变；没有版本就无法分清新事实与旧结论。',[('来源说明','PROVENANCE_ZH.md'),('源归档完整性清单','sources/archive_manifest.json')]),
 rule(2,'结论范围写清','范围','这是哪个模型、训练阶段、任务和实验？','模型规模、恢复阶段、参照和适用范围明确。','信息可追溯，但正文省略关键范围。','把代理实验写成535B已验证结果。','同一个权重在不同历史和模型上不是同一干预。',[('代理与放大边界','CONCLUSIONS_ZH.md'),('swarm审计','analysis/swarm_audit.json')]),
 rule(3,'指标含义和评估路径一致','评估','Loss、BPB、正确率与drop口径是否分清？','指标分母、方向、dropless/有drop路径和能力边界明确。','指标名称有了，分母或路由路径不明。','BPB当准确率，或训练CE与固定验证混作同一种证据。','度量对象变了，曲线就不能按原含义解读。',[('三种Loss误读','REPORT_ZH.md'),('配对窗口','analysis/summary.json')]),
 rule(4,'包含有竞争力的简单参照','实验','候选优于旧方案，还是也优于简单方案？','旧方案与库存比例等简单基线均纳入相同范围对照。','只有旧方案对照，或简单基线条件不同。','把所有旧→新差值都归给复杂搜索。','92.05%的观察macro差值已由比例基线取得，参照影响结论。',[('强基线对照','analysis/strong_baseline_comparison.csv'),('第四轮判断','CONCLUSIONS_ZH.md')]),

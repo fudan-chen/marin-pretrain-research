@@ -5,6 +5,7 @@ import markdown
 from bs4 import BeautifulSoup
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 chapters=[('learning','理解文档与自测','LEARNING_GUIDE_ZH.md'),('rubrics','18条判断规则','RUBRICS_ZH.md'),('pipeline','七阶段决策管线','PIPELINE_ZH.md'),('improvement','持续改进队列','IMPROVEMENT_LOG_ZH.md'),('conclusions','第四轮：结论与判断','CONCLUSIONS_ZH.md'),('report','研究主报告','REPORT_ZH.md'),('data','数据配比与顺序','DATA_GUIDE_ZH.md'),('deep','第二轮：搜索、取舍与游标','DEEP_DIVE_ZH.md'),('practical','第三轮：删域、曝光与顺序','PRACTICAL_ZH.md'),('translation','#8435逐条中文解读','ISSUE_8435_ZH.md'),('operations','58条运行记录','OPERATIONS_ZH.md'),('provenance','来源与复核','PROVENANCE_ZH.md')]
+chapters.insert(0,('decision-guide','候选选择与规则回放','DECISION_GUIDE_ZH.md'))
 readings={x['file']:x for x in json.loads((ROOT/'analysis/figure_readings.json').read_text())}
 sections=[];toc=[]
 for slug,label,file in chapters:
@@ -38,6 +39,7 @@ samples=[{'cell':s['cell'],'examples':[t[:300]+('…' if len(t)>300 else '') for
 def data(j):return json.dumps(j,ensure_ascii=False).replace('<','\\u003c').replace('>','\\u003e').replace('&','\\u0026')
 nav='<a class="major" href="#workbench">理解与评审工作台</a>'+''.join('<a class="major" href="#%s">%s</a>'%(s,html.escape(l)) for s,l,_ in chapters)
 nav+='<a class="major" href="#planner">自己的配比预算工具</a><a class="major" href="#explorer">200桶查询</a><a class="major" href="#notes">我的研究笔记</a>'
+nav='<a class="major" href="#decision-lab">候选决策实验室</a>'+nav
 details=''
 for slug,label,_ in chapters:
     links=''.join('<a class="%s" href="#%s">%s</a>'%('minor' if kind=='h3' else '',ident,html.escape(text)) for s,_,ident,text,kind in toc if s==slug)
@@ -50,9 +52,11 @@ template=template.replace('<script>JS</script>','<script type="application/json"
 template=template.replace('<a href="#deep">第二轮新增结论</a>','<a href="#deep">第二轮新增结论</a><a href="#practical">第三轮：如何设计自己的实验</a><a href="#planner">输入自己的预算</a>')
 template=template.replace('<span>934条配比观测</span>','<span>934条配比观测</span><span>129个运行配置复核</span>')
 template=template.replace('<a href="#report">从三个案例开始</a>','<a href="#conclusions">先读最新结论与判断</a><a href="#report">从三个案例开始</a>')
-template=template.replace('SECTIONS PLANNER','WORKBENCH SECTIONS PLANNER')
+template=template.replace('SECTIONS PLANNER','WORKBENCH DECISIONLAB SECTIONS PLANNER')
 template=template.replace('<a href="#conclusions">先读最新结论与判断</a>','<a href="#workbench">从理解与评审工作台开始</a><a href="#learning">理解文档与自测</a><a href="#pipeline">决策管线</a><a href="#conclusions">最新研究结论</a>')
 template=template.replace('<script>PLANNERUI</script>','<script>PLANNERUI</script><script type="application/json" id="workbench-data">WORKBENCHDATA</script><script type="application/json" id="rubric-data">RUBRICDATA</script><script>REVIEWCORE</script><script>WORKBENCHJS</script>')
+template=template.replace('<script>WORKBENCHJS</script>','<script>WORKBENCHJS</script><script type="application/json" id="decision-data">DECISIONDATA</script><script>DECISIONCORE</script><script>DECISIONUI</script>')
+template=template.replace('<a href="#workbench">从理解与评审工作台开始</a>','<a href="#decision-lab">比较候选与退步限制</a><a href="#workbench">从理解与评审工作台开始</a>')
 workbench=json.loads((ROOT/'analysis/workbench_data.json').read_text());rubric=json.loads((ROOT/'analysis/rubrics.json').read_text());chapter_paths={file:'#'+slug for slug,_,file in chapters}
 for c in workbench['cases']:c['source']=chapter_paths.get(c['source'],c['source'])
 for rule in rubric['rules']:
@@ -61,6 +65,9 @@ mapping={'CSS':(ROOT/'assets/report.css').read_text()+'\n'+(ROOT/'assets/workben
          'WORKBENCH':(ROOT/'assets/workbench.html').read_text(),'WORKBENCHDATA':data(workbench),'RUBRICDATA':data(rubric),'REVIEWCORE':(ROOT/'assets/review-core.js').read_text(),'WORKBENCHJS':(ROOT/'assets/workbench.js').read_text(),
          'PLANNER':(ROOT/'assets/planner.html').read_text(),'PLANEXAMPLE':data(json.loads((ROOT/'analysis/planner_example.json').read_text())),
          'PLANNERCORE':(ROOT/'assets/planner-core.js').read_text(),'PLANNERUI':(ROOT/'assets/planner-ui.js').read_text()}
+mapping['CSS']+='\n'+(ROOT/'assets/decision.css').read_text()
+mapping.update({'DECISIONLAB':(ROOT/'assets/decision.html').read_text(),'DECISIONDATA':data(json.loads((ROOT/'analysis/decision_data.json').read_text())),
+                'DECISIONCORE':(ROOT/'assets/decision-core.js').read_text(),'DECISIONUI':(ROOT/'assets/decision-ui.js').read_text()})
 page=re.sub('|'.join(sorted(mapping,key=len,reverse=True)),lambda m:mapping[m[0]],template)
 # Link existing markdown artifacts to their corresponding chapters in this combined report.
 for slug,_,file in chapters:page=page.replace('href="'+file+'"','href="#'+slug+'"')

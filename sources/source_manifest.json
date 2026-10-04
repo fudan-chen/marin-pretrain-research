@@ -3141,5 +3141,45 @@
     "bytes": 4423,
     "sha256": "9849008fb79999d4b3329aa9db410289f9a75b8033b588d8909b26a5562c9f0c",
     "retrieved_utc": "2026-10-04T06:03:29.798492+00:00"
+  },
+  {
+    "file": "decision_2026_10_04/marin_head.json",
+    "url": "https://api.github.com/repos/marin-community/marin/commits/main",
+    "final_url": "https://api.github.com/repos/marin-community/marin/commits/main",
+    "bytes": 9146,
+    "sha256": "e6fef4c3e7052ee9cae0f7b84eb8cd12b3555f5f21849307e2a0ba67a710e182",
+    "retrieved_utc": "2026-10-04T07:35:20.377050+00:00"
+  },
+  {
+    "file": "decision_2026_10_04/issue_9126.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/9126",
+    "final_url": "https://api.github.com/repos/marin-community/marin/issues/9126",
+    "bytes": 16199,
+    "sha256": "ff42bfae305d778697b7471eaa9bf5e96727abf8260b84d7222f5c7d00647930",
+    "retrieved_utc": "2026-10-04T07:35:20.438337+00:00"
+  },
+  {
+    "file": "decision_2026_10_04/search_mixture_hash.json",
+    "url": "https://api.github.com/search/issues?q=repo%3Amarin-community%2Fmarin+996f489106c7b922&per_page=100",
+    "final_url": "https://api.github.com/search/issues?q=repo%3Amarin-community%2Fmarin+996f489106c7b922&per_page=100",
+    "bytes": 15358,
+    "sha256": "c319bcdfb04a3c319c702e9b812ae510d3764e0ffa242e7c88f04e3e4eb1bec9",
+    "retrieved_utc": "2026-10-04T07:35:20.470996+00:00"
+  },
+  {
+    "file": "decision_2026_10_04/search_swarm_id.json",
+    "url": "https://api.github.com/search/issues?q=repo%3Amarin-community%2Fmarin+h100-d512-from10pct-store-4d2e363d&per_page=100",
+    "final_url": "https://api.github.com/search/issues?q=repo%3Amarin-community%2Fmarin+h100-d512-from10pct-store-4d2e363d&per_page=100",
+    "bytes": 15358,
+    "sha256": "c319bcdfb04a3c319c702e9b812ae510d3764e0ffa242e7c88f04e3e4eb1bec9",
+    "retrieved_utc": "2026-10-04T07:35:21.184974+00:00"
+  },
+  {
+    "file": "decision_2026_10_04/marin_tree.json",
+    "url": "https://api.github.com/repos/marin-community/marin/git/trees/84869ae8c91ffe64e9f761c5bd714542eb1876e0?recursive=1",
+    "final_url": "https://api.github.com/repos/marin-community/marin/git/trees/84869ae8c91ffe64e9f761c5bd714542eb1876e0?recursive=1",
+    "bytes": 1322549,
+    "sha256": "4bc6e573afcf7d3c861535badd6c0eb431c907134f26e44325c0a725444db7a9",
+    "retrieved_utc": "2026-10-04T07:35:22.283949+00:00"
   }
 ]

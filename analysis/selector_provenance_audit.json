@@ -1,0 +1,46 @@
+{
+  "status": "not_recovered_in_checked_public_entries",
+  "pinned_marin_revision": "84869ae8c91ffe64e9f761c5bd714542eb1876e0",
+  "tree_truncated": false,
+  "filename_search_terms": [
+    "selector",
+    "regmix",
+    "swarm",
+    "mixprior",
+    "mixture_search",
+    "mixture_opt",
+    "surrogate"
+  ],
+  "filename_matches": [
+    "lib/marin/src/marin/schemas/web/selectors.py",
+    "tests/cluster/vllm/resources/representative_eval_prompt_selectors.json"
+  ],
+  "issue_queries": [
+    {
+      "file": "sources/decision_2026_10_04/search_mixture_hash.json",
+      "total_count": 1,
+      "incomplete_results": false,
+      "items_returned": 1,
+      "issue_numbers": [
+        9126
+      ]
+    },
+    {
+      "file": "sources/decision_2026_10_04/search_swarm_id.json",
+      "total_count": 1,
+      "incomplete_results": false,
+      "items_returned": 1,
+      "issue_numbers": [
+        9126
+      ]
+    }
+  ],
+  "issue_9126_body_unchanged_from_prior_archive": true,
+  "limitations": [
+    "Filename matching is not a full text search of every blob or branch.",
+    "GitHub issue queries cover matching issue/PR indexed text, not a complete comment search.",
+    "Pinned HF registry fields give observations and budgets, not a selector execution contract.",
+    "This establishes the checked access boundary, not universal absence of public artifacts."
+  ],
+  "rubric_R12": "unassessed; endpoints cannot establish the historical decision criteria"
+}

@@ -6,6 +6,8 @@
 
 ## 内容
 
+- [候选选择与规则回放](DECISION_GUIDE_ZH.md)：597个seed0候选、七项BPB、三个参照；先执行退步限制再排序，解释零个符合条件者和自比通过的边界。
+
 - [理解文档与自测](LEARNING_GUIDE_ZH.md)：三条阅读路线、18个术语、五个反例练习；HTML前部有交互理解与评审工作台。
 - [18条判断规则](RUBRICS_ZH.md)：每条保留证据齐全/部分/反证锚点与来源，判断证据支持的结论范围，不计算总分。
 - [七阶段决策管线](PIPELINE_ZH.md)：冻结来源、筛候选、局部交换、独立确认、顺序、放大切换与复盘；附实验模板。
@@ -78,3 +80,10 @@ HTML提供五个Loss/工程案例的解释链、四项BPB的三seed点图和旧/
 可以给18条规则填写证据与状态、查看所选阶段缺口，并通过JSON复制/导入/导出。记录保存在当前浏览器本地，和旧笔记使用不同存储项；工具不验证用户证据真伪，也不执行训练。空证据、反证和不适用均不能让必备项通过；不同规则版本需要人工核对。
 
 `make report`新增规则/理解数据生成与9组逻辑、算术检查。第五轮报告检查通过521项，浏览器检查见[browser_validation_v5.json](analysis/browser_validation_v5.json)。完整实验计划模板位于[templates](templates/experiment_record.md)，默认均为未执行计划。原313文件源归档和训练曲线保持原快照，第五版标签为`report-v5-2026-10-04`。
+
+
+## 第六轮：候选决策实验室
+
+HTML的“候选决策实验室”按当前参照、主目标和启用风险阈值筛选597个seed0终点，展示七指标变化与排除原因。可切换完整/局部散点，局部图明确声明范围外数量且不改变筛选；手机端图和长表在容器内滚动。完整CSV及条件JSON可导出，默认情景是本报告自拟教学条件。JSON始终标记探索性重算；确认选择契约位于[templates/selection_contract.json](templates/selection_contract.json)。
+
+完整selector没有在已检查入口恢复，检索范围见[审计](analysis/selector_provenance_audit.json)。新增来源另存目录，318个文件有校验和；原312个内容文件未变，抓取清单新增记录。完整离线重建通过546项检查，九情景另从原parquet独立复算。浏览器记录见[browser_validation_v6.json](analysis/browser_validation_v6.json)，测试包括空结果、无效输入、CSV按钮数据、局部图排名不变与单文件零远程请求。未检验OS实际保存下载文件、独立GPU确认或外部规则效度。第六版标签`report-v6-2026-10-04`。

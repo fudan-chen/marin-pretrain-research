@@ -1,0 +1,38 @@
+{
+  "checkedUtc": "2026-10-04T12:37:16.733Z",
+  "functional": {
+    "nineScenariosMatch": true,
+    "infeasibleNotRelaxed": true,
+    "invalidInputBlocksOutput": true,
+    "jsonRetainsExploratoryState": true,
+    "completeCSVExport": true,
+    "existingLocalNotesPreserved": true,
+    "zoomPreservesRanking": true
+  },
+  "scenarios": [
+    {"baseline": "proportional", "preset": "macro", "count": 597, "best": "4602cace15312bd4"},
+    {"baseline": "proportional", "preset": "balanced", "count": 12, "best": "b100ad1935c71002"},
+    {"baseline": "proportional", "preset": "medical", "count": 0, "best": null},
+    {"baseline": "old", "preset": "macro", "count": 597, "best": "4602cace15312bd4"},
+    {"baseline": "old", "preset": "balanced", "count": 61, "best": "1d28fbf0c12e9932"},
+    {"baseline": "old", "preset": "medical", "count": 2, "best": "44bfd83cf7199b40"},
+    {"baseline": "selected", "preset": "macro", "count": 597, "best": "4602cace15312bd4"},
+    {"baseline": "selected", "preset": "balanced", "count": 85, "best": "197c9f5ceff6b9ee"},
+    {"baseline": "selected", "preset": "medical", "count": 1, "best": "996f489106c7b922"}
+  ],
+  "csv": {"rows": 597, "headerColumns": 18, "buttonPayloadVerified": true, "osFileSaveNotTested": true},
+  "desktop": {"viewport": 1440, "documentWidth": 1425, "chartWidth": 900},
+  "mobile": {"viewport": 390, "documentWidth": 375, "chartContainerWidth": 297, "chartScrollWidth": 650, "chartSvgWidth": 650, "tableScrollWidth": 1576},
+  "zoom": {"visible": 123, "outside": 474, "markers": 123},
+  "standalone": {"candidateCount": 597, "embeddedFigures": 12, "loadedFigures": 12, "externalHttpRequests": []},
+  "errors": [],
+  "screenshots": ["analysis/screenshots/decision_desktop_v6.png", "analysis/screenshots/decision_mobile_v6.png"],
+  "verification_scope": [
+    "Nine scenarios, invalid enabled cap, refusal to relax constraints and JSON state were exercised through native UI controls.",
+    "CSV/JSON button handlers produced inspected Blob payloads; anchor click was intercepted to avoid an unsolicited OS download. Original handlers were restored.",
+    "Local storage values were compared before and after decision interactions; existing notes and review entries remained unchanged.",
+    "Screenshots were opened and visually inspected. Mobile plots and tables scroll inside containers.",
+    "Browser receipts span two task sessions; the report document persisted, while runtime globals were reinitialized for the final visual checks."
+  ],
+  "not_verified": ["historical selector", "independent training confirmation", "real generation accuracy", "external reader comprehension"]
+}

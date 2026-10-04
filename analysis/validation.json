@@ -1,5 +1,5 @@
 {
-  "checks_passed": 521,
+  "checks_passed": 546,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -18,13 +18,18 @@
     "four new config contrasts / six step393 resume windows",
     "twelve embedded figures",
     "all relative HTML links valid",
-    "313 source archive checksums valid",
+    "318 source archive checksums valid",
     "18 authored rubrics / seven claim-stage decisions",
     "five interpretation cases / four metrics with switchable baselines",
     "12 figure-reading entries / five preserved collapsed tables",
     "18 terms / five reading exercises",
     "nine review logic and arithmetic checks",
-    "browser import/persistence/print and offline workbench checks"
+    "browser import/persistence/print and offline workbench checks",
+    "597 seed0 candidates / seven exact BPB inputs / nine constrained-selection scenarios",
+    "bounded selector provenance audit / five new source files",
+    "six rubric counterexample replays / confirmation selection contract",
+    "nine decision boundary test groups / separate raw-source recomputation",
+    "decision browser baseline, constraint, invalid-input, CSV and offline checks"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

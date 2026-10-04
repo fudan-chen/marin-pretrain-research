@@ -1,0 +1,29 @@
+{
+  "schema": "marin-selection-confirmation-contract/1",
+  "status": "planned_not_executed",
+  "contract_frozen_utc": null,
+  "prior_search_results_already_seen": true,
+  "search_snapshot_digest": null,
+  "frozen_candidate_ids": [],
+  "scope": {
+    "model": null,
+    "checkpoint_content_digest": null,
+    "bucket_manifest_digest": null,
+    "tokenizer_revision": null,
+    "evaluation_path": null
+  },
+  "budget": {"primary_matching_unit": null, "budget_per_arm": null, "confirmation_repetitions": null},
+  "primary": {"metric": null, "unit": null, "direction": null, "aggregation": null},
+  "baseline": {"recipe_digest": null, "rationale": null},
+  "guardrails": [],
+  "independent_confirmation": {
+    "eval_manifest_digest": null,
+    "used_during_search": null,
+    "generation_protocol": null,
+    "contamination_audit": null,
+    "repetition_protocol": null
+  },
+  "decision": {"minimum_effect": null, "uncertainty_rule": null, "infeasible_action": null, "stop_condition": null},
+  "results": null,
+  "limitations": ["Existing endpoint exploration is retrospective. Freezing this contract would apply only to future confirmation, not turn prior search into preregistered evidence."]
+}

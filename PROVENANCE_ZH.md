@@ -75,3 +75,13 @@ domain比例是同cluster五档求和；质量比例是同档40域求和；阶�
 5. 当前计划epochs与实际文档曝光的差距；不公开的token store及cursor无法在本机完整重放。
 
 本报告针对这些问题给出可检验的实验设计，没有补造实验结果。
+
+## 6. 第六轮的选择入口与探索性重算
+
+`sources/decision_2026_10_04/`新增五个文件：最新main元信息、固定递归代码树、#9126正文、按配比哈希和swarm ID的issue查询。固定revision为`84869ae8c91ffe64e9f761c5bd714542eb1876e0`，检索限制保存在[入口审计](analysis/selector_provenance_audit.json)。原313个文件保留，归档总数318；生产曲线和HF终点没有更新。
+
+`scripts/build_decision.py`从原固定parquet提取597个seed0候选、七指标与三个seed0参照，保留原键、文件摘要和数据摘要。`assets/decision-core.js`执行硬限制交集后按主目标排序。它只操作已公开终点；事后阈值不能变成预先注册，导出JSON始终注明探索状态。
+
+九情景的哈希和数量由JS计算，报告校验另从原parquet与设置独立复算。新模板的执行/结果字段保持空值。历史selector、独立确认、生成正确率与目标规模收益均未由这套工具验证。
+
+与V5归档逐文件核对时，原312个内容文件的SHA256未变，`source_manifest.json`扩展了五条新采集记录。新的完整性清单记录当前318文件；它不把清单扩展误记成旧训练证据刷新。

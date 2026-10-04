@@ -1,0 +1,19 @@
+<section class="chapter decision-lab" id="decision-lab">
+<h1>候选决策实验室：目标改变后，选择怎样改变</h1>
+<p>用固定版本的597个d512 seed0搜索终点做探索性重算。先执行退步限制，再最小化主目标BPB。这里没有恢复Marin原selector，也没有产生独立确认结果。<a href="#decision-guide">阅读决策文档与规则回放</a></p>
+<div class="decision-controls"><div><label for="decision-baseline">比较参照（全部seed0）</label><select id="decision-baseline"><option value="proportional">库存比例基线</option><option value="old">旧Harrier配比</option><option value="selected">选中996f配比</option></select></div><div><label for="decision-primary">主目标（越小越好）</label><select id="decision-primary"></select></div><div><label for="decision-preset">教学情景</label><select id="decision-preset"><option value="macro">只按通用文本BPB排序</option><option value="balanced">代码目标 + 数学/通用文本不退步</option><option value="medical">三指标目标 + 医学/语言风险检查</option><option value="custom">自定义探索</option></select></div></div>
+<p class="status">情景与默认阈值由本报告自拟，用于理解决策条件；不代表Marin目标或训练建议。未启用的指标保持可见，但不会过滤候选。</p>
+<details class="decision-caps" open><summary>设置硬限制：各项BPB相对参照最多退步多少</summary><div id="decision-caps"></div><p class="status">0% = 相对当前参照不退步；+2% = 允许BPB最多上升2%；−1% = 要求至少改善1%。约束先于排序执行，不允许用另一项收益抵消越界。所有数值来自seed0，不能据此证明稳定通过能力保底。</p></details>
+<p id="decision-status" class="status" role="status" aria-live="polite"></p>
+<div id="decision-summary" class="decision-summary" aria-live="polite"></div>
+<div class="decision-chart-wrap"><h2>同一批候选里的取舍</h2><p>横轴Paloma macro、纵轴HumanEval目标文本，均为相对当前参照的BPB变化；左下更好。被启用限制排除的点为灰色；符合限制为蓝色；选中996f为菱形、197c为大圆。符号仅用于定位；点的颜色取决于限制，不能只看落点决定上线。</p><label for="decision-chart-range">散点显示范围（不改变筛选与排名）</label><select id="decision-chart-range"><option value="full">完整范围：全部597点</option><option value="focus">聚焦参照与两个候选：显示范围外计数</option></select><div id="decision-chart"></div><p id="decision-chart-reading" class="status"></p></div>
+<div id="decision-focus" class="interpretation-grid"></div>
+<h2>逐指标看风险，保留被排除的原因</h2>
+<label for="decision-row-search">候选哈希筛选</label><input id="decision-row-search" placeholder="如197c、996f"><label for="decision-row-filter">显示范围</label><select id="decision-row-filter"><option value="all">全部候选</option><option value="eligible">符合当前限制</option><option value="excluded">被当前限制排除</option></select>
+<p id="decision-row-status" class="status"></p><div class="table-wrap"><table id="decision-table"><thead></thead><tbody></tbody></table></div>
+<p class="status">页面最多显示前30行；完整597行及排除原因可导出CSV。是否有其他seed只表明同权重记录存在，不会把这里的seed0排名变成多seed确认；共享checkpoint和参与搜索的条件仍在。</p>
+<p class="status">手机端图表和长表可在各自容器内横向滚动；完整原值可以下载CSV。</p>
+<div class="actions"><button class="action" id="decision-export-json">导出探索性决策JSON</button><button class="action" id="decision-export-csv">导出全部候选CSV</button><button class="action" id="decision-copy">显示当前决策JSON</button></div>
+<details id="decision-record-view"><summary>查看可复制的决策记录</summary><textarea id="decision-record" aria-label="探索性决策JSON" readonly></textarea></details>
+<p><a href="analysis/decision_candidates.csv">固定七指标原值CSV</a> · <a href="analysis/selector_provenance_audit.json">selector公开入口审计</a> · <a href="templates/selection_contract.json" download>独立确认选择契约模板</a></p>
+</section>

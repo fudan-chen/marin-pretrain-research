@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-04T07:27:31.000594+00:00",
+  "integrity_manifest_created_utc": "2026-10-04T12:39:41.530524+00:00",
   "files": [
     {
       "file": "code_launch_scaling_ladder.py",
@@ -48,6 +48,41 @@
       "sha256": "7bb03ec42887be8fd57cdc61899a8585e465d352aff5ec109e0193ac6726522e",
       "url": "https://storage.googleapis.com/marin-public/held/harrier-k40-cluster-overview/2026.08.18/index.html?revision=uniform-sampling",
       "retrieved_utc": "2026-10-03T21:33:00.184780+00:00"
+    },
+    {
+      "file": "decision_2026_10_04/issue_9126.json",
+      "bytes": 16199,
+      "sha256": "ff42bfae305d778697b7471eaa9bf5e96727abf8260b84d7222f5c7d00647930",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/9126",
+      "retrieved_utc": "2026-10-04T07:35:20.438337+00:00"
+    },
+    {
+      "file": "decision_2026_10_04/marin_head.json",
+      "bytes": 9146,
+      "sha256": "e6fef4c3e7052ee9cae0f7b84eb8cd12b3555f5f21849307e2a0ba67a710e182",
+      "url": "https://api.github.com/repos/marin-community/marin/commits/main",
+      "retrieved_utc": "2026-10-04T07:35:20.377050+00:00"
+    },
+    {
+      "file": "decision_2026_10_04/marin_tree.json",
+      "bytes": 1322549,
+      "sha256": "4bc6e573afcf7d3c861535badd6c0eb431c907134f26e44325c0a725444db7a9",
+      "url": "https://api.github.com/repos/marin-community/marin/git/trees/84869ae8c91ffe64e9f761c5bd714542eb1876e0?recursive=1",
+      "retrieved_utc": "2026-10-04T07:35:22.283949+00:00"
+    },
+    {
+      "file": "decision_2026_10_04/search_mixture_hash.json",
+      "bytes": 15358,
+      "sha256": "c319bcdfb04a3c319c702e9b812ae510d3764e0ffa242e7c88f04e3e4eb1bec9",
+      "url": "https://api.github.com/search/issues?q=repo%3Amarin-community%2Fmarin+996f489106c7b922&per_page=100",
+      "retrieved_utc": "2026-10-04T07:35:20.470996+00:00"
+    },
+    {
+      "file": "decision_2026_10_04/search_swarm_id.json",
+      "bytes": 15358,
+      "sha256": "c319bcdfb04a3c319c702e9b812ae510d3764e0ffa242e7c88f04e3e4eb1bec9",
+      "url": "https://api.github.com/search/issues?q=repo%3Amarin-community%2Fmarin+h100-d512-from10pct-store-4d2e363d&per_page=100",
+      "retrieved_utc": "2026-10-04T07:35:21.184974+00:00"
     },
     {
       "file": "deepening_2026_10_04/dataset_production.py",
@@ -1744,8 +1779,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 155163,
-      "sha256": "362be6d757c24e96d3fdeb61519575016f51cd92bd193a1c362247cfa3dfbeaa",
+      "bytes": 157356,
+      "sha256": "26b00cdef83724d82d08ec37764ad970d51b8385f8d081d4e890278f9050628a",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

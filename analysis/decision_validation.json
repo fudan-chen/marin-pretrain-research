@@ -1,0 +1,489 @@
+{
+  "test_groups_passed": 9,
+  "candidates": 597,
+  "metrics": 7,
+  "scenarios": [
+    {
+      "baseline": "proportional",
+      "name": "macro_only",
+      "primary": "paloma",
+      "caps": {},
+      "eligible": 597,
+      "best": "4602cace15312bd4",
+      "selected": [
+        {
+          "id": "197c9f5ceff6b9ee",
+          "rank": 19,
+          "violations": [],
+          "changes": {
+            "paloma": -0.1758592643611001,
+            "humaneval": -7.90861914170261,
+            "gsm8k": 1.7059747765672872,
+            "medqa": 22.355905121752716,
+            "belebele": 2.196639141873735,
+            "include": 0.7903950940040705,
+            "programming": -1.854540424627582
+          }
+        },
+        {
+          "id": "996f489106c7b922",
+          "rank": 116,
+          "violations": [],
+          "changes": {
+            "paloma": -0.002582176252119428,
+            "humaneval": -7.180219449228764,
+            "gsm8k": 4.67544095116903,
+            "medqa": 10.872293697383961,
+            "belebele": 0.38325816869704266,
+            "include": -0.7664150044383145,
+            "programming": -1.8840814108954107
+          }
+        }
+      ]
+    },
+    {
+      "baseline": "proportional",
+      "name": "code_with_math_guard",
+      "primary": "humaneval",
+      "caps": {
+        "paloma": 0,
+        "gsm8k": 0
+      },
+      "eligible": 12,
+      "best": "b100ad1935c71002",
+      "selected": [
+        {
+          "id": "197c9f5ceff6b9ee",
+          "rank": null,
+          "violations": [
+            {
+              "metric": "gsm8k",
+              "cap": 0,
+              "change": 1.7059747765672872
+            }
+          ],
+          "changes": {
+            "paloma": -0.1758592643611001,
+            "humaneval": -7.90861914170261,
+            "gsm8k": 1.7059747765672872,
+            "medqa": 22.355905121752716,
+            "belebele": 2.196639141873735,
+            "include": 0.7903950940040705,
+            "programming": -1.854540424627582
+          }
+        },
+        {
+          "id": "996f489106c7b922",
+          "rank": null,
+          "violations": [
+            {
+              "metric": "gsm8k",
+              "cap": 0,
+              "change": 4.67544095116903
+            }
+          ],
+          "changes": {
+            "paloma": -0.002582176252119428,
+            "humaneval": -7.180219449228764,
+            "gsm8k": 4.67544095116903,
+            "medqa": 10.872293697383961,
+            "belebele": 0.38325816869704266,
+            "include": -0.7664150044383145,
+            "programming": -1.8840814108954107
+          }
+        }
+      ]
+    },
+    {
+      "baseline": "proportional",
+      "name": "three_metrics_with_medical_guard",
+      "primary": "paloma",
+      "caps": {
+        "paloma": 0,
+        "humaneval": 0,
+        "gsm8k": 0,
+        "medqa": 2,
+        "belebele": 1,
+        "include": 1
+      },
+      "eligible": 0,
+      "best": null,
+      "selected": [
+        {
+          "id": "197c9f5ceff6b9ee",
+          "rank": null,
+          "violations": [
+            {
+              "metric": "gsm8k",
+              "cap": 0,
+              "change": 1.7059747765672872
+            },
+            {
+              "metric": "medqa",
+              "cap": 2,
+              "change": 22.355905121752716
+            },
+            {
+              "metric": "belebele",
+              "cap": 1,
+              "change": 2.196639141873735
+            }
+          ],
+          "changes": {
+            "paloma": -0.1758592643611001,
+            "humaneval": -7.90861914170261,
+            "gsm8k": 1.7059747765672872,
+            "medqa": 22.355905121752716,
+            "belebele": 2.196639141873735,
+            "include": 0.7903950940040705,
+            "programming": -1.854540424627582
+          }
+        },
+        {
+          "id": "996f489106c7b922",
+          "rank": null,
+          "violations": [
+            {
+              "metric": "gsm8k",
+              "cap": 0,
+              "change": 4.67544095116903
+            },
+            {
+              "metric": "medqa",
+              "cap": 2,
+              "change": 10.872293697383961
+            }
+          ],
+          "changes": {
+            "paloma": -0.002582176252119428,
+            "humaneval": -7.180219449228764,
+            "gsm8k": 4.67544095116903,
+            "medqa": 10.872293697383961,
+            "belebele": 0.38325816869704266,
+            "include": -0.7664150044383145,
+            "programming": -1.8840814108954107
+          }
+        }
+      ]
+    },
+    {
+      "baseline": "old",
+      "name": "macro_only",
+      "primary": "paloma",
+      "caps": {},
+      "eligible": 597,
+      "best": "4602cace15312bd4",
+      "selected": [
+        {
+          "id": "197c9f5ceff6b9ee",
+          "rank": 19,
+          "violations": [],
+          "changes": {
+            "paloma": -0.7415802335584587,
+            "humaneval": -3.7971596305026,
+            "gsm8k": 7.451650637600005,
+            "medqa": 30.678933639418048,
+            "belebele": 4.959037608996897,
+            "include": 1.8397467392137656,
+            "programming": -3.7712374741131427
+          }
+        },
+        {
+          "id": "996f489106c7b922",
+          "rank": 116,
+          "violations": [],
+          "changes": {
+            "paloma": -0.5692851371951857,
+            "humaneval": -3.0362402188577997,
+            "gsm8k": 10.588870871459765,
+            "medqa": 18.414171315338336,
+            "belebele": 3.096640534481887,
+            "include": 0.2667283380203722,
+            "programming": -3.800201550135074
+          }
+        }
+      ]
+    },
+    {
+      "baseline": "old",
+      "name": "code_with_math_guard",
+      "primary": "humaneval",
+      "caps": {
+        "paloma": 0,
+        "gsm8k": 0
+      },
+      "eligible": 61,
+      "best": "1d28fbf0c12e9932",
+      "selected": [
+        {
+          "id": "197c9f5ceff6b9ee",
+          "rank": null,
+          "violations": [
+            {
+              "metric": "gsm8k",
+              "cap": 0,
+              "change": 7.451650637600005
+            }
+          ],
+          "changes": {
+            "paloma": -0.7415802335584587,
+            "humaneval": -3.7971596305026,
+            "gsm8k": 7.451650637600005,
+            "medqa": 30.678933639418048,
+            "belebele": 4.959037608996897,
+            "include": 1.8397467392137656,
+            "programming": -3.7712374741131427
+          }
+        },
+        {
+          "id": "996f489106c7b922",
+          "rank": null,
+          "violations": [
+            {
+              "metric": "gsm8k",
+              "cap": 0,
+              "change": 10.588870871459765
+            }
+          ],
+          "changes": {
+            "paloma": -0.5692851371951857,
+            "humaneval": -3.0362402188577997,
+            "gsm8k": 10.588870871459765,
+            "medqa": 18.414171315338336,
+            "belebele": 3.096640534481887,
+            "include": 0.2667283380203722,
+            "programming": -3.800201550135074
+          }
+        }
+      ]
+    },
+    {
+      "baseline": "old",
+      "name": "three_metrics_with_medical_guard",
+      "primary": "paloma",
+      "caps": {
+        "paloma": 0,
+        "humaneval": 0,
+        "gsm8k": 0,
+        "medqa": 2,
+        "belebele": 1,
+        "include": 1
+      },
+      "eligible": 2,
+      "best": "44bfd83cf7199b40",
+      "selected": [
+        {
+          "id": "197c9f5ceff6b9ee",
+          "rank": null,
+          "violations": [
+            {
+              "metric": "gsm8k",
+              "cap": 0,
+              "change": 7.451650637600005
+            },
+            {
+              "metric": "medqa",
+              "cap": 2,
+              "change": 30.678933639418048
+            },
+            {
+              "metric": "belebele",
+              "cap": 1,
+              "change": 4.959037608996897
+            },
+            {
+              "metric": "include",
+              "cap": 1,
+              "change": 1.8397467392137656
+            }
+          ],
+          "changes": {
+            "paloma": -0.7415802335584587,
+            "humaneval": -3.7971596305026,
+            "gsm8k": 7.451650637600005,
+            "medqa": 30.678933639418048,
+            "belebele": 4.959037608996897,
+            "include": 1.8397467392137656,
+            "programming": -3.7712374741131427
+          }
+        },
+        {
+          "id": "996f489106c7b922",
+          "rank": null,
+          "violations": [
+            {
+              "metric": "gsm8k",
+              "cap": 0,
+              "change": 10.588870871459765
+            },
+            {
+              "metric": "medqa",
+              "cap": 2,
+              "change": 18.414171315338336
+            },
+            {
+              "metric": "belebele",
+              "cap": 1,
+              "change": 3.096640534481887
+            }
+          ],
+          "changes": {
+            "paloma": -0.5692851371951857,
+            "humaneval": -3.0362402188577997,
+            "gsm8k": 10.588870871459765,
+            "medqa": 18.414171315338336,
+            "belebele": 3.096640534481887,
+            "include": 0.2667283380203722,
+            "programming": -3.800201550135074
+          }
+        }
+      ]
+    },
+    {
+      "baseline": "selected",
+      "name": "macro_only",
+      "primary": "paloma",
+      "caps": {},
+      "eligible": 597,
+      "best": "4602cace15312bd4",
+      "selected": [
+        {
+          "id": "197c9f5ceff6b9ee",
+          "rank": 19,
+          "violations": [],
+          "changes": {
+            "paloma": -0.17328156254433624,
+            "humaneval": -0.784746191115393,
+            "gsm8k": -2.8368317798508236,
+            "medqa": 10.357512270569803,
+            "belebele": 1.8064575769489943,
+            "include": 1.5688338766678633,
+            "programming": 0.030108250213234378
+          }
+        },
+        {
+          "id": "996f489106c7b922",
+          "rank": 116,
+          "violations": [],
+          "changes": {
+            "paloma": 0,
+            "humaneval": 0,
+            "gsm8k": 0,
+            "medqa": 0,
+            "belebele": 0,
+            "include": 0,
+            "programming": 0
+          }
+        }
+      ]
+    },
+    {
+      "baseline": "selected",
+      "name": "code_with_math_guard",
+      "primary": "humaneval",
+      "caps": {
+        "paloma": 0,
+        "gsm8k": 0
+      },
+      "eligible": 85,
+      "best": "197c9f5ceff6b9ee",
+      "selected": [
+        {
+          "id": "197c9f5ceff6b9ee",
+          "rank": 1,
+          "violations": [],
+          "changes": {
+            "paloma": -0.17328156254433624,
+            "humaneval": -0.784746191115393,
+            "gsm8k": -2.8368317798508236,
+            "medqa": 10.357512270569803,
+            "belebele": 1.8064575769489943,
+            "include": 1.5688338766678633,
+            "programming": 0.030108250213234378
+          }
+        },
+        {
+          "id": "996f489106c7b922",
+          "rank": 2,
+          "violations": [],
+          "changes": {
+            "paloma": 0,
+            "humaneval": 0,
+            "gsm8k": 0,
+            "medqa": 0,
+            "belebele": 0,
+            "include": 0,
+            "programming": 0
+          }
+        }
+      ]
+    },
+    {
+      "baseline": "selected",
+      "name": "three_metrics_with_medical_guard",
+      "primary": "paloma",
+      "caps": {
+        "paloma": 0,
+        "humaneval": 0,
+        "gsm8k": 0,
+        "medqa": 2,
+        "belebele": 1,
+        "include": 1
+      },
+      "eligible": 1,
+      "best": "996f489106c7b922",
+      "selected": [
+        {
+          "id": "197c9f5ceff6b9ee",
+          "rank": null,
+          "violations": [
+            {
+              "metric": "medqa",
+              "cap": 2,
+              "change": 10.357512270569803
+            },
+            {
+              "metric": "belebele",
+              "cap": 1,
+              "change": 1.8064575769489943
+            },
+            {
+              "metric": "include",
+              "cap": 1,
+              "change": 1.5688338766678633
+            }
+          ],
+          "changes": {
+            "paloma": -0.17328156254433624,
+            "humaneval": -0.784746191115393,
+            "gsm8k": -2.8368317798508236,
+            "medqa": 10.357512270569803,
+            "belebele": 1.8064575769489943,
+            "include": 1.5688338766678633,
+            "programming": 0.030108250213234378
+          }
+        },
+        {
+          "id": "996f489106c7b922",
+          "rank": 1,
+          "violations": [],
+          "changes": {
+            "paloma": 0,
+            "humaneval": 0,
+            "gsm8k": 0,
+            "medqa": 0,
+            "belebele": 0,
+            "include": 0,
+            "programming": 0
+          }
+        }
+      ]
+    }
+  ],
+  "not_verified": [
+    "historical selector",
+    "preregistered validity of retrospective thresholds",
+    "independent model confirmation",
+    "generation accuracy or target-scale performance"
+  ]
+}

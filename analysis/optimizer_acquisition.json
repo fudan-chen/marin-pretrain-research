@@ -1,0 +1,12 @@
+{
+  "revision": "84869ae8c91ffe64e9f761c5bd714542eb1876e0",
+  "files": [
+    {
+      "file": "optimizer_2026_10_05/optimizer.py",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/grug/moe_hero_ep/optimizer.py",
+      "bytes": 11656,
+      "sha256": "50dddad265e18974e8529f7a9df26d37e44430ffc5442d5c93e58cb2e924ae0e",
+      "retrieved_utc": "2026-10-05T10:42:58.975435+00:00"
+    }
+  ]
+}

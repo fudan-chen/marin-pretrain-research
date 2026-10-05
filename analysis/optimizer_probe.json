@@ -1,0 +1,151 @@
+{
+  "checks_passed": 16,
+  "checks": [
+    "Only exact gate/router leaf suffixes receive specialized decay",
+    "Router bias remains Adam group but has no specialized decay",
+    "Output projection routes to AdamH",
+    "Gated norm precedes ordinary weight-suffix routing",
+    "Matrix and embedding groups follow their distinct rules",
+    "Original wrapper decay arithmetic at count 0",
+    "Original wrapper decay arithmetic at count 50",
+    "Original wrapper decay arithmetic at count 100",
+    "Original wrapper decay arithmetic at count 150",
+    "Wrapper forwards underlying state without adding decay state",
+    "Decay uses input count before synthetic Adam increment",
+    "Bias update excludes parameter decay contribution",
+    "Decay wrapper rejects missing params",
+    "Current default is zero and historical optimizer has no dedicated branch",
+    "Six ladder records retain three absent and three explicit zero settings",
+    "Clipping call sites lie in three separate group transforms"
+  ],
+  "parameter_groups": {
+    "blocks.attn.attn_gate": "adam",
+    "blocks.mlp.router": "adam",
+    "blocks.mlp.router_bias": "adam",
+    "blocks.mlp.router_extra": "muonh",
+    "token_embed": "adam",
+    "output_proj": "adamh",
+    "blocks.norm.weight": "adam",
+    "blocks.gated_norm.weight": "muonh",
+    "blocks.mlp.w1": "muonh"
+  },
+  "dedicated_decay_mask": {
+    "blocks.attn.attn_gate": true,
+    "blocks.mlp.router": true,
+    "blocks.mlp.router_bias": false,
+    "blocks.mlp.router_extra": false,
+    "token_embed": false,
+    "output_proj": false,
+    "blocks.norm.weight": false,
+    "blocks.gated_norm.weight": false,
+    "blocks.mlp.w1": false
+  },
+  "cases": [
+    {
+      "input_adam_count": 0,
+      "output_adam_count": 1,
+      "decay_coefficient": 0.2,
+      "router_final_with_artificial_lr": [
+        2.989,
+        5.983
+      ],
+      "router_bias_final_with_artificial_lr": [
+        4.995,
+        9.995
+      ]
+    },
+    {
+      "input_adam_count": 50,
+      "output_adam_count": 51,
+      "decay_coefficient": 0.1,
+      "router_final_with_artificial_lr": [
+        2.992,
+        5.989
+      ],
+      "router_bias_final_with_artificial_lr": [
+        4.995,
+        9.995
+      ]
+    },
+    {
+      "input_adam_count": 100,
+      "output_adam_count": 101,
+      "decay_coefficient": 0.0,
+      "router_final_with_artificial_lr": [
+        2.995,
+        5.995
+      ],
+      "router_bias_final_with_artificial_lr": [
+        4.995,
+        9.995
+      ]
+    },
+    {
+      "input_adam_count": 150,
+      "output_adam_count": 151,
+      "decay_coefficient": 0.0,
+      "router_final_with_artificial_lr": [
+        2.995,
+        5.995
+      ],
+      "router_bias_final_with_artificial_lr": [
+        4.995,
+        9.995
+      ]
+    }
+  ],
+  "configurations": [
+    {
+      "run": "h100-mix25-20260912-d1024",
+      "dedicated_decay_present": true,
+      "dedicated_decay_value": 0,
+      "max_grad_norm": null,
+      "generic_weight_decay": 0.1
+    },
+    {
+      "run": "h100-mix25-20260912-d1536",
+      "dedicated_decay_present": true,
+      "dedicated_decay_value": 0,
+      "max_grad_norm": null,
+      "generic_weight_decay": 0.1
+    },
+    {
+      "run": "h100-mix25-20260912-d768",
+      "dedicated_decay_present": true,
+      "dedicated_decay_value": 0,
+      "max_grad_norm": null,
+      "generic_weight_decay": 0.1
+    },
+    {
+      "run": "rav-ladder-d1024",
+      "dedicated_decay_present": false,
+      "dedicated_decay_value": null,
+      "max_grad_norm": null,
+      "generic_weight_decay": 0.1
+    },
+    {
+      "run": "rav-ladder-d1536",
+      "dedicated_decay_present": false,
+      "dedicated_decay_value": null,
+      "max_grad_norm": null,
+      "generic_weight_decay": 0.1
+    },
+    {
+      "run": "rav-ladder-d768-v2",
+      "dedicated_decay_present": false,
+      "dedicated_decay_value": null,
+      "max_grad_norm": null,
+      "generic_weight_decay": 0.1
+    }
+  ],
+  "default_dedicated_decay": 0.0,
+  "scope": "original flat-tree masks and decay wrapper with identity Adam dependency substitute; artificial learning rate; not actual Adam or multi_transform",
+  "source_sha256": {
+    "sources/optimizer_2026_10_05/optimizer.py": "50dddad265e18974e8529f7a9df26d37e44430ffc5442d5c93e58cb2e924ae0e",
+    "sources/code_optimizer.py": "2e64be6d9c1534add6aeecfcc0e71388e29936d6b66df59ac37db6b67b6de42f"
+  },
+  "actual_optimizer_state": null,
+  "actual_clipping_result": null,
+  "actual_training_effect": null,
+  "historical_execution_sha": null
+}

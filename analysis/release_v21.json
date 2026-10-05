@@ -1,0 +1,32 @@
+{
+  "edition": "V21",
+  "goal_status": "active",
+  "checks_passed": 1160,
+  "source_files": 407,
+  "prior_source_files_preserved": 405,
+  "original_optimizer_helper_checks": 16,
+  "scope": "original flat-tree masks and decay wrapper with identity-Adam substitute; no real moments, partitioned clipping, restore or training",
+  "actual_optimizer_state": null,
+  "actual_clipping_result": null,
+  "actual_training_effect": null,
+  "historical_execution_sha": null,
+  "artifact_sha256": {
+    "OPTIMIZER_GROUPS_ZH.md": "4ce2dda312cea32690a634f0e73cc039ac295d9a038236f06309a50880bec571",
+    "README.md": "62d4e720310dd27e8d9378bf5c27814411e1c193821043fe5b36a3964ecf296f",
+    "IMPROVEMENT_LOG_ZH.md": "bae092d336cebdecc1c129950fb5d5ecf6beaf33e3db4c2dfaac6640e09b8f5e",
+    "scripts/acquire_optimizer.py": "f5e974d3c8d4373092878fa838efcd5d103a6f8fee9284d4fce0014312ec964f",
+    "scripts/probe_optimizer.py": "10a23f2e44f1483e085227f59f4233eeff1b16233b88bbe62e3a893619c461df",
+    "scripts/build_html.py": "0ced8a29bfaff6777db326a7250ce8129a45b8887bed45f6bf1fa81fdaa66626",
+    "scripts/validate.py": "83e9ccab2ac812d8148802c011600531f3d44bd605f5cc8e22efdc3ba4263d3f",
+    "Makefile": "be7c7724bf5d8011a373b697f955bc203574ea0efe0be45ab2cf4ba45de7d5f5",
+    "analysis/optimizer_acquisition.json": "659e32812d5cc35ecb04139cc3ab6891fcc4e273d4db91ebe20a1ef0542f1fa7",
+    "analysis/optimizer_probe.json": "a67f4edb4ef98f76758ba357b008dff41de1472b4215bc35c47d5a9975c4b878",
+    "analysis/browser_validation_v21.json": "f64fab374cdd21e306c4fa251efa222de9a169016d742d59be07501522bfe44f",
+    "analysis/browser_v21_optimizer_desktop.png": "62ee6e96af9a8a7a0bdbc33dc77efad31729d054e806c70aa208c3d14e4821ee",
+    "analysis/validation.json": "d77d18a0c68562648e66004def1161415376a1898ec45b9b4bea08854739ea89",
+    "sources/archive_manifest.json": "1750b1edc03db0df0f0c32e3717d0efc473d3209644a48befb0ab9de5194d7ae",
+    "sources/source_manifest.json": "9bc2e2eb9a59e1b05a9d88305f27fbe1261f49bdb854d7de3ad109328572f7d0",
+    "index.html": "6ecd581827f53ef69de4abb99ff2f1ef54b1a7a12c2f8864a55528a19baa9ca9",
+    "report_standalone.html": "138c0b3c4b36178915f0afdc8a0a4a39a2a943a96191d9b7cc95f4c60d6d316f"
+  }
+}

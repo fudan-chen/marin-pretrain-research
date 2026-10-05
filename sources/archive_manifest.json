@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-05T10:39:30.050056+00:00",
+  "integrity_manifest_created_utc": "2026-10-05T10:46:54.788557+00:00",
   "files": [
     {
       "file": "boundaries_2026_10_05/attention_core.py",
@@ -1083,6 +1083,13 @@
       "sha256": "cb2a8b6ac3df1adf2b7861844c8a688736729ebad0a7329bed5a7f5c334a6851",
       "url": "https://storage.googleapis.com/marin-public/held/h100-mix25-paloma/swarm-2026.09.14.1/selected_runs.json",
       "retrieved_utc": "2026-10-03T21:38:35.795538+00:00"
+    },
+    {
+      "file": "optimizer_2026_10_05/optimizer.py",
+      "bytes": 11656,
+      "sha256": "50dddad265e18974e8529f7a9df26d37e44430ffc5442d5c93e58cb2e924ae0e",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/grug/moe_hero_ep/optimizer.py",
+      "retrieved_utc": "2026-10-05T10:42:58.975435+00:00"
     },
     {
       "file": "plot_scaling_ladder.py",
@@ -2346,8 +2353,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 194568,
-      "sha256": "f411b6eb640da71ee8f2d0be3d8def876475b62a1e80b043a8427adb1c8bbbc7",
+      "bytes": 194937,
+      "sha256": "9bc2e2eb9a59e1b05a9d88305f27fbe1261f49bdb854d7de3ad109328572f7d0",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

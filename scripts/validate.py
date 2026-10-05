@@ -141,7 +141,7 @@ alt=all_rows[f['counterexample_run']]
 ok('197c dominates selected seed0 on three axes but not all tasks',all(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in [PM,HE,GM]) and sum(metric_value(alt,k)>metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==31 and sum(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==23)
 ok('197c has no independent seed1 or seed2 counterpart in this registry',sum('197c9f5ceff6b9ee-' in r['run_name'] for r in rows)==1)
 F=S/'findings_2026_10_04'
-ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/','contracts_2026_10_05/','state_2026_10_05/','boundaries_2026_10_05/','cache_2026_10_05/','dedup_2026_10_05/','quality_2026_10_05/','routing_2026_10_05/')) for x in manifest['files'])==313)
+ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/','contracts_2026_10_05/','state_2026_10_05/','boundaries_2026_10_05/','cache_2026_10_05/','dedup_2026_10_05/','quality_2026_10_05/','routing_2026_10_05/','optimizer_2026_10_05/')) for x in manifest['files'])==313)
 for i,row in enumerate(f['configs']):
     def source_run(name):return read((F if 'mixprior-' in name else P)/('config_'+name+'.json'))['data']['project']['run']
     ra,rb=source_run(row['run_a']),source_run(row['run_b']);ca,cb=json.loads(ra['config']),json.loads(rb['config'])
@@ -192,7 +192,7 @@ for scenario in decision_checks['scenarios']:
 doc_tables=soup.select('#decision-guide table')
 ok('Decision documentation preserves nine scenarios and six rule counterexamples',len(doc_tables)==3 and len(doc_tables[1].select('tbody tr'))==9 and len(doc_tables[2].select('tbody tr'))==6 and all(int(t.select('td')[2].text)==s['eligible'] and (s['best'] is None or s['best']==t.select('td')[3].text) for s,t in zip(decision_checks['scenarios'],doc_tables[1].select('tbody tr'))))
 ok('Selector trace reports bounded search rather than universal absence',trace['status']=='not_recovered_in_checked_public_entries' and trace['tree_truncated'] is False and len(trace['limitations'])==4 and all(q['total_count']==q['items_returned']==1 and q['issue_numbers']==[9126] and q['incomplete_results'] is False for q in trace['issue_queries']) and trace['issue_9126_body_unchanged_from_prior_archive'])
-ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==406 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
+ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==407 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
 contract=read(ROOT/'templates/selection_contract.json')
 ok('Confirmation contract cannot retroactively assert prior registration',contract['status']=='planned_not_executed' and contract['prior_search_results_already_seen'] is True and contract['contract_frozen_utc'] is None and contract['results'] is None and contract['independent_confirmation']['used_during_search'] is None)
 embedded=json.loads(soup.select_one('#decision-data').text)
@@ -521,6 +521,18 @@ report['highlights']+=['V20 local-quantile partition / HIST shared-grid range / 
 browser20=read(A/'browser_validation_v20.json')
 ok('V20 QB chapter fits viewport and loads offline',browser20['desktop']['width']<=browser20['desktop']['viewport'] and browser20['mobile']['width']<=browser20['mobile']['viewport'] and browser20['offline']['figures']==browser20['offline']['loaded']==17 and browser20['offline']['tables']==4 and browser20['offline']['hasHistogramCaveat'] and browser20['offline']['requests']==browser20['offline']['errors']==[])
 ok('V20 viewed screenshot retains exact bytes',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha for p,sha in browser20['screenshot_sha256'].items()))
+op=read(A/'optimizer_probe.json')
+ok('V21 optimizer masks and decay wrapper retain sixteen scoped checks',op['checks_passed']==len(op['checks'])==16 and op['actual_optimizer_state'] is None and op['actual_clipping_result'] is None and op['actual_training_effect'] is None and op['historical_execution_sha'] is None)
+ok('V21 bias belongs to Adam but is excluded from dedicated decay',op['parameter_groups']['blocks.mlp.router_bias']=='adam' and op['dedicated_decay_mask']['blocks.mlp.router_bias'] is False)
+ok('V21 count-based decay retains clipping to zero',[c['decay_coefficient'] for c in op['cases']]==[.2,.1,0,0] and op['default_dedicated_decay']==0)
+ok('V21 six config declarations remain distinct from effective execution',len(op['configurations'])==6 and sum(c['dedicated_decay_present'] for c in op['configurations'])==3 and all(c['dedicated_decay_value'] in (None,0) and c['max_grad_norm'] is None and c['generic_weight_decay']==.1 for c in op['configurations']))
+for p,sha in op['source_sha256'].items():ok('Optimizer source checksum '+p,hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha)
+ok('V21 chapter distinguishes missing values from Python None',soup.select_one('#optimizer-guide') is not None and '不是显式传入Python' in soup.select_one('#optimizer-guide').text and '不是Adam算法数值结果' in soup.select_one('#optimizer-guide').text)
+report['highlights']=[x.replace('406 source archive checksums valid','407 source archive checksums valid') for x in report['highlights']]
+report['highlights']+=['V21 parameter groups / dedicated decay mask / Adam-count clock / group clipping scope']
+browser21=read(A/'browser_validation_v21.json')
+ok('V21 optimizer chapter fits viewport and loads offline',browser21['desktop']['width']<=browser21['desktop']['viewport'] and browser21['mobile']['width']<=browser21['mobile']['viewport'] and browser21['offline']['figures']==browser21['offline']['loaded']==17 and browser21['offline']['tables']==4 and browser21['offline']['hasScope'] and browser21['offline']['requests']==browser21['offline']['errors']==[])
+ok('V21 viewed screenshot retains exact bytes',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha for p,sha in browser21['screenshot_sha256'].items()))
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

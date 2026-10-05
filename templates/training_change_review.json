@@ -1,0 +1,22 @@
+{
+  "schema": "training-change-review/1",
+  "status": "planned_not_executed",
+  "question": null,
+  "intended_intervention": {
+    "kind": null,
+    "description": null,
+    "allowed_changes": [],
+    "required_invariants": [],
+    "declared_side_effects": []
+  },
+  "identities": {
+    "baseline": {"code_runtime_digest": null, "model_config_digest": null, "optimizer_schedule_digest": null, "start_state_digest": null, "data_content_and_index_digest": null, "tokenizer_digest": null, "sample_construction_digest": null, "evaluation_contract_digest": null},
+    "candidate": {"code_runtime_digest": null, "model_config_digest": null, "optimizer_schedule_digest": null, "start_state_digest": null, "data_content_and_index_digest": null, "tokenizer_digest": null, "sample_construction_digest": null, "evaluation_contract_digest": null}
+  },
+  "budget_contract": {"primary_axis": null, "start_and_end_next_index": null, "nominal_tokens": null, "scored_targets": null, "dropped_targets": null, "wallclock_seconds": null, "restart_and_stall_seconds": null, "data_build_cost_seconds": null},
+  "evaluation_contract": {"model_view": null, "pending_router_bias_policy": null, "ema_policy": null, "moe_drop_policy": null, "loss_terms": null, "weight_semantics": null, "byte_token_aggregation": null, "task_and_decoding_manifest": null},
+  "controls": {"common_start_replay": {"status": "not_run", "tolerances": null, "evidence": []}, "declared_invariant_checks": {"status": "not_run", "observations": null, "evidence": []}, "independent_confirmation": {"status": "not_run", "freeze_record": null, "metrics_and_guardrails": null, "evidence": []}},
+  "claim": {"scope": null, "supported_observation": null, "unresolved_alternatives": [], "decision": "pending_evidence", "rollback_point": null},
+  "evidence": [],
+  "warning": "This form organizes evidence. Filled fields or matching hashes do not authorize deployment or prove causality."
+}

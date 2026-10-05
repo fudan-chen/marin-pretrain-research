@@ -486,6 +486,18 @@ ok('V17 viewed screenshot keeps exact bytes',all(hashlib.sha256((ROOT/p).read_by
 for filename in ['scripts/acquire_quality.py','scripts/probe_quality.py','scripts/build_quality_windows.py']:
     compile((ROOT/filename).read_bytes(),filename,'exec')
 ok('V17 acquisition probe and explorer builder compile',True)
+contractaudit=read(A/'ladder_contract_audit.json')
+ok('V18 paired config census retains declared and actual equivalence distinction',len(contractaudit['pairs'])==3 and contractaudit['configuration_equal_is_execution_equal'] is False and all(p['groups']['model']['declared_equal'] and p['actual_code_sha'] is None and p['actual_start_state_digest'] is None and p['actual_cache_content_equivalence'] is None and p['actual_evaluation_equivalence'] is None for p in contractaudit['pairs']))
+ok('V18 group equality agrees with configuration content hashes',all(g['declared_equal']==(g['old_sha256']==g['new_sha256']) for p in contractaudit['pairs'] for g in p['groups'].values()))
+ok('V18 declared differences retain exact pair counts',[[len(p['groups'][k]['differences']) for k in ['model','optimizer','eval','trainer','resources']] for p in contractaudit['pairs']]==[[0,1,3,21,6],[0,5,4,24,6],[0,5,4,22,6]])
+for p,sha in contractaudit['source_sha256'].items():ok('Ladder contract source checksum '+p,hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha)
+changereview=read(ROOT/'templates/training_change_review.json')
+ok('V18 training change form retains unexecuted controls and actual identity unknowns',changereview['status']=='planned_not_executed' and changereview['claim']['decision']=='pending_evidence' and all(v is None for arm in changereview['identities'].values() for v in arm.values()) and all(c['status']=='not_run' and c['evidence']==[] for c in changereview['controls'].values()) and changereview['evidence']==[])
+ok('V18 chapter joins source checks without inventing deployment authority',soup.select_one('#change-guide') is not None and '五个对象' in soup.select_one('#change-guide').text and '不自动允许部署' in soup.select_one('#change-guide').text)
+report['highlights']+=['V18 paired config census / five frozen objects / three engineering claim layers / unexecuted change-review form']
+browser18=read(A/'browser_validation_v18.json')
+ok('V18 change guide fits viewport with offline ordered chapters and unchanged bank',browser18['desktop']['width']<=browser18['desktop']['viewport'] and browser18['mobile']['width']<=browser18['mobile']['viewport'] and browser18['desktop']['has_template'] and browser18['offline']['protocol']=='file:' and browser18['offline']['figures']==17 and browser18['offline']['tables']==3 and browser18['offline']['guide_order'][0]=='change-guide' and browser18['offline']['requests']==browser18['offline']['errors']==[] and browser18['offline']['bank']==bank['bank_sha256'])
+ok('V18 viewed screenshot retains exact bytes',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha for p,sha in browser18['screenshot_sha256'].items()))
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

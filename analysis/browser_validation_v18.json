@@ -1,0 +1,53 @@
+{
+  "desktop": {
+    "viewport": 1440,
+    "width": 1425,
+    "tables": 3,
+    "bank": "d58ffef93d8d21e388bd5e8ab072e91c6726aed756d586c0e1b961cb53bf3e9e",
+    "has_template": true
+  },
+  "mobile": {
+    "viewport": 390,
+    "width": 375,
+    "tables": [
+      {
+        "width": 297,
+        "scroll": 620
+      },
+      {
+        "width": 297,
+        "scroll": 620
+      },
+      {
+        "width": 297,
+        "scroll": 620
+      }
+    ]
+  },
+  "offline": {
+    "protocol": "file:",
+    "figures": 17,
+    "tables": 3,
+    "guide_order": [
+      "change-guide",
+      "quality-guide",
+      "dedup-guide",
+      "cache-guide",
+      "boundary-guide",
+      "state-guide",
+      "contracts-guide",
+      "scale-guide"
+    ],
+    "bank": "d58ffef93d8d21e388bd5e8ab072e91c6726aed756d586c0e1b961cb53bf3e9e",
+    "requests": [],
+    "errors": []
+  },
+  "screenshots": [
+    "analysis/browser_v18_change_desktop.png"
+  ],
+  "screenshot_sha256": {
+    "analysis/browser_v18_change_desktop.png": "92d9175dc19bbaf9062fe0694e0a3f1c13ca41124de69c1a09ffe80045b90a6c"
+  },
+  "visual_scope": "desktop screenshot viewed; mobile table dimensions; offline DOM/resources",
+  "prior_source_files_preserved": 400
+}

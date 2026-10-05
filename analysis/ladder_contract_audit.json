@@ -1,0 +1,1073 @@
+{
+  "scope": "all declared model/optimizer/eval/trainer/resources fields; selected data settings and cell cache roots; lists compared as whole values",
+  "pairs": [
+    {
+      "old_run": "rav-ladder-d768-v2",
+      "new_run": "h100-mix25-20260912-d768",
+      "groups": {
+        "model": {
+          "old_sha256": "7a833f0b1c92dc738cb303097ca80d44edb01a536d6d24a1208e0109fecc8ee3",
+          "new_sha256": "7a833f0b1c92dc738cb303097ca80d44edb01a536d6d24a1208e0109fecc8ee3",
+          "declared_equal": true,
+          "differences": []
+        },
+        "optimizer": {
+          "old_sha256": "fcd89e048349625e9c38e22b4652969b41ccdc74e7d32b427a49d60e1cdcec5f",
+          "new_sha256": "a1e2f15e533485c5044e46ec4c37db01af324f677ea380ffd8517fb146ea8505",
+          "declared_equal": false,
+          "differences": [
+            {
+              "path": "optimizer.gate_router_weight_decay",
+              "old_present": false,
+              "new_present": true,
+              "old": null,
+              "new": 0
+            }
+          ]
+        },
+        "eval": {
+          "old_sha256": "a605b5a941e9c6930b589f1102147443c4dee2c8837f5f5d091e5357d8f1aca4",
+          "new_sha256": "4d947406ca5cb83a72090a046e4b784204fbad0bb0aaf24cb8663ca53fd5fe7f",
+          "declared_equal": false,
+          "differences": [
+            {
+              "path": "eval.dropless_eval_moe_implementation",
+              "old_present": false,
+              "new_present": true,
+              "old": null,
+              "new": "sonic"
+            },
+            {
+              "path": "eval.eval_at_first_step",
+              "old_present": false,
+              "new_present": true,
+              "old": null,
+              "new": false
+            },
+            {
+              "path": "eval.eval_batch_size",
+              "old_present": true,
+              "new_present": true,
+              "old": 64,
+              "new": 16
+            }
+          ]
+        },
+        "trainer": {
+          "old_sha256": "14c58f298bdce5b20aa98e6a91fad2def7ddcd5e462a052e74d66697f17aa32e",
+          "new_sha256": "3f445553826422ab31a8a5e82fba8a49a22b631581e25ae4b2a5d75679e2e6a7",
+          "declared_equal": false,
+          "differences": [
+            {
+              "path": "trainer.expert_axis_size",
+              "old_present": true,
+              "new_present": true,
+              "old": 64,
+              "new": 8
+            },
+            {
+              "path": "trainer.replica_axis_size",
+              "old_present": true,
+              "new_present": true,
+              "old": 1,
+              "new": 2
+            },
+            {
+              "path": "trainer.trainer.checkpointer.base_path",
+              "old_present": true,
+              "new_present": true,
+              "old": "s3://marin-us-east-02a/marin/grug/rav-ladder-d768-v2/2026.08.18/checkpoints",
+              "new": "s3://marin-us-east-02a/marin/users/held/grug/h100-mix25-20260912-d768/dev/checkpoints"
+            },
+            {
+              "path": "trainer.trainer.checkpointer.save_interval",
+              "old_present": true,
+              "new_present": true,
+              "old": null,
+              "new": "1:00:00"
+            },
+            {
+              "path": "trainer.trainer.checkpointer.temporary_base_path",
+              "old_present": true,
+              "new_present": true,
+              "old": null,
+              "new": "s3://marin-us-east-02a/tmp/ttl=14d/checkpoints-temp/marin-us-east-02a/marin/users/held/grug/h100-mix25-20260912-d768/dev/checkpoints"
+            },
+            {
+              "path": "trainer.trainer.checkpointer.write.cache_pool_bytes",
+              "old_present": false,
+              "new_present": true,
+              "old": null,
+              "new": 1073741824
+            },
+            {
+              "path": "trainer.trainer.checkpointer.write.data_copy_concurrency",
+              "old_present": false,
+              "new_present": true,
+              "old": null,
+              "new": 16
+            },
+            {
+              "path": "trainer.trainer.checkpointer.write.max_write_replicas",
+              "old_present": true,
+              "new_present": true,
+              "old": 64,
+              "new": 1024
+            },
+            {
+              "path": "trainer.trainer.id",
+              "old_present": true,
+              "new_present": true,
+              "old": "rav-ladder-d768-v2",
+              "new": "h100-mix25-20260912-d768"
+            },
+            {
+              "path": "trainer.trainer.load_checkpoint",
+              "old_present": true,
+              "new_present": true,
+              "old": false,
+              "new": null
+            },
+            {
+              "path": "trainer.trainer.load_checkpoint_path",
+              "old_present": true,
+              "new_present": true,
+              "old": null,
+              "new": [
+                "s3://marin-us-east-02a/marin/users/held/grug/h100-mix25-20260912-d768/dev/checkpoints",
+                "s3://marin-us-east-02a/tmp/ttl=14d/checkpoints-temp/marin-us-east-02a/marin/users/held/grug/h100-mix25-20260912-d768/dev/checkpoints",
+                "s3://marin-us-east-02a/tmp/ttl=14d/checkpoints-temp/marin-us-east-02a/marin/users/held/grug/h100-mix25-20260912-d768/dev/checkpoints"
+              ]
+            },
+            {
+              "path": "trainer.trainer.per_device_eval_parallelism",
+              "old_present": true,
+              "new_present": true,
+              "old": 16,
+              "new": 64
+            },
+            {
+              "path": "trainer.trainer.per_device_parallelism",
+              "old_present": true,
+              "new_present": true,
+              "old": 16,
+              "new": 64
+            },
+            {
+              "path": "trainer.trainer.progress_watchdog.process_timeout",
+              "old_present": true,
+              "new_present": true,
+              "old": null,
+              "new": "1:00:00"
+            },
+            {
+              "path": "trainer.trainer.progress_watchdog.startup_timeout",
+              "old_present": false,
+              "new_present": true,
+              "old": null,
+              "new": "1:20:00"
+            },
+            {
+              "path": "trainer.trainer.progress_watchdog.step_timeout",
+              "old_present": true,
+              "new_present": true,
+              "old": null,
+              "new": "0:15:00"
+            },
+            {
+              "path": "trainer.trainer.tracker.group",
+              "old_present": true,
+              "new_present": true,
+              "old": "moe-hero-ep-scaling-ladder",
+              "new": "moe-hero-ep-h100-scaling-ladder"
+            },
+            {
+              "path": "trainer.trainer.tracker.name",
+              "old_present": true,
+              "new_present": true,
+              "old": "rav-ladder-d768-v2",
+              "new": "h100-mix25-20260912-d768"
+            },
+            {
+              "path": "trainer.trainer.tracker.replicate_path",
+              "old_present": true,
+              "new_present": true,
+              "old": "s3://marin-us-east-02a/marin/grug/rav-ladder-d768-v2/2026.08.18",
+              "new": "s3://marin-us-east-02a/marin/users/held/grug/h100-mix25-20260912-d768/dev"
+            },
+            {
+              "path": "trainer.trainer.tracker.tags",
+              "old_present": true,
+              "new_present": true,
+              "old": [
+                "grug",
+                "moe",
+                "hero",
+                "ep",
+                "scaling-ladder",
+                "shape-d768",
+                "racks-1",
+                "gb200",
+                "harrier-mix-2026.08.18"
+              ],
+              "new": [
+                "grug",
+                "moe",
+                "hero",
+                "ep",
+                "scaling-ladder",
+                "h100",
+                "shape-d768",
+                "h100-nodes-2",
+                "ep8",
+                "harrier-mix-2026.08.18",
+                "best-mixture-996f489106c7b922"
+              ]
+            },
+            {
+              "path": "trainer.training_data_mode",
+              "old_present": false,
+              "new_present": true,
+              "old": null,
+              "new": "MIXTURE"
+            }
+          ]
+        },
+        "resources": {
+          "old_sha256": "c4c288e8118b209af5d1511fdcd7f44d88c888439cefa1613e4cb332761b6992",
+          "new_sha256": "45bf3d2b8dd50ad33cdee0c8c4158b3c9a85e78917a187f2dc817bb49690b39b",
+          "declared_equal": false,
+          "differences": [
+            {
+              "path": "resources.cpu",
+              "old_present": true,
+              "new_present": true,
+              "old": 120,
+              "new": 32
+            },
+            {
+              "path": "resources.device.count",
+              "old_present": true,
+              "new_present": true,
+              "old": 4,
+              "new": 8
+            },
+            {
+              "path": "resources.device.variant",
+              "old_present": true,
+              "new_present": true,
+              "old": "GB200",
+              "new": "H100"
+            },
+            {
+              "path": "resources.disk",
+              "old_present": true,
+              "new_present": true,
+              "old": "1t",
+              "new": "900g"
+            },
+            {
+              "path": "resources.ram",
+              "old_present": true,
+              "new_present": true,
+              "old": "850g",
+              "new": "600g"
+            },
+            {
+              "path": "resources.replicas",
+              "old_present": true,
+              "new_present": true,
+              "old": 16,
+              "new": 2
+            }
+          ]
+        }
+      },
+      "cache_roots": [
+        [
+          "s3://marin-us-east-02a/marin/datakit/store_81e7e39a"
+        ],
+        [
+          "s3://marin-us-east-02a/marin/datakit/store_4d2e363d"
+        ]
+      ],
+      "mixture_sha256": [
+        "5226362f875b703a92e35fd3feeb4bec6ca3d2f40ed47dc22053c80ffd56e921",
+        "21fce3d220dd3a8cb27d96b4ed3cc570b411b63b7063a8d4aaf3b571cf45ec5a"
+      ],
+      "selected_data_differences": [],
+      "observations": [
+        {
+          "run": "rav-ladder-d768-v2",
+          "state": "finished",
+          "logged_step": 11419,
+          "logged_total_tokens": 47898951680.0
+        },
+        {
+          "run": "h100-mix25-20260912-d768",
+          "state": "finished",
+          "logged_step": 11419,
+          "logged_total_tokens": 47898951680.0
+        }
+      ],
+      "assessment": "observed_complete_recipe_comparison; pure_mixture_effect_not_identified",
+      "actual_code_sha": null,
+      "actual_start_state_digest": null,
+      "actual_cache_content_equivalence": null,
+      "actual_evaluation_equivalence": null
+    },
+    {
+      "old_run": "rav-ladder-d1024",
+      "new_run": "h100-mix25-20260912-d1024",
+      "groups": {
+        "model": {
+          "old_sha256": "810b5eb28e49236394ee619713599c03b97b29f3ac26a0e6f7cc87a4b963fa75",
+          "new_sha256": "810b5eb28e49236394ee619713599c03b97b29f3ac26a0e6f7cc87a4b963fa75",
+          "declared_equal": true,
+          "differences": []
+        },
+        "optimizer": {
+          "old_sha256": "49917edd0e8366462a140dba919ad9bcb545d836760c12b2fed36912cc57147a",
+          "new_sha256": "1c3f141c3f253695f62d12f96127608a29c91503e4e22d0f8a6fb827b5be2216",
+          "declared_equal": false,
+          "differences": [
+            {
+              "path": "optimizer.adam_lr",
+              "old_present": true,
+              "new_present": true,
+              "old": 0.0033256689824839912,
+              "new": 0.0023516030894961955
+            },
+            {
+              "path": "optimizer.beta2",
+              "old_present": true,
+              "new_present": true,
+              "old": 0.95,
+              "new": 0.9684910757595268
+            },
+            {
+              "path": "optimizer.epsilon",
+              "old_present": true,
+              "new_present": true,
+              "old": 1.195916022710625e-15,
+              "new": 1.691280658776656e-15
+            },
+            {
+              "path": "optimizer.gate_router_weight_decay",
+              "old_present": false,
+              "new_present": true,
+              "old": null,
+              "new": 0
+            },
+            {
+              "path": "optimizer.learning_rate",
+              "old_present": true,
+              "new_present": true,
+              "old": 0.014411232257430628,
+              "new": 0.010190280054483513
+            }
+          ]
+        },
+        "eval": {
+          "old_sha256": "66bd160ee556b0743a4b021693a6344dd0fd57305d70e8b9510d0b6e86c13063",
+          "new_sha256": "c294dd28f7f65f94e5a0215506e0c012ec1647c559dc6a848c3022a1aba98b0c",
+          "declared_equal": false,
+          "differences": [
+            {
+              "path": "eval.dropless_eval_moe_implementation",
+              "old_present": false,
+              "new_present": true,
+              "old": null,
+              "new": "sonic"
+            },
+            {
+              "path": "eval.eval_at_first_step",
+              "old_present": false,
+              "new_present": true,
+              "old": null,
+              "new": false
+            },
+            {
+              "path": "eval.eval_batch_size",
+              "old_present": true,
+              "new_present": true,
+              "old": 128,
+              "new": 32
+            },
+            {
+              "path": "eval.steps_per_eval",
+              "old_present": true,
+              "new_present": true,
+              "old": 764,
+              "new": 1528
+            }
+          ]
+        },
+        "trainer": {
+          "old_sha256": "165813f0ab98e2b6d68efc1f51525ca1d06cbfb36d0ee7430341b0dfb77ae31d",
+          "new_sha256": "4305722c0891227ba0d1f6fd9c1ec916995dfee7853399e1b8b14533ea00d177",
+          "declared_equal": false,
+          "differences": [
+            {
+              "path": "trainer.expert_axis_size",
+              "old_present": true,
+              "new_present": true,
+              "old": 64,
+              "new": 8
+            },
+            {
+              "path": "trainer.replica_axis_size",
+              "old_present": true,
+              "new_present": true,
+              "old": 2,
+              "new": 4
+            },
+            {
+              "path": "trainer.trainer.checkpointer.base_path",
+              "old_present": true,
+              "new_present": true,
+              "old": "s3://marin-us-east-02a/marin/grug/rav-ladder-d1024/2026.08.18/checkpoints",
+              "new": "s3://marin-us-east-02a/marin/users/held/grug/h100-mix25-20260912-d1024/dev/checkpoints"
+            },
+            {
+              "path": "trainer.trainer.checkpointer.keep",
+              "old_present": true,
+              "new_present": true,
+              "old": [
+                {
+                  "every": 3000
+                }
+              ],
+              "new": null
+            },
+            {
+              "path": "trainer.trainer.checkpointer.save_interval",
+              "old_present": true,
+              "new_present": true,
+              "old": null,
+              "new": "1:00:00"
+            },
+            {
+              "path": "trainer.trainer.checkpointer.temporary_base_path",
+              "old_present": true,
+              "new_present": true,
+              "old": null,
+              "new": "s3://marin-us-east-02a/tmp/ttl=14d/checkpoints-temp/marin-us-east-02a/marin/users/held/grug/h100-mix25-20260912-d1024/dev/checkpoints"
+            },
+            {
+              "path": "trainer.trainer.checkpointer.write.cache_pool_bytes",
+              "old_present": false,
+              "new_present": true,
+              "old": null,
+              "new": 1073741824
+            },
+            {
+              "path": "trainer.trainer.checkpointer.write.data_copy_concurrency",
+              "old_present": false,
+              "new_present": true,
+              "old": null,
+              "new": 16
+            },
+            {
+              "path": "trainer.trainer.checkpointer.write.max_write_replicas",
+              "old_present": true,
+              "new_present": true,
+              "old": 64,
+              "new": 1024
+            },
+            {
+              "path": "trainer.trainer.id",
+              "old_present": true,
+              "new_present": true,
+              "old": "rav-ladder-d1024",
+              "new": "h100-mix25-20260912-d1024"
+            },
+            {
+              "path": "trainer.trainer.load_checkpoint",
+              "old_present": true,
+              "new_present": true,
+              "old": false,
+              "new": null
+            },
+            {
+              "path": "trainer.trainer.load_checkpoint_path",
+              "old_present": true,
+              "new_present": true,
+              "old": null,
+              "new": [
+                "s3://marin-us-east-02a/marin/users/held/grug/h100-mix25-20260912-d1024/dev/checkpoints",
+                "s3://marin-us-east-02a/tmp/ttl=14d/checkpoints-temp/marin-us-east-02a/marin/users/held/grug/h100-mix25-20260912-d1024/dev/checkpoints",
+                "s3://marin-us-east-02a/tmp/ttl=14d/checkpoints-temp/marin-us-east-02a/marin/users/held/grug/h100-mix25-20260912-d1024/dev/checkpoints"
+              ]
+            },
+            {
+              "path": "trainer.trainer.num_train_steps",
+              "old_present": true,
+              "new_present": true,
+              "old": 15276,
+              "new": 30552
+            },
+            {
+              "path": "trainer.trainer.per_device_eval_parallelism",
+              "old_present": true,
+              "new_present": true,
+              "old": 16,
+              "new": 32
+            },
+            {
+              "path": "trainer.trainer.per_device_parallelism",
+              "old_present": true,
+              "new_present": true,
+              "old": 16,
+              "new": 32
+            },
+            {
+              "path": "trainer.trainer.progress_watchdog.process_timeout",
+              "old_present": true,
+              "new_present": true,
+              "old": null,
+              "new": "1:00:00"
+            },
+            {
+              "path": "trainer.trainer.progress_watchdog.startup_timeout",
+              "old_present": false,
+              "new_present": true,
+              "old": null,
+              "new": "1:20:00"
+            },
+            {
+              "path": "trainer.trainer.progress_watchdog.step_timeout",
+              "old_present": true,
+              "new_present": true,
+              "old": null,
+              "new": "0:15:00"
+            },
+            {
+              "path": "trainer.trainer.tracker.group",
+              "old_present": true,
+              "new_present": true,
+              "old": "moe-hero-ep-scaling-ladder",
+              "new": "moe-hero-ep-h100-scaling-ladder"
+            },
+            {
+              "path": "trainer.trainer.tracker.name",
+              "old_present": true,
+              "new_present": true,
+              "old": "rav-ladder-d1024",
+              "new": "h100-mix25-20260912-d1024"
+            },
+            {
+              "path": "trainer.trainer.tracker.replicate_path",
+              "old_present": true,
+              "new_present": true,
+              "old": "s3://marin-us-east-02a/marin/grug/rav-ladder-d1024/2026.08.18",
+              "new": "s3://marin-us-east-02a/marin/users/held/grug/h100-mix25-20260912-d1024/dev"
+            },
+            {
+              "path": "trainer.trainer.tracker.tags",
+              "old_present": true,
+              "new_present": true,
+              "old": [
+                "grug",
+                "moe",
+                "hero",
+                "ep",
+                "scaling-ladder",
+                "shape-d1024",
+                "racks-2",
+                "gb200",
+                "harrier-mix-2026.08.18"
+              ],
+              "new": [
+                "grug",
+                "moe",
+                "hero",
+                "ep",
+                "scaling-ladder",
+                "h100",
+                "shape-d1024",
+                "h100-nodes-4",
+                "ep8",
+                "harrier-mix-2026.08.18",
+                "best-mixture-996f489106c7b922"
+              ]
+            },
+            {
+              "path": "trainer.trainer.train_batch_size",
+              "old_present": true,
+              "new_present": true,
+              "old": 2048,
+              "new": 1024
+            },
+            {
+              "path": "trainer.training_data_mode",
+              "old_present": false,
+              "new_present": true,
+              "old": null,
+              "new": "MIXTURE"
+            }
+          ]
+        },
+        "resources": {
+          "old_sha256": "227dd6625963370e8851a49a6d0fc18700f91986f111d796c42b8998b5b435c8",
+          "new_sha256": "c2773f2271d2600e97729f19ba06a469cd185ef37ccb2e50fab9593f73b19095",
+          "declared_equal": false,
+          "differences": [
+            {
+              "path": "resources.cpu",
+              "old_present": true,
+              "new_present": true,
+              "old": 120,
+              "new": 32
+            },
+            {
+              "path": "resources.device.count",
+              "old_present": true,
+              "new_present": true,
+              "old": 4,
+              "new": 8
+            },
+            {
+              "path": "resources.device.variant",
+              "old_present": true,
+              "new_present": true,
+              "old": "GB200",
+              "new": "H100"
+            },
+            {
+              "path": "resources.disk",
+              "old_present": true,
+              "new_present": true,
+              "old": "1t",
+              "new": "900g"
+            },
+            {
+              "path": "resources.ram",
+              "old_present": true,
+              "new_present": true,
+              "old": "850g",
+              "new": "600g"
+            },
+            {
+              "path": "resources.replicas",
+              "old_present": true,
+              "new_present": true,
+              "old": 32,
+              "new": 4
+            }
+          ]
+        }
+      },
+      "cache_roots": [
+        [
+          "s3://marin-us-east-02a/marin/datakit/store_81e7e39a"
+        ],
+        [
+          "s3://marin-us-east-02a/marin/datakit/store_4d2e363d"
+        ]
+      ],
+      "mixture_sha256": [
+        "c45732f9e08725beb1f634591df7c338826878cdf9d607e2d79a1869eb037bee",
+        "04aca3b143d70d457da3ecf461c63454a0d0126f653bd67a2342267fb4750758"
+      ],
+      "selected_data_differences": [],
+      "observations": [
+        {
+          "run": "rav-ladder-d1024",
+          "state": "finished",
+          "logged_step": 15275,
+          "logged_total_tokens": 128144375808.0
+        },
+        {
+          "run": "h100-mix25-20260912-d1024",
+          "state": "finished",
+          "logged_step": 30551,
+          "logged_total_tokens": 128144375808.0
+        }
+      ],
+      "assessment": "observed_complete_recipe_comparison; pure_mixture_effect_not_identified",
+      "actual_code_sha": null,
+      "actual_start_state_digest": null,
+      "actual_cache_content_equivalence": null,
+      "actual_evaluation_equivalence": null
+    },
+    {
+      "old_run": "rav-ladder-d1536",
+      "new_run": "h100-mix25-20260912-d1536",
+      "groups": {
+        "model": {
+          "old_sha256": "9de182025d85f81c98ef1ca7978bb425b16e98571a99c7ab25637c87cd570b0f",
+          "new_sha256": "9de182025d85f81c98ef1ca7978bb425b16e98571a99c7ab25637c87cd570b0f",
+          "declared_equal": true,
+          "differences": []
+        },
+        "optimizer": {
+          "old_sha256": "0095c73b0844d060d32398359cce8967422a8aeffb803537cdadcacbdd79b34b",
+          "new_sha256": "825555645e3b552911381b5a25b659552b0f0e9a40f8068edcc8846fcf67879e",
+          "declared_equal": false,
+          "differences": [
+            {
+              "path": "optimizer.adam_lr",
+              "old_present": true,
+              "new_present": true,
+              "old": 0.0034360151656866902,
+              "new": 0.001402752666139655
+            },
+            {
+              "path": "optimizer.beta2",
+              "old_present": true,
+              "new_present": true,
+              "old": 0.95,
+              "new": 0.9684910757595268
+            },
+            {
+              "path": "optimizer.epsilon",
+              "old_present": true,
+              "new_present": true,
+              "old": 1.1901086660166794e-15,
+              "new": 2.9151429118641857e-15
+            },
+            {
+              "path": "optimizer.gate_router_weight_decay",
+              "old_present": false,
+              "new_present": true,
+              "old": null,
+              "new": 0
+            },
+            {
+              "path": "optimizer.learning_rate",
+              "old_present": true,
+              "new_present": true,
+              "old": 0.01488939905130899,
+              "new": 0.006078594886605172
+            }
+          ]
+        },
+        "eval": {
+          "old_sha256": "36a3a7974b26ba77632d1d4993ea0afc40ec2c54783e3503a4f3643c046d99f6",
+          "new_sha256": "68247c54773d3cf4e975e4c6a7cb182748b3da6d94ab937cbbc93179e9da9e93",
+          "declared_equal": false,
+          "differences": [
+            {
+              "path": "eval.dropless_eval_moe_implementation",
+              "old_present": false,
+              "new_present": true,
+              "old": null,
+              "new": "sonic"
+            },
+            {
+              "path": "eval.eval_at_first_step",
+              "old_present": false,
+              "new_present": true,
+              "old": null,
+              "new": false
+            },
+            {
+              "path": "eval.eval_batch_size",
+              "old_present": true,
+              "new_present": true,
+              "old": 384,
+              "new": 64
+            },
+            {
+              "path": "eval.steps_per_eval",
+              "old_present": true,
+              "new_present": true,
+              "old": 756,
+              "new": 4538
+            }
+          ]
+        },
+        "trainer": {
+          "old_sha256": "6351e9effb04e2b12d89153f7d3fecf0409964c0e1602dc83b1db8bd42039272",
+          "new_sha256": "8b97b2ad0dbba2b71c785735c512b4712993f51629701b5d226b5dc3a94492a4",
+          "declared_equal": false,
+          "differences": [
+            {
+              "path": "trainer.expert_axis_size",
+              "old_present": true,
+              "new_present": true,
+              "old": 64,
+              "new": 8
+            },
+            {
+              "path": "trainer.replica_axis_size",
+              "old_present": true,
+              "new_present": true,
+              "old": 6,
+              "new": 8
+            },
+            {
+              "path": "trainer.trainer.checkpointer.base_path",
+              "old_present": true,
+              "new_present": true,
+              "old": "s3://marin-us-east-02a/marin/grug/rav-ladder-d1536/2026.08.18/checkpoints",
+              "new": "s3://marin-us-east-02a/marin/users/held/grug/h100-mix25-20260912-d1536/dev/checkpoints"
+            },
+            {
+              "path": "trainer.trainer.checkpointer.keep",
+              "old_present": true,
+              "new_present": true,
+              "old": [
+                {
+                  "every": 3000
+                }
+              ],
+              "new": null
+            },
+            {
+              "path": "trainer.trainer.checkpointer.save_interval",
+              "old_present": true,
+              "new_present": true,
+              "old": null,
+              "new": "1:00:00"
+            },
+            {
+              "path": "trainer.trainer.checkpointer.temporary_base_path",
+              "old_present": true,
+              "new_present": true,
+              "old": null,
+              "new": "s3://marin-us-east-02a/tmp/ttl=14d/checkpoints-temp/marin-us-east-02a/marin/users/held/grug/h100-mix25-20260912-d1536/dev/checkpoints"
+            },
+            {
+              "path": "trainer.trainer.checkpointer.write.cache_pool_bytes",
+              "old_present": false,
+              "new_present": true,
+              "old": null,
+              "new": 1073741824
+            },
+            {
+              "path": "trainer.trainer.checkpointer.write.data_copy_concurrency",
+              "old_present": false,
+              "new_present": true,
+              "old": null,
+              "new": 16
+            },
+            {
+              "path": "trainer.trainer.checkpointer.write.max_write_replicas",
+              "old_present": true,
+              "new_present": true,
+              "old": 64,
+              "new": 1024
+            },
+            {
+              "path": "trainer.trainer.id",
+              "old_present": true,
+              "new_present": true,
+              "old": "rav-ladder-d1536",
+              "new": "h100-mix25-20260912-d1536"
+            },
+            {
+              "path": "trainer.trainer.load_checkpoint",
+              "old_present": true,
+              "new_present": true,
+              "old": false,
+              "new": null
+            },
+            {
+              "path": "trainer.trainer.load_checkpoint_path",
+              "old_present": true,
+              "new_present": true,
+              "old": null,
+              "new": [
+                "s3://marin-us-east-02a/marin/users/held/grug/h100-mix25-20260912-d1536/dev/checkpoints",
+                "s3://marin-us-east-02a/tmp/ttl=14d/checkpoints-temp/marin-us-east-02a/marin/users/held/grug/h100-mix25-20260912-d1536/dev/checkpoints",
+                "s3://marin-us-east-02a/tmp/ttl=14d/checkpoints-temp/marin-us-east-02a/marin/users/held/grug/h100-mix25-20260912-d1536/dev/checkpoints"
+              ]
+            },
+            {
+              "path": "trainer.trainer.num_train_steps",
+              "old_present": true,
+              "new_present": true,
+              "old": 15128,
+              "new": 90767
+            },
+            {
+              "path": "trainer.trainer.progress_watchdog.process_timeout",
+              "old_present": true,
+              "new_present": true,
+              "old": null,
+              "new": "1:00:00"
+            },
+            {
+              "path": "trainer.trainer.progress_watchdog.startup_timeout",
+              "old_present": false,
+              "new_present": true,
+              "old": null,
+              "new": "1:20:00"
+            },
+            {
+              "path": "trainer.trainer.progress_watchdog.step_timeout",
+              "old_present": true,
+              "new_present": true,
+              "old": null,
+              "new": "0:15:00"
+            },
+            {
+              "path": "trainer.trainer.tracker.group",
+              "old_present": true,
+              "new_present": true,
+              "old": "moe-hero-ep-scaling-ladder",
+              "new": "moe-hero-ep-h100-scaling-ladder"
+            },
+            {
+              "path": "trainer.trainer.tracker.name",
+              "old_present": true,
+              "new_present": true,
+              "old": "rav-ladder-d1536",
+              "new": "h100-mix25-20260912-d1536"
+            },
+            {
+              "path": "trainer.trainer.tracker.replicate_path",
+              "old_present": true,
+              "new_present": true,
+              "old": "s3://marin-us-east-02a/marin/grug/rav-ladder-d1536/2026.08.18",
+              "new": "s3://marin-us-east-02a/marin/users/held/grug/h100-mix25-20260912-d1536/dev"
+            },
+            {
+              "path": "trainer.trainer.tracker.tags",
+              "old_present": true,
+              "new_present": true,
+              "old": [
+                "grug",
+                "moe",
+                "hero",
+                "ep",
+                "scaling-ladder",
+                "shape-d1536",
+                "racks-6",
+                "gb200",
+                "harrier-mix-2026.08.18"
+              ],
+              "new": [
+                "grug",
+                "moe",
+                "hero",
+                "ep",
+                "scaling-ladder",
+                "h100",
+                "shape-d1536",
+                "h100-nodes-8",
+                "ep8",
+                "harrier-mix-2026.08.18",
+                "best-mixture-996f489106c7b922"
+              ]
+            },
+            {
+              "path": "trainer.trainer.train_batch_size",
+              "old_present": true,
+              "new_present": true,
+              "old": 6144,
+              "new": 1024
+            },
+            {
+              "path": "trainer.training_data_mode",
+              "old_present": false,
+              "new_present": true,
+              "old": null,
+              "new": "MIXTURE"
+            }
+          ]
+        },
+        "resources": {
+          "old_sha256": "35bf392ccc2e113e639761bd52bbd4db66fcbd6869fd13da01e833d49865eebd",
+          "new_sha256": "34192ee6d3a112c71f37309b666f0a8e477a6309910401a34969e4731066e851",
+          "declared_equal": false,
+          "differences": [
+            {
+              "path": "resources.cpu",
+              "old_present": true,
+              "new_present": true,
+              "old": 120,
+              "new": 32
+            },
+            {
+              "path": "resources.device.count",
+              "old_present": true,
+              "new_present": true,
+              "old": 4,
+              "new": 8
+            },
+            {
+              "path": "resources.device.variant",
+              "old_present": true,
+              "new_present": true,
+              "old": "GB200",
+              "new": "H100"
+            },
+            {
+              "path": "resources.disk",
+              "old_present": true,
+              "new_present": true,
+              "old": "1t",
+              "new": "900g"
+            },
+            {
+              "path": "resources.ram",
+              "old_present": true,
+              "new_present": true,
+              "old": "850g",
+              "new": "600g"
+            },
+            {
+              "path": "resources.replicas",
+              "old_present": true,
+              "new_present": true,
+              "old": 96,
+              "new": 8
+            }
+          ]
+        }
+      },
+      "cache_roots": [
+        [
+          "s3://marin-us-east-02a/marin/datakit/store_81e7e39a"
+        ],
+        [
+          "s3://marin-us-east-02a/marin/datakit/store_4d2e363d"
+        ]
+      ],
+      "mixture_sha256": [
+        "2f7daf72d16367a6674842f1d243ffd80a4d41baabc244a9bb6bb279cb636a80",
+        "4eb1551c5924fca3424abfc5a1801c1a14f3a88975268649048d4c7f6cd18154"
+      ],
+      "selected_data_differences": [
+        {
+          "field": "experiment_budget",
+          "old": 380708585472,
+          "new": 380704391168,
+          "old_present": true,
+          "new_present": true
+        }
+      ],
+      "observations": [
+        {
+          "run": "rav-ladder-d1536",
+          "state": "finished",
+          "logged_step": 15127,
+          "logged_total_tokens": 380708585472.0
+        },
+        {
+          "run": "h100-mix25-20260912-d1536",
+          "state": "finished",
+          "logged_step": 90766,
+          "logged_total_tokens": 380704391168.0
+        }
+      ],
+      "assessment": "observed_complete_recipe_comparison; pure_mixture_effect_not_identified",
+      "actual_code_sha": null,
+      "actual_start_state_digest": null,
+      "actual_cache_content_equivalence": null,
+      "actual_evaluation_equivalence": null
+    }
+  ],
+  "source_sha256": {
+    "sources/scale_2026_10_05/config_rav-ladder-d768-v2.json": "3b0e9f5a883dcb778f7c3e7d310220c817b2f35a835c4dacb622af90173de4cd",
+    "sources/scale_2026_10_05/config_h100-mix25-20260912-d768.json": "17e18f8bd54ad25503ac792f1119768593a60b4e1eb966350ae5eea500440c47",
+    "sources/scale_2026_10_05/config_rav-ladder-d1024.json": "8228b01d96f8b43b8da7109087d6c0f8cdbf44b93c86b35190207496a52e1012",
+    "sources/scale_2026_10_05/config_h100-mix25-20260912-d1024.json": "b43bd75d42c3a4f5c9407aafca32f0a14d71c691adc7bf5d43ff26936fbb8f31",
+    "sources/scale_2026_10_05/config_rav-ladder-d1536.json": "90cdd8c7822dbc90534992654e776431b8156d8c9d1bdec864feefadc61dc493",
+    "sources/scale_2026_10_05/config_h100-mix25-20260912-d1536.json": "5d47fe4758a0b76505dddf70d56640aa4d875629a3ac7ead8620be5a7626e22c"
+  },
+  "configuration_equal_is_execution_equal": false
+}

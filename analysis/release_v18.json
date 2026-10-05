@@ -1,0 +1,31 @@
+{
+  "edition": "V18",
+  "goal_status": "active",
+  "checks_passed": 1124,
+  "source_files": 400,
+  "prior_source_files_preserved": 400,
+  "scope": "declared configuration census; integrated change-review method and reading routes; actual execution and causality unverified",
+  "actual_execution_equivalence": null,
+  "actual_cache_content_equivalence": null,
+  "actual_start_state_equivalence": null,
+  "artifact_sha256": {
+    "CHANGE_REVIEW_ZH.md": "2e1db5b781796370703d7918c69129d1b873f9f182d099f7ce09a294d94e8342",
+    "DELIVERY_AUDIT_ZH.md": "94a41d82a2646dc8bb561fb6e3bb35235e5db227c6d5dae82e388a51fe5ef791",
+    "PIPELINE_ZH.md": "06667a4eadb1d75810403637753a6e13cbd40d8a679f946611c436638fa378c2",
+    "README.md": "3115de94b274a9b140386ccf7d83c5a2c52d07f3b5027d9604827f25c0a21525",
+    "IMPROVEMENT_LOG_ZH.md": "f76b21db19ed04d8d2e56baeb41fe00b3d735a6679ea10c04028f0eb0587932e",
+    "templates/training_change_review.json": "7ec83ab6f288531221a723825fa81b7f21e113e11027ae4b48e510d4035304a8",
+    "scripts/audit_ladder_contract.py": "4586be432c80d38bb38db070cbdfae31825818868ec864964ca305078b6c1c7e",
+    "scripts/validate.py": "347eee122c52c0c66f205551190784b4045cbc59dd53b04a63f5139ebf59c3f5",
+    "scripts/build_html.py": "07ca27d5edc6a7f26a5d4665275ec012f7b8030ecc938a3e22b04588ea272cce",
+    "Makefile": "26f273577e5ab801fe751135c20e619cb60c59a3d4437c2ef2f09814309904b2",
+    "analysis/ladder_contract_audit.json": "7dbddcf924cb28abc1a678bd296c97b1443abb512143e85e99d222013f28133f",
+    "analysis/browser_validation_v18.json": "f40ab317c06c09bf6d2d86ad8f14283ea27fe407ba86d7e2e5703809dc2fe875",
+    "analysis/browser_v18_change_desktop.png": "92d9175dc19bbaf9062fe0694e0a3f1c13ca41124de69c1a09ffe80045b90a6c",
+    "analysis/validation.json": "1a6db63a54015e34006bbb07d280d772d6c6308410c914ba9bb268b2be87c31d",
+    "sources/archive_manifest.json": "918c29066b08ac86f6ddaf4c2e01db23a7d15fbb1bd1fc157c5347ba48153a35",
+    "sources/source_manifest.json": "290f14e2252b6ac1b645f32b6f8bfa712753d550c0e7545ece978e6d407896f8",
+    "index.html": "a861d67548b3612ae7787cd9c60c174492ceee660c9c92e4b97888ff67dd0d16",
+    "report_standalone.html": "09b5f0b10ca3dfe7d50f37c49eb7009ffdacebe70197dc8fd17ebd55e0282d9f"
+  }
+}

@@ -483,6 +483,9 @@ report['highlights']+=['V17 quality observation / vocabulary / calibration / fiv
 browser17=read(A/'browser_validation_v17.json')
 ok('V17 embedded explorer fits desktop/mobile and works offline',browser17['desktop']['width']<=browser17['desktop']['viewport'] and browser17['mobile']['width']<=browser17['mobile']['viewport'] and browser17['mobile']['inner_width']<=browser17['mobile']['inner_viewport'] and browser17['offline']['protocol']=='file:' and browser17['offline']['coverage']=='6000 / 10000' and browser17['offline']['requests']==browser17['offline']['errors']==[] and browser17['offline']['bank']==bank['bank_sha256'])
 ok('V17 viewed screenshot keeps exact bytes',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha for p,sha in browser17['screenshot_sha256'].items()))
+for filename in ['scripts/acquire_quality.py','scripts/probe_quality.py','scripts/build_quality_windows.py']:
+    compile((ROOT/filename).read_bytes(),filename,'exec')
+ok('V17 acquisition probe and explorer builder compile',True)
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

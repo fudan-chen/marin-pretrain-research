@@ -3511,5 +3511,54 @@
     "bytes": 100876,
     "sha256": "d796e5d3837afede33ff8d42ccceaa1ee017fbca727b24a18652e42c6e482bba",
     "retrieved_utc": "2026-10-05T08:46:51.153738+00:00"
+  },
+  {
+    "file": "state_2026_10_05/state_adapter.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/callbacks/state_adapter.py",
+    "bytes": 2580,
+    "sha256": "fdde652f95b9fb82d322d5e4cfed3b0750fdb15cd7507869e39a4e47bd82b70b",
+    "retrieved_utc": "2026-10-05T09:00:31.878734+00:00"
+  },
+  {
+    "file": "state_2026_10_05/callback_core.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/callbacks/_core.py",
+    "bytes": 5345,
+    "sha256": "093eb427fd538123007ef3e14658be3462fddfbe8f43783977bb11bb0a3b24ce",
+    "retrieved_utc": "2026-10-05T09:00:31.890916+00:00"
+  },
+  {
+    "file": "state_2026_10_05/test_state_adapter.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/tests/test_state_adapter_callbacks.py",
+    "bytes": 3207,
+    "sha256": "df98f0184aaeb5b29bccdaa382904b4dc130f9bc41287212ec64b17ca2a88b22",
+    "retrieved_utc": "2026-10-05T09:00:31.881551+00:00"
+  },
+  {
+    "file": "state_2026_10_05/test_checkpointing.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/tests/test_grug_checkpointing.py",
+    "bytes": 15278,
+    "sha256": "ef7fe93f356c26f249c8a5311d6717dcc289f3fc91a73f4d7d41203477c57771",
+    "retrieved_utc": "2026-10-05T09:00:31.902177+00:00"
+  },
+  {
+    "file": "state_2026_10_05/test_hero.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/tests/test_moe_hero_ep.py",
+    "bytes": 59983,
+    "sha256": "af0f050fdd4ac5fb75819ae91bacc643cce53bda8d139c35b8893aaef27fd4c5",
+    "retrieved_utc": "2026-10-05T09:00:32.354980+00:00"
+  },
+  {
+    "file": "state_2026_10_05/export_vllm.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/grug/moe_hero_ep/ops/export_vllm.py",
+    "bytes": 10025,
+    "sha256": "5e064bd0a05d06e987568f3ada35bc719d64531881d367e1d5a4414e99dabc46",
+    "retrieved_utc": "2026-10-05T09:00:32.186011+00:00"
+  },
+  {
+    "file": "state_2026_10_05/weights.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/grug/moe_hero_ep/weights.py",
+    "bytes": 2869,
+    "sha256": "495de05281ce1cd01d2ad187aafd43e7d89833d42109c63fe63db3d80d21f231",
+    "retrieved_utc": "2026-10-05T09:01:32.946146+00:00"
   }
 ]

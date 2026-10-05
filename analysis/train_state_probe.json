@@ -1,0 +1,486 @@
+{
+  "status": "original_function_control_flow_with_substitutes",
+  "checks_passed": 28,
+  "checks": [
+    "Original beta helper negates and centers each layer",
+    "Adding constant to all beta entries leaves centered bias invariant",
+    "Original train step increments optimizer metadata host_master_bf16",
+    "FP32 authoritative path accumulates ten increments host_master_bf16",
+    "Original train step increments optimizer metadata device_bf16_counterfactual",
+    "Illustrative repeated BF16 updates erase sub-ULP increments",
+    "Original train step increments optimizer metadata device_fp32",
+    "FP32 authoritative path accumulates ten increments device_fp32",
+    "Host authoritative parameters recast to finite BF16 replica",
+    "Original step stores newly observed betas as pending",
+    "Stored step-one params retain beta used on step one",
+    "Next step uses pending betas before substituted gradient computation",
+    "Master and compute views share centered beta at step two",
+    "Offload ordering transfers optimizer and master in and out",
+    "Synthetic near-tie routing changes expert under pending bias",
+    "Full modeled-state continuation equals uninterrupted two-step result",
+    "Same weights and step with missing pending beta changes next router state",
+    "Migration template selects master slot instead of rounded params slot",
+    "Original post-restore helper moves master into params",
+    "Synthesizing host master from masterless layout is rejected",
+    "Six archived ladder configs choose BF16 replica and FP32 host master",
+    "Original callback labels first completed update as log step zero",
+    "Original callback log labels differ from completed-update count by one",
+    "Actual training dataclass has six fields and no standalone RNG leaf",
+    "Inference weight consumer explicitly applies pending beta",
+    "Callback supplies stored params without pending-beta helper",
+    "Dataset cursor reconstructed from completed state step",
+    "Checkpoint writer stores completed-update count"
+  ],
+  "pinned_revision": "84869ae8c91ffe64e9f761c5bd714542eb1876e0",
+  "source_sha256": {
+    "sources/scale_2026_10_05/train_hero_ep.py": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7",
+    "sources/contracts_2026_10_05/model.py": "8fdfd89cf6814da05683f134f154525916728370368a2493843195d9a489859c",
+    "sources/state_2026_10_05/callback_core.py": "093eb427fd538123007ef3e14658be3462fddfbe8f43783977bb11bb0a3b24ce",
+    "sources/state_2026_10_05/export_vllm.py": "5e064bd0a05d06e987568f3ada35bc719d64531881d367e1d5a4414e99dabc46",
+    "sources/state_2026_10_05/state_adapter.py": "fdde652f95b9fb82d322d5e4cfed3b0750fdb15cd7507869e39a4e47bd82b70b",
+    "sources/state_2026_10_05/test_checkpointing.py": "ef7fe93f356c26f249c8a5311d6717dcc289f3fc91a73f4d7d41203477c57771",
+    "sources/state_2026_10_05/test_hero.py": "af0f050fdd4ac5fb75819ae91bacc643cce53bda8d139c35b8893aaef27fd4c5",
+    "sources/state_2026_10_05/test_state_adapter.py": "df98f0184aaeb5b29bccdaa382904b4dc130f9bc41287212ec64b17ca2a88b22",
+    "sources/state_2026_10_05/weights.py": "495de05281ce1cd01d2ad187aafd43e7d89833d42109c63fe63db3d80d21f231"
+  },
+  "extracted_original_functions": {
+    "sources/contracts_2026_10_05/model.py": [
+      {
+        "function": "apply_qb_betas",
+        "first_line": 1463,
+        "last_line": 1467
+      }
+    ],
+    "sources/scale_2026_10_05/train_hero_ep.py": [
+      {
+        "function": "template_for_candidate_layout",
+        "first_line": 161,
+        "last_line": 183
+      },
+      {
+        "function": "take_master_as_params",
+        "first_line": 186,
+        "last_line": 190
+      },
+      {
+        "function": "_make_train_step",
+        "first_line": 825,
+        "last_line": 914
+      }
+    ]
+  },
+  "train_state_fields": [
+    "step",
+    "params",
+    "master_params",
+    "opt_state",
+    "ema_params",
+    "pending_qb_betas"
+  ],
+  "precision_rows": [
+    {
+      "case": "host_master_bf16",
+      "completed_updates": 1,
+      "compute_weight": 1.0,
+      "master_weight": 0.9989989995956421,
+      "optimizer_counter": 1
+    },
+    {
+      "case": "host_master_bf16",
+      "completed_updates": 2,
+      "compute_weight": 0.99609375,
+      "master_weight": 0.9979979991912842,
+      "optimizer_counter": 2
+    },
+    {
+      "case": "host_master_bf16",
+      "completed_updates": 3,
+      "compute_weight": 0.99609375,
+      "master_weight": 0.9969969987869263,
+      "optimizer_counter": 3
+    },
+    {
+      "case": "host_master_bf16",
+      "completed_updates": 4,
+      "compute_weight": 0.99609375,
+      "master_weight": 0.9959959983825684,
+      "optimizer_counter": 4
+    },
+    {
+      "case": "host_master_bf16",
+      "completed_updates": 5,
+      "compute_weight": 0.99609375,
+      "master_weight": 0.9949949979782104,
+      "optimizer_counter": 5
+    },
+    {
+      "case": "host_master_bf16",
+      "completed_updates": 6,
+      "compute_weight": 0.9921875,
+      "master_weight": 0.9939939975738525,
+      "optimizer_counter": 6
+    },
+    {
+      "case": "host_master_bf16",
+      "completed_updates": 7,
+      "compute_weight": 0.9921875,
+      "master_weight": 0.9929929971694946,
+      "optimizer_counter": 7
+    },
+    {
+      "case": "host_master_bf16",
+      "completed_updates": 8,
+      "compute_weight": 0.9921875,
+      "master_weight": 0.9919919967651367,
+      "optimizer_counter": 8
+    },
+    {
+      "case": "host_master_bf16",
+      "completed_updates": 9,
+      "compute_weight": 0.9921875,
+      "master_weight": 0.9909909963607788,
+      "optimizer_counter": 9
+    },
+    {
+      "case": "host_master_bf16",
+      "completed_updates": 10,
+      "compute_weight": 0.98828125,
+      "master_weight": 0.9899899959564209,
+      "optimizer_counter": 10
+    },
+    {
+      "case": "device_bf16_counterfactual",
+      "completed_updates": 1,
+      "compute_weight": 1.0,
+      "master_weight": null,
+      "optimizer_counter": 1
+    },
+    {
+      "case": "device_bf16_counterfactual",
+      "completed_updates": 2,
+      "compute_weight": 1.0,
+      "master_weight": null,
+      "optimizer_counter": 2
+    },
+    {
+      "case": "device_bf16_counterfactual",
+      "completed_updates": 3,
+      "compute_weight": 1.0,
+      "master_weight": null,
+      "optimizer_counter": 3
+    },
+    {
+      "case": "device_bf16_counterfactual",
+      "completed_updates": 4,
+      "compute_weight": 1.0,
+      "master_weight": null,
+      "optimizer_counter": 4
+    },
+    {
+      "case": "device_bf16_counterfactual",
+      "completed_updates": 5,
+      "compute_weight": 1.0,
+      "master_weight": null,
+      "optimizer_counter": 5
+    },
+    {
+      "case": "device_bf16_counterfactual",
+      "completed_updates": 6,
+      "compute_weight": 1.0,
+      "master_weight": null,
+      "optimizer_counter": 6
+    },
+    {
+      "case": "device_bf16_counterfactual",
+      "completed_updates": 7,
+      "compute_weight": 1.0,
+      "master_weight": null,
+      "optimizer_counter": 7
+    },
+    {
+      "case": "device_bf16_counterfactual",
+      "completed_updates": 8,
+      "compute_weight": 1.0,
+      "master_weight": null,
+      "optimizer_counter": 8
+    },
+    {
+      "case": "device_bf16_counterfactual",
+      "completed_updates": 9,
+      "compute_weight": 1.0,
+      "master_weight": null,
+      "optimizer_counter": 9
+    },
+    {
+      "case": "device_bf16_counterfactual",
+      "completed_updates": 10,
+      "compute_weight": 1.0,
+      "master_weight": null,
+      "optimizer_counter": 10
+    },
+    {
+      "case": "device_fp32",
+      "completed_updates": 1,
+      "compute_weight": 0.9989989995956421,
+      "master_weight": null,
+      "optimizer_counter": 1
+    },
+    {
+      "case": "device_fp32",
+      "completed_updates": 2,
+      "compute_weight": 0.9979979991912842,
+      "master_weight": null,
+      "optimizer_counter": 2
+    },
+    {
+      "case": "device_fp32",
+      "completed_updates": 3,
+      "compute_weight": 0.9969969987869263,
+      "master_weight": null,
+      "optimizer_counter": 3
+    },
+    {
+      "case": "device_fp32",
+      "completed_updates": 4,
+      "compute_weight": 0.9959959983825684,
+      "master_weight": null,
+      "optimizer_counter": 4
+    },
+    {
+      "case": "device_fp32",
+      "completed_updates": 5,
+      "compute_weight": 0.9949949979782104,
+      "master_weight": null,
+      "optimizer_counter": 5
+    },
+    {
+      "case": "device_fp32",
+      "completed_updates": 6,
+      "compute_weight": 0.9939939975738525,
+      "master_weight": null,
+      "optimizer_counter": 6
+    },
+    {
+      "case": "device_fp32",
+      "completed_updates": 7,
+      "compute_weight": 0.9929929971694946,
+      "master_weight": null,
+      "optimizer_counter": 7
+    },
+    {
+      "case": "device_fp32",
+      "completed_updates": 8,
+      "compute_weight": 0.9919919967651367,
+      "master_weight": null,
+      "optimizer_counter": 8
+    },
+    {
+      "case": "device_fp32",
+      "completed_updates": 9,
+      "compute_weight": 0.9909909963607788,
+      "master_weight": null,
+      "optimizer_counter": 9
+    },
+    {
+      "case": "device_fp32",
+      "completed_updates": 10,
+      "compute_weight": 0.9899899959564209,
+      "master_weight": null,
+      "optimizer_counter": 10
+    }
+  ],
+  "qb_example": {
+    "after_first_stored_bias": [
+      [
+        0.0,
+        0.0
+      ]
+    ],
+    "after_first_pending_beta": [
+      [
+        1.0,
+        3.0
+      ]
+    ],
+    "next_training_bias": [
+      [
+        1.0,
+        -1.0
+      ]
+    ],
+    "after_second_stored_bias": [
+      [
+        1.0,
+        -1.0
+      ]
+    ],
+    "gradient_input_biases": [
+      [
+        [
+          -0.0,
+          -0.0
+        ]
+      ],
+      [
+        [
+          1.0,
+          -1.0
+        ]
+      ]
+    ],
+    "raw_logits": [
+      0.1,
+      0.2
+    ],
+    "stored_bias_top1": 1,
+    "pending_applied_top1": 0
+  },
+  "migration_cases": [
+    {
+      "checkpoint_has_master": true,
+      "run_mode": "device",
+      "error": null,
+      "template_params_is_none": true,
+      "same_template": false
+    },
+    {
+      "checkpoint_has_master": true,
+      "run_mode": "fp32_pinned_host",
+      "error": null,
+      "template_params_is_none": false,
+      "same_template": true
+    },
+    {
+      "checkpoint_has_master": false,
+      "run_mode": "device",
+      "error": null,
+      "template_params_is_none": false,
+      "same_template": true
+    },
+    {
+      "checkpoint_has_master": false,
+      "run_mode": "fp32_pinned_host",
+      "error": "ValueError"
+    }
+  ],
+  "ladder_configs": [
+    {
+      "run": "h100-mix25-20260912-d1024",
+      "master_param_mode": "FP32_PINNED_HOST",
+      "offload_opt_state": true,
+      "ema_beta": null,
+      "policy": {
+        "compute_dtype": "jax.numpy.bfloat16",
+        "output_dtype": "jax.numpy.bfloat16",
+        "param_dtype": "jax.numpy.bfloat16"
+      },
+      "load_checkpoint": null,
+      "source": "sources/scale_2026_10_05/config_h100-mix25-20260912-d1024.json",
+      "source_sha256": "b43bd75d42c3a4f5c9407aafca32f0a14d71c691adc7bf5d43ff26936fbb8f31"
+    },
+    {
+      "run": "h100-mix25-20260912-d1536",
+      "master_param_mode": "FP32_PINNED_HOST",
+      "offload_opt_state": true,
+      "ema_beta": null,
+      "policy": {
+        "compute_dtype": "jax.numpy.bfloat16",
+        "output_dtype": "jax.numpy.bfloat16",
+        "param_dtype": "jax.numpy.bfloat16"
+      },
+      "load_checkpoint": null,
+      "source": "sources/scale_2026_10_05/config_h100-mix25-20260912-d1536.json",
+      "source_sha256": "5d47fe4758a0b76505dddf70d56640aa4d875629a3ac7ead8620be5a7626e22c"
+    },
+    {
+      "run": "h100-mix25-20260912-d768",
+      "master_param_mode": "FP32_PINNED_HOST",
+      "offload_opt_state": true,
+      "ema_beta": null,
+      "policy": {
+        "compute_dtype": "jax.numpy.bfloat16",
+        "output_dtype": "jax.numpy.bfloat16",
+        "param_dtype": "jax.numpy.bfloat16"
+      },
+      "load_checkpoint": null,
+      "source": "sources/scale_2026_10_05/config_h100-mix25-20260912-d768.json",
+      "source_sha256": "17e18f8bd54ad25503ac792f1119768593a60b4e1eb966350ae5eea500440c47"
+    },
+    {
+      "run": "rav-ladder-d1024",
+      "master_param_mode": "FP32_PINNED_HOST",
+      "offload_opt_state": true,
+      "ema_beta": null,
+      "policy": {
+        "compute_dtype": "jax.numpy.bfloat16",
+        "output_dtype": "jax.numpy.bfloat16",
+        "param_dtype": "jax.numpy.bfloat16"
+      },
+      "load_checkpoint": false,
+      "source": "sources/scale_2026_10_05/config_rav-ladder-d1024.json",
+      "source_sha256": "8228b01d96f8b43b8da7109087d6c0f8cdbf44b93c86b35190207496a52e1012"
+    },
+    {
+      "run": "rav-ladder-d1536",
+      "master_param_mode": "FP32_PINNED_HOST",
+      "offload_opt_state": true,
+      "ema_beta": null,
+      "policy": {
+        "compute_dtype": "jax.numpy.bfloat16",
+        "output_dtype": "jax.numpy.bfloat16",
+        "param_dtype": "jax.numpy.bfloat16"
+      },
+      "load_checkpoint": false,
+      "source": "sources/scale_2026_10_05/config_rav-ladder-d1536.json",
+      "source_sha256": "90cdd8c7822dbc90534992654e776431b8156d8c9d1bdec864feefadc61dc493"
+    },
+    {
+      "run": "rav-ladder-d768-v2",
+      "master_param_mode": "FP32_PINNED_HOST",
+      "offload_opt_state": true,
+      "ema_beta": null,
+      "policy": {
+        "compute_dtype": "jax.numpy.bfloat16",
+        "output_dtype": "jax.numpy.bfloat16",
+        "param_dtype": "jax.numpy.bfloat16"
+      },
+      "load_checkpoint": false,
+      "source": "sources/scale_2026_10_05/config_rav-ladder-d768-v2.json",
+      "source_sha256": "3b0e9f5a883dcb778f7c3e7d310220c817b2f35a835c4dacb622af90173de4cd"
+    }
+  ],
+  "step_labels": [
+    {
+      "completed_updates": 1,
+      "log_step": 0,
+      "next_step": 1
+    },
+    {
+      "completed_updates": 393,
+      "log_step": 392,
+      "next_step": 393
+    },
+    {
+      "completed_updates": 394,
+      "log_step": 393,
+      "next_step": 394
+    }
+  ],
+  "substitutions": [
+    "JIT replaced with identity; no compilation or donation",
+    "NumPy arrays and finite BF16 RNE emulation",
+    "synthetic constant gradients and SGD update, not actual model/Adam",
+    "model and Eqx tree replacement adapters",
+    "memory transfer records only; no device transfers",
+    "fabricated manifest-presence values"
+  ],
+  "actual_hardware_result": null,
+  "actual_checkpoint_restore": null,
+  "historical_execution_binding": null,
+  "limitations": [
+    "No JAX autodiff, BF16 accelerator arithmetic, scheduling, or multi-host I/O reproduced",
+    "Toy top-1 differs from Hero top-k; illustrates decision sensitivity only",
+    "Stored-vs-pending evaluation timing is code-derived; magnitude and intended preferred semantics unmeasured",
+    "Control-flow resume equivalence does not prove full real token/state replay"
+  ]
+}

@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1036,
+  "checks_passed": 1065,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -18,7 +18,7 @@
     "four new config contrasts / six step393 resume windows",
     "seventeen embedded figures",
     "all relative HTML links valid",
-    "354 source archive checksums valid",
+    "361 source archive checksums valid",
     "18 authored rubrics / seven claim-stage decisions",
     "five interpretation cases / four metrics with switchable baselines",
     "17 figure-reading entries / five preserved collapsed tables",
@@ -57,7 +57,11 @@
     "V10 answer-bank preserved bytewise / old bank import explicitly rejected",
     "six null public commit fields / two callable runner entries / execution-code binding remains unknown",
     "six pinned implementation files / 46 original-helper and arithmetic checks / seven acceptance rules",
-    "V11 browser evidence remains historical; new chapter separately verified"
+    "V11 browser evidence remains historical; new chapter separately verified",
+    "seven new state sources / 28 original control-flow checks / master, pending routing and step-label audit",
+    "V12 bank retained bytewise before correcting main-report source semantics",
+    "V13 current-bank browser / old-record rejection / untouched local storage / file-protocol chapter",
+    "state-switch contract retains 3 unexecuted controls and 5 unknown gates"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

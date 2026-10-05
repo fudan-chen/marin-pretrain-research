@@ -1,0 +1,74 @@
+{
+  "schema": "marin-state-switch-acceptance/1",
+  "status": "planned_not_executed",
+  "purpose": "Before comparing mixture or order continuations, verify the state that determines the next update.",
+  "common_start": {
+    "executed_source_revision": null,
+    "effective_runtime_environment": null,
+    "actual_checkpoint_candidate": null,
+    "checkpoint_metadata_digest": null,
+    "completed_updates": null,
+    "log_step_convention": null,
+    "state_layout": null,
+    "authoritative_parameter_field": null,
+    "authoritative_parameter_dtype": null,
+    "authoritative_parameter_digest": null,
+    "stored_router_bias_digest": null,
+    "pending_qb_betas_digest": null,
+    "effective_next_router_bias_digest": null,
+    "optimizer_state_digest": null,
+    "optimizer_counter": null,
+    "effective_learning_rate": null,
+    "ema_enabled": null,
+    "ema_state_digest": null,
+    "data_key_derivation": null,
+    "tokenizer_digest": null,
+    "store_and_index_digest": null,
+    "first_batch_token_ids_digest": null,
+    "mixture_phase": null,
+    "cumulative_exposure_ledger": null
+  },
+  "evaluation_contract": {
+    "view": null,
+    "apply_pending_qb_betas": null,
+    "use_ema": null,
+    "compute_dtype": null,
+    "moe_backend": null,
+    "capacity_drop_policy": null,
+    "loss_weight_semantics": null,
+    "nll_and_regularizer_terms": null,
+    "token_and_byte_aggregation": null
+  },
+  "controls": [
+    {
+      "id": "uninterrupted_vs_restored",
+      "requires": "same complete state, data and runtime; compare one and multiple updates",
+      "predeclared_tolerances": null,
+      "observations": null,
+      "result": "not_run"
+    },
+    {
+      "id": "callback_vs_export_view",
+      "requires": "pin same candidate; explicitly align pending, EMA, dtype and backend",
+      "predeclared_tolerances": null,
+      "observations": null,
+      "result": "not_run"
+    },
+    {
+      "id": "mode_migration",
+      "requires": "verify authoritative FP32 values, optimizer and router state after migration",
+      "predeclared_tolerances": null,
+      "observations": null,
+      "result": "not_run"
+    }
+  ],
+  "gates": {
+    "state_identity": "unknown",
+    "cursor_identity": "unknown",
+    "objective_identity": "unknown",
+    "evaluation_identity": "unknown",
+    "resume_equivalence": "unknown"
+  },
+  "evidence": [],
+  "decision": "do_not_attribute_to_mixture_before_state_and_measurement_gates_are_resolved"
+}

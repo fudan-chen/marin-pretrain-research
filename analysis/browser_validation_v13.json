@@ -1,0 +1,45 @@
+{
+  "offline": {
+    "tables": 4,
+    "protocol": "file:",
+    "errors": [],
+    "bank": "d58ffef93d8d21e388bd5e8ab072e91c6726aed756d586c0e1b961cb53bf3e9e",
+    "diagrams": 1,
+    "requests": [],
+    "loadedFigures": 17
+  },
+  "desktop": {
+    "documentWidth": 1425,
+    "bank": "d58ffef93d8d21e388bd5e8ab072e91c6726aed756d586c0e1b961cb53bf3e9e",
+    "viewport": 1440,
+    "tables": 4,
+    "diagram": 1
+  },
+  "mobile": {
+    "documentWidth": 375,
+    "tableContainerWidth": 297,
+    "viewport": 390,
+    "tableScrollWidth": 620
+  },
+  "oldImportMessage": "导入未完成：题目版本或来源摘要不同；先人工迁移，不覆盖当前记录。 当前记录保留。",
+  "bankChecks": {
+    "promptsAndAnchorsUnchanged": true,
+    "oldImportRejected": true,
+    "localStorageUnchanged": true,
+    "oldBank": "3aea31f5b40bbdb9d0a725e7f971b6cb45fdd2d49cf8107feb55b934858d8915"
+  },
+  "scope": "V13 state chapter, old-bank import rejection and standalone loading; no whole legacy interaction replay or reader study",
+  "screenshots": [
+    "analysis/browser_v13_state_desktop.png",
+    "analysis/browser_v13_state_mobile.png",
+    "analysis/browser_v13_state_offline.png"
+  ],
+  "screenshot_sha256": {
+    "analysis/browser_v13_state_desktop.png": "7e90f393a1d312c3444aeffd2b71961a9ecc3db454857fb22d7e1871aba97172",
+    "analysis/browser_v13_state_mobile.png": "d61d8941012677300e98a1f712e4d6c639ebb88896baec69a2c51f904ee9a494",
+    "analysis/browser_v13_state_offline.png": "604c4102265c930d539953886fe76c1dc3d282e7709368f4f9970ac4704ad1bd"
+  },
+  "notes": [
+    "Import textarea initially hidden in a closed details panel; fill timed out without writes; inspected then opened observed summary and verified rejection."
+  ]
+}

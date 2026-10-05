@@ -1,5 +1,5 @@
 {
-  "bank_sha256": "3aea31f5b40bbdb9d0a725e7f971b6cb45fdd2d49cf8107feb55b934858d8915",
+  "bank_sha256": "d58ffef93d8d21e388bd5e8ab072e91c6726aed756d586c0e1b961cb53bf3e9e",
   "scope": "30 authored calibration examples; exercises evaluation-state logic only; no external human agreement measured",
   "examples": [
     {

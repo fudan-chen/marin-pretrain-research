@@ -178,7 +178,7 @@ ragged 路径把 receiving shard 的 per-chunk capacity clipping 计入 `sender_
 
 | 量 | 回答的问题 | 常见误读 |
 |---|---|---|
-| train/cross_entropy_loss | 当前被抽到的训练分布有多难预测 | 把配比变化后的数值当同一把尺 |
+| train/cross_entropy_loss | 原日志键；需查执行代码和系数，固定Hero源码会把最终logit z-loss计入这个键 | 因名称含CE就当纯NLL，或把配比变化后的数值当同一把尺 |
 | train/loss | 实际优化目标，可能包括最终logit z-loss | 与纯CE混用，误判正则的效果 |
 | eval_dropless/paloma/macro_loss | 固定Paloma子集的无容量丢弃平均loss | 与eval_dropless/macro_loss混用 |
 | macro BPB | 每byte的平均预测代价，减少tokenizer计量差异 | 把小百分比下降直接叫同百分比算力收益 |
@@ -186,6 +186,8 @@ ragged 路径把 receiving shard 的 per-chunk capacity clipping 计入 `sender_
 | throughput/mfu | 按解析FLOPs估计的硬件利用 | 跨context比较时忽略分子FLOPs变了 |
 
 Paloma macro 是子集平均，领域权重与训练池占比不是一回事。固定评测的多领域macro提高，不意味着每个下游任务都提高：新mix在d1536的Wikipedia BPB仍回退约0.50%；d768/d1024的code BPB略退，d1536才转为改善。[各子集最终结果](sources/mix_study_final-2026.09.15.1_final_results.csv)
+
+训练目标的源码口径见[接口深读](IMPLEMENTATION_CONTRACTS_ZH.md)；FP32 master、延后应用的路由偏置、恢复布局和日志step含义见[训练状态深读](TRAIN_STATE_ZH.md)。在当前固定实现中，日志step 0的首次评估发生在第一次更新之后，不是未经训练的初始化评估。历史run仍需绑定实际执行版本，不能只凭当前代码改写历史原因。
 
 W&B 图表在本报告中按七条实际 lineage 的有效区间拼接，避免把回退 trial 或父run的重复历史加进训练主轨迹。原始 GraphQL response 保留；长时间序列每个metric请求至多1500采样点，图中1000-step中位数只用于读趋势，不能检出所有单步尖峰。专项200步窗口单独抓取，逐点范围和数量核验。重复eval同step、同值已去重，未发现数值冲突。
 

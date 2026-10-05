@@ -19,6 +19,7 @@ report:
 	$(PYTHON) scripts/probe_qb_partition.py
 	$(PYTHON) scripts/probe_optimizer.py
 	$(PYTHON) scripts/probe_short_conv.py
+	$(PYTHON) scripts/analyze_mix_trajectory.py > analysis/mix_trajectory_computation.txt
 	$(PYTHON) scripts/audit_router_precision.py
 	$(PYTHON) scripts/audit_ladder_contract.py
 	$(PYTHON) scripts/probe_quality.py

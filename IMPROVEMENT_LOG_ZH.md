@@ -181,3 +181,8 @@ R05/R10/R14的回放从配置走到索引条件，规则1.0不变。完整报告
 ## V24：回到C025核对实验实现
 
 重新读取#8435公开API，27条评论的身份/正文均与归档一致，保留独立刷新核查记录。新增三份C025实验fork源码，静态提取三种router dot分支，明确后cast与preferred_element_type的区别；人工BF16输出舍入不是GPU复现。新章解释一rack诊断中实际batch、optimizer启发式batch、完整schedule的区别，提出未执行的训练/评估policy四格；真实fixture、HLO与训练结果未独立复现。
+
+
+## V25：回到配比切换的真实验证轨迹
+
+新增[MIX_TRAJECTORY_ZH.md](MIX_TRAJECTORY_ZH.md)。独立复算六份eval归档，按七段接续边界筛选；67个完整日志step、2144个子集值、67个macro值，排除528个继承值。换配比附近CE方向分裂，等权BPB与记录macro方向相反；16域图不平滑、不填补缺点。下一项检查优先共同checkpoint双分支和评估numerator/denominator，不从单条生产曲线估计因果收益。历史评估身份、训练桶到Paloma映射及反事实仍未取得。

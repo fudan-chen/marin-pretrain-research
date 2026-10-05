@@ -558,6 +558,23 @@ report['highlights']+=['V24 experimental fork router precision / schedule contro
 browser24=read(A/'browser_validation_v24.json')
 ok('V24 router precision chapter fits viewport and loads offline',browser24['desktop']['width']<=browser24['desktop']['viewport'] and browser24['mobile']['width']<=browser24['mobile']['viewport'] and browser24['offline']['figures']==browser24['offline']['loaded']==17 and browser24['offline']['tables']==4 and browser24['offline']['requests']==browser24['offline']['errors']==[])
 ok('V24 viewed screenshot retains exact bytes',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha for p,sha in browser24['screenshot_sha256'].items()))
+mt=read(A/'mix_trajectory.json')
+ok('V25 preserves exact subset points and separate logged macro',len(mt['subsets'])==16 and len(mt['complete_steps'])==67 and mt['subset_points']==2144 and mt['macro_points']==67 and mt['selected_points']==2211)
+for p,sha in mt['source_sha256'].items():ok('Mix trajectory input checksum '+p,hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha)
+# Cross-check against the independently implemented prior production-lineage stitch.
+with (A/'mix_trajectory_points.csv').open() as f:
+    point_rows=list(csv.DictReader(f))
+prior_series=read(A/'series.json')
+for row in point_rows:
+    key='eval_dropless/paloma/'+('' if row['subset']=='__macro__' else row['subset']+'/')+row['metric']
+    matches=[p for p in prior_series[key] if p['step']==int(row['step']) and p['run']==row['run']]
+    assert len(matches)==1 and matches[0]['value']==float(row['value'])
+ok('V25 independent production-lineage extraction matches 2211 prior values',len(point_rows)==2211)
+ok('V25 counterfactual and historical evaluator remain unknown',mt['actual_mix_counterfactual'] is None and mt['actual_cluster_to_paloma_mapping'] is None and mt['actual_historical_eval_identity'] is None)
+browser25=read(A/'browser_validation_v25.json')
+ok('V25 real trajectory SVG fits viewport and works offline',browser25['desktop']['width']<=browser25['desktop']['viewport'] and browser25['mobile']['width']<=browser25['mobile']['viewport'] and browser25['offline']['figures']==browser25['offline']['loaded']==17 and browser25['offline']['svg'] and browser25['offline']['requests']==browser25['offline']['errors']==[] and soup.select_one('#mix-trajectory-guide svg') is not None)
+ok('V25 viewed screenshot retains exact bytes',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha for p,sha in browser25['screenshot_sha256'].items()))
+report['highlights']+=['V25 exact production-lineage subset trajectories / inherited history exclusion / aggregate direction sensitivity / no causal attribution']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

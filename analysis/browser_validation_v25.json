@@ -1,0 +1,28 @@
+{
+  "desktop": {
+    "viewport": 1440,
+    "width": 1425,
+    "tables": 4,
+    "svg": true
+  },
+  "mobile": {
+    "viewport": 390,
+    "width": 375,
+    "wrapper_width": 297,
+    "scroll_width": 850
+  },
+  "offline": {
+    "figures": 17,
+    "loaded": 17,
+    "tables": 4,
+    "svg": true,
+    "hasScope": true,
+    "requests": [],
+    "errors": []
+  },
+  "screenshot_sha256": {
+    "analysis/browser_v25_mix_trajectory_desktop.png": "8b5cf6ca78962892153483b0fc54eb3c67dba64cf3a953949dfdc8100f2ba732"
+  },
+  "task_finished": true,
+  "independent_series_comparison_points": 2211
+}

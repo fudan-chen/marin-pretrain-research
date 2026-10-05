@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1186,
+  "checks_passed": 1198,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -72,7 +72,8 @@
     "V20 local-quantile partition / HIST shared-grid range / next-step router state / sixteen original helper checks",
     "V21 parameter groups / dedicated decay mask / Adam-count clock / group clipping scope",
     "V23 ShortConv segment identity / halo metadata / initialization blindspot / rounding and fallback scopes",
-    "V24 experimental fork router precision / schedule controls / proposed policy matrix / original issue body refresh"
+    "V24 experimental fork router precision / schedule controls / proposed policy matrix / original issue body refresh",
+    "V25 exact production-lineage subset trajectories / inherited history exclusion / aggregate direction sensitivity / no causal attribution"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

@@ -1,0 +1,124 @@
+{
+  "complete_checkpoints": 67,
+  "selected_points": 2211,
+  "summary": {
+    "pre_switch": {
+      "loss": {
+        "decreased": 8,
+        "increased": 8,
+        "equal_subset_mean_delta": 0.009041313081979752
+      },
+      "bpb": {
+        "decreased": 8,
+        "increased": 8,
+        "equal_subset_mean_delta": 0.002570575103163719
+      }
+    },
+    "crosses_mix_and_execution_changes": {
+      "loss": {
+        "decreased": 9,
+        "increased": 7,
+        "equal_subset_mean_delta": -0.001870952546596527
+      },
+      "bpb": {
+        "decreased": 9,
+        "increased": 7,
+        "equal_subset_mean_delta": -0.0009364951401948929
+      }
+    },
+    "post_switch": {
+      "loss": {
+        "decreased": 7,
+        "increased": 9,
+        "equal_subset_mean_delta": -0.0018376372754573822
+      },
+      "bpb": {
+        "decreased": 7,
+        "increased": 9,
+        "equal_subset_mean_delta": -0.0005722958594560623
+      }
+    }
+  },
+  "census": [
+    {
+      "run": "hero-12d8b6f0-dee637",
+      "lo": 0,
+      "hi": 58014,
+      "status": "archived_sampled_points",
+      "raw_points": 660,
+      "selected_points": 660,
+      "excluded_steps": []
+    },
+    {
+      "run": "hero-wd-gate-router-p02-step58k",
+      "lo": 58014,
+      "hi": 81716,
+      "status": "archived_sampled_points",
+      "raw_points": 264,
+      "selected_points": 264,
+      "excluded_steps": []
+    },
+    {
+      "run": "hero-ragged_a2a-nccl2307-ep-step81k",
+      "lo": 81716,
+      "hi": 108000,
+      "status": "archived_sampled_points",
+      "raw_points": 297,
+      "selected_points": 297,
+      "excluded_steps": []
+    },
+    {
+      "run": "hero-mix-996f4891-step108k",
+      "lo": 108000,
+      "hi": 108778,
+      "status": "no_archived_eval_snapshot",
+      "raw_points": 0,
+      "selected_points": 0
+    },
+    {
+      "run": "hero-nopdl-step108k",
+      "lo": 108778,
+      "hi": 121638,
+      "status": "archived_sampled_points",
+      "raw_points": 132,
+      "selected_points": 132,
+      "excluded_steps": []
+    },
+    {
+      "run": "hero-main-step121638",
+      "lo": 121638,
+      "hi": 146139,
+      "status": "archived_sampled_points",
+      "raw_points": 396,
+      "selected_points": 264,
+      "excluded_steps": [
+        110999,
+        113999,
+        116999,
+        119999
+      ]
+    },
+    {
+      "run": "hero-fa4sm100-nomask-step146k",
+      "lo": 146139,
+      "hi": null,
+      "status": "archived_sampled_points",
+      "raw_points": 990,
+      "selected_points": 594,
+      "excluded_steps": [
+        110999,
+        113999,
+        116999,
+        119999,
+        122999,
+        125999,
+        128999,
+        131999,
+        134999,
+        137999,
+        140999,
+        143999
+      ]
+    }
+  ]
+}

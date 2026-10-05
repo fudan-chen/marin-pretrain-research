@@ -1,0 +1,33 @@
+{
+  "edition": "V24",
+  "goal_status": "active",
+  "checks_passed": 1186,
+  "source_files": 416,
+  "prior_source_files_preserved": 412,
+  "scope": "static experimental fork audit, illustrative output rounding, body-only issue refresh; no new GPU training result",
+  "actual_gpu_dot": null,
+  "actual_hlo_verification": null,
+  "actual_fixture_loaded": null,
+  "actual_training_result": null,
+  "crossed_policy_evaluation": "proposed_not_executed",
+  "artifact_sha256": {
+    "ROUTER_PRECISION_ZH.md": "b74cb32df4df5043643b999339887cf477fb0c363882cc026c458d0a2f20b113",
+    "README.md": "ca73a582e078e93e831f19eb483914d497c0aa9fc2fc23c2f0e2dc0a9242c157",
+    "IMPROVEMENT_LOG_ZH.md": "f5bfee777258448ecca5250d5a49ef3cd8f6b9996a4b8d2b25a96916ee701ca5",
+    "scripts/acquire_router_precision.py": "75822a3ea5dcec0610fbfb2dc90daca2730ad61263d8e8fcc2bc87b41fecaaf1",
+    "scripts/audit_router_precision.py": "38a0aa64edac5fb227db33267c3b726df06a508fcd3b9ccde6af3aac087a99f9",
+    "scripts/build_html.py": "7ce9ee557798951ff6ef71b73aa80f3a5d0492e5836ca45ea2624dc19e2d4853",
+    "scripts/validate.py": "0eeed57f8bace0606be85d140165bbdf46722ca4cbb74e27bb4cadc55a836a53",
+    "Makefile": "fd5f22b9327ec78045894f40f40e8da6fb1b3da818dfc37e78c483bba89eef5d",
+    "analysis/router_precision_acquisition.json": "bba9b68543ca5d93c08e315c19fcb60f8ee8c9ef93edcecb2c80f41a1917ada1",
+    "analysis/router_precision_audit.json": "009013413c7c163f69e56711962c2338d468b3a4da4318f1329d19f2c295baf3",
+    "analysis/issue_8435_refresh_v24.json": "fe9b5ad528763894839221deda09425ad3698833f53f789804dd91b673081c12",
+    "analysis/browser_validation_v24.json": "52d2442d3b6d9896c3e3ade6336a931164750a5a4fac7a6456d366d4a1e49fee",
+    "analysis/browser_v24_router_precision_desktop.png": "b0c8b7723b4a3435f1f4627fb562087b773285e80e43a3dc49bb6d774a1127cd",
+    "analysis/validation.json": "02f3322766a6d7ffe94e6ca70cb9662831bbe075a71279c9940e50b0737c8a04",
+    "sources/archive_manifest.json": "244c2a3dcb08e55913ca065af66ce8e9a19b98d6fc9206a688b8e7ed08bf3be3",
+    "sources/source_manifest.json": "2897be3b68e6d41a2a0cfd756083f82f5d814b703e72a959e51e91957bec9777",
+    "index.html": "46320f1c67e9e6fe3a45ba3a613fda8d868ec21f73b767c5fe9164dcf791fce7",
+    "report_standalone.html": "b87d46b12cad34c4166468b196deb490f141a7fcc96b5bf903aa347b8f13d13a"
+  }
+}

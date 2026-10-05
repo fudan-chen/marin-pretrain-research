@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-05T10:59:27.443329+00:00",
+  "integrity_manifest_created_utc": "2026-10-05T13:15:16.495906+00:00",
   "files": [
     {
       "file": "boundaries_2026_10_05/attention_core.py",
@@ -2212,6 +2212,27 @@
       "retrieved_utc": "2026-10-05T09:56:37.865606+00:00"
     },
     {
+      "file": "router_precision_2026_10_05/launch_diagnostics.py",
+      "bytes": 23757,
+      "sha256": "bd223c9c3c8de1e1d693aa4b680f115edefcff2d03d7cc7fb3df922fa0a81270",
+      "url": "https://raw.githubusercontent.com/yonromai/marin/a00cb77a491f4777a2c66edce54f47ff7b255c40/experiments/grug/moe_hero_ep/launch_diagnostics.py",
+      "retrieved_utc": "2026-10-05T13:11:07.984230+00:00"
+    },
+    {
+      "file": "router_precision_2026_10_05/model.py",
+      "bytes": 78820,
+      "sha256": "bcd011cd1c7e584b56e80614c49440f910ddb4792211cedc4a770bc1373943d7",
+      "url": "https://raw.githubusercontent.com/yonromai/marin/a00cb77a491f4777a2c66edce54f47ff7b255c40/experiments/grug/moe_hero_ep/model.py",
+      "retrieved_utc": "2026-10-05T13:11:08.107468+00:00"
+    },
+    {
+      "file": "router_precision_2026_10_05/router_shape_probe.py",
+      "bytes": 6268,
+      "sha256": "b531f752aa24c5ce14b9376f0d46aac2163f4ab1cb343095ba42fe866c175dad",
+      "url": "https://raw.githubusercontent.com/yonromai/marin/a00cb77a491f4777a2c66edce54f47ff7b255c40/experiments/grug/moe_hero_ep/router_shape_probe.py",
+      "retrieved_utc": "2026-10-05T13:11:08.076243+00:00"
+    },
+    {
       "file": "routing_2026_10_05/common.py",
       "bytes": 11757,
       "sha256": "17499bc8712f00d475e98b67942adbc753713b5e274489b6467471c7ab3a7b4a",
@@ -2395,8 +2416,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 197260,
-      "sha256": "dcbee7a554bac76f97539cf98d740180272d5c901d12ec4ed45b394db6fa7d1f",
+      "bytes": 198394,
+      "sha256": "2897be3b68e6d41a2a0cfd756083f82f5d814b703e72a959e51e91957bec9777",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

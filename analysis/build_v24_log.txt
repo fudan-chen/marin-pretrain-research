@@ -1,0 +1,264 @@
+.venv/bin/python scripts/analyze.py > analysis/computation_log.txt
+.venv/bin/python scripts/appendices.py
+40-domain tables, top exposures, 17 eval rows, 58 production records generated.
+.venv/bin/python scripts/analyze_deepening.py > analysis/deepening_computation_log.txt
+.venv/bin/python scripts/analyze_practical.py > analysis/practical_computation_log.txt
+.venv/bin/python scripts/analyze_findings.py > analysis/findings_computation_log.txt
+.venv/bin/python scripts/analyze_execution.py > analysis/execution_computation_log.txt
+.venv/bin/python scripts/analyze_scale.py > analysis/scale_computation_log.txt
+.venv/bin/python scripts/probe_contracts.py
+Original helper and arithmetic checks: 46
+.venv/bin/python scripts/probe_state.py
+Original state-control-flow checks: 28
+.venv/bin/python scripts/probe_boundaries.py
+Boundary source-helper checks: 17
+.venv/bin/python scripts/audit_cache.py
+{
+  "configurations": 6,
+  "component_instances": 1200,
+  "unique_components": 200,
+  "cache_roots": [
+    "s3://marin-us-east-02a/marin/datakit/store_4d2e363d",
+    "s3://marin-us-east-02a/marin/datakit/store_81e7e39a"
+  ],
+  "component_split_counts": {
+    "validation": 1200
+  },
+  "admission_branch_cases": [
+    {
+      "case": "matching",
+      "status": "opened",
+      "warnings": []
+    },
+    {
+      "case": "mismatch",
+      "status": "opened",
+      "warnings": [
+        "Metadata mismatch: {'tokenizer': 'different'}"
+      ]
+    },
+    {
+      "case": "empty_metadata",
+      "status": "opened",
+      "warnings": [
+        "Metadata mismatch: {'preprocessor_metadata': 'missing'}"
+      ]
+    },
+    {
+      "case": "unfinished",
+      "status": "rejected_unfinished",
+      "warnings": []
+    }
+  ],
+  "current_tokenizer_markers": {
+    "<|begin_of_text|>": 128000,
+    "<|end_of_text|>": 128001,
+    "<|finetune_right_pad_id|>": 128004,
+    "<|eot_id|>": 128009
+  },
+  "observed_hf_revision": "a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2",
+  "historical_tokenizer_revision": null,
+  "actual_cache_ledger": null,
+  "actual_token_arrays": null,
+  "scope": "original admission branch with stubbed comparison and constructor; configuration census; current public tokenizer metadata only"
+}
+.venv/bin/python scripts/probe_dedup.py
+Dedup/document checks: 11
+.venv/bin/python scripts/probe_routing.py
+Routing checks: 11
+.venv/bin/python scripts/probe_qb_partition.py
+QB partition original helper checks: 16
+.venv/bin/python scripts/probe_optimizer.py
+Optimizer helper checks: 16
+.venv/bin/python scripts/probe_short_conv.py
+ShortConv checks: 16
+.venv/bin/python scripts/audit_router_precision.py
+Static router branches: 3 schedule source entries: 5
+.venv/bin/python scripts/audit_ladder_contract.py
+Audited 3 paired configurations; no actual execution equivalence asserted
+.venv/bin/python scripts/probe_quality.py
+Quality helper checks: 11
+.venv/bin/python scripts/build_quality_windows.py
+node scripts/test_quality.cjs
+Quality explorer: eight original-source window cases and invalid inputs verified
+.venv/bin/python scripts/build_learning.py
+Built 18 authored rubrics, seven pipeline stages and five interpretation cases from frozen results.
+.venv/bin/python scripts/build_decision.py
+Decision input: 597 seed0 candidates; 7 BPB metrics; SHA256 4402a49f814168b924c9000efc0601b8dfde215d3f6f533e473357479f63e40e
+Selector trace: not_recovered_in_checked_public_entries 84869ae8c91ffe64e9f761c5bd714542eb1876e0
+.venv/bin/python scripts/build_transfer.py > analysis/transfer_computation_log.txt
+.venv/bin/python scripts/build_order.py
+Built 8 historical order pairs and two prospective count contracts.
+.venv/bin/python scripts/build_engineering.py
+Engineering atlas: 8 episodes, 24 authored claims; no new cluster results.
+.venv/bin/python scripts/build_assessment.py
+Reader cases: 10 source-bound; authored calibration examples: 30
+.venv/bin/python scripts/charts.py
+Exported five figures, PNG + SVG.
+.venv/bin/python scripts/charts_deepening.py
+Exported three additional figures, PNG + SVG.
+.venv/bin/python scripts/charts_practical.py
+Exported two practical figures, PNG + SVG.
+.venv/bin/python scripts/charts_findings.py
+Exported two findings figures, PNG + SVG.
+.venv/bin/python scripts/charts_transfer.py
+.venv/bin/python scripts/charts_order.py
+.venv/bin/python scripts/charts_scale.py
+node scripts/test_planner.cjs
+{
+  "test_groups_passed": 12,
+  "random_schedule_cases": 100,
+  "claims_verified": [
+    "budget conservation",
+    "balanced phase compensation",
+    "unequal-stage swapping changes exposure",
+    "aggregate and per-bucket infeasibility",
+    "history retention",
+    "floor and epoch limits after quantization",
+    "zero-count buckets",
+    "finite and normalized inputs"
+  ],
+  "scope": "Arithmetic tests; no model training or Loss prediction."
+}
+node scripts/test_review.cjs
+{
+  "test_groups_passed": 11,
+  "scope": "Rubric input validation, claim-stage boundaries and baseline arithmetic; not external rubric validity or model training."
+}
+node scripts/test_decision.cjs
+PASS Missing or invalid metric cannot silently pass
+PASS Every constraint must pass before primary ranking
+PASS 197c three-metric improvement does not cancel medical regression
+PASS Stricter caps produce a subset with no hidden relaxation
+PASS Infeasible input returns no winner and preserves every rejection
+PASS No guardrails is explicitly single-objective retrospective ranking
+PASS Changing baseline changes the denominator without altering raw BPB
+PASS Seven raw metrics all survive ranking and CSV export
+PASS Input arrays and immutable dataset remain unchanged
+Decision tests passed: 9
+.venv/bin/python scripts/test_transfer.py
+Transfer contrast checks: 13 groups passed
+.venv/bin/python scripts/test_order.py
+Order ledger: 12 boundary groups passed
+node scripts/test_order.cjs
+Order JS: 7 groups passed
+node scripts/test_assessment.cjs
+{
+  "test_groups_passed": 13,
+  "tests": [
+    "Blank or unattempted cases stay unknown rather than zero or pass",
+    "Thirty authored annotations replay without becoming external observations",
+    "Critical overreach cannot be averaged away by all other perfect ratings",
+    "Unknown dimensions, critical checks and absent evidence cannot settle a review",
+    "Versions, source hashes and undeclared cases are rejected before mutation",
+    "Answer revisions preserve prior text and review rather than inheriting pass",
+    "Reviewer disagreement keeps two original ratings and is never averaged",
+    "Identical reviewer labels cannot masquerade as distinct review",
+    "Adjudication requires a real recorded disagreement and preserves the original basis",
+    "Revised reviewer opinions retain earlier events and inconsistent history is rejected",
+    "Fabricated imported summary claims cannot grant comprehension or training decisions",
+    "Unicode and HTML-like answer text survive JSON while fixed fields stay bounded",
+    "Contradictory critical status or invalid scores fail without changing the original"
+  ],
+  "authored_replay_count": 30,
+  "scope": "Manual assessment state, revision and provenance boundaries; no automatic Chinese grading, external reader result or scoring validity verified"
+}
+.venv/bin/python scripts/build_html.py
+HTML built: 2884167 bytes; standalone: 8270763 bytes
+.venv/bin/python scripts/archive_manifest.py
+Source archive hashed: 416 files
+.venv/bin/python scripts/validate.py
+{
+  "checks_passed": 1184,
+  "highlights": [
+    "27 comments translated and anchored",
+    "58 operations entries",
+    "200 buckets x 3 normalized phases",
+    "400 public examples",
+    "200-step EP and kernel paired windows",
+    "934 swarm observations / 915 exact weight pairs",
+    "54 task BPB comparisons",
+    "1200 counts match native 3.12 arithmetic and 1200 match legacy sensitivity",
+    "complete-block cursor differences independently totaled",
+    "80 domain interventions / 129 source configs",
+    "8 order comparisons / 3 token budget conventions",
+    "12 planner numeric test groups / 100 random schedules",
+    "strong proportional baseline / 16 macro contributions",
+    "597 seed0 endpoints / three independently checked observed frontiers",
+    "four new config contrasts / six step393 resume windows",
+    "seventeen embedded figures",
+    "all relative HTML links valid",
+    "416 source archive checksums valid",
+    "18 authored rubrics / seven claim-stage decisions",
+    "five interpretation cases / four metrics with switchable baselines",
+    "17 figure-reading entries / five preserved collapsed tables",
+    "18 terms / five reading exercises",
+    "eleven review logic, migration and arithmetic checks",
+    "browser import/persistence/print and offline workbench checks",
+    "597 seed0 candidates / seven exact BPB inputs / nine constrained-selection scenarios",
+    "bounded selector provenance audit / five new source files",
+    "six rubric counterexample replays / confirmation selection contract",
+    "nine decision boundary test groups / separate raw-source recomputation",
+    "decision browser baseline, constraint, invalid-input, CSV and offline checks",
+    "four candidate budget decompositions / 1600 bucket and 320 domain rows",
+    "math amount and timing separated / explicit donor-factorial plans",
+    "13 transfer boundary groups / independent raw-weight arithmetic",
+    "12 planned arm records / eight unique integer recipes / 24 repaired and 24 original native loader counts",
+    "original global-rounding leakage preserved / declared-domain integer repair",
+    "transfer browser budget, donor, export, six print tables and offline checks",
+    "eight order comparisons / complete-block residuals and partial-edge bounds",
+    "48 historical and 480 compiled archived stage-count evaluations",
+    "20 conditional edge/index proofs / all 40 JS mode-amplitude cases",
+    "same original window budget with locked edge blocks / planned count-only exports",
+    "unlocked-edge diagnostic counterexample / separate actual-token-stream unknowns",
+    "R16 1.1 scope correction / seventeen unchanged anchors / explicit old-version migration",
+    "ten source-bound comprehension cases / thirty authored calibration examples",
+    "thirteen answer-revision, critical-error and reviewer-disagreement boundary groups",
+    "file-protocol offline reader workbench / actual Blob export / local data restored",
+    "eight source-bound engineering timelines / twenty-four authored claim contrasts",
+    "eleven actual wording repairs / quota and post-cleanup stall separated",
+    "twelve dated public GitHub payloads / all 317 prior content files unchanged",
+    "current and historical question-bank digests kept separate",
+    "full 48-endpoint scale contrasts / four observed direction changes",
+    "six public run configs / 20.3919 percent initial mixture half-L1",
+    "synthetic batch-sensitive BPB ranking counterexample / joint floor-slope diagnostics",
+    "48 unlaunched confirmation slots / 8.481788657664T planned continuation tokens",
+    "current V11 desktop/mobile/file-protocol browser / nine source-and-state behaviors",
+    "V10 answer-bank preserved bytewise / old bank import explicitly rejected",
+    "six null public commit fields / two callable runner entries / execution-code binding remains unknown",
+    "six pinned implementation files / 46 original-helper and arithmetic checks / seven acceptance rules",
+    "V11 browser evidence remains historical; new chapter separately verified",
+    "seven new state sources / 28 original control-flow checks / master, pending routing and step-label audit",
+    "V12 bank retained bytewise before correcting main-report source semantics",
+    "V13 current-bank browser / old-record rejection / untouched local storage / file-protocol chapter",
+    "state-switch contract retains 3 unexecuted controls and 5 unknown gates",
+    "seven boundary sources / 17 original-helper checks / EOS, padding, segment and target-position audit",
+    "V14 desktop/mobile and offline boundary chapter / current source-bank preserved",
+    "V15 1200 component census / two cache roots / four original admission branches / actual cache identity remains unknown",
+    "V16 sixteen-source fuzzy exemption / real local Parquet original helpers / sparse missing-path ambiguity / spec identity mismatch",
+    "V17 quality observation / vocabulary / calibration / five acceptance rules / embedded window explorer",
+    "V18 paired config census / five frozen objects / three engineering claim layers / unexecuted change-review form",
+    "V19 routing denominator / count vs token damage / original combine / prefix clip / synthetic diagram",
+    "V20 local-quantile partition / HIST shared-grid range / next-step router state / sixteen original helper checks",
+    "V21 parameter groups / dedicated decay mask / Adam-count clock / group clipping scope",
+    "V23 ShortConv segment identity / halo metadata / initialization blindspot / rounding and fallback scopes",
+    "V24 experimental fork router precision / schedule controls / proposed policy matrix / original issue body refresh"
+  ],
+  "not_verified": [
+    "GPU training/kernel reproduction",
+    "causality of individual mixture buckets",
+    "independent confirmation after candidate selection",
+    "535B task accuracy or long-context outcomes",
+    "full token ID / inner shuffle replay",
+    "all original experiment launch code SHAs and actual restored checkpoint contents",
+    "full selector objective, fitted model and hidden constraints",
+    "external rubric scoring validity or actual reader comprehension study",
+    "truth of user-entered self-assessment evidence",
+    "prospective factorial GPU outcomes and actual finite data stream",
+    "portable integer weight encoding across other runtimes or block sizes",
+    "external reviewer identity, scoring agreement and transfer-task comprehension",
+    "September ladder executed evaluation-code binding and common-checkpoint BPB re-evaluation",
+    "causal isolated scale or 25-percent mixture-switch effects",
+    "48 proposed GPU continuations, shared-checkpoint and generation-evaluation costs"
+  ]
+}

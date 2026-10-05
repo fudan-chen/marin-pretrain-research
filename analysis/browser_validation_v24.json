@@ -1,0 +1,24 @@
+{
+  "desktop": {
+    "viewport": 1440,
+    "width": 1425,
+    "tables": 4
+  },
+  "mobile": {
+    "viewport": 390,
+    "width": 375
+  },
+  "offline": {
+    "protocol": "file:",
+    "figures": 17,
+    "loaded": 17,
+    "tables": 4,
+    "requests": [],
+    "errors": []
+  },
+  "screenshot_sha256": {
+    "analysis/browser_v24_router_precision_desktop.png": "b0c8b7723b4a3435f1f4627fb562087b773285e80e43a3dc49bb6d774a1127cd"
+  },
+  "visual_scope": "desktop screenshot viewed; mobile DOM dimensions; offline resources",
+  "prior_source_files_preserved": 412
+}

@@ -19,6 +19,7 @@ report:
 	$(PYTHON) scripts/probe_qb_partition.py
 	$(PYTHON) scripts/probe_optimizer.py
 	$(PYTHON) scripts/probe_short_conv.py
+	$(PYTHON) scripts/audit_router_precision.py
 	$(PYTHON) scripts/audit_ladder_contract.py
 	$(PYTHON) scripts/probe_quality.py
 	$(PYTHON) scripts/build_quality_windows.py

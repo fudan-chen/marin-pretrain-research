@@ -177,3 +177,7 @@ R05/R10/R14的回放从配置走到索引条件，规则1.0不变。完整报告
 ## V23：attention之外的文档边界
 
 新增六份固定ShortConv实现与原测试，执行16项原FP32 reference、模拟halo函数体和API辅助检查。核对六份配置的三处width4卷积；反例表明非连续ID重用可重新接上旧文档，identity初始化会遮住此类问题。区分前向/dx/dw舍入契约与实际后端回退；原GPU测试未执行，真实通信、BF16和梯度结果仍未知。
+
+## V24：回到C025核对实验实现
+
+重新读取#8435公开API，27条评论的身份/正文均与归档一致，保留独立刷新核查记录。新增三份C025实验fork源码，静态提取三种router dot分支，明确后cast与preferred_element_type的区别；人工BF16输出舍入不是GPU复现。新章解释一rack诊断中实际batch、optimizer启发式batch、完整schedule的区别，提出未执行的训练/评估policy四格；真实fixture、HLO与训练结果未独立复现。

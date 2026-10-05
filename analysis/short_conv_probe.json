@@ -1,0 +1,244 @@
+{
+  "checks_passed": 16,
+  "checks": [
+    "Packed boundaries suppress preceding document taps",
+    "No segment metadata mixes preceding causal positions",
+    "Non-contiguous reused IDs reconnect an older matching segment",
+    "Identity initialization hides cross-document tap effects",
+    "Lag-zero tap stays active for padding-like negative IDs",
+    "Original halo body matches pooled reference: unpacked",
+    "Original halo body matches pooled reference: cross_shard_same_document",
+    "Original halo body matches pooled reference: boundary_inside_shard",
+    "Original halo body matches pooled reference: boundary_on_shard",
+    "Missing halo damages a continuous document at shard boundary",
+    "Default CPU substitute selects original reference",
+    "Ordered backend list warns then falls back",
+    "Explicit unavailable backend fails rather than falling back",
+    "Mixed weight and activation dtype is rejected at API",
+    "Round-up supports tile padding without changing retained prefix",
+    "Six ladder configs enable all three SConv sites at width four"
+  ],
+  "cases": [
+    {
+      "name": "unpacked",
+      "segment_ids": null,
+      "output": [
+        1.0,
+        11.0,
+        111.0,
+        1110.0,
+        11100.0,
+        111000.0
+      ]
+    },
+    {
+      "name": "packed",
+      "segment_ids": [
+        [
+          0,
+          0,
+          1,
+          1,
+          2,
+          2
+        ]
+      ],
+      "output": [
+        1.0,
+        11.0,
+        100.0,
+        1100.0,
+        10000.0,
+        110000.0
+      ]
+    },
+    {
+      "name": "reused",
+      "segment_ids": [
+        [
+          0,
+          1,
+          0,
+          2,
+          2,
+          2
+        ]
+      ],
+      "output": [
+        1.0,
+        10.0,
+        101.0,
+        1000.0,
+        11000.0,
+        111000.0
+      ]
+    }
+  ],
+  "halo_cases": [
+    {
+      "name": "unpacked",
+      "got": [
+        1.0,
+        11.0,
+        111.0,
+        1110.0,
+        11100.0,
+        111000.0
+      ],
+      "reference": [
+        1.0,
+        11.0,
+        111.0,
+        1110.0,
+        11100.0,
+        111000.0
+      ]
+    },
+    {
+      "name": "cross_shard_same_document",
+      "got": [
+        1.0,
+        11.0,
+        111.0,
+        1110.0,
+        11100.0,
+        111000.0
+      ],
+      "reference": [
+        1.0,
+        11.0,
+        111.0,
+        1110.0,
+        11100.0,
+        111000.0
+      ]
+    },
+    {
+      "name": "boundary_inside_shard",
+      "got": [
+        1.0,
+        11.0,
+        100.0,
+        1100.0,
+        10000.0,
+        110000.0
+      ],
+      "reference": [
+        1.0,
+        11.0,
+        100.0,
+        1100.0,
+        10000.0,
+        110000.0
+      ]
+    },
+    {
+      "name": "boundary_on_shard",
+      "got": [
+        1.0,
+        11.0,
+        111.0,
+        1000.0,
+        11000.0,
+        111000.0
+      ],
+      "reference": [
+        1.0,
+        11.0,
+        111.0,
+        1000.0,
+        11000.0,
+        111000.0
+      ]
+    }
+  ],
+  "configurations": [
+    {
+      "run": "h100-mix25-20260912-d1024",
+      "sconv_settings": {
+        "sconv": true,
+        "sconv_kernel": 4,
+        "sconv_sites": [
+          "k",
+          "attn",
+          "mlp"
+        ]
+      }
+    },
+    {
+      "run": "h100-mix25-20260912-d1536",
+      "sconv_settings": {
+        "sconv": true,
+        "sconv_kernel": 4,
+        "sconv_sites": [
+          "k",
+          "attn",
+          "mlp"
+        ]
+      }
+    },
+    {
+      "run": "h100-mix25-20260912-d768",
+      "sconv_settings": {
+        "sconv": true,
+        "sconv_kernel": 4,
+        "sconv_sites": [
+          "k",
+          "attn",
+          "mlp"
+        ]
+      }
+    },
+    {
+      "run": "rav-ladder-d1024",
+      "sconv_settings": {
+        "sconv": true,
+        "sconv_kernel": 4,
+        "sconv_sites": [
+          "k",
+          "attn",
+          "mlp"
+        ]
+      }
+    },
+    {
+      "run": "rav-ladder-d1536",
+      "sconv_settings": {
+        "sconv": true,
+        "sconv_kernel": 4,
+        "sconv_sites": [
+          "k",
+          "attn",
+          "mlp"
+        ]
+      }
+    },
+    {
+      "run": "rav-ladder-d768-v2",
+      "sconv_settings": {
+        "sconv": true,
+        "sconv_kernel": 4,
+        "sconv_sites": [
+          "k",
+          "attn",
+          "mlp"
+        ]
+      }
+    }
+  ],
+  "scope": "original FP32 reference, halo body and dispatch API with NumPy and simulated shard_map/ppermute; sharding guards replaced by no-ops",
+  "source_sha256": {
+    "sources/short_conv_2026_10_05/config.py": "6440b42fe15b7401306fecb63202fc538df14162c5f0a2168a3c4bf74c9b9160",
+    "sources/short_conv_2026_10_05/__init__.py": "0edfd62a41d2291d1a0d0e222baf521d9d89c2f8a5f771070f9bf2e1b7c5da4f",
+    "sources/short_conv_2026_10_05/api.py": "4bd2812eb0f9703886a42184b5250b0c6ab9b2c8de95969449b07542513fd612",
+    "sources/short_conv_2026_10_05/pallas_gpu.py": "eeedd9f6745f99b86cfd6dc955d40d76e578861100d52f2f6f14b730971581b5",
+    "sources/short_conv_2026_10_05/reference.py": "88e67479be051b34a430cf2ba237387241bd25fcc89b3a566e1b5f1c8576fb33",
+    "sources/short_conv_2026_10_05/test_short_conv.py": "17c469bfb97287ed0907b026305d4e89161c146145611891f8cc066c4fdab620",
+    "sources/contracts_2026_10_05/model.py": "8fdfd89cf6814da05683f134f154525916728370368a2493843195d9a489859c"
+  },
+  "actual_pallas_result": null,
+  "actual_bf16_result": null,
+  "actual_gradient_result": null,
+  "actual_distributed_result": null,
+  "historical_execution_sha": null
+}

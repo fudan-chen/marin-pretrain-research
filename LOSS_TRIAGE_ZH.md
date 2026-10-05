@@ -45,7 +45,7 @@ BPB的聚合与评估分批也需要核查。某些不同分母下的平均会�
 
 同checkpoint的交叉分布诊断只能说明输入分布差异，不能说明训练后的B模型更好。它是排除“换了更容易的题”这类解释的辅助材料，能力结论仍来自固定评估。
 
-对应入口：[缓存身份](CACHE_PROVENANCE_ZH.md)、[评分](QUALITY_BUCKETS_ZH.md)、[去重](DEDUP_FILTERS_ZH.md)、[边界](DOCUMENT_BOUNDARIES_ZH.md)、[顺序账本](ORDER_GUIDE_ZH.md)。
+对应入口：[缓存身份](CACHE_PROVENANCE_ZH.md)、[评分](QUALITY_BUCKETS_ZH.md)、[去重](DEDUP_FILTERS_ZH.md)、[边界](DOCUMENT_BOUNDARIES_ZH.md)、[ShortConv与halo](SHORT_CONV_ZH.md)、[顺序账本](ORDER_GUIDE_ZH.md)。
 
 ## 4. 第三站：执行与更新是否改变
 

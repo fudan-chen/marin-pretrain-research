@@ -3883,5 +3883,47 @@
     "bytes": 11656,
     "sha256": "50dddad265e18974e8529f7a9df26d37e44430ffc5442d5c93e58cb2e924ae0e",
     "retrieved_utc": "2026-10-05T10:42:58.975435+00:00"
+  },
+  {
+    "file": "short_conv_2026_10_05/__init__.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/kernels/pallas/short_conv/__init__.py",
+    "bytes": 550,
+    "sha256": "0edfd62a41d2291d1a0d0e222baf521d9d89c2f8a5f771070f9bf2e1b7c5da4f",
+    "retrieved_utc": "2026-10-05T10:54:34.969240+00:00"
+  },
+  {
+    "file": "short_conv_2026_10_05/api.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/kernels/pallas/short_conv/api.py",
+    "bytes": 14482,
+    "sha256": "4bd2812eb0f9703886a42184b5250b0c6ab9b2c8de95969449b07542513fd612",
+    "retrieved_utc": "2026-10-05T10:54:34.889154+00:00"
+  },
+  {
+    "file": "short_conv_2026_10_05/config.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/kernels/pallas/short_conv/config.py",
+    "bytes": 2224,
+    "sha256": "6440b42fe15b7401306fecb63202fc538df14162c5f0a2168a3c4bf74c9b9160",
+    "retrieved_utc": "2026-10-05T10:54:34.926918+00:00"
+  },
+  {
+    "file": "short_conv_2026_10_05/pallas_gpu.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/kernels/pallas/short_conv/pallas_gpu.py",
+    "bytes": 22073,
+    "sha256": "eeedd9f6745f99b86cfd6dc955d40d76e578861100d52f2f6f14b730971581b5",
+    "retrieved_utc": "2026-10-05T10:54:34.977116+00:00"
+  },
+  {
+    "file": "short_conv_2026_10_05/reference.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/kernels/pallas/short_conv/reference.py",
+    "bytes": 1754,
+    "sha256": "88e67479be051b34a430cf2ba237387241bd25fcc89b3a566e1b5f1c8576fb33",
+    "retrieved_utc": "2026-10-05T10:54:35.464679+00:00"
+  },
+  {
+    "file": "short_conv_2026_10_05/test_short_conv.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/tests/kernels/test_short_conv.py",
+    "bytes": 26934,
+    "sha256": "17c469bfb97287ed0907b026305d4e89161c146145611891f8cc066c4fdab620",
+    "retrieved_utc": "2026-10-05T10:54:35.572009+00:00"
   }
 ]

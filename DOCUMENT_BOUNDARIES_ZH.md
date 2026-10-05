@@ -72,3 +72,7 @@ Dense mask按segment编号相等判断可见性；压缩下界按相邻编号变
 当前读取到的`TokenSeqDataset`用cache扁平长度除以seq_len取整，再按固定长度取切片；显式packing则走另一条带segment的路径。不要把连续流切片和文档打包混成一种数据处理。不同component的format/pack、尾部余数及已有权重还需逐项追踪。[dataset路径](sources/boundaries_2026_10_05/datasets.py)
 
 本轮的结论是：**数据质量和配比之外，预处理还定义了上下文边界与计分目标。** 解释loss前，先确定它到底在评价哪种任务。下一步需要把公开component的format/pack配置、tokenizer特殊标记与真实缓存样本对应起来；本轮没有把人工边界反例写成生产故障，也没有新的配方收益结果。
+
+## 补充：attention之外还要检查ShortConv
+
+六份ladder启用K/attention输出/MLP输出三处ShortConv。模型将segment IDs传入卷积，但卷积自己执行tap两端ID比较；context shard还需要同时交换激活与segment halo。非连续ID重用、identity初始化遮蔽、分片梯度舍入分别见[ShortConv深读](SHORT_CONV_ZH.md)。不能把attention隔离验收替代整个模型的文档隔离验收。

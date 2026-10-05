@@ -1,0 +1,29 @@
+{
+  "edition": "V20",
+  "goal_status": "active",
+  "checks_passed": 1150,
+  "source_files": 406,
+  "prior_source_files_preserved": 406,
+  "original_qb_helper_checks": 16,
+  "scope": "original QB local threshold/reduction and pooled HIST helper; artificial inputs; no collective or training verification",
+  "actual_mesh_execution": null,
+  "actual_training_effect": null,
+  "historical_execution_sha": null,
+  "artifact_sha256": {
+    "QB_ESTIMATION_ZH.md": "6cb7697c8a4f67add3faa64196a1d1c615d272c6670017bc62b8c4055730ea01",
+    "README.md": "af5b85b863ffc19e215e95543026c5811e71ae6fd4bf8856cf2e9b2ecd2585a7",
+    "IMPROVEMENT_LOG_ZH.md": "2083def99eae1cb5f1d043a8bff2ba191c18284b4b7d51e3e264ef4c03f7814a",
+    "scripts/probe_qb_partition.py": "f10ef2c45a26df1376638e68d5d40a7e6c0fca566e73d5d5726bdb3fd51ef76f",
+    "scripts/build_html.py": "43752f7c1d923c56bd6ad0418b75cc5b222913aa0309ba27efc33356266d6117",
+    "scripts/validate.py": "a14f0a752c0c479be3d7419cfa5c94958dc189cbe7029b6d402d6de02df2e682",
+    "Makefile": "9868335249f8718a7250e49d559326bf537c18f01be80dbb48c113560036904d",
+    "analysis/qb_partition_probe.json": "165bedfce0180a03fda49960026ed791c44a0a21b69b1e0b07cedebdcb951d47",
+    "analysis/browser_validation_v20.json": "5cfafb412b490c9b34b65b77ec8af05cab73c32a99726001279eafb2a61d85cf",
+    "analysis/browser_v20_qb_desktop.png": "6f50074b9a93f368ace1b72efab6e62db0f2c98eb8d508360ffe716bd203d752",
+    "analysis/validation.json": "a8c7becaa2178fd99cebbb3ca25e78f6f8dd982f039ad06981b412dbf1ae7370",
+    "sources/archive_manifest.json": "1c57177bb9c402253e8b07502efee8b0497d5226f20dae786e5f172a1b9021fe",
+    "sources/source_manifest.json": "f411b6eb640da71ee8f2d0be3d8def876475b62a1e80b043a8427adb1c8bbbc7",
+    "index.html": "66b3901560494117faafd45dc2496aecf3ed42641eb66c99c6194dc98cadc140",
+    "report_standalone.html": "beff9a9ef046f4b1632fd551ef468285adb40173ebad31642c59ad8856553d8e"
+  }
+}

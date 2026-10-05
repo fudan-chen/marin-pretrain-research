@@ -1,0 +1,236 @@
+{
+  "checks_passed": 16,
+  "checks": [
+    "Margins follow zero-bias K+1 threshold for a two-expert toy",
+    "Identical global inputs retain identical exact global threshold",
+    "Original shard estimator differs under a new partition",
+    "Weighted local threshold need not equal pooled threshold",
+    "Centered bias can change next expert selection under partition",
+    "All-padding shard emits finite zero and zero weight",
+    "Zero-weight empty shard cannot change reduced beta",
+    "Invalid extreme margin cannot enter the local threshold",
+    "Effective count weights local betas rather than equal shard mean",
+    "Local token permutation leaves order-statistic threshold unchanged",
+    "Tiny local populations clamp target count to one",
+    "Six archived ladder configurations declare HIST with 10000 bins",
+    "HIST common range expands after another expert extreme margin",
+    "HIST can change expert threshold without changing its own margins",
+    "HIST pooled histogram is invariant to toy row permutation",
+    "Padding is excluded from artificial HIST range and counts"
+  ],
+  "raw_logits": [
+    [
+      100.0,
+      0.0
+    ],
+    [
+      99.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      0.0,
+      2.0
+    ]
+  ],
+  "margins": [
+    [
+      100.0,
+      0.0
+    ],
+    [
+      99.0,
+      0.0
+    ],
+    [
+      0.0,
+      1.0
+    ],
+    [
+      0.0,
+      2.0
+    ]
+  ],
+  "cases": [
+    {
+      "name": "contiguous",
+      "groups": [
+        [
+          0,
+          1
+        ],
+        [
+          2,
+          3
+        ]
+      ],
+      "local_betas": [
+        [
+          100.0,
+          0.0
+        ],
+        [
+          0.0,
+          2.0
+        ]
+      ],
+      "valid_counts": [
+        2,
+        2
+      ],
+      "beta": [
+        50.0,
+        1.0
+      ],
+      "centered_bias": [
+        -24.5,
+        24.5
+      ],
+      "next_query_raw_logits": [
+        60,
+        0
+      ],
+      "next_query_biased_logits": [
+        35.5,
+        24.5
+      ],
+      "next_selected_expert": 0
+    },
+    {
+      "name": "interleaved",
+      "groups": [
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          3
+        ]
+      ],
+      "local_betas": [
+        [
+          100.0,
+          1.0
+        ],
+        [
+          99.0,
+          2.0
+        ]
+      ],
+      "valid_counts": [
+        2,
+        2
+      ],
+      "beta": [
+        99.5,
+        1.5
+      ],
+      "centered_bias": [
+        -49.0,
+        49.0
+      ],
+      "next_query_raw_logits": [
+        60,
+        0
+      ],
+      "next_query_biased_logits": [
+        11.0,
+        49.0
+      ],
+      "next_selected_expert": 1
+    }
+  ],
+  "pooled_exact_topk_beta": [
+    99.0,
+    1.0
+  ],
+  "histogram_range_example": {
+    "base": {
+      "beta": [
+        99.0,
+        1.0
+      ],
+      "lo": 0.0,
+      "hi": 100.0,
+      "bins": 10000,
+      "bin_width": 0.01
+    },
+    "other_expert_outlier": {
+      "beta": [
+        66.66666412353516,
+        66.66666412353516
+      ],
+      "lo": 0.0,
+      "hi": 1000000.0,
+      "bins": 10000,
+      "bin_width": 100.0
+    },
+    "unchanged_expert": 0,
+    "valid_tokens": 4
+  },
+  "unequal_count_example": {
+    "betas": [
+      [
+        10,
+        0
+      ],
+      [
+        0,
+        10
+      ]
+    ],
+    "weights": [
+      1,
+      3
+    ],
+    "result": [
+      2.5,
+      7.5
+    ]
+  },
+  "configurations": [
+    {
+      "run": "h100-mix25-20260912-d1024",
+      "qb_estimator": "HIST",
+      "qb_hist_bins": 10000
+    },
+    {
+      "run": "h100-mix25-20260912-d1536",
+      "qb_estimator": "HIST",
+      "qb_hist_bins": 10000
+    },
+    {
+      "run": "h100-mix25-20260912-d768",
+      "qb_estimator": "HIST",
+      "qb_hist_bins": 10000
+    },
+    {
+      "run": "rav-ladder-d1024",
+      "qb_estimator": "HIST",
+      "qb_hist_bins": 10000
+    },
+    {
+      "run": "rav-ladder-d1536",
+      "qb_estimator": "HIST",
+      "qb_hist_bins": 10000
+    },
+    {
+      "run": "rav-ladder-d768-v2",
+      "qb_estimator": "HIST",
+      "qb_hist_bins": 10000
+    }
+  ],
+  "source_sha256": {
+    "sources/routing_2026_10_05/grug_moe.py": "5b67e36774981b8e42c753f62b638a5700fbf204c8b16c71df6d72c0b0ea398c",
+    "sources/contracts_2026_10_05/model.py": "8fdfd89cf6814da05683f134f154525916728370368a2493843195d9a489859c",
+    "sources/scale_2026_10_05/train_hero_ep.py": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7"
+  },
+  "scope": "original local threshold, post-scan reduction and pooled histogram helper with NumPy dependency substitutes; centered bias and next query are transparent artificial arithmetic",
+  "actual_mesh_execution": null,
+  "actual_training_effect": null,
+  "historical_execution_sha": null
+}

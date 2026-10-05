@@ -509,6 +509,18 @@ report['highlights']+=['V19 routing denominator / count vs token damage / origin
 browser19=read(A/'browser_validation_v19.json')
 ok('V19 routing diagram fits desktop/mobile and loads offline',browser19['desktop']['width']<=browser19['desktop']['viewport'] and browser19['mobile']['width']<=browser19['mobile']['viewport'] and browser19['mobile']['wrapper_width']<browser19['mobile']['scroll_width'] and browser19['offline']['figures']==browser19['offline']['loaded_figures']==17 and browser19['offline']['rects']==129 and browser19['offline']['tables']==3 and browser19['offline']['requests']==browser19['offline']['errors']==[])
 ok('V19 viewed screenshot retains exact bytes',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha for p,sha in browser19['screenshot_sha256'].items()))
+qb=read(A/'qb_partition_probe.json')
+ok('V20 original QB helpers pass sixteen scoped checks',qb['checks_passed']==len(qb['checks'])==16 and qb['actual_mesh_execution'] is None and qb['actual_training_effect'] is None and qb['historical_execution_sha'] is None)
+ok('V20 estimator applicability follows archived HIST configurations',len(qb['configurations'])==6 and all(c['qb_estimator']=='HIST' and c['qb_hist_bins']==10000 for c in qb['configurations']))
+ok('V20 local quantile partition counterexample retains exact pooled reference',[c['beta'] for c in qb['cases']]==[[50,1],[99.5,1.5]] and qb['pooled_exact_topk_beta']==[99,1] and [c['next_selected_expert'] for c in qb['cases']]==[0,1])
+hist=qb['histogram_range_example']
+ok('V20 histogram outlier changes shared-grid resolution',hist['base']['bin_width']==.01 and hist['other_expert_outlier']['bin_width']==100 and hist['base']['beta'][0]!=hist['other_expert_outlier']['beta'][0])
+for p,sha in qb['source_sha256'].items():ok('QB source checksum '+p,hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha)
+ok('V20 chapter limits TOPK applicability and historical attribution',soup.select_one('#qb-guide') is not None and '不能据此认定这些HIST运行' in soup.select_one('#qb-guide').text and '不是Hero观察' in soup.select_one('#qb-guide').text)
+report['highlights']+=['V20 local-quantile partition / HIST shared-grid range / next-step router state / sixteen original helper checks']
+browser20=read(A/'browser_validation_v20.json')
+ok('V20 QB chapter fits viewport and loads offline',browser20['desktop']['width']<=browser20['desktop']['viewport'] and browser20['mobile']['width']<=browser20['mobile']['viewport'] and browser20['offline']['figures']==browser20['offline']['loaded']==17 and browser20['offline']['tables']==4 and browser20['offline']['hasHistogramCaveat'] and browser20['offline']['requests']==browser20['offline']['errors']==[])
+ok('V20 viewed screenshot retains exact bytes',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha for p,sha in browser20['screenshot_sha256'].items()))
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

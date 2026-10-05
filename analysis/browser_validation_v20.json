@@ -1,0 +1,43 @@
+{
+  "desktop": {
+    "viewport": 1440,
+    "width": 1425,
+    "tables": 4
+  },
+  "mobile": {
+    "viewport": 390,
+    "width": 375,
+    "tables": [
+      {
+        "width": 297,
+        "scroll": 620
+      },
+      {
+        "width": 297,
+        "scroll": 620
+      },
+      {
+        "width": 297,
+        "scroll": 620
+      },
+      {
+        "width": 297,
+        "scroll": 620
+      }
+    ]
+  },
+  "offline": {
+    "protocol": "file:",
+    "figures": 17,
+    "loaded": 17,
+    "tables": 4,
+    "hasHistogramCaveat": true,
+    "requests": [],
+    "errors": []
+  },
+  "screenshot_sha256": {
+    "analysis/browser_v20_qb_desktop.png": "6f50074b9a93f368ace1b72efab6e62db0f2c98eb8d508360ffe716bd203d752"
+  },
+  "visual_scope": "desktop screenshot viewed; mobile DOM dimensions; offline DOM and resource checks",
+  "prior_source_files_preserved": 406
+}

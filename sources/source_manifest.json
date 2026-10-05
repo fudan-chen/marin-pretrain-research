@@ -3277,5 +3277,197 @@
     "bytes": 11977,
     "sha256": "63f96277b6bd9fe66261e8ba7a12872654381ac1a352792bafb3c6833c11b9a5",
     "retrieved_utc": "2026-10-04T18:02:48.090054+00:00"
+  },
+  {
+    "file": "scale_2026_10_05/data_mixing_laws_v2.html",
+    "url": "https://arxiv.org/html/2403.16952v2",
+    "bytes": 320521,
+    "sha256": "fce5463134d9b14baf600f3b266a65ce23ee5eee1e60c38c17cf2e1e9ed7be64",
+    "retrieved_utc": "2026-10-04T22:23:26.021816+00:00"
+  },
+  {
+    "file": "scale_2026_10_05/regmix_v2.html",
+    "url": "https://arxiv.org/html/2407.01492v2",
+    "bytes": 666685,
+    "sha256": "e1a03b0b609f5410b30e3e02dd68c1d8295fc5f57fe91d476120ccac2384479b",
+    "retrieved_utc": "2026-10-04T22:23:26.524469+00:00"
+  },
+  {
+    "file": "scale_2026_10_05/regmix_d_v1.html",
+    "url": "https://arxiv.org/html/2606.18663v1",
+    "bytes": 172878,
+    "sha256": "e0e91fe0841193d32399778e45aca3dda4677285e855423503e07d459aa22ee5",
+    "retrieved_utc": "2026-10-04T22:23:25.313471+00:00"
+  },
+  {
+    "file": "scale_2026_10_05/issue_9126.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/9126",
+    "bytes": 16199,
+    "sha256": "ff42bfae305d778697b7471eaa9bf5e96727abf8260b84d7222f5c7d00647930",
+    "retrieved_utc": "2026-10-04T22:23:25.071414+00:00"
+  },
+  {
+    "file": "scale_2026_10_05/config_rav-ladder-d768-v2.json",
+    "url": "https://api.wandb.ai/graphql",
+    "bytes": 119073,
+    "sha256": "3b0e9f5a883dcb778f7c3e7d310220c817b2f35a835c4dacb622af90173de4cd",
+    "retrieved_utc": "2026-10-04T22:23:27.365033+00:00",
+    "request_body": {
+      "query": "query($e:String!,$p:String!,$r:String!){project(name:$p,entityName:$e){run(name:$r){name displayName state config summaryMetrics}}}",
+      "variables": {
+        "e": "marin-community",
+        "p": "marin_moe",
+        "r": "rav-ladder-d768-v2"
+      }
+    }
+  },
+  {
+    "file": "scale_2026_10_05/config_h100-mix25-20260912-d768.json",
+    "url": "https://api.wandb.ai/graphql",
+    "bytes": 153790,
+    "sha256": "17e18f8bd54ad25503ac792f1119768593a60b4e1eb966350ae5eea500440c47",
+    "retrieved_utc": "2026-10-04T22:23:27.032177+00:00",
+    "request_body": {
+      "query": "query($e:String!,$p:String!,$r:String!){project(name:$p,entityName:$e){run(name:$r){name displayName state config summaryMetrics}}}",
+      "variables": {
+        "e": "marin-community",
+        "p": "marin_moe",
+        "r": "h100-mix25-20260912-d768"
+      }
+    }
+  },
+  {
+    "file": "scale_2026_10_05/config_rav-ladder-d1024.json",
+    "url": "https://api.wandb.ai/graphql",
+    "bytes": 111417,
+    "sha256": "8228b01d96f8b43b8da7109087d6c0f8cdbf44b93c86b35190207496a52e1012",
+    "retrieved_utc": "2026-10-04T22:23:27.251360+00:00",
+    "request_body": {
+      "query": "query($e:String!,$p:String!,$r:String!){project(name:$p,entityName:$e){run(name:$r){name displayName state config summaryMetrics}}}",
+      "variables": {
+        "e": "marin-community",
+        "p": "marin_moe",
+        "r": "rav-ladder-d1024"
+      }
+    }
+  },
+  {
+    "file": "scale_2026_10_05/config_h100-mix25-20260912-d1024.json",
+    "url": "https://api.wandb.ai/graphql",
+    "bytes": 174549,
+    "sha256": "b43bd75d42c3a4f5c9407aafca32f0a14d71c691adc7bf5d43ff26936fbb8f31",
+    "retrieved_utc": "2026-10-04T22:23:32.802187+00:00",
+    "request_body": {
+      "query": "query($e:String!,$p:String!,$r:String!){project(name:$p,entityName:$e){run(name:$r){name displayName state config summaryMetrics}}}",
+      "variables": {
+        "e": "marin-community",
+        "p": "marin_moe",
+        "r": "h100-mix25-20260912-d1024"
+      }
+    }
+  },
+  {
+    "file": "scale_2026_10_05/config_rav-ladder-d1536.json",
+    "url": "https://api.wandb.ai/graphql",
+    "bytes": 115243,
+    "sha256": "90cdd8c7822dbc90534992654e776431b8156d8c9d1bdec864feefadc61dc493",
+    "retrieved_utc": "2026-10-04T22:23:27.983122+00:00",
+    "request_body": {
+      "query": "query($e:String!,$p:String!,$r:String!){project(name:$p,entityName:$e){run(name:$r){name displayName state config summaryMetrics}}}",
+      "variables": {
+        "e": "marin-community",
+        "p": "marin_moe",
+        "r": "rav-ladder-d1536"
+      }
+    }
+  },
+  {
+    "file": "scale_2026_10_05/config_h100-mix25-20260912-d1536.json",
+    "url": "https://api.wandb.ai/graphql",
+    "bytes": 198389,
+    "sha256": "5d47fe4758a0b76505dddf70d56640aa4d875629a3ac7ead8620be5a7626e22c",
+    "retrieved_utc": "2026-10-04T22:23:28.362082+00:00",
+    "request_body": {
+      "query": "query($e:String!,$p:String!,$r:String!){project(name:$p,entityName:$e){run(name:$r){name displayName state config summaryMetrics}}}",
+      "variables": {
+        "e": "marin-community",
+        "p": "marin_moe",
+        "r": "h100-mix25-20260912-d1536"
+      }
+    }
+  },
+  {
+    "file": "scale_2026_10_05/train_hero_ep.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/grug/moe_hero_ep/train.py",
+    "bytes": 63250,
+    "sha256": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7",
+    "retrieved_utc": "2026-10-04T22:24:49.417654+00:00",
+    "git_revision": "84869ae8c91ffe64e9f761c5bd714542eb1876e0",
+    "execution_binding": "Public pinned code; not verified as the code executed by the September ladder runs"
+  },
+  {
+    "file": "scale_2026_10_05/labeled_eval.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/callbacks/labeled_eval.py",
+    "bytes": 7137,
+    "sha256": "5cf9daaf84ad1663c77220ff3b5c43bcb516e856f453404e5fbee952cce32d40",
+    "retrieved_utc": "2026-10-04T22:24:49.214800+00:00",
+    "git_revision": "84869ae8c91ffe64e9f761c5bd714542eb1876e0",
+    "execution_binding": "Public pinned code; not verified as the code executed by the September ladder runs"
+  },
+  {
+    "file": "scale_2026_10_05/grug_loss.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/grug/loss.py",
+    "bytes": 5525,
+    "sha256": "97e86e8a7540cafeb4be9695da9a5c8342f3780b7fee6cbb45de79ffc50c15ba",
+    "retrieved_utc": "2026-10-04T22:24:49.210067+00:00",
+    "git_revision": "84869ae8c91ffe64e9f761c5bd714542eb1876e0",
+    "execution_binding": "Public pinned code; not verified as the code executed by the September ladder runs"
+  },
+  {
+    "file": "scale_2026_10_05/eval.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/eval.py",
+    "bytes": 35454,
+    "sha256": "b67cc96335f667982a0fe43618215734140c28392be215a88177979c712dee2c",
+    "retrieved_utc": "2026-10-04T22:25:07.413607+00:00",
+    "git_revision": "84869ae8c91ffe64e9f761c5bd714542eb1876e0",
+    "execution_binding": "Public pinned code; not verified as executed September ladder code"
+  },
+  {
+    "file": "execution_2026_10_05/run_execution_files.json",
+    "url": "https://api.wandb.ai/graphql",
+    "request_body": {
+      "query": "query { project(name:\"marin_moe\",entityName:\"marin-community\") {r0:run(name:\"rav-ladder-d768-v2\"){name commit createdAt state fileCount files(names:[\"wandb-metadata.json\"],first:10){edges{node{name url sizeBytes}} pageInfo{hasNextPage}}} r1:run(name:\"rav-ladder-d1024\"){name commit createdAt state fileCount files(names:[\"wandb-metadata.json\"],first:10){edges{node{name url sizeBytes}} pageInfo{hasNextPage}}} r2:run(name:\"rav-ladder-d1536\"){name commit createdAt state fileCount files(names:[\"wandb-metadata.json\"],first:10){edges{node{name url sizeBytes}} pageInfo{hasNextPage}}} r3:run(name:\"h100-mix25-20260912-d768\"){name commit createdAt state fileCount files(names:[\"wandb-metadata.json\"],first:10){edges{node{name url sizeBytes}} pageInfo{hasNextPage}}} r4:run(name:\"h100-mix25-20260912-d1024\"){name commit createdAt state fileCount files(names:[\"wandb-metadata.json\"],first:10){edges{node{name url sizeBytes}} pageInfo{hasNextPage}}} r5:run(name:\"h100-mix25-20260912-d1536\"){name commit createdAt state fileCount files(names:[\"wandb-metadata.json\"],first:10){edges{node{name url sizeBytes}} pageInfo{hasNextPage}}}} }"
+    },
+    "bytes": 1070,
+    "sha256": "63180124f33b7aa138d8b5d009cb480ad9462381f44e11535f59fa40b6471a1f",
+    "retrieved_utc": "2026-10-05T07:36:04.934206+00:00"
+  },
+  {
+    "file": "execution_2026_10_05/run_file_inventory.json",
+    "bytes": 11222,
+    "sha256": "7b655f52f21d210b0c1a93a581aa55e2a61f159101728973b39fafc7bd1cf45a",
+    "retrieved_utc": "2026-10-05T07:38:25.225691+00:00",
+    "url": "https://api.wandb.ai/graphql",
+    "request_body": {
+      "query": "query { project(name:\"marin_moe\",entityName:\"marin-community\") {r0:run(name:\"rav-ladder-d768-v2\"){name commit fileCount files(first:100){edges{node{name sizeBytes}} pageInfo{hasNextPage}} runner:files(names:[\"code/_callable_runner.py\"],first:10){edges{node{name url sizeBytes}}}} r1:run(name:\"rav-ladder-d1024\"){name commit fileCount files(first:100){edges{node{name sizeBytes}} pageInfo{hasNextPage}} runner:files(names:[\"code/_callable_runner.py\"],first:10){edges{node{name url sizeBytes}}}} r2:run(name:\"rav-ladder-d1536\"){name commit fileCount files(first:100){edges{node{name sizeBytes}} pageInfo{hasNextPage}} runner:files(names:[\"code/_callable_runner.py\"],first:10){edges{node{name url sizeBytes}}}} r3:run(name:\"h100-mix25-20260912-d768\"){name commit fileCount files(first:100){edges{node{name sizeBytes}} pageInfo{hasNextPage}} runner:files(names:[\"code/_callable_runner.py\"],first:10){edges{node{name url sizeBytes}}}} r4:run(name:\"h100-mix25-20260912-d1024\"){name commit fileCount files(first:100){edges{node{name sizeBytes}} pageInfo{hasNextPage}} runner:files(names:[\"code/_callable_runner.py\"],first:10){edges{node{name url sizeBytes}}}} r5:run(name:\"h100-mix25-20260912-d1536\"){name commit fileCount files(first:100){edges{node{name sizeBytes}} pageInfo{hasNextPage}} runner:files(names:[\"code/_callable_runner.py\"],first:10){edges{node{name url sizeBytes}}}}} }"
+    }
+  },
+  {
+    "file": "execution_2026_10_05/runner_rav-ladder-d768-v2.py",
+    "bytes": 1655,
+    "sha256": "00eb0d2f6f1eee20d253558dae0f6c6f9fa6321987adedea82df866c3b4e32d1",
+    "retrieved_utc": "2026-10-05T07:38:25.225991+00:00",
+    "url": "https://api.wandb.ai/files/marin-community/marin_moe/rav-ladder-d768-v2/code/_callable_runner.py",
+    "public_run": "rav-ladder-d768-v2",
+    "wandb_file_name": "code/_callable_runner.py"
+  },
+  {
+    "file": "execution_2026_10_05/runner_h100-mix25-20260912-d768.py",
+    "bytes": 1870,
+    "sha256": "ad003af5c7734151b5426f0ab2c77211f09d2dedd16dbb325ef625d66ed32b59",
+    "retrieved_utc": "2026-10-05T07:38:25.226257+00:00",
+    "url": "https://api.wandb.ai/files/marin-community/marin_moe/h100-mix25-20260912-d768/code/_callable_runner.py",
+    "public_run": "h100-mix25-20260912-d768",
+    "wandb_file_name": "code/_callable_runner.py"
   }
 ]

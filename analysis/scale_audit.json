@@ -1,0 +1,74 @@
+{
+  "scope": "Frozen public endpoint recomputation plus logged configuration contrast; no controlled scale-effect estimate",
+  "endpoint_rows": 48,
+  "macro_rows": [
+    {
+      "size": "d768",
+      "old_bpb": 1.0837204530835152,
+      "new_bpb": 1.0793302208185196,
+      "compute": 2.649679880270119e+19,
+      "improved": 11
+    },
+    {
+      "size": "d1024",
+      "old_bpb": 1.002216674387455,
+      "new_bpb": 0.9952438846230507,
+      "compute": 1.7261182741798453e+20,
+      "improved": 12
+    },
+    {
+      "size": "d1536",
+      "old_bpb": 0.9250680357217789,
+      "new_bpb": 0.9184419363737106,
+      "compute": 1.3813106318003122e+21,
+      "improved": 15
+    }
+  ],
+  "direction_changes": [
+    "dolma_100_programing_languages",
+    "ptb",
+    "redpajama",
+    "wikitext_103"
+  ],
+  "ce_bpb_direction_disagreements": [
+    {
+      "size": "d768",
+      "subset": "dolma_100_programing_languages"
+    },
+    {
+      "size": "d1024",
+      "subset": "dolma_100_programing_languages"
+    }
+  ],
+  "initial_weight_half_l1": [
+    0.20391888499269875,
+    0.20391888499269875,
+    0.20391888499269875
+  ],
+  "fit_assumptions": {
+    "compute_source": "point_speedups.csv baseline_compute; not nominal launcher constants",
+    "fixed_floor_then_refit": true,
+    "recenter_at_measured_target_endpoint": true,
+    "throughput_ratio": 1,
+    "confidence_interval": null,
+    "estimated_irreducible_floor": null
+  },
+  "sources_sha256": {
+    "sources/scale_2026_10_05/config_h100-mix25-20260912-d1024.json": "b43bd75d42c3a4f5c9407aafca32f0a14d71c691adc7bf5d43ff26936fbb8f31",
+    "sources/scale_2026_10_05/config_h100-mix25-20260912-d1536.json": "5d47fe4758a0b76505dddf70d56640aa4d875629a3ac7ead8620be5a7626e22c",
+    "sources/scale_2026_10_05/config_h100-mix25-20260912-d768.json": "17e18f8bd54ad25503ac792f1119768593a60b4e1eb966350ae5eea500440c47",
+    "sources/scale_2026_10_05/config_rav-ladder-d1024.json": "8228b01d96f8b43b8da7109087d6c0f8cdbf44b93c86b35190207496a52e1012",
+    "sources/scale_2026_10_05/config_rav-ladder-d1536.json": "90cdd8c7822dbc90534992654e776431b8156d8c9d1bdec864feefadc61dc493",
+    "sources/scale_2026_10_05/config_rav-ladder-d768-v2.json": "3b0e9f5a883dcb778f7c3e7d310220c817b2f35a835c4dacb622af90173de4cd",
+    "sources/scale_2026_10_05/data_mixing_laws_v2.html": "fce5463134d9b14baf600f3b266a65ce23ee5eee1e60c38c17cf2e1e9ed7be64",
+    "sources/scale_2026_10_05/eval.py": "b67cc96335f667982a0fe43618215734140c28392be215a88177979c712dee2c",
+    "sources/scale_2026_10_05/grug_loss.py": "97e86e8a7540cafeb4be9695da9a5c8342f3780b7fee6cbb45de79ffc50c15ba",
+    "sources/scale_2026_10_05/issue_9126.json": "ff42bfae305d778697b7471eaa9bf5e96727abf8260b84d7222f5c7d00647930",
+    "sources/scale_2026_10_05/labeled_eval.py": "5cf9daaf84ad1663c77220ff3b5c43bcb516e856f453404e5fbee952cce32d40",
+    "sources/scale_2026_10_05/regmix_d_v1.html": "e0e91fe0841193d32399778e45aca3dda4677285e855423503e07d459aa22ee5",
+    "sources/scale_2026_10_05/regmix_v2.html": "e1a03b0b609f5410b30e3e02dd68c1d8295fc5f57fe91d476120ccac2384479b",
+    "sources/scale_2026_10_05/train_hero_ep.py": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7"
+  },
+  "actual_scale_causal_experiment": null,
+  "actual_gpu_confirmation": null
+}

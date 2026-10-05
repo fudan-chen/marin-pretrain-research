@@ -8,6 +8,8 @@ report:
 	$(PYTHON) scripts/analyze_deepening.py > analysis/deepening_computation_log.txt
 	$(PYTHON) scripts/analyze_practical.py > analysis/practical_computation_log.txt
 	$(PYTHON) scripts/analyze_findings.py > analysis/findings_computation_log.txt
+	$(PYTHON) scripts/analyze_execution.py > analysis/execution_computation_log.txt
+	$(PYTHON) scripts/analyze_scale.py > analysis/scale_computation_log.txt
 	$(PYTHON) scripts/build_learning.py
 	$(PYTHON) scripts/build_decision.py
 	$(PYTHON) scripts/build_transfer.py > analysis/transfer_computation_log.txt
@@ -20,6 +22,7 @@ report:
 	$(PYTHON) scripts/charts_findings.py
 	$(PYTHON) scripts/charts_transfer.py
 	$(PYTHON) scripts/charts_order.py
+	$(PYTHON) scripts/charts_scale.py
 	$(NODE) scripts/test_planner.cjs
 	$(NODE) scripts/test_review.cjs
 	$(NODE) scripts/test_decision.cjs

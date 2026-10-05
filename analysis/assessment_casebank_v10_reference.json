@@ -1,0 +1,553 @@
+{
+  "schema": "marin-reader-casebank/1",
+  "protocol_version": "0.1",
+  "rubric_framework_version": "1.1",
+  "scope": "Authored source-bound comprehension practice; no external reader or scoring-validity study",
+  "snapshot": "2026-10-04 numerical archive; 2026-10-05 engineering wording audit; questions and anchors unchanged",
+  "dimensions": [
+    {
+      "id": "scope",
+      "label": "结论范围"
+    },
+    {
+      "id": "mechanism",
+      "label": "限制原因"
+    },
+    {
+      "id": "next",
+      "label": "最小追加证据"
+    }
+  ],
+  "cases": [
+    {
+      "id": "Q01",
+      "title": "CE跳升：究竟是谁变了",
+      "prompt": "108k配比切换附近，训练CE约1.210→1.235。有人据此要求立即回退，理由是“新配比让模型变差”。现有材料支持这句判断吗？写出原因，以及最少要补的可比证据。",
+      "reference_answer": "这只能描述该窗口训练CE上升，不能单独判定新配比损害能力。 抽样分布变了，较难文本占比提高也会抬高训练CE；路由丢弃和恢复状态仍需核对。这个解释也不证明新配比更好。 先比较共同状态和预算下、相同固定验证集与路由路径的结果，再决定是否回退。",
+      "allowed_claim": "这只能描述该窗口训练CE上升，不能单独判定新配比损害能力。",
+      "explanation": "抽样分布变了，较难文本占比提高也会抬高训练CE；路由丢弃和恢复状态仍需核对。这个解释也不证明新配比更好。",
+      "next_evidence": "先比较共同状态和预算下、相同固定验证集与路由路径的结果，再决定是否回退。",
+      "critical_errors": [
+        {
+          "id": "Q01-E1",
+          "text": "把训练CE跳升直接写成模型能力退步，或反过来写成更难数据必然更好。"
+        }
+      ],
+      "links": [
+        {
+          "href": "analysis/summary.json",
+          "label": "配对与窗口原值"
+        },
+        {
+          "href": "REPORT_ZH.md",
+          "label": "三个曲线案例"
+        }
+      ],
+      "rules": [
+        "R02",
+        "R03",
+        "R14"
+      ],
+      "figure": "assets/training_signals.png",
+      "anchors": {
+        "scope": {
+          "2": "明确108k训练CE窗口和能力结论的区别，不反向保证收益。",
+          "1": "对象或结论方向基本正确，但比较范围有遗漏。",
+          "0": "把题目中的范围改成了更强或不同的主张。"
+        },
+        "mechanism": {
+          "2": "解释批次分布改变平均CE，并保留路由/状态混杂。",
+          "1": "提到相关风险，但未说明如何影响本题比较。",
+          "0": "只背结论、混淆机制，或没有说明限制原因。"
+        },
+        "next": {
+          "2": "指出同固定验证、路由、预算/状态的具体比较。",
+          "1": "提出相关方向，但所需对照或证据不具体。",
+          "0": "没有下一步，或只写“更多数据/继续研究”。"
+        }
+      }
+    },
+    {
+      "id": "Q02",
+      "title": "BPB改善：能否换算正确率",
+      "prompt": "三组d512续训的HumanEval目标文本BPB均值，相对库存比例基线约变化-7.50%。能否把它写成pass@1提升7.50%？这个候选现在可以支持什么决定？",
+      "reference_answer": "不能换算pass@1；目前支持代码目标文本预测改善的候选线索。 BPB按byte度量给定目标文本的预测代价；生成、解码与执行错误不由这个均值直接给出。三seed续训也不是535B验证。 冻结候选，补相同题目/解码设置的实际生成与执行评估，并记录波动和风险，再决定放大。",
+      "allowed_claim": "不能换算pass@1；目前支持代码目标文本预测改善的候选线索。",
+      "explanation": "BPB按byte度量给定目标文本的预测代价；生成、解码与执行错误不由这个均值直接给出。三seed续训也不是535B验证。",
+      "next_evidence": "冻结候选，补相同题目/解码设置的实际生成与执行评估，并记录波动和风险，再决定放大。",
+      "critical_errors": [
+        {
+          "id": "Q02-E1",
+          "text": "把BPB百分比当成pass@1、正确率或535B已验证能力收益。"
+        }
+      ],
+      "links": [
+        {
+          "href": "analysis/strong_baseline_comparison.csv",
+          "label": "均值与参照"
+        },
+        {
+          "href": "analysis/workbench_data.json",
+          "label": "逐seedBPB"
+        }
+      ],
+      "rules": [
+        "R02",
+        "R03",
+        "R07",
+        "R15"
+      ],
+      "figure": "assets/paired_seed_tradeoffs.png",
+      "anchors": {
+        "scope": {
+          "2": "正确说出d512、库存比例参照、目标文本BPB和候选层级。",
+          "1": "对象或结论方向基本正确，但比较范围有遗漏。",
+          "0": "把题目中的范围改成了更强或不同的主张。"
+        },
+        "mechanism": {
+          "2": "解释给定文本概率与自主生成/执行的区别。",
+          "1": "提到相关风险，但未说明如何影响本题比较。",
+          "0": "只背结论、混淆机制，或没有说明限制原因。"
+        },
+        "next": {
+          "2": "给出冻结候选后的实际生成/执行对照，不仅重测BPB。",
+          "1": "提出相关方向，但所需对照或证据不具体。",
+          "0": "没有下一步，或只写“更多数据/继续研究”。"
+        }
+      }
+    },
+    {
+      "id": "Q03",
+      "title": "92.05%：是差值比例还是原因",
+      "prompt": "旧、比例、选中方案的三seed Paloma宏平均BPB均值分别为1.193383、1.186598、1.186012。比例基线取得约92.05%的旧→选中观察差。应怎样解读，不能怎样解读？",
+      "reference_answer": "这是三个续训终点均值的差值比例，说明简单参照已经取得大部分观察macro差。 它没有隔离库存比例本身的因果贡献；不同配方同时改动多个桶。参照变强后，选中方案的额外macro改善很小，但代码等子任务仍需分别看。 保留比例参照与退步项；若要归因某类数据，用明确供体、相同预算的局部干预与独立重复。",
+      "allowed_claim": "这是三个续训终点均值的差值比例，说明简单参照已经取得大部分观察macro差。",
+      "explanation": "它没有隔离库存比例本身的因果贡献；不同配方同时改动多个桶。参照变强后，选中方案的额外macro改善很小，但代码等子任务仍需分别看。",
+      "next_evidence": "保留比例参照与退步项；若要归因某类数据，用明确供体、相同预算的局部干预与独立重复。",
+      "critical_errors": [
+        {
+          "id": "Q03-E1",
+          "text": "把92.05%写成库存比例的因果贡献率、统计置信度或535B收益。"
+        }
+      ],
+      "links": [
+        {
+          "href": "analysis/strong_baseline_comparison.csv",
+          "label": "三参照均值"
+        },
+        {
+          "href": "CONCLUSIONS_ZH.md",
+          "label": "差值比例解释"
+        }
+      ],
+      "rules": [
+        "R03",
+        "R04",
+        "R06",
+        "R08"
+      ],
+      "figure": "assets/macro_contribution_findings.png",
+      "anchors": {
+        "scope": {
+          "2": "说出三均值差值比例与d512观察范围，不改名为因果贡献。",
+          "1": "对象或结论方向基本正确，但比较范围有遗漏。",
+          "0": "把题目中的范围改成了更强或不同的主张。"
+        },
+        "mechanism": {
+          "2": "解释强参照和多桶共同变化，允许不同子任务有不同方向。",
+          "1": "提到相关风险，但未说明如何影响本题比较。",
+          "0": "只背结论、混淆机制，或没有说明限制原因。"
+        },
+        "next": {
+          "2": "保留强参照，并为归因提出具体供体和预算控制。",
+          "1": "提出相关方向，但所需对照或证据不具体。",
+          "0": "没有下一步，或只写“更多数据/继续研究”。"
+        }
+      }
+    },
+    {
+      "id": "Q04",
+      "title": "597个候选：为什么不是597次复验",
+      "prompt": "候选工作台有597个seed0终点，能够事后调整约束、主目标与排名。把第一名选出来后，是否已经得到稳定收益证据？应怎样进入确认阶段？",
+      "reference_answer": "这是一批不同配方的搜索终点，支持提出候选，不等于冻结候选的独立重复。 搜索与事后调阈值会偏向乐观结果；当前材料没有恢复完整历史selector，也不能把新工作台的规则写成当时的选择方法。 在看新结果前冻结候选、参照、主目标和风险阈值，用未参与选择的重复与确认评估检验；没有符合条件者应保留空集。",
+      "allowed_claim": "这是一批不同配方的搜索终点，支持提出候选，不等于冻结候选的独立重复。",
+      "explanation": "搜索与事后调阈值会偏向乐观结果；当前材料没有恢复完整历史selector，也不能把新工作台的规则写成当时的选择方法。",
+      "next_evidence": "在看新结果前冻结候选、参照、主目标和风险阈值，用未参与选择的重复与确认评估检验；没有符合条件者应保留空集。",
+      "critical_errors": [
+        {
+          "id": "Q04-E1",
+          "text": "把597个不同候选当同一候选的独立重复，或把事后筛选当独立确认。"
+        }
+      ],
+      "links": [
+        {
+          "href": "analysis/decision_data.json",
+          "label": "597候选与来源"
+        },
+        {
+          "href": "analysis/selector_provenance_audit.json",
+          "label": "历史selector检索范围"
+        },
+        {
+          "href": "templates/selection_contract.json",
+          "label": "未来确认契约"
+        }
+      ],
+      "rules": [
+        "R01",
+        "R07",
+        "R12"
+      ],
+      "figure": "assets/observed_frontier_findings.png",
+      "anchors": {
+        "scope": {
+          "2": "区分搜索候选与同一冻结候选重复，保留selector未知。",
+          "1": "对象或结论方向基本正确，但比较范围有遗漏。",
+          "0": "把题目中的范围改成了更强或不同的主张。"
+        },
+        "mechanism": {
+          "2": "说明选择偏差与事后阈值为何不能确认稳定收益。",
+          "1": "提到相关风险，但未说明如何影响本题比较。",
+          "0": "只背结论、混淆机制，或没有说明限制原因。"
+        },
+        "next": {
+          "2": "具体冻结四项并使用新重复/确认评估，空集不静默放宽。",
+          "1": "提出相关方向，但所需对照或证据不具体。",
+          "0": "没有下一步，或只写“更多数据/继续研究”。"
+        }
+      }
+    },
+    {
+      "id": "Q05",
+      "title": "平均改善：能否抵消关键退步",
+      "prompt": "197c相对996f的seed0 Paloma macro BPB变化约-0.173%，MedQA目标文本BPB约+10.36%。如果主目标是macro，能否直接说“全面更好”并使医学保底通过？",
+      "reference_answer": "可以把197c保留为有取舍的macro候选，不能说全面更好或医学保底已通过。 平均与关键任务衡量不同目标；BPB越低越好，MedQA方向为退步。单seed事后比较也没有证明医学问答准确率下降同样百分比。 按预先定义的风险阈值独立确认；若医学是硬约束，当前冲突要单列，不能由macro改善抵消。",
+      "allowed_claim": "可以把197c保留为有取舍的macro候选，不能说全面更好或医学保底已通过。",
+      "explanation": "平均与关键任务衡量不同目标；BPB越低越好，MedQA方向为退步。单seed事后比较也没有证明医学问答准确率下降同样百分比。",
+      "next_evidence": "按预先定义的风险阈值独立确认；若医学是硬约束，当前冲突要单列，不能由macro改善抵消。",
+      "critical_errors": [
+        {
+          "id": "Q05-E1",
+          "text": "用macro改善抵消硬保底冲突，或把MedQA BPB变化换成医学答题准确率变化。"
+        }
+      ],
+      "links": [
+        {
+          "href": "analysis/candidate_197c_counterexample.csv",
+          "label": "197c/996f七指标"
+        },
+        {
+          "href": "analysis/decision_data.json",
+          "label": "同seed原值"
+        }
+      ],
+      "rules": [
+        "R03",
+        "R06",
+        "R07",
+        "R12",
+        "R15"
+      ],
+      "figure": "assets/observed_frontier_findings.png",
+      "anchors": {
+        "scope": {
+          "2": "同时报告参照、seed、macro改善与MedQA BPB退步。",
+          "1": "对象或结论方向基本正确，但比较范围有遗漏。",
+          "0": "把题目中的范围改成了更强或不同的主张。"
+        },
+        "mechanism": {
+          "2": "解释平均无法替代关键约束，BPB不等于准确率。",
+          "1": "提到相关风险，但未说明如何影响本题比较。",
+          "0": "只背结论、混淆机制，或没有说明限制原因。"
+        },
+        "next": {
+          "2": "指出预定阈值、独立确认与不可抵消的关键冲突。",
+          "1": "提出相关方向，但所需对照或证据不具体。",
+          "0": "没有下一步，或只写“更多数据/继续研究”。"
+        }
+      }
+    },
+    {
+      "id": "Q06",
+      "title": "名义曝光：能否当作文档重复次数",
+      "prompt": "公开库存与全程计划中，c27q0的计划量/库存约为6.74轮。是否说明其每篇文档实际重复了这么多次，或实际训练已经读完这份量？增量前先查什么？",
+      "reference_answer": "这是全程名义曝光比，不是每篇文档的真实重复次数，也不是已完成的读取量。 库存、抽样权重和实际曝光有不同分母；去重覆盖、随机排列、有限库存取模和历史会影响具体重复。4K生产快照仍未完成18T目标。 加量前核对有效去重库存、已有历史和剩余预算；若要报告实际重复，需实际token/文档ID与读取记录。",
+      "allowed_claim": "这是全程名义曝光比，不是每篇文档的真实重复次数，也不是已完成的读取量。",
+      "explanation": "库存、抽样权重和实际曝光有不同分母；去重覆盖、随机排列、有限库存取模和历史会影响具体重复。4K生产快照仍未完成18T目标。",
+      "next_evidence": "加量前核对有效去重库存、已有历史和剩余预算；若要报告实际重复，需实际token/文档ID与读取记录。",
+      "critical_errors": [
+        {
+          "id": "Q06-E1",
+          "text": "把全程计划epochs当成逐文档实测重复次数或已完成生产量。"
+        }
+      ],
+      "links": [
+        {
+          "href": "analysis/cell_weights.csv",
+          "label": "计划库存与曝光"
+        },
+        {
+          "href": "analysis/summary.json",
+          "label": "生产快照和预算"
+        }
+      ],
+      "rules": [
+        "R02",
+        "R05",
+        "R09",
+        "R14"
+      ],
+      "figure": "assets/domain_mixture.png",
+      "anchors": {
+        "scope": {
+          "2": "明确计划而非实测、桶而非每篇文档、全程而非当前完成量。",
+          "1": "对象或结论方向基本正确，但比较范围有遗漏。",
+          "0": "把题目中的范围改成了更强或不同的主张。"
+        },
+        "mechanism": {
+          "2": "解释库存/权重/曝光不同分母，以及实际覆盖条件。",
+          "1": "提到相关风险，但未说明如何影响本题比较。",
+          "0": "只背结论、混淆机制，或没有说明限制原因。"
+        },
+        "next": {
+          "2": "提出有效库存、历史、剩余预算或真实ID核对。",
+          "1": "提出相关方向，但所需对照或证据不具体。",
+          "0": "没有下一步，或只写“更多数据/继续研究”。"
+        }
+      }
+    },
+    {
+      "id": "Q07",
+      "title": "数学加量：有没有同时改变时序",
+      "prompt": "197c对996f的名义剩余计划：数学累计增量约20.866B tokens；扣除同累计增量的常数方案后，前/后段余量约±8.070B。能否用这两个候选的端点差证明“数学前置有效”？",
+      "reference_answer": "不能；原比较同时包含累计量与时序变化，且供体和其他桶也在变。 两个阶段变化可拆成同累计量的常数加量与和为零的时序余量。账本分解识别了待检验因素，没有给各因素分配因果收益。 先确认累计配方和供体，再在相同累计量、预算与状态下构造整数匹配的前置/后置比较。",
+      "allowed_claim": "不能；原比较同时包含累计量与时序变化，且供体和其他桶也在变。",
+      "explanation": "两个阶段变化可拆成同累计量的常数加量与和为零的时序余量。账本分解识别了待检验因素，没有给各因素分配因果收益。",
+      "next_evidence": "先确认累计配方和供体，再在相同累计量、预算与状态下构造整数匹配的前置/后置比较。",
+      "critical_errors": [
+        {
+          "id": "Q07-E1",
+          "text": "把候选端点差或约8.070B时序余量本身当成数学前置的因果收益。"
+        }
+      ],
+      "links": [
+        {
+          "href": "analysis/transfer_data.json",
+          "label": "数学累计与时序分解"
+        },
+        {
+          "href": "TRANSFER_GUIDE_ZH.md",
+          "label": "供体与因素草案"
+        }
+      ],
+      "rules": [
+        "R05",
+        "R08",
+        "R10"
+      ],
+      "figure": "assets/candidate_budget_decomposition.png",
+      "anchors": {
+        "scope": {
+          "2": "保留候选整体比较、累计量和时序的范围区别。",
+          "1": "对象或结论方向基本正确，但比较范围有遗漏。",
+          "0": "把题目中的范围改成了更强或不同的主张。"
+        },
+        "mechanism": {
+          "2": "解释常数加量/零和余量及供体共同变化，不归因端点。",
+          "1": "提到相关风险，但未说明如何影响本题比较。",
+          "0": "只背结论、混淆机制，或没有说明限制原因。"
+        },
+        "next": {
+          "2": "提出确认累计配方后、共同状态下的匹配整数顺序对照。",
+          "1": "提出相关方向，但所需对照或证据不具体。",
+          "0": "没有下一步，或只写“更多数据/继续研究”。"
+        }
+      }
+    },
+    {
+      "id": "Q08",
+      "title": "整数余数：配置只改两域就够了吗",
+      "prompt": "V7连续权重只声明数学与供体域变化，原加载器取整却改变了c28q4/c30q4。修正后24次整块计数匹配目标。现在能否说已经完成“仅两域的实际数据干预”和能力确认？",
+      "reference_answer": "修正支持声明域内的整块计数设计；不能由24次计数推出实际数据流或能力已经确认。 全局余数分配可能改变未声明桶，权重支持与整数支持不一致。修正解决这个执行算术问题，但没有读取真实store、恢复内容或跑生成评估。 保留原泄漏反例和逐桶整数残差；再核对实际库存、cursor、shuffle与token ID，按冻结方案独立训练确认。",
+      "allowed_claim": "修正支持声明域内的整块计数设计；不能由24次计数推出实际数据流或能力已经确认。",
+      "explanation": "全局余数分配可能改变未声明桶，权重支持与整数支持不一致。修正解决这个执行算术问题，但没有读取真实store、恢复内容或跑生成评估。",
+      "next_evidence": "保留原泄漏反例和逐桶整数残差；再核对实际库存、cursor、shuffle与token ID，按冻结方案独立训练确认。",
+      "critical_errors": [
+        {
+          "id": "Q08-E1",
+          "text": "将加载器计数通过写成实际内容干预、训练完成或能力确认。"
+        }
+      ],
+      "links": [
+        {
+          "href": "analysis/transfer_plan_quantization.csv",
+          "label": "原取整泄漏"
+        },
+        {
+          "href": "analysis/transfer_plan_integer_controlled.csv",
+          "label": "修正逐桶计数"
+        },
+        {
+          "href": "analysis/transfer_loader_probe_python312.json",
+          "label": "原方法运行范围"
+        }
+      ],
+      "rules": [
+        "R05",
+        "R08",
+        "R14",
+        "R15"
+      ],
+      "figure": "assets/cell_weight_shifts.png",
+      "anchors": {
+        "scope": {
+          "2": "只肯定24次整块计数范围，真实内容与能力保持未知。",
+          "1": "对象或结论方向基本正确，但比较范围有遗漏。",
+          "0": "把题目中的范围改成了更强或不同的主张。"
+        },
+        "mechanism": {
+          "2": "解释全局取整余数导致未声明桶变化的机制。",
+          "1": "提到相关风险，但未说明如何影响本题比较。",
+          "0": "只背结论、混淆机制，或没有说明限制原因。"
+        },
+        "next": {
+          "2": "保留反例/残差并提出真实映射和独立训练核对。",
+          "1": "提出相关方向，但所需对照或证据不具体。",
+          "0": "没有下一步，或只写“更多数据/继续研究”。"
+        }
+      }
+    },
+    {
+      "id": "Q09",
+      "title": "整块零差：为何整个窗口还不同",
+      "prompt": "按公开窗口推导，前后为56/16个完整块，另有两端部分块。把数学每块改成前段+2k、后段−7k，完整块累计差为零。如果两端也随配方改变，是否足够声称纯顺序实验？",
+      "reference_answer": "不够；完整块匹配没有覆盖两端实际读取的槽位。 部分块某桶的读数依赖块内排列，不能按权重期望代填。k10关闭shuffle的合法诊断仍有140序列L1差；这只是反例，不是Marin历史读取差。 保留原总预算，让两端数组与累计游标共同不变，中间整数补偿；再核对实际恢复、key与映射。",
+      "allowed_claim": "不够；完整块匹配没有覆盖两端实际读取的槽位。",
+      "explanation": "部分块某桶的读数依赖块内排列，不能按权重期望代填。k10关闭shuffle的合法诊断仍有140序列L1差；这只是反例，不是Marin历史读取差。",
+      "next_evidence": "保留原总预算，让两端数组与累计游标共同不变，中间整数补偿；再核对实际恢复、key与映射。",
+      "critical_errors": [
+        {
+          "id": "Q09-E1",
+          "text": "把整块残差零当完整窗口相同，或把140序列诊断当历史实际差。"
+        }
+      ],
+      "links": [
+        {
+          "href": "analysis/order_integer_audit.json",
+          "label": "窗口与整数计数"
+        },
+        {
+          "href": "analysis/order_loader_probe_python312.json",
+          "label": "部分块反例"
+        },
+        {
+          "href": "ORDER_GUIDE_ZH.md",
+          "label": "共同边缘设计"
+        }
+      ],
+      "rules": [
+        "R05",
+        "R10",
+        "R14"
+      ],
+      "figure": "assets/order_edge_ledger.png",
+      "anchors": {
+        "scope": {
+          "2": "区分完整块、整个窗口与诊断，不把反例当历史值。",
+          "1": "对象或结论方向基本正确，但比较范围有遗漏。",
+          "0": "把题目中的范围改成了更强或不同的主张。"
+        },
+        "mechanism": {
+          "2": "解释部分块排列和槽位读取为何破坏简单比例补偿。",
+          "1": "提到相关风险，但未说明如何影响本题比较。",
+          "0": "只背结论、混淆机制，或没有说明限制原因。"
+        },
+        "next": {
+          "2": "保持预算/共同边缘和游标，补真实key/映射，而非裁窗口。",
+          "1": "提出相关方向，但所需对照或证据不具体。",
+          "0": "没有下一步，或只写“更多数据/继续研究”。"
+        }
+      }
+    },
+    {
+      "id": "Q10",
+      "title": "条件索引证明：离实际token还缺什么",
+      "prompt": "共同边缘草案已核对480组阶段计数和20份两端数组/游标关系。有人准备把标题写成“已证明Marin各组看到了相同token”。这个标题应怎样改，哪项证据会推翻当前条件？",
+      "reference_answer": "应写成“共同状态条件下的累计逻辑索引匹配”；没有验证Marin实际token内容。 计数、边缘数组和游标匹配提供条件逻辑关系；实际checkpoint、next index、混合/内部shuffle key、底层映射与packing仍未核对。任一共同状态不同都可能使推论失效。 固定代码/环境和恢复内容，取得真实cursor、keys和store manifest，重放实际token ID；另做生成评估才能讨论能力。",
+      "allowed_claim": "应写成“共同状态条件下的累计逻辑索引匹配”；没有验证Marin实际token内容。",
+      "explanation": "计数、边缘数组和游标匹配提供条件逻辑关系；实际checkpoint、next index、混合/内部shuffle key、底层映射与packing仍未核对。任一共同状态不同都可能使推论失效。",
+      "next_evidence": "固定代码/环境和恢复内容，取得真实cursor、keys和store manifest，重放实际token ID；另做生成评估才能讨论能力。",
+      "critical_errors": [
+        {
+          "id": "Q10-E1",
+          "text": "把条件索引证明写成实际Marin token流复现，或以它使能力/生产阶段通过。"
+        }
+      ],
+      "links": [
+        {
+          "href": "analysis/order_loader_probe_python312.json",
+          "label": "六段方法与条件证明"
+        },
+        {
+          "href": "templates/order_edge_locked.json",
+          "label": "空的执行状态"
+        },
+        {
+          "href": "ORDER_GUIDE_ZH.md",
+          "label": "四层相同"
+        }
+      ],
+      "rules": [
+        "R01",
+        "R02",
+        "R10",
+        "R14",
+        "R15"
+      ],
+      "figure": "assets/order_edge_ledger.png",
+      "anchors": {
+        "scope": {
+          "2": "明确本地草案、条件索引与实际内容，改掉过强标题。",
+          "1": "对象或结论方向基本正确，但比较范围有遗漏。",
+          "0": "把题目中的范围改成了更强或不同的主张。"
+        },
+        "mechanism": {
+          "2": "指出至少一种具体共同状态改变会破坏条件，并区分能力。",
+          "1": "提到相关风险，但未说明如何影响本题比较。",
+          "0": "只背结论、混淆机制，或没有说明限制原因。"
+        },
+        "next": {
+          "2": "提出真实checkpoint/cursor/key/store与token重放，而非重跑计数。",
+          "1": "提出相关方向，但所需对照或证据不具体。",
+          "0": "没有下一步，或只写“更多数据/继续研究”。"
+        }
+      }
+    }
+  ],
+  "source_sha256": {
+    "CONCLUSIONS_ZH.md": "b5cc30fa897eb28de4d8e1344a256f135ea4bf4ed9bab09375ef4fa26433b021",
+    "ORDER_GUIDE_ZH.md": "fd02a561e7f386ca32ee2dfb193e86af8daabca09ba3df19ee37354ad72b521e",
+    "REPORT_ZH.md": "d9aa94dc4cc441b740bfafe471d3ca631a584bd8f6f7e51158581a3e45612da2",
+    "TRANSFER_GUIDE_ZH.md": "c97441ecdcee875290c3aea6635d5ba103d9eb0b83af301e1db94f4708365d42",
+    "analysis/candidate_197c_counterexample.csv": "7ab4db7bd80e08347d1cec062e13b982ebd862c4173de42a1ef1636b7b42bf54",
+    "analysis/cell_weights.csv": "a23fb88895d7d3e1ea3732b01ffa5dc0081a592d37a4d7a2d612be881a0625b1",
+    "analysis/decision_data.json": "2d89176a55b10b12f2b9705517ca303cf7c4252d29f6f937ca5972022bf4ab96",
+    "analysis/order_integer_audit.json": "e2239ac4bb4ae5e28e5ab5a44233ac3efb52b2f63aa732f2f1a12208808c8a98",
+    "analysis/order_loader_probe_python312.json": "52817bd5b69f0830d3d1a21eb62e3094116668527da471c0cdbc315427a91ecc",
+    "analysis/order_workbench_data.json": "bba22dc48e9fb6903dca6b1e2853448e9b807a6e488154b8c69f43783b5cd19e",
+    "analysis/rubrics.json": "440abb8a7c7083086fe1ec4e03c2daff571f101133b7b0eccced8004fcb7fa16",
+    "analysis/selector_provenance_audit.json": "9dc29667d9e94d8d852f31378e406b267aff5b391fe65031c5c75126c60337ec",
+    "analysis/strong_baseline_comparison.csv": "23fa7ba8d25db16c197f93f67d4d2bb5c6d309c8ace29b4ec90c805e7862a5f4",
+    "analysis/summary.json": "548b6ceb369024457353b46051975d1e6873c530b66d6b7be90ae4d7cc59b00c",
+    "analysis/transfer_data.json": "3ca1c06e987a277759581fb7483977d549bf1cc51b4d3a502c89281f1d70008b",
+    "analysis/transfer_loader_probe_python312.json": "b7f2eccbedb3bf228b2a8054c5ff0345efd21806c47995d38d032b091d42eec5",
+    "analysis/transfer_plan_integer_controlled.csv": "f528038b223ea908b71cfbd5bdb7c8b2b28ac9db2aceb865955a836ca4cd3a50",
+    "analysis/transfer_plan_quantization.csv": "917be49a61251b6bae97134241203409c5c6e8b112d640e821167a7c427bb128",
+    "analysis/workbench_data.json": "a7f9c1db1fb42f9b9d5156f56fd64770443086aca11cd9383511c5ca35880e29",
+    "templates/order_edge_locked.json": "ab17a2628efac71ed6c196184bae9f10ae591537418d9bff19cbd8c829395b91",
+    "templates/selection_contract.json": "9e3797fbc628a2d6e6f39233bd4366503e6c5fb14b260e6a312ab8782d869cd8"
+  },
+  "external_readers": null,
+  "external_scoring_validity": null,
+  "bank_sha256": "ce6db7ca2f9bd3f55e50011759a2f3b12c99def12f8191f14ecacb439948ab0f"
+}

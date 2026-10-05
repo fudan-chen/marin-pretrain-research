@@ -10,6 +10,7 @@ chapters.insert(0,('transfer-guide','预算分解与供体实验','TRANSFER_GUID
 chapters.insert(0,('order-guide','顺序、边缘块与索引','ORDER_GUIDE_ZH.md'))
 chapters.insert(0,('engineering-guide','工程排障、反证与验收','ENGINEERING_GUIDE_ZH.md'))
 chapters.insert(0,('assessment-guide','理解检查、锚点与分歧','ASSESSMENT_GUIDE_ZH.md'))
+chapters.insert(0,('scale-guide','跨规模比较、评估口径与确认','SCALE_TRANSFER_ZH.md'))
 readings={x['file']:x for x in json.loads((ROOT/'analysis/figure_readings.json').read_text())}
 sections=[];toc=[]
 for slug,label,file in chapters:
@@ -75,6 +76,7 @@ template=template.replace('<a href="#order-lab">检查顺序与累计量</a>','<
 template=template.replace('<script>ASSESSMENTUI</script>','<script>ASSESSMENTUI</script><script type="application/json" id="engineering-data">ENGINEERINGDATA</script><script>ENGINEERINGUI</script>')
 template=template.replace('公开快照：2026-10-04','训练快照：2026-10-04 · 工程核对：10-05')
 template=template.replace('<a href="#assessment-lab">保存自己的证据判断</a>','<a href="#engineering-lab">核对工程解释与反证</a><a href="#assessment-lab">保存自己的证据判断</a>')
+template=template.replace('<a href="#engineering-lab">核对工程解释与反证</a>', '<a href="#scale-guide">最新：配比历史与BPB聚合检查</a><a href="#engineering-lab">核对工程解释与反证</a>')
 workbench=json.loads((ROOT/'analysis/workbench_data.json').read_text());rubric=json.loads((ROOT/'analysis/rubrics.json').read_text());chapter_paths={file:'#'+slug for slug,_,file in chapters}
 for c in workbench['cases']:c['source']=chapter_paths.get(c['source'],c['source'])
 for rule in rubric['rules']:

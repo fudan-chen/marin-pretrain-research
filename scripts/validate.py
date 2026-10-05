@@ -63,7 +63,7 @@ manifest=read(S/'archive_manifest.json')
 ok('All archived file checksums match',all(hashlib.sha256((S/x['file']).read_bytes()).hexdigest()==x['sha256'] for x in manifest['files']))
 stand=(ROOT/'report_standalone.html').read_text()
 figure_count=len(soup.select('img[src^="assets/"]'))
-ok('Standalone embeds all fourteen referenced figures',figure_count==14 and stand.count('src="data:image/png;base64,')==figure_count)
+ok('Standalone embeds all seventeen referenced figures',figure_count==17 and stand.count('src="data:image/png;base64,')==figure_count)
 D=S/'deepening_2026_10_04';rows=pq.read_table(D/'hf_observations.parquet').to_pylist();swarm=read(A/'swarm_audit.json')
 ok('Full pinned swarm has 934 distinct run names',len(rows)==len({r['run_name'] for r in rows})==934)
 hashes={hashlib.sha256(json.dumps([r['phase0_weights'],r['phase1_weights']],sort_keys=True,separators=(',',':')).encode()).hexdigest() for r in rows}
@@ -141,7 +141,7 @@ alt=all_rows[f['counterexample_run']]
 ok('197c dominates selected seed0 on three axes but not all tasks',all(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in [PM,HE,GM]) and sum(metric_value(alt,k)>metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==31 and sum(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==23)
 ok('197c has no independent seed1 or seed2 counterpart in this registry',sum('197c9f5ceff6b9ee-' in r['run_name'] for r in rows)==1)
 F=S/'findings_2026_10_04'
-ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/')) for x in manifest['files'])==313)
+ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/')) for x in manifest['files'])==313)
 for i,row in enumerate(f['configs']):
     def source_run(name):return read((F if 'mixprior-' in name else P)/('config_'+name+'.json'))['data']['project']['run']
     ra,rb=source_run(row['run_a']),source_run(row['run_b']);ca,cb=json.loads(ra['config']),json.loads(rb['config'])
@@ -167,7 +167,7 @@ ok('Interpretation types do not present all arrows as observed causality',any(n[
 for metric in workbench['metrics']:
     key=metric['key'];raw=[r for r in per_seed if r['metric']==key]
     ok('Interactive metric uses all original seed BPB values '+key,len(raw)==3 and [r['seed'] for r in metric['seeds']]==[0,1,2] and all(abs(metric['seeds'][int(r['seed'])][name]-float(r[name+'_bpb']))<1e-12 for r in raw for name in ['old','proportional','selected']) and all(abs(metric['means'][name]-statistics.mean(float(r[name+'_bpb']) for r in raw))<1e-12 for name in ['old','proportional','selected']))
-ok('All fourteen scientific figures have reading and original-value entries',len(figure_notes)==14 and {x['file'] for x in figure_notes}=={i['src'] for i in soup.select('img[src^="assets/"]')} and len(soup.select('.figure-reading'))==14 and all((ROOT/x['values']).exists() and (ROOT/x['chapter']).exists() and x['reading'] and x['boundary'] for x in figure_notes))
+ok('All seventeen scientific figures have reading and original-value entries',len(figure_notes)==17 and {x['file'] for x in figure_notes}=={i['src'] for i in soup.select('img[src^="assets/"]')} and len(soup.select('.figure-reading'))==17 and all((ROOT/x['values']).exists() and (ROOT/x['chapter']).exists() and x['reading'] and x['boundary'] for x in figure_notes))
 long_tables=[t for t in soup.select('table') if len(t.select('tbody tr'))>30]
 ok('All five long tables are retained but initially collapsed',len(long_tables)==5 and all(t.find_parent('details',class_='large-table-details') is not None and not t.find_parent('details',class_='large-table-details').has_attr('open') for t in long_tables))
 ok('Learning guide includes eighteen terms and five expandable exercises',len(soup.select('#learning table')[1].select('tbody tr'))==18 and len(soup.select('#learning details'))==5)
@@ -192,7 +192,7 @@ for scenario in decision_checks['scenarios']:
 doc_tables=soup.select('#decision-guide table')
 ok('Decision documentation preserves nine scenarios and six rule counterexamples',len(doc_tables)==3 and len(doc_tables[1].select('tbody tr'))==9 and len(doc_tables[2].select('tbody tr'))==6 and all(int(t.select('td')[2].text)==s['eligible'] and (s['best'] is None or s['best']==t.select('td')[3].text) for s,t in zip(decision_checks['scenarios'],doc_tables[1].select('tbody tr'))))
 ok('Selector trace reports bounded search rather than universal absence',trace['status']=='not_recovered_in_checked_public_entries' and trace['tree_truncated'] is False and len(trace['limitations'])==4 and all(q['total_count']==q['items_returned']==1 and q['issue_numbers']==[9126] and q['incomplete_results'] is False for q in trace['issue_queries']) and trace['issue_9126_body_unchanged_from_prior_archive'])
-ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==330 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
+ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==348 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
 contract=read(ROOT/'templates/selection_contract.json')
 ok('Confirmation contract cannot retroactively assert prior registration',contract['status']=='planned_not_executed' and contract['prior_search_results_already_seen'] is True and contract['contract_frozen_utc'] is None and contract['results'] is None and contract['independent_confirmation']['used_during_search'] is None)
 embedded=json.loads(soup.select_one('#decision-data').text)
@@ -373,14 +373,32 @@ step_drop=100*(1-14.67/16.29);iteration_drop=100*(1-15.53/18.62)
 step_speed=100*(16.29/14.67-1);iteration_speed=100*(18.62/15.53-1)
 guide=(ROOT/'ENGINEERING_GUIDE_ZH.md').read_text()
 ok('Step/iteration arithmetic preserves both denominators',all('%.2f%%'%v in guide for v in [step_drop,iteration_drop,step_speed,iteration_speed]))
-browser10=read(A/'browser_validation_v10.json')
+browser10=read(A/'browser_validation_v10.json');bank10=read(A/'assessment_casebank_v10_reference.json')
 expected_engineering_behaviors={'allEightCasesAndTwentyFourClaims','correctSourceLinks','quotaAndLaterStallRemainSeparate','caseNotesIsolatedAndTextEscaped','actualExportBlobPreservesUnknowns','oldBankNotSilentlyImported','tenQuestionAnchorsUnchanged','existingLocalStorageUnchanged','transientNotesDoNotPretendPersisted','offlineSelectorsAndEmbeddedInputs','actualOldBankImportRejectsWithoutOverwrite'}
-ok('Current browser checks current bank and all eleven engineering behaviors',browser10['bank_sha256']==bank['bank_sha256'] and browser10['atlas_sha256']==engineering['atlas_sha256'] and set(browser10['functional'])==expected_engineering_behaviors and all(browser10['functional'].values()) and not browser10['errors'])
-ok('Current offline engineering page remains self-contained',browser10['standalone']['protocol']=='file:' and browser10['standalone']['episodeCount']==8 and browser10['standalone']['questionCount']==10 and browser10['standalone']['loadedFigures']==14 and browser10['standalone']['httpRequests']==[] and browser10['standalone']['errors']==[])
-ok('Current engineering mobile and desktop fit their viewports',browser10['desktop']['documentWidth']<=browser10['desktop']['viewport'] and browser10['mobile']['documentWidth']<=browser10['mobile']['viewport'])
+ok('Historical V10 browser checks V10 bank and all eleven engineering behaviors',browser10['bank_sha256']==bank10['bank_sha256'] and browser10['atlas_sha256']==engineering['atlas_sha256'] and set(browser10['functional'])==expected_engineering_behaviors and all(browser10['functional'].values()) and not browser10['errors'])
+ok('Historical V10 offline engineering page remains self-contained',browser10['standalone']['protocol']=='file:' and browser10['standalone']['episodeCount']==8 and browser10['standalone']['questionCount']==10 and browser10['standalone']['loadedFigures']==14 and browser10['standalone']['httpRequests']==[] and browser10['standalone']['errors']==[])
+ok('Historical V10 engineering mobile and desktop fit their viewports',browser10['desktop']['documentWidth']<=browser10['desktop']['viewport'] and browser10['mobile']['documentWidth']<=browser10['mobile']['viewport'])
 ok('Actual engineering button blob has no executed result or gate decision',browser10['export']['schema']=='marin-engineering-draft/1' and browser10['export']['execution_status']=='not_executed' and browser10['export']['reader_understanding'] is None and browser10['export']['training_gate_decision'] is None)
 report['highlights']=[x.replace('318 source archive checksums valid','330 source archive checksums valid') for x in report['highlights']]
 report['highlights']+=['eight source-bound engineering timelines / twenty-four authored claim contrasts','eleven actual wording repairs / quota and post-cleanup stall separated','twelve dated public GitHub payloads / all 317 prior content files unchanged','current and historical question-bank digests kept separate']
+import runpy
+runpy.run_path(str(ROOT/'scripts/validate_scale.py'),init_globals={'check_scale':ok})
+ok('V11 retains all ten V10 question texts and anchors while rebinding changed source',bank['cases']==bank10['cases'] and bank['dimensions']==bank10['dimensions'] and bank['protocol_version']==bank10['protocol_version'] and bank['bank_sha256']!=bank10['bank_sha256'] and bank['source_sha256']['CONCLUSIONS_ZH.md']!=bank10['source_sha256']['CONCLUSIONS_ZH.md'])
+report['highlights']=[x.replace('330 source archive checksums valid','348 source archive checksums valid').replace('fourteen embedded figures','seventeen embedded figures').replace('14 figure-reading entries','17 figure-reading entries') for x in report['highlights']]
+report['highlights']+=['full 48-endpoint scale contrasts / four observed direction changes','six public run configs / 20.3919 percent initial mixture half-L1','synthetic batch-sensitive BPB ranking counterexample / joint floor-slope diagnostics','48 unlaunched confirmation slots / 8.481788657664T planned continuation tokens']
+report['not_verified']+=['September ladder executed evaluation-code binding and common-checkpoint BPB re-evaluation','causal isolated scale or 25-percent mixture-switch effects','48 proposed GPU continuations, shared-checkpoint and generation-evaluation costs']
+browser11=read(A/'browser_validation_v11.json')
+ok('Current V11 browser binds current source bank and all nine declared behaviors',browser11['bank_sha256']==bank['bank_sha256'] and len(browser11['functional'])==9 and all(browser11['functional'].values()) and browser11['errors']==[])
+ok('Current V11 standalone embeds seventeen figures and works without HTTP',browser11['standalone']['bank_sha256']==bank['bank_sha256'] and browser11['standalone']['protocol']=='file:' and browser11['standalone']['embeddedFigures']==browser11['standalone']['loadedFigures']==browser11['standalone']['figureReadings']==17 and browser11['standalone']['questionCount']==10 and browser11['standalone']['httpRequests']==browser11['standalone']['errors']==[] and browser11['standalone']['engineeringSelectorUpdated'] is True)
+ok('Current V11 narrow tables scroll within viewport while old storage is preserved',browser11['desktop']['documentWidth']<=browser11['desktop']['viewport'] and browser11['mobile']['documentWidth']<=browser11['mobile']['viewport'] and browser11['mobile']['tableScrollWidth']>browser11['mobile']['tableContainerWidth'] and browser11['functional']['existingLocalStorageUnchanged'] is True and '导入未完成' in browser11['oldImportMessage'])
+ok('Three actual V11 browser screenshots retain viewed artifact bytes',len(browser11['screenshots'])==3 and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==browser11['screenshot_sha256'][p] for p in browser11['screenshots']))
+ok('Archived V10 bank is byte-identical to the V10 release reference',hashlib.sha256((A/'assessment_casebank_v10_reference.json').read_bytes()).hexdigest()==read(A/'release_v10.json')['artifacts']['analysis/assessment_data.json'] and bank10['bank_sha256']==read(A/'release_v10.json')['current_bank_sha256'])
+report['highlights']+=['current V11 desktop/mobile/file-protocol browser / nine source-and-state behaviors','V10 answer-bank preserved bytewise / old bank import explicitly rejected']
+execution=read(A/'execution_provenance_audit.json')
+ok('Six public run commits remain null with bounded metadata and file-list search',len(execution['runs'])==6 and all(r['commit'] is None and r['has_next_page'] is False and r['exact_metadata_name_matches']==[] and r['count_discrepancy']==1 and r['runner_present'] is True for r in execution['runs']) and execution['historical_eval_code_binding'] is None)
+ok('Two saved public code entries load a callable and are not executed locally',len(execution['runner_entries'])==2 and all(r['loads_cloudpickle_callable'] is True and r['callable_pickle_name_present'] is True and r['source_executed'] is False and r['deserialized_callable'] is False and hashlib.sha256((ROOT/r['file']).read_bytes()).hexdigest()==r['sha256'] for r in execution['runner_entries']))
+for p,sha in execution['source_sha256'].items():ok('Execution provenance payload checksum '+p,hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha)
+report['highlights']+=['six null public commit fields / two callable runner entries / execution-code binding remains unknown']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

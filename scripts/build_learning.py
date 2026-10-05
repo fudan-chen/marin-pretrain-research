@@ -77,6 +77,10 @@ figure_rows=[
 ('observed_frontier_findings','为什么不同目标会选出不同候选？','上排全部597个seed0，下排局部放大；两个轴均越小越好。','观察前沿不是确认或部署推荐；197c还有其他任务退步。','analysis/observed_pareto_frontiers.csv','CONCLUSIONS_ZH.md'),
 ('candidate_budget_decomposition','看域净差会漏掉多少Q档变化？','四候选均相对996f；条形全长为桶累计半L1，蓝色为域净差半L1，棕色为域内相抵。','预算为13.125T/3.75T名义模拟；不指定实际供体路径，不估计Loss或桶因果贡献。','analysis/transfer_cell_differences.csv','TRANSFER_GUIDE_ZH.md'),
 ('order_edge_ledger','为什么时序变化只放进完整块？','三臂总窗口相同；两端灰块共同保留，前后完整部分按56/16做整数补偿。','本报告未执行草案；逻辑匹配要求共同历史、cursor、key与映射；不是Marin实际读取图。','templates/order_edge_locked.json','ORDER_GUIDE_ZH.md')]
+figure_rows.extend([
+('scale_direction_matrix','全部16子集的方向在不同ladder是否一致？','每格是一个旧/新端点BPB相对变化；四项改变方向，11项均改善，Wikipedia均退步。','初始配比和系统/评估设置不同；不是控制规模效应，也不是候选排序相关性。','analysis/scale_endpoints.csv','SCALE_TRANSFER_ZH.md'),
+('scale_fit_assumptions','等效算力倍数对floor/斜率联合假设怎样响应？','横轴为人为选定floor；实线每次重拟合α，虚线沿用零floor斜率作为对照假设。','三个旧端点；不是拟合出的真实floor、置信区间、535B或墙钟节省。','analysis/scale_fit_sensitivity.csv','SCALE_TRANSFER_ZH.md'),
+('scale_batch_counterexample','同一组预测只改变分批，BPB排名会不会变？','人工A/B记录保持不变；左图按公共代码公式回放，右图统一累计NLL/byte。','合成算术反例；未确认历史执行代码、checkpoint重评或真实冲突根因。','analysis/scale_batch_counterexample.json','SCALE_TRANSFER_ZH.md')])
 save('figure_readings.json',[{'file':'assets/'+name+'.png','question':question,'reading':reading,'boundary':boundary,'values':values,'chapter':chapter} for name,question,reading,boundary,values,chapter in figure_rows])
 
 doc=R/'RUBRICS_ZH.md'

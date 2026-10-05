@@ -110,5 +110,29 @@
     "boundary": "本报告未执行草案；逻辑匹配要求共同历史、cursor、key与映射；不是Marin实际读取图。",
     "values": "templates/order_edge_locked.json",
     "chapter": "ORDER_GUIDE_ZH.md"
+  },
+  {
+    "file": "assets/scale_direction_matrix.png",
+    "question": "全部16子集的方向在不同ladder是否一致？",
+    "reading": "每格是一个旧/新端点BPB相对变化；四项改变方向，11项均改善，Wikipedia均退步。",
+    "boundary": "初始配比和系统/评估设置不同；不是控制规模效应，也不是候选排序相关性。",
+    "values": "analysis/scale_endpoints.csv",
+    "chapter": "SCALE_TRANSFER_ZH.md"
+  },
+  {
+    "file": "assets/scale_fit_assumptions.png",
+    "question": "等效算力倍数对floor/斜率联合假设怎样响应？",
+    "reading": "横轴为人为选定floor；实线每次重拟合α，虚线沿用零floor斜率作为对照假设。",
+    "boundary": "三个旧端点；不是拟合出的真实floor、置信区间、535B或墙钟节省。",
+    "values": "analysis/scale_fit_sensitivity.csv",
+    "chapter": "SCALE_TRANSFER_ZH.md"
+  },
+  {
+    "file": "assets/scale_batch_counterexample.png",
+    "question": "同一组预测只改变分批，BPB排名会不会变？",
+    "reading": "人工A/B记录保持不变；左图按公共代码公式回放，右图统一累计NLL/byte。",
+    "boundary": "合成算术反例；未确认历史执行代码、checkpoint重评或真实冲突根因。",
+    "values": "analysis/scale_batch_counterexample.json",
+    "chapter": "SCALE_TRANSFER_ZH.md"
   }
 ]

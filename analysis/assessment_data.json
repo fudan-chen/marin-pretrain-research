@@ -3,7 +3,7 @@
   "protocol_version": "0.1",
   "rubric_framework_version": "1.1",
   "scope": "Authored source-bound comprehension practice; no external reader or scoring-validity study",
-  "snapshot": "2026-10-04 numerical archive; 2026-10-05 engineering wording audit; questions and anchors unchanged",
+  "snapshot": "2026-10-04 numerical archive; 2026-10-05 engineering and scale-comparison wording audit; questions and anchors unchanged",
   "dimensions": [
     {
       "id": "scope",
@@ -525,7 +525,7 @@
     }
   ],
   "source_sha256": {
-    "CONCLUSIONS_ZH.md": "b5cc30fa897eb28de4d8e1344a256f135ea4bf4ed9bab09375ef4fa26433b021",
+    "CONCLUSIONS_ZH.md": "0c6b54a8c3c6c196dd47ad011ef3315822fb6ea6221e99de8279a22a48c3097a",
     "ORDER_GUIDE_ZH.md": "fd02a561e7f386ca32ee2dfb193e86af8daabca09ba3df19ee37354ad72b521e",
     "REPORT_ZH.md": "d9aa94dc4cc441b740bfafe471d3ca631a584bd8f6f7e51158581a3e45612da2",
     "TRANSFER_GUIDE_ZH.md": "c97441ecdcee875290c3aea6635d5ba103d9eb0b83af301e1db94f4708365d42",
@@ -549,5 +549,5 @@
   },
   "external_readers": null,
   "external_scoring_validity": null,
-  "bank_sha256": "ce6db7ca2f9bd3f55e50011759a2f3b12c99def12f8191f14ecacb439948ab0f"
+  "bank_sha256": "3aea31f5b40bbdb9d0a725e7f971b6cb45fdd2d49cf8107feb55b934858d8915"
 }

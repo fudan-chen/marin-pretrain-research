@@ -1,0 +1,45 @@
+{
+  "scope": "Synthetic arithmetic replay; no JAX/GPU/checkpoint or historical metric root cause verified",
+  "source": "sources/scale_2026_10_05/eval.py:583-590",
+  "records": [
+    {
+      "record": "A",
+      "tokens": 100,
+      "bytes": 100,
+      "old_nll": 100,
+      "new_nll": 110
+    },
+    {
+      "record": "B",
+      "tokens": 100,
+      "bytes": 1000,
+      "old_nll": 100,
+      "new_nll": 50
+    }
+  ],
+  "results": [
+    {
+      "batch_size": 1,
+      "old_ce": 1.0,
+      "old_batch_token_weighted_bpb": 0.7934822724889298,
+      "old_global_ratio_bpb": 0.2623081892525388,
+      "new_ce": 0.8,
+      "new_batch_token_weighted_bpb": 0.8295496485111539,
+      "new_global_ratio_bpb": 0.20984655140203104,
+      "logged_formula_change_pct": 4.545454545454541,
+      "global_ratio_change_pct": -19.999999999999996
+    },
+    {
+      "batch_size": 2,
+      "old_ce": 1.0,
+      "old_batch_token_weighted_bpb": 0.2623081892525388,
+      "old_global_ratio_bpb": 0.2623081892525388,
+      "new_ce": 0.8,
+      "new_batch_token_weighted_bpb": 0.209846551402031,
+      "new_global_ratio_bpb": 0.20984655140203104,
+      "logged_formula_change_pct": -20.000000000000007,
+      "global_ratio_change_pct": -19.999999999999996
+    }
+  ],
+  "unchanged_predictions_between_batchings": true
+}

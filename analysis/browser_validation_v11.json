@@ -1,0 +1,88 @@
+{
+  "errors": [],
+  "version": "V11",
+  "functional": {
+    "allSeventeenFiguresLoaded": true,
+    "offlineSelectorsWork": true,
+    "newScopeAndBudgetTextPresent": true,
+    "tenQuestionPromptsAndAnchorsUnchanged": true,
+    "offlineNoHttpRequests": true,
+    "allSeventeenReadingEntries": true,
+    "threeNewFiguresAndReadings": true,
+    "existingLocalStorageUnchanged": true,
+    "actualV10ImportRejected": true
+  },
+  "mobile": {
+    "documentWidth": 375,
+    "tableContainerWidth": 297,
+    "newImages": [
+      {
+        "width": 295,
+        "loaded": true
+      },
+      {
+        "width": 295,
+        "loaded": true
+      },
+      {
+        "width": 295,
+        "loaded": true
+      }
+    ],
+    "viewport": 390,
+    "tableScrollWidth": 620
+  },
+  "readingLinks": [
+    [
+      "analysis/scale_endpoints.csv",
+      "#scale-guide"
+    ],
+    [
+      "analysis/scale_batch_counterexample.json",
+      "#scale-guide"
+    ],
+    [
+      "analysis/scale_fit_sensitivity.csv",
+      "#scale-guide"
+    ]
+  ],
+  "retainedURL": "http://127.0.0.1:8765/?view=v11#scale-guide",
+  "reader_study": null,
+  "oldImportMessage": "导入未完成：题目版本或来源摘要不同；先人工迁移，不覆盖当前记录。 当前记录保留。",
+  "notes": [
+    "First read-only DOM-check script omitted its storage argument; inspected state and corrected before screenshots.",
+    "Three browser screenshots loaded and visually inspected; local numerical figures inspected separately.",
+    "Static scientific figures need browser zoom or original-value tables on small screens; mobile checks cover layout and reading text.",
+    "No real reader answers, GPU confirmation or historical checkpoint evaluation."
+  ],
+  "bank_sha256": "3aea31f5b40bbdb9d0a725e7f971b6cb45fdd2d49cf8107feb55b934858d8915",
+  "desktop": {
+    "viewport": 1440,
+    "documentWidth": 1425
+  },
+  "actual_gpu_test": null,
+  "screenshots": [
+    "analysis/browser_v11_scale_desktop.png",
+    "analysis/browser_v11_scale_mobile.png",
+    "analysis/browser_v11_scale_offline.png"
+  ],
+  "training_gate_decision": null,
+  "standalone": {
+    "embeddedFigures": 17,
+    "protocol": "file:",
+    "questionCount": 10,
+    "controlsUpdated": true,
+    "bank_sha256": "3aea31f5b40bbdb9d0a725e7f971b6cb45fdd2d49cf8107feb55b934858d8915",
+    "errors": [],
+    "engineeringSelectorUpdated": true,
+    "figureReadings": 17,
+    "newChapterPresent": true,
+    "loadedFigures": 17,
+    "httpRequests": []
+  },
+  "screenshot_sha256": {
+    "analysis/browser_v11_scale_desktop.png": "ca83a7f70b1191e272ed4094131c4eda79911ba3549441b4eae70ec43cf13b48",
+    "analysis/browser_v11_scale_mobile.png": "b75fc84f4e0ef49c8e304fa2a958d0b35f681aeb8c0bac96ee3e39674eb208fd",
+    "analysis/browser_v11_scale_offline.png": "aa4dabed387c3be4052307e47f88d5267f4deace07289f4defcdfe5d96b1a0f3"
+  }
+}

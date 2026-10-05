@@ -109,7 +109,7 @@ d1536 最终结果的 Paloma macro BPB 改善约0.716%，16个子集15个改善�
 
 ![新配比相对旧配比的固定Paloma子集BPB变化](assets/mixture_eval.png)
 
-代码子集在 d768、d1024 略差，在 d1536 转为改善，说明小代理排序也存在规模依赖。d1536代码BPB改善约0.463%，比macro的改善小；不能把macro的“等效算力约20%”移植到代码能力。d512同checkpoint、三seed实验的Uncheatable代码改善支持继续尝试，但没有消除最终535B收益的不确定性。[实验细节和限制](https://github.com/marin-community/marin/issues/9126)
+代码子集在 d768、d1024 略差，在 d1536 转为改善；这是不同ladder上的观察方向，尚不能归因给规模。第十一轮核对发现，旧、新run切换前的初始权重已有约20.39%半L1差，代码CE/BPB也在两个较小ladder上给出相反方向；[完整配置与评估聚合检查](SCALE_TRANSFER_ZH.md)说明下一步应先统一测量与历史。d1536代码BPB改善约0.463%，比macro的改善小；不能把macro的“等效算力约20%”移植到代码能力。d512同checkpoint、三seed实验的Uncheatable代码改善支持继续尝试，但没有消除最终535B收益的不确定性。[实验细节和限制](https://github.com/marin-community/marin/issues/9126)
 
 第二轮读取完整registry后发现：d512新配比的GSM8K任务BPB在三个seed上均退化，均值约+10.844%；HumanEval任务BPB均值约−4.034%，三个seed均改善。这些是文本BPB，不能换算为解题准确率或pass@1。数学域削减与退化同时发生，尚无单桶因果证据。[完整54项任务与选择偏差分析](DEEP_DIVE_ZH.md)
 

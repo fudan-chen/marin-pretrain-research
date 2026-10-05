@@ -117,3 +117,13 @@ domain比例是同cluster五档求和；质量比例是同档40域求和；阶�
 ## 10月5日工程补充快照
 
 12份公共GitHub API文件另存`sources/engineering_2026_10_05/`：三个issue及完整comments、#9062/#9183/#9333的PR元数据和全部files。分页next-link与issue comment / PR changed_files计数均核对。#8435/#8506/#8870的评论数量、IDs、正文及issue正文与旧档相同；PR diff用于审计具体依赖、PDL调用与tail测试。原318项清单中的317个非抓取清单文件保持字节不变；`source_manifest.json`追加新记录，完整归档变为330项。训练曲线和数据配比没有刷新。见[差异审计](analysis/engineering_refresh_audit.json)。
+
+## 第十一轮来源与计算范围
+
+`sources/scale_2026_10_05/`新增14份原文件：三个固定版本论文HTML、#9126主帖、六个匿名公共W&B config/summary，以及固定公开SHA的四份评估/训练代码。生产曲线快照未更新。全部329个旧内容文件字节不变，只有采集清单追加；[新来源审计](analysis/scale_refresh_audit.json)保存原330项完整清单。
+
+端点CSV的48行BPB与归档W&B summary交叉核对；macro从16项重建。初始200桶权重差使用日志配置，不能证明实际token流。公共评估代码未核对为历史执行代码，分批敏感例为合成算术回放。floor为人工诊断值；新章没有拟合真实floor、构造置信区间或重训GPU。48槽位为预算草案，所有执行字段为空。
+
+[跨规模研究与全部原值入口](SCALE_TRANSFER_ZH.md) · [复算脚本](scripts/analyze_scale.py) · [独立协方差/两点公式验证](scripts/validate_scale.py)
+
+V11后续执行来源追查另存`sources/execution_2026_10_05/`四份原文件：两个公共GraphQL响应与两份保存的runner入口。六run commit均为空，文件枚举count与connection相差1，保留这个口径差。入口仅加载另外的pickle，没有绑定实际评估代码；本轮未遍历全部job artifacts或加载pickle。[执行来源边界](analysis/execution_provenance_audit.json)

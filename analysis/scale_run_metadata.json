@@ -1,0 +1,116 @@
+[
+  {
+    "size": "d768",
+    "run": "rav-ladder-d768-v2",
+    "state": "finished",
+    "final_step": 11419,
+    "logged_total_tokens": 47898951680.0,
+    "configured_total_tokens": 47898951680,
+    "weight_starts": [
+      0,
+      9120
+    ],
+    "weight_start_fractions": [
+      0.0,
+      0.7985989492119089
+    ],
+    "config_file": "sources/scale_2026_10_05/config_rav-ladder-d768-v2.json",
+    "config_sha256": "3b0e9f5a883dcb778f7c3e7d310220c817b2f35a835c4dacb622af90173de4cd"
+  },
+  {
+    "size": "d768",
+    "run": "h100-mix25-20260912-d768",
+    "state": "finished",
+    "final_step": 11419,
+    "logged_total_tokens": 47898951680.0,
+    "configured_total_tokens": 47898951680,
+    "weight_starts": [
+      0,
+      2880,
+      9120
+    ],
+    "weight_start_fractions": [
+      0.0,
+      0.2521891418563923,
+      0.7985989492119089
+    ],
+    "config_file": "sources/scale_2026_10_05/config_h100-mix25-20260912-d768.json",
+    "config_sha256": "17e18f8bd54ad25503ac792f1119768593a60b4e1eb966350ae5eea500440c47"
+  },
+  {
+    "size": "d1024",
+    "run": "rav-ladder-d1024",
+    "state": "finished",
+    "final_step": 15275,
+    "logged_total_tokens": 128144375808.0,
+    "configured_total_tokens": 128144375808,
+    "weight_starts": [
+      0,
+      12216
+    ],
+    "weight_start_fractions": [
+      0.0,
+      0.7996857816182247
+    ],
+    "config_file": "sources/scale_2026_10_05/config_rav-ladder-d1024.json",
+    "config_sha256": "8228b01d96f8b43b8da7109087d6c0f8cdbf44b93c86b35190207496a52e1012"
+  },
+  {
+    "size": "d1024",
+    "run": "h100-mix25-20260912-d1024",
+    "state": "finished",
+    "final_step": 30551,
+    "logged_total_tokens": 128144375808.0,
+    "configured_total_tokens": 128144375808,
+    "weight_starts": [
+      0,
+      7680,
+      24432
+    ],
+    "weight_start_fractions": [
+      0.0,
+      0.2513747054202671,
+      0.7996857816182247
+    ],
+    "config_file": "sources/scale_2026_10_05/config_h100-mix25-20260912-d1024.json",
+    "config_sha256": "b43bd75d42c3a4f5c9407aafca32f0a14d71c691adc7bf5d43ff26936fbb8f31"
+  },
+  {
+    "size": "d1536",
+    "run": "rav-ladder-d1536",
+    "state": "finished",
+    "final_step": 15127,
+    "logged_total_tokens": 380708585472.0,
+    "configured_total_tokens": 380708585472,
+    "weight_starts": [
+      0,
+      12096
+    ],
+    "weight_start_fractions": [
+      0.0,
+      0.7995769434161819
+    ],
+    "config_file": "sources/scale_2026_10_05/config_rav-ladder-d1536.json",
+    "config_sha256": "90cdd8c7822dbc90534992654e776431b8156d8c9d1bdec864feefadc61dc493"
+  },
+  {
+    "size": "d1536",
+    "run": "h100-mix25-20260912-d1536",
+    "state": "finished",
+    "final_step": 90766,
+    "logged_total_tokens": 380704391168.0,
+    "configured_total_tokens": 380704391168,
+    "weight_starts": [
+      0,
+      22704,
+      72576
+    ],
+    "weight_start_fractions": [
+      0.0,
+      0.2501349609439554,
+      0.7995857525312062
+    ],
+    "config_file": "sources/scale_2026_10_05/config_h100-mix25-20260912-d1536.json",
+    "config_sha256": "5d47fe4758a0b76505dddf70d56640aa4d875629a3ac7ead8620be5a7626e22c"
+  }
+]

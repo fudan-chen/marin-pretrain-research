@@ -1,0 +1,3 @@
+Ladder directions: ['dolma_100_programing_languages', 'ptb', 'redpajama', 'wikitext_103'] CE/BPB disagreements: [{'size': 'd768', 'subset': 'dolma_100_programing_languages'}, {'size': 'd1024', 'subset': 'dolma_100_programing_languages'}]
+Initial mixture half-L1: [0.20391888499269875, 0.20391888499269875, 0.20391888499269875]
+Planned continuation slots/tokens: 48 8481788657664

@@ -1,0 +1,7 @@
+subset,held_out_size,alpha,predicted_bpb,observed_bpb,error_bpb,relative_error_pct,scope
+macro,d768,0.03851544277470109,1.0772300567570368,1.0837204530835152,-0.006490396326478409,-0.598899495530536,"Two-rung zero-floor fit predicts the third baseline rung; three dependent diagnostics, not independent trials"
+macro,d1024,0.040034754678108665,1.0053884649544431,1.002216674387455,0.0031717905669881308,0.3164775290659172,"Two-rung zero-floor fit predicts the third baseline rung; three dependent diagnostics, not independent trials"
+macro,d1536,0.04172084960291467,0.9189216521035516,0.9250680357217789,-0.00614638361822728,-0.6644250347955905,"Two-rung zero-floor fit predicts the third baseline rung; three dependent diagnostics, not independent trials"
+dolma_100_programing_languages,d768,0.06596453347586666,0.5673265970918043,0.5766160488128662,-0.009289451721061881,-1.6110289923748966,"Two-rung zero-floor fit predicts the third baseline rung; three dependent diagnostics, not independent trials"
+dolma_100_programing_languages,d1024,0.07007238384671738,0.5056574547696451,0.5013558864593506,0.00430156831029449,0.857986996158111,"Two-rung zero-floor fit predicts the third baseline rung; three dependent diagnostics, not independent trials"
+dolma_100_programing_languages,d1536,0.07463117499856677,0.42927706743480554,0.4370846748352051,-0.007807607400399541,-1.786291730164935,"Two-rung zero-floor fit predicts the third baseline rung; three dependent diagnostics, not independent trials"

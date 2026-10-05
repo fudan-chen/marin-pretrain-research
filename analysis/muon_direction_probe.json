@@ -1,0 +1,280 @@
+{
+  "checks_passed": 20,
+  "checks": [
+    "Five-step matrix output agrees with scalar singular polynomial",
+    "Five steps do not produce exact unit singular values",
+    "Six-step repeated sequence worsens artificial orthogonality residual",
+    "Exact rank deficiency remains zero",
+    "Zero matrix remains finite zero",
+    "Tall transpose branch agrees with wide transpose",
+    "No-mesh replicated and local outputs agree under float32 substitute",
+    "Rack selector excludes DCN when intra-rack axes exist",
+    "Rack selector falls back to DCN if it is sole active axis",
+    "Three-layer stack pads to four and crops back",
+    "Zero padded layer does not change valid independent matrices",
+    "Padded leading sharded target is rejected by original guard",
+    "Composite bank context split uses bank-preserving 4D branch",
+    "Context-bank synthetic target dimensions divide declared mesh factors",
+    "Bank branch restores exact declared target spec",
+    "Each expert matrix receives independent NS before later hyperball",
+    "Unsplit bank uses maximal divisible merged-axis shard product",
+    "Unsplit merged six does find a divisible two-axis subset",
+    "Unsplit merged six with only shard four rejects instead of padding",
+    "Common positive fan factor cancels from normalized hyperball direction"
+  ],
+  "scope": "Archived NS functions with float32 replacing BF16, global NumPy arrays, fake layout ops.\nControl-flow and polynomial evidence only; no actual distributed slice, collective or QuACK kernel.\n",
+  "source_sha256": {
+    "sources/muon_direction_2026_10_05/grugmuon_hero.py": "c6c1c09904b3349d57c2a2d6b3de912320cc3f1b504211f653ad6ed4b333a646",
+    "sources/muon_direction_2026_10_05/util.py": "e413a8dbffc94daaccadffe7ba84d8a985c5d366725c697bd6ea5108db3a8603"
+  },
+  "trajectory": [
+    {
+      "steps": 0,
+      "singular_values": [
+        0.9805335998535156,
+        0.1961067169904709,
+        0.00980533566325903,
+        9.805336048884783e-06
+      ],
+      "orthogonality_residual": 1.7105137926765521
+    },
+    {
+      "steps": 1,
+      "singular_values": [
+        0.7499076724052429,
+        0.1585228443145752,
+        0.0400463305413723,
+        4.00528333557304e-05
+      ],
+      "orthogonality_residual": 1.7716362727561046
+    },
+    {
+      "steps": 2,
+      "singular_values": [
+        0.9300096035003662,
+        0.6014003157615662,
+        0.15779851377010345,
+        0.00015822872228454798
+      ],
+      "orthogonality_residual": 1.5415952355009905
+    },
+    {
+      "steps": 3,
+      "singular_values": [
+        1.215359091758728,
+        0.5851094722747803,
+        0.5687062740325928,
+        0.0005920602707192302
+      ],
+      "orthogonality_residual": 1.4552911313596442
+    },
+    {
+      "steps": 4,
+      "singular_values": [
+        1.1363837718963623,
+        1.1297199726104736,
+        1.0489068031311035,
+        0.0017032974865287542
+      ],
+      "orthogonality_residual": 1.0822450198627487
+    },
+    {
+      "steps": 5,
+      "singular_values": [
+        1.0203113555908203,
+        1.0137865543365479,
+        0.9778096675872803,
+        0.004831559024751186
+      ],
+      "orthogonality_residual": 1.0021647467498913
+    },
+    {
+      "steps": 6,
+      "singular_values": [
+        0.16476893424987793,
+        0.09181451797485352,
+        0.08104085922241211,
+        0.019735174253582954
+      ],
+      "orthogonality_residual": 1.9788329378914087
+    },
+    {
+      "steps": 7,
+      "singular_values": [
+        0.6230453848838806,
+        0.35785210132598877,
+        0.31680646538734436,
+        0.07791537046432495
+      ],
+      "orthogonality_residual": 1.7122603534866339
+    },
+    {
+      "steps": 8,
+      "singular_values": [
+        1.1952989101409912,
+        1.096303939819336,
+        1.01499342918396,
+        0.28890562057495117
+      ],
+      "orthogonality_residual": 1.0322405099225744
+    },
+    {
+      "steps": 9,
+      "singular_values": [
+        1.0109190940856934,
+        0.9314993619918823,
+        0.920691728591919,
+        0.757794201374054
+      ],
+      "orthogonality_residual": 0.4716487374842075
+    },
+    {
+      "steps": 10,
+      "singular_values": [
+        1.1213912963867188,
+        1.0239931344985962,
+        1.017515778541565,
+        0.9822138547897339
+      ],
+      "orthogonality_residual": 0.26676914909872246
+    }
+  ],
+  "artificial_input_diagonal": [
+    1.0,
+    0.20000000298023224,
+    0.009999999776482582,
+    9.999999747378752e-06
+  ],
+  "three_dimensional_layout_calls": [
+    {
+      "shape": [
+        4,
+        2,
+        4
+      ],
+      "spec": [
+        "data",
+        null,
+        null
+      ]
+    },
+    {
+      "shape": [
+        4,
+        2,
+        4
+      ],
+      "spec": [
+        [
+          "data",
+          "model"
+        ],
+        null,
+        null
+      ]
+    },
+    {
+      "shape": [
+        4,
+        2,
+        4
+      ],
+      "spec": [
+        null,
+        null,
+        null
+      ]
+    }
+  ],
+  "context_bank_layout_calls": [
+    {
+      "shape": [
+        2,
+        4,
+        2,
+        4
+      ],
+      "spec": [
+        null,
+        "context",
+        null,
+        null
+      ]
+    },
+    {
+      "shape": [
+        2,
+        4,
+        2,
+        4
+      ],
+      "spec": [
+        null,
+        "context",
+        "data",
+        "model"
+      ]
+    }
+  ],
+  "merged_bank_layout_calls": [
+    {
+      "shape": [
+        4,
+        2,
+        4
+      ],
+      "spec": [
+        [
+          "data",
+          "model"
+        ],
+        null,
+        null
+      ]
+    },
+    {
+      "shape": [
+        4,
+        2,
+        4
+      ],
+      "spec": [
+        null,
+        "data",
+        "model"
+      ]
+    }
+  ],
+  "coefficient_sequence": [
+    [
+      4.0848,
+      -6.8946,
+      2.927
+    ],
+    [
+      3.9505,
+      -6.3029,
+      2.6377
+    ],
+    [
+      3.7418,
+      -5.5913,
+      2.3037
+    ],
+    [
+      2.8769,
+      -3.1427,
+      1.2046
+    ],
+    [
+      2.8366,
+      -3.0525,
+      1.2012
+    ]
+  ],
+  "actual_BF16_result": null,
+  "actual_QuACK_result": null,
+  "actual_distributed_result": null,
+  "actual_training_effect": null,
+  "historical_execution_sha": null
+}

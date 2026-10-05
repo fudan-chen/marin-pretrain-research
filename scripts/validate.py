@@ -141,7 +141,7 @@ alt=all_rows[f['counterexample_run']]
 ok('197c dominates selected seed0 on three axes but not all tasks',all(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in [PM,HE,GM]) and sum(metric_value(alt,k)>metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==31 and sum(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==23)
 ok('197c has no independent seed1 or seed2 counterpart in this registry',sum('197c9f5ceff6b9ee-' in r['run_name'] for r in rows)==1)
 F=S/'findings_2026_10_04'
-ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/','contracts_2026_10_05/','state_2026_10_05/','boundaries_2026_10_05/','cache_2026_10_05/','dedup_2026_10_05/','quality_2026_10_05/','routing_2026_10_05/','optimizer_2026_10_05/','short_conv_2026_10_05/','router_precision_2026_10_05/','eval_metrics_2026_10_05/','checkpoint_commit_2026_10_05/','checkpoint_memory_2026_10_05/','muon_geometry_2026_10_05/','adamh_2026_10_05/')) for x in manifest['files'])==313)
+ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/','contracts_2026_10_05/','state_2026_10_05/','boundaries_2026_10_05/','cache_2026_10_05/','dedup_2026_10_05/','quality_2026_10_05/','routing_2026_10_05/','optimizer_2026_10_05/','short_conv_2026_10_05/','router_precision_2026_10_05/','eval_metrics_2026_10_05/','checkpoint_commit_2026_10_05/','checkpoint_memory_2026_10_05/','muon_geometry_2026_10_05/','adamh_2026_10_05/','muon_direction_2026_10_05/')) for x in manifest['files'])==313)
 for i,row in enumerate(f['configs']):
     def source_run(name):return read((F if 'mixprior-' in name else P)/('config_'+name+'.json'))['data']['project']['run']
     ra,rb=source_run(row['run_a']),source_run(row['run_b']);ca,cb=json.loads(ra['config']),json.loads(rb['config'])
@@ -192,7 +192,7 @@ for scenario in decision_checks['scenarios']:
 doc_tables=soup.select('#decision-guide table')
 ok('Decision documentation preserves nine scenarios and six rule counterexamples',len(doc_tables)==3 and len(doc_tables[1].select('tbody tr'))==9 and len(doc_tables[2].select('tbody tr'))==6 and all(int(t.select('td')[2].text)==s['eligible'] and (s['best'] is None or s['best']==t.select('td')[3].text) for s,t in zip(decision_checks['scenarios'],doc_tables[1].select('tbody tr'))))
 ok('Selector trace reports bounded search rather than universal absence',trace['status']=='not_recovered_in_checked_public_entries' and trace['tree_truncated'] is False and len(trace['limitations'])==4 and all(q['total_count']==q['items_returned']==1 and q['issue_numbers']==[9126] and q['incomplete_results'] is False for q in trace['issue_queries']) and trace['issue_9126_body_unchanged_from_prior_archive'])
-ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==426 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
+ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==428 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
 contract=read(ROOT/'templates/selection_contract.json')
 ok('Confirmation contract cannot retroactively assert prior registration',contract['status']=='planned_not_executed' and contract['prior_search_results_already_seen'] is True and contract['contract_frozen_utc'] is None and contract['results'] is None and contract['independent_confirmation']['used_during_search'] is None)
 embedded=json.loads(soup.select_one('#decision-data').text)
@@ -637,6 +637,18 @@ report['highlights']=[x.replace('425 source archive checksums valid','426 source
 report['highlights']+=['V31 original AdamH body and explicit moment substitutes; state reset direction counterexample; count-only cancellation boundary']
 b31=read(A/'browser_validation_v31.json')
 ok('V31 state diagram loads desktop mobile and offline without overflow',b31['desktop']['width']<=b31['desktop']['viewport'] and b31['mobile']['width']<=b31['mobile']['viewport'] and b31['offline']['figures']==b31['offline']['loaded']==17 and b31['offline']['diagram'] and b31['offline']['tables']==2 and b31['requests']==b31['errors']==[])
+md=read(A/'muon_direction_probe.json')
+ok('V32 direction helper and layout probes preserve twenty scoped checks',md['checks_passed']==len(md['checks'])==20 and md['actual_BF16_result'] is None and md['actual_QuACK_result'] is None and md['actual_distributed_result'] is None and md['actual_training_effect'] is None and md['historical_execution_sha'] is None)
+ok('V32 artificial sixth iteration worsens rather than guarantees convergence',len(md['trajectory'])==11 and md['trajectory'][6]['orthogonality_residual']>md['trajectory'][5]['orthogonality_residual'])
+ok('V32 fixed Muon coefficient source digests match',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==v for p,v in md['source_sha256'].items()))
+ok('V32 context-bank layout is preserved while matrix dims replicate',md['context_bank_layout_calls'][0]['spec']==[None,'context',None,None] and md['context_bank_layout_calls'][-1]['spec']==[None,'context','data','model'])
+ok('V32 padded stack retains original global layer output shape',md['three_dimensional_layout_calls'][0]['shape'][0]==4)
+ok('V32 direction chapter and spectrum illustration are embedded',len(soup.select('#muon-direction-guide table'))==4 and soup.select_one('#muon-direction-guide svg') is not None)
+ok('V32 future direction execution fields remain null',all(v is None for k,v in read(ROOT/'templates/muon_direction_check.json').items() if k!='status'))
+report['highlights']=[x.replace('426 source archive checksums valid','428 source archive checksums valid') for x in report['highlights']]
+report['highlights']+=['V32 original Newton-Schulz functions / float32 substitutions; nonmonotonic finite-step spectrum; bank-preserving layout boundaries']
+b32=read(A/'browser_validation_v32.json')
+ok('V32 direction spectrum and four tables load desktop mobile and offline',b32['desktop']['width']<=b32['desktop']['viewport'] and b32['mobile']['width']<=b32['mobile']['viewport'] and b32['offline']['figures']==b32['offline']['loaded']==17 and b32['offline']['diagram'] and b32['offline']['tables']==4 and b32['requests']==b32['errors']==[])
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

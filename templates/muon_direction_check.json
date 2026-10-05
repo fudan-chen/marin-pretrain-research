@@ -1,0 +1,21 @@
+{
+  "status":"planned_not_executed",
+  "execution_sha":null,
+  "checkpoint_digest":null,
+  "momentum_direction_digest":null,
+  "shape":null,
+  "dtype":null,
+  "epsilon":null,
+  "coefficient_sequence":null,
+  "steps":null,
+  "mesh":null,
+  "target_partition_spec":null,
+  "bank_axes":null,
+  "padding":null,
+  "tolerance_preregistered":null,
+  "actual_local_BF16_result":null,
+  "actual_QuACK_result":null,
+  "actual_distributed_result":null,
+  "actual_restored_step_result":null,
+  "actual_training_effect":null
+}

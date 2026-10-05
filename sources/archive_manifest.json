@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-05T15:36:36.721274+00:00",
+  "integrity_manifest_created_utc": "2026-10-05T15:58:06.882382+00:00",
   "files": [
     {
       "file": "adamh_2026_10_05/adamh.py",
@@ -1139,6 +1139,20 @@
       "sha256": "cb2a8b6ac3df1adf2b7861844c8a688736729ebad0a7329bed5a7f5c334a6851",
       "url": "https://storage.googleapis.com/marin-public/held/h100-mix25-paloma/swarm-2026.09.14.1/selected_runs.json",
       "retrieved_utc": "2026-10-03T21:38:35.795538+00:00"
+    },
+    {
+      "file": "muon_direction_2026_10_05/grugmuon_hero.py",
+      "bytes": 13052,
+      "sha256": "c6c1c09904b3349d57c2a2d6b3de912320cc3f1b504211f653ad6ed4b333a646",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/grug/moe_hero_ep/grugmuon_hero.py",
+      "retrieved_utc": "2026-10-05T15:49:41.334636+00:00"
+    },
+    {
+      "file": "muon_direction_2026_10_05/util.py",
+      "bytes": 12296,
+      "sha256": "e413a8dbffc94daaccadffe7ba84d8a985c5d366725c697bd6ea5108db3a8603",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/optim/util.py",
+      "retrieved_utc": "2026-10-05T15:49:42.335575+00:00"
     },
     {
       "file": "muon_geometry_2026_10_05/comments_8073.json",
@@ -2486,8 +2500,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 202079,
-      "sha256": "cdde5adfa580b69e5721641f4706b5fa446654f8c671ff3b218bbdfd49138dae",
+      "bytes": 202828,
+      "sha256": "06a015dc6c38e5ba5fc2e136fe59f7b76d6c587359cc6a4de059dfcd99382186",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

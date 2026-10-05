@@ -215,3 +215,7 @@ V25把`paloma/bpb`错误命名为macro；它在固定公共源码中来自父级
 ## V31：把范数验收扩展为方向与状态验收
 
 新增固定版本AdamH源文件，执行原函数体与NumPy moment/树/vmap/计数替代，17项检查；同参数/梯度人工两步例子中，保留/重置moments的范数相同，输出方向相差约3.86度。推导固定lr、零epsilon下count公共缩放抵消的边界，避免夸大count偏差；源码调用确认AdamH使用learning_rate而非adam_lr。新增[章节](ADAMH_STATE_ZH.md)、机制图与四臂配比×状态草案。没有实际Optax、GPU、checkpoint反序列化或训练结果。
+
+## V32：方向算子与布局变换的边界
+
+新增固定源码grugmuon_hero.py与系数util.py；20项原NS函数/控制流与独立标量谱检查，BF16替换为float32、真实分片替换为全局数组/布局记录，未执行QuACK。人工矩阵五步到六步正交残差变差，反驳“多一步必然更准确”；核对专家bank保留但矩阵维度复制、仅DCN活跃时的fallback、三维padding与四维整除拒绝。新增[章节](MUON_DIRECTION_ZH.md)、谱图与空白执行记录。历史训练/性能结果没有刷新。

@@ -4016,5 +4016,19 @@
     "bytes": 3475,
     "sha256": "722ed10ea6c36440049c5f5a4eb9ea98abcfe7cd761a52e3973a3031b0755716",
     "retrieved_utc": "2026-10-05T15:31:29.437363+00:00"
+  },
+  {
+    "file": "muon_direction_2026_10_05/grugmuon_hero.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/grug/moe_hero_ep/grugmuon_hero.py",
+    "bytes": 13052,
+    "sha256": "c6c1c09904b3349d57c2a2d6b3de912320cc3f1b504211f653ad6ed4b333a646",
+    "retrieved_utc": "2026-10-05T15:49:41.334636+00:00"
+  },
+  {
+    "file": "muon_direction_2026_10_05/util.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/optim/util.py",
+    "bytes": 12296,
+    "sha256": "e413a8dbffc94daaccadffe7ba84d8a985c5d366725c697bd6ea5108db3a8603",
+    "retrieved_utc": "2026-10-05T15:49:42.335575+00:00"
   }
 ]

@@ -1,0 +1,25 @@
+{
+  "desktop": {
+    "diagram": true,
+    "hasBoundary": true,
+    "width": 1425,
+    "viewport": 1440,
+    "tables": 4
+  },
+  "mobile": {
+    "diagram": true,
+    "hasBoundary": true,
+    "width": 375,
+    "viewport": 390,
+    "tables": 4
+  },
+  "offline": {
+    "figures": 17,
+    "loaded": 17,
+    "tables": 4,
+    "diagram": true
+  },
+  "requests": [],
+  "errors": [],
+  "scope": "DOM checks only; artificial PNG separately inspected; no screenshot or reader evaluation"
+}

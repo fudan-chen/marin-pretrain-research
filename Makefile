@@ -20,6 +20,8 @@ report:
 	$(PYTHON) scripts/probe_optimizer.py
 	$(PYTHON) scripts/probe_adamh.py
 	$(PYTHON) scripts/draw_adamh_state.py
+	$(PYTHON) scripts/probe_muon_direction.py
+	$(PYTHON) scripts/draw_muon_direction.py
 	$(PYTHON) scripts/probe_muon_geometry.py
 	$(PYTHON) scripts/draw_muon_geometry.py
 	$(PYTHON) scripts/probe_short_conv.py

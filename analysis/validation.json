@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1264,
+  "checks_passed": 1273,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -18,7 +18,7 @@
     "four new config contrasts / six step393 resume windows",
     "seventeen embedded figures",
     "all relative HTML links valid",
-    "426 source archive checksums valid",
+    "428 source archive checksums valid",
     "18 authored rubrics / seven claim-stage decisions",
     "five interpretation cases / four metrics with switchable baselines",
     "17 figure-reading entries / five preserved collapsed tables",
@@ -79,7 +79,8 @@
     "V28 original asyncio budget / replica writer planning / odd chunk target boundary / no actual RSS claim",
     "V29 fifteen-case symptom / source / local-scope / next-check map and six entry routes; current delivery audit separates historical records",
     "V30 twenty original geometry and analytic checks; four-comment incident diagnosis corrections; no GPU / SPMD reproduction",
-    "V31 original AdamH body and explicit moment substitutes; state reset direction counterexample; count-only cancellation boundary"
+    "V31 original AdamH body and explicit moment substitutes; state reset direction counterexample; count-only cancellation boundary",
+    "V32 original Newton-Schulz functions / float32 substitutions; nonmonotonic finite-step spectrum; bank-preserving layout boundaries"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

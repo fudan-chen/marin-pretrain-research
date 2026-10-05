@@ -1,0 +1,37 @@
+{
+  "desktop": {
+    "documentWidth": 1425,
+    "bank": "3aea31f5b40bbdb9d0a725e7f971b6cb45fdd2d49cf8107feb55b934858d8915",
+    "viewport": 1440,
+    "tables": 3,
+    "diagram": 1
+  },
+  "mobile": {
+    "documentWidth": 375,
+    "tableContainerWidth": 297,
+    "viewport": 390,
+    "tableScrollWidth": 620
+  },
+  "offline": {
+    "tables": 3,
+    "protocol": "file:",
+    "errors": [],
+    "diagram": 1,
+    "figures": 17,
+    "bank": "3aea31f5b40bbdb9d0a725e7f971b6cb45fdd2d49cf8107feb55b934858d8915",
+    "requests": []
+  },
+  "scope": "New chapter layout and standalone loading; no re-execution of every legacy interaction or reader study",
+  "screenshots": [
+    "analysis/browser_v12_contracts_desktop.png",
+    "analysis/browser_v12_contracts_mobile.png"
+  ],
+  "screenshot_sha256": {
+    "analysis/browser_v12_contracts_desktop.png": "9267664bcf7435091af6b3517f9c2c7f54f77e612c1060c3238bce9539fd90a3",
+    "analysis/browser_v12_contracts_mobile.png": "41c0ceb00a3943898f78340c02c4705d386508acdd636f349eefd1bfe3b3f2df"
+  },
+  "notes": [
+    "Initial local navigation failed: server was no longer listening; verified no listener and restarted it.",
+    "First screenshot captured an unpainted viewport; inspected it and replaced it after explicit chapter positioning."
+  ]
+}

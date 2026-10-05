@@ -41,9 +41,9 @@
     }
   ],
   "initial_weight_half_l1": [
-    0.20391888499269875,
-    0.20391888499269875,
-    0.20391888499269875
+    0.20391888499269867,
+    0.20391888499269867,
+    0.20391888499269867
   ],
   "fit_assumptions": {
     "compute_source": "point_speedups.csv baseline_compute; not nominal launcher constants",

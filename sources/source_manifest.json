@@ -3469,5 +3469,47 @@
     "url": "https://api.wandb.ai/files/marin-community/marin_moe/h100-mix25-20260912-d768/code/_callable_runner.py",
     "public_run": "h100-mix25-20260912-d768",
     "wandb_file_name": "code/_callable_runner.py"
+  },
+  {
+    "file": "contracts_2026_10_05/model.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/grug/moe_hero_ep/model.py",
+    "bytes": 77140,
+    "sha256": "8fdfd89cf6814da05683f134f154525916728370368a2493843195d9a489859c",
+    "retrieved_utc": "2026-10-05T08:46:50.348808+00:00"
+  },
+  {
+    "file": "contracts_2026_10_05/checkpointing.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/grug/checkpointing.py",
+    "bytes": 9839,
+    "sha256": "1f7395e4caeb60f31db7d84e32e972b75791e43e454dafd146449b9148e5016d",
+    "retrieved_utc": "2026-10-05T08:46:50.114571+00:00"
+  },
+  {
+    "file": "contracts_2026_10_05/api.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/kernels/pallas/fused_cross_entropy_loss/api.py",
+    "bytes": 36741,
+    "sha256": "5efeea2badba92dbc2dce9d0fc2306f12a2bf754dd2d8bee16b1dcd3ed0e355d",
+    "retrieved_utc": "2026-10-05T08:46:50.202697+00:00"
+  },
+  {
+    "file": "contracts_2026_10_05/xla.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/kernels/pallas/fused_cross_entropy_loss/xla.py",
+    "bytes": 29505,
+    "sha256": "4a4f086b968934114ba450ec90d1e875842a04a3b79c7ae82879eda882a4d7d4",
+    "retrieved_utc": "2026-10-05T08:46:51.896922+00:00"
+  },
+  {
+    "file": "contracts_2026_10_05/reference.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/kernels/pallas/fused_cross_entropy_loss/reference.py",
+    "bytes": 7429,
+    "sha256": "f113b3b6872af2d6aa4658cf4326b6c52c2675bf537690d5653604e9d559c0d5",
+    "retrieved_utc": "2026-10-05T08:46:50.770207+00:00"
+  },
+  {
+    "file": "contracts_2026_10_05/test_fused.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/tests/kernels/test_pallas_fused_cross_entropy_loss.py",
+    "bytes": 100876,
+    "sha256": "d796e5d3837afede33ff8d42ccceaa1ee017fbca727b24a18652e42c6e482bba",
+    "retrieved_utc": "2026-10-05T08:46:51.153738+00:00"
   }
 ]

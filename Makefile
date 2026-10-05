@@ -10,6 +10,7 @@ report:
 	$(PYTHON) scripts/analyze_findings.py > analysis/findings_computation_log.txt
 	$(PYTHON) scripts/analyze_execution.py > analysis/execution_computation_log.txt
 	$(PYTHON) scripts/analyze_scale.py > analysis/scale_computation_log.txt
+	$(PYTHON) scripts/probe_contracts.py
 	$(PYTHON) scripts/build_learning.py
 	$(PYTHON) scripts/build_decision.py
 	$(PYTHON) scripts/build_transfer.py > analysis/transfer_computation_log.txt

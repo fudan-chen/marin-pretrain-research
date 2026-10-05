@@ -141,7 +141,7 @@ alt=all_rows[f['counterexample_run']]
 ok('197c dominates selected seed0 on three axes but not all tasks',all(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in [PM,HE,GM]) and sum(metric_value(alt,k)>metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==31 and sum(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==23)
 ok('197c has no independent seed1 or seed2 counterpart in this registry',sum('197c9f5ceff6b9ee-' in r['run_name'] for r in rows)==1)
 F=S/'findings_2026_10_04'
-ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/')) for x in manifest['files'])==313)
+ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/','contracts_2026_10_05/')) for x in manifest['files'])==313)
 for i,row in enumerate(f['configs']):
     def source_run(name):return read((F if 'mixprior-' in name else P)/('config_'+name+'.json'))['data']['project']['run']
     ra,rb=source_run(row['run_a']),source_run(row['run_b']);ca,cb=json.loads(ra['config']),json.loads(rb['config'])
@@ -192,7 +192,7 @@ for scenario in decision_checks['scenarios']:
 doc_tables=soup.select('#decision-guide table')
 ok('Decision documentation preserves nine scenarios and six rule counterexamples',len(doc_tables)==3 and len(doc_tables[1].select('tbody tr'))==9 and len(doc_tables[2].select('tbody tr'))==6 and all(int(t.select('td')[2].text)==s['eligible'] and (s['best'] is None or s['best']==t.select('td')[3].text) for s,t in zip(decision_checks['scenarios'],doc_tables[1].select('tbody tr'))))
 ok('Selector trace reports bounded search rather than universal absence',trace['status']=='not_recovered_in_checked_public_entries' and trace['tree_truncated'] is False and len(trace['limitations'])==4 and all(q['total_count']==q['items_returned']==1 and q['issue_numbers']==[9126] and q['incomplete_results'] is False for q in trace['issue_queries']) and trace['issue_9126_body_unchanged_from_prior_archive'])
-ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==348 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
+ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==354 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
 contract=read(ROOT/'templates/selection_contract.json')
 ok('Confirmation contract cannot retroactively assert prior registration',contract['status']=='planned_not_executed' and contract['prior_search_results_already_seen'] is True and contract['contract_frozen_utc'] is None and contract['results'] is None and contract['independent_confirmation']['used_during_search'] is None)
 embedded=json.loads(soup.select_one('#decision-data').text)
@@ -399,6 +399,21 @@ ok('Six public run commits remain null with bounded metadata and file-list searc
 ok('Two saved public code entries load a callable and are not executed locally',len(execution['runner_entries'])==2 and all(r['loads_cloudpickle_callable'] is True and r['callable_pickle_name_present'] is True and r['source_executed'] is False and r['deserialized_callable'] is False and hashlib.sha256((ROOT/r['file']).read_bytes()).hexdigest()==r['sha256'] for r in execution['runner_entries']))
 for p,sha in execution['source_sha256'].items():ok('Execution provenance payload checksum '+p,hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha)
 report['highlights']+=['six null public commit fields / two callable runner entries / execution-code binding remains unknown']
+contract=read(A/'implementation_contract_probe.json')
+ok('Source helper probe passes 46 local checks without GPU claims',contract['checks_passed']==46 and len(contract['checks'])==46 and contract['status']=='local_source_helper_probe_only' and len(contract['substitutions'])==3 and len(contract['not_verified'])==5)
+ok('Fractional mask example distinguishes single and repeated weighting',contract['mask_example']['weighted_unreduced']==[2,3,0] and abs(contract['mask_example']['single_weight_mean']-10/3)<1e-14 and abs(contract['mask_example']['double_weight_mean']-7/3)<1e-14)
+ok('Original environment helpers cover 18 precedence cases',len(contract['backward_precedence'])==18 and sum(r['error']=='ValueError' for r in contract['backward_precedence'])==3 and all(r['resolved'] is False for r in contract['backward_precedence'] if r['environment']=='0'))
+ok('Checkpoint fallback is explicitly recorded',next(r for r in contract['restore_cases'] if r['case']=='fallback_older')['result']=={'restored':'root/10'} and next(r for r in contract['restore_cases'] if r['case']=='optional_existing_unreadable')['error']=='FileNotFoundError')
+ok('Counter example is an upper-bound illustration, not actual drop telemetry',contract['counter_example']['int64_total']==6442450944 and contract['counter_example']['int32_total']==-2147483648 and contract['counter_example']['actual_drop_count'] is None)
+for p,sha in contract['source_sha256'].items():ok('Implementation source checksum '+p,hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha)
+ok('New source chapter and inline mechanism diagram are rendered',soup.select_one('#contracts-guide') is not None and len(soup.select('#contracts-guide svg'))==1 and len(soup.select('#contracts-guide table'))==3 and 'C7' in soup.select_one('#contracts-guide').text)
+report['highlights']=[x.replace('348 source archive checksums valid','354 source archive checksums valid') for x in report['highlights']]
+report['highlights']+=['six pinned implementation files / 46 original-helper and arithmetic checks / seven acceptance rules','V11 browser evidence remains historical; new chapter separately verified']
+browser12=read(A/'browser_validation_v12.json')
+ok('New chapter desktop and mobile fit their viewports',all(browser12[k]['documentWidth']<=browser12[k]['viewport'] for k in ['desktop','mobile']) and browser12['mobile']['tableScrollWidth']>browser12['mobile']['tableContainerWidth'])
+ok('New standalone chapter loads without HTTP or browser errors',browser12['offline']['protocol']=='file:' and browser12['offline']['diagram']==1 and browser12['offline']['tables']==3 and browser12['offline']['figures']==17 and browser12['offline']['requests']==browser12['offline']['errors']==[])
+ok('New chapter preserves existing answer-bank identity',browser12['desktop']['bank']==browser12['offline']['bank']==bank['bank_sha256'])
+ok('Two viewed V12 browser screenshots preserve exact bytes',len(browser12['screenshots'])==2 and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==browser12['screenshot_sha256'][p] for p in browser12['screenshots']))
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

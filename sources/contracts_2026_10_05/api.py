@@ -1,0 +1,986 @@
+# Copyright The Levanter Authors
+# SPDX-License-Identifier: Apache-2.0
+
+from collections.abc import Callable, Sequence
+from functools import lru_cache, partial
+import hashlib
+import json
+import logging
+import math
+import pathlib
+import time
+from typing import Literal, Optional, TypeAlias, cast, overload
+import warnings
+
+import jax
+import jax.numpy as jnp
+import jaxlib
+from jax._src.mesh import get_concrete_mesh
+from jaxtyping import Array, Float, Int
+from finestore.cache import PersistentKvCache
+from rigging.cache import (
+    combined_content_hash,
+    directory_content_hash,
+    file_content_hash,
+    workspace_lock_hash,
+)
+
+from levanter.kernels.pallas import autotune_utils
+from levanter.utils.jax_utils import multihost_allgather_sync
+
+from .config import BlockSizes
+from .tuned_block_sizes import (
+    infer_block_sizes,
+    infer_block_sizes_with_tuned_match,
+    shape_bucket_name,
+    widest_dtype_name,
+)
+from .reference import linear_softmax_cross_entropy_loss_reference
+from .xla import linear_softmax_cross_entropy_loss_xla
+from .batched_xla import (
+    BatchedXlaUnsupportedError,
+    linear_softmax_cross_entropy_loss_batched_xla,
+)
+
+
+Implementation: TypeAlias = Literal[
+    "pallas_tpu",
+    "batched_xla",
+    "xla",
+    "xla_fast_bwd",
+    "reference",
+]
+Reduction: TypeAlias = Literal["sum", "mean"] | None
+
+
+KernelOutput: TypeAlias = tuple[jax.Array, jax.Array] | tuple[jax.Array, jax.Array, jax.Array]
+ArrayImpl = Callable[..., KernelOutput]
+
+
+IMPLEMENTATIONS: dict[str, ArrayImpl] = {
+    "reference": linear_softmax_cross_entropy_loss_reference,
+    "xla": linear_softmax_cross_entropy_loss_xla,
+    # Same forward as "xla" (loss and lse are bitwise identical), but the backward
+    # is the scan/one-hot/tensor-core rewrite: no scatter, one GEMM per vocab block
+    # over the whole batch, and dlogits cast to the activation dtype so both
+    # backward GEMMs stay on bf16 tensor cores instead of being upcast to
+    # float32/TF32. Measured on GB200 at the grug EP hero CE shape
+    # (B=65,536 H=6,144 V=128,256): 723.4 ms -> 310.0 ms end-to-end for the kernel,
+    # 428 -> 1,000 TFLOP/s on the 3-GEMM convention (571 -> 1,333 counting all four
+    # GEMMs the kernel issues), at +0.04 GiB peak HBM. Gradients change: they are
+    # ~30% CLOSER to a float32 reference than the "xla" path. Opt in explicitly;
+    # "xla" is unchanged for every other caller.
+    "xla_fast_bwd": partial(linear_softmax_cross_entropy_loss_xla, fast_backward=True),
+}
+_DEFAULT_IMPLEMENTATION: tuple[Implementation, ...] = ("xla",)
+_IMPLEMENTATION_FALLBACK_WARNINGS_EMITTED: set[str] = set()
+_SELECTED_IMPL_LOGGED: set[str] = set()
+_AUTOTUNE_ON_MISS_ENV_VAR = "LEVANTER_PALLAS_CE_AUTOTUNE_ON_MISS"
+# Bump the prefix when entry encoding changes; bump the source schema when selection semantics change.
+_AUTOTUNE_BLOCK_SIZE_PREFIX = "levanter_kernel_autotune/fused_cross_entropy_loss/block_sizes_v2"
+_AUTOTUNE_SOURCE_SCHEMA = "fused-cross-entropy-autotune-v5"
+
+
+class _NoViableCandidate:
+    """Marks a key whose autotune sweep found no viable block size."""
+
+
+_NO_VIABLE_CANDIDATE = _NoViableCandidate()
+_AUTOTUNE_NEGATIVE_CACHE_MARKER = "no_viable_candidate"
+
+_AutotuneCacheEntry = BlockSizes | _NoViableCandidate
+_AUTOTUNE_COMPILE_HIT_THRESHOLD_S = 0.20
+_VMEM_COMPILE_FALLBACK_WARNINGS_EMITTED: set[str] = set()
+
+logger = logging.getLogger(__name__)
+
+
+def _encode_autotune_entry(value: _AutotuneCacheEntry) -> dict[str, object]:
+    if isinstance(value, _NoViableCandidate):
+        return {_AUTOTUNE_NEGATIVE_CACHE_MARKER: True}
+    return {
+        "b_block_size": value.b_block_size,
+        "h_block_size": value.h_block_size,
+        "v_block_size": value.v_block_size,
+    }
+
+
+def _decode_autotune_entry(entry: dict) -> _AutotuneCacheEntry | None:
+    if entry.get(_AUTOTUNE_NEGATIVE_CACHE_MARKER) is True:
+        return _NO_VIABLE_CANDIDATE
+    b, h, v = entry.get("b_block_size"), entry.get("h_block_size"), entry.get("v_block_size")
+    if all(isinstance(val, int) for val in (b, h, v)):
+        return BlockSizes(b_block_size=b, h_block_size=h, v_block_size=v)
+    return None
+
+
+def _autotune_entry_name(key: str) -> str:
+    """A path-safe object name for an opaque autotune key."""
+    return hashlib.sha256(key.encode()).hexdigest()
+
+
+class AutotuneBlockSizeCache:
+    """Tuned block sizes keyed by an opaque string and stored as named values.
+
+    The tiering and the per-process memo live in :class:`PersistentKvCache`; this
+    wrapper only translates a block-size entry to and from its JSON object. Backed
+    by a memory-only cache, the results stay off shared storage.
+    """
+
+    def __init__(self, cache: PersistentKvCache) -> None:
+        self._cache = cache
+
+    def get(self, key: str) -> _AutotuneCacheEntry | None:
+        raw = self._cache.load(_autotune_entry_name(key))
+        if raw is None:
+            return None
+        payload = json.loads(raw)
+        return _decode_autotune_entry(payload) if isinstance(payload, dict) else None
+
+    def put(self, key: str, value: _AutotuneCacheEntry) -> None:
+        payload = json.dumps(_encode_autotune_entry(value), sort_keys=True).encode()
+        self._cache.store(_autotune_entry_name(key), payload)
+
+
+_CANONICAL_BACKEND_IMPLEMENTATIONS: dict[str, ArrayImpl] = {}
+
+try:
+    from .pallas_tpu import (
+        PallasUnsupportedError,
+        linear_softmax_cross_entropy_loss_pallas,
+    )
+
+    IMPLEMENTATIONS["pallas_tpu"] = linear_softmax_cross_entropy_loss_pallas
+    _CANONICAL_BACKEND_IMPLEMENTATIONS["pallas_tpu"] = linear_softmax_cross_entropy_loss_pallas
+except ImportError:
+    PallasUnsupportedError = NotImplementedError  # type: ignore[assignment]
+
+IMPLEMENTATIONS["batched_xla"] = linear_softmax_cross_entropy_loss_batched_xla
+_CANONICAL_BACKEND_IMPLEMENTATIONS["batched_xla"] = linear_softmax_cross_entropy_loss_batched_xla
+
+
+@lru_cache(maxsize=1)
+def _default_implementations() -> tuple[Implementation, ...]:
+    implementations = _DEFAULT_IMPLEMENTATION
+    backend = jax.default_backend()
+
+    if backend == "gpu" and "batched_xla" in IMPLEMENTATIONS:
+        devices = jax.devices()
+        device_kind = devices[0].device_kind.lower() if devices else ""
+        if "gb10" in device_kind:
+            return cast(tuple[Implementation, ...], implementations + ("batched_xla",))
+        return cast(tuple[Implementation, ...], ("batched_xla",) + implementations)
+    if backend == "tpu":
+        # Keep TPU default stable and robust unless Pallas is explicitly requested.
+        return implementations
+    return implementations
+
+
+def _warn_implementation_fallback_once(exc: Exception) -> None:
+    message = str(exc)
+    if "requires TPU backend" in message:
+        return
+    if message in _IMPLEMENTATION_FALLBACK_WARNINGS_EMITTED:
+        return
+    _IMPLEMENTATION_FALLBACK_WARNINGS_EMITTED.add(message)
+    warnings.warn(
+        f"Fused cross-entropy implementation unavailable, falling back to XLA: {message}",
+        RuntimeWarning,
+    )
+
+
+def _is_tpu_vmem_compile_error(exc: Exception) -> bool:
+    message = str(exc).lower()
+    return "resource_exhausted" in message and "vmem" in message
+
+
+def _warn_vmem_compile_fallback_once(exc: Exception, *, impl_name: str) -> None:
+    message = str(exc)
+    key = f"{impl_name}|{message}"
+    if key in _VMEM_COMPILE_FALLBACK_WARNINGS_EMITTED:
+        return
+    _VMEM_COMPILE_FALLBACK_WARNINGS_EMITTED.add(key)
+    warnings.warn(
+        f"Pallas fused cross-entropy hit TPU vmem compile OOM in {impl_name}; "
+        f"trying the next implementation. Error: {message}",
+        RuntimeWarning,
+    )
+
+
+def _raise_if_renamed_implementation(impl: object) -> None:
+    if impl == "pallas_gpu":
+        raise ValueError('implementation="pallas_gpu" was renamed to "batched_xla"; use implementation="batched_xla".')
+
+
+def _implementation_matches_current_backend(impl_name: str, *, fn: ArrayImpl | None = None) -> bool:
+    canonical_impl = _CANONICAL_BACKEND_IMPLEMENTATIONS.get(impl_name)
+    if canonical_impl is None:
+        return True
+    if fn is None:
+        fn = IMPLEMENTATIONS.get(impl_name)
+    if fn is not canonical_impl:
+        return True
+
+    backend = jax.default_backend()
+    return (impl_name == "pallas_tpu" and backend == "tpu") or (impl_name == "batched_xla" and backend == "gpu")
+
+
+def _autotune_enabled() -> bool:
+    return autotune_utils.env_flag(_AUTOTUNE_ON_MISS_ENV_VAR, default=True)
+
+
+def _autotune_process_ids(*values: jax.Array) -> tuple[int, ...]:
+    """Return the process IDs that participate in this kernel invocation."""
+    for value in values:
+        sharding = autotune_utils.named_sharding_of(value)
+        if sharding is not None and isinstance(sharding.mesh, jax.sharding.Mesh):
+            process_ids = tuple(sorted({device.process_index for device in sharding.mesh.devices.flat}))
+            if jax.process_index() in process_ids:
+                return process_ids
+
+    mesh = get_concrete_mesh()
+    if isinstance(mesh, jax.sharding.Mesh) and not mesh.empty:
+        process_ids = tuple(sorted({device.process_index for device in mesh.devices.flat}))
+        if jax.process_index() in process_ids:
+            return process_ids
+    return tuple(range(jax.process_count()))
+
+
+def _autotune_allgather(value, process_ids: tuple[int, ...]):
+    if process_ids == tuple(range(jax.process_count())):
+        return multihost_allgather_sync(value)
+    return multihost_allgather_sync(value, process_ids=process_ids)
+
+
+_AUTOTUNE_CACHE = AutotuneBlockSizeCache(
+    PersistentKvCache.for_prefix(_AUTOTUNE_BLOCK_SIZE_PREFIX, is_writer=lambda: jax.process_index() == 0)
+)
+
+
+def _autotune_jaxpr_hash(
+    *,
+    fn: ArrayImpl,
+    inferred: BlockSizes,
+    x: jax.Array,
+    labels: jax.Array,
+    w: jax.Array,
+    dtype: Optional[jnp.dtype],
+    logit_soft_cap: Optional[float],
+    precision: jax.lax.PrecisionLike,
+    return_argmax: bool,
+) -> str | None:
+    try:
+        kwargs = dict(
+            block_sizes=inferred,
+            dtype=dtype,
+            logit_soft_cap=logit_soft_cap,
+            precision=precision,
+        )
+        if return_argmax:
+            kwargs["return_argmax"] = True
+
+        def _loss_only(x_value: jax.Array, labels_value: jax.Array, w_value: jax.Array) -> jax.Array:
+            out = fn(x_value, labels_value, w_value, **kwargs)
+            return out[0]
+
+        traced = jax.make_jaxpr(_loss_only)(x, labels, w)
+        return hashlib.sha256(str(traced.jaxpr).encode("utf-8")).hexdigest()[:16]
+    except Exception as exc:
+        logger.warning("Fused CE autotune result will not be shared because the kernel jaxpr is unavailable: %s", exc)
+        return None
+
+
+@lru_cache(maxsize=None)
+def _autotune_revision(impl_name: str) -> str:
+    source_root = pathlib.Path(__file__).resolve().parent
+    autotune_helpers = source_root.parent / "autotune_utils.py"
+    return combined_content_hash(
+        [
+            _AUTOTUNE_SOURCE_SCHEMA,
+            f"implementation={impl_name}",
+            f"source={directory_content_hash(source_root)}",
+            f"autotune_helpers={file_content_hash(autotune_helpers)}",
+            f"dependencies={workspace_lock_hash(pathlib.Path(__file__))}",
+            f"jax={jax.__version__}",
+            f"jaxlib={jaxlib.__version__}",
+        ]
+    )
+
+
+def _autotune_cache_key(
+    *,
+    impl_name: str,
+    fn: ArrayImpl,
+    x: jax.Array,
+    labels: jax.Array,
+    w: jax.Array,
+    inferred: BlockSizes,
+    dtype: Optional[jnp.dtype],
+    logit_soft_cap: Optional[float],
+    precision: jax.lax.PrecisionLike,
+    return_argmax: bool,
+) -> str | None:
+    """Return a shared autotune identity, or ``None`` when safe identity is unavailable.
+
+    A missing jaxpr or source/compiler revision disables both cache reads and
+    writes, including negative entries, while still allowing the sweep to run.
+    """
+    devices = jax.devices()
+    device_kind = devices[0].device_kind.lower() if devices else ""
+    compute_dtype = jnp.dtype(dtype).name if dtype is not None else "none"
+    jaxpr_hash = _autotune_jaxpr_hash(
+        fn=fn,
+        inferred=inferred,
+        x=x,
+        labels=labels,
+        w=w,
+        dtype=dtype,
+        logit_soft_cap=logit_soft_cap,
+        precision=precision,
+        return_argmax=return_argmax,
+    )
+    if jaxpr_hash is None:
+        return None
+    try:
+        revision = _autotune_revision(impl_name)
+    except (OSError, ValueError) as exc:
+        logger.warning("Fused CE autotune result will not be shared because source identity is unavailable: %s", exc)
+        return None
+    return "|".join(
+        (
+            _AUTOTUNE_SOURCE_SCHEMA,
+            revision,
+            impl_name,
+            jax.default_backend(),
+            device_kind,
+            str(x.shape[0]),
+            str(x.shape[1]),
+            str(w.shape[1]),
+            jnp.dtype(x.dtype).name,
+            jnp.dtype(w.dtype).name,
+            compute_dtype,
+            str(logit_soft_cap),
+            str(precision),
+            str(return_argmax),
+            f"jaxpr={jaxpr_hash}",
+        )
+    )
+
+
+def _candidate_block_sizes(
+    impl_name: str,
+    inferred: BlockSizes,
+    *,
+    x: jax.Array,
+    w: jax.Array,
+    dtype: Optional[jnp.dtype],
+) -> list[BlockSizes]:
+    candidates: list[BlockSizes] = [inferred]
+    if impl_name == "pallas_tpu":
+        bucket = shape_bucket_name(x.shape[0], x.shape[1], w.shape[1])
+        if bucket == "large-batch-medium-h":
+            for h_block in (256, 512, 1024, 2048):
+                if x.shape[1] % h_block != 0:
+                    continue
+                for v_block in (128, 256, 512, 768, 1024):
+                    candidates.append(
+                        BlockSizes(
+                            b_block_size=1024,
+                            h_block_size=h_block,
+                            v_block_size=v_block,
+                        )
+                    )
+        else:
+            widest_dtype = widest_dtype_name(dtype=dtype, x_dtype=x.dtype, w_dtype=w.dtype)
+            if widest_dtype == jnp.dtype(jnp.float32).name:
+                v_blocks = (256, 512, 768, 1024)
+            else:
+                v_blocks = (256, 512, 1024, 2048, 4096)
+            for v_block in v_blocks:
+                candidates.append(
+                    BlockSizes(
+                        b_block_size=inferred.b_block_size,
+                        h_block_size=inferred.h_block_size,
+                        v_block_size=v_block,
+                    )
+                )
+    elif impl_name == "batched_xla":
+        for v_block in (64, 128, 256, 512, 1024, 2048, 4096):
+            candidates.append(
+                BlockSizes(
+                    b_block_size=inferred.b_block_size,
+                    h_block_size=inferred.h_block_size,
+                    v_block_size=v_block,
+                )
+            )
+    deduped: list[BlockSizes] = []
+    seen: set[tuple[int, int, int]] = set()
+    for entry in candidates:
+        key = (entry.b_block_size, entry.h_block_size, entry.v_block_size)
+        if key in seen:
+            continue
+        seen.add(key)
+        deduped.append(entry)
+    return deduped
+
+
+def _compile_block_sizes_candidate(
+    *,
+    fn: ArrayImpl,
+    candidate: BlockSizes,
+    x: jax.Array,
+    labels: jax.Array,
+    w: jax.Array,
+    dtype: Optional[jnp.dtype],
+    logit_soft_cap: Optional[float],
+    precision: jax.lax.PrecisionLike,
+    return_argmax: bool,
+) -> Callable[..., jax.Array]:
+    def _loss_only(x_value: jax.Array, labels_value: jax.Array, w_value: jax.Array) -> jax.Array:
+        kwargs = dict(
+            block_sizes=candidate,
+            dtype=dtype,
+            logit_soft_cap=logit_soft_cap,
+            precision=precision,
+        )
+        if return_argmax:
+            kwargs["return_argmax"] = True
+        out = fn(x_value, labels_value, w_value, **kwargs)
+        return out[0]
+
+    benchmark_fn = autotune_utils.maybe_wrap_in_shard_map(
+        _loss_only,
+        args=(x, labels, w),
+        out_specs=autotune_utils.named_sharding_of(labels).spec if autotune_utils.named_sharding_of(labels) else None,
+    )
+    lowering_args = autotune_utils.benchmark_lowering_args(x, labels, w)
+    compile_time = autotune_utils.compile_benchmark_fn(
+        benchmark_fn=benchmark_fn,
+        lowering_args=lowering_args,
+        args=(x, labels, w),
+    )
+    if compile_time <= _AUTOTUNE_COMPILE_HIT_THRESHOLD_S:
+        logger.info(
+            "Fused CE autotune candidate %s likely hit JAX compilation cache (compile %.3fs).",
+            candidate,
+            compile_time,
+        )
+
+    return benchmark_fn
+
+
+def _run_block_sizes_candidate(
+    benchmark_fn: Callable[..., jax.Array],
+    x: jax.Array,
+    labels: jax.Array,
+    w: jax.Array,
+) -> float:
+    jitted = jax.jit(benchmark_fn)
+    start = time.perf_counter()
+    out = jitted(x, labels, w)
+    jax.block_until_ready(out)
+    run_time = time.perf_counter() - start
+    return run_time
+
+
+def _benchmark_block_sizes_candidate(
+    *,
+    fn: ArrayImpl,
+    candidate: BlockSizes,
+    x: jax.Array,
+    labels: jax.Array,
+    w: jax.Array,
+    dtype: Optional[jnp.dtype],
+    logit_soft_cap: Optional[float],
+    precision: jax.lax.PrecisionLike,
+    return_argmax: bool,
+) -> float:
+    benchmark_fn = _compile_block_sizes_candidate(
+        fn=fn,
+        candidate=candidate,
+        x=x,
+        labels=labels,
+        w=w,
+        dtype=dtype,
+        logit_soft_cap=logit_soft_cap,
+        precision=precision,
+        return_argmax=return_argmax,
+    )
+    return _run_block_sizes_candidate(benchmark_fn, x, labels, w)
+
+
+def _autotune_block_sizes_on_miss(
+    *,
+    impl_name: str,
+    fn: ArrayImpl,
+    x: jax.Array,
+    labels: jax.Array,
+    w: jax.Array,
+    inferred: BlockSizes,
+    dtype: Optional[jnp.dtype],
+    logit_soft_cap: Optional[float],
+    precision: jax.lax.PrecisionLike,
+    return_argmax: bool,
+    process_ids: tuple[int, ...] | None = None,
+) -> BlockSizes:
+    """Select the first jointly compilable candidate while tracing, or the fastest at runtime."""
+    if not _autotune_enabled():
+        return inferred
+    cache_key = _autotune_cache_key(
+        impl_name=impl_name,
+        fn=fn,
+        x=x,
+        labels=labels,
+        w=w,
+        inferred=inferred,
+        dtype=dtype,
+        logit_soft_cap=logit_soft_cap,
+        precision=precision,
+        return_argmax=return_argmax,
+    )
+    cached = _AUTOTUNE_CACHE.get(cache_key) if cache_key is not None else None
+    if process_ids is None:
+        process_ids = _autotune_process_ids(x, labels, w)
+    distributed = len(process_ids) > 1
+    tracing = autotune_utils.contains_tracer(x, labels, w)
+    candidates = _candidate_block_sizes(impl_name, inferred, x=x, w=w, dtype=dtype)
+    if distributed:
+        # Every rank must enter the same rendezvous, even when only some ranks
+        # have a local cache hit or can construct a persistent cache key.
+        states = _autotune_allgather(
+            {
+                "key": cache_key,
+                "cached": _encode_autotune_entry(cached) if cached is not None else None,
+                "candidates": [_encode_autotune_entry(candidate) for candidate in candidates],
+            },
+            process_ids,
+        )
+        if any(state["candidates"] != states[0]["candidates"] for state in states[1:]):
+            raise RuntimeError("Fused CE autotune candidates differ across JAX processes")
+        shared_key = cache_key is not None and all(state["key"] == cache_key for state in states)
+        cached = _decode_autotune_entry(states[0]["cached"]) if shared_key and states[0]["cached"] else None
+    else:
+        shared_key = cache_key is not None
+
+    if cached is not None:
+        if isinstance(cached, _NoViableCandidate):
+            logger.info(
+                "Fused CE autotune negative-cache hit for %s; no viable block-size candidate. "
+                "Skipping sweep and falling back.",
+                impl_name,
+            )
+            raise ExceptionGroup(
+                f"Fused CE autotune found no viable block-size candidates for {impl_name} (negative-cached)",
+                [RuntimeError("autotune previously found no viable candidate for this key")],
+            )
+        logger.info("Fused CE autotune cache hit for %s. Using cached block sizes %s.", impl_name, cached)
+        return cached
+
+    logger.info("Fused CE autotune miss for %s. Checking %d block-size candidates.", impl_name, len(candidates))
+    best: BlockSizes | None = None
+    best_score = float("inf")
+    errors: list[Exception] = []
+    for candidate in candidates:
+        if distributed:
+            try:
+                prepared = _compile_block_sizes_candidate(
+                    fn=fn,
+                    candidate=candidate,
+                    x=x,
+                    labels=labels,
+                    w=w,
+                    dtype=dtype,
+                    logit_soft_cap=logit_soft_cap,
+                    precision=precision,
+                    return_argmax=return_argmax,
+                )
+            except Exception as exc:
+                errors.append(exc)
+                prepared = None
+
+            # No rank may execute the candidate until every rank has compiled it.
+            if not all(_autotune_allgather(prepared is not None, process_ids)):
+                continue
+            assert prepared is not None
+            if tracing:
+                best = candidate
+                break
+            try:
+                score = _run_block_sizes_candidate(prepared, x, labels, w)
+            except Exception as exc:
+                errors.append(exc)
+                score = None
+            timings = _autotune_allgather(score if score is not None and math.isfinite(score) else None, process_ids)
+            if any(timing is None for timing in timings):
+                continue
+            score = math.fsum(cast(float, timing) for timing in timings) / len(timings)
+        else:
+            try:
+                if tracing:
+                    _compile_block_sizes_candidate(
+                        fn=fn,
+                        candidate=candidate,
+                        x=x,
+                        labels=labels,
+                        w=w,
+                        dtype=dtype,
+                        logit_soft_cap=logit_soft_cap,
+                        precision=precision,
+                        return_argmax=return_argmax,
+                    )
+                    best = candidate
+                    break
+                else:
+                    score = _benchmark_block_sizes_candidate(
+                        fn=fn,
+                        candidate=candidate,
+                        x=x,
+                        labels=labels,
+                        w=w,
+                        dtype=dtype,
+                        logit_soft_cap=logit_soft_cap,
+                        precision=precision,
+                        return_argmax=return_argmax,
+                    )
+            except Exception as exc:
+                errors.append(exc)
+                continue
+
+        if score < best_score:
+            best_score = score
+            best = candidate
+
+    if best is None:
+        if shared_key:
+            _AUTOTUNE_CACHE.put(cache_key, _NO_VIABLE_CANDIDATE)
+        raise ExceptionGroup(
+            f"Fused CE autotune found no viable block-size candidates for {impl_name}",
+            errors or [RuntimeError(f"No viable candidate for {impl_name}.")],
+        )
+
+    if shared_key:
+        _AUTOTUNE_CACHE.put(cache_key, best)
+    logger.info("Fused CE autotune selected block sizes %s for %s.", best, impl_name)
+    return best
+
+
+def _validate_inputs(x: jax.Array, labels: jax.Array, w: jax.Array) -> None:
+    if x.ndim != 2:
+        raise ValueError(f"x must be rank-2 [B, H], got shape {x.shape}.")
+    if labels.ndim != 1:
+        raise ValueError(f"labels must be rank-1 [B], got shape {labels.shape}.")
+    if w.ndim != 2:
+        raise ValueError(f"w must be rank-2 [H, V], got shape {w.shape}.")
+    if x.shape[0] != labels.shape[0]:
+        raise ValueError(f"Batch mismatch: x has B={x.shape[0]}, labels has B={labels.shape[0]}.")
+    if x.shape[1] != w.shape[0]:
+        raise ValueError(f"Hidden mismatch: x has H={x.shape[1]}, w has H={w.shape[0]}.")
+    if not jnp.issubdtype(labels.dtype, jnp.integer):
+        raise ValueError(f"labels must be integer dtype, got {labels.dtype}.")
+
+
+def _resolve_block_sizes(
+    block_size: Optional[int],
+    block_sizes: Optional[BlockSizes],
+    *,
+    x: jax.Array,
+    w: jax.Array,
+    dtype: Optional[jnp.dtype],
+) -> BlockSizes:
+    if block_sizes is None:
+        if block_size is None:
+            return infer_block_sizes(x.shape[0], x.shape[1], w.shape[1], dtype=dtype, x_dtype=x.dtype, w_dtype=w.dtype)
+        return BlockSizes(v_block_size=block_size)
+    if block_size is not None and block_size != block_sizes.v_block_size:
+        raise ValueError(
+            "block_size and block_sizes.v_block_size disagree: "
+            f"block_size={block_size}, block_sizes.v_block_size={block_sizes.v_block_size}."
+        )
+    return block_sizes
+
+
+def _apply_reduction(loss: jax.Array, reduction: Reduction, weight: Optional[jax.Array]) -> jax.Array:
+    if weight is not None:
+        weight = weight.astype(loss.dtype)
+        loss = loss * weight
+
+    if reduction is None:
+        return loss
+    if reduction == "sum":
+        return jnp.sum(loss)
+    if reduction == "mean":
+        if weight is None:
+            return jnp.mean(loss)
+        denom = jnp.sum(weight)
+        return jnp.where(denom != 0, jnp.sum(loss) / denom, jnp.zeros_like(denom))
+    raise ValueError(f"Unsupported reduction: {reduction}")
+
+
+@overload
+def fused_cross_entropy_loss_and_logsumexp_penalty(
+    x: Float[Array, "B H"],
+    labels: Int[Array, "B"],
+    w: Float[Array, "H V"],
+    *,
+    reduction: Reduction = "mean",
+    weight: Optional[Float[Array, "B"]] = None,
+    logsumexp_weight: Optional[float] = 0.0,
+    block_size: Optional[int] = None,
+    block_sizes: Optional[BlockSizes] = None,
+    dtype: Optional[jnp.dtype] = jnp.float32,
+    logit_soft_cap: Optional[float] = None,
+    precision: jax.lax.PrecisionLike = None,
+    implementation: Implementation | Sequence[Implementation | ArrayImpl] | None = None,
+    return_argmax: Literal[False] = False,
+) -> jax.Array: ...
+
+
+@overload
+def fused_cross_entropy_loss_and_logsumexp_penalty(
+    x: Float[Array, "B H"],
+    labels: Int[Array, "B"],
+    w: Float[Array, "H V"],
+    *,
+    reduction: Reduction = "mean",
+    weight: Optional[Float[Array, "B"]] = None,
+    logsumexp_weight: Optional[float] = 0.0,
+    block_size: Optional[int] = None,
+    block_sizes: Optional[BlockSizes] = None,
+    dtype: Optional[jnp.dtype] = jnp.float32,
+    logit_soft_cap: Optional[float] = None,
+    precision: jax.lax.PrecisionLike = None,
+    implementation: Implementation | Sequence[Implementation | ArrayImpl] | None = None,
+    return_argmax: Literal[True] = True,
+) -> tuple[jax.Array, jax.Array]: ...
+
+
+def fused_cross_entropy_loss_and_logsumexp_penalty(
+    x: Float[Array, "B H"],
+    labels: Int[Array, "B"],
+    w: Float[Array, "H V"],
+    *,
+    reduction: Reduction = "mean",
+    weight: Optional[Float[Array, "B"]] = None,
+    logsumexp_weight: Optional[float] = 0.0,
+    block_size: Optional[int] = None,
+    block_sizes: Optional[BlockSizes] = None,
+    dtype: Optional[jnp.dtype] = jnp.float32,
+    logit_soft_cap: Optional[float] = None,
+    precision: jax.lax.PrecisionLike = None,
+    implementation: Implementation | Sequence[Implementation | ArrayImpl] | None = None,
+    return_argmax: bool = False,
+) -> jax.Array | tuple[jax.Array, jax.Array]:
+    """Fused cross-entropy + logsumexp penalty on raw arrays.
+
+    Args:
+        x: [B, H] input activations.
+        labels: [B] integer labels.
+        w: [H, V] projection weights.
+        reduction: "sum", "mean", or None to return per-example loss.
+        weight: Optional per-example weights/mask, broadcastable to [B].
+        logsumexp_weight: Weight for the logsumexp (z-loss) penalty.
+        block_size: Optional convenience for setting block_sizes.v_block_size.
+        block_sizes: Block size configuration for the kernel.
+        dtype: Optional dtype for logits/softmax computations.
+        logit_soft_cap: Optional tanh soft cap for logits.
+        precision: Optional matmul precision override for XLA/reference paths.
+        implementation: Backend selector or override implementation list.
+        return_argmax: Whether to additionally return per-example argmax ids.
+
+    Returns:
+        If return_argmax=False: reduced loss (scalar) or per-example loss [B] if reduction is None.
+        If return_argmax=True: tuple of (loss, argmax_ids[B]).
+    """
+    _validate_inputs(x, labels, w)
+    explicit_block_sizes = block_size is not None or block_sizes is not None
+    resolved_block_sizes = (
+        _resolve_block_sizes(block_size, block_sizes, x=x, w=w, dtype=dtype) if explicit_block_sizes else None
+    )
+
+    if implementation is None:
+        impls = cast(Sequence[Implementation | ArrayImpl], _default_implementations())
+        explicit = False
+        user_requested_impls = False
+    elif isinstance(implementation, Sequence) and not isinstance(implementation, (str, bytes)):
+        impls = cast(Sequence[Implementation | ArrayImpl], implementation)
+        explicit = len(impls) == 1
+        user_requested_impls = True
+    else:
+        impls = (cast(Implementation, implementation),)
+        explicit = True
+        user_requested_impls = True
+
+    needs_inferred_block_sizes = not explicit_block_sizes and any(
+        not isinstance(impl, str) or impl not in ("xla", "xla_fast_bwd", "reference") for impl in impls
+    )
+    if needs_inferred_block_sizes:
+        inferred, has_tuned_match = infer_block_sizes_with_tuned_match(
+            x.shape[0], x.shape[1], w.shape[1], dtype=dtype, x_dtype=x.dtype, w_dtype=w.dtype
+        )
+    else:
+        inferred, has_tuned_match = None, False
+
+    process_ids = _autotune_process_ids(x, labels, w)
+    if len(process_ids) > 1:
+        # The sweep's rendezvous cannot help if one rank takes a tuned-table hit,
+        # disables tuning, or chooses a different implementation before entering it.
+        plan = {
+            "implementations": [
+                impl if isinstance(impl, str) else f"{type(impl).__module__}.{type(impl).__qualname__}"
+                for impl in impls
+            ],
+            "explicit": explicit,
+            "user_requested_impls": user_requested_impls,
+            "block_sizes": _encode_autotune_entry(resolved_block_sizes) if resolved_block_sizes is not None else None,
+            "inferred": _encode_autotune_entry(inferred) if inferred is not None else None,
+            "has_tuned_match": has_tuned_match,
+            "autotune_enabled": _autotune_enabled() if needs_inferred_block_sizes else None,
+            "shape": (x.shape, labels.shape, w.shape),
+            "dtypes": (str(x.dtype), str(labels.dtype), str(w.dtype), str(dtype)),
+            "backend": jax.default_backend(),
+            "logit_soft_cap": logit_soft_cap,
+            "precision": str(precision),
+            "return_argmax": return_argmax,
+        }
+        plans = _autotune_allgather(plan, process_ids)
+        if any(peer != plans[0] for peer in plans[1:]):
+            raise RuntimeError(f"Fused CE selection differs across JAX processes: {dict(zip(process_ids, plans))}")
+
+    errors: list[Exception] = []
+    for impl in impls:
+        _raise_if_renamed_implementation(impl)
+        impl_for_call = impl
+        if explicit_block_sizes:
+            block_sizes_for_impl = resolved_block_sizes
+        elif impl_for_call in ("xla", "xla_fast_bwd", "reference"):
+            block_sizes_for_impl = None
+        elif isinstance(impl_for_call, str) and impl_for_call in ("pallas_tpu", "batched_xla"):
+            assert inferred is not None
+            fn = IMPLEMENTATIONS.get(impl_for_call)
+            if fn is None or not _implementation_matches_current_backend(impl_for_call, fn=fn):
+                block_sizes_for_impl = inferred
+            elif has_tuned_match:
+                block_sizes_for_impl = inferred
+            else:
+                try:
+                    block_sizes_for_impl = _autotune_block_sizes_on_miss(
+                        impl_name=impl_for_call,
+                        fn=fn,
+                        x=x,
+                        labels=labels,
+                        w=w,
+                        inferred=inferred,
+                        dtype=dtype,
+                        logit_soft_cap=logit_soft_cap,
+                        precision=precision,
+                        return_argmax=return_argmax,
+                        process_ids=process_ids,
+                    )
+                except Exception as exc:
+                    if explicit:
+                        raise
+                    _warn_implementation_fallback_once(exc)
+                    errors.append(exc)
+                    continue
+        else:
+            assert inferred is not None
+            block_sizes_for_impl = inferred
+        if callable(impl_for_call):
+            try:
+                kwargs = dict(
+                    block_sizes=block_sizes_for_impl,
+                    dtype=dtype,
+                    logit_soft_cap=logit_soft_cap,
+                    precision=precision,
+                )
+                if return_argmax:
+                    kwargs["return_argmax"] = True
+                result = impl_for_call(x, labels, w, **kwargs)
+            except (PallasUnsupportedError, BatchedXlaUnsupportedError) as e:
+                if explicit:
+                    raise
+                _warn_implementation_fallback_once(e)
+                errors.append(e)
+                continue
+            except NotImplementedError as e:
+                if explicit:
+                    raise
+                _warn_implementation_fallback_once(e)
+                errors.append(e)
+                continue
+        else:
+            fn = IMPLEMENTATIONS.get(impl_for_call)
+            if fn is None:
+                raise ValueError(f"Unsupported implementation: {impl_for_call}")
+            try:
+                kwargs = dict(
+                    block_sizes=block_sizes_for_impl,
+                    dtype=dtype,
+                    logit_soft_cap=logit_soft_cap,
+                    precision=precision,
+                )
+                if return_argmax:
+                    kwargs["return_argmax"] = True
+                result = fn(x, labels, w, **kwargs)
+            except (PallasUnsupportedError, BatchedXlaUnsupportedError) as e:
+                if explicit:
+                    raise
+                _warn_implementation_fallback_once(e)
+                errors.append(e)
+                continue
+            except NotImplementedError as e:
+                if explicit:
+                    raise
+                _warn_implementation_fallback_once(e)
+                errors.append(e)
+                continue
+            except Exception as e:
+                should_try_next_impl = (
+                    not explicit
+                    and isinstance(impl_for_call, str)
+                    and impl_for_call == "pallas_tpu"
+                    and _is_tpu_vmem_compile_error(e)
+                )
+                if should_try_next_impl:
+                    _warn_vmem_compile_fallback_once(e, impl_name=impl_for_call)
+                    errors.append(e)
+                    continue
+                if explicit or user_requested_impls:
+                    raise
+                errors.append(e)
+                continue
+
+        selected = str(impl_for_call)
+        if selected not in _SELECTED_IMPL_LOGGED:
+            _SELECTED_IMPL_LOGGED.add(selected)
+            logger.info("Fused cross-entropy selected implementation: %s", selected)
+
+        if len(result) == 2:
+            loss, lse = result
+            argmax = None
+        elif len(result) == 3:
+            loss, lse, argmax = result
+        else:
+            raise ValueError(f"Implementation returned unexpected output tuple length: {len(result)}")
+
+        if return_argmax and argmax is None:
+            raise ValueError("Implementation does not support return_argmax=True")
+
+        if logsumexp_weight is not None and logsumexp_weight != 0.0:
+            loss = loss + logsumexp_weight * (lse**2)
+        reduced_loss = _apply_reduction(loss, reduction, weight)
+        if return_argmax:
+            assert argmax is not None
+            return reduced_loss, argmax
+        return reduced_loss
+
+    raise ExceptionGroup("all implementations failed", errors)
+
+
+__all__ = [
+    "BlockSizes",
+    "Implementation",
+    "IMPLEMENTATIONS",
+    "Reduction",
+    "fused_cross_entropy_loss_and_logsumexp_penalty",
+]

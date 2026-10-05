@@ -1,0 +1,22 @@
+{
+  "status": "two_process_hash_seeds_match",
+  "runs": [
+    {
+      "hash_seed": "1",
+      "artifact_sha256": {
+        "analysis/scale_audit.json": "bf90e117090e6e7d2e01d46b1bc1fe8c8c337f03ff2706ed4560edec2b733a60",
+        "analysis/scale_config_contrasts.csv": "30efa97f42ec4b1b8b1b34857dba1abfa6ed6b16cbd9b61f02b93b6ac87e56d0",
+        "analysis/scale_computation_log.txt": "fadcd7086cdb61d6aedbdd1137746fcde9139c69286a235861cc175306692a5c"
+      }
+    },
+    {
+      "hash_seed": "271828",
+      "artifact_sha256": {
+        "analysis/scale_audit.json": "bf90e117090e6e7d2e01d46b1bc1fe8c8c337f03ff2706ed4560edec2b733a60",
+        "analysis/scale_config_contrasts.csv": "30efa97f42ec4b1b8b1b34857dba1abfa6ed6b16cbd9b61f02b93b6ac87e56d0",
+        "analysis/scale_computation_log.txt": "fadcd7086cdb61d6aedbdd1137746fcde9139c69286a235861cc175306692a5c"
+      }
+    }
+  ],
+  "change": "sorted keys and math.fsum for half-L1; prior difference below 2e-16; substantive conclusions unchanged"
+}

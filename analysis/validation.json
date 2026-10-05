@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1019,
+  "checks_passed": 1036,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -18,7 +18,7 @@
     "four new config contrasts / six step393 resume windows",
     "seventeen embedded figures",
     "all relative HTML links valid",
-    "348 source archive checksums valid",
+    "354 source archive checksums valid",
     "18 authored rubrics / seven claim-stage decisions",
     "five interpretation cases / four metrics with switchable baselines",
     "17 figure-reading entries / five preserved collapsed tables",
@@ -55,7 +55,9 @@
     "48 unlaunched confirmation slots / 8.481788657664T planned continuation tokens",
     "current V11 desktop/mobile/file-protocol browser / nine source-and-state behaviors",
     "V10 answer-bank preserved bytewise / old bank import explicitly rejected",
-    "six null public commit fields / two callable runner entries / execution-code binding remains unknown"
+    "six null public commit fields / two callable runner entries / execution-code binding remains unknown",
+    "six pinned implementation files / 46 original-helper and arithmetic checks / seven acceptance rules",
+    "V11 browser evidence remains historical; new chapter separately verified"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

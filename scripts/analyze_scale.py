@@ -91,7 +91,7 @@ for size, old_name in zip(SIZES, OLD):
     for cell in cells:
         early_cells.append({'size': size, 'cell': cell, 'old_initial_weight': wa.get(cell,0),
                             'new_initial_weight': wb.get(cell,0), 'new_minus_old': wb.get(cell,0)-wa.get(cell,0)})
-    half_l1 = sum(abs(wa.get(k,0)-wb.get(k,0)) for k in wa.keys() | wb.keys())/2
+    half_l1 = math.fsum(abs(wa.get(k,0)-wb.get(k,0)) for k in sorted(wa.keys() | wb.keys()))/2
     contrasts.append({'size': size, 'field': 'initial_weight_half_l1', 'path': 'data.train_weights[0][1]', 'old': 0, 'new': half_l1, 'equal': half_l1==0})
     valkeys = [k for k in oc['data']['components'] if k.startswith('paloma/')]
     contrasts.append({'size': size, 'field': 'sixteen_validation_component_configs', 'path': 'data.components[paloma/*]',

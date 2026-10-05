@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-05T07:41:49.140269+00:00",
+  "integrity_manifest_created_utc": "2026-10-05T08:53:17.389817+00:00",
   "files": [
     {
       "file": "code_launch_scaling_ladder.py",
@@ -41,6 +41,48 @@
       "sha256": "961fa251b7b9c11aed54a123c0570414b4c05ba9e9f3106bdcdf59191cef6a58",
       "url": "https://api.github.com/repos/marin-community/marin/issues/8435/comments?per_page=100&page=1",
       "retrieved_utc": "2026-10-03T21:32:58.646971+00:00"
+    },
+    {
+      "file": "contracts_2026_10_05/api.py",
+      "bytes": 36741,
+      "sha256": "5efeea2badba92dbc2dce9d0fc2306f12a2bf754dd2d8bee16b1dcd3ed0e355d",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/kernels/pallas/fused_cross_entropy_loss/api.py",
+      "retrieved_utc": "2026-10-05T08:46:50.202697+00:00"
+    },
+    {
+      "file": "contracts_2026_10_05/checkpointing.py",
+      "bytes": 9839,
+      "sha256": "1f7395e4caeb60f31db7d84e32e972b75791e43e454dafd146449b9148e5016d",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/grug/checkpointing.py",
+      "retrieved_utc": "2026-10-05T08:46:50.114571+00:00"
+    },
+    {
+      "file": "contracts_2026_10_05/model.py",
+      "bytes": 77140,
+      "sha256": "8fdfd89cf6814da05683f134f154525916728370368a2493843195d9a489859c",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/grug/moe_hero_ep/model.py",
+      "retrieved_utc": "2026-10-05T08:46:50.348808+00:00"
+    },
+    {
+      "file": "contracts_2026_10_05/reference.py",
+      "bytes": 7429,
+      "sha256": "f113b3b6872af2d6aa4658cf4326b6c52c2675bf537690d5653604e9d559c0d5",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/kernels/pallas/fused_cross_entropy_loss/reference.py",
+      "retrieved_utc": "2026-10-05T08:46:50.770207+00:00"
+    },
+    {
+      "file": "contracts_2026_10_05/test_fused.py",
+      "bytes": 100876,
+      "sha256": "d796e5d3837afede33ff8d42ccceaa1ee017fbca727b24a18652e42c6e482bba",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/tests/kernels/test_pallas_fused_cross_entropy_loss.py",
+      "retrieved_utc": "2026-10-05T08:46:51.153738+00:00"
+    },
+    {
+      "file": "contracts_2026_10_05/xla.py",
+      "bytes": 29505,
+      "sha256": "4a4f086b968934114ba450ec90d1e875842a04a3b79c7ae82879eda882a4d7d4",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/kernels/pallas/fused_cross_entropy_loss/xla.py",
+      "retrieved_utc": "2026-10-05T08:46:51.896922+00:00"
     },
     {
       "file": "data_overview.html",
@@ -1989,8 +2031,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 173077,
-      "sha256": "6c1190fe41d2953f3e749e598615a901a83a1d62ec395ef510cdb3859f6337f0",
+      "bytes": 175391,
+      "sha256": "651864a1f45b751bf9f99e45a34ca9b89a8371a7b1d9d4d5232b1a3d7e1fe90e",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

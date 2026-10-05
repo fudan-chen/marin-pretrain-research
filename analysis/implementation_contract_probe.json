@@ -1,0 +1,347 @@
+{
+  "pinned_revision": "84869ae8c91ffe64e9f761c5bd714542eb1876e0",
+  "status": "local_source_helper_probe_only",
+  "checks_passed": 46,
+  "checks": [
+    "Fractional unreduced weights applied in original helper",
+    "Single and double weighting diverge",
+    "Binary masks conceal the repeated-weight distinction",
+    "Unweighted mean returns ordinary NLL mean",
+    "Weighted sum preserves numerator",
+    "Zero-weight mean guarded to zero",
+    "Invalid reduction rejects",
+    "Original backward precedence (None, None)",
+    "Original backward precedence (None, True)",
+    "Original backward precedence (None, False)",
+    "Original backward precedence ('1', None)",
+    "Original backward precedence ('1', True)",
+    "Original backward precedence ('1', False)",
+    "Original backward precedence ('0', None)",
+    "Original backward precedence ('0', True)",
+    "Original backward precedence ('0', False)",
+    "Original backward precedence (' TRUE ', None)",
+    "Original backward precedence (' TRUE ', True)",
+    "Original backward precedence (' TRUE ', False)",
+    "Original backward precedence ('off', None)",
+    "Original backward precedence ('off', True)",
+    "Original backward precedence ('off', False)",
+    "Invalid environment rejects None",
+    "Invalid environment rejects True",
+    "Invalid environment rejects False",
+    "Original restore policy disabled",
+    "Explicit disabled resume performs no I/O substitute calls",
+    "Restore barrier is only called after successful substituted load disabled",
+    "Original restore policy optional_empty",
+    "Restore barrier is only called after successful substituted load optional_empty",
+    "Original restore policy required_empty",
+    "Restore barrier is only called after successful substituted load required_empty",
+    "Original restore policy optional_existing_unreadable",
+    "Restore barrier is only called after successful substituted load optional_existing_unreadable",
+    "Original restore policy fallback_older",
+    "Unreadable newest candidate falls back to older loadable checkpoint",
+    "Restore barrier is only called after successful substituted load fallback_older",
+    "Original restore policy metadata_step_beats_time",
+    "Candidate ordering prioritizes step above timestamp",
+    "Restore barrier is only called after successful substituted load metadata_step_beats_time",
+    "Per-layer assignment count fits int32",
+    "Total assignment count exceeds int32",
+    "Fused API applies weights after adding final-logit z penalty",
+    "Evaluator callback returns model-weighted positions and original weights",
+    "Router z loss explicitly has logging-only metric name",
+    "Training passes final-logit z-loss and evaluation disables it"
+  ],
+  "extracted_original_functions": {
+    "api.py": [
+      {
+        "name": "_apply_reduction",
+        "first_line": 702,
+        "last_line": 716
+      }
+    ],
+    "xla.py": [
+      {
+        "name": "_fast_backward_env_override",
+        "first_line": 41,
+        "last_line": 59
+      },
+      {
+        "name": "_resolve_fast_backward",
+        "first_line": 62,
+        "last_line": 69
+      }
+    ],
+    "checkpointing.py": [
+      {
+        "name": "_checkpoint_candidates",
+        "first_line": 57,
+        "last_line": 68
+      },
+      {
+        "name": "restore_grug_state_from_checkpoint",
+        "first_line": 110,
+        "last_line": 180
+      }
+    ]
+  },
+  "substitutions": [
+    "NumPy instead of jax.numpy in reduction helper",
+    "isolated fake os.environ",
+    "fake candidate scan, checkpoint loader and restore barrier"
+  ],
+  "mask_example": {
+    "nll": [
+      2.0,
+      6.0,
+      100.0
+    ],
+    "weights": [
+      1.0,
+      0.5,
+      0.0
+    ],
+    "weighted_unreduced": [
+      2.0,
+      3.0,
+      0.0
+    ],
+    "single_weight_mean": 3.3333333333333335,
+    "double_weight_mean": 2.3333333333333335,
+    "binary_current_scope_not_verified": true
+  },
+  "backward_precedence": [
+    {
+      "environment": null,
+      "call_site": null,
+      "resolved": false,
+      "error": null
+    },
+    {
+      "environment": null,
+      "call_site": true,
+      "resolved": true,
+      "error": null
+    },
+    {
+      "environment": null,
+      "call_site": false,
+      "resolved": false,
+      "error": null
+    },
+    {
+      "environment": "1",
+      "call_site": null,
+      "resolved": true,
+      "error": null
+    },
+    {
+      "environment": "1",
+      "call_site": true,
+      "resolved": true,
+      "error": null
+    },
+    {
+      "environment": "1",
+      "call_site": false,
+      "resolved": true,
+      "error": null
+    },
+    {
+      "environment": "0",
+      "call_site": null,
+      "resolved": false,
+      "error": null
+    },
+    {
+      "environment": "0",
+      "call_site": true,
+      "resolved": false,
+      "error": null
+    },
+    {
+      "environment": "0",
+      "call_site": false,
+      "resolved": false,
+      "error": null
+    },
+    {
+      "environment": " TRUE ",
+      "call_site": null,
+      "resolved": true,
+      "error": null
+    },
+    {
+      "environment": " TRUE ",
+      "call_site": true,
+      "resolved": true,
+      "error": null
+    },
+    {
+      "environment": " TRUE ",
+      "call_site": false,
+      "resolved": true,
+      "error": null
+    },
+    {
+      "environment": "off",
+      "call_site": null,
+      "resolved": false,
+      "error": null
+    },
+    {
+      "environment": "off",
+      "call_site": true,
+      "resolved": false,
+      "error": null
+    },
+    {
+      "environment": "off",
+      "call_site": false,
+      "resolved": false,
+      "error": null
+    },
+    {
+      "environment": "fasle",
+      "call_site": null,
+      "resolved": null,
+      "error": "ValueError"
+    },
+    {
+      "environment": "fasle",
+      "call_site": true,
+      "resolved": null,
+      "error": "ValueError"
+    },
+    {
+      "environment": "fasle",
+      "call_site": false,
+      "resolved": null,
+      "error": "ValueError"
+    }
+  ],
+  "restore_cases": [
+    {
+      "case": "disabled",
+      "setting": false,
+      "candidate_metadata": [],
+      "result": {
+        "initial": true
+      },
+      "error": null,
+      "load_calls": [],
+      "barrier_calls": 0
+    },
+    {
+      "case": "optional_empty",
+      "setting": null,
+      "candidate_metadata": [],
+      "result": {
+        "initial": true
+      },
+      "error": null,
+      "load_calls": [
+        "root"
+      ],
+      "barrier_calls": 0
+    },
+    {
+      "case": "required_empty",
+      "setting": true,
+      "candidate_metadata": [],
+      "result": null,
+      "error": "FileNotFoundError",
+      "load_calls": [
+        "root"
+      ],
+      "barrier_calls": 0
+    },
+    {
+      "case": "optional_existing_unreadable",
+      "setting": null,
+      "candidate_metadata": [
+        [
+          20,
+          "b",
+          "root/20"
+        ]
+      ],
+      "result": null,
+      "error": "FileNotFoundError",
+      "load_calls": [
+        "root/20",
+        "root"
+      ],
+      "barrier_calls": 0
+    },
+    {
+      "case": "fallback_older",
+      "setting": true,
+      "candidate_metadata": [
+        [
+          10,
+          "a",
+          "root/10"
+        ],
+        [
+          20,
+          "b",
+          "root/20"
+        ]
+      ],
+      "result": {
+        "restored": "root/10"
+      },
+      "error": null,
+      "load_calls": [
+        "root/20",
+        "root/10"
+      ],
+      "barrier_calls": 1
+    },
+    {
+      "case": "metadata_step_beats_time",
+      "setting": true,
+      "candidate_metadata": [
+        [
+          10,
+          "z",
+          "root/10"
+        ],
+        [
+          20,
+          "a",
+          "root/20"
+        ]
+      ],
+      "result": {
+        "restored": "root/20"
+      },
+      "error": null,
+      "load_calls": [
+        "root/20"
+      ],
+      "barrier_calls": 1
+    }
+  ],
+  "counter_example": {
+    "per_layer": 134217728,
+    "layers": 48,
+    "int64_total": 6442450944,
+    "int32_total": -2147483648,
+    "actual_drop_count": null
+  },
+  "source_sha256": {
+    "sources/contracts_2026_10_05/api.py": "5efeea2badba92dbc2dce9d0fc2306f12a2bf754dd2d8bee16b1dcd3ed0e355d",
+    "sources/contracts_2026_10_05/checkpointing.py": "1f7395e4caeb60f31db7d84e32e972b75791e43e454dafd146449b9148e5016d",
+    "sources/contracts_2026_10_05/model.py": "8fdfd89cf6814da05683f134f154525916728370368a2493843195d9a489859c",
+    "sources/contracts_2026_10_05/reference.py": "f113b3b6872af2d6aa4658cf4326b6c52c2675bf537690d5653604e9d559c0d5",
+    "sources/contracts_2026_10_05/test_fused.py": "d796e5d3837afede33ff8d42ccceaa1ee017fbca727b24a18652e42c6e482bba",
+    "sources/contracts_2026_10_05/xla.py": "4a4f086b968934114ba450ec90d1e875842a04a3b79c7ae82879eda882a4d7d4"
+  },
+  "not_verified": [
+    "actual historical execution SHA/environment",
+    "JAX/autodiff/GPU kernel behavior",
+    "fractional weights in Hero validation inputs",
+    "checkpoint contents and distributed barrier behavior",
+    "actual production counter overflow or numerical root cause"
+  ]
+}

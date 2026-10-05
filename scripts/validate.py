@@ -141,7 +141,7 @@ alt=all_rows[f['counterexample_run']]
 ok('197c dominates selected seed0 on three axes but not all tasks',all(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in [PM,HE,GM]) and sum(metric_value(alt,k)>metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==31 and sum(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==23)
 ok('197c has no independent seed1 or seed2 counterpart in this registry',sum('197c9f5ceff6b9ee-' in r['run_name'] for r in rows)==1)
 F=S/'findings_2026_10_04'
-ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/','contracts_2026_10_05/','state_2026_10_05/','boundaries_2026_10_05/','cache_2026_10_05/','dedup_2026_10_05/','quality_2026_10_05/','routing_2026_10_05/','optimizer_2026_10_05/','short_conv_2026_10_05/','router_precision_2026_10_05/')) for x in manifest['files'])==313)
+ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/','contracts_2026_10_05/','state_2026_10_05/','boundaries_2026_10_05/','cache_2026_10_05/','dedup_2026_10_05/','quality_2026_10_05/','routing_2026_10_05/','optimizer_2026_10_05/','short_conv_2026_10_05/','router_precision_2026_10_05/','eval_metrics_2026_10_05/')) for x in manifest['files'])==313)
 for i,row in enumerate(f['configs']):
     def source_run(name):return read((F if 'mixprior-' in name else P)/('config_'+name+'.json'))['data']['project']['run']
     ra,rb=source_run(row['run_a']),source_run(row['run_b']);ca,cb=json.loads(ra['config']),json.loads(rb['config'])
@@ -192,7 +192,7 @@ for scenario in decision_checks['scenarios']:
 doc_tables=soup.select('#decision-guide table')
 ok('Decision documentation preserves nine scenarios and six rule counterexamples',len(doc_tables)==3 and len(doc_tables[1].select('tbody tr'))==9 and len(doc_tables[2].select('tbody tr'))==6 and all(int(t.select('td')[2].text)==s['eligible'] and (s['best'] is None or s['best']==t.select('td')[3].text) for s,t in zip(decision_checks['scenarios'],doc_tables[1].select('tbody tr'))))
 ok('Selector trace reports bounded search rather than universal absence',trace['status']=='not_recovered_in_checked_public_entries' and trace['tree_truncated'] is False and len(trace['limitations'])==4 and all(q['total_count']==q['items_returned']==1 and q['issue_numbers']==[9126] and q['incomplete_results'] is False for q in trace['issue_queries']) and trace['issue_9126_body_unchanged_from_prior_archive'])
-ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==416 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
+ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==417 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
 contract=read(ROOT/'templates/selection_contract.json')
 ok('Confirmation contract cannot retroactively assert prior registration',contract['status']=='planned_not_executed' and contract['prior_search_results_already_seen'] is True and contract['contract_frozen_utc'] is None and contract['results'] is None and contract['independent_confirmation']['used_during_search'] is None)
 embedded=json.loads(soup.select_one('#decision-data').text)
@@ -559,22 +559,32 @@ browser24=read(A/'browser_validation_v24.json')
 ok('V24 router precision chapter fits viewport and loads offline',browser24['desktop']['width']<=browser24['desktop']['viewport'] and browser24['mobile']['width']<=browser24['mobile']['viewport'] and browser24['offline']['figures']==browser24['offline']['loaded']==17 and browser24['offline']['tables']==4 and browser24['offline']['requests']==browser24['offline']['errors']==[])
 ok('V24 viewed screenshot retains exact bytes',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha for p,sha in browser24['screenshot_sha256'].items()))
 mt=read(A/'mix_trajectory.json')
-ok('V25 preserves exact subset points and separate logged macro',len(mt['subsets'])==16 and len(mt['complete_steps'])==67 and mt['subset_points']==2144 and mt['macro_points']==67 and mt['selected_points']==2211)
+ok('V26 corrected trajectory preserves subset and all four parent metrics',len(mt['subsets'])==16 and len(mt['complete_steps'])==67 and mt['subset_points']==2144 and mt['macro_points']==134 and mt['parent_points']==268 and mt['selected_points']==2412)
 for p,sha in mt['source_sha256'].items():ok('Mix trajectory input checksum '+p,hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha)
 # Cross-check against the independently implemented prior production-lineage stitch.
 with (A/'mix_trajectory_points.csv').open() as f:
     point_rows=list(csv.DictReader(f))
 prior_series=read(A/'series.json')
 for row in point_rows:
-    key='eval_dropless/paloma/'+('' if row['subset']=='__macro__' else row['subset']+'/')+row['metric']
+    key='eval_dropless/paloma/'+('' if row['subset']=='__parent__' else row['subset']+'/')+row['metric']
     matches=[p for p in prior_series[key] if p['step']==int(row['step']) and p['run']==row['run']]
     assert len(matches)==1 and matches[0]['value']==float(row['value'])
-ok('V25 independent production-lineage extraction matches 2211 prior values',len(point_rows)==2211)
+ok('V26 independent extraction matches all 2412 prior values',len(point_rows)==2412)
 ok('V25 counterfactual and historical evaluator remain unknown',mt['actual_mix_counterfactual'] is None and mt['actual_cluster_to_paloma_mapping'] is None and mt['actual_historical_eval_identity'] is None)
 browser25=read(A/'browser_validation_v25.json')
 ok('V25 real trajectory SVG fits viewport and works offline',browser25['desktop']['width']<=browser25['desktop']['viewport'] and browser25['mobile']['width']<=browser25['mobile']['viewport'] and browser25['offline']['figures']==browser25['offline']['loaded']==17 and browser25['offline']['svg'] and browser25['offline']['requests']==browser25['offline']['errors']==[] and soup.select_one('#mix-trajectory-guide svg') is not None)
 ok('V25 viewed screenshot retains exact bytes',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha for p,sha in browser25['screenshot_sha256'].items()))
 report['highlights']+=['V25 exact production-lineage subset trajectories / inherited history exclusion / aggregate direction sensitivity / no causal attribution']
+em=read(A/'eval_metric_audit.json')
+ok('V26 original helper and static dataflow scope remains bounded',em['checks_passed']==len(em['checks'])==14 and em['actual_evaluator_execution'] is None and em['actual_distributed_reduce'] is None and em['actual_token_byte_counts'] is None and em['historical_execution_sha'] is None)
+for p,sha in em['source_sha256'].items():ok('Eval metric source checksum '+p,hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha)
+ok('V26 real logged macro reconstructs at all 67 steps',len(mt['macro_reconstruction'])==67 and all(abs(x['CE_residual'])<5e-7 and abs(x['BPB_residual'])<5e-7 for x in mt['macro_reconstruction']))
+ok('V26 naming correction is explicit in both chapters',soup.select_one('#eval-metrics-guide') is not None and '命名前提错了' in soup.select_one('#eval-metrics-guide').text and 'V26更正' in soup.select_one('#mix-trajectory-guide').text)
+report['highlights']=[x.replace('416 source archive checksums valid','417 source archive checksums valid') for x in report['highlights']]
+report['highlights']+=['V26 correction of parent micro versus macro BPB / all 67 macro reconstructions / original log helpers and RunningMean units']
+browser26=read(A/'browser_validation_v26.json')
+ok('V26 corrected metric chapter fits and loads offline',browser26['desktop']['width']<=browser26['desktop']['viewport'] and browser26['mobile']['width']<=browser26['mobile']['viewport'] and browser26['offline']['figures']==browser26['offline']['loaded']==17 and browser26['offline']['tables']==3 and browser26['offline']['hasCorrection'] and browser26['offline']['requests']==browser26['offline']['errors']==[])
+ok('V26 viewed screenshot retains exact bytes',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha for p,sha in browser26['screenshot_sha256'].items()))
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

@@ -186,3 +186,7 @@ R05/R10/R14的回放从配置走到索引条件，规则1.0不变。完整报告
 ## V25：回到配比切换的真实验证轨迹
 
 新增[MIX_TRAJECTORY_ZH.md](MIX_TRAJECTORY_ZH.md)。独立复算六份eval归档，按七段接续边界筛选；67个完整日志step、2144个子集值、67个macro值，排除528个继承值。换配比附近CE方向分裂，等权BPB与记录macro方向相反；16域图不平滑、不填补缺点。下一项检查优先共同checkpoint双分支和评估numerator/denominator，不从单条生产曲线估计因果收益。历史评估身份、训练桶到Paloma映射及反事实仍未取得。
+
+## V26：纠正V25汇总字段并追查累计单位
+
+V25把`paloma/bpb`错误命名为macro；它在固定公共源码中来自父级micro，真正macro是`paloma/macro_bpb`。补齐全部36指标，67个step的macro与16域等权重建在float32舍入量级一致。当前分析保留2144个子集值、268个父级值，排除576个继承值；V25的旧计数来自只选择33指标的历史版本。新增[EVAL_METRICS_ZH.md](EVAL_METRICS_ZH.md)和14项原日志/层级、状态与静态数据流检查，追查名为byte total的状态实际累计token权重。保留历史release，修正当前章节与README。尚未执行真实evaluate、分布式归约或重新排序候选。

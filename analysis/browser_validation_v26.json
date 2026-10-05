@@ -1,0 +1,26 @@
+{
+  "desktop": {
+    "viewport": 1440,
+    "width": 1425,
+    "tables": 3,
+    "hasCorrection": true,
+    "linkedRevision": true
+  },
+  "mobile": {
+    "viewport": 390,
+    "width": 375
+  },
+  "offline": {
+    "figures": 17,
+    "loaded": 17,
+    "tables": 3,
+    "hasCorrection": true,
+    "trajectorySVG": true,
+    "requests": [],
+    "errors": []
+  },
+  "task_finished": true,
+  "screenshot_sha256": {
+    "analysis/browser_v26_eval_metrics_desktop.png": "c03ae254219d48853043cf5a065402f68942bb63219b83db3f23251f1fb3fec3"
+  }
+}

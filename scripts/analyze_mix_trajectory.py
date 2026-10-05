@@ -17,13 +17,14 @@ for run,lo,hi in lineage:
  assert len(d['specs'])==len(d['series'])
  for spec,series in zip(d['specs'],d['series']):
   key=spec['keys'][-1]
-  if not key.startswith('eval_dropless/paloma/') or not key.endswith(('/loss','/bpb')):continue
+  if not key.startswith('eval_dropless/paloma/'):continue
+  if key.split('/')[-1] not in ('loss','bpb','macro_bpb','macro_loss','micro_loss'):continue
   seen=set()
   for x in series:
    if key not in x:continue
    step=x['_step'];value=x[key];assert step not in seen and math.isfinite(value);seen.add(step);raw+=1
    if step<lo or (hi is not None and step>=hi):excluded.add(step);continue
-   subset=key.split('/')[2] if len(key.split('/'))==4 else '__macro__';metric=key.split('/')[-1]
+   subset=key.split('/')[2] if len(key.split('/'))==4 else '__parent__';metric=key.split('/')[-1]
    rows.append(dict(step=step,run=run,subset=subset,metric=metric,value=value));selected+=1
  census.append(dict(run=run,lo=lo,hi=hi,status='archived_sampled_points',raw_points=raw,selected_points=selected,excluded_steps=sorted(excluded)))
 lookup={}
@@ -48,8 +49,10 @@ summary={label:{m:{'decreased':sum(c[label+'_'+m+'_delta']<0 for c in comparison
 sensitivity={}
 for a,b,label in windows:
  deltas=[lookup[b,u,'loss']-lookup[a,u,'loss'] for u in subsets]
- sensitivity[label]={'median_subset_CE_delta':float(np.median(deltas)),'mean_CE_delta_without_ptb':float(np.mean([d for u,d in zip(subsets,deltas) if u!='ptb-llama3'])),'logged_macro_BPB_delta':lookup[b,'__macro__','bpb']-lookup[a,'__macro__','bpb']}
-audit=dict(sensitivity=sensitivity,subset_points=sum(r['subset']!='__macro__' for r in rows),macro_points=sum(r['subset']=='__macro__' for r in rows),scope='exact archived sampled dropless Paloma points, lineage filtered, descriptive only',source_sha256=hashes,lineage_census=census,subsets=subsets,complete_steps=steps,selected_points=len(rows),windows=[dict(start=a,end=b,label=l) for a,b,l in windows],summary=summary,comparisons=comparisons,actual_mix_counterfactual=None,actual_cluster_to_paloma_mapping=None,actual_historical_eval_identity=None)
+ sensitivity[label]={'median_subset_CE_delta':float(np.median(deltas)),'mean_CE_delta_without_ptb':float(np.mean([d for u,d in zip(subsets,deltas) if u!='ptb-llama3'])),'logged_micro_BPB_delta':lookup[b,'__parent__','bpb']-lookup[a,'__parent__','bpb'],'logged_macro_BPB_delta':lookup[b,'__parent__','macro_bpb']-lookup[a,'__parent__','macro_bpb'],'logged_macro_CE_delta':lookup[b,'__parent__','macro_loss']-lookup[a,'__parent__','macro_loss'],'logged_micro_CE_delta':lookup[b,'__parent__','micro_loss']-lookup[a,'__parent__','micro_loss']}
+macro_reconstruction=[dict(step=s,CE_residual=lookup[s,'__parent__','macro_loss']-float(np.mean([lookup[s,u,'loss'] for u in subsets])),BPB_residual=lookup[s,'__parent__','macro_bpb']-float(np.mean([lookup[s,u,'bpb'] for u in subsets]))) for s in steps]
+assert all((s,'__parent__',m) in lookup for s in steps for m in ('bpb','macro_bpb','macro_loss','micro_loss'))
+audit=dict(macro_reconstruction=macro_reconstruction,sensitivity=sensitivity,subset_points=sum(r['subset']!='__parent__' for r in rows),parent_points=sum(r['subset']=='__parent__' for r in rows),macro_points=sum(r['subset']=='__parent__' and r['metric'].startswith('macro_') for r in rows),scope='exact archived sampled dropless Paloma points, lineage filtered, descriptive only',source_sha256=hashes,lineage_census=census,subsets=subsets,complete_steps=steps,selected_points=len(rows),windows=[dict(start=a,end=b,label=l) for a,b,l in windows],summary=summary,comparisons=comparisons,actual_mix_counterfactual=None,actual_cluster_to_paloma_mapping=None,actual_historical_eval_identity=None)
 (ROOT/'analysis/mix_trajectory.json').write_text(json.dumps(audit,ensure_ascii=False,indent=2)+'\n')
 for name,items in [('mix_trajectory_points.csv',rows),('mix_trajectory_changes.csv',comparisons)]:
  with (ROOT/'analysis'/name).open('w',newline='') as f:

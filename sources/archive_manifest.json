@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-05T13:28:39.019840+00:00",
+  "integrity_manifest_created_utc": "2026-10-05T13:40:03.458002+00:00",
   "files": [
     {
       "file": "boundaries_2026_10_05/attention_core.py",
@@ -573,6 +573,13 @@
       "sha256": "16a3e03ca0c82da266a96eb275a6af1cf5a2bc2003689756f5c76b19fa3c45f3",
       "url": "https://storage.googleapis.com/marin-public/rav/moe-fixed-wave-a2a-384/2026.08.17/index.html",
       "retrieved_utc": "2026-10-03T21:34:46.188333+00:00"
+    },
+    {
+      "file": "eval_metrics_2026_10_05/stat_utils.py",
+      "bytes": 959,
+      "sha256": "5ca79fea0edd5db0c9fb4abbb412902b6d640403f9f42a82f7f6b55f67b862e2",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/utils/stat_utils.py",
+      "retrieved_utc": "2026-10-05T13:36:02.625330+00:00"
     },
     {
       "file": "execution_2026_10_05/run_execution_files.json",
@@ -2416,8 +2423,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 198394,
-      "sha256": "2897be3b68e6d41a2a0cfd756083f82f5d814b703e72a959e51e91957bec9777",
+      "bytes": 198769,
+      "sha256": "1cbdedbd7fe7cd8653230d92fd16afb1f0e24f2c45fa5a387639f2686c62b6fb",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

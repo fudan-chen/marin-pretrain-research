@@ -1,0 +1,43 @@
+{
+  "status": "planned_not_executed",
+  "measurement_objective": null,
+  "primary_metric_key": null,
+  "source_mapping": {
+    "declared_code_sha": null,
+    "executed_code_sha": null,
+    "return_field": null,
+    "numerator_is_already_weighted": null,
+    "running_total_unit": null,
+    "within_domain_aggregation_formula": null,
+    "across_domain_aggregation_formula": null
+  },
+  "input_identity": {
+    "checkpoint_and_state_sha": null,
+    "sequence_ids_sha": null,
+    "tokenizer_and_byte_table_sha": null,
+    "cache_sha": null,
+    "target_mask_sha": null,
+    "batch_size": null,
+    "routing_policy": null
+  },
+  "observations": {
+    "per_batch_domain_N_T_B_file": null,
+    "logged_leaf_and_parent_metrics_file": null,
+    "zero_token_or_zero_byte_counts": null,
+    "same_target_coverage_verified": null,
+    "distributed_numerator_denominator_coverage_verified": null
+  },
+  "planned_checks": [
+    "original versus independently reconstructed metric",
+    "same predictions regrouped at at least two batch sizes",
+    "domain order permutation with fixed coverage",
+    "partial final batch and all-zero mask",
+    "parent aggregation reconstructed from explicit units"
+  ],
+  "acceptance": {
+    "allowed_numerical_tolerance": null,
+    "ranking_invariance_requirement": null,
+    "result": "pending",
+    "reviewer": null
+  }
+}

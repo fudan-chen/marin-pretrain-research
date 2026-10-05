@@ -1,0 +1,106 @@
+{
+  "scope": "original log/hierarchy helpers with fabricated EvalResult and original RunningMean with NumPy substitutes; evaluator accumulator dataflow inspected by AST",
+  "checks": [
+    "parent bpb is tag_micro_bpb",
+    "parent macro_bpb is separate tag_macro_bpb",
+    "parent CE uses explicit micro_loss and macro_loss",
+    "leaf CE loss and BPB retain leaf values",
+    "leaf macro_loss is not redundantly logged",
+    "root aggregate remains distinct",
+    "parent maps to two leaf indices",
+    "no tokenizer omits BPB only",
+    "BPB running total accumulates token weights",
+    "variable named bytes total reads BPB running total",
+    "original RunningMean total is sum of passed token weights",
+    "original RunningMean keeps token-weighted batch ratios",
+    "byte weighting recovers global NLL over bytes",
+    "zero-total update preserves zero mean and total"
+  ],
+  "checks_passed": 14,
+  "function_lines": {
+    "_join_prefix": [
+      176,
+      179
+    ],
+    "construct_log_dict": [
+      444,
+      484
+    ],
+    "_construct_tag_hierarchy": [
+      660,
+      670
+    ]
+  },
+  "log_mapping_example": {
+    "eval_dropless/loss": 101.0,
+    "eval_dropless/loading_time": 0.0,
+    "eval_dropless/total_time": 1.0,
+    "eval_dropless/macro_loss": 102.0,
+    "eval_dropless/paloma/macro_loss": 106.0,
+    "eval_dropless/paloma/micro_loss": 103.0,
+    "eval_dropless/paloma/a/loss": 104.0,
+    "eval_dropless/paloma/b/loss": 105.0,
+    "eval_dropless/bpb": 201.0,
+    "eval_dropless/macro_bpb": 202.0,
+    "eval_dropless/paloma/bpb": 203.0,
+    "eval_dropless/paloma/a/bpb": 204.0,
+    "eval_dropless/paloma/b/bpb": 205.0,
+    "eval_dropless/paloma/macro_bpb": 206.0
+  },
+  "hierarchy_example": {
+    "paloma": [
+      0,
+      1
+    ]
+  },
+  "static_expressions": {
+    "total_bytes_per_tag_cpu": {
+      "line": 629,
+      "expression": "np.array(state.bpb_per_tag.total)"
+    },
+    "macro_avg_bpb": {
+      "line": 619,
+      "expression": "None"
+    },
+    "bpb_per_tag_mean": {
+      "line": 589,
+      "expression": "state.bpb_per_tag.add(bpb_per_tag, this_weights_per_tag)"
+    }
+  },
+  "running_mean_example": {
+    "scope": "artificial two-batch ratio example, not observed Hero data",
+    "N": [
+      2,
+      6
+    ],
+    "T": [
+      2,
+      6
+    ],
+    "B": [
+      20,
+      6
+    ],
+    "token_weighted_ratio": 0.775,
+    "token_weighted_total": 8.0,
+    "byte_weighted_ratio": 0.3076923076923077,
+    "byte_weighted_total": 26.0,
+    "log2e_not_applied": true
+  },
+  "running_mean_substitutes": [
+    "eqx.Module replaced by object plus dataclass initializer",
+    "hax.where replaced by numpy.where"
+  ],
+  "running_mean_lines": [
+    16,
+    36
+  ],
+  "source_sha256": {
+    "sources/scale_2026_10_05/eval.py": "b67cc96335f667982a0fe43618215734140c28392be215a88177979c712dee2c",
+    "sources/eval_metrics_2026_10_05/stat_utils.py": "5ca79fea0edd5db0c9fb4abbb412902b6d640403f9f42a82f7f6b55f67b862e2"
+  },
+  "actual_evaluator_execution": null,
+  "actual_distributed_reduce": null,
+  "actual_token_byte_counts": null,
+  "historical_execution_sha": null
+}

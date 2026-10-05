@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1198,
+  "checks_passed": 1206,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -18,7 +18,7 @@
     "four new config contrasts / six step393 resume windows",
     "seventeen embedded figures",
     "all relative HTML links valid",
-    "416 source archive checksums valid",
+    "417 source archive checksums valid",
     "18 authored rubrics / seven claim-stage decisions",
     "five interpretation cases / four metrics with switchable baselines",
     "17 figure-reading entries / five preserved collapsed tables",
@@ -73,7 +73,8 @@
     "V21 parameter groups / dedicated decay mask / Adam-count clock / group clipping scope",
     "V23 ShortConv segment identity / halo metadata / initialization blindspot / rounding and fallback scopes",
     "V24 experimental fork router precision / schedule controls / proposed policy matrix / original issue body refresh",
-    "V25 exact production-lineage subset trajectories / inherited history exclusion / aggregate direction sensitivity / no causal attribution"
+    "V25 exact production-lineage subset trajectories / inherited history exclusion / aggregate direction sensitivity / no causal attribution",
+    "V26 correction of parent micro versus macro BPB / all 67 macro reconstructions / original log helpers and RunningMean units"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

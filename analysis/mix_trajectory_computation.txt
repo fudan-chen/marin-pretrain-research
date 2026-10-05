@@ -1,6 +1,6 @@
 {
   "complete_checkpoints": 67,
-  "selected_points": 2211,
+  "selected_points": 2412,
   "summary": {
     "pre_switch": {
       "loss": {
@@ -45,8 +45,8 @@
       "lo": 0,
       "hi": 58014,
       "status": "archived_sampled_points",
-      "raw_points": 660,
-      "selected_points": 660,
+      "raw_points": 720,
+      "selected_points": 720,
       "excluded_steps": []
     },
     {
@@ -54,8 +54,8 @@
       "lo": 58014,
       "hi": 81716,
       "status": "archived_sampled_points",
-      "raw_points": 264,
-      "selected_points": 264,
+      "raw_points": 288,
+      "selected_points": 288,
       "excluded_steps": []
     },
     {
@@ -63,8 +63,8 @@
       "lo": 81716,
       "hi": 108000,
       "status": "archived_sampled_points",
-      "raw_points": 297,
-      "selected_points": 297,
+      "raw_points": 324,
+      "selected_points": 324,
       "excluded_steps": []
     },
     {
@@ -80,8 +80,8 @@
       "lo": 108778,
       "hi": 121638,
       "status": "archived_sampled_points",
-      "raw_points": 132,
-      "selected_points": 132,
+      "raw_points": 144,
+      "selected_points": 144,
       "excluded_steps": []
     },
     {
@@ -89,8 +89,8 @@
       "lo": 121638,
       "hi": 146139,
       "status": "archived_sampled_points",
-      "raw_points": 396,
-      "selected_points": 264,
+      "raw_points": 432,
+      "selected_points": 288,
       "excluded_steps": [
         110999,
         113999,
@@ -103,8 +103,8 @@
       "lo": 146139,
       "hi": null,
       "status": "archived_sampled_points",
-      "raw_points": 990,
-      "selected_points": 594,
+      "raw_points": 1080,
+      "selected_points": 648,
       "excluded_steps": [
         110999,
         113999,

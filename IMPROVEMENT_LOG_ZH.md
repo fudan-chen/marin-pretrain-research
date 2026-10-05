@@ -190,3 +190,8 @@ R05/R10/R14的回放从配置走到索引条件，规则1.0不变。完整报告
 ## V26：纠正V25汇总字段并追查累计单位
 
 V25把`paloma/bpb`错误命名为macro；它在固定公共源码中来自父级micro，真正macro是`paloma/macro_bpb`。补齐全部36指标，67个step的macro与16域等权重建在float32舍入量级一致。当前分析保留2144个子集值、268个父级值，排除576个继承值；V25的旧计数来自只选择33指标的历史版本。新增[EVAL_METRICS_ZH.md](EVAL_METRICS_ZH.md)和14项原日志/层级、状态与静态数据流检查，追查名为byte total的状态实际累计token权重。保留历史release，修正当前章节与README。尚未执行真实evaluate、分布式归约或重新排序候选。
+
+
+## V27：保存提交与真正可恢复的进度
+
+新增[CHECKPOINT_COMMIT_ZH.md](CHECKPOINT_COMMIT_ZH.md)。追加五份固定源码，17项原atomic、metadata、发现和save-wrapper检查（本地fixture与假serializer）核对manifest早于数组、metadata回调、copy/delete权限冲突、标记前后失败和复用路径。记录训练、保存交接、metadata发布、独立恢复四个水位，容量预算与回退点分开验收。没有执行TensorStore、真实云权限、模型数组或分布式恢复；下一项优先真实各rank提交轨迹与自己save后restore。

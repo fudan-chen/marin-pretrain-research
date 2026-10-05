@@ -1,0 +1,170 @@
+{
+  "scope": "original metadata/discovery/save-wrapper/atomic helpers with local fixtures and fake async serializer; TensorStore ordering static only",
+  "checks": [
+    "copy/delete failure can leave destination visible",
+    "failed cleanup does not swallow original error",
+    "async helper returns path before completion metadata",
+    "manifest-only candidate is excluded from discovery",
+    "metadata precedes user retention callback",
+    "metadata-only fixture is discoverable without arrays",
+    "failed completion-marker publication prevents retention callback",
+    "post-marker callback error leaves discoverable metadata",
+    "numeric metadata step wins over path and newer timestamp",
+    "max_step excludes newer numeric step",
+    "exclude prefix does not accidentally exclude sibling",
+    "reused path does not retract pre-existing metadata on failure",
+    "local metadata roundtrip retains reserved and extra fields",
+    "remote metadata bypasses copy/delete rename",
+    "nonzero process does not publish metadata",
+    "reserved metadata rejected before I/O",
+    "layout manifest is published before array serializer call"
+  ],
+  "checks_passed": 17,
+  "functions": {
+    "atomic.py": [
+      {
+        "name": "unique_temp_path",
+        "lines": [
+          23,
+          24
+        ]
+      },
+      {
+        "name": "_mv_with_retry",
+        "lines": [
+          27,
+          34
+        ]
+      },
+      {
+        "name": "atomic_rename",
+        "lines": [
+          38,
+          53
+        ]
+      }
+    ],
+    "checkpoint.py": [
+      {
+        "name": "save_checkpoint",
+        "lines": [
+          800,
+          910
+        ]
+      },
+      {
+        "name": "_save_metadata",
+        "lines": [
+          913,
+          929
+        ]
+      },
+      {
+        "name": "_load_metadata",
+        "lines": [
+          1100,
+          1105
+        ]
+      },
+      {
+        "name": "discover_checkpoint_candidates",
+        "lines": [
+          1108,
+          1138
+        ]
+      },
+      {
+        "name": "_checkpoint_candidate_sort_key",
+        "lines": [
+          1141,
+          1142
+        ]
+      },
+      {
+        "name": "_is_path_under_any",
+        "lines": [
+          1145,
+          1151
+        ]
+      },
+      {
+        "name": "discover_latest_checkpoint",
+        "lines": [
+          1154,
+          1177
+        ]
+      },
+      {
+        "name": "latest_checkpoint_path",
+        "lines": [
+          1180,
+          1193
+        ]
+      },
+      {
+        "name": "_discover_checkpoint_candidates_single",
+        "lines": [
+          1196,
+          1213
+        ]
+      },
+      {
+        "name": "_discover_checkpoint_paths_single",
+        "lines": [
+          1216,
+          1241
+        ]
+      }
+    ]
+  },
+  "static_call_lines": {
+    "_serialize_arrays": 656,
+    "write_manifest": 637
+  },
+  "cases": [
+    {
+      "case": "artificial_object_store_copy_delete_denied",
+      "destination_visible": true,
+      "temporary_object_remains": true,
+      "caller_success": false
+    },
+    {
+      "case": "fake_async_save",
+      "path_returned_before_metadata": true,
+      "manifest_only_discovered": false,
+      "metadata_only_discovered": true,
+      "real_arrays_written": false
+    },
+    {
+      "case": "fake_commit_callback_failures",
+      "metadata_failure_blocks_retention": true,
+      "post_metadata_callback_failure_keeps_marker": true,
+      "real_arrays_written": false
+    },
+    {
+      "case": "reuse_path_precommit_failure",
+      "old_metadata_remains_discoverable": true,
+      "actual_array_corruption": null
+    }
+  ],
+  "source_sha256": {
+    "sources/checkpoint_commit_2026_10_05/atomic.py": "7bccbf8d646fc22d973ea213fcb7aa6add552a062839facba56c76ff8b2990db",
+    "sources/checkpoint_commit_2026_10_05/checkpoint.py": "3997faa8082442fcdf16df2fd0c13bf30a26a9c5db62eb81cce0758bff4a2274",
+    "sources/checkpoint_commit_2026_10_05/checkpoint_manifest.py": "ae7a3535d2721bcd4ac598bd3f75c9bb8878fbbb1656f87f22b0c988dd0d9b3b",
+    "sources/checkpoint_commit_2026_10_05/storage_path.py": "00d1ccfa254371e76441b1ccdb447bcd26beddcd6ac64524a13c1fd6a55efef0",
+    "sources/checkpoint_commit_2026_10_05/tensorstore_serialization.py": "5dddf8c6cc87cb062593482abe6775eee59eea443c28c7fd8d8b7ddf261f89ea"
+  },
+  "substitutes": [
+    "local filesystem adapter",
+    "minimal StoragePath with in-memory s3 paths",
+    "jax process index stub",
+    "equinox filter identity",
+    "fake async serializer/callback capture",
+    "single-call retry substitute, no retry timing tested"
+  ],
+  "actual_tensorstore_write": null,
+  "actual_cloud_permissions": null,
+  "actual_checkpoint_restore": null,
+  "actual_distributed_commit": null,
+  "historical_execution_sha": null
+}

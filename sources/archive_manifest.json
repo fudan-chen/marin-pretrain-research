@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-05T13:40:03.458002+00:00",
+  "integrity_manifest_created_utc": "2026-10-05T14:07:04.327941+00:00",
   "files": [
     {
       "file": "boundaries_2026_10_05/attention_core.py",
@@ -119,6 +119,41 @@
       "sha256": "55d704474f94d9a84b3f306c40f3263db080da7633a39cbb438e64668a4e4881",
       "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/store/cache.py",
       "retrieved_utc": "2026-10-05T09:37:20.695740+00:00"
+    },
+    {
+      "file": "checkpoint_commit_2026_10_05/atomic.py",
+      "bytes": 2570,
+      "sha256": "7bccbf8d646fc22d973ea213fcb7aa6add552a062839facba56c76ff8b2990db",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/rigging/src/rigging/filesystem/atomic.py",
+      "retrieved_utc": "2026-10-05T13:42:46.171366+00:00"
+    },
+    {
+      "file": "checkpoint_commit_2026_10_05/checkpoint.py",
+      "bytes": 56177,
+      "sha256": "3997faa8082442fcdf16df2fd0c13bf30a26a9c5db62eb81cce0758bff4a2274",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/checkpoint.py",
+      "retrieved_utc": "2026-10-05T13:42:46.170684+00:00"
+    },
+    {
+      "file": "checkpoint_commit_2026_10_05/checkpoint_manifest.py",
+      "bytes": 2634,
+      "sha256": "ae7a3535d2721bcd4ac598bd3f75c9bb8878fbbb1656f87f22b0c988dd0d9b3b",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/checkpoint_manifest.py",
+      "retrieved_utc": "2026-10-05T13:42:46.170934+00:00"
+    },
+    {
+      "file": "checkpoint_commit_2026_10_05/storage_path.py",
+      "bytes": 18217,
+      "sha256": "00d1ccfa254371e76441b1ccdb447bcd26beddcd6ac64524a13c1fd6a55efef0",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/rigging/src/rigging/filesystem/storage_path.py",
+      "retrieved_utc": "2026-10-05T13:42:46.171588+00:00"
+    },
+    {
+      "file": "checkpoint_commit_2026_10_05/tensorstore_serialization.py",
+      "bytes": 52269,
+      "sha256": "5dddf8c6cc87cb062593482abe6775eee59eea443c28c7fd8d8b7ddf261f89ea",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/tensorstore_serialization.py",
+      "retrieved_utc": "2026-10-05T13:42:46.171175+00:00"
     },
     {
       "file": "code_launch_scaling_ladder.py",
@@ -2423,8 +2458,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 198769,
-      "sha256": "1cbdedbd7fe7cd8653230d92fd16afb1f0e24f2c45fa5a387639f2686c62b6fb",
+      "bytes": 200709,
+      "sha256": "d4bbcabdb4ba648a3d3aefc7001967ddf941091c669f4f9221fc27799614acc5",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

@@ -1,6 +1,20 @@
 # Marin 535B 预训练研究
 
-当前研究增补为V26。[评估指标源码深读](EVAL_METRICS_ZH.md)纠正V25将`paloma/bpb`误称macro的问题；补齐真正macro与micro字段，67个step重建macro一致，并追查BPB累计状态里的token/byte单位。[配比切换与16域轨迹](MIX_TRAJECTORY_ZH.md)独立拼接67个完整日志step，排除继承点，并列CE、BPB与记录micro/macro，分析108k附近micro与macro方向不同和执行改动混杂；含真实16域科学图与可复算CSV。[Router精度与策略](ROUTER_PRECISION_ZH.md)核对C025实验fork的三种算术、长期schedule与训练/评估policy四格；本轮再次核对#8435，仍27条，正文无新增/修改。[ShortConv源码检查](SHORT_CONV_ZH.md)追查三个卷积位置、文档ID约束、context halo、后端回退与不同梯度验收口径。[loss变化诊断流程](LOSS_TRIAGE_ZH.md)整合指标口径、样本身份、执行更新和独立确认，附可交接的诊断记录。[优化器分组与衰减](OPTIMIZER_GROUPS_ZH.md)核对参数路径、专用/通用衰减字段、Adam状态时钟与分组裁剪；配置差异不直接当作更新差异。[路由均衡与数据分组](QB_ESTIMATION_ZH.md)区分TOPK局部阈值平均与HIST全局网格，追查分组敏感性、异常margin与下一步bias；六份ladder配置使用HIST，TOPK反例不冒充历史运行。[MoE分配丢弃](ROUTING_DROPS_ZH.md)追查有效分母、combine权重、receiver裁剪与语言目标，附集中/分散丢弃的人工机制图。[训练变更评审](CHANGE_REVIEW_ZH.md)将各源码章节接到五个冻结对象、三层工程结论和真实配置差异核查，并提供按问题阅读的入口。[质量评分深读](QUALITY_BUCKETS_ZH.md)追查BME字符窗口、紧凑词表、单调校准与分桶边界，网页内嵌可操作的窗口覆盖示意。[去重与样本对齐](DEDUP_FILTERS_ZH.md)追查16来源豁免、稀疏属性缺失、chunk重组、行序对齐和库存身份。[缓存身份核查](CACHE_PROVENANCE_ZH.md)完整核对1200条component，发现跨组store地址不同，区分加载告警、真实token边界与配比归因。[文档边界深读](DOCUMENT_BOUNDARIES_ZH.md)区分attention、loss与路由有效性，追查EOS目标、左padding、segment编号与prompt位置。[训练状态深读](TRAIN_STATE_ZH.md)核对FP32 master、小更新累积、pending路由偏置、恢复布局和step标签，并说明它们怎样影响配比切换的可比性。[接口深读](IMPLEMENTATION_CONTRACTS_ZH.md)追查反向内核、权重、z-loss、恢复与计数。[跨规模研究](SCALE_TRANSFER_ZH.md)核对六个ladder配置和BPB分批敏感性。[离线HTML](report_standalone.html)包含18张科学图（17张原有图和内嵌16域轨迹图）及原值入口，两个源码章节各有一张机制示意图。原函数探针采用替代依赖，未运行GPU或真实checkpoint恢复；各版本浏览器验证范围分别保留。
+当前版本为V27。最新研究是[Checkpoint提交与恢复](CHECKPOINT_COMMIT_ZH.md)：分清布局manifest、异步保存交接、完成metadata和独立恢复，附故障注入、控制流图与验收模板。V26对V25的micro/macro命名错误已[明确更正](EVAL_METRICS_ZH.md)。
+
+建议按自己要解决的问题阅读，不必顺着版本号读完全部增补：
+
+|你现在的问题|阅读入口|
+|---|---|
+|这次535B训练到底遇到了什么|[主报告](REPORT_ZH.md) → [主帖解读](ISSUE_8435_ZH.md) → [58条运行索引](OPERATIONS_ZH.md)|
+|数据比例为何这样设，loss说明什么|[数据配比](DATA_GUIDE_ZH.md) → [16域真实轨迹](MIX_TRAJECTORY_ZH.md) → [评估分母](EVAL_METRICS_ZH.md)|
+|如何为自己的训练选配比和顺序|[候选比较](DECISION_GUIDE_ZH.md) → [供体与预算](TRANSFER_GUIDE_ZH.md) → [顺序账本](ORDER_GUIDE_ZH.md)|
+|换数据之后loss突然变化|[诊断流程](LOSS_TRIAGE_ZH.md) → [缓存身份](CACHE_PROVENANCE_ZH.md) → [去重](DEDUP_FILTERS_ZH.md)与[质量桶](QUALITY_BUCKETS_ZH.md)|
+|换kernel或优化器能否安全接续|[变更评审](CHANGE_REVIEW_ZH.md) → [状态时钟](TRAIN_STATE_ZH.md) → [优化器](OPTIMIZER_GROUPS_ZH.md)与[接口契约](IMPLEMENTATION_CONTRACTS_ZH.md)|
+|MoE和文档边界有哪些具体陷阱|[路由丢弃](ROUTING_DROPS_ZH.md)、[分位数均衡](QB_ESTIMATION_ZH.md)、[router精度](ROUTER_PRECISION_ZH.md)、[文档边界](DOCUMENT_BOUNDARIES_ZH.md)、[ShortConv](SHORT_CONV_ZH.md)|
+|训练在跑，但不知道checkpoint是否可靠|[保存提交与恢复](CHECKPOINT_COMMIT_ZH.md) → [工程证据链](ENGINEERING_GUIDE_ZH.md)|
+
+离线HTML包含18张科学图及原值入口，另有机制与提交控制流示意图。各原函数探针明确列出替代依赖，没有运行真实GPU训练、模型checkpoint恢复或分布式提交。各版本来源、验证范围与历史更正分别保留。
 
 这是一份独立的中文研究报告，重点是读懂故障机制、核实Loss变化、还原实际数据配比，以及设计自己的配比与顺序实验。训练数值快照截止北京时间2026年10月4日约05:38；18T是目标，该快照约51%，仍为4K。工程GitHub于10月5日另行核对，未刷新训练进度。
 

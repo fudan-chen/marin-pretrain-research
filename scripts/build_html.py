@@ -26,13 +26,20 @@ chapters.insert(0,('short-conv-guide','ShortConv文档边界、halo与数值','S
 chapters.insert(0,('router-precision-guide','Router精度与训练评估策略','ROUTER_PRECISION_ZH.md'))
 chapters.insert(0,('mix-trajectory-guide','配比切换与16域真实轨迹','MIX_TRAJECTORY_ZH.md'))
 chapters.insert(0,('eval-metrics-guide','评估字段、父级聚合与分母','EVAL_METRICS_ZH.md'))
-priority=['eval-metrics-guide','mix-trajectory-guide','router-precision-guide','short-conv-guide','loss-triage','optimizer-guide','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
+chapters.insert(0,('checkpoint-commit-guide','Checkpoint提交、回退与可恢复进度','CHECKPOINT_COMMIT_ZH.md'))
+priority=['checkpoint-commit-guide','eval-metrics-guide','mix-trajectory-guide','router-precision-guide','short-conv-guide','loss-triage','optimizer-guide','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
 chapters.sort(key=lambda c:priority.index(c[0]) if c[0] in priority else len(priority))
 readings={x['file']:x for x in json.loads((ROOT/'analysis/figure_readings.json').read_text())}
 sections=[];toc=[]
 for slug,label,file in chapters:
     result=markdown.markdown((ROOT/file).read_text(),extensions=['tables','fenced_code','toc'])
     soup=BeautifulSoup(result,'html.parser')
+    checkpoint_placeholder=soup.select_one('#checkpoint-flow-placeholder')
+    if checkpoint_placeholder is not None:
+        checkpoint_svg=BeautifulSoup((ROOT/'assets/checkpoint_commit_flow.svg').read_text(),'html.parser').svg
+        checkpoint_svg['style']='display:block;width:100%;min-width:850px;height:auto;'
+        checkpoint_wrap=soup.new_tag('div',attrs={'class':'table-wrap','style':'overflow-x:auto;'})
+        checkpoint_wrap.append(checkpoint_svg);checkpoint_placeholder.replace_with(checkpoint_wrap)
     mix_placeholder=soup.select_one('#mix-trajectory-placeholder')
     if mix_placeholder is not None:
         mix_svg=BeautifulSoup((ROOT/'assets/mix_trajectory.svg').read_text(),'html.parser').svg
@@ -110,7 +117,7 @@ template=template.replace('<a href="#order-lab">检查顺序与累计量</a>','<
 template=template.replace('<script>ASSESSMENTUI</script>','<script>ASSESSMENTUI</script><script type="application/json" id="engineering-data">ENGINEERINGDATA</script><script>ENGINEERINGUI</script>')
 template=template.replace('公开快照：2026-10-04','训练快照：2026-10-04 · 工程核对：10-05')
 template=template.replace('<a href="#assessment-lab">保存自己的证据判断</a>','<a href="#engineering-lab">核对工程解释与反证</a><a href="#assessment-lab">保存自己的证据判断</a>')
-template=template.replace('<a href="#engineering-lab">核对工程解释与反证</a>', '<a href="#eval-metrics-guide">最新：评估指标与V25更正</a><a href="#mix-trajectory-guide">配比切换与16域曲线</a><a href="#router-precision-guide">Router精度与评估策略</a><a href="#short-conv-guide">ShortConv边界与halo</a><a href="#loss-triage">loss变化诊断流程</a><a href="#optimizer-guide">优化器分组与衰减</a><a href="#qb-guide">路由均衡与数据分组</a><a href="#routing-guide">MoE丢弃与训练目标</a><a href="#change-guide">训练变更评审</a><a href="#quality-guide">评分窗口与质量桶</a><a href="#dedup-guide">去重与样本对齐</a><a href="#cache-guide">缓存身份与配比归因</a><a href="#boundary-guide">文档边界与有效目标</a><a href="#state-guide">训练状态与切换时刻</a><a href="#contracts-guide">源码接口与恢复验收</a><a href="#scale-guide">配比历史与BPB聚合检查</a><a href="#engineering-lab">核对工程解释与反证</a>')
+template=template.replace('<a href="#engineering-lab">核对工程解释与反证</a>', '<a href="#checkpoint-commit-guide">最新：保存提交与可恢复进度</a><a href="#eval-metrics-guide">评估指标与V25更正</a><a href="#mix-trajectory-guide">配比切换与16域曲线</a><a href="#router-precision-guide">Router精度与评估策略</a><a href="#short-conv-guide">ShortConv边界与halo</a><a href="#loss-triage">loss变化诊断流程</a><a href="#optimizer-guide">优化器分组与衰减</a><a href="#qb-guide">路由均衡与数据分组</a><a href="#routing-guide">MoE丢弃与训练目标</a><a href="#change-guide">训练变更评审</a><a href="#quality-guide">评分窗口与质量桶</a><a href="#dedup-guide">去重与样本对齐</a><a href="#cache-guide">缓存身份与配比归因</a><a href="#boundary-guide">文档边界与有效目标</a><a href="#state-guide">训练状态与切换时刻</a><a href="#contracts-guide">源码接口与恢复验收</a><a href="#scale-guide">配比历史与BPB聚合检查</a><a href="#engineering-lab">核对工程解释与反证</a>')
 workbench=json.loads((ROOT/'analysis/workbench_data.json').read_text());rubric=json.loads((ROOT/'analysis/rubrics.json').read_text());chapter_paths={file:'#'+slug for slug,_,file in chapters}
 for c in workbench['cases']:c['source']=chapter_paths.get(c['source'],c['source'])
 for rule in rubric['rules']:

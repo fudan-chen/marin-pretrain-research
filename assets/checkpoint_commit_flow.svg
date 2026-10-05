@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="420" viewBox="0 0 1000 420" role="img" aria-label="Checkpoint提交控制流与独立恢复验收">
+<style>text{font-family:Arial,'Arial Unicode MS',sans-serif;fill:#17384c}.title{font-size:20px;font-weight:bold}.main{font-size:16px;font-weight:bold}.note{font-size:14px}.box{fill:#edf4f8;stroke:#7197b0;stroke-width:1.5}.commit{fill:#e8f3e9;stroke:#67916b;stroke-width:1.5}.proposal{fill:#fff6e8;stroke:#b48948;stroke-dasharray:6 4;stroke-width:1.5}.arrow{stroke:#45667d;stroke-width:2;fill:none;marker-end:url(#end)}</style>
+<defs><marker id="end" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0 0 L0 6 L7 3 Z" fill="#45667d"/></marker></defs>
+<text class="title" x="25" y="30">固定源码中的提交顺序；不表示时间长度或真实设备运行结果</text>
+<rect class="box" x="25" y="60" width="270" height="85" rx="6"/><text class="main" x="40" y="87">① 发布 manifest.json</text><text class="note" x="40" y="113">布局描述，数组尚未完成</text>
+<path class="arrow" d="M295 103 H355"/>
+<rect class="box" x="355" y="60" width="280" height="85" rx="6"/><text class="main" x="370" y="87">② 等前次保存、写数组与stage</text><text class="note" x="370" y="113">各rank、本地future、host复制</text>
+<path class="arrow" d="M635 103 H695"/>
+<rect class="box" x="695" y="60" width="280" height="85" rx="6"/><text class="main" x="710" y="87">③ manager异步commit</text><text class="note" x="710" y="113">有manager时可先返回保存路径</text>
+<path class="arrow" d="M835 145 V200 H635"/>
+<rect class="commit" x="355" y="175" width="280" height="85" rx="6"/><text class="main" x="370" y="202">④ callback发布 metadata.json</text><text class="note" x="370" y="228">完成标记；发现函数据此筛选</text>
+<path class="arrow" d="M355 218 H295"/>
+<rect class="box" x="25" y="175" width="270" height="85" rx="6"/><text class="main" x="40" y="202">⑤ 用户callback保留／清理</text><text class="note" x="40" y="228">可能报错；删除结果需读回</text>
+<path class="arrow" d="M495 260 V300"/>
+<rect class="proposal" x="235" y="300" width="520" height="75" rx="6"/><text class="main" x="250" y="328">额外验收建议：独立新进程恢复完整状态</text><text class="note" x="250" y="353">核对下一批输入、下一步训练与固定eval；不在清理callback里</text>
+<text class="note" x="25" y="403">四个水位分别记录：训练完成 → 保存交接 → metadata发布 → 独立恢复验证</text>
+</svg>

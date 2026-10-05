@@ -1,0 +1,31 @@
+{
+  "desktop_http": {
+    "viewport": 1440,
+    "width": 1425,
+    "tables": 3,
+    "svg": true,
+    "hasScope": true,
+    "template": "templates/checkpoint_commit_review.json"
+  },
+  "mobile_file": {
+    "viewport": 390,
+    "width": 375,
+    "wrapper_width": 297,
+    "scroll_width": 850
+  },
+  "offline": {
+    "figures": 17,
+    "loaded": 17,
+    "tables": 3,
+    "svg": true,
+    "proposal": true,
+    "requests": [],
+    "errors": []
+  },
+  "task_finished": true,
+  "scratch_closed": true,
+  "recovery_note": "Entry attachment failed after desktop HTTP check. Confirmed terminal error, inspected task state, completed remaining checks on the owned scratch tab, then closed scratch.",
+  "screenshot_sha256": {
+    "analysis/browser_v27_checkpoint_commit_desktop.png": "9f0c54df4822fbef0964ed38acbc43a77d5e6aa0a4dd5f0461b0e7bc20ac23cc"
+  }
+}

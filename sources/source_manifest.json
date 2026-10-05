@@ -4030,5 +4030,19 @@
     "bytes": 12296,
     "sha256": "e413a8dbffc94daaccadffe7ba84d8a985c5d366725c697bd6ea5108db3a8603",
     "retrieved_utc": "2026-10-05T15:49:42.335575+00:00"
+  },
+  {
+    "file": "watch_2026_10_06/watch.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/callbacks/watch.py",
+    "bytes": 7745,
+    "sha256": "e311cfe1fba131f533dc879c43f96ee9e6775c5aa723fd41891791c6513eb530",
+    "retrieved_utc": "2026-10-05T16:02:54.304202+00:00"
+  },
+  {
+    "file": "watch_2026_10_06/tree_stats.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/analysis/tree_stats.py",
+    "bytes": 6206,
+    "sha256": "5953cf1c64764984335289162f34c5f838c3952fc0920fb9dbc0dc9098470c6b",
+    "retrieved_utc": "2026-10-05T16:02:55.188617+00:00"
   }
 ]

@@ -219,3 +219,7 @@ V25把`paloma/bpb`错误命名为macro；它在固定公共源码中来自父级
 ## V32：方向算子与布局变换的边界
 
 新增固定源码grugmuon_hero.py与系数util.py；20项原NS函数/控制流与独立标量谱检查，BF16替换为float32、真实分片替换为全局数组/布局记录，未执行QuACK。人工矩阵五步到六步正交残差变差，反驳“多一步必然更准确”；核对专家bank保留但矩阵维度复制、仅DCN活跃时的fallback、三维padding与四维整除拒绝。新增[章节](MUON_DIRECTION_ZH.md)、谱图与空白执行记录。历史训练/性能结果没有刷新。
+
+## V33：将优化器发现连成可执行事故检查
+
+固定watch/tree_stats来源，22项原辅助函数/平坦数组统计与静态时序检查：inline计算/输出interval不同，diagnostic额外反向且不支持更新/state，total norm无条件返回、隐藏逐叶norm在Python构造但JIT可能消除；旧状态、master/compute视图及duration边界需区分。新增[章节](OBSERVABILITY_ZH.md)、规范化全局NPZ离线检查器与23项合成输入验证。缺少方向/分母明确列出，root_cause始终null；没有历史事故包或真实GPU重放。

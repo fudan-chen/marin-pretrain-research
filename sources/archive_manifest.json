@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-05T15:58:06.882382+00:00",
+  "integrity_manifest_created_utc": "2026-10-05T18:19:17.793285+00:00",
   "files": [
     {
       "file": "adamh_2026_10_05/adamh.py",
@@ -2500,8 +2500,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 202828,
-      "sha256": "06a015dc6c38e5ba5fc2e136fe59f7b76d6c587359cc6a4de059dfcd99382186",
+      "bytes": 203563,
+      "sha256": "5c36c5bf31cdbb4884cf3f8c01c66e515be5d86e5f7b0aa1db0630b0fa785ade",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {
@@ -3004,6 +3004,20 @@
       "bytes": 5733,
       "sha256": "8ab277b318b65167f93a18df3fb6f143e1ca605e571404fd984e6a8adcd6fc81",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
+    },
+    {
+      "file": "watch_2026_10_06/tree_stats.py",
+      "bytes": 6206,
+      "sha256": "5953cf1c64764984335289162f34c5f838c3952fc0920fb9dbc0dc9098470c6b",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/analysis/tree_stats.py",
+      "retrieved_utc": "2026-10-05T16:02:55.188617+00:00"
+    },
+    {
+      "file": "watch_2026_10_06/watch.py",
+      "bytes": 7745,
+      "sha256": "e311cfe1fba131f533dc879c43f96ee9e6775c5aa723fd41891791c6513eb530",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/callbacks/watch.py",
+      "retrieved_utc": "2026-10-05T16:02:54.304202+00:00"
     }
   ]
 }

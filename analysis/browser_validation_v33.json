@@ -1,0 +1,25 @@
+{
+  "desktop": {
+    "hasBoundary": true,
+    "hasToolLink": true,
+    "width": 1425,
+    "viewport": 1440,
+    "tables": 3
+  },
+  "mobile": {
+    "hasBoundary": true,
+    "hasToolLink": true,
+    "width": 375,
+    "viewport": 390,
+    "tables": 3
+  },
+  "offline": {
+    "figures": 17,
+    "hasChapter": true,
+    "tables": 3,
+    "loaded": 17
+  },
+  "requests": [],
+  "errors": [],
+  "scope": "DOM checks only; no screenshot, GPU replay or reader evaluation"
+}

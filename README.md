@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本为V32。先用[排障总图](ENGINEERING_MAP_ZH.md)按症状选择入口，再核对[交付范围](DELIVERY_AUDIT_ZH.md)。优化器可按[参数分组](OPTIMIZER_GROUPS_ZH.md) → [AdamH状态](ADAMH_STATE_ZH.md) → [MuonH投影](MUON_GEOMETRY_ZH.md) → [NS方向与布局](MUON_DIRECTION_ZH.md)阅读：分别回答谁被更新、历史怎样影响下一步、保持哪组范数、方向怎样被计算。
+当前版本为V33。新增[监控与事故重放](OBSERVABILITY_ZH.md)，把日志时刻、计算成本和优化器证据连到可执行的离线检查器。先用[排障总图](ENGINEERING_MAP_ZH.md)按症状选择入口，再核对[交付范围](DELIVERY_AUDIT_ZH.md)。优化器可按[参数分组](OPTIMIZER_GROUPS_ZH.md) → [AdamH状态](ADAMH_STATE_ZH.md) → [MuonH投影](MUON_GEOMETRY_ZH.md) → [NS方向与布局](MUON_DIRECTION_ZH.md)阅读：分别回答谁被更新、历史怎样影响下一步、保持哪组范数、方向怎样被计算。
 
 V26对V25的micro/macro命名错误已[明确更正](EVAL_METRICS_ZH.md)。
 

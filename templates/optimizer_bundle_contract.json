@@ -1,0 +1,18 @@
+{
+ "status":"planned_not_executed",
+ "array_scope":null,
+ "parameter_view":null,
+ "update_convention":null,
+ "norm_reduction_axes":null,
+ "relative_tolerance":null,
+ "learning_rate":null,
+ "projection_epsilon":null,
+ "direction_stage":null,
+ "execution_sha":null,
+ "run":null,
+ "step":null,
+ "checkpoint_digest":null,
+ "optimizer_state_phase":null,
+ "mesh_partition_spec":null,
+ "data_cursor_identity":null
+}

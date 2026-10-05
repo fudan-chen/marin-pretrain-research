@@ -1,0 +1,24 @@
+"""Synthetic incident classes and malformed-input checks; not historical incident replay."""
+import json,pathlib,tempfile,subprocess,sys
+import numpy as np
+from analyze_optimizer_bundle import analyze,group_norm
+R=pathlib.Path(__file__).resolve().parents[1];checks=[]
+def ck(n,v):assert v,n;checks.append(n)
+meta={'array_scope':'global','parameter_view':'optimizer_parameter_before_update','update_convention':'p_after=p_before+update','norm_reduction_axes':[0,1],'relative_tolerance':1e-6,'learning_rate':.1,'projection_epsilon':1e-10,'direction_stage':'after_moment_or_NS_before_projection','execution_sha':None};p=np.array([[1.,0.],[0.,0.]],np.float32);u=np.array([[0.,1.],[0.,0.]],np.float32);v=p-.1*u;q=v/np.linalg.norm(v);a={'p_before':p,'update':q-p,'direction':u,'projection_intermediate':v,'computed_new_param_norm':np.array(np.linalg.norm(v),np.float64),'p_after':q};j=analyze(a,meta)
+ck('Clean synthetic projection passes geometry and signed-delta consistency',not j['norm_deviation_exceeds_declared_tolerance'] and not j['reference_update_disagrees'] and not j['p_after_disagrees_with_signed_delta']);ck('Clean recorded denominator agrees with recomputation',not j['denominator_disagreement']);ck('No automatic causal verdict',j['root_cause'] is None and j['status']=='observations_not_root_cause')
+b=dict(a,update=q/7-p,p_after=q/7,computed_new_param_norm=a['computed_new_param_norm']*7);j=analyze(b,meta);ck('Artificial collapse produces norm deviation',j['norm_deviation_exceeds_declared_tolerance']);ck('Artificial denominator overcount has ratio seven',abs(j['recorded_to_recomputed_denominator_ratio'][0]-7)<1e-6);ck('Clean direction does not explain recorded collapsed output',j['reference_update_disagrees'])
+other=np.array([[np.cos(.1),0.],[np.sin(.1),0.]],np.float32);j=analyze(dict(a,update=other-p,p_after=other),meta);ck('Direction difference can be detected while norm check passes',not j['norm_deviation_exceeds_declared_tolerance'] and j['reference_update_disagrees'])
+j=analyze({'p_before':p,'update':q-p},meta);ck('Missing direction stays missing rather than inferred','direction' in j['missing_evidence'] and 'reference_update_disagrees' not in j)
+j=analyze(dict(a,p_after=q+.1),meta);ck('Mismatched parameter after update is caught',j['p_after_disagrees_with_signed_delta'])
+j=analyze({'p_before':p*0,'update':p*0},meta);ck('Zero parameter ratio is undefined rather than passing',j['norm_ratio']==[None] and j['zero_parameter_groups']==1)
+j=analyze({'p_before':p,'update':np.full_like(p,np.nan)},meta);ck('Nonfinite input returns observation without fabricated geometry',j['numerical_observation']=='nonfinite_present_geometry_not_reconstructed' and 'norm_ratio' not in j)
+ck('Stable norm avoids square overflow for finite huge values',np.isfinite(group_norm(np.array([[1e200,1e200]]),[0,1])).all())
+for name,arrays,contract in [('local_shard',a,dict(meta,array_scope='local')),('wrong_phase',a,dict(meta,parameter_view='compute_BF16')),('wrong_axes',a,dict(meta,norm_reduction_axes=[1])),('missing_direction_stage',a,dict(meta,direction_stage=None)),('wrong_shape',dict(a,direction=np.zeros((2,3))),meta),('invalid_tolerance',a,dict(meta,relative_tolerance=-1)),('object_array',dict(a,update=np.array([['x','x'],['x','x']],dtype=object)),meta),('negative_denominator',dict(a,computed_new_param_norm=np.array(-1.,np.float64)),meta)]:
+ try:analyze(arrays,contract);bad=False
+ except ValueError:bad=True
+ ck('Reject malformed '+name,bad)
+# Per-leading-slice grouping is distinct from per-inner-matrix grouping.
+p4=np.array([[[[1.,0.],[0.,0.]],[[2.,0.],[0.,0.]]]],np.float32);u4=np.zeros_like(p4);u4[0,0,0,1]=1;r=group_norm(p4,[1,2,3]);v4=p4-.1*u4*r;q4=v4*r/group_norm(v4,[1,2,3]);j=analyze({'p_before':p4,'update':q4-p4},dict(meta,norm_reduction_axes=[1,2,3]));ck('Four-dimensional joint norm accepted despite inner norm changes',not j['norm_deviation_exceeds_declared_tolerance'] and not np.allclose(np.linalg.norm(q4,axis=(2,3)),np.linalg.norm(p4,axis=(2,3))))
+with tempfile.TemporaryDirectory() as td:
+ td=pathlib.Path(td);np.savez(td/'arrays.npz',**a);(td/'contract.json').write_text(json.dumps(meta));cmd=[sys.executable,str(R/'scripts/analyze_optimizer_bundle.py'),'--arrays',str(td/'arrays.npz'),'--contract',str(td/'contract.json'),'--output',str(td/'result.json')];subprocess.run(cmd,check=True,capture_output=True);result=json.loads((td/'result.json').read_text());ck('Real NPZ CLI read writes digest-bound JSON',len(result['input_sha256'])==2 and result['root_cause'] is None);ck('CLI refuses existing output without overwrite',subprocess.run(cmd,capture_output=True).returncode!=0)
+out={'checks_passed':len(checks),'checks':checks,'scope':__doc__,'actual_historical_bundle':None,'actual_GPU_replay':None};(R/'analysis/optimizer_bundle_validation.json').write_text(json.dumps(out,indent=2)+'\n');print('Synthetic bundle checks:',len(checks))

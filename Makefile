@@ -18,6 +18,8 @@ report:
 	$(PYTHON) scripts/probe_routing.py
 	$(PYTHON) scripts/probe_qb_partition.py
 	$(PYTHON) scripts/probe_optimizer.py
+	$(PYTHON) scripts/probe_watch.py
+	$(PYTHON) scripts/test_optimizer_bundle.py
 	$(PYTHON) scripts/probe_adamh.py
 	$(PYTHON) scripts/draw_adamh_state.py
 	$(PYTHON) scripts/probe_muon_direction.py

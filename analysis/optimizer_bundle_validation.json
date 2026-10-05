@@ -1,0 +1,31 @@
+{
+  "checks_passed": 23,
+  "checks": [
+    "Clean synthetic projection passes geometry and signed-delta consistency",
+    "Clean recorded denominator agrees with recomputation",
+    "No automatic causal verdict",
+    "Artificial collapse produces norm deviation",
+    "Artificial denominator overcount has ratio seven",
+    "Clean direction does not explain recorded collapsed output",
+    "Direction difference can be detected while norm check passes",
+    "Missing direction stays missing rather than inferred",
+    "Mismatched parameter after update is caught",
+    "Zero parameter ratio is undefined rather than passing",
+    "Nonfinite input returns observation without fabricated geometry",
+    "Stable norm avoids square overflow for finite huge values",
+    "Reject malformed local_shard",
+    "Reject malformed wrong_phase",
+    "Reject malformed wrong_axes",
+    "Reject malformed missing_direction_stage",
+    "Reject malformed wrong_shape",
+    "Reject malformed invalid_tolerance",
+    "Reject malformed object_array",
+    "Reject malformed negative_denominator",
+    "Four-dimensional joint norm accepted despite inner norm changes",
+    "Real NPZ CLI read writes digest-bound JSON",
+    "CLI refuses existing output without overwrite"
+  ],
+  "scope": "Synthetic incident classes and malformed-input checks; not historical incident replay.",
+  "actual_historical_bundle": null,
+  "actual_GPU_replay": null
+}

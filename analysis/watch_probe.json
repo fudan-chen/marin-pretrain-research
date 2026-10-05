@@ -1,0 +1,50 @@
+{
+  "checks_passed": 22,
+  "checks": [
+    "Default targets include gradients and parameters only",
+    "Default interval ten enables watch",
+    "Nonpositive interval disables watch",
+    "Empty targets disable watch",
+    "Per-parameter flag alone cannot enable watch",
+    "Histogram-only config is enabled",
+    "Requested missing updates raise instead of silent omission",
+    "Unknown watch target is rejected",
+    "Actual dispatcher preserves distinct gradient parameter update prefixes",
+    "Stats options forwarded without proving real norms",
+    "Model-tree filtered state excludes scalar count from dispatch",
+    "Unfiltered state forwards scalar count as well",
+    "Original diagnostic builder rejects updates target",
+    "Original diagnostic builder rejects optimizer state target",
+    "Diagnostic computes synthetic gradient after applying pending beta",
+    "Comma-separated targets normalized by diagnostic builder",
+    "Inline static call passes preupdate state and applied-beta parameter",
+    "Inline train watch call has no interval guard in train-step source",
+    "Original flat tree stats still computes total norm with include_norms false",
+    "Disabled per-parameter outputs still construct Python norm calls before filtering",
+    "Flat total value agrees with independent element count",
+    "Tree-stat total field has unconditional source assignment"
+  ],
+  "scope": "Original watch dispatcher/config with recording tree-stat substitutes; no actual norms or JAX.\nOriginal diagnostic builder with identity JIT, synthetic gradient and beta helpers.\n",
+  "inline_static_fields": {
+    "watch_targets": "watch_targets",
+    "include_norms": "watch_config.include_norms",
+    "include_per_parameter_norms": "watch_config.include_per_parameter_norms",
+    "include_histogram": "watch_config.include_histograms",
+    "split_scan_layers": "watch_config.split_scan_layers",
+    "params": "qb_params",
+    "grads": "grads",
+    "updates": "updates",
+    "opt_state": "opt_state_in",
+    "model_tree_type": "type(state.params)"
+  },
+  "source_sha256": {
+    "sources/watch_2026_10_06/watch.py": "e311cfe1fba131f533dc879c43f96ee9e6775c5aa723fd41891791c6513eb530",
+    "sources/scale_2026_10_05/train_hero_ep.py": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7",
+    "sources/watch_2026_10_06/tree_stats.py": "5953cf1c64764984335289162f34c5f838c3952fc0920fb9dbc0dc9098470c6b"
+  },
+  "flat_tree_norm_scope": "original flat-array stat function, recorded NumPy norm substitute; no scan split, histogram or distributed norm",
+  "actual_tree_norm_result": null,
+  "actual_JAX_execution": null,
+  "actual_watch_overhead": null,
+  "historical_execution_sha": null
+}

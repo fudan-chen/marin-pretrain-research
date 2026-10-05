@@ -1,6 +1,6 @@
 # 当前交付审计：文件覆盖与真实验证分别核对
 
-当前为V32，新增[Muon方向、NS迭代与布局](MUON_DIRECTION_ZH.md)，20项float32/恒等布局替代检查；与此前AdamH状态和MuonH投影检查组成完整阅读链。未执行生产BF16、QuACK、多卡方向对照或真实checkpoint恢复。下方V18旧审计保留为历史材料，其旧文件数和版本链接不代表当前发布。
+当前为V33，新增[监控与事故重放](OBSERVABILITY_ZH.md)，22项辅助函数/静态核对与23项合成事故包检查；此前[Muon方向、NS迭代与布局](MUON_DIRECTION_ZH.md)，20项float32/恒等布局替代检查；与此前AdamH状态和MuonH投影检查组成完整阅读链。未执行生产BF16、QuACK、多卡方向对照或真实checkpoint恢复。下方V18旧审计保留为历史材料，其旧文件数和版本链接不代表当前发布。
 
 |用户要求|当前权威产物|覆盖与实际限制|
 |---|---|---|
@@ -14,7 +14,7 @@
 
 现在最缺的不是更多章节数量，而是能改变结论的材料：真实执行包绑定、同checkpoint输入/状态重放、固定评估逐批N/T/B、独立GPU重复、真实save后restore，以及各rank首个异常和提交轨迹。它们分别限制历史归因、配比收益、评估排序、恢复可靠性和hang机制；没有这些材料时保留未知，不用本地绿灯补齐。
 
-总图按症状给出每项下一步与接受/继续调查边界；[可机读配置](config/engineering_case_map.json)将作者做过的动作和建议检查分开。长期研究目标保持进行中，V32没有以文件齐全为理由宣布全部研究已完成。V30的机制与范围见[原值账本](analysis/muon_geometry_probe.json)，此前V29发布见[历史账本](analysis/release_v29.json)。
+总图按症状给出每项下一步与接受/继续调查边界；[可机读配置](config/engineering_case_map.json)将作者做过的动作和建议检查分开。长期研究目标保持进行中，V33没有以文件齐全为理由宣布全部研究已完成。V30的机制与范围见[原值账本](analysis/muon_geometry_probe.json)，此前V29发布见[历史账本](analysis/release_v29.json)。
 
 ## V18及此前的历史审计（保留原文）
 

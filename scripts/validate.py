@@ -141,7 +141,7 @@ alt=all_rows[f['counterexample_run']]
 ok('197c dominates selected seed0 on three axes but not all tasks',all(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in [PM,HE,GM]) and sum(metric_value(alt,k)>metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==31 and sum(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==23)
 ok('197c has no independent seed1 or seed2 counterpart in this registry',sum('197c9f5ceff6b9ee-' in r['run_name'] for r in rows)==1)
 F=S/'findings_2026_10_04'
-ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/','contracts_2026_10_05/','state_2026_10_05/')) for x in manifest['files'])==313)
+ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/','contracts_2026_10_05/','state_2026_10_05/','boundaries_2026_10_05/')) for x in manifest['files'])==313)
 for i,row in enumerate(f['configs']):
     def source_run(name):return read((F if 'mixprior-' in name else P)/('config_'+name+'.json'))['data']['project']['run']
     ra,rb=source_run(row['run_a']),source_run(row['run_b']);ca,cb=json.loads(ra['config']),json.loads(rb['config'])
@@ -192,7 +192,7 @@ for scenario in decision_checks['scenarios']:
 doc_tables=soup.select('#decision-guide table')
 ok('Decision documentation preserves nine scenarios and six rule counterexamples',len(doc_tables)==3 and len(doc_tables[1].select('tbody tr'))==9 and len(doc_tables[2].select('tbody tr'))==6 and all(int(t.select('td')[2].text)==s['eligible'] and (s['best'] is None or s['best']==t.select('td')[3].text) for s,t in zip(decision_checks['scenarios'],doc_tables[1].select('tbody tr'))))
 ok('Selector trace reports bounded search rather than universal absence',trace['status']=='not_recovered_in_checked_public_entries' and trace['tree_truncated'] is False and len(trace['limitations'])==4 and all(q['total_count']==q['items_returned']==1 and q['issue_numbers']==[9126] and q['incomplete_results'] is False for q in trace['issue_queries']) and trace['issue_9126_body_unchanged_from_prior_archive'])
-ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==361 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
+ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==368 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
 contract=read(ROOT/'templates/selection_contract.json')
 ok('Confirmation contract cannot retroactively assert prior registration',contract['status']=='planned_not_executed' and contract['prior_search_results_already_seen'] is True and contract['contract_frozen_utc'] is None and contract['results'] is None and contract['independent_confirmation']['used_during_search'] is None)
 embedded=json.loads(soup.select_one('#decision-data').text)
@@ -436,6 +436,20 @@ ok('V13 standalone state chapter uses current bank without HTTP',browser13['offl
 ok('Three viewed V13 browser screenshots retain exact archived bytes',len(browser13['screenshots'])==3 and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==browser13['screenshot_sha256'][p] for p in browser13['screenshots']))
 ok('State-switch template keeps 3 controls and all actual inputs unexecuted',statecontract['status']=='planned_not_executed' and all(v is None for v in statecontract['common_start'].values()) and all(v is None for v in statecontract['evaluation_contract'].values()) and len(statecontract['controls'])==3 and all(c['result']=='not_run' and c['observations'] is None and c['predeclared_tolerances'] is None for c in statecontract['controls']) and set(statecontract['gates'].values())=={'unknown'} and statecontract['evidence']==[])
 report['highlights']+=['V13 current-bank browser / old-record rejection / untouched local storage / file-protocol chapter','state-switch contract retains 3 unexecuted controls and 5 unknown gates']
+boundary=read(A/'boundary_probe.json')
+ok('Boundary probe records 17 scoped original-helper checks',boundary['checks_passed']==len(boundary['checks'])==17 and boundary['actual_gpu_result'] is None and boundary['actual_training_input_segments'] is None and len(boundary['cases'])==6)
+ok('Boundary target and attention isolation remain distinct',boundary['cases'][0]['segments']==[0,0,1,1] and boundary['cases'][0]['loss_weights']==[1,1,1,0] and boundary['cases'][0]['dense_attention'][2]==[0,0,1,0])
+ok('Padding bounds and routing validity preserve separate meanings',boundary['cases'][3]['lower_bounds']==[2,2,2,2,4,4,7] and boundary['cases'][3]['kernel_valid']==[False,False,True,True,True,True,False] and boundary['cases'][3]['loss_weights']==[0,1,1,1,1,0,0])
+ok('Contiguous masks match while reused-ID counterexample differs',all(boundary['cases'][i]['real_token_mask_mismatches']==0 for i in [2,3,4]) and boundary['cases'][5]['real_token_mask_mismatches']==2)
+for p,sha in boundary['source_sha256'].items():ok('Boundary source checksum '+p,hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha)
+ok('Boundary chapter retains three tables and explicit production limits',soup.select_one('#boundary-guide') is not None and len(soup.select('#boundary-guide table'))==3 and '没有证明Hero生成了复用ID' in soup.select_one('#boundary-guide').text)
+report['highlights']=[x.replace('361 source archive checksums valid','368 source archive checksums valid') for x in report['highlights']]
+report['highlights']+=['seven boundary sources / 17 original-helper checks / EOS, padding, segment and target-position audit']
+browser14=read(A/'browser_validation_v14.json')
+ok('V14 boundary tables fit desktop/mobile viewport',all(browser14[k]['width']<=browser14[k]['viewport'] for k in ['desktop','mobile']) and browser14['mobile']['tableScrollWidth']>browser14['mobile']['tableWidth'])
+ok('V14 boundary chapter loads offline with 17 figures and unchanged source bank',browser14['offline']['protocol']=='file:' and browser14['offline']['figures']==17 and browser14['offline']['tables']==3 and browser14['offline']['requests']==browser14['offline']['errors']==[] and browser14['desktop']['bank']==browser14['offline']['bank']==bank['bank_sha256']==read(A/'release_v13.json')['current_bank_sha256'])
+ok('Two viewed V14 screenshots retain exact bytes',len(browser14['screenshots'])==2 and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==browser14['screenshot_sha256'][p] for p in browser14['screenshots']))
+report['highlights']+=['V14 desktop/mobile and offline boundary chapter / current source-bank preserved']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

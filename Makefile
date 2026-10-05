@@ -12,6 +12,7 @@ report:
 	$(PYTHON) scripts/analyze_scale.py > analysis/scale_computation_log.txt
 	$(PYTHON) scripts/probe_contracts.py
 	$(PYTHON) scripts/probe_state.py
+	$(PYTHON) scripts/probe_boundaries.py
 	$(PYTHON) scripts/build_learning.py
 	$(PYTHON) scripts/build_decision.py
 	$(PYTHON) scripts/build_transfer.py > analysis/transfer_computation_log.txt

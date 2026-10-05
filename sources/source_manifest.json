@@ -3560,5 +3560,54 @@
     "bytes": 2869,
     "sha256": "495de05281ce1cd01d2ad187aafd43e7d89833d42109c63fe63db3d80d21f231",
     "retrieved_utc": "2026-10-05T09:01:32.946146+00:00"
+  },
+  {
+    "file": "boundaries_2026_10_05/examples.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/data/text/examples.py",
+    "bytes": 15041,
+    "sha256": "199a86abfd0f85eca39e6e73042c05ba56822dc35c26a5ed048dbb2f1299ec49",
+    "retrieved_utc": "2026-10-05T09:19:51.307225+00:00"
+  },
+  {
+    "file": "boundaries_2026_10_05/datasets.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/data/text/datasets.py",
+    "bytes": 47569,
+    "sha256": "4fd44ff53067beb7a2ac05cc4d41f0dda18012691751a85e7c5eb65c4849823b",
+    "retrieved_utc": "2026-10-05T09:19:51.340540+00:00"
+  },
+  {
+    "file": "boundaries_2026_10_05/text_init.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/data/text/__init__.py",
+    "bytes": 595,
+    "sha256": "4a3b3cdb295e780c06887c5427c75aa684aefed2346fded66ec77bcc44c01b11",
+    "retrieved_utc": "2026-10-05T09:19:51.259454+00:00"
+  },
+  {
+    "file": "boundaries_2026_10_05/attention_core.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/grug/attention/_core.py",
+    "bytes": 18739,
+    "sha256": "233674b8abbeef3e8a08743b3ffa366973d10fa5258214907a36031bdd0e1041",
+    "retrieved_utc": "2026-10-05T09:19:51.272739+00:00"
+  },
+  {
+    "file": "boundaries_2026_10_05/fa4_cute.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/grug/attention/_fa4_cute.py",
+    "bytes": 18201,
+    "sha256": "f838d498503119c3e9a54fc45e3cd0757c0068c6d2dc99cff2f3f2a07b2691aa",
+    "retrieved_utc": "2026-10-05T09:19:51.976859+00:00"
+  },
+  {
+    "file": "boundaries_2026_10_05/test_fa4.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/tests/grug/test_fa4_cute_attention.py",
+    "bytes": 31243,
+    "sha256": "ee28c3ea021be214a8cac6132c9a74f7c971b60599301d6f62ef4d519f3e6081",
+    "retrieved_utc": "2026-10-05T09:19:52.081277+00:00"
+  },
+  {
+    "file": "boundaries_2026_10_05/lm_model.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/models/lm_model.py",
+    "bytes": 12370,
+    "sha256": "1a8f7917f7c10b200afd772bf9638581091bc4757afb4a608cf602ba3a2264be",
+    "retrieved_utc": "2026-10-05T09:19:52.038517+00:00"
   }
 ]

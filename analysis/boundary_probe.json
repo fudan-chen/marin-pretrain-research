@@ -1,0 +1,811 @@
+{
+  "status": "local_original_helper_probe_with_substitutes",
+  "checks_passed": 17,
+  "checks": [
+    "EOS attention separation starts after EOS",
+    "Cross-document target still scored at EOS source position",
+    "Disabling cross attention changes visibility but not target weights",
+    "Right-padding successor is removed from target loss",
+    "Router validity differs from next-token loss mask",
+    "Left-padding bound carries next valid query bound",
+    "Leading padding remains invalid despite carried lower bound",
+    "Loss constructor alone may score pad-to-first-real transition",
+    "Contiguous segments match dense mask on real tokens",
+    "Reused noncontiguous ID gives dense/compressed disagreement",
+    "Window W includes self and W-1 predecessors",
+    "Prompt length three scores completion starting at source index two",
+    "Dense all-false query rows imply invalid token",
+    "Additive dense mask does not establish query validity",
+    "Nonpositive window rejects 0",
+    "Nonpositive window rejects -1",
+    "Six recorded ladder configs enable document separation"
+  ],
+  "cases": [
+    {
+      "case": "eos_separated",
+      "tokens": [
+        11,
+        99,
+        22,
+        23
+      ],
+      "segments": [
+        0,
+        0,
+        1,
+        1
+      ],
+      "loss_weights": [
+        1.0,
+        1.0,
+        1.0,
+        0.0
+      ],
+      "dense_attention": [
+        [
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          1
+        ]
+      ],
+      "token_valid": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "lower_bounds": [
+        0,
+        0,
+        2,
+        2
+      ],
+      "kernel_valid": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "compressed_attention": [
+        [
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          1
+        ]
+      ],
+      "real_token_mask_mismatches": 0
+    },
+    {
+      "case": "cross_attention_enabled",
+      "tokens": [
+        11,
+        99,
+        22,
+        23
+      ],
+      "segments": null,
+      "loss_weights": [
+        1.0,
+        1.0,
+        1.0,
+        0.0
+      ],
+      "dense_attention": [
+        [
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          1,
+          0,
+          0
+        ],
+        [
+          1,
+          1,
+          1,
+          0
+        ],
+        [
+          1,
+          1,
+          1,
+          1
+        ]
+      ],
+      "token_valid": [
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "case": "right_padding",
+      "tokens": [
+        11,
+        99,
+        22,
+        23,
+        0,
+        0
+      ],
+      "segments": [
+        0,
+        0,
+        1,
+        1,
+        -1,
+        -1
+      ],
+      "loss_weights": [
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "dense_attention": [
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          1
+        ]
+      ],
+      "token_valid": [
+        true,
+        true,
+        true,
+        true,
+        false,
+        false
+      ],
+      "lower_bounds": [
+        0,
+        0,
+        2,
+        2,
+        6,
+        6
+      ],
+      "kernel_valid": [
+        true,
+        true,
+        true,
+        true,
+        false,
+        false
+      ],
+      "compressed_attention": [
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "real_token_mask_mismatches": 0
+    },
+    {
+      "case": "left_padding",
+      "tokens": [
+        0,
+        0,
+        11,
+        12,
+        22,
+        23,
+        0
+      ],
+      "segments": [
+        -1,
+        -1,
+        0,
+        0,
+        1,
+        1,
+        -1
+      ],
+      "loss_weights": [
+        0.0,
+        1.0,
+        1.0,
+        1.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      "dense_attention": [
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0
+        ],
+        [
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "token_valid": [
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        false
+      ],
+      "lower_bounds": [
+        2,
+        2,
+        2,
+        2,
+        4,
+        4,
+        7
+      ],
+      "kernel_valid": [
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        false
+      ],
+      "compressed_attention": [
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ],
+      "real_token_mask_mismatches": 0
+    },
+    {
+      "case": "window_two",
+      "tokens": [
+        11,
+        12,
+        13,
+        14
+      ],
+      "segments": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "loss_weights": [
+        1.0,
+        1.0,
+        1.0,
+        0.0
+      ],
+      "dense_attention": [
+        [
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          1
+        ]
+      ],
+      "token_valid": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "lower_bounds": [
+        0,
+        0,
+        1,
+        2
+      ],
+      "kernel_valid": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "compressed_attention": [
+        [
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          1
+        ]
+      ],
+      "real_token_mask_mismatches": 0
+    },
+    {
+      "case": "reused_segment_id",
+      "tokens": [
+        11,
+        12,
+        13,
+        14
+      ],
+      "segments": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "loss_weights": [
+        1.0,
+        1.0,
+        1.0,
+        0.0
+      ],
+      "dense_attention": [
+        [
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          1,
+          1,
+          0,
+          1
+        ]
+      ],
+      "token_valid": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "lower_bounds": [
+        0,
+        0,
+        2,
+        3
+      ],
+      "kernel_valid": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "compressed_attention": [
+        [
+          1,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          1
+        ]
+      ],
+      "real_token_mask_mismatches": 2
+    }
+  ],
+  "prompt_case": {
+    "prompt_length": 3,
+    "loss_weights": [
+      0.0,
+      0.0,
+      1.0,
+      1.0,
+      0.0
+    ]
+  },
+  "ladder_configs": [
+    {
+      "run": "h100-mix25-20260912-d1024",
+      "block_cross_document_attention": true,
+      "source": "sources/scale_2026_10_05/config_h100-mix25-20260912-d1024.json"
+    },
+    {
+      "run": "h100-mix25-20260912-d1536",
+      "block_cross_document_attention": true,
+      "source": "sources/scale_2026_10_05/config_h100-mix25-20260912-d1536.json"
+    },
+    {
+      "run": "h100-mix25-20260912-d768",
+      "block_cross_document_attention": true,
+      "source": "sources/scale_2026_10_05/config_h100-mix25-20260912-d768.json"
+    },
+    {
+      "run": "rav-ladder-d1024",
+      "block_cross_document_attention": true,
+      "source": "sources/scale_2026_10_05/config_rav-ladder-d1024.json"
+    },
+    {
+      "run": "rav-ladder-d1536",
+      "block_cross_document_attention": true,
+      "source": "sources/scale_2026_10_05/config_rav-ladder-d1536.json"
+    },
+    {
+      "run": "rav-ladder-d768-v2",
+      "block_cross_document_attention": true,
+      "source": "sources/scale_2026_10_05/config_rav-ladder-d768-v2.json"
+    }
+  ],
+  "extracted": [
+    {
+      "source": "sources/boundaries_2026_10_05/examples.py",
+      "function": "causal",
+      "first_line": 124,
+      "last_line": 174
+    },
+    {
+      "source": "sources/boundaries_2026_10_05/examples.py",
+      "function": "from_prompt_and_completion",
+      "first_line": 177,
+      "last_line": 196
+    },
+    {
+      "source": "sources/boundaries_2026_10_05/examples.py",
+      "function": "causal_loss_mask",
+      "first_line": 199,
+      "last_line": 208
+    },
+    {
+      "source": "sources/boundaries_2026_10_05/attention_core.py",
+      "function": "materialize_mask",
+      "first_line": 102,
+      "last_line": 142
+    },
+    {
+      "source": "sources/boundaries_2026_10_05/attention_core.py",
+      "function": "token_validity_from_attention_mask",
+      "first_line": 145,
+      "last_line": 178
+    },
+    {
+      "source": "sources/boundaries_2026_10_05/fa4_cute.py",
+      "function": "_batched_segment_ids",
+      "first_line": 35,
+      "last_line": 47
+    },
+    {
+      "source": "sources/boundaries_2026_10_05/fa4_cute.py",
+      "function": "_segment_starts",
+      "first_line": 58,
+      "last_line": 62
+    },
+    {
+      "source": "sources/boundaries_2026_10_05/fa4_cute.py",
+      "function": "_packed_segment_start_positions",
+      "first_line": 65,
+      "last_line": 77
+    },
+    {
+      "source": "sources/boundaries_2026_10_05/fa4_cute.py",
+      "function": "_packed_segment_causal_lower_bounds",
+      "first_line": 80,
+      "last_line": 115
+    }
+  ],
+  "source_sha256": {
+    "sources/boundaries_2026_10_05/attention_core.py": "233674b8abbeef3e8a08743b3ffa366973d10fa5258214907a36031bdd0e1041",
+    "sources/boundaries_2026_10_05/datasets.py": "4fd44ff53067beb7a2ac05cc4d41f0dda18012691751a85e7c5eb65c4849823b",
+    "sources/boundaries_2026_10_05/examples.py": "199a86abfd0f85eca39e6e73042c05ba56822dc35c26a5ed048dbb2f1299ec49",
+    "sources/boundaries_2026_10_05/fa4_cute.py": "f838d498503119c3e9a54fc45e3cd0757c0068c6d2dc99cff2f3f2a07b2691aa",
+    "sources/boundaries_2026_10_05/lm_model.py": "1a8f7917f7c10b200afd772bf9638581091bc4757afb4a608cf602ba3a2264be",
+    "sources/boundaries_2026_10_05/test_fa4.py": "ee28c3ea021be214a8cac6132c9a74f7c971b60599301d6f62ef4d519f3e6081",
+    "sources/boundaries_2026_10_05/text_init.py": "4a3b3cdb295e780c06887c5427c75aa684aefed2346fded66ec77bcc44c01b11"
+  },
+  "substitutions": [
+    "NumPy ndarray and functional .at.set adapter",
+    "associative_scan emulated with NumPy ufunc.accumulate",
+    "metadata replication is identity",
+    "lightweight Example/Mask classes instead of JAX/Equinox objects"
+  ],
+  "historical_execution_binding": null,
+  "actual_gpu_result": null,
+  "actual_training_input_segments": null,
+  "limitations": [
+    "No attention kernel, backward, batching or real token cache executed",
+    "Left-padding loss example tests constructor alone; actual upstream loss weights may already mask padding",
+    "Reused-ID counterexample does not prove such input exists in Hero",
+    "FA4 mask comparison explicitly excludes padding query/key rows"
+  ]
+}

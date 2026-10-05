@@ -1,0 +1,31 @@
+{
+  "desktop": {
+    "bank": "d58ffef93d8d21e388bd5e8ab072e91c6726aed756d586c0e1b961cb53bf3e9e",
+    "viewport": 1440,
+    "width": 1425,
+    "tables": 3
+  },
+  "mobile": {
+    "tableScrollWidth": 620,
+    "viewport": 390,
+    "width": 375,
+    "tableWidth": 297
+  },
+  "offline": {
+    "figures": 17,
+    "errors": [],
+    "protocol": "file:",
+    "bank": "d58ffef93d8d21e388bd5e8ab072e91c6726aed756d586c0e1b961cb53bf3e9e",
+    "tables": 3,
+    "requests": []
+  },
+  "scope": "New boundary chapter layout and standalone loading; no GPU or reader study",
+  "screenshots": [
+    "analysis/browser_v14_boundary_desktop.png",
+    "analysis/browser_v14_boundary_mobile.png"
+  ],
+  "screenshot_sha256": {
+    "analysis/browser_v14_boundary_desktop.png": "53acade23fe2c5a50fd82164eb33f12ceb43995add029bd98e05596c94257196",
+    "analysis/browser_v14_boundary_mobile.png": "85b9bdba51f10d300c632e1c3229728ea17fff3f67c52ab5c55b892978dd53e3"
+  }
+}

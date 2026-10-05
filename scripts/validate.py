@@ -141,7 +141,7 @@ alt=all_rows[f['counterexample_run']]
 ok('197c dominates selected seed0 on three axes but not all tasks',all(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in [PM,HE,GM]) and sum(metric_value(alt,k)>metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==31 and sum(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==23)
 ok('197c has no independent seed1 or seed2 counterpart in this registry',sum('197c9f5ceff6b9ee-' in r['run_name'] for r in rows)==1)
 F=S/'findings_2026_10_04'
-ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/','contracts_2026_10_05/','state_2026_10_05/','boundaries_2026_10_05/')) for x in manifest['files'])==313)
+ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/','contracts_2026_10_05/','state_2026_10_05/','boundaries_2026_10_05/','cache_2026_10_05/')) for x in manifest['files'])==313)
 for i,row in enumerate(f['configs']):
     def source_run(name):return read((F if 'mixprior-' in name else P)/('config_'+name+'.json'))['data']['project']['run']
     ra,rb=source_run(row['run_a']),source_run(row['run_b']);ca,cb=json.loads(ra['config']),json.loads(rb['config'])
@@ -192,7 +192,7 @@ for scenario in decision_checks['scenarios']:
 doc_tables=soup.select('#decision-guide table')
 ok('Decision documentation preserves nine scenarios and six rule counterexamples',len(doc_tables)==3 and len(doc_tables[1].select('tbody tr'))==9 and len(doc_tables[2].select('tbody tr'))==6 and all(int(t.select('td')[2].text)==s['eligible'] and (s['best'] is None or s['best']==t.select('td')[3].text) for s,t in zip(decision_checks['scenarios'],doc_tables[1].select('tbody tr'))))
 ok('Selector trace reports bounded search rather than universal absence',trace['status']=='not_recovered_in_checked_public_entries' and trace['tree_truncated'] is False and len(trace['limitations'])==4 and all(q['total_count']==q['items_returned']==1 and q['issue_numbers']==[9126] and q['incomplete_results'] is False for q in trace['issue_queries']) and trace['issue_9126_body_unchanged_from_prior_archive'])
-ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==368 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
+ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==378 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
 contract=read(ROOT/'templates/selection_contract.json')
 ok('Confirmation contract cannot retroactively assert prior registration',contract['status']=='planned_not_executed' and contract['prior_search_results_already_seen'] is True and contract['contract_frozen_utc'] is None and contract['results'] is None and contract['independent_confirmation']['used_during_search'] is None)
 embedded=json.loads(soup.select_one('#decision-data').text)
@@ -450,6 +450,15 @@ ok('V14 boundary tables fit desktop/mobile viewport',all(browser14[k]['width']<=
 ok('V14 boundary chapter loads offline with 17 figures and unchanged source bank',browser14['offline']['protocol']=='file:' and browser14['offline']['figures']==17 and browser14['offline']['tables']==3 and browser14['offline']['requests']==browser14['offline']['errors']==[] and browser14['desktop']['bank']==browser14['offline']['bank']==bank['bank_sha256']==read(A/'release_v13.json')['current_bank_sha256'])
 ok('Two viewed V14 screenshots retain exact bytes',len(browser14['screenshots'])==2 and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==browser14['screenshot_sha256'][p] for p in browser14['screenshots']))
 report['highlights']+=['V14 desktop/mobile and offline boundary chapter / current source-bank preserved']
+cacheaudit=read(A/'cache_audit.json')
+ok('Cache census covers 1200 component instances and two roots',cacheaudit['component_instances']==1200 and cacheaudit['unique_components']==200 and len(cacheaudit['cache_roots'])==2 and cacheaudit['component_split_counts']=={'validation':1200})
+ok('Cache admission probe separates mismatch warning and unfinished rejection',[x['status'] for x in cacheaudit['admission_branch_cases']]==['opened','opened','opened','rejected_unfinished'] and cacheaudit['actual_cache_ledger'] is None and cacheaudit['actual_token_arrays'] is None and cacheaudit['historical_tokenizer_revision'] is None)
+ok('Cache chapter exposes six acceptance rules and historical limits',soup.select_one('#cache-guide') is not None and 'K6' in soup.select_one('#cache-guide').text and '不是已确认的历史训练版本' in soup.select_one('#cache-guide').text)
+report['highlights']+=['V15 1200 component census / two cache roots / four original admission branches / actual cache identity remains unknown']
+browser15=read(A/'browser_validation_v15.json')
+ok('V15 desktop mobile offline chapter and source bank remain valid',browser15['desktop']['width']<=browser15['desktop']['viewport'] and browser15['mobile']['width']<=browser15['mobile']['viewport'] and browser15['offline']['figures']==17 and browser15['offline']['tables']==4 and browser15['offline']['requests']==browser15['offline']['errors']==[] and browser15['offline']['bank']==bank['bank_sha256'])
+ok('V15 viewed desktop screenshot retains exact bytes',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha for p,sha in browser15['screenshot_sha256'].items()))
+report['highlights']=[x.replace('368 source archive checksums valid','378 source archive checksums valid') for x in report['highlights']]
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

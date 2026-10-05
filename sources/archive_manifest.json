@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-05T09:28:52.704555+00:00",
+  "integrity_manifest_created_utc": "2026-10-05T09:42:45.673819+00:00",
   "files": [
     {
       "file": "boundaries_2026_10_05/attention_core.py",
@@ -49,6 +49,76 @@
       "sha256": "4a3b3cdb295e780c06887c5427c75aa684aefed2346fded66ec77bcc44c01b11",
       "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/data/text/__init__.py",
       "retrieved_utc": "2026-10-05T09:19:51.259454+00:00"
+    },
+    {
+      "file": "cache_2026_10_05/batch_tokenizer.py",
+      "bytes": 8333,
+      "sha256": "bd00a7f23e06be82d79670527227d13acb13456bed29f0f7284b1d65ae74eee3",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/data/text/_batch_tokenizer.py",
+      "retrieved_utc": "2026-10-05T09:32:27.573072+00:00"
+    },
+    {
+      "file": "cache_2026_10_05/bucket_writer.py",
+      "bytes": 6086,
+      "sha256": "7a586733ff7bb80fb8302ed29da33a151b96fc83f189da3e55d2df2aca93d859",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/datakit/store/bucket_writer.py",
+      "retrieved_utc": "2026-10-05T09:32:27.573710+00:00"
+    },
+    {
+      "file": "cache_2026_10_05/cache.py",
+      "bytes": 2435,
+      "sha256": "383e718429f2642f17b20af9972009ca16fbddbdbf217037e15c6618da9d4990",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/data/text/cache.py",
+      "retrieved_utc": "2026-10-05T09:32:27.572618+00:00"
+    },
+    {
+      "file": "cache_2026_10_05/datakit_store.py",
+      "bytes": 33589,
+      "sha256": "3e871d28d02e7660384d38eea66e63f18525c7358e7b6c245d25336e23ad8c46",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/datakit/store/datakit_store.py",
+      "retrieved_utc": "2026-10-05T09:32:27.573333+00:00"
+    },
+    {
+      "file": "cache_2026_10_05/formats.py",
+      "bytes": 11787,
+      "sha256": "a6073b2db24bf5330817455fe757e9b041da5b6d5c1b80c9e38144099a970e5c",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/data/text/formats.py",
+      "retrieved_utc": "2026-10-05T09:37:21.376275+00:00"
+    },
+    {
+      "file": "cache_2026_10_05/hf_model_metadata.json",
+      "bytes": 6232,
+      "sha256": "4dffbe3572f1e5cb27d85f613b7ced6581880d99cd243df8c1dfbad1343e4d42",
+      "url": "https://huggingface.co/api/models/marin-community/marin-tokenizer",
+      "retrieved_utc": "2026-10-05T09:32:27.575108+00:00"
+    },
+    {
+      "file": "cache_2026_10_05/special_tokens_map.json",
+      "bytes": 301,
+      "sha256": "cc2e013b7545f183ef03e079a3c91c6f364fa37e4068c512d7dd843e59024535",
+      "url": "https://huggingface.co/marin-community/marin-tokenizer/resolve/a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2/special_tokens_map.json",
+      "retrieved_utc": "2026-10-05T09:32:27.574748+00:00"
+    },
+    {
+      "file": "cache_2026_10_05/tokenize_report.py",
+      "bytes": 3460,
+      "sha256": "4f60a0474c61e0abd7c5d970eca847ccc1e1ae72533966e216648a1335a79041",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/datakit/reports/tokenize.py",
+      "retrieved_utc": "2026-10-05T09:32:27.573930+00:00"
+    },
+    {
+      "file": "cache_2026_10_05/tokenizer_config.json",
+      "bytes": 50502,
+      "sha256": "c2af9516d1f3439130030a63093ddf96335d813c252b07de4a4fae6505909c03",
+      "url": "https://huggingface.co/marin-community/marin-tokenizer/resolve/a5ca45f2feb6c959bd87b81689aa7279b5bdcaa2/tokenizer_config.json",
+      "retrieved_utc": "2026-10-05T09:32:27.574551+00:00"
+    },
+    {
+      "file": "cache_2026_10_05/tree_cache.py",
+      "bytes": 60290,
+      "sha256": "55d704474f94d9a84b3f306c40f3263db080da7633a39cbb438e64668a4e4881",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/store/cache.py",
+      "retrieved_utc": "2026-10-05T09:37:20.695740+00:00"
     },
     {
       "file": "code_launch_scaling_ladder.py",
@@ -2080,8 +2150,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 180608,
-      "sha256": "c34cbeb47c6ee05cb99d8e9a9a6f01eb6f1c35c09233f27a5bcb900c88e3fb9d",
+      "bytes": 184220,
+      "sha256": "08e743f68b57a76637024dbf6b58a1efbe15424cf0271a1b801667864054ec7d",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

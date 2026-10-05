@@ -1,0 +1,46 @@
+{
+  "desktop": {
+    "viewport": 1440,
+    "width": 1425,
+    "tables": 4,
+    "bank": "d58ffef93d8d21e388bd5e8ab072e91c6726aed756d586c0e1b961cb53bf3e9e"
+  },
+  "mobile": {
+    "viewport": 390,
+    "width": 375,
+    "tables": [
+      {
+        "width": 297,
+        "scroll": 620
+      },
+      {
+        "width": 297,
+        "scroll": 620
+      },
+      {
+        "width": 297,
+        "scroll": 620
+      },
+      {
+        "width": 297,
+        "scroll": 620
+      }
+    ]
+  },
+  "offline": {
+    "protocol": "file:",
+    "figures": 17,
+    "tables": 4,
+    "bank": "d58ffef93d8d21e388bd5e8ab072e91c6726aed756d586c0e1b961cb53bf3e9e",
+    "requests": [],
+    "errors": []
+  },
+  "screenshots": [
+    "analysis/browser_v15_cache_desktop.png"
+  ],
+  "screenshot_sha256": {
+    "analysis/browser_v15_cache_desktop.png": "069d661a4121f13e7f6238cdb6bacc99f5e8cb1941244fd4df8e309c419d8387"
+  },
+  "visual_scope": "desktop screenshot viewed; mobile DOM dimensions checked; offline DOM/resource check",
+  "prior_archived_files_preserved": 367
+}

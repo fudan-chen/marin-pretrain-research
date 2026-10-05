@@ -1,0 +1,32 @@
+{
+  "edition": "V15",
+  "goal_status": "active",
+  "scope": "cache provenance / configuration census / original admission branch; no actual cloud cache read",
+  "checks_passed": 1087,
+  "source_files": 378,
+  "prior_source_files_preserved": 367,
+  "actual_cache_ledger": null,
+  "actual_token_arrays": null,
+  "historical_tokenizer_revision": null,
+  "actual_gpu_result": null,
+  "artifact_sha256": {
+    "CACHE_PROVENANCE_ZH.md": "db180b80e0f5608b3184d6214d6987a7a0285395ed7bbfd1ff612d3ec13a753e",
+    "README.md": "6efe7fc7436c868f8ddd0ae19356b52c50442f9bf3b97cf855fd8b7655f98642",
+    "IMPROVEMENT_LOG_ZH.md": "cc1b4394a192bbd47623cc15ca7ccf4de85ce1ccdad57529a1be9578ad3f2dae",
+    "scripts/audit_cache.py": "015cf871e5ae452fb864415b65eab124dede795c1784a1b6010ccae6a8d3616e",
+    "scripts/acquire_cache.py": "d3e7d2f914a28704c9c5808b210e9e19a56d0b9957b920ac43b07f6badacb551",
+    "scripts/validate.py": "929e1373b4b1990d0bf0c2336e11aee8faf9dda1de302418c28b7ca556a3e765",
+    "scripts/build_html.py": "834fdfb26e93276107ba95e41839529773b6a014d777d4e5a5fecf23a9636975",
+    "Makefile": "15121f7a2db7dd3f9479a008fc77644f1266d345629f7db6de1ab93991332309",
+    "analysis/cache_audit.json": "4f453642abb84fede49a2cdb9a69fa6fe2e2ead1e898dbbd123a52b41c9b5db6",
+    "analysis/cache_acquisition.json": "b902201e64992bef478de023ee7bff442a72e5b3f8614055f94161498a487b5c",
+    "analysis/browser_validation_v15.json": "4194a50ca475023e9562272cb971e20b66a313850bb801da0b541d5749f5c948",
+    "analysis/browser_v15_cache_desktop.png": "069d661a4121f13e7f6238cdb6bacc99f5e8cb1941244fd4df8e309c419d8387",
+    "analysis/validation.json": "e2b0d767688f9faec0275114167d9d047aa9906885a1767255eb7356f9a3312f",
+    "sources/archive_manifest.json": "b258df0876274c75c5fda69f3cc7482d29648824d9e4e1c4ebe92d50476baa0d",
+    "sources/source_manifest.json": "08e743f68b57a76637024dbf6b58a1efbe15424cf0271a1b801667864054ec7d",
+    "index.html": "60954716b3826f9d0aef44314217f8365de6cb3adde38702b5d2e06b303b1508",
+    "report_standalone.html": "1d949f327d6c17c6f74f1d44ed04f944b374d7b4390f9d0ba4eabd0cf72a5a66",
+    "SCALE_TRANSFER_ZH.md": "b2fa7b7ee689f86273ade82a377132a67f2299c1831f45858ee5f9934aad9ca2"
+  }
+}

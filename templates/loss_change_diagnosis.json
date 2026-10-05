@@ -1,0 +1,21 @@
+{
+  "schema_version": "1.0",
+  "status": "planned_not_executed",
+  "question": null,
+  "observed_change": {"run": null, "time": null, "first_affected_step": null, "metric": null, "before": null, "after": null, "evidence": []},
+  "intervention": {"declared_change": [], "co_changes": [], "comparison_scope": null},
+  "checks": {
+    "metric_and_model_view": {"status": "not_checked", "evidence": [], "finding": null},
+    "sample_content_and_counts": {"status": "not_checked", "evidence": [], "finding": null},
+    "router_and_capacity": {"status": "not_checked", "evidence": [], "finding": null},
+    "gradients_and_updates": {"status": "not_checked", "evidence": [], "finding": null},
+    "optimizer_and_resume_clocks": {"status": "not_checked", "evidence": [], "finding": null},
+    "independent_capability_confirmation": {"status": "not_checked", "evidence": [], "finding": null}
+  },
+  "alternative_explanations": [],
+  "next_discriminating_check": null,
+  "required_resources": null,
+  "decision": "pending_evidence",
+  "permitted_claim": null,
+  "rollback_reference": null
+}

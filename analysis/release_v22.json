@@ -1,0 +1,24 @@
+{
+  "edition": "V22",
+  "goal_status": "active",
+  "checks_passed": 1163,
+  "source_files": 407,
+  "prior_source_files_preserved": 407,
+  "scope": "integrated diagnostic workflow and corrected prior review entry; no new experiment or source acquisition",
+  "new_training_results": null,
+  "artifact_sha256": {
+    "LOSS_TRIAGE_ZH.md": "4ee2fcb383eaa9386902fad200053b420370c21dad9f20bd74f2dd1ad97d6af6",
+    "CHANGE_REVIEW_ZH.md": "192382483059e0e20ad76f5eaa01e71323c33c733e5f273f6cdd0aabd25e29e4",
+    "PIPELINE_ZH.md": "48a4b4ec2660837bcd9c099655a095cfb493dd9c951433f19cb1bd1c235e445d",
+    "README.md": "1d9dc6df52009df919e648fa4341953aa1f2054b9b0b66dbc156e707c283d1cf",
+    "IMPROVEMENT_LOG_ZH.md": "4aafee1c5ff53ee93ac53692591d59b5cc4a742ace6e5ffd7fb85503a426590f",
+    "templates/loss_change_diagnosis.json": "817755fba0887dd0e91c59e8263d1af085db7ebaebcf13aea359f85863687e28",
+    "scripts/build_html.py": "c70a14c09f66d11c7017d85898d2c557b71b4c54a366bf58f52ed71a04f3484e",
+    "scripts/validate.py": "773237cbbbe3211b91aa9756b5b8343a9f82db01e3a630ce47b84da3842367d6",
+    "analysis/browser_validation_v22.json": "5dcd4f8b0b9aa9eac2fe670ff00be60dd34cab5a8cdaf24be2831dd3b9a29edf",
+    "analysis/browser_v22_triage_desktop.png": "c85af78081d0863ad636917969c8416302aa34664722532048a455da30385ac3",
+    "analysis/validation.json": "f20f8fc231364f2d2259786a70de95c1bb44884709b9f46a3492124ef95c446a",
+    "index.html": "f5486cbaf48a4d8e28b920b6e24dabe7a5731710a567c8d3bb1dbf72b4d9cdb3",
+    "report_standalone.html": "553f9214ba689f631e16dad92c2f6ac866da96f868d62897eb2d2b45b5034d47"
+  }
+}

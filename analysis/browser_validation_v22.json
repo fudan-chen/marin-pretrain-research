@@ -1,0 +1,25 @@
+{
+  "desktop": {
+    "viewport": 1440,
+    "width": 1425,
+    "tables": 4,
+    "template_link": true
+  },
+  "mobile": {
+    "viewport": 390,
+    "width": 375
+  },
+  "offline": {
+    "protocol": "file:",
+    "figures": 17,
+    "loaded": 17,
+    "tables": 4,
+    "requests": [],
+    "errors": []
+  },
+  "screenshot_sha256": {
+    "analysis/browser_v22_triage_desktop.png": "c85af78081d0863ad636917969c8416302aa34664722532048a455da30385ac3"
+  },
+  "visual_scope": "desktop screenshot viewed; mobile DOM dimensions; offline resources",
+  "prior_source_files_preserved": 407
+}

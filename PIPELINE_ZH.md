@@ -77,3 +77,7 @@ P1可以用[候选决策文档](DECISION_GUIDE_ZH.md)复算不同目标和限制
 ## 源码检查如何进入实际实验
 
 V18的[训练变更评审](CHANGE_REVIEW_ZH.md)将缓存/评分/边界、完整训练状态、实际更新规则、评估视图与预算接到P0/P2/P3/P5。它保留配置、内容、执行等价的区别，提供[变更记录](templates/training_change_review.json)。六份ladder配置的完整字段差异只支持完整配方比较，不把它当作共同状态下的单一配比确认。
+
+## loss变化的统一诊断入口
+
+V22的[诊断流程](LOSS_TRIAGE_ZH.md)把指标/模型视图、样本内容与计数、执行/更新规则依次接到上述阶段。它整合容量丢弃、HIST/TOPK估计和optimizer时钟，不把配置字段差异当成实际行为差异。可复制[诊断记录](templates/loss_change_diagnosis.json)保存首个异常、共同变化、替代解释和下一项区分检查；这是未执行模板，不新增训练或能力证据。

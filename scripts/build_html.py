@@ -21,7 +21,8 @@ chapters.insert(0,('routing-guide','MoE分配丢弃、权重与目标','ROUTING_
 chapters.insert(0,('boundary-guide','文档边界、上下文与有效目标','DOCUMENT_BOUNDARIES_ZH.md'))
 chapters.insert(0,('qb-guide','路由均衡、分位数与数据分组','QB_ESTIMATION_ZH.md'))
 chapters.insert(0,('optimizer-guide','优化器分组、衰减与状态时钟','OPTIMIZER_GROUPS_ZH.md'))
-priority=['optimizer-guide','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
+chapters.insert(0,('loss-triage','配比切换后的loss诊断流程','LOSS_TRIAGE_ZH.md'))
+priority=['loss-triage','optimizer-guide','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
 chapters.sort(key=lambda c:priority.index(c[0]) if c[0] in priority else len(priority))
 readings={x['file']:x for x in json.loads((ROOT/'analysis/figure_readings.json').read_text())}
 sections=[];toc=[]
@@ -99,7 +100,7 @@ template=template.replace('<a href="#order-lab">检查顺序与累计量</a>','<
 template=template.replace('<script>ASSESSMENTUI</script>','<script>ASSESSMENTUI</script><script type="application/json" id="engineering-data">ENGINEERINGDATA</script><script>ENGINEERINGUI</script>')
 template=template.replace('公开快照：2026-10-04','训练快照：2026-10-04 · 工程核对：10-05')
 template=template.replace('<a href="#assessment-lab">保存自己的证据判断</a>','<a href="#engineering-lab">核对工程解释与反证</a><a href="#assessment-lab">保存自己的证据判断</a>')
-template=template.replace('<a href="#engineering-lab">核对工程解释与反证</a>', '<a href="#optimizer-guide">最新：优化器分组与衰减</a><a href="#qb-guide">路由均衡与数据分组</a><a href="#routing-guide">MoE丢弃与训练目标</a><a href="#change-guide">训练变更评审</a><a href="#quality-guide">评分窗口与质量桶</a><a href="#dedup-guide">去重与样本对齐</a><a href="#cache-guide">缓存身份与配比归因</a><a href="#boundary-guide">文档边界与有效目标</a><a href="#state-guide">训练状态与切换时刻</a><a href="#contracts-guide">源码接口与恢复验收</a><a href="#scale-guide">配比历史与BPB聚合检查</a><a href="#engineering-lab">核对工程解释与反证</a>')
+template=template.replace('<a href="#engineering-lab">核对工程解释与反证</a>', '<a href="#loss-triage">最新：loss变化诊断流程</a><a href="#optimizer-guide">优化器分组与衰减</a><a href="#qb-guide">路由均衡与数据分组</a><a href="#routing-guide">MoE丢弃与训练目标</a><a href="#change-guide">训练变更评审</a><a href="#quality-guide">评分窗口与质量桶</a><a href="#dedup-guide">去重与样本对齐</a><a href="#cache-guide">缓存身份与配比归因</a><a href="#boundary-guide">文档边界与有效目标</a><a href="#state-guide">训练状态与切换时刻</a><a href="#contracts-guide">源码接口与恢复验收</a><a href="#scale-guide">配比历史与BPB聚合检查</a><a href="#engineering-lab">核对工程解释与反证</a>')
 workbench=json.loads((ROOT/'analysis/workbench_data.json').read_text());rubric=json.loads((ROOT/'analysis/rubrics.json').read_text());chapter_paths={file:'#'+slug for slug,_,file in chapters}
 for c in workbench['cases']:c['source']=chapter_paths.get(c['source'],c['source'])
 for rule in rubric['rules']:

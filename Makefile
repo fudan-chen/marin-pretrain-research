@@ -48,6 +48,7 @@ report:
 	$(PYTHON) scripts/test_order.py
 	$(NODE) scripts/test_order.cjs
 	$(NODE) scripts/test_assessment.cjs
+	$(PYTHON) scripts/build_engineering_map.py
 	$(PYTHON) scripts/build_html.py
 	$(PYTHON) scripts/archive_manifest.py
 	$(PYTHON) scripts/validate.py

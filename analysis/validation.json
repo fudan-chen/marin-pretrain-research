@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1225,
+  "checks_passed": 1247,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -76,7 +76,8 @@
     "V25 exact production-lineage subset trajectories / inherited history exclusion / aggregate direction sensitivity / no causal attribution",
     "V26 correction of parent micro versus macro BPB / all 67 macro reconstructions / original log helpers and RunningMean units",
     "V27 layout versus completion markers / async save handoff / copy-delete permission / reused marker / four recovery watermarks",
-    "V28 original asyncio budget / replica writer planning / odd chunk target boundary / no actual RSS claim"
+    "V28 original asyncio budget / replica writer planning / odd chunk target boundary / no actual RSS claim",
+    "V29 fifteen-case symptom / source / local-scope / next-check map and six entry routes; current delivery audit separates historical records"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

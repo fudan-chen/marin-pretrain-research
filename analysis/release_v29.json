@@ -1,0 +1,32 @@
+{
+  "edition": "V29",
+  "goal_status": "active",
+  "verification_status": "rebuild_and_dom_checks_passed",
+  "checks_passed": 1247,
+  "source_files": 423,
+  "prior_source_files_preserved": 423,
+  "new_source_acquisitions": 0,
+  "scope": "curated fifteen-case map and six proposed routes, source/link/coverage checks, current delivery audit; no automatic claim grader",
+  "mapped_cases": 15,
+  "proposed_entry_routes": 6,
+  "rubric_version": "1.1",
+  "actual_new_cluster_execution": null,
+  "actual_external_reader_result": null,
+  "artifact_sha256": {
+    "ENGINEERING_MAP_ZH.md": "44305ce7be65e3497853eaea48857a90d24b1bc7cf913f739a90ae6748d3eb58",
+    "DELIVERY_AUDIT_ZH.md": "45bb1b9e488ae7d0dab4f2bc9c088079a7c4644e522fd8e130d1b3bbf3823a7e",
+    "README.md": "ed8f0578c51bf60d18a8901657bb2135f4eeba27c199117c0fbdc2a27db99218",
+    "IMPROVEMENT_LOG_ZH.md": "09791b30f12c4ece2be70db1b5d6bb94b6cb433a6d32720b68b5818af1fe082d",
+    "Makefile": "203019d45e0b001d8464175fd890f6c8076227dd98dea2f0761e0c787e8a0cdf",
+    "config/engineering_case_map.json": "6a433c15fcceff815a1130278f59045fbcf302064c866b1b1cd5aae8b4c01e71",
+    "scripts/build_engineering_map.py": "29415a24ee5c6692bd81a35f3079a9f514387478175b84fd7813e29c34eb1116",
+    "scripts/build_html.py": "dcee57e01b5fc884aa6ffae635d686a9a924b7c2958559350ac8d07682921103",
+    "scripts/validate.py": "d7c1cf64490a742e59af13c2516c38db6a5dd561add81f37693b0bcfe51c4078",
+    "analysis/engineering_case_map.json": "4ca591ceae069d6ca90808c676326e1a4951ec9e408cbdf07d68309a8ebf4380",
+    "analysis/browser_validation_v29.json": "827b4de54da896e3abdb866e251ced8b376417ed7dd16a6a444e6866fc8d5724",
+    "analysis/validation.json": "8ecd22193f5c2bb6705f34e22a8af133ff3a920fdd4f8fe41047b4b48ad0036a",
+    "sources/archive_manifest.json": "4121e3e09fa0fcb8e704dc39650798fc0cea3b3ef19fbccdbd4d69d09e151b32",
+    "index.html": "b6b1238f7d9e0d53cf590b895c00d0c73753ec6e526353d4947bf73a12e77f92",
+    "report_standalone.html": "7e6e35ec02e78151d3f28f414f52863e54bdcaf86b830263595f89e16451db3a"
+  }
+}

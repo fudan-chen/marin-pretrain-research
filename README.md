@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本为V28。新增[Checkpoint内存与写入分摊](CHECKPOINT_MEMORY_ZH.md)，核对budget独占超大请求、副本writer计划和chunk整分边界。[Checkpoint提交与恢复](CHECKPOINT_COMMIT_ZH.md)则分清布局manifest、异步保存交接、完成metadata和独立恢复，附故障注入、控制流图与验收模板。V26对V25的micro/macro命名错误已[明确更正](EVAL_METRICS_ZH.md)。
+当前版本为V29。先用[预训练排障总图](ENGINEERING_MAP_ZH.md)按症状选择入口：15类问题逐项对应作者动作、源码、本地核对范围、下一项检查与接受边界。再看[当前交付审计](DELIVERY_AUDIT_ZH.md)，分清文件覆盖和真实验证。V26对V25的micro/macro命名错误已[明确更正](EVAL_METRICS_ZH.md)。
 
 建议按自己要解决的问题阅读，不必顺着版本号读完全部增补：
 

@@ -605,6 +605,15 @@ report['highlights']=[x.replace('422 source archive checksums valid','423 source
 report['highlights']+=['V28 original asyncio budget / replica writer planning / odd chunk target boundary / no actual RSS claim']
 browser28=read(A/'browser_validation_v28.json')
 ok('V28 memory chapter DOM fits both viewports and runs offline',browser28['desktop']['width']<=browser28['desktop']['viewport'] and browser28['mobile']['width']<=browser28['mobile']['viewport'] and browser28['offline']['figures']==browser28['offline']['loaded']==17 and browser28['offline']['tables']==3 and browser28['offline']['hasScope'] and browser28['offline']['requests']==browser28['offline']['errors']==[])
+case_map=read(A/'engineering_case_map.json')
+ok('V29 maps all fifteen report cases without claiming new execution',len(case_map['cases'])==15 and {x['report_section'] for x in case_map['cases']}=={'3.'+str(i) for i in range(1,16)} and all(x['actual_new_cluster_execution'] is None and x['original_evidence_urls'] for x in case_map['cases']))
+known_rules={x['id'] for x in read(A/'rubrics.json')['rules']}
+ok('V29 routes use established rules and preserve proposed-check status',len(case_map['entry_routes'])==6 and all(set(x['rubric_ids'])<=known_rules for x in case_map['cases']+case_map['entry_routes']) and case_map['status']=='research_navigation_and_proposed_checks')
+for p,sha in case_map['source_sha256'].items():ok('Case map input checksum '+p,hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha)
+ok('V29 navigation and current audit are present in standalone report',soup.select_one('#engineering-map-guide') is not None and soup.select_one('#delivery-audit-guide') is not None and 'V18及此前的历史审计' in soup.select_one('#delivery-audit-guide').text and '不自动给主张评分' in soup.select_one('#engineering-map-guide').text)
+report['highlights']+=['V29 fifteen-case symptom / source / local-scope / next-check map and six entry routes; current delivery audit separates historical records']
+browser29=read(A/'browser_validation_v29.json')
+ok('V29 fifteen-case map and six routes fit and load offline',browser29['desktop']['width']<=browser29['desktop']['viewport'] and browser29['mobile']['width']<=browser29['mobile']['viewport'] and browser29['offline']['figures']==browser29['offline']['loaded']==17 and browser29['offline']['cases']==15 and browser29['offline']['entryRows']==6 and browser29['offline']['historicalAudit'] and browser29['offline']['requests']==browser29['offline']['errors']==[])
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

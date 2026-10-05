@@ -1,0 +1,27 @@
+{
+  "desktop": {
+    "viewport": 1440,
+    "width": 1425,
+    "cases": 15,
+    "entryRows": 6,
+    "auditTables": 2,
+    "hasProposed": true
+  },
+  "mobile": {
+    "viewport": 390,
+    "width": 375
+  },
+  "offline": {
+    "figures": 17,
+    "loaded": 17,
+    "cases": 15,
+    "entryRows": 6,
+    "historicalAudit": true,
+    "requests": [],
+    "errors": []
+  },
+  "task_finished": true,
+  "scratch_closed": true,
+  "screenshot_inspection": false,
+  "scope": "DOM layout and offline loading; no screenshot or reader comprehension test"
+}

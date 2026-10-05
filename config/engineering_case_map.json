@@ -1,0 +1,455 @@
+{
+  "schema": "engineering-case-map-v1",
+  "authorship": "report-author curated cross-references, not Marin official acceptance criteria",
+  "status": "research_navigation_and_proposed_checks",
+  "cases": [
+    {
+      "id": "restore_placement",
+      "report_section": "3.1",
+      "symptom": "恢复报memory kind不匹配",
+      "mechanism": "作者报告deserialize device buffer与pinned-host模板不匹配；当前reader源码保留目标sharding并逐leaf完成放置。",
+      "local_evidence_scope": "读取路径已归档；未运行真实恢复或验证HBM/host落点。",
+      "source_paths": [
+        "sources/checkpoint_commit_2026_10_05/tensorstore_serialization.py"
+      ],
+      "reading_paths": [
+        "TRAIN_STATE_ZH.md",
+        "CHECKPOINT_COMMIT_ZH.md"
+      ],
+      "proposed_next_check": "小state先保存再独立恢复，逐leaf核对dtype、shape、sharding与memory kind，再扩大到真实state。",
+      "decision_boundary": "落点与完整状态均匹配才接受；仅打印Loaded不通过。",
+      "rubric_ids": [
+        "R13",
+        "R14"
+      ],
+      "actual_new_cluster_execution": null,
+      "reported_action_result": "作者修复逐leaf的device materialization与目标memory kind放置，并保留具体化sharding里的memory_kind。"
+    },
+    {
+      "id": "restore_oom",
+      "report_section": "3.2",
+      "symptom": "恢复显示Loaded后仍OOM",
+      "mechanism": "作者以恢复后驻留量、4 ranks/node和冷启动对照定位共存状态/读缓冲问题；多项内存措施一起生效。",
+      "local_evidence_scope": "历史数字来自作者，当前未重测RSS；源码探针不能证明940GiB配置会通过。",
+      "source_paths": [
+        "sources/checkpoint_commit_2026_10_05/tensorstore_serialization.py"
+      ],
+      "reading_paths": [
+        "CHECKPOINT_MEMORY_ZH.md",
+        "CHECKPOINT_COMMIT_ZH.md"
+      ],
+      "proposed_next_check": "分阶段记录init、reader staging、restored state、data cache与allocator；按node叠加local ranks。",
+      "decision_boundary": "峰值与稳态均有余量、下一步可运行才接受；确定性OOM先停止重复拉起。",
+      "rubric_ids": [
+        "R12",
+        "R13",
+        "R14"
+      ],
+      "actual_new_cluster_execution": null,
+      "reported_action_result": "作者组合使用读缓冲分块/donation、释放初始状态、延后data cache和rank轮流恢复，报告fleet峰值882→735GiB及step164续训。"
+    },
+    {
+      "id": "save_rss",
+      "report_section": "3.3",
+      "symptom": "保存后RSS地板逐次抬高",
+      "mechanism": "作者纠正为completed futures仍持引用，allocator保留另算；两条链不能互相代替。",
+      "local_evidence_scope": "本地检查预算/规划，未执行真实manager的引用清理，也未测RSS。",
+      "source_paths": [
+        "sources/checkpoint_commit_2026_10_05/tensorstore_serialization.py",
+        "sources/checkpoint_memory_2026_10_05/byte_budget.py"
+      ],
+      "reading_paths": [
+        "CHECKPOINT_MEMORY_ZH.md",
+        "ENGINEERING_GUIDE_ZH.md"
+      ],
+      "proposed_next_check": "同一state重复保存，分别测writer/non-writer RSS、future完成/可达引用、allocator retained bytes。",
+      "decision_boundary": "引用回落与allocator行为分别判断；RSS没回基线不能单独否定引用修复。",
+      "rubric_ids": [
+        "R13",
+        "R14"
+      ],
+      "actual_new_cluster_execution": null,
+      "reported_action_result": "作者先后尝试缓存/并发限制、malloc_trim与jemalloc，并纠正completed futures引用；没有在报告里认定第一项措施根治。"
+    },
+    {
+      "id": "loader_cache",
+      "report_section": "3.4",
+      "symptom": "增大loader cache，训练速度基本不变",
+      "mechanism": "小规模loader benchmark已远高于训练所需速率；更大cache未证明端到端收益。",
+      "local_evidence_scope": "报告复述作者吞吐；没有11rack尾延迟与真实loader stall测量。",
+      "source_paths": [],
+      "reading_paths": [
+        "DATA_GUIDE_ZH.md",
+        "ENGINEERING_GUIDE_ZH.md"
+      ],
+      "proposed_next_check": "保持训练、I/O和输入相同，仅变cache cap，记录consumer等待、cache hit、尾延迟与RSS。",
+      "decision_boundary": "满足输入余量后优先保留较小内存配置；只有实际训练等待降低才称端到端加速。",
+      "rubric_ids": [
+        "R02",
+        "R12",
+        "R14"
+      ],
+      "actual_new_cluster_execution": null,
+      "reported_action_result": "作者比较1GiB与125GiB cap，较小cache仍提供约18.6倍输入余量；没有报告11rack端到端提升。"
+    },
+    {
+      "id": "infrastructure",
+      "report_section": "3.5",
+      "symptom": "NVLink/IB/节点掉线，或退出阶段CUDA报错",
+      "mechanism": "先行硬件证据与teardown报错有不同因果位置；retry恢复进度不等于修复硬件。",
+      "local_evidence_scope": "已有作者时序证据；没有本地设备诊断，未定位为训练代码根因。",
+      "source_paths": [],
+      "reading_paths": [
+        "ENGINEERING_GUIDE_ZH.md",
+        "OPERATIONS_ZH.md"
+      ],
+      "proposed_next_check": "按UTC记录last progress、first abnormal event、watchdog、kill与restart，并保存各rank健康证据。",
+      "decision_boundary": "有先行独立证据才归硬件；只有退出错误则保持最初原因未知。",
+      "rubric_ids": [
+        "R01",
+        "R13",
+        "R18"
+      ],
+      "actual_new_cluster_execution": null,
+      "reported_action_result": "作者whole-gang retry从完整checkpoint恢复；硬件是否修好和teardown是否首因分别保留判断。"
+    },
+    {
+      "id": "ragged_rollout",
+      "report_section": "3.6",
+      "symptom": "ragged候选短窗更快，随后silent hang",
+      "mechanism": "少丢弃改变前向，短窗数学/速度通过；生产同步仍失败，作者回退旧代码与完整状态。",
+      "local_evidence_scope": "独立复算公开同step指标；没有重放token ID或多rack执行。",
+      "source_paths": [
+        "sources/routing_2026_10_05/pooled.py",
+        "sources/routing_2026_10_05/ragged.py"
+      ],
+      "reading_paths": [
+        "ROUTING_DROPS_ZH.md",
+        "CHANGE_REVIEW_ZH.md"
+      ],
+      "proposed_next_check": "同handoff和输入比较数值/路由，先验证独立checkpoint树与回退，再覆盖生产拓扑稳定窗。",
+      "decision_boundary": "分别批准数值、速度、稳定、保存恢复；出现同型hang即按预定条件回退。",
+      "rubric_ids": [
+        "R03",
+        "R12",
+        "R13",
+        "R14"
+      ],
+      "actual_new_cluster_execution": null,
+      "reported_action_result": "作者在两次silent hang后回退旧代码和旧checkpoint，保留独立run/checkpoint树并核验同批次loss重放。"
+    },
+    {
+      "id": "watch_path",
+      "report_section": "3.7",
+      "symptom": "hang总在日志/watch附近",
+      "mechanism": "曾提watch/plain executable交替，后查INLINE路径排除了必要条件；相邻时间不是机制。",
+      "local_evidence_scope": "来源中有作者路径审计；未取得历史实际编译执行包。",
+      "source_paths": [
+        "sources/code_train.py"
+      ],
+      "reading_paths": [
+        "ENGINEERING_GUIDE_ZH.md",
+        "IMPLEMENTATION_CONTRACTS_ZH.md"
+      ],
+      "proposed_next_check": "核对执行版本、WatchMode、编译路径与触发条件；定位最先停住的rank。",
+      "decision_boundary": "必要条件不存在就撤回该假说；小环境未复现只保留阴性范围。",
+      "rubric_ids": [
+        "R01",
+        "R13",
+        "R14"
+      ],
+      "actual_new_cluster_execution": null,
+      "reported_action_result": "作者核对INLINE执行路径后排除watch/plain交替解释；这不是把所有hang都归入另一确定根因。"
+    },
+    {
+      "id": "nccl_versions",
+      "report_section": "3.8",
+      "symptom": "NCCL编译headers/runtime不一致",
+      "mechanism": "依赖diff修正了明确版本缺陷；候选200步通过后1590步仍复发，不能认定全部hang解决。",
+      "local_evidence_scope": "PR patch与作者复发记录已归档；本地没有加载wheel或验证实际runtime。",
+      "source_paths": [
+        "sources/engineering_2026_10_05/pull_9062_files.json"
+      ],
+      "reading_paths": [
+        "ENGINEERING_GUIDE_ZH.md",
+        "CHANGE_REVIEW_ZH.md"
+      ],
+      "proposed_next_check": "记录headers、wheel摘要和实际加载库版本，随后按同故障特征观察完整拓扑。",
+      "decision_boundary": "版本一致性通过与长期稳定通过分别记录；保留已验收回退点。",
+      "rubric_ids": [
+        "R01",
+        "R12",
+        "R13",
+        "R14"
+      ],
+      "actual_new_cluster_execution": null,
+      "reported_action_result": "作者更换ARM64 PJRT依赖wheel修正headers/runtime缺陷；200步通过后1590步复发，稳定性结论收窄。"
+    },
+    {
+      "id": "pdl_hang",
+      "report_section": "3.9",
+      "symptom": "grouped GEMM中部分warps退出，load warp等barrier",
+      "mechanism": "dump约束PDL读取旧边界的假说；PDL-off与wheel整包缓解，不提供单组件收益。",
+      "local_evidence_scope": "launcher diff、dump叙述与公开窗口已核对；未执行GPU边界确认测量。",
+      "source_paths": [
+        "sources/engineering_2026_10_05/pull_9183_files.json"
+      ],
+      "reading_paths": [
+        "ENGINEERING_GUIDE_ZH.md",
+        "CHANGE_REVIEW_ZH.md"
+      ],
+      "proposed_next_check": "固定wheel/拓扑，记录各warp真实cu_seqlens及前驱完成事件；单独比较PDL开关。",
+      "decision_boundary": "机制需边界读值支持；同型warp状态再现要改写假说，不只延长观察窗。",
+      "rubric_ids": [
+        "R12",
+        "R13",
+        "R14",
+        "R18"
+      ],
+      "actual_new_cluster_execution": null,
+      "reported_action_result": "作者部署PDL-off与新wheel整包，记录194 paired steps及2052步无hang窗口；组件收益与最终机制没有独立确认。"
+    },
+    {
+      "id": "commit_permissions",
+      "report_section": "3.10",
+      "symptom": "永久metadata copy完成却报AccessDenied",
+      "mechanism": "copy-delete提交动作与保护策略冲突；当前固定代码远端metadata direct write。",
+      "local_evidence_scope": "原atomic/metadata助手在模拟权限下核对；没有测试真实S3 policy。",
+      "source_paths": [
+        "sources/checkpoint_commit_2026_10_05/atomic.py",
+        "sources/checkpoint_commit_2026_10_05/checkpoint.py"
+      ],
+      "reading_paths": [
+        "CHECKPOINT_COMMIT_ZH.md"
+      ],
+      "proposed_next_check": "区分目的对象可见、callback成功和恢复通过，核对temp/permanent前缀实际权限。",
+      "decision_boundary": "临时、永久及自己save后restore分别通过；不从已有目的对象掩盖调用失败。",
+      "rubric_ids": [
+        "R13",
+        "R14"
+      ],
+      "actual_new_cluster_execution": null,
+      "reported_action_result": "原调查识别copy/delete与保护策略冲突且未改policy；随后部署保存测试通过。当前固定源码远端metadata使用direct write。"
+    },
+    {
+      "id": "quota_stall",
+      "report_section": "3.11",
+      "symptom": "配额拒写后清理，仍有部分rank停写",
+      "mechanism": "配额拒写有证据，清理后256/704停写起因未知；下次save等待旧commit是传播链。",
+      "local_evidence_scope": "本地验证manifest/metadata与假async边界；未定位真实worker或存储首因。",
+      "source_paths": [
+        "sources/checkpoint_commit_2026_10_05/checkpoint.py",
+        "sources/checkpoint_commit_2026_10_05/tensorstore_serialization.py"
+      ],
+      "reading_paths": [
+        "CHECKPOINT_COMMIT_ZH.md",
+        "CHECKPOINT_MEMORY_ZH.md"
+      ],
+      "proposed_next_check": "采集每rank local commit和各请求首个异常，记录四个水位与容量/保留版本。",
+      "decision_boundary": "恢复写入可记缓解；清理后的第二次停滞另立事故，不能沿用配额根因。",
+      "rubric_ids": [
+        "R13",
+        "R14",
+        "R18"
+      ],
+      "actual_new_cluster_execution": null,
+      "reported_action_result": "作者清理约49TB并保留指定handoff，服务恢复写入；清理后另一次256/704停写起因仍未确认。"
+    },
+    {
+      "id": "kernel_bundle",
+      "report_section": "3.12",
+      "symptom": "FA4/mask/GC整包提速，CE略偏移",
+      "mechanism": "三项一起变更，训练CE窗口只支持该窗口数值差；active-only消费者允许特定路径去tail mask。",
+      "local_evidence_scope": "本地复算200点；NaN-tail测试仅阅读PR，未在SM100执行。",
+      "source_paths": [
+        "sources/engineering_2026_10_05/pull_9333_files.json"
+      ],
+      "reading_paths": [
+        "ENGINEERING_GUIDE_ZH.md",
+        "CHANGE_REVIEW_ZH.md"
+      ],
+      "proposed_next_check": "毒化unused tail，核对active输出、输入梯度、所有专家参数梯度；另做固定eval和save/restore。",
+      "decision_boundary": "整包接受条件与组件消融分开；消费者变更后重新审计mask契约。",
+      "rubric_ids": [
+        "R03",
+        "R12",
+        "R13",
+        "R14"
+      ],
+      "actual_new_cluster_execution": null,
+      "reported_action_result": "作者部署FA4、去tail mask与协调GC整包，200步有吞吐改善与小CE偏移；当时eval和自己save后restore尚未覆盖。"
+    },
+    {
+      "id": "router_precision",
+      "report_section": "3.13",
+      "symptom": "提高dot精度，score更准但路由改变",
+      "mechanism": "top-k离散边界使小误差改变专家集合与QB下一步状态；20步单rack不能保证生产切换。",
+      "local_evidence_scope": "fork三分支静态核对与人工BF16舍入；未运行真实GPU dot、fixture或长期训练。",
+      "source_paths": [
+        "sources/router_precision_2026_10_05/model.py"
+      ],
+      "reading_paths": [
+        "ROUTER_PRECISION_ZH.md",
+        "QB_ESTIMATION_ZH.md"
+      ],
+      "proposed_next_check": "分别测顺序、集合和combine，设计训练/评估policy交叉对照，固定schedule与checkpoint。",
+      "decision_boundary": "算术参考更接近不自动批准中途切换；历史作者选择未部署。",
+      "rubric_ids": [
+        "R03",
+        "R12",
+        "R14",
+        "R15"
+      ],
+      "actual_new_cluster_execution": null,
+      "reported_action_result": "作者比较旧/新router算术，精度指标改善但真实路由改变；短窗结果不支持中途切换，选择未部署。"
+    },
+    {
+      "id": "pending_state",
+      "report_section": "3.14",
+      "symptom": "checkpoint-only eval漏了pending QB更新",
+      "mechanism": "raw params与下一次train forward实际使用状态不同；实验结果重算不等于生产路径合入。",
+      "local_evidence_scope": "原状态控制流与导出探针已核对，依赖替代；没有真实checkpoint恢复。",
+      "source_paths": [
+        "sources/state_2026_10_05/state_adapter.py",
+        "sources/state_2026_10_05/export_vllm.py"
+      ],
+      "reading_paths": [
+        "TRAIN_STATE_ZH.md",
+        "EVAL_METRICS_ZH.md"
+      ],
+      "proposed_next_check": "同state比较下一步train视图、eval视图和export视图，确认pending应用恰好一次。",
+      "decision_boundary": "记录实验fork/主线状态；完整状态与metric路径一致才批准评估口径。",
+      "rubric_ids": [
+        "R03",
+        "R14"
+      ],
+      "actual_new_cluster_execution": null,
+      "reported_action_result": "作者废弃漏pending state的a1结果并重做a2；实验fork的纠正没有被表述为生产主线已修好。"
+    },
+    {
+      "id": "context_drop",
+      "report_section": "3.15",
+      "symptom": "固定token budget下拉长context，drop上升",
+      "mechanism": "独立文档减少可增加局部相关与专家集中；字段sender不必表示裁剪发生在sender。",
+      "local_evidence_scope": "原drop分母/裁剪辅助检查和作者三seed诊断；没有生产长context结果。",
+      "source_paths": [
+        "sources/routing_2026_10_05/ragged.py",
+        "sources/routing_2026_10_05/ep_common.py"
+      ],
+      "reading_paths": [
+        "ROUTING_DROPS_ZH.md",
+        "DOCUMENT_BOUNDARIES_ZH.md",
+        "QB_ESTIMATION_ZH.md"
+      ],
+      "proposed_next_check": "固定checkpoint、token budget和路由策略，分开测assignment丢弃、受损token与有效目标。",
+      "decision_boundary": "不只比较drop倍数；qk、LR、WD、拓扑变化保留为混杂，按真实能力约束验收。",
+      "rubric_ids": [
+        "R02",
+        "R03",
+        "R12",
+        "R14"
+      ],
+      "actual_new_cluster_execution": null,
+      "reported_action_result": "作者用同180k checkpoint做单rack三seed短诊断，报告长context drop上升及小幅速度下降；生产长上下文质量仍未验证。"
+    }
+  ],
+  "entry_routes": [
+    {
+      "symptom": "训练loss在换配比处跳变，但训练正常",
+      "first_read": [
+        "LOSS_TRIAGE_ZH.md",
+        "EVAL_METRICS_ZH.md",
+        "MIX_TRAJECTORY_ZH.md"
+      ],
+      "first_artifact": "原metric key、配比生效step、固定验证叶子/micro/macro与输入身份",
+      "hold_decision": "先判断尺子/分布/状态是否改变，再讨论数据质量；不由训练CE跳变直接改比例。",
+      "rubric_ids": [
+        "R01",
+        "R03",
+        "R14"
+      ]
+    },
+    {
+      "symptom": "部分rank不推进，最后停在AllReduce/barrier",
+      "first_read": [
+        "ENGINEERING_GUIDE_ZH.md",
+        "OPERATIONS_ZH.md"
+      ],
+      "first_artifact": "各rank last progress与首个异常，触发机制的必要条件和实际执行包",
+      "hold_decision": "先查最早未进入后续collective的rank；末端等待不能独立证明通信库首因。",
+      "rubric_ids": [
+        "R01",
+        "R13",
+        "R14",
+        "R18"
+      ]
+    },
+    {
+      "symptom": "训练继续，但保存水位落后或下一次save阻塞",
+      "first_read": [
+        "CHECKPOINT_COMMIT_ZH.md",
+        "CHECKPOINT_MEMORY_ZH.md"
+      ],
+      "first_artifact": "四个水位、旧manager任务状态、manifest/metadata请求和每rank local commit",
+      "hold_decision": "布局存在、路径返回、marker可见和restore通过逐项判断；保留已验证回退点。",
+      "rubric_ids": [
+        "R12",
+        "R13",
+        "R14"
+      ]
+    },
+    {
+      "symptom": "恢复后OOM或保存后RSS不断抬高",
+      "first_read": [
+        "CHECKPOINT_MEMORY_ZH.md",
+        "CHECKPOINT_COMMIT_ZH.md",
+        "TRAIN_STATE_ZH.md"
+      ],
+      "first_artifact": "分阶段buffer共存、每rank计划、当前RSS、可达引用和allocator retained bytes",
+      "hold_decision": "先定位活跃对象与调度等待，再改变一个内存控制量；不连续重复确定性OOM。",
+      "rubric_ids": [
+        "R12",
+        "R13",
+        "R14"
+      ]
+    },
+    {
+      "symptom": "候选kernel更快，准备接入生产",
+      "first_read": [
+        "CHANGE_REVIEW_ZH.md",
+        "ENGINEERING_GUIDE_ZH.md"
+      ],
+      "first_artifact": "五个冻结对象、同起点输入/状态、数值窗口与回退和保存恢复结果",
+      "hold_decision": "整包接受与组件收益分开；短窗、固定eval、生产稳定与恢复分别验收。",
+      "rubric_ids": [
+        "R03",
+        "R12",
+        "R13",
+        "R14"
+      ]
+    },
+    {
+      "symptom": "准备修改数据比例或顺序",
+      "first_read": [
+        "DATA_GUIDE_ZH.md",
+        "DECISION_GUIDE_ZH.md",
+        "TRANSFER_GUIDE_ZH.md",
+        "ORDER_GUIDE_ZH.md"
+      ],
+      "first_artifact": "旧/简单基线、供体、逐桶预算与累计量、独立重复、预定保底项",
+      "hold_decision": "先检查竞争参照与预算/顺序混杂，保留逐任务限制；选择集收益不冒充独立确认。",
+      "rubric_ids": [
+        "R04",
+        "R05",
+        "R06",
+        "R07",
+        "R08",
+        "R09",
+        "R10",
+        "R11",
+        "R12",
+        "R15"
+      ]
+    }
+  ]
+}

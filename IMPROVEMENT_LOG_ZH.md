@@ -200,3 +200,8 @@ V25把`paloma/bpb`错误命名为macro；它在固定公共源码中来自父级
 ## V28：保存内存预算与副本写入计划
 
 新增[CHECKPOINT_MEMORY_ZH.md](CHECKPOINT_MEMORY_ZH.md)，追加固定HostByteBudget源码。17项CPU预算、原shape与synthetic sharding检查核对超大请求独占、线程释放、副本区间覆盖、单writer与奇数chunk超目标边界。默认16GiB/process和日志4倍乘数不冒充Hero实测；实际RSS、模型write plan、GPU切片和TensorStore I/O仍未验证。后续优先实际每rank计划和内存/提交时间分解，控制一个变量后选budget。
+
+
+## V29：将源码增补收束为症状驱动的交接图
+
+新增[ENGINEERING_MAP_ZH.md](ENGINEERING_MAP_ZH.md)，以人工配置映射15类主报告问题与六种起点，分别保存作者动作/结果、本地证据范围、建议检查和决策边界，仍使用18条1.1规则。构建核对15标题完整覆盖、URL、文件SHA与规则ID；它不自动证明根因。更新交付审计，旧V18记录显式历史化；正文入口优先总图。没有新增集群运行、数据来源或读者成绩，长期目标继续进行中。

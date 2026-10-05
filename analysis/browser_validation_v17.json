@@ -1,0 +1,36 @@
+{
+  "desktop": {
+    "viewport": 1440,
+    "width": 1425,
+    "frame": 995,
+    "bank": "d58ffef93d8d21e388bd5e8ab072e91c6726aed756d586c0e1b961cb53bf3e9e"
+  },
+  "mobile": {
+    "viewport": 390,
+    "width": 375,
+    "frame": 295,
+    "inner_width": 280,
+    "inner_viewport": 295,
+    "coverage": "6000 / 20000"
+  },
+  "duplicate_case": {
+    "chars": 2001,
+    "repeated_first_two_windows": true
+  },
+  "offline": {
+    "protocol": "file:",
+    "figures": 17,
+    "coverage": "6000 / 10000",
+    "bank": "d58ffef93d8d21e388bd5e8ab072e91c6726aed756d586c0e1b961cb53bf3e9e",
+    "requests": [],
+    "errors": []
+  },
+  "screenshots": [
+    "analysis/browser_v17_quality_desktop.png"
+  ],
+  "screenshot_sha256": {
+    "analysis/browser_v17_quality_desktop.png": "ccd51a4df722eb74a2484f61f22a53bfdbfc6d622a8456d020b2411ebbb18c67"
+  },
+  "visual_scope": "desktop screenshot viewed; actual button interaction on desktop/mobile/offline; mobile DOM dimensions",
+  "prior_source_files_preserved": 389
+}

@@ -1,0 +1,6 @@
+Source: https://numpy.org/doc/stable/reference/generated/numpy.interp.html
+Acquisition: web tool text excerpt, not raw HTML; direct urllib returned HTTP 403.
+Observed page title: NumPy v2.5 Manual / numpy.interp
+Official warning excerpt: The x-coordinate sequence is expected to be increasing, but this is not explicitly enforced.
+Documented strict-order check: np.all(np.diff(xp) > 0)
+The page also excludes NaN in xp. This excerpt is not a snapshot of the entire documentation page.

@@ -1,0 +1,255 @@
+{
+  "checks_passed": 11,
+  "checks": [
+    "Separated level medians yield strictly increasing knots",
+    "Separated toy oracle levels map to five buckets",
+    "Missing oracle level is rejected",
+    "Present levels do not ensure strictly increasing knots",
+    "2000 characters use one window; 2001 use three",
+    "2001 repeats the first two windows",
+    "10000 characters cover only 6000 unique characters",
+    "Synthetic unsampled damage is invisible to BME windows",
+    "Rare raw token IDs are omitted from compact vocabulary",
+    "Exact bucket edges enter the higher bucket",
+    "Valid remap preserves nondecreasing order and clips endpoints"
+  ],
+  "numpy_version": "2.0.2",
+  "good_calibration": {
+    "raw": [
+      0.1,
+      0.3,
+      0.5,
+      0.7,
+      0.9
+    ],
+    "levels": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "knots": {
+      "xk": [
+        0.099999,
+        0.2,
+        0.4,
+        0.6,
+        0.8,
+        0.900001
+      ],
+      "yk": [
+        0,
+        0.2,
+        0.4,
+        0.6,
+        0.8,
+        1
+      ]
+    },
+    "calibrated": [
+      1.999980000201998e-06,
+      0.3,
+      0.5,
+      0.7,
+      0.9999980000199997
+    ],
+    "buckets": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  "collapsed_calibration": {
+    "xk": [
+      0.499999,
+      0.5,
+      0.5,
+      0.5,
+      0.5,
+      0.500001
+    ],
+    "yk": [
+      0,
+      0.2,
+      0.4,
+      0.6,
+      0.8,
+      1
+    ],
+    "observed_numpy_result": [
+      0.8
+    ],
+    "valid_interp_contract": false
+  },
+  "bme_windows": [
+    {
+      "chars": 1999,
+      "spans": [
+        [
+          0,
+          1999
+        ]
+      ],
+      "unique_chars": 1999,
+      "coverage": 1.0,
+      "window_count": 1
+    },
+    {
+      "chars": 2000,
+      "spans": [
+        [
+          0,
+          2000
+        ]
+      ],
+      "unique_chars": 2000,
+      "coverage": 1.0,
+      "window_count": 1
+    },
+    {
+      "chars": 2001,
+      "spans": [
+        [
+          0,
+          2000
+        ],
+        [
+          0,
+          2000
+        ],
+        [
+          1,
+          2001
+        ]
+      ],
+      "unique_chars": 2001,
+      "coverage": 1.0,
+      "window_count": 3
+    },
+    {
+      "chars": 3000,
+      "spans": [
+        [
+          0,
+          2000
+        ],
+        [
+          500,
+          2500
+        ],
+        [
+          1000,
+          3000
+        ]
+      ],
+      "unique_chars": 3000,
+      "coverage": 1.0,
+      "window_count": 3
+    },
+    {
+      "chars": 4000,
+      "spans": [
+        [
+          0,
+          2000
+        ],
+        [
+          1000,
+          3000
+        ],
+        [
+          2000,
+          4000
+        ]
+      ],
+      "unique_chars": 4000,
+      "coverage": 1.0,
+      "window_count": 3
+    },
+    {
+      "chars": 6000,
+      "spans": [
+        [
+          0,
+          2000
+        ],
+        [
+          2000,
+          4000
+        ],
+        [
+          4000,
+          6000
+        ]
+      ],
+      "unique_chars": 6000,
+      "coverage": 1.0,
+      "window_count": 3
+    },
+    {
+      "chars": 10000,
+      "spans": [
+        [
+          0,
+          2000
+        ],
+        [
+          4000,
+          6000
+        ],
+        [
+          8000,
+          10000
+        ]
+      ],
+      "unique_chars": 6000,
+      "coverage": 0.6,
+      "window_count": 3
+    },
+    {
+      "chars": 20000,
+      "spans": [
+        [
+          0,
+          2000
+        ],
+        [
+          9000,
+          11000
+        ],
+        [
+          18000,
+          20000
+        ]
+      ],
+      "unique_chars": 6000,
+      "coverage": 0.3,
+      "window_count": 3
+    }
+  ],
+  "unsampled_damage": {
+    "char_position": 3000,
+    "doc_chars": 10000,
+    "scores": [
+      1.0,
+      1.0
+    ],
+    "scorer": "synthetic ! detector",
+    "real_model_result": null
+  },
+  "rare_vocab_remap": {
+    "10": 2
+  },
+  "source_sha256": {
+    "sources/quality_2026_10_05/calibrate.py": "06a865544d708255084ba4d287c059e580c7e0e1e6ff17b5db31c28b2fbfda4d",
+    "sources/quality_2026_10_05/scorer.py": "7c50e92f26751e3400cf3b7531960c59e9d8bda86b493bd26524e880d04e1251",
+    "sources/quality_2026_10_05/data.py": "dba14b1b305afef50206ff77e68f5e948539c383b9b823d4f17c10279f45fa1e",
+    "sources/quality_2026_10_05/artifact.py": "af50c63371ef3366c6cec4a292ffdba6e54f752348f50cb341042cf0e8bfd7a2"
+  },
+  "actual_model": null,
+  "actual_calibration_file": null,
+  "historical_execution_sha": null
+}

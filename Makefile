@@ -15,6 +15,9 @@ report:
 	$(PYTHON) scripts/probe_boundaries.py
 	$(PYTHON) scripts/audit_cache.py
 	$(PYTHON) scripts/probe_dedup.py
+	$(PYTHON) scripts/probe_quality.py
+	$(PYTHON) scripts/build_quality_windows.py
+	$(NODE) scripts/test_quality.cjs
 	$(PYTHON) scripts/build_learning.py
 	$(PYTHON) scripts/build_decision.py
 	$(PYTHON) scripts/build_transfer.py > analysis/transfer_computation_log.txt

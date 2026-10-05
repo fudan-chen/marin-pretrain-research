@@ -141,7 +141,7 @@ alt=all_rows[f['counterexample_run']]
 ok('197c dominates selected seed0 on three axes but not all tasks',all(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in [PM,HE,GM]) and sum(metric_value(alt,k)>metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==31 and sum(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==23)
 ok('197c has no independent seed1 or seed2 counterpart in this registry',sum('197c9f5ceff6b9ee-' in r['run_name'] for r in rows)==1)
 F=S/'findings_2026_10_04'
-ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/','contracts_2026_10_05/','state_2026_10_05/','boundaries_2026_10_05/','cache_2026_10_05/','dedup_2026_10_05/')) for x in manifest['files'])==313)
+ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/','contracts_2026_10_05/','state_2026_10_05/','boundaries_2026_10_05/','cache_2026_10_05/','dedup_2026_10_05/','quality_2026_10_05/')) for x in manifest['files'])==313)
 for i,row in enumerate(f['configs']):
     def source_run(name):return read((F if 'mixprior-' in name else P)/('config_'+name+'.json'))['data']['project']['run']
     ra,rb=source_run(row['run_a']),source_run(row['run_b']);ca,cb=json.loads(ra['config']),json.loads(rb['config'])
@@ -192,7 +192,7 @@ for scenario in decision_checks['scenarios']:
 doc_tables=soup.select('#decision-guide table')
 ok('Decision documentation preserves nine scenarios and six rule counterexamples',len(doc_tables)==3 and len(doc_tables[1].select('tbody tr'))==9 and len(doc_tables[2].select('tbody tr'))==6 and all(int(t.select('td')[2].text)==s['eligible'] and (s['best'] is None or s['best']==t.select('td')[3].text) for s,t in zip(decision_checks['scenarios'],doc_tables[1].select('tbody tr'))))
 ok('Selector trace reports bounded search rather than universal absence',trace['status']=='not_recovered_in_checked_public_entries' and trace['tree_truncated'] is False and len(trace['limitations'])==4 and all(q['total_count']==q['items_returned']==1 and q['issue_numbers']==[9126] and q['incomplete_results'] is False for q in trace['issue_queries']) and trace['issue_9126_body_unchanged_from_prior_archive'])
-ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==390 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
+ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==400 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
 contract=read(ROOT/'templates/selection_contract.json')
 ok('Confirmation contract cannot retroactively assert prior registration',contract['status']=='planned_not_executed' and contract['prior_search_results_already_seen'] is True and contract['contract_frozen_utc'] is None and contract['results'] is None and contract['independent_confirmation']['used_during_search'] is None)
 embedded=json.loads(soup.select_one('#decision-data').text)
@@ -471,6 +471,18 @@ report['highlights']+=['V16 sixteen-source fuzzy exemption / real local Parquet 
 browser16=read(A/'browser_validation_v16.json')
 ok('V16 chapter fits viewport and loads offline with unchanged assessment bank',browser16['desktop']['width']<=browser16['desktop']['viewport'] and browser16['mobile']['width']<=browser16['mobile']['viewport'] and browser16['offline']['figures']==17 and browser16['offline']['tables']==3 and browser16['offline']['requests']==browser16['offline']['errors']==[] and browser16['offline']['bank']==bank['bank_sha256'])
 ok('V16 viewed screenshot retains exact bytes',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha for p,sha in browser16['screenshot_sha256'].items()))
+quality=read(A/'quality_probe.json')
+ok('V17 quality helpers preserve eleven scoped checks',quality['checks_passed']==len(quality['checks'])==11 and quality['actual_model'] is None and quality['actual_calibration_file'] is None and quality['historical_execution_sha'] is None)
+ok('V17 quality windows distinguish duplication and coverage',quality['bme_windows'][2]['spans'][0]==quality['bme_windows'][2]['spans'][1] and quality['bme_windows'][6]['coverage']==.6 and quality['bme_windows'][7]['coverage']==.3 and quality['unsampled_damage']['real_model_result'] is None)
+ok('V17 invalid interpolation is not treated as valid calibration',quality['collapsed_calibration']['valid_interp_contract'] is False)
+for p,sha in quality['source_sha256'].items():ok('Quality source checksum '+p,hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha)
+qframe=soup.select_one('#quality-window-frame')
+ok('V17 explorer is embedded with offline srcdoc and explicit quality limits',qframe is not None and qframe['srcdoc']==(ROOT/'QUALITY_WINDOWS.html').read_text() and 'Q5' in soup.select_one('#quality-guide').text and '不是生产词表覆盖率' in soup.select_one('#quality-guide').text)
+report['highlights']=[x.replace('390 source archive checksums valid','400 source archive checksums valid') for x in report['highlights']]
+report['highlights']+=['V17 quality observation / vocabulary / calibration / five acceptance rules / embedded window explorer']
+browser17=read(A/'browser_validation_v17.json')
+ok('V17 embedded explorer fits desktop/mobile and works offline',browser17['desktop']['width']<=browser17['desktop']['viewport'] and browser17['mobile']['width']<=browser17['mobile']['viewport'] and browser17['mobile']['inner_width']<=browser17['mobile']['inner_viewport'] and browser17['offline']['protocol']=='file:' and browser17['offline']['coverage']=='6000 / 10000' and browser17['offline']['requests']==browser17['offline']['errors']==[] and browser17['offline']['bank']==bank['bank_sha256'])
+ok('V17 viewed screenshot keeps exact bytes',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha for p,sha in browser17['screenshot_sha256'].items()))
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

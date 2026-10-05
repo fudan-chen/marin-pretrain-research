@@ -3763,5 +3763,76 @@
     "bytes": 7912,
     "sha256": "28af5f440bc90800e90d7c482c005678ca9d0cbbef43fa40db158b479dafd493",
     "retrieved_utc": "2026-10-05T09:48:26.754301+00:00"
+  },
+  {
+    "file": "quality_2026_10_05/artifact.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/datakit/cluster/quality/fast_transformer/artifact.py",
+    "bytes": 2124,
+    "sha256": "af50c63371ef3366c6cec4a292ffdba6e54f752348f50cb341042cf0e8bfd7a2",
+    "retrieved_utc": "2026-10-05T09:56:37.177049+00:00"
+  },
+  {
+    "file": "quality_2026_10_05/calibrate.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/datakit/cluster/quality/fast_transformer/calibrate.py",
+    "bytes": 4235,
+    "sha256": "06a865544d708255084ba4d287c059e580c7e0e1e6ff17b5db31c28b2fbfda4d",
+    "retrieved_utc": "2026-10-05T09:56:37.213618+00:00"
+  },
+  {
+    "file": "quality_2026_10_05/inference.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/datakit/cluster/quality/fast_transformer/inference.py",
+    "bytes": 2940,
+    "sha256": "a54bc17b24374d66004a1b9cd2e0caa7184893d708ab3b8dfe657c05165b1d2e",
+    "retrieved_utc": "2026-10-05T09:56:37.201052+00:00"
+  },
+  {
+    "file": "quality_2026_10_05/rubric.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/datakit/cluster/quality/fast_transformer/rubric.py",
+    "bytes": 2597,
+    "sha256": "3c085d2219a11c4d45d8625a6322cffc2210f2d214e452721a3cfd2a9a6c38a0",
+    "retrieved_utc": "2026-10-05T09:56:37.180180+00:00"
+  },
+  {
+    "file": "quality_2026_10_05/score.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/datakit/cluster/quality/fast_transformer/score.py",
+    "bytes": 9240,
+    "sha256": "c9f2b973d3ecc5a7d922c3ed413dd431545d3c8d919009e2b282651e341b6453",
+    "retrieved_utc": "2026-10-05T09:56:37.870088+00:00"
+  },
+  {
+    "file": "quality_2026_10_05/scorer.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/datakit/cluster/quality/fast_transformer/scorer.py",
+    "bytes": 4995,
+    "sha256": "7c50e92f26751e3400cf3b7531960c59e9d8bda86b493bd26524e880d04e1251",
+    "retrieved_utc": "2026-10-05T09:56:37.865606+00:00"
+  },
+  {
+    "file": "quality_2026_10_05/data.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/datakit/cluster/quality/fast_transformer/data.py",
+    "bytes": 4087,
+    "sha256": "dba14b1b305afef50206ff77e68f5e948539c383b9b823d4f17c10279f45fa1e",
+    "retrieved_utc": "2026-10-05T09:56:37.873316+00:00"
+  },
+  {
+    "file": "quality_2026_10_05/metrics.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/datakit/cluster/quality/fast_transformer/metrics.py",
+    "bytes": 1674,
+    "sha256": "41ee150a07102bc84b4ab87572abb205c25062941d2cc5014346a3582766a45e",
+    "retrieved_utc": "2026-10-05T09:56:37.871482+00:00"
+  },
+  {
+    "file": "quality_2026_10_05/README.md",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/datakit/cluster/quality/fast_transformer/README.md",
+    "bytes": 4358,
+    "sha256": "bdd6f554f05cd44133d4ab92d02dc76d178875f9feb25b02b84f3fb648503ef4",
+    "retrieved_utc": "2026-10-05T09:57:31.346349+00:00"
+  },
+  {
+    "file": "quality_2026_10_05/numpy_interp_excerpt.txt",
+    "url": "https://numpy.org/doc/stable/reference/generated/numpy.interp.html",
+    "bytes": 485,
+    "sha256": "29b251256c213d8ab33729140582773b506311ab4e14282daf7b7d8632dca54a",
+    "retrieved_utc": "2026-10-05T10:03:52.573786+00:00",
+    "source_kind": "web_tool_text_excerpt"
   }
 ]

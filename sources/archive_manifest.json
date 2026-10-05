@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-05T09:53:54.264234+00:00",
+  "integrity_manifest_created_utc": "2026-10-05T10:04:16.479633+00:00",
   "files": [
     {
       "file": "boundaries_2026_10_05/attention_core.py",
@@ -2135,6 +2135,76 @@
       "retrieved_utc": "2026-10-03T21:32:59.375260+00:00"
     },
     {
+      "file": "quality_2026_10_05/README.md",
+      "bytes": 4358,
+      "sha256": "bdd6f554f05cd44133d4ab92d02dc76d178875f9feb25b02b84f3fb648503ef4",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/datakit/cluster/quality/fast_transformer/README.md",
+      "retrieved_utc": "2026-10-05T09:57:31.346349+00:00"
+    },
+    {
+      "file": "quality_2026_10_05/artifact.py",
+      "bytes": 2124,
+      "sha256": "af50c63371ef3366c6cec4a292ffdba6e54f752348f50cb341042cf0e8bfd7a2",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/datakit/cluster/quality/fast_transformer/artifact.py",
+      "retrieved_utc": "2026-10-05T09:56:37.177049+00:00"
+    },
+    {
+      "file": "quality_2026_10_05/calibrate.py",
+      "bytes": 4235,
+      "sha256": "06a865544d708255084ba4d287c059e580c7e0e1e6ff17b5db31c28b2fbfda4d",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/datakit/cluster/quality/fast_transformer/calibrate.py",
+      "retrieved_utc": "2026-10-05T09:56:37.213618+00:00"
+    },
+    {
+      "file": "quality_2026_10_05/data.py",
+      "bytes": 4087,
+      "sha256": "dba14b1b305afef50206ff77e68f5e948539c383b9b823d4f17c10279f45fa1e",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/datakit/cluster/quality/fast_transformer/data.py",
+      "retrieved_utc": "2026-10-05T09:56:37.873316+00:00"
+    },
+    {
+      "file": "quality_2026_10_05/inference.py",
+      "bytes": 2940,
+      "sha256": "a54bc17b24374d66004a1b9cd2e0caa7184893d708ab3b8dfe657c05165b1d2e",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/datakit/cluster/quality/fast_transformer/inference.py",
+      "retrieved_utc": "2026-10-05T09:56:37.201052+00:00"
+    },
+    {
+      "file": "quality_2026_10_05/metrics.py",
+      "bytes": 1674,
+      "sha256": "41ee150a07102bc84b4ab87572abb205c25062941d2cc5014346a3582766a45e",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/datakit/cluster/quality/fast_transformer/metrics.py",
+      "retrieved_utc": "2026-10-05T09:56:37.871482+00:00"
+    },
+    {
+      "file": "quality_2026_10_05/numpy_interp_excerpt.txt",
+      "bytes": 485,
+      "sha256": "29b251256c213d8ab33729140582773b506311ab4e14282daf7b7d8632dca54a",
+      "url": "https://numpy.org/doc/stable/reference/generated/numpy.interp.html",
+      "retrieved_utc": "2026-10-05T10:03:52.573786+00:00"
+    },
+    {
+      "file": "quality_2026_10_05/rubric.py",
+      "bytes": 2597,
+      "sha256": "3c085d2219a11c4d45d8625a6322cffc2210f2d214e452721a3cfd2a9a6c38a0",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/datakit/cluster/quality/fast_transformer/rubric.py",
+      "retrieved_utc": "2026-10-05T09:56:37.180180+00:00"
+    },
+    {
+      "file": "quality_2026_10_05/score.py",
+      "bytes": 9240,
+      "sha256": "c9f2b973d3ecc5a7d922c3ed413dd431545d3c8d919009e2b282651e341b6453",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/datakit/cluster/quality/fast_transformer/score.py",
+      "retrieved_utc": "2026-10-05T09:56:37.870088+00:00"
+    },
+    {
+      "file": "quality_2026_10_05/scorer.py",
+      "bytes": 4995,
+      "sha256": "7c50e92f26751e3400cf3b7531960c59e9d8bda86b493bd26524e880d04e1251",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/datakit/cluster/quality/fast_transformer/scorer.py",
+      "retrieved_utc": "2026-10-05T09:56:37.865606+00:00"
+    },
+    {
       "file": "scale_2026_10_05/config_h100-mix25-20260912-d1024.json",
       "bytes": 174549,
       "sha256": "b43bd75d42c3a4f5c9407aafca32f0a14d71c691adc7bf5d43ff26936fbb8f31",
@@ -2234,8 +2304,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 188503,
-      "sha256": "abdcd52776c2dc460ec941c75445f8a04993f33e606c2b3a21b6e7e238efafe2",
+      "bytes": 192320,
+      "sha256": "290f14e2252b6ac1b645f32b6f8bfa712753d550c0e7545ece978e6d407896f8",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

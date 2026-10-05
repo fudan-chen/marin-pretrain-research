@@ -14,6 +14,7 @@ chapters.insert(0,('scale-guide','跨规模比较、评估口径与确认','SCAL
 chapters.insert(0,('contracts-guide','源码接口、梯度与恢复验收','IMPLEMENTATION_CONTRACTS_ZH.md'))
 chapters.insert(0,('state-guide','训练状态、精度与切换时刻','TRAIN_STATE_ZH.md'))
 chapters.insert(0,('cache-guide','缓存身份、分词与配比归因','CACHE_PROVENANCE_ZH.md'))
+chapters.insert(0,('dedup-guide','去重、样本对齐与曝光解释','DEDUP_FILTERS_ZH.md'))
 chapters.insert(0,('boundary-guide','文档边界、上下文与有效目标','DOCUMENT_BOUNDARIES_ZH.md'))
 readings={x['file']:x for x in json.loads((ROOT/'analysis/figure_readings.json').read_text())}
 sections=[];toc=[]
@@ -80,7 +81,7 @@ template=template.replace('<a href="#order-lab">检查顺序与累计量</a>','<
 template=template.replace('<script>ASSESSMENTUI</script>','<script>ASSESSMENTUI</script><script type="application/json" id="engineering-data">ENGINEERINGDATA</script><script>ENGINEERINGUI</script>')
 template=template.replace('公开快照：2026-10-04','训练快照：2026-10-04 · 工程核对：10-05')
 template=template.replace('<a href="#assessment-lab">保存自己的证据判断</a>','<a href="#engineering-lab">核对工程解释与反证</a><a href="#assessment-lab">保存自己的证据判断</a>')
-template=template.replace('<a href="#engineering-lab">核对工程解释与反证</a>', '<a href="#cache-guide">最新：缓存身份与配比归因</a><a href="#boundary-guide">文档边界与有效目标</a><a href="#state-guide">训练状态与切换时刻</a><a href="#contracts-guide">源码接口与恢复验收</a><a href="#scale-guide">配比历史与BPB聚合检查</a><a href="#engineering-lab">核对工程解释与反证</a>')
+template=template.replace('<a href="#engineering-lab">核对工程解释与反证</a>', '<a href="#dedup-guide">最新：去重与样本对齐</a><a href="#cache-guide">缓存身份与配比归因</a><a href="#boundary-guide">文档边界与有效目标</a><a href="#state-guide">训练状态与切换时刻</a><a href="#contracts-guide">源码接口与恢复验收</a><a href="#scale-guide">配比历史与BPB聚合检查</a><a href="#engineering-lab">核对工程解释与反证</a>')
 workbench=json.loads((ROOT/'analysis/workbench_data.json').read_text());rubric=json.loads((ROOT/'analysis/rubrics.json').read_text());chapter_paths={file:'#'+slug for slug,_,file in chapters}
 for c in workbench['cases']:c['source']=chapter_paths.get(c['source'],c['source'])
 for rule in rubric['rules']:

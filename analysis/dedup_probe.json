@@ -1,0 +1,120 @@
+{
+  "checks_passed": 11,
+  "checks": [
+    "Repeated adjacent IDs remain two documents; chunks cross Arrow batches",
+    "Skipped chunk index is rejected",
+    "Legacy token rows without chunk_index are rejected",
+    "Missing exact and fuzzy attribute files read as empty sets",
+    "normal conserves exclusive filter counters",
+    "fuzzy_exempt conserves exclusive filter counters",
+    "Fuzzy exemption preserves exact and contamination filtering",
+    "Overlap attributes are attributed to first rejecting filter",
+    "Equal row count with reordered IDs is rejected",
+    "Unrelated single-token sequences share 2 of 3 word trigrams",
+    "Policy source contains sixteen registry names"
+  ],
+  "cases": [
+    {
+      "case": "chunk_reassembly",
+      "documents": [
+        [
+          "same",
+          [
+            1,
+            2,
+            3
+          ]
+        ],
+        [
+          "same",
+          [
+            4
+          ]
+        ],
+        [
+          "last",
+          [
+            5
+          ]
+        ]
+      ]
+    },
+    {
+      "case": "normal",
+      "surviving_tokens": [
+        [
+          3
+        ]
+      ],
+      "counters": {
+        "datakit_store/records_in": 4,
+        "datakit_store/contaminated_dropped": 1,
+        "datakit_store/exact_duplicate_dropped": 0,
+        "datakit_store/fuzzy_duplicate_dropped": 2,
+        "datakit_store/records_out": 1
+      }
+    },
+    {
+      "case": "fuzzy_exempt",
+      "surviving_tokens": [
+        [
+          2
+        ],
+        [
+          3
+        ]
+      ],
+      "counters": {
+        "datakit_store/records_in": 4,
+        "datakit_store/contaminated_dropped": 1,
+        "datakit_store/exact_duplicate_dropped": 1,
+        "datakit_store/fuzzy_duplicate_dropped": 0,
+        "datakit_store/records_out": 2
+      }
+    }
+  ],
+  "raw_feature_counterexample": {
+    "shared_word_trigrams": 2,
+    "total_word_trigrams": 3,
+    "containment": 0.6666666666666666,
+    "under_tokenized": [
+      true,
+      true
+    ],
+    "decision_rule_executed": false
+  },
+  "exempt_sources": [
+    "biocollection/free_text_stream",
+    "biocollection/instruction_stream",
+    "biocorpus",
+    "cp/data_provenance",
+    "davinci-dev/ctx-native",
+    "dna/functional-regions",
+    "massive_function_calling",
+    "nemotron_legal/globalcit",
+    "nemotron_specialized_v1_1/code_concepts",
+    "nemotron_specialized_v1_1/economics",
+    "nemotron_specialized_v1_1/formal_logic",
+    "nemotron_specialized_v1_1/multiple_choice",
+    "nemotron_specialized_v1_2/fact_seeking",
+    "nemotron_specialized_v1_2/generative",
+    "nemotron_specialized_v1_2/multiple_choice",
+    "swe-rebench-contree"
+  ],
+  "spec_identity": {
+    "old_named_spec_store": "s3://marin-us-east-02a/marin/datakit/store_0381a974",
+    "new_named_spec_store": "s3://marin-us-east-02a/marin/datakit/store_4d2e363d",
+    "old_named_spec_total": 24917216684457,
+    "new_named_spec_total": 23106103007622,
+    "old_run_store": "s3://marin-us-east-02a/marin/datakit/store_81e7e39a",
+    "old_spec_matches_old_run": false
+  },
+  "source_sha256": {
+    "sources/cache_2026_10_05/datakit_store.py": "3e871d28d02e7660384d38eea66e63f18525c7358e7b6c245d25336e23ad8c46",
+    "sources/dedup_2026_10_05/fuzzy_verification.py": "28af5f440bc90800e90d7c482c005678ca9d0cbbef43fa40db158b479dafd493",
+    "sources/dedup_2026_10_05/produce_store_policy.py": "40f1c2106b3db9439f1d60b405afe8c0875fb44dc55c838c1f1e6f6eebec1ae4"
+  },
+  "actual_corpus": null,
+  "historical_execution_sha": null,
+  "scope": "local real Parquet; original source helpers; synthetic fixtures; pure feature counterexample, no fuzzy decision executed"
+}

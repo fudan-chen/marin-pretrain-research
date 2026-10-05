@@ -1,0 +1,42 @@
+{
+  "desktop": {
+    "viewport": 1440,
+    "width": 1425,
+    "tables": 3,
+    "bank": "d58ffef93d8d21e388bd5e8ab072e91c6726aed756d586c0e1b961cb53bf3e9e"
+  },
+  "mobile": {
+    "viewport": 390,
+    "width": 375,
+    "tables": [
+      {
+        "width": 297,
+        "scroll": 620
+      },
+      {
+        "width": 297,
+        "scroll": 620
+      },
+      {
+        "width": 297,
+        "scroll": 620
+      }
+    ]
+  },
+  "offline": {
+    "protocol": "file:",
+    "figures": 17,
+    "tables": 3,
+    "bank": "d58ffef93d8d21e388bd5e8ab072e91c6726aed756d586c0e1b961cb53bf3e9e",
+    "requests": [],
+    "errors": []
+  },
+  "screenshots": [
+    "analysis/browser_v16_dedup_desktop.png"
+  ],
+  "screenshot_sha256": {
+    "analysis/browser_v16_dedup_desktop.png": "579cc99d280c76ee9631a67511b86646fbced74b258774fbe0b4e0c7440e3b0c"
+  },
+  "visual_scope": "desktop screenshot viewed; mobile DOM dimensions; offline DOM/resources",
+  "prior_source_files_preserved": 377
+}

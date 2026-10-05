@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-05T09:42:45.673819+00:00",
+  "integrity_manifest_created_utc": "2026-10-05T09:53:54.264234+00:00",
   "files": [
     {
       "file": "boundaries_2026_10_05/attention_core.py",
@@ -244,6 +244,90 @@
       "sha256": "c319bcdfb04a3c319c702e9b812ae510d3764e0ffa242e7c88f04e3e4eb1bec9",
       "url": "https://api.github.com/search/issues?q=repo%3Amarin-community%2Fmarin+h100-d512-from10pct-store-4d2e363d&per_page=100",
       "retrieved_utc": "2026-10-04T07:35:21.184974+00:00"
+    },
+    {
+      "file": "dedup_2026_10_05/exemption_commit.json",
+      "bytes": 11856,
+      "sha256": "5323a50a061666a45b802d245431534aa43391a9cb2d52b202568008659c7708",
+      "url": "https://api.github.com/repos/marin-community/marin/commits/fd332ba6d94576e724ea2fa037459158401a8c2a",
+      "retrieved_utc": "2026-10-05T09:48:03.125294+00:00"
+    },
+    {
+      "file": "dedup_2026_10_05/fuzzy_verification.py",
+      "bytes": 7912,
+      "sha256": "28af5f440bc90800e90d7c482c005678ca9d0cbbef43fa40db158b479dafd493",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/marin/src/marin/processing/classification/deduplication/fuzzy_verification.py",
+      "retrieved_utc": "2026-10-05T09:48:26.754301+00:00"
+    },
+    {
+      "file": "dedup_2026_10_05/global_exact_dedup.py",
+      "bytes": 8024,
+      "sha256": "5f985d199fae55a55de7ce8fdf71a1331d61f8438e2c6e7d4d0e1f35bb61000e",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/datakit/global_exact_dedup.py",
+      "retrieved_utc": "2026-10-05T09:46:18.037862+00:00"
+    },
+    {
+      "file": "dedup_2026_10_05/hero_data.py",
+      "bytes": 13008,
+      "sha256": "a177484442d9052ee7b2129273b363c2ef2367c308066c0c3208e03399b62301",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/datakit/hero_data.py",
+      "retrieved_utc": "2026-10-05T09:46:17.954245+00:00"
+    },
+    {
+      "file": "dedup_2026_10_05/new_mix.py",
+      "bytes": 7104,
+      "sha256": "90b2881c131682567bae111e8d6cf4d104a0a81c0e0bc1f206b96226d1f295d7",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/grug/moe_hero_ep/harrier_mix_2026_08_18.py",
+      "retrieved_utc": "2026-10-05T09:46:18.633433+00:00"
+    },
+    {
+      "file": "dedup_2026_10_05/new_spec.json",
+      "bytes": 29521,
+      "sha256": "8f3fd489a6b2bacdcbf61e47577e4e87864e320aece2a62eae64c8f62721344e",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/grug/moe_hero_ep/harrier_mix_2026_08_18.json",
+      "retrieved_utc": "2026-10-05T09:46:18.626018+00:00"
+    },
+    {
+      "file": "dedup_2026_10_05/old_spec.json",
+      "bytes": 20097,
+      "sha256": "f02c48f628ca9b6d04c7da9c5126c74f6d64f6a79e4c45993e9f27c4be09f612",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/grug/moe_hero_ep/harrier_mix_2026_08_17_1.json",
+      "retrieved_utc": "2026-10-05T09:46:18.100679+00:00"
+    },
+    {
+      "file": "dedup_2026_10_05/pr8405.json",
+      "bytes": 16452,
+      "sha256": "527b8d4c27b3c9cf6d2ffda24d339395da0b1746d807f58e3b71453582419e7f",
+      "url": "https://api.github.com/repos/marin-community/marin/pulls/8405",
+      "retrieved_utc": "2026-10-05T09:46:59.046140+00:00"
+    },
+    {
+      "file": "dedup_2026_10_05/pr8405_comments.json",
+      "bytes": 9520,
+      "sha256": "22e708da069805debd00069451df0a2955a0483dd880dc4678323798b8fb3110",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8405/comments?per_page=100",
+      "retrieved_utc": "2026-10-05T09:47:00.044320+00:00"
+    },
+    {
+      "file": "dedup_2026_10_05/pr8405_commits.json",
+      "bytes": 294641,
+      "sha256": "bc00ef6fbadcfcbba3bf7146f716e4f6c1734ba548f02ab1391011c7a7b02b31",
+      "url": "https://api.github.com/repos/marin-community/marin/pulls/8405/commits?per_page=100",
+      "retrieved_utc": "2026-10-05T09:47:43.295797+00:00"
+    },
+    {
+      "file": "dedup_2026_10_05/produce_store_policy.py",
+      "bytes": 38989,
+      "sha256": "40f1c2106b3db9439f1d60b405afe8c0875fb44dc55c838c1f1e6f6eebec1ae4",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/fd332ba6d94576e724ea2fa037459158401a8c2a/experiments/datakit/produce_store.py",
+      "retrieved_utc": "2026-10-05T09:48:25.866892+00:00"
+    },
+    {
+      "file": "dedup_2026_10_05/reference_pipeline.py",
+      "bytes": 58357,
+      "sha256": "15fb224ee8d34ad9126ead349e34752ab708479892432c6a826bb6c07b777c96",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/datakit/reference_pipeline.py",
+      "retrieved_utc": "2026-10-05T09:46:18.172532+00:00"
     },
     {
       "file": "deepening_2026_10_04/dataset_production.py",
@@ -2150,8 +2234,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 184220,
-      "sha256": "08e743f68b57a76637024dbf6b58a1efbe15424cf0271a1b801667864054ec7d",
+      "bytes": 188503,
+      "sha256": "abdcd52776c2dc460ec941c75445f8a04993f33e606c2b3a21b6e7e238efafe2",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

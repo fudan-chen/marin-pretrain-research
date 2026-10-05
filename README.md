@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本为V30。新增[MuonH范数与分片检查](MUON_GEOMETRY_ZH.md)：保持哪组范数、内部矩阵为何仍会变化，以及分布式归约怎样破坏投影。先用[预训练排障总图](ENGINEERING_MAP_ZH.md)按症状选择入口：15类问题逐项对应作者动作、源码、本地核对范围、下一项检查与接受边界。再看[当前交付审计](DELIVERY_AUDIT_ZH.md)，分清文件覆盖和真实验证。V26对V25的micro/macro命名错误已[明确更正](EVAL_METRICS_ZH.md)。
+当前版本为V31。新增[AdamH状态与接续](ADAMH_STATE_ZH.md)：范数正常为何仍不能证明恢复正确，计数偏差何时会被归一化抵消，换配比时怎样排除状态重置干预。新增[MuonH范数与分片检查](MUON_GEOMETRY_ZH.md)：保持哪组范数、内部矩阵为何仍会变化，以及分布式归约怎样破坏投影。先用[预训练排障总图](ENGINEERING_MAP_ZH.md)按症状选择入口：15类问题逐项对应作者动作、源码、本地核对范围、下一项检查与接受边界。再看[当前交付审计](DELIVERY_AUDIT_ZH.md)，分清文件覆盖和真实验证。V26对V25的micro/macro命名错误已[明确更正](EVAL_METRICS_ZH.md)。
 
 建议按自己要解决的问题阅读，不必顺着版本号读完全部增补：
 

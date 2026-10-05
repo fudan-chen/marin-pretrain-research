@@ -4009,5 +4009,12 @@
     "bytes": 20022,
     "sha256": "3a803f1105259599a983058a0cb1f34a2332f16a7a0394cc73423aca1c2cd423",
     "retrieved_utc": "2026-10-05T15:21:08.858433+00:00"
+  },
+  {
+    "file": "adamh_2026_10_05/adamh.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/grug/moe_hero_ep/adamh.py",
+    "bytes": 3475,
+    "sha256": "722ed10ea6c36440049c5f5a4eb9ea98abcfe7cd761a52e3973a3031b0755716",
+    "retrieved_utc": "2026-10-05T15:31:29.437363+00:00"
   }
 ]

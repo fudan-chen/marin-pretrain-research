@@ -1,0 +1,53 @@
+{
+  "checks_passed": 17,
+  "checks": [
+    "Original init count is int32 zero",
+    "Original init stores two zero moments",
+    "First updated moments match independent EMA formulas",
+    "Bias correction uses incremented count",
+    "First projected matrix retains norm with nonzero update",
+    "Second moments retain first gradient history",
+    "Second update matches independently reconstructed direction and projection",
+    "Output count advances to two",
+    "Copied synthetic state repeats same second update",
+    "Reset moments change output despite identical parameter gradient and norm",
+    "Count-only reset cancels from normalized direction at eps zero and fixed LR",
+    "Artificial large epsilon breaks count-only cancellation",
+    "Requested moment dtype casts returned mu but not nu",
+    "One leading vmap preserves joint 4D slice norm",
+    "AdamH inner 4D matrix norms can change",
+    "Masked None parameter remains None and count advances",
+    "AdamH branch receives learning_rate rather than adam_lr"
+  ],
+  "source_sha256": "722ed10ea6c36440049c5f5a4eb9ea98abcfe7cd761a52e3973a3031b0755716",
+  "scope": "Original AdamH transformation with explicit real-array NumPy moment/tree substitutes.\nNo Optax implementation, JAX compilation, distributed reduction or actual checkpoint restore.\n",
+  "artificial_learning_rate": 0.1,
+  "second_step_with_moments": [
+    [
+      2.03126859664917,
+      -0.2339407205581665
+    ],
+    [
+      -0.2782743275165558,
+      0.861268162727356
+    ]
+  ],
+  "second_step_reset_moments": [
+    [
+      1.9827884435653687,
+      -0.2153453826904297
+    ],
+    [
+      -0.2153453826904297,
+      0.9878268837928772
+    ]
+  ],
+  "angle_between_retained_and_reset_degrees": 3.858944892883301,
+  "retained_norm": 2.236067771911621,
+  "reset_norm": 2.236067771911621,
+  "actual_Optax_moments": null,
+  "actual_JAX_SPMD": null,
+  "actual_checkpoint_restore": null,
+  "actual_training_effect": null,
+  "historical_execution_sha": null
+}

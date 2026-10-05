@@ -31,13 +31,20 @@ chapters.insert(0,('checkpoint-memory-guide','Checkpoint内存预算、副本与
 chapters.insert(0,('engineering-map-guide','按症状阅读：15案与六条检查入口','ENGINEERING_MAP_ZH.md'))
 chapters.insert(0,('delivery-audit-guide','当前交付与真实验证范围','DELIVERY_AUDIT_ZH.md'))
 chapters.insert(0,('muon-geometry-guide','MuonH范数、分片与更新几何','MUON_GEOMETRY_ZH.md'))
-priority=['muon-geometry-guide','engineering-map-guide','delivery-audit-guide','checkpoint-memory-guide','checkpoint-commit-guide','eval-metrics-guide','mix-trajectory-guide','router-precision-guide','short-conv-guide','loss-triage','optimizer-guide','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
+chapters.insert(0,('adamh-state-guide','AdamH动量、计数与恢复方向','ADAMH_STATE_ZH.md'))
+priority=['adamh-state-guide','muon-geometry-guide','engineering-map-guide','delivery-audit-guide','checkpoint-memory-guide','checkpoint-commit-guide','eval-metrics-guide','mix-trajectory-guide','router-precision-guide','short-conv-guide','loss-triage','optimizer-guide','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
 chapters.sort(key=lambda c:priority.index(c[0]) if c[0] in priority else len(priority))
 readings={x['file']:x for x in json.loads((ROOT/'analysis/figure_readings.json').read_text())}
 sections=[];toc=[]
 for slug,label,file in chapters:
     result=markdown.markdown((ROOT/file).read_text(),extensions=['tables','fenced_code','toc'])
     soup=BeautifulSoup(result,'html.parser')
+    adamh_placeholder=soup.select_one('#adamh-state-placeholder')
+    if adamh_placeholder is not None:
+        adamh_svg=BeautifulSoup((ROOT/'assets/adamh_state.svg').read_text(),'html.parser').svg
+        adamh_svg['style']='display:block;width:100%;min-width:700px;height:auto;'
+        adamh_wrap=soup.new_tag('div',attrs={'class':'table-wrap','style':'overflow-x:auto;'})
+        adamh_wrap.append(adamh_svg);adamh_placeholder.replace_with(adamh_wrap)
     muon_placeholder=soup.select_one('#muon-geometry-placeholder')
     if muon_placeholder is not None:
         muon_svg=BeautifulSoup((ROOT/'assets/muon_geometry.svg').read_text(),'html.parser').svg

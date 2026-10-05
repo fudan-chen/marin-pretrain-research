@@ -1,6 +1,13 @@
 {
-  "integrity_manifest_created_utc": "2026-10-05T15:29:11.769393+00:00",
+  "integrity_manifest_created_utc": "2026-10-05T15:36:36.721274+00:00",
   "files": [
+    {
+      "file": "adamh_2026_10_05/adamh.py",
+      "bytes": 3475,
+      "sha256": "722ed10ea6c36440049c5f5a4eb9ea98abcfe7cd761a52e3973a3031b0755716",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/grug/moe_hero_ep/adamh.py",
+      "retrieved_utc": "2026-10-05T15:31:29.437363+00:00"
+    },
     {
       "file": "boundaries_2026_10_05/attention_core.py",
       "bytes": 18739,
@@ -2479,8 +2486,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 201723,
-      "sha256": "cbf98bc1a1f7d2832b8e1f7e9a598d36827325d2878c04d3daafa70856a04476",
+      "bytes": 202079,
+      "sha256": "cdde5adfa580b69e5721641f4706b5fa446654f8c671ff3b218bbdfd49138dae",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

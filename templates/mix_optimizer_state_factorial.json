@@ -1,0 +1,16 @@
+{
+  "status": "planned_not_executed",
+  "common_checkpoint_digest": null,
+  "execution_sha": null,
+  "token_budget_per_arm": null,
+  "fixed_eval_identity": null,
+  "scheduler_state_policy": null,
+  "restored_or_reset_fields": null,
+  "arms": [
+    {"id":"old_full", "mixture":"old", "optimizer_state":"full", "result":null},
+    {"id":"old_reset", "mixture":"old", "optimizer_state":"reset_explicit_fields", "result":null},
+    {"id":"new_full", "mixture":"new", "optimizer_state":"full", "result":null},
+    {"id":"new_reset", "mixture":"new", "optimizer_state":"reset_explicit_fields", "result":null}
+  ],
+  "actual_training_executed": false
+}

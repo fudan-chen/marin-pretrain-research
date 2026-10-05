@@ -1,0 +1,33 @@
+{
+  "edition": "V28",
+  "goal_status": "active",
+  "checks_passed": 1225,
+  "source_files": 423,
+  "prior_source_files_preserved": 421,
+  "scope": "original asyncio budget on CPU event loop; original replica and chunk planning with synthetic JAX/sharding; no actual model memory measurement",
+  "scoped_checks": 17,
+  "actual_RSS": null,
+  "actual_model_write_plan": null,
+  "actual_GPU_slice": null,
+  "actual_TensorStore_IO": null,
+  "historical_execution_sha": null,
+  "artifact_sha256": {
+    "CHECKPOINT_MEMORY_ZH.md": "5017f5a86215783954575c01ac12fead3bfd5f9628147b0ac738b285318336a6",
+    "README.md": "d3f1e4553ab34b67fe105bfb9904699f0c68dbe92dc28f1bdab69eb98fd0677f",
+    "IMPROVEMENT_LOG_ZH.md": "15fff205b0c1300e4e77cf77488ca65afe5f9abb41d41850ad8dfa24446cf7a3",
+    "Makefile": "fdc27f890a5c15065fede30bea5c020b5746910f0c2b584901ee87871be2b1c9",
+    "scripts/acquire_checkpoint_memory.py": "551b826bb229e50633c0f2a2b01d21db54d3e519d05972168269fa302c7bd315",
+    "scripts/probe_checkpoint_memory.py": "57adf8f42fff60149818f3e4496b6d044d190173ae67688210b3bbd436f7e242",
+    "scripts/build_html.py": "a280a730b594094a64d8eac9063415c107464aafe9431b977d3aaf0bbd2691e5",
+    "scripts/validate.py": "bcaafddea50fe6e1e0f1d60513eb22e61d528424a13893b1b67001b365fff7dc",
+    "analysis/checkpoint_memory_acquisition.json": "6f3c8a3596afe02e74061d269eb9448e9b669f84bdf4281c4c8c0245b331973b",
+    "analysis/checkpoint_memory_probe.json": "55b35860be841f80f9467a912dec5a1a987e67d7dfb29ef69b727127e19777a9",
+    "analysis/browser_validation_v28.json": "81cece2e103d5917e1da3048dc989f8254e816bbe8133b70944c7a5fde8ef142",
+    "analysis/validation.json": "51722b7f1fe2448043e31792a2ca51e04136f27daad4901be8e72b6a18ba2372",
+    "sources/source_manifest.json": "85f77706c1a2578dfb9db3e637771a590bc72e8dba03132e58acba6973351069",
+    "sources/archive_manifest.json": "eb7936055b573f1a5be4b06ba1c3ac3391cb6aba8e3675f8ec86c52ced9284bc",
+    "sources/checkpoint_memory_2026_10_05/byte_budget.py": "5e1dbcd8bcae899f295952236269b0b439e308b54c6a120da43eda3441ec4f34",
+    "index.html": "72409149a942eefb17a23c744bcdc2212571ee47c667c01a85dbe29516aa147b",
+    "report_standalone.html": "ac93d5941d4de47ca9ca250a8628852b711e9e6fbeaee4400d1820a9d5026348"
+  }
+}

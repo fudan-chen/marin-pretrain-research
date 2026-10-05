@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1217,
+  "checks_passed": 1225,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -18,7 +18,7 @@
     "four new config contrasts / six step393 resume windows",
     "seventeen embedded figures",
     "all relative HTML links valid",
-    "422 source archive checksums valid",
+    "423 source archive checksums valid",
     "18 authored rubrics / seven claim-stage decisions",
     "five interpretation cases / four metrics with switchable baselines",
     "17 figure-reading entries / five preserved collapsed tables",
@@ -75,7 +75,8 @@
     "V24 experimental fork router precision / schedule controls / proposed policy matrix / original issue body refresh",
     "V25 exact production-lineage subset trajectories / inherited history exclusion / aggregate direction sensitivity / no causal attribution",
     "V26 correction of parent micro versus macro BPB / all 67 macro reconstructions / original log helpers and RunningMean units",
-    "V27 layout versus completion markers / async save handoff / copy-delete permission / reused marker / four recovery watermarks"
+    "V27 layout versus completion markers / async save handoff / copy-delete permission / reused marker / four recovery watermarks",
+    "V28 original asyncio budget / replica writer planning / odd chunk target boundary / no actual RSS claim"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

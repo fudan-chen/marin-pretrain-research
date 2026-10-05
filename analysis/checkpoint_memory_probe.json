@@ -1,0 +1,166 @@
+{
+  "scope": "original asyncio budget on CPU event loop; original shape/replica planning functions with synthetic jax.Array/sharding",
+  "checks": [
+    "sum above target waits while another snapshot is active",
+    "release admits waiting snapshot and peak tracks concurrent bytes",
+    "oversized snapshot proceeds alone above target",
+    "completion-thread release wakes event-loop waiter",
+    "reserve exception releases capacity",
+    "nonpositive budget rejected",
+    "declared staging target equals 16 GiB",
+    "four replicas divide first divisible axis",
+    "replica slices cover global axis exactly once",
+    "per-process staged sum counts distinct writer slices",
+    "default minimum slice rejects tiny array split",
+    "CRC path selects one writer rather than all replicas",
+    "unsafe pinned host vector avoids device slicing",
+    "even axes can satisfy chunk target",
+    "all-odd shape remains over chunk target",
+    "unsharded host array counts only process zero",
+    "nonzero process omits unsharded host write bytes"
+  ],
+  "checks_passed": 17,
+  "source_sha256": {
+    "sources/checkpoint_memory_2026_10_05/byte_budget.py": "5e1dbcd8bcae899f295952236269b0b439e308b54c6a120da43eda3441ec4f34",
+    "sources/checkpoint_commit_2026_10_05/tensorstore_serialization.py": "5dddf8c6cc87cb062593482abe6775eee59eea443c28c7fd8d8b7ddf261f89ea"
+  },
+  "functions": {
+    "_estimate_array_nbytes": [
+      105,
+      111
+    ],
+    "TensorStoreWriteConfig": [
+      194,
+      225
+    ],
+    "_WritePlan": [
+      290,
+      305
+    ],
+    "_ShardWrite": [
+      309,
+      323
+    ],
+    "_hashable_index": [
+      326,
+      327
+    ],
+    "_uniform_replica_count": [
+      330,
+      339
+    ],
+    "_shard_shape": [
+      342,
+      350
+    ],
+    "_is_safe_to_slice": [
+      353,
+      360
+    ],
+    "_capped_chunk_shape": [
+      363,
+      375
+    ],
+    "plan_array_write": [
+      378,
+      435
+    ],
+    "_shard_write_region": [
+      438,
+      456
+    ],
+    "_process_staged_bytes": [
+      459,
+      467
+    ]
+  },
+  "declared_defaults": {
+    "max_write_replicas": 1024,
+    "min_replica_slice_bytes": 16777216,
+    "max_chunk_bytes": 536870912,
+    "max_staged_host_bytes": 17179869184,
+    "cache_pool_bytes": 1073741824,
+    "data_copy_concurrency": 16
+  },
+  "cases": [
+    {
+      "case": "original_async_budget",
+      "target_bytes": 10,
+      "ordinary_peak_bytes": 6,
+      "oversized_peak_bytes": 14,
+      "thread_release_verified": true,
+      "actual_RSS": null
+    },
+    {
+      "case": "synthetic_replica_split",
+      "shape": [
+        8,
+        4
+      ],
+      "replicas": 4,
+      "min_slice_bytes": 1,
+      "plan": {
+        "chunk_shape": [
+          2,
+          4
+        ],
+        "split_axis": 0,
+        "write_replicas": 4,
+        "block": 2,
+        "replicas": 4,
+        "writer_replica": 0
+      },
+      "written_axis_intervals": [
+        [
+          0,
+          2
+        ],
+        [
+          2,
+          4
+        ],
+        [
+          4,
+          6
+        ],
+        [
+          6,
+          8
+        ]
+      ]
+    },
+    {
+      "case": "original_chunk_shape",
+      "target_bytes": 1024,
+      "even_input_shape": [
+        64,
+        64
+      ],
+      "even_chunk_shape": [
+        16,
+        16
+      ],
+      "even_chunk_bytes": 1024,
+      "odd_input_shape": [
+        33,
+        33
+      ],
+      "odd_chunk_shape": [
+        33,
+        33
+      ],
+      "odd_chunk_bytes": 4356,
+      "actual_Hero_oversized_chunk": null
+    }
+  ],
+  "substitutes": [
+    "synthetic jax.Array and sharding index map",
+    "dtype-size records instead of device data",
+    "process index stub"
+  ],
+  "actual_RSS": null,
+  "actual_model_write_plan": null,
+  "actual_GPU_slice": null,
+  "actual_TensorStore_IO": null,
+  "historical_execution_sha": null
+}

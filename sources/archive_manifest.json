@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-05T14:07:04.327941+00:00",
+  "integrity_manifest_created_utc": "2026-10-05T14:28:17.748391+00:00",
   "files": [
     {
       "file": "boundaries_2026_10_05/attention_core.py",
@@ -154,6 +154,13 @@
       "sha256": "5dddf8c6cc87cb062593482abe6775eee59eea443c28c7fd8d8b7ddf261f89ea",
       "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/tensorstore_serialization.py",
       "retrieved_utc": "2026-10-05T13:42:46.171175+00:00"
+    },
+    {
+      "file": "checkpoint_memory_2026_10_05/byte_budget.py",
+      "bytes": 1613,
+      "sha256": "5e1dbcd8bcae899f295952236269b0b439e308b54c6a120da43eda3441ec4f34",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/utils/byte_budget.py",
+      "retrieved_utc": "2026-10-05T14:18:12.404213+00:00"
     },
     {
       "file": "code_launch_scaling_ladder.py",
@@ -2458,8 +2465,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 200709,
-      "sha256": "d4bbcabdb4ba648a3d3aefc7001967ddf941091c669f4f9221fc27799614acc5",
+      "bytes": 201092,
+      "sha256": "85f77706c1a2578dfb9db3e637771a590bc72e8dba03132e58acba6973351069",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

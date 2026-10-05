@@ -195,3 +195,8 @@ V25把`paloma/bpb`错误命名为macro；它在固定公共源码中来自父级
 ## V27：保存提交与真正可恢复的进度
 
 新增[CHECKPOINT_COMMIT_ZH.md](CHECKPOINT_COMMIT_ZH.md)。追加五份固定源码，17项原atomic、metadata、发现和save-wrapper检查（本地fixture与假serializer）核对manifest早于数组、metadata回调、copy/delete权限冲突、标记前后失败和复用路径。记录训练、保存交接、metadata发布、独立恢复四个水位，容量预算与回退点分开验收。没有执行TensorStore、真实云权限、模型数组或分布式恢复；下一项优先真实各rank提交轨迹与自己save后restore。
+
+
+## V28：保存内存预算与副本写入计划
+
+新增[CHECKPOINT_MEMORY_ZH.md](CHECKPOINT_MEMORY_ZH.md)，追加固定HostByteBudget源码。17项CPU预算、原shape与synthetic sharding检查核对超大请求独占、线程释放、副本区间覆盖、单writer与奇数chunk超目标边界。默认16GiB/process和日志4倍乘数不冒充Hero实测；实际RSS、模型write plan、GPU切片和TensorStore I/O仍未验证。后续优先实际每rank计划和内存/提交时间分解，控制一个变量后选budget。

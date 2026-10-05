@@ -1,0 +1,12 @@
+{
+  "revision": "84869ae8c91ffe64e9f761c5bd714542eb1876e0",
+  "files": [
+    {
+      "file": "checkpoint_memory_2026_10_05/byte_budget.py",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/utils/byte_budget.py",
+      "bytes": 1613,
+      "sha256": "5e1dbcd8bcae899f295952236269b0b439e308b54c6a120da43eda3441ec4f34",
+      "retrieved_utc": "2026-10-05T14:18:12.404213+00:00"
+    }
+  ]
+}

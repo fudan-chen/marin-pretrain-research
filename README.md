@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本为V27。最新研究是[Checkpoint提交与恢复](CHECKPOINT_COMMIT_ZH.md)：分清布局manifest、异步保存交接、完成metadata和独立恢复，附故障注入、控制流图与验收模板。V26对V25的micro/macro命名错误已[明确更正](EVAL_METRICS_ZH.md)。
+当前版本为V28。新增[Checkpoint内存与写入分摊](CHECKPOINT_MEMORY_ZH.md)，核对budget独占超大请求、副本writer计划和chunk整分边界。[Checkpoint提交与恢复](CHECKPOINT_COMMIT_ZH.md)则分清布局manifest、异步保存交接、完成metadata和独立恢复，附故障注入、控制流图与验收模板。V26对V25的micro/macro命名错误已[明确更正](EVAL_METRICS_ZH.md)。
 
 建议按自己要解决的问题阅读，不必顺着版本号读完全部增补：
 
@@ -12,7 +12,7 @@
 |换数据之后loss突然变化|[诊断流程](LOSS_TRIAGE_ZH.md) → [缓存身份](CACHE_PROVENANCE_ZH.md) → [去重](DEDUP_FILTERS_ZH.md)与[质量桶](QUALITY_BUCKETS_ZH.md)|
 |换kernel或优化器能否安全接续|[变更评审](CHANGE_REVIEW_ZH.md) → [状态时钟](TRAIN_STATE_ZH.md) → [优化器](OPTIMIZER_GROUPS_ZH.md)与[接口契约](IMPLEMENTATION_CONTRACTS_ZH.md)|
 |MoE和文档边界有哪些具体陷阱|[路由丢弃](ROUTING_DROPS_ZH.md)、[分位数均衡](QB_ESTIMATION_ZH.md)、[router精度](ROUTER_PRECISION_ZH.md)、[文档边界](DOCUMENT_BOUNDARIES_ZH.md)、[ShortConv](SHORT_CONV_ZH.md)|
-|训练在跑，但不知道checkpoint是否可靠|[保存提交与恢复](CHECKPOINT_COMMIT_ZH.md) → [工程证据链](ENGINEERING_GUIDE_ZH.md)|
+|训练在跑，但不知道checkpoint是否可靠|[保存提交与恢复](CHECKPOINT_COMMIT_ZH.md) → [保存内存与写入计划](CHECKPOINT_MEMORY_ZH.md) → [工程证据链](ENGINEERING_GUIDE_ZH.md)|
 
 离线HTML包含18张科学图及原值入口，另有机制与提交控制流示意图。各原函数探针明确列出替代依赖，没有运行真实GPU训练、模型checkpoint恢复或分布式提交。各版本来源、验证范围与历史更正分别保留。
 

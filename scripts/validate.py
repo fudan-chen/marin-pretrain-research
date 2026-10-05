@@ -141,7 +141,7 @@ alt=all_rows[f['counterexample_run']]
 ok('197c dominates selected seed0 on three axes but not all tasks',all(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in [PM,HE,GM]) and sum(metric_value(alt,k)>metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==31 and sum(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==23)
 ok('197c has no independent seed1 or seed2 counterpart in this registry',sum('197c9f5ceff6b9ee-' in r['run_name'] for r in rows)==1)
 F=S/'findings_2026_10_04'
-ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/','contracts_2026_10_05/','state_2026_10_05/','boundaries_2026_10_05/','cache_2026_10_05/','dedup_2026_10_05/','quality_2026_10_05/','routing_2026_10_05/','optimizer_2026_10_05/','short_conv_2026_10_05/','router_precision_2026_10_05/','eval_metrics_2026_10_05/','checkpoint_commit_2026_10_05/')) for x in manifest['files'])==313)
+ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/','contracts_2026_10_05/','state_2026_10_05/','boundaries_2026_10_05/','cache_2026_10_05/','dedup_2026_10_05/','quality_2026_10_05/','routing_2026_10_05/','optimizer_2026_10_05/','short_conv_2026_10_05/','router_precision_2026_10_05/','eval_metrics_2026_10_05/','checkpoint_commit_2026_10_05/','checkpoint_memory_2026_10_05/')) for x in manifest['files'])==313)
 for i,row in enumerate(f['configs']):
     def source_run(name):return read((F if 'mixprior-' in name else P)/('config_'+name+'.json'))['data']['project']['run']
     ra,rb=source_run(row['run_a']),source_run(row['run_b']);ca,cb=json.loads(ra['config']),json.loads(rb['config'])
@@ -192,7 +192,7 @@ for scenario in decision_checks['scenarios']:
 doc_tables=soup.select('#decision-guide table')
 ok('Decision documentation preserves nine scenarios and six rule counterexamples',len(doc_tables)==3 and len(doc_tables[1].select('tbody tr'))==9 and len(doc_tables[2].select('tbody tr'))==6 and all(int(t.select('td')[2].text)==s['eligible'] and (s['best'] is None or s['best']==t.select('td')[3].text) for s,t in zip(decision_checks['scenarios'],doc_tables[1].select('tbody tr'))))
 ok('Selector trace reports bounded search rather than universal absence',trace['status']=='not_recovered_in_checked_public_entries' and trace['tree_truncated'] is False and len(trace['limitations'])==4 and all(q['total_count']==q['items_returned']==1 and q['issue_numbers']==[9126] and q['incomplete_results'] is False for q in trace['issue_queries']) and trace['issue_9126_body_unchanged_from_prior_archive'])
-ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==422 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
+ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==423 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
 contract=read(ROOT/'templates/selection_contract.json')
 ok('Confirmation contract cannot retroactively assert prior registration',contract['status']=='planned_not_executed' and contract['prior_search_results_already_seen'] is True and contract['contract_frozen_utc'] is None and contract['results'] is None and contract['independent_confirmation']['used_during_search'] is None)
 embedded=json.loads(soup.select_one('#decision-data').text)
@@ -595,6 +595,16 @@ report['highlights']+=['V27 layout versus completion markers / async save handof
 browser27=read(A/'browser_validation_v27.json')
 ok('V27 checkpoint chapter fits both viewports and runs offline',browser27['desktop_http']['width']<=browser27['desktop_http']['viewport'] and browser27['mobile_file']['width']<=browser27['mobile_file']['viewport'] and browser27['offline']['figures']==browser27['offline']['loaded']==17 and browser27['offline']['tables']==3 and browser27['offline']['svg'] and browser27['offline']['proposal'] and browser27['offline']['requests']==browser27['offline']['errors']==[])
 ok('V27 viewed screenshot retains exact bytes',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha for p,sha in browser27['screenshot_sha256'].items()))
+cm=read(A/'checkpoint_memory_probe.json')
+ok('V28 memory planning scope retains seventeen bounded checks',cm['checks_passed']==len(cm['checks'])==17 and cm['actual_RSS'] is None and cm['actual_model_write_plan'] is None and cm['actual_GPU_slice'] is None and cm['actual_TensorStore_IO'] is None and cm['historical_execution_sha'] is None)
+for p,sha in cm['source_sha256'].items():ok('Checkpoint memory source checksum '+p,hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha)
+ok('V28 original budget and chunk boundaries retain artificial scope',cm['cases'][0]['oversized_peak_bytes']==14 and cm['cases'][0]['target_bytes']==10 and cm['cases'][2]['odd_chunk_bytes']==4356 and cm['cases'][2]['actual_Hero_oversized_chunk'] is None)
+ok('V28 synthetic writer coverage and declared defaults remain exact',cm['cases'][1]['written_axis_intervals']==[[0,2],[2,4],[4,6],[6,8]] and cm['declared_defaults']['max_staged_host_bytes']==16*1024**3)
+ok('V28 chapter separates reporting estimate from measurement',soup.select_one('#checkpoint-memory-guide') is not None and '不是节点实际峰值' in soup.select_one('#checkpoint-memory-guide').text and '没有生成Hero真实计划' in soup.select_one('#checkpoint-memory-guide').text)
+report['highlights']=[x.replace('422 source archive checksums valid','423 source archive checksums valid') for x in report['highlights']]
+report['highlights']+=['V28 original asyncio budget / replica writer planning / odd chunk target boundary / no actual RSS claim']
+browser28=read(A/'browser_validation_v28.json')
+ok('V28 memory chapter DOM fits both viewports and runs offline',browser28['desktop']['width']<=browser28['desktop']['viewport'] and browser28['mobile']['width']<=browser28['mobile']['viewport'] and browser28['offline']['figures']==browser28['offline']['loaded']==17 and browser28['offline']['tables']==3 and browser28['offline']['hasScope'] and browser28['offline']['requests']==browser28['offline']['errors']==[])
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

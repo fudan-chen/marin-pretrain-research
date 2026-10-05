@@ -1,0 +1,49 @@
+{
+  "checks_passed": 20,
+  "checks": [
+    "Orthogonal direction matches analytic cos(theta)=1/sqrt(1+lr^2)",
+    "Orthogonal direction matches analytic sin(theta)=-lr/sqrt(1+lr^2)",
+    "Nonzero angular step preserves 2D Frobenius norm",
+    "Positive direction rescaling leaves geometry unchanged",
+    "Negative direction scaling reverses angular orientation",
+    "Positive parameter scaling yields correspondingly scaled result",
+    "Zero learning rate leaves parameter unchanged",
+    "Zero direction leaves nonzero parameter unchanged",
+    "Zero parameter cannot grow under norm multiplier",
+    "Exactly collinear lr=1 synthetic edge collapses at epsilon guard",
+    "3D stacked update conserves each leading slice norm",
+    "4D conserves leading slice joint norm",
+    "4D does not generally conserve each inner matrix norm",
+    "Original function retains masked None update",
+    "Identity pin stub called on intermediate before projection",
+    "MuonH branch contains no outer optax.scale call",
+    "Geometry source pins computed intermediate in both dimensional branches",
+    "Postprojection tangent step exceeds preprojection eta bound",
+    "Tangent direction attains independently derived postprojection bound",
+    "Moment norm ratio is not norm of elementwise normalized direction"
+  ],
+  "scope": "Execute archived MuonH geometry helper with NumPy, flat tree and identity sharding.\nNo Muon direction computation, JAX lowering, GPU collective or AdamH execution.\n",
+  "source_sha256": "50dddad265e18974e8529f7a9df26d37e44430ffc5442d5c93e58cb2e924ae0e",
+  "artificial_lr": 0.2,
+  "postprojection_tight_bound_eta_0p2": 0.20101792401041657,
+  "tangent_update_norm_eta_0p2": 0.20101793110370636,
+  "orthogonal_angle_degrees": 11.309932474020215,
+  "four_dimensional_inner_norm_before": [
+    [
+      1.0,
+      2.0
+    ]
+  ],
+  "four_dimensional_inner_norm_after": [
+    [
+      1.0741722583770752,
+      1.9611612558364868
+    ]
+  ],
+  "four_dimensional_joint_norm_before": 2.2360680103302,
+  "four_dimensional_joint_norm_after": 2.236067771911621,
+  "actual_Muon_direction": null,
+  "actual_JAX_SPMD": null,
+  "actual_GPU_result": null,
+  "historical_execution_sha": null
+}

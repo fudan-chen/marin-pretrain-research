@@ -30,13 +30,20 @@ chapters.insert(0,('checkpoint-commit-guide','Checkpoint提交、回退与可恢
 chapters.insert(0,('checkpoint-memory-guide','Checkpoint内存预算、副本与分块','CHECKPOINT_MEMORY_ZH.md'))
 chapters.insert(0,('engineering-map-guide','按症状阅读：15案与六条检查入口','ENGINEERING_MAP_ZH.md'))
 chapters.insert(0,('delivery-audit-guide','当前交付与真实验证范围','DELIVERY_AUDIT_ZH.md'))
-priority=['engineering-map-guide','delivery-audit-guide','checkpoint-memory-guide','checkpoint-commit-guide','eval-metrics-guide','mix-trajectory-guide','router-precision-guide','short-conv-guide','loss-triage','optimizer-guide','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
+chapters.insert(0,('muon-geometry-guide','MuonH范数、分片与更新几何','MUON_GEOMETRY_ZH.md'))
+priority=['muon-geometry-guide','engineering-map-guide','delivery-audit-guide','checkpoint-memory-guide','checkpoint-commit-guide','eval-metrics-guide','mix-trajectory-guide','router-precision-guide','short-conv-guide','loss-triage','optimizer-guide','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
 chapters.sort(key=lambda c:priority.index(c[0]) if c[0] in priority else len(priority))
 readings={x['file']:x for x in json.loads((ROOT/'analysis/figure_readings.json').read_text())}
 sections=[];toc=[]
 for slug,label,file in chapters:
     result=markdown.markdown((ROOT/file).read_text(),extensions=['tables','fenced_code','toc'])
     soup=BeautifulSoup(result,'html.parser')
+    muon_placeholder=soup.select_one('#muon-geometry-placeholder')
+    if muon_placeholder is not None:
+        muon_svg=BeautifulSoup((ROOT/'assets/muon_geometry.svg').read_text(),'html.parser').svg
+        muon_svg['style']='display:block;width:100%;min-width:700px;height:auto;'
+        muon_wrap=soup.new_tag('div',attrs={'class':'table-wrap','style':'overflow-x:auto;'})
+        muon_wrap.append(muon_svg);muon_placeholder.replace_with(muon_wrap)
     checkpoint_placeholder=soup.select_one('#checkpoint-flow-placeholder')
     if checkpoint_placeholder is not None:
         checkpoint_svg=BeautifulSoup((ROOT/'assets/checkpoint_commit_flow.svg').read_text(),'html.parser').svg

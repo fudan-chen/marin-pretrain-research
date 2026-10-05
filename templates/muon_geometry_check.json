@@ -1,0 +1,18 @@
+{
+  "status": "planned_not_executed",
+  "execution_sha": null,
+  "checkpoint_digest": null,
+  "parameter_leaf_path": null,
+  "shape": null,
+  "dtype_parameter": null,
+  "dtype_direction": null,
+  "named_sharding": null,
+  "norm_reduction_axes": null,
+  "learning_rate": null,
+  "optimizer_state_count": null,
+  "tolerance_preregistered": null,
+  "single_device_result": null,
+  "distributed_result": null,
+  "restored_one_step_result": null,
+  "training_effect": null
+}

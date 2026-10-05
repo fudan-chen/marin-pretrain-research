@@ -1,0 +1,27 @@
+{
+  "checked_utc": "2026-10-05T15:21:08.864425+00:00",
+  "scope": "issue body and comment ID/body comparison; metadata changes excluded",
+  "issues": [
+    {
+      "issue": 8435,
+      "comment_count": 27,
+      "body_or_comment_changed": false,
+      "updated_at": "2026-10-01T00:40:47Z",
+      "url": "https://github.com/marin-community/marin/issues/8435"
+    },
+    {
+      "issue": 8506,
+      "comment_count": 58,
+      "body_or_comment_changed": false,
+      "updated_at": "2026-10-03T11:27:20Z",
+      "url": "https://github.com/marin-community/marin/issues/8506"
+    },
+    {
+      "issue": 8870,
+      "comment_count": 30,
+      "body_or_comment_changed": false,
+      "updated_at": "2026-09-24T00:09:31Z",
+      "url": "https://github.com/marin-community/marin/issues/8870"
+    }
+  ]
+}

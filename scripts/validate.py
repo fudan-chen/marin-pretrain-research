@@ -43,7 +43,7 @@ for old,new,limit,label,delta in [('ep_control','ep_new',81916,'ep',-.0064983397
     ok(label+' independently verified CE mean delta',abs(statistics.mean(b[s]-a[s] for s in steps)-delta)<1e-12)
 ok('No conflicting inherited measurements',not summary['duplicate_value_conflicts'])
 known_ids=set()
-for p in S.glob('*comments*.json'):
+for p in S.rglob('*comments*.json'):
     j=read(p)
     if isinstance(j,list):known_ids.update(str(c['id']) for c in j if isinstance(c,dict) and 'id' in c)
 for p in ROOT.glob('*_ZH.md'):
@@ -141,7 +141,7 @@ alt=all_rows[f['counterexample_run']]
 ok('197c dominates selected seed0 on three axes but not all tasks',all(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in [PM,HE,GM]) and sum(metric_value(alt,k)>metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==31 and sum(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==23)
 ok('197c has no independent seed1 or seed2 counterpart in this registry',sum('197c9f5ceff6b9ee-' in r['run_name'] for r in rows)==1)
 F=S/'findings_2026_10_04'
-ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/','contracts_2026_10_05/','state_2026_10_05/','boundaries_2026_10_05/','cache_2026_10_05/','dedup_2026_10_05/','quality_2026_10_05/','routing_2026_10_05/','optimizer_2026_10_05/','short_conv_2026_10_05/','router_precision_2026_10_05/','eval_metrics_2026_10_05/','checkpoint_commit_2026_10_05/','checkpoint_memory_2026_10_05/')) for x in manifest['files'])==313)
+ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/','contracts_2026_10_05/','state_2026_10_05/','boundaries_2026_10_05/','cache_2026_10_05/','dedup_2026_10_05/','quality_2026_10_05/','routing_2026_10_05/','optimizer_2026_10_05/','short_conv_2026_10_05/','router_precision_2026_10_05/','eval_metrics_2026_10_05/','checkpoint_commit_2026_10_05/','checkpoint_memory_2026_10_05/','muon_geometry_2026_10_05/')) for x in manifest['files'])==313)
 for i,row in enumerate(f['configs']):
     def source_run(name):return read((F if 'mixprior-' in name else P)/('config_'+name+'.json'))['data']['project']['run']
     ra,rb=source_run(row['run_a']),source_run(row['run_b']);ca,cb=json.loads(ra['config']),json.loads(rb['config'])
@@ -192,7 +192,7 @@ for scenario in decision_checks['scenarios']:
 doc_tables=soup.select('#decision-guide table')
 ok('Decision documentation preserves nine scenarios and six rule counterexamples',len(doc_tables)==3 and len(doc_tables[1].select('tbody tr'))==9 and len(doc_tables[2].select('tbody tr'))==6 and all(int(t.select('td')[2].text)==s['eligible'] and (s['best'] is None or s['best']==t.select('td')[3].text) for s,t in zip(decision_checks['scenarios'],doc_tables[1].select('tbody tr'))))
 ok('Selector trace reports bounded search rather than universal absence',trace['status']=='not_recovered_in_checked_public_entries' and trace['tree_truncated'] is False and len(trace['limitations'])==4 and all(q['total_count']==q['items_returned']==1 and q['issue_numbers']==[9126] and q['incomplete_results'] is False for q in trace['issue_queries']) and trace['issue_9126_body_unchanged_from_prior_archive'])
-ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==423 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
+ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==425 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
 contract=read(ROOT/'templates/selection_contract.json')
 ok('Confirmation contract cannot retroactively assert prior registration',contract['status']=='planned_not_executed' and contract['prior_search_results_already_seen'] is True and contract['contract_frozen_utc'] is None and contract['results'] is None and contract['independent_confirmation']['used_during_search'] is None)
 embedded=json.loads(soup.select_one('#decision-data').text)
@@ -614,6 +614,19 @@ ok('V29 navigation and current audit are present in standalone report',soup.sele
 report['highlights']+=['V29 fifteen-case symptom / source / local-scope / next-check map and six entry routes; current delivery audit separates historical records']
 browser29=read(A/'browser_validation_v29.json')
 ok('V29 fifteen-case map and six routes fit and load offline',browser29['desktop']['width']<=browser29['desktop']['viewport'] and browser29['mobile']['width']<=browser29['mobile']['viewport'] and browser29['offline']['figures']==browser29['offline']['loaded']==17 and browser29['offline']['cases']==15 and browser29['offline']['entryRows']==6 and browser29['offline']['historicalAudit'] and browser29['offline']['requests']==browser29['offline']['errors']==[])
+mg=read(A/'muon_geometry_probe.json');refresh=read(A/'issue_refresh_v30.json')
+ok('V30 original geometry helper retains twenty bounded checks',mg['checks_passed']==len(mg['checks'])==20 and mg['actual_Muon_direction'] is None and mg['actual_JAX_SPMD'] is None and mg['actual_GPU_result'] is None and mg['historical_execution_sha'] is None)
+ok('V30 fixed geometry source digest matches',mg['source_sha256']==hashlib.sha256((S/'optimizer_2026_10_05/optimizer.py').read_bytes()).hexdigest())
+ok('V30 four-dimensional counterexample conserves joint norm only',abs(mg['four_dimensional_joint_norm_before']-mg['four_dimensional_joint_norm_after'])<1e-5 and mg['four_dimensional_inner_norm_before']!=mg['four_dimensional_inner_norm_after'])
+ok('V30 postprojection bound counterexample exceeds eta',mg['tangent_update_norm_eta_0p2']>mg['artificial_lr'] and abs(mg['tangent_update_norm_eta_0p2']-mg['postprojection_tight_bound_eta_0p2'])<1e-6)
+ok('V30 complete four-comment incident archive preserves correction order',len(read(S/'muon_geometry_2026_10_05/comments_8073.json'))==read(S/'muon_geometry_2026_10_05/issue_8073.json')['comments']==4)
+ok('V30 refresh checks three body/comment comparisons without changing snapshots',[x['issue'] for x in refresh['issues']]==[8435,8506,8870] and all(not x['body_or_comment_changed'] for x in refresh['issues']))
+ok('V30 future geometry execution fields stay null',all(v is None for k,v in read(ROOT/'templates/muon_geometry_check.json').items() if k!='status'))
+ok('V30 geometry chapter is present with four tables',soup.select_one('#muon-geometry-guide') is not None and len(soup.select('#muon-geometry-guide table'))==4)
+bv30=read(A/'browser_validation_v30.json')
+ok('V30 geometry diagrams and four tables load desktop mobile and offline',bv30['desktop']['width']<=bv30['desktop']['viewport'] and bv30['mobile']['width']<=bv30['mobile']['viewport'] and bv30['offline']['figures']==bv30['offline']['loaded']==17 and bv30['offline']['diagram'] and bv30['offline']['tables']==4 and bv30['requests']==bv30['errors']==[])
+report['highlights']=[x.replace('423 source archive checksums valid','425 source archive checksums valid') for x in report['highlights']]
+report['highlights']+=['V30 twenty original geometry and analytic checks; four-comment incident diagnosis corrections; no GPU / SPMD reproduction']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

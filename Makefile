@@ -18,6 +18,8 @@ report:
 	$(PYTHON) scripts/probe_routing.py
 	$(PYTHON) scripts/probe_qb_partition.py
 	$(PYTHON) scripts/probe_optimizer.py
+	$(PYTHON) scripts/probe_muon_geometry.py
+	$(PYTHON) scripts/draw_muon_geometry.py
 	$(PYTHON) scripts/probe_short_conv.py
 	$(PYTHON) scripts/probe_checkpoint_memory.py
 	$(PYTHON) scripts/probe_checkpoint_commit.py

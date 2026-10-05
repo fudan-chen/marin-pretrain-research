@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1247,
+  "checks_passed": 1257,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -18,7 +18,7 @@
     "four new config contrasts / six step393 resume windows",
     "seventeen embedded figures",
     "all relative HTML links valid",
-    "423 source archive checksums valid",
+    "425 source archive checksums valid",
     "18 authored rubrics / seven claim-stage decisions",
     "five interpretation cases / four metrics with switchable baselines",
     "17 figure-reading entries / five preserved collapsed tables",
@@ -77,7 +77,8 @@
     "V26 correction of parent micro versus macro BPB / all 67 macro reconstructions / original log helpers and RunningMean units",
     "V27 layout versus completion markers / async save handoff / copy-delete permission / reused marker / four recovery watermarks",
     "V28 original asyncio budget / replica writer planning / odd chunk target boundary / no actual RSS claim",
-    "V29 fifteen-case symptom / source / local-scope / next-check map and six entry routes; current delivery audit separates historical records"
+    "V29 fifteen-case symptom / source / local-scope / next-check map and six entry routes; current delivery audit separates historical records",
+    "V30 twenty original geometry and analytic checks; four-comment incident diagnosis corrections; no GPU / SPMD reproduction"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

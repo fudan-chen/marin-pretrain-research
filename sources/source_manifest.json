@@ -3995,5 +3995,19 @@
     "bytes": 1613,
     "sha256": "5e1dbcd8bcae899f295952236269b0b439e308b54c6a120da43eda3441ec4f34",
     "retrieved_utc": "2026-10-05T14:18:12.404213+00:00"
+  },
+  {
+    "file": "muon_geometry_2026_10_05/issue_8073.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8073",
+    "bytes": 4077,
+    "sha256": "e24d384105e88bfdcf34f4f072f975161b1625191ece683ef5fb0db64a12348b",
+    "retrieved_utc": "2026-10-05T15:21:08.857398+00:00"
+  },
+  {
+    "file": "muon_geometry_2026_10_05/comments_8073.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8073/comments?per_page=100&page=1",
+    "bytes": 20022,
+    "sha256": "3a803f1105259599a983058a0cb1f34a2332f16a7a0394cc73423aca1c2cd423",
+    "retrieved_utc": "2026-10-05T15:21:08.858433+00:00"
   }
 ]

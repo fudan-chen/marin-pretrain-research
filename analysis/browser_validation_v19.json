@@ -1,0 +1,30 @@
+{
+  "desktop": {
+    "viewport": 1440,
+    "width": 1425,
+    "svg_width": 800,
+    "rects": 129,
+    "tables": 3
+  },
+  "mobile": {
+    "viewport": 390,
+    "width": 375,
+    "wrapper_width": 297,
+    "svg_width": 760,
+    "scroll_width": 760
+  },
+  "offline": {
+    "protocol": "file:",
+    "figures": 17,
+    "loaded_figures": 17,
+    "rects": 129,
+    "tables": 3,
+    "requests": [],
+    "errors": []
+  },
+  "screenshot_sha256": {
+    "analysis/browser_v19_routing_desktop.png": "52f17f210335a3e2eb1ad880ea0c0e9a84a4adacbfaa5de911e442b0764fec05"
+  },
+  "visual_scope": "desktop screenshot viewed; mobile DOM dimensions only; offline DOM and resources",
+  "prior_source_files_preserved": 399
+}

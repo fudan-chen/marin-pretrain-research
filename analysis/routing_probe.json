@@ -1,0 +1,365 @@
+{
+  "checks_passed": 11,
+  "checks": [
+    "Padding expands to skipped assignments independently of loss",
+    "Denominator version changes padded example from 12.5 to 25 percent",
+    "Current metrics reject invalid-plus-padding accounting mismatch",
+    "Dynamic logical capacity clips to declared physical capacity",
+    "Receiver clipping prioritizes expert then sender prefixes",
+    "Receiver clipping respects each receiver capacity",
+    "Same assignment rate need not touch same number of tokens",
+    "Routed combine retains original weights without survivor renormalization",
+    "Same lost count can yield different artificial NLL",
+    "Affected/full-drop bounds hold across all 64 small patterns",
+    "All six ladder configurations report top8/shared2/capacity counters"
+  ],
+  "metric_denominator_example": {
+    "old": {
+      "moe/dropped_assignments": 4,
+      "moe/drop_fraction": 0.125,
+      "moe/sender_dropped_assignments": 4,
+      "moe/sender_drop_fraction": 0.125,
+      "moe/receiver_dropped_assignments": 0,
+      "moe/receiver_drop_fraction": 0.0,
+      "moe/receiver_drop_fraction_of_received": 0.0
+    },
+    "new": {
+      "moe/dropped_assignments": 4,
+      "moe/drop_fraction": 0.25,
+      "moe/sender_dropped_assignments": 4,
+      "moe/sender_drop_fraction": 0.25,
+      "moe/receiver_dropped_assignments": 0,
+      "moe/receiver_drop_fraction": 0.0,
+      "moe/receiver_drop_fraction_of_received": 0.0,
+      "moe/skipped_padding_assignments": 16,
+      "moe/skipped_padding_fraction": 0.5,
+      "moe/valid_assignments": 16
+    },
+    "scope": "artificial padded input, no historical metric rebinding"
+  },
+  "receiver_clip_example": {
+    "input": [
+      [
+        4,
+        0,
+        0,
+        4
+      ],
+      [
+        0,
+        4,
+        4,
+        0
+      ]
+    ],
+    "accepted": [
+      [
+        4,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        4,
+        0
+      ]
+    ],
+    "receiver_capacity": 4
+  },
+  "cases": [
+    {
+      "name": "concentrated",
+      "dropped_assignments": 8,
+      "assignment_drop_fraction": 0.125,
+      "affected_tokens": 1,
+      "fully_dropped_tokens": 1,
+      "routed_output": [
+        0.0,
+        2.5,
+        2.5,
+        2.5,
+        2.5,
+        2.5,
+        2.5,
+        2.5
+      ],
+      "synthetic_binary_nll": [
+        0.6931471824645996,
+        0.07888973504304886,
+        0.07888973504304886,
+        0.07888973504304886,
+        0.07888973504304886,
+        0.07888973504304886,
+        0.07888973504304886,
+        0.07888973504304886
+      ],
+      "mean_synthetic_binary_nll": 0.15567190945148468,
+      "lost_weight_mass": [
+        2.5,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "drop_pattern": [
+        [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    },
+    {
+      "name": "distributed",
+      "dropped_assignments": 8,
+      "assignment_drop_fraction": 0.125,
+      "affected_tokens": 8,
+      "fully_dropped_tokens": 0,
+      "routed_output": [
+        2.1875,
+        2.1875,
+        2.1875,
+        2.1875,
+        2.1875,
+        2.1875,
+        2.1875,
+        2.1875
+      ],
+      "synthetic_binary_nll": [
+        0.10633724182844162,
+        0.10633724182844162,
+        0.10633724182844162,
+        0.10633724182844162,
+        0.10633724182844162,
+        0.10633724182844162,
+        0.10633724182844162,
+        0.10633724182844162
+      ],
+      "mean_synthetic_binary_nll": 0.10633724182844162,
+      "lost_weight_mass": [
+        0.3125,
+        0.3125,
+        0.3125,
+        0.3125,
+        0.3125,
+        0.3125,
+        0.3125,
+        0.3125
+      ],
+      "drop_pattern": [
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      ]
+    }
+  ],
+  "ladder_configurations": [
+    {
+      "run": "h100-mix25-20260912-d1024",
+      "topk": 8,
+      "shared_experts": 2,
+      "report_capacity_overflow": true
+    },
+    {
+      "run": "h100-mix25-20260912-d1536",
+      "topk": 8,
+      "shared_experts": 2,
+      "report_capacity_overflow": true
+    },
+    {
+      "run": "h100-mix25-20260912-d768",
+      "topk": 8,
+      "shared_experts": 2,
+      "report_capacity_overflow": true
+    },
+    {
+      "run": "rav-ladder-d1024",
+      "topk": 8,
+      "shared_experts": 2,
+      "report_capacity_overflow": true
+    },
+    {
+      "run": "rav-ladder-d1536",
+      "topk": 8,
+      "shared_experts": 2,
+      "report_capacity_overflow": true
+    },
+    {
+      "run": "rav-ladder-d768-v2",
+      "topk": 8,
+      "shared_experts": 2,
+      "report_capacity_overflow": true
+    }
+  ],
+  "source_sha256": {
+    "sources/routing_2026_10_05/common.py": "17499bc8712f00d475e98b67942adbc753713b5e274489b6467471c7ab3a7b4a",
+    "sources/routing_2026_10_05/ep_common.py": "c9d6511f1cd5d69be168a701dc92742ccc26f09d69bbb144fc53d1c9ea934bbd",
+    "sources/routing_2026_10_05/ragged.py": "bf379169c86ac4d03ef4f0d0345d6af012b80cd3d16c3805b3e7d4f84ed1358c",
+    "sources/routing_2026_10_05/pooled.py": "18c36cfe3c8b4541310e403679acfcf14e63b91c462027907e47d35c83498752",
+    "sources/routing_2026_10_05/grug_moe.py": "5b67e36774981b8e42c753f62b638a5700fbf204c8b16c71df6d72c0b0ea398c",
+    "sources/scale_2026_10_05/train_hero_ep.py": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7",
+    "sources/code_train.py": "adfdbb3128babe5270e56d73518aa02f54fd7ba88c8844cf0c5602cb8232d8fc",
+    "sources/contracts_2026_10_05/model.py": "8fdfd89cf6814da05683f134f154525916728370368a2493843195d9a489859c"
+  },
+  "actual_collective_result": null,
+  "actual_gradient_result": null,
+  "actual_input_drop_pattern": null,
+  "historical_execution_sha": null
+}

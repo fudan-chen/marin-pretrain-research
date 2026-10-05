@@ -15,6 +15,7 @@ report:
 	$(PYTHON) scripts/probe_boundaries.py
 	$(PYTHON) scripts/audit_cache.py
 	$(PYTHON) scripts/probe_dedup.py
+	$(PYTHON) scripts/probe_routing.py
 	$(PYTHON) scripts/audit_ladder_contract.py
 	$(PYTHON) scripts/probe_quality.py
 	$(PYTHON) scripts/build_quality_windows.py

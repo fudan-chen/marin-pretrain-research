@@ -1,0 +1,33 @@
+{
+  "edition": "V19",
+  "goal_status": "active",
+  "checks_passed": 1139,
+  "source_files": 406,
+  "prior_source_files_preserved": 399,
+  "original_routing_checks": 11,
+  "scope": "original routing/count/combine helper probes and synthetic damage illustration; no collective, gradient or historical-run replication",
+  "actual_collective_result": null,
+  "actual_gradient_result": null,
+  "actual_input_drop_pattern": null,
+  "historical_execution_sha": null,
+  "artifact_sha256": {
+    "ROUTING_DROPS_ZH.md": "785b68c06a0a9f0fe38d8ed955b88671093f682236ecc606db45488e84245d4e",
+    "README.md": "0993285bb64d18b3f8e9bc1143bebac9fa10851a76a560fb8dab7a82d951e9b4",
+    "IMPROVEMENT_LOG_ZH.md": "5d88fc4053653c0b75757ee221d37b48175fd18b2924f1cba99c8fc0520af3cb",
+    "scripts/acquire_routing.py": "70c3180a37eb3c419922aa4d9917c7543f5d82811e809ee30a8e0e2f412219bc",
+    "scripts/probe_routing.py": "83c85a57914f7eba194ac7cff83eaf6ae0e60ebe8d09d7ae87b84f6f7bd5c1bf",
+    "scripts/validate.py": "e34530243caa3481c19ece214179809e4fb6f3f7b5017cef19ef633b362f2042",
+    "scripts/build_html.py": "e4597416ad9cf89131dff478d13444d9e7dcf696f92213f2914ab34e1d1773d4",
+    "Makefile": "fcd537ae74a60ae38bbb074780f81358b44921b07cb5bdf583576ab17ff6d3a9",
+    "assets/drop_patterns.svg": "33e5a35e1a42b1833b46d9802e1c547caec0fc3bdb352b3e65038f48ffb46591",
+    "analysis/routing_acquisition.json": "59d75ff85519e1ed70be8997dc9473981874b2cec982ee7020525f0f9272316c",
+    "analysis/routing_probe.json": "951846b555351617626485716571ffd63ac2847d9aa42c10a99ff78fcf28b63b",
+    "analysis/browser_validation_v19.json": "d534a40690fc434e521ac2c48582ca9e6e1688b422d360471b2b9b9c034445a2",
+    "analysis/browser_v19_routing_desktop.png": "52f17f210335a3e2eb1ad880ea0c0e9a84a4adacbfaa5de911e442b0764fec05",
+    "analysis/validation.json": "f473ad7102131c1e954cf5b3dcf12ff945bbf8291c199459f0b66a5a2d46f428",
+    "sources/archive_manifest.json": "720f84dae5268ae21c919aa678e38245c28aff425bc47454d56681e86a3250f1",
+    "sources/source_manifest.json": "f411b6eb640da71ee8f2d0be3d8def876475b62a1e80b043a8427adb1c8bbbc7",
+    "index.html": "47e3c2d04668694bd398e5c411bde4295950d6a6ce26742a1ab1e5c644d5e4bd",
+    "report_standalone.html": "6fb46c590e8c49b279444bb8df62f50915fcc68324b4f62ca6f34a9eaa83f06d"
+  }
+}

@@ -141,7 +141,7 @@ alt=all_rows[f['counterexample_run']]
 ok('197c dominates selected seed0 on three axes but not all tasks',all(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in [PM,HE,GM]) and sum(metric_value(alt,k)>metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==31 and sum(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==23)
 ok('197c has no independent seed1 or seed2 counterpart in this registry',sum('197c9f5ceff6b9ee-' in r['run_name'] for r in rows)==1)
 F=S/'findings_2026_10_04'
-ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/','contracts_2026_10_05/','state_2026_10_05/','boundaries_2026_10_05/','cache_2026_10_05/','dedup_2026_10_05/','quality_2026_10_05/')) for x in manifest['files'])==313)
+ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/','contracts_2026_10_05/','state_2026_10_05/','boundaries_2026_10_05/','cache_2026_10_05/','dedup_2026_10_05/','quality_2026_10_05/','routing_2026_10_05/')) for x in manifest['files'])==313)
 for i,row in enumerate(f['configs']):
     def source_run(name):return read((F if 'mixprior-' in name else P)/('config_'+name+'.json'))['data']['project']['run']
     ra,rb=source_run(row['run_a']),source_run(row['run_b']);ca,cb=json.loads(ra['config']),json.loads(rb['config'])
@@ -192,7 +192,7 @@ for scenario in decision_checks['scenarios']:
 doc_tables=soup.select('#decision-guide table')
 ok('Decision documentation preserves nine scenarios and six rule counterexamples',len(doc_tables)==3 and len(doc_tables[1].select('tbody tr'))==9 and len(doc_tables[2].select('tbody tr'))==6 and all(int(t.select('td')[2].text)==s['eligible'] and (s['best'] is None or s['best']==t.select('td')[3].text) for s,t in zip(decision_checks['scenarios'],doc_tables[1].select('tbody tr'))))
 ok('Selector trace reports bounded search rather than universal absence',trace['status']=='not_recovered_in_checked_public_entries' and trace['tree_truncated'] is False and len(trace['limitations'])==4 and all(q['total_count']==q['items_returned']==1 and q['issue_numbers']==[9126] and q['incomplete_results'] is False for q in trace['issue_queries']) and trace['issue_9126_body_unchanged_from_prior_archive'])
-ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==400 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
+ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==406 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
 contract=read(ROOT/'templates/selection_contract.json')
 ok('Confirmation contract cannot retroactively assert prior registration',contract['status']=='planned_not_executed' and contract['prior_search_results_already_seen'] is True and contract['contract_frozen_utc'] is None and contract['results'] is None and contract['independent_confirmation']['used_during_search'] is None)
 embedded=json.loads(soup.select_one('#decision-data').text)
@@ -498,6 +498,17 @@ report['highlights']+=['V18 paired config census / five frozen objects / three e
 browser18=read(A/'browser_validation_v18.json')
 ok('V18 change guide fits viewport with offline ordered chapters and unchanged bank',browser18['desktop']['width']<=browser18['desktop']['viewport'] and browser18['mobile']['width']<=browser18['mobile']['viewport'] and browser18['desktop']['has_template'] and browser18['offline']['protocol']=='file:' and browser18['offline']['figures']==17 and browser18['offline']['tables']==3 and browser18['offline']['guide_order'][0]=='change-guide' and browser18['offline']['requests']==browser18['offline']['errors']==[] and browser18['offline']['bank']==bank['bank_sha256'])
 ok('V18 viewed screenshot retains exact bytes',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha for p,sha in browser18['screenshot_sha256'].items()))
+routing=read(A/'routing_probe.json')
+ok('V19 routing helpers retain eleven scoped original checks',routing['checks_passed']==len(routing['checks'])==11 and routing['actual_collective_result'] is None and routing['actual_gradient_result'] is None and routing['actual_input_drop_pattern'] is None and routing['historical_execution_sha'] is None)
+ok('V19 old/new denominator distinction stays explicit',routing['metric_denominator_example']['old']['moe/drop_fraction']==.125 and routing['metric_denominator_example']['new']['moe/drop_fraction']==.25)
+ok('V19 same assignment loss retains distinct token damage',routing['cases'][0]['assignment_drop_fraction']==routing['cases'][1]['assignment_drop_fraction']==.125 and [c['affected_tokens'] for c in routing['cases']]==[1,8] and routing['cases'][1]['routed_output']==[2.1875]*8)
+for p,sha in routing['source_sha256'].items():ok('Routing source checksum '+p,hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha)
+ok('V19 inline assignment diagram retains artificial scope',soup.select_one('#routing-guide svg') is not None and len(soup.select('#routing-guide svg rect'))==129 and '不是Hero的loss' in soup.select_one('#routing-guide').text)
+report['highlights']=[x.replace('400 source archive checksums valid','406 source archive checksums valid') for x in report['highlights']]
+report['highlights']+=['V19 routing denominator / count vs token damage / original combine / prefix clip / synthetic diagram']
+browser19=read(A/'browser_validation_v19.json')
+ok('V19 routing diagram fits desktop/mobile and loads offline',browser19['desktop']['width']<=browser19['desktop']['viewport'] and browser19['mobile']['width']<=browser19['mobile']['viewport'] and browser19['mobile']['wrapper_width']<browser19['mobile']['scroll_width'] and browser19['offline']['figures']==browser19['offline']['loaded_figures']==17 and browser19['offline']['rects']==129 and browser19['offline']['tables']==3 and browser19['offline']['requests']==browser19['offline']['errors']==[])
+ok('V19 viewed screenshot retains exact bytes',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha for p,sha in browser19['screenshot_sha256'].items()))
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

@@ -17,14 +17,22 @@ chapters.insert(0,('cache-guide','缓存身份、分词与配比归因','CACHE_P
 chapters.insert(0,('dedup-guide','去重、样本对齐与曝光解释','DEDUP_FILTERS_ZH.md'))
 chapters.insert(0,('quality-guide','质量评分、观察窗口与配比','QUALITY_BUCKETS_ZH.md'))
 chapters.insert(0,('change-guide','训练变更评审与执行入口','CHANGE_REVIEW_ZH.md'))
+chapters.insert(0,('routing-guide','MoE分配丢弃、权重与目标','ROUTING_DROPS_ZH.md'))
 chapters.insert(0,('boundary-guide','文档边界、上下文与有效目标','DOCUMENT_BOUNDARIES_ZH.md'))
-priority=['change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
+priority=['routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
 chapters.sort(key=lambda c:priority.index(c[0]) if c[0] in priority else len(priority))
 readings={x['file']:x for x in json.loads((ROOT/'analysis/figure_readings.json').read_text())}
 sections=[];toc=[]
 for slug,label,file in chapters:
     result=markdown.markdown((ROOT/file).read_text(),extensions=['tables','fenced_code','toc'])
     soup=BeautifulSoup(result,'html.parser')
+    drop_placeholder=soup.select_one('#drop-pattern-placeholder')
+    if drop_placeholder is not None:
+        drop_svg=BeautifulSoup((ROOT/'assets/drop_patterns.svg').read_text(),'html.parser').svg
+        drop_svg['style']='display:block;width:100%;min-width:760px;max-width:800px;height:auto;'
+        drop_wrap=soup.new_tag('div',attrs={'class':'table-wrap','style':'overflow-x:auto;'})
+        drop_wrap.append(drop_svg)
+        drop_placeholder.replace_with(drop_wrap)
     placeholder=soup.select_one('#quality-window-placeholder')
     if placeholder is not None:
         frame=soup.new_tag('iframe',attrs={'id':'quality-window-frame','title':'BME字符窗口交互示意','srcdoc':(ROOT/'QUALITY_WINDOWS.html').read_text(),'style':'width:100%;height:780px;border:1px solid #cedde6;border-radius:6px;','loading':'lazy'})
@@ -89,7 +97,7 @@ template=template.replace('<a href="#order-lab">检查顺序与累计量</a>','<
 template=template.replace('<script>ASSESSMENTUI</script>','<script>ASSESSMENTUI</script><script type="application/json" id="engineering-data">ENGINEERINGDATA</script><script>ENGINEERINGUI</script>')
 template=template.replace('公开快照：2026-10-04','训练快照：2026-10-04 · 工程核对：10-05')
 template=template.replace('<a href="#assessment-lab">保存自己的证据判断</a>','<a href="#engineering-lab">核对工程解释与反证</a><a href="#assessment-lab">保存自己的证据判断</a>')
-template=template.replace('<a href="#engineering-lab">核对工程解释与反证</a>', '<a href="#change-guide">最新：训练变更评审</a><a href="#quality-guide">评分窗口与质量桶</a><a href="#dedup-guide">去重与样本对齐</a><a href="#cache-guide">缓存身份与配比归因</a><a href="#boundary-guide">文档边界与有效目标</a><a href="#state-guide">训练状态与切换时刻</a><a href="#contracts-guide">源码接口与恢复验收</a><a href="#scale-guide">配比历史与BPB聚合检查</a><a href="#engineering-lab">核对工程解释与反证</a>')
+template=template.replace('<a href="#engineering-lab">核对工程解释与反证</a>', '<a href="#routing-guide">最新：MoE丢弃与训练目标</a><a href="#change-guide">训练变更评审</a><a href="#quality-guide">评分窗口与质量桶</a><a href="#dedup-guide">去重与样本对齐</a><a href="#cache-guide">缓存身份与配比归因</a><a href="#boundary-guide">文档边界与有效目标</a><a href="#state-guide">训练状态与切换时刻</a><a href="#contracts-guide">源码接口与恢复验收</a><a href="#scale-guide">配比历史与BPB聚合检查</a><a href="#engineering-lab">核对工程解释与反证</a>')
 workbench=json.loads((ROOT/'analysis/workbench_data.json').read_text());rubric=json.loads((ROOT/'analysis/rubrics.json').read_text());chapter_paths={file:'#'+slug for slug,_,file in chapters}
 for c in workbench['cases']:c['source']=chapter_paths.get(c['source'],c['source'])
 for rule in rubric['rules']:

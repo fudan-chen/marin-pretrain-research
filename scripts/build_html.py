@@ -118,6 +118,12 @@ for slug,label,file in chapters:
             route_parts.append('</p><p class="route-boundary"><strong>证据范围：</strong>'+html.escape(route['limit'])+'</p></div></details>')
         route_parts.append('</div>')
         routes_placeholder.replace_with(BeautifulSoup(''.join(route_parts),'html.parser'))
+    stall_placeholder=soup.select_one('#loader-stall-flow-placeholder')
+    if stall_placeholder is not None:
+        stall_svg=BeautifulSoup((ROOT/'assets/loader_stall_flow.svg').read_text(),'html.parser').svg
+        stall_svg['style']='display:block;width:100%;min-width:800px;height:auto;'
+        stall_wrap=soup.new_tag('div',attrs={'class':'table-wrap','style':'overflow-x:auto;'})
+        stall_wrap.append(stall_svg);stall_placeholder.replace_with(stall_wrap)
     live_placeholder=soup.select_one('#live-observation-placeholder')
     if live_placeholder is not None:
         live_svg=BeautifulSoup((ROOT/'assets/live_2026_10_06.svg').read_text(),'html.parser').svg

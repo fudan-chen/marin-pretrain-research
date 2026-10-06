@@ -1,0 +1,146 @@
+{
+  "scope": "Original loader host flow, watchdog and next warnings with bounded fault adapters.\nReal asyncio tasks and event-gated waits, unchanged ten-second watchdog threshold.\nNo full background queue, device batchification, real token store or training.\n",
+  "checks_passed": 13,
+  "checks": [
+    "Original ten-second read watchdog warns while fetch remains pending",
+    "Warning is not cancellation or automatic retry",
+    "Release returns original requested identities",
+    "Finite length await emits no read-watchdog warning in bounded interval",
+    "Length wait occurs before batch read",
+    "Release finite length allows normal original batch",
+    "Explicit caller cancellation reaches gated read",
+    "Deep fetch later fault prevents earlier first yield",
+    "Shallow fetch yields earlier valid batch before same later fault",
+    "Both fetch depths propagate original fault",
+    "Synchronous next warning is absent while call blocks",
+    "Synchronous successful slow next logs after returning",
+    "Synchronous failed next bypasses post-return stall warning"
+  ],
+  "runtime_python": "3.12.13",
+  "cases": {
+    "read_wait": {
+      "warnings": [
+        "Data loading is taking a long time: 10.0 seconds. Waiting for 4 items."
+      ],
+      "request": [
+        [
+          0,
+          1,
+          2,
+          3
+        ]
+      ],
+      "returned": {
+        "step": 0,
+        "offset": 0,
+        "size": 4,
+        "identities": [
+          0,
+          1,
+          2,
+          3
+        ]
+      },
+      "automatic_timeout": false
+    },
+    "length_wait": {
+      "observation_seconds": 10.3,
+      "pending_before_release": true,
+      "warnings_before_release": [],
+      "requests_before_release": []
+    },
+    "explicit_cancellation": {
+      "caller_cancelled": true,
+      "read_cancelled": true
+    },
+    "fault_fetch_4": {
+      "returned": [],
+      "requests": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ]
+      ],
+      "error": "artificial unreadable identity four"
+    },
+    "fault_fetch_1": {
+      "returned": [
+        {
+          "step": 0,
+          "offset": 0,
+          "size": 4,
+          "identities": [
+            0,
+            1,
+            2,
+            3
+          ]
+        }
+      ],
+      "requests": [
+        [
+          0,
+          1,
+          2,
+          3
+        ],
+        [
+          4,
+          5,
+          6,
+          7
+        ]
+      ],
+      "error": "artificial unreadable identity four"
+    },
+    "sync_next_False": {
+      "pending_before_release": true,
+      "warnings_before_release": [],
+      "warnings_after_release": [
+        "Data loader stalled 0.652s. queue_size=N/A fetch_batch_size=1 max_buffered=0"
+      ],
+      "result": "ready",
+      "error": null
+    },
+    "sync_next_True": {
+      "pending_before_release": true,
+      "warnings_before_release": [],
+      "warnings_after_release": [],
+      "result": null,
+      "error": "artificial next failure"
+    }
+  },
+  "original_methods": {
+    "__next__": [
+      252,
+      265
+    ],
+    "run_and_report_slowness": [
+      481,
+      500
+    ]
+  },
+  "source_sha256": {
+    "sources/eval_identity_2026_10_06/loader.py": "d8c14060286d9998c8784ce945694958b7c61a5404bcede6e77ba34c467e077d",
+    "sources/deepening_2026_10_04/schedule_production.py": "01a2faa0d7a0b5cca4aad4cd702ed9aed5114111293970d8ea379d36f40ff281",
+    "scripts/probe_loader_resume.py": "0679ebaddd48a0204cb61ee6dfae2c4bb270f0e187f52d674cb34d23ed95c2bf",
+    "scripts/probe_loader_stall_cpu.py": "0eae4643c032ea9fbde517cb049b3eb4224292734283f12bc909fdd346b13ef1"
+  },
+  "actual_Hero_stall": null,
+  "actual_training_resume": null,
+  "actual_full_background_queue": null
+}

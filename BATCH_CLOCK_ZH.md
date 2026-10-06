@@ -217,3 +217,37 @@ V71检查loader与日志的边界，本轮向上追到实际Harrier配置构建�
 忠实续训时保存绝对阶段边界和已消耗前缀，延长停止预算应明确是否保持原阶段计划；若按新的N整体重算，则把它当成新的顺序干预，并审核旧数据映射。不要只改num_train_steps后沿用原loss解释。V86显示同一个N还可能改变优化器衰减，因此配比时间表、外层lr计划和状态时钟应共同导出后评审；本轮没有执行外层学习率，也没有证明三者实际错配。
 
 新增3份同head源码/spec，492份旧非bookkeeping来源字节保持，完整来源496份。[获取台账](analysis/phase_budget_acquisition.json)记录SHA。复现入口`make phase-budget-probe HOST_PYTHON=/tmp/marin-jax-cpu-072/bin/python`需要Python≥3.10的严格zip，未运行JAX数值kernel。
+
+
+## V99：训练等数据时，哪些报警真的在等待期间运行
+
+继续沿loader调用链，发现报警覆盖范围必须分开理解。“看到了watchdog”并不意味着读取有deadline；“没有stalled日志”也不能排除loader正在等待。这不是新增Hero卡顿事故，而是固定源码的行为边界。本轮重新下载b65be4c9550c5097f0a3add08933531a1c24d534版本loader，与既有归档逐字节一致，未增加源文件。[同版本字节绑定](analysis/loader_current_source_binding.json)
+
+<div id="loader-stall-flow-placeholder"></div>
+
+本轮在既有原host三个异步函数之外，执行原`run_and_report_slowness`和`__next__`，未改函数体或10秒阈值。异步读取/长度使用事件适配器，等待实际经过原阈值；同步next使用可释放的人工阻塞迭代器。共13项检查，原始日志与请求保留。[结果](analysis/loader_stall_cpu.json) · [脚本](scripts/probe_loader_stall_cpu.py)
+
+|等待位置或故障输入|原函数对照结果|排查含义|
+|---|---|---|
+|get_batch事件未释放|10秒warning出现，读数task仍pending；没有自动重试|这是慢请求观察器，不是超时恢复器|
+|同一请求随后释放|返回原请求0–3的身份|报警不丢弃请求，也不自动改变cursor|
+|finite async_len事件未释放|观察10.3秒仍pending，无读取watchdog报警；尚未请求get_batch|长度查询发生在watchdog包裹的读取之前|
+|调用方主动取消原读取链|人工read收到CancelledError|取消由调用方发起；没有验证真实线程/远程IO可中断|
+|同步next阻塞后成功返回|阻塞期间没有该stalled日志，成功返回后记录耗时|该日志是事后观察，不能作为运行中的心跳|
+|同步next阻塞后抛错|原错误传播，没有该事后stalled日志|日志缺失不能排除一次慢失败|
+|fetch=4，人工身份4不可读|一次请求0–15，首批尚未yield就抛OSError|预取成功与已交付训练批次需区分|
+|fetch=1，同一坏身份|先交付0–3，下一请求4–7再失败|失败覆盖范围改变；本轮没有吞吐或内存测量|
+
+原`_produce_batches`先确认可用长度，再请求batch-of-batches，最后逐批yield。`_do_retrieve_batch_of_batches`把多个批次的本地主机索引合为一次get_batch，整体返回后才拆回。慢请求wrapper对读取建立task，每10秒仅记warning；finally取消自己的watchdog。同步`__next__`的耗时判断则在next成功返回后。日志覆盖的是这些明确位置，不是整条loader的每一个等待。[原加载器](https://github.com/marin-community/marin/blob/b65be4c9550c5097f0a3add08933531a1c24d534/lib/levanter/src/levanter/data/loader.py)
+
+人工故障store声明无限，在遇到身份4时主动抛OSError；不是V96的有限库存越界，也不是源码自己生成的故障。预取四批时，早期有效身份虽在请求范围内，尚未形成可交付批次；这个控制没有证明真实后端会部分读取、重试或缓存它们。这里只证明原host管线的yield在整次get_batch成功之后。fetch=1的正向例子也不代表生产应一律关闭预取。
+
+### 卡顿与恢复管线的具体规则
+
+先将等待分成长度/就绪查询、get_batch读取、后台队列消费、batchify/设备传输、训练执行，分别保留开始和完成时刻。读取warning存在时，检查该请求仍pending、后端错误、队列和各host进度；不要把warning直接写成“自动重试中”。读取warning不存在时，也要检查有限长度查询和初始化。没有执行本轮未覆盖的真实后台队列或初始化路径，不能用这里的安静对照概括它们全部日志。
+
+显式超时若要加入，应另写合同：作用在哪个等待、能否取消底层IO、各host如何共同退出、是否重试同一身份、什么状态允许提交下一训练step。只在单host外面加wait_for，而其他host继续进入collective，可能需要进一步协调；这是设计审查事项，本轮未实施或复现跨host死锁。wall-clock报警阈值也不等于可读性deadline，不能直接拿原10秒阈值作为停止标准。
+
+恢复仍依据完成的state.step及历史数据声明，不依据“后台已经请求到哪里”。在重新取数前记录已请求、已交付、已完成更新三种水位；重读未完成的预取身份不等于模型训练重复。对于外部有副作用或不可重放的数据源，另建游标和提交合同，不能套用稳定随机访问identity store的结论。
+
+数据配比实验也受此影响：若调整后某域读取更慢、损坏请求更频繁或host掉队，按墙钟比较到达的loss会混入有效训练量差异。先核对成功完成的序列和有效目标预算，再比较共同进度的域loss；吞吐退化与统计收益分别报告。本轮没有生产步时、真实故障率或loss，不能量化Hero受影响的程度。

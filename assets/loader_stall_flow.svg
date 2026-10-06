@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 530" role="img" aria-labelledby="loader-stall-title loader-stall-desc">
+<title id="loader-stall-title">加载器等待与报警：三处等待不共用一个超时</title><desc id="loader-stall-desc">有限数据长度查询没有经过读取watchdog；get_batch每十秒警告但保持等待；同步next的慢调用日志在成功返回之后。人工坏样本四令一次预取四批在首批交付前失败，预取一批可先交付有效首批。不是Hero生产观测。</desc>
+<rect width="960" height="530" fill="#f8fafc"/>
+<g font-family="system-ui, sans-serif" fill="#172b3a"><text x="30" y="38" font-size="23" font-weight="700">等待不等于超时；报警不等于恢复</text><text x="30" y="67" font-size="14" fill="#536675">原函数受控执行 · 真实 10 秒 watchdog · 人工身份数据 · 无训练更新</text>
+<g stroke="#cbd5e1" fill="#fff"><rect x="30" y="96" width="275" height="170" rx="10"/><rect x="343" y="96" width="275" height="170" rx="10"/><rect x="656" y="96" width="275" height="170" rx="10"/></g>
+<g font-size="17" font-weight="650"><text x="47" y="127">1  查询 finite async_len</text><text x="359" y="127">2  请求 get_batch</text><text x="672" y="127">3  交付 / 同步 next</text></g>
+<g font-size="15"><text x="47" y="159">长度未返回，批量读取还未开始</text><text x="47" y="190">10.3 秒对照：仍等待、无报警</text><text x="47" y="230" fill="#9a3412">此 await 未包读取 watchdog</text><text x="359" y="159">10 秒警告出现，读取仍 pending</text><text x="359" y="190">释放事件后返回原请求内容</text><text x="359" y="230" fill="#9a3412">警告不取消、不重试、不设 deadline</text><text x="672" y="159">next 成功返回后计算耗时</text><text x="672" y="190">慢返回：记 stalled；抛错：跳过</text><text x="672" y="230" fill="#9a3412">此日志不能实时定位正在卡住的调用</text></g>
+<g stroke="#64748b" stroke-width="2"><path d="M310 181h25m-7-6 7 6-7 6" fill="none"/><path d="M623 181h25m-7-6 7 6-7 6" fill="none"/></g>
+<text x="30" y="309" font-size="19" font-weight="650">同一人工坏样本，预取深度改变首次可交付的范围</text>
+<rect x="30" y="333" width="900" height="70" rx="8" fill="#fff1f2"/><rect x="30" y="416" width="900" height="70" rx="8" fill="#ecfdf5"/>
+<g font-size="16"><text x="47" y="360">fetch=4：一次请求身份 0–15，其中身份 4 抛错</text><text x="47" y="385" fill="#9f1239">首批 0–3 尚未 yield → 请求失败传播；已读身份不等于完成训练</text><text x="47" y="443">fetch=1：先请求 0–3 并交付，再请求 4–7</text><text x="47" y="468" fill="#166534">首批可交付，下一请求遇到同一错误 → 没有测吞吐，也不据此推荐缩小预取</text></g>
+<text x="30" y="514" font-size="13" fill="#536675">执行边界：host 方法 / 事件适配器；没有完整后台队列、多主机一致失败、真实缓存或 Hero 卡顿归因。</text>
+</g></svg>

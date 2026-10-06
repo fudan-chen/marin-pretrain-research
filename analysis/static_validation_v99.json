@@ -1,0 +1,17 @@
+{
+  "version": "V99",
+  "checks_passed": 10,
+  "checks": [
+    "index.html unique IDs",
+    "index.html seven historical clock tables preserved plus wait comparison",
+    "index.html wait semantics and production limits",
+    "index.html diagram inline with no unresolved placeholder",
+    "report_standalone.html unique IDs",
+    "report_standalone.html seven historical clock tables preserved plus wait comparison",
+    "report_standalone.html wait semantics and production limits",
+    "report_standalone.html diagram inline with no unresolved placeholder",
+    "1593 fresh checks",
+    "SVG valid with accessible title and viewbox"
+  ],
+  "actual_browser_rendering": null
+}

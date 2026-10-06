@@ -676,7 +676,7 @@ ok('V35 schedule and allocation source digests match',all(hashlib.sha256((ROOT/p
 ok('V35 alignment and cursor counterexample remain rejected',not bc['synthetic_review']['construction_alignment_ok'] and bc['synthetic_review']['resume']['sequence_offset_delta']==-12)
 ok('V35 equal totals do not imply equal batch prefixes',bc['equal_endpoint_counterexample']['sequence_offset_delta']==0 and not bc['equal_endpoint_counterexample']['consumed_batch_prefix_equal'])
 ok('V35 original callback does not write removed component zero','mixture/weight/B' not in bc['original_callback_logs'][-1]['data'])
-ok('V71 clock chapter retains five historical tables plus boundary-log table',len(soup.select('#batch-clock-guide table'))==7)
+ok('V71 clock chapter retains five historical tables plus boundary-log table',len(soup.select('#batch-clock-guide table'))==8)
 report['highlights']+=['V35 exact cumulative batch clock / stage alignment rejection / consumed prefix review / configured weights versus block counts; static HTML verification only for new chapter']
 mr=read(A/'mixture_range_probe.json')
 ok('V36 integer range probes retain twenty-two bounded checks',mr['checks_passed']==len(mr['checks'])==22 and mr['actual_historical_overflow'] is None and mr['actual_loader_replay'] is None and mr['actual_Hero_runtime_numpy_version'] is None)
@@ -809,7 +809,7 @@ ok('V52 eleven original async loader host controls retain scope',lr['checks_pass
 ok('V52 loader source identities match',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in lr['source_sha256'].items()))
 ok('V52 prefetch and completed-step resume are distinct',max(lr['prefetch']['first_store_request'])==19 and lr['prefetch']['resume_completed_step_one']['identities']==[4,5,6,7])
 ok('V52 historical rewrite affects original host retrieval',lr['history_change']['old']['offset']==20 and lr['history_change']['rewritten']['offset']==32 and lr['history_change']['future_only']['offset']==20)
-ok('V71 batch clock chapter retains five historical tables and one new table',len(soup.select('#batch-clock-guide table'))==7)
+ok('V71 batch clock chapter retains five historical tables and one new table',len(soup.select('#batch-clock-guide table'))==8)
 report['highlights']+=['V52 eleven original async loader host controls, identity-store retrieval and finite endpoints; no actual Hero token stream, background queue or complete checkpoint restore']
 mi=read(A/'mixture_identity_cpu.json')
 ok('V53 fourteen original mixture class CPU controls retain scope',mi['checks_passed']==len(mi['checks'])==14 and mi['runtime']['backend']=='cpu' and mi['actual_Hero_mapping'] is None and mi['actual_inner_shuffle'] is None and mi['actual_token_store'] is None)
@@ -1133,6 +1133,11 @@ ok('V98 original history replay controls source-bound',mh['checks_passed']==len(
 ok('V98 same current quota and names do not imply same identities',mh['same_current_quota']==[4,4] and mh['old_prefix']==[8,8] and mh['changed_prefix']==[12,4] and all(x.split(':')[0]==y.split(':')[0] and x!=y for x,y in zip(mh['old_read'],mh['changed_past_read'])))
 ok('V98 modulo alias retains distinct logical offsets',mh['modulo_masked_old']==mh['modulo_masked_changed'] and mh['old_logical']!=mh['changed_logical'] and mh['reset_cursor_read']!=mh['old_read'])
 report['highlights']+=['V98 sixteen original-class historical-stage replay controls; unchanged current quota with shifted base and modulo-masked history, no actual loader restore']
+ls=read(A/'loader_stall_cpu.json');lb=read(A/'loader_current_source_binding.json')
+ok('V99 original loader waits source-bound and current bytes verified',ls['checks_passed']==len(ls['checks'])==13 and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in ls['source_sha256'].items()) and lb['same_bytes'] and hashlib.sha256((ROOT/lb['archived_file']).read_bytes()).hexdigest()==lb['sha256'] and lb['git_revision']=='b65be4c9550c5097f0a3add08933531a1c24d534' and ls['actual_Hero_stall'] is None)
+ok('V99 watchdog only observes selected read waits',ls['cases']['read_wait']['automatic_timeout'] is False and any('10.0 seconds' in x for x in ls['cases']['read_wait']['warnings']) and ls['cases']['length_wait']['pending_before_release'] and ls['cases']['length_wait']['warnings_before_release']==[] and ls['cases']['explicit_cancellation']['read_cancelled'])
+ok('V99 prefetch fault and post-return warning scopes explicit',ls['cases']['fault_fetch_4']['returned']==[] and len(ls['cases']['fault_fetch_1']['returned'])==1 and ls['cases']['sync_next_True']['warnings_after_release']==[] and soup.select_one('#loader-stall-title') is not None)
+report['highlights']+=['V99 thirteen original loader host watchdog/next controls; no automatic timeout, selected waits unwrapped and prefetch fault boundaries, no actual Hero stall']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

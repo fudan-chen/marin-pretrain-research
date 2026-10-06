@@ -317,3 +317,6 @@ V97补充：重复覆盖公式要求实际未取模域内索引是连续区间�
 
 
 V98补充恢复检查：同一当前quota、seed和global sequence cursor仍可能因历史阶段改写而读取不同身份。恢复前记录完整已执行阶段及各域未取模累计offset，同时比较样本摘要；库存周期可能掩盖offset差异。[原类恢复映射对照](MIXTURE_IDENTITY_ZH.md)。此检查尚未接入真实loader。
+
+
+V99：将长度查询、批量读取、队列消费、设备准备和完成更新分别计时。读取watchdog仅报警；next的stalled日志在成功返回后出现。恢复用完成step而非预取水位；显式超时须审查底层取消、多host退出与重试身份合同。[原函数13项对照](BATCH_CLOCK_ZH.md)。

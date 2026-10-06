@@ -1,0 +1,83 @@
+{
+  "scope": "Fresh full issue/body/comment comparison against frozen Oct5 snapshot; no new execution evidence",
+  "comparisons": [
+    {
+      "issue": 8435,
+      "title": "[Hero Run] 535B-A23B on 18T tokens",
+      "body_changed": false,
+      "comments": 27,
+      "added": [],
+      "removed": [],
+      "changed": [],
+      "updated_at": "2026-10-01T00:40:47Z",
+      "state": "open",
+      "old_body_source": "sources/engineering_2026_10_05/issue_8435.json",
+      "old_comments_source": "sources/engineering_2026_10_05/issue_8435_comments.json"
+    },
+    {
+      "issue": 8506,
+      "title": "Hero Run / Ongoing Status",
+      "body_changed": false,
+      "comments": 58,
+      "added": [],
+      "removed": [],
+      "changed": [],
+      "updated_at": "2026-10-03T11:27:20Z",
+      "state": "open",
+      "old_body_source": "sources/engineering_2026_10_05/issue_8506.json",
+      "old_comments_source": "sources/engineering_2026_10_05/issue_8506_comments.json"
+    },
+    {
+      "issue": 8870,
+      "title": "[grug] Ragged EP train step hangs silently on one rack at d6144 hero scale",
+      "body_changed": false,
+      "comments": 30,
+      "added": [],
+      "removed": [],
+      "changed": [],
+      "updated_at": "2026-09-24T00:09:31Z",
+      "state": "open",
+      "old_body_source": "sources/engineering_2026_10_05/issue_8870.json",
+      "old_comments_source": "sources/engineering_2026_10_05/issue_8870_comments.json"
+    }
+  ],
+  "requests": [
+    {
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8435",
+      "sha256": "a54694915dc162c10a2754ad58dfae46cad0ea9573c01b0db151e42a0743ddc2",
+      "retrieved_utc": "2026-10-06T19:11:34.036339+00:00",
+      "pagination_complete": true
+    },
+    {
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8506",
+      "sha256": "77e2a282f368870dfe7edcc5460f92582f68a30f9e21947150e047d012939c9a",
+      "retrieved_utc": "2026-10-06T19:11:33.725640+00:00",
+      "pagination_complete": true
+    },
+    {
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8870",
+      "sha256": "19866ee91b32ada6cc196ad699bdf9dd0eac75dd669add143f4ae4ce6af52ae1",
+      "retrieved_utc": "2026-10-06T19:11:34.302326+00:00",
+      "pagination_complete": true
+    },
+    {
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8435/comments?per_page=100",
+      "sha256": "961fa251b7b9c11aed54a123c0570414b4c05ba9e9f3106bdcdf59191cef6a58",
+      "retrieved_utc": "2026-10-06T19:11:34.198091+00:00",
+      "pagination_complete": true
+    },
+    {
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8506/comments?per_page=100",
+      "sha256": "5d7840f10eb28fdc78b229d924a13fdc6626c18b3718c1f41b0ab2a7bb399cb7",
+      "retrieved_utc": "2026-10-06T19:11:37.157455+00:00",
+      "pagination_complete": true
+    },
+    {
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8870/comments?per_page=100",
+      "sha256": "0b31e85fdbfeb4e938ff4c11dc7736e93ced670dbe838fe54440152bdb9f28ec",
+      "retrieved_utc": "2026-10-06T19:11:36.038668+00:00",
+      "pagination_complete": true
+    }
+  ],
+  "actual_new_fix_verification": null
+}

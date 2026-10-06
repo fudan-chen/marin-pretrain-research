@@ -141,7 +141,7 @@ alt=all_rows[f['counterexample_run']]
 ok('197c dominates selected seed0 on three axes but not all tasks',all(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in [PM,HE,GM]) and sum(metric_value(alt,k)>metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==31 and sum(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==23)
 ok('197c has no independent seed1 or seed2 counterpart in this registry',sum('197c9f5ceff6b9ee-' in r['run_name'] for r in rows)==1)
 F=S/'findings_2026_10_04'
-ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/','contracts_2026_10_05/','state_2026_10_05/','boundaries_2026_10_05/','cache_2026_10_05/','dedup_2026_10_05/','quality_2026_10_05/','routing_2026_10_05/','optimizer_2026_10_05/','short_conv_2026_10_05/','router_precision_2026_10_05/','eval_metrics_2026_10_05/','checkpoint_commit_2026_10_05/','checkpoint_memory_2026_10_05/','muon_geometry_2026_10_05/','adamh_2026_10_05/','muon_direction_2026_10_05/','watch_2026_10_06/','live_2026_10_06/','eval_identity_2026_10_06/','paloma_protocol_2026_10_06/','packing_2026_10_07/','live_2026_10_07/','accumulation_2026_10_07/','prp_2026_10_07/')) for x in manifest['files'])==313)
+ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/','contracts_2026_10_05/','state_2026_10_05/','boundaries_2026_10_05/','cache_2026_10_05/','dedup_2026_10_05/','quality_2026_10_05/','routing_2026_10_05/','optimizer_2026_10_05/','short_conv_2026_10_05/','router_precision_2026_10_05/','eval_metrics_2026_10_05/','checkpoint_commit_2026_10_05/','checkpoint_memory_2026_10_05/','muon_geometry_2026_10_05/','adamh_2026_10_05/','muon_direction_2026_10_05/','watch_2026_10_06/','live_2026_10_06/','eval_identity_2026_10_06/','paloma_protocol_2026_10_06/','packing_2026_10_07/','live_2026_10_07/','accumulation_2026_10_07/','prp_2026_10_07/','engineering_current_2026_10_07/')) for x in manifest['files'])==313)
 for i,row in enumerate(f['configs']):
     def source_run(name):return read((F if 'mixprior-' in name else P)/('config_'+name+'.json'))['data']['project']['run']
     ra,rb=source_run(row['run_a']),source_run(row['run_b']);ca,cb=json.loads(ra['config']),json.loads(rb['config'])
@@ -192,7 +192,7 @@ for scenario in decision_checks['scenarios']:
 doc_tables=soup.select('#decision-guide table')
 ok('Decision documentation preserves nine scenarios and six rule counterexamples',len(doc_tables)==3 and len(doc_tables[1].select('tbody tr'))==9 and len(doc_tables[2].select('tbody tr'))==6 and all(int(t.select('td')[2].text)==s['eligible'] and (s['best'] is None or s['best']==t.select('td')[3].text) for s,t in zip(decision_checks['scenarios'],doc_tables[1].select('tbody tr'))))
 ok('Selector trace reports bounded search rather than universal absence',trace['status']=='not_recovered_in_checked_public_entries' and trace['tree_truncated'] is False and len(trace['limitations'])==4 and all(q['total_count']==q['items_returned']==1 and q['issue_numbers']==[9126] and q['incomplete_results'] is False for q in trace['issue_queries']) and trace['issue_9126_body_unchanged_from_prior_archive'])
-ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==444 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
+ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==455 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
 contract=read(ROOT/'templates/selection_contract.json')
 ok('Confirmation contract cannot retroactively assert prior registration',contract['status']=='planned_not_executed' and contract['prior_search_results_already_seen'] is True and contract['contract_frozen_utc'] is None and contract['results'] is None and contract['independent_confirmation']['used_during_search'] is None)
 embedded=json.loads(soup.select_one('#decision-data').text)
@@ -835,6 +835,20 @@ ok('V55 empty active inventory is rejected by original restart path',bi['small_z
 ok('V55 cap applies after shuffled prefix and split',bi['shuffled_cap']['cap']==bi['shuffled_cap']['full'][:5] and len(bi['split_then_cap'])==4 and bi['errors']['zero_target']=='ZeroDivisionError')
 report['highlights']+=['V55 sixteen original train_sets and post_init CPU controls with explicit cache/key/sync adapters; floor distorts repeat factors and can empty active inventory, no actual Hero simulation or pilot model loss']
 ok('V55 original init rejects combinations used only as bypassed function controls',bi['bypassed_initialization_controls'] is True and set(bi['post_init_rejections'])=={'split_and_budget','cap_and_budget'})
+rp=read(A/'routing_gradient_proposal_cpu.json')
+ok('V56 seven proposal CPU/source checks retain unexecuted GPU scope',rp['checks_passed']==len(rp['checks'])==7 and rp['actual_ragged_MoE_execution'] is None and rp['actual_GPU_reproduction'] is None and rp['actual_Hero_deployment'] is None)
+ok('V56 proposal source hashes match',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in rp['source_sha256'].items()))
+ok('V56 formula controls retain boundary gradients',rp['cases'][0]['proposal_division_dS']==6 and rp['cases'][1]['proposal_division_dS']==0 and rp['cases'][1]['exact_reference_dS']==6 and rp['cases'][2]['proposal_division_dS']==0 and rp['cases'][2]['exact_reference_dS']>0)
+for n in [9832,9833]:
+    pr=read(S/f'engineering_current_2026_10_07/pull_{n}.json');fs=read(S/f'engineering_current_2026_10_07/pull_{n}_files.json')
+    ok('V56 unmerged PR and complete file connection '+str(n),not pr['merged'] and pr['state']=='open' and pr['changed_files']==len(fs))
+ec=read(A/'engineering_current_v56.json')
+ok('V56 primary issue bodies and comment IDs unchanged',len(ec['comparisons'])==3 and all(not x['body_changed'] and not x['added'] and not x['removed'] and not x['changed'] for x in ec['comparisons']))
+ok('V56 new engineering chapter retains two source-control tables',len(soup.select('#recent-moe-guide table'))==2)
+report['highlights']=[x.replace('444 source archive checksums valid','455 source archive checksums valid') for x in report['highlights']]
+report['highlights']+=['V56 three full issue refreshes unchanged and two unmerged MoE PR audits; seven patch-statement CPU/source controls, no GPU MoE or production deployment verification']
+ps=read(A/'moe_proposal_source_audit.json')
+ok('V56 nineteen independent raw API source audits retain deployment unknown',ps['checks_passed']==len(ps['checks'])==19 and ps['actual_deployment'] is None and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in ps['source_sha256'].items()))
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

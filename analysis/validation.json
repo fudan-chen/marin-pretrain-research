@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1421,
+  "checks_passed": 1430,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -18,7 +18,7 @@
     "four new config contrasts / six step393 resume windows",
     "seventeen embedded figures",
     "all relative HTML links valid",
-    "444 source archive checksums valid",
+    "455 source archive checksums valid",
     "18 authored rubrics / seven claim-stage decisions",
     "five interpretation cases / four metrics with switchable baselines",
     "17 figure-reading entries / five preserved collapsed tables",
@@ -103,7 +103,8 @@
     "V52 eleven original async loader host controls, identity-store retrieval and finite endpoints; no actual Hero token stream, background queue or complete checkpoint restore",
     "V53 fourteen original mixture class and real JAX CPU identity controls; ordered dataset IDs, integer ties, finite modulo and partial windows; no actual Hero token/shuffle/restore",
     "V54 fourteen original inner-shuffle/split CPU controls including 130 small PRP domains; same-snapshot disjointness versus cross-snapshot overlap, Hero declared split disabled, no actual token contamination",
-    "V55 sixteen original train_sets and post_init CPU controls with explicit cache/key/sync adapters; floor distorts repeat factors and can empty active inventory, no actual Hero simulation or pilot model loss"
+    "V55 sixteen original train_sets and post_init CPU controls with explicit cache/key/sync adapters; floor distorts repeat factors and can empty active inventory, no actual Hero simulation or pilot model loss",
+    "V56 three full issue refreshes unchanged and two unmerged MoE PR audits; seven patch-statement CPU/source controls, no GPU MoE or production deployment verification"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

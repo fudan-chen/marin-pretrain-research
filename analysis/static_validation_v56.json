@@ -1,0 +1,17 @@
+{
+  "pages": {
+    "index.html": {
+      "recent_moe_tables": 2,
+      "sha256": "d2fe4be8fa1b1f3ec4c445706273c701c49ddf01e2c7f46c5d1b784a4cbc3fa7"
+    },
+    "report_standalone.html": {
+      "recent_moe_tables": 2,
+      "sha256": "ff95e2f26aa2b23fc3c3d16f2bf1ea6b780f48b41d3430e76344c30b66bfdf40"
+    }
+  },
+  "prior_source_bytes_preserved": 444,
+  "source_files": 455,
+  "new_API_files": 11,
+  "actual_browser_rendering": null,
+  "routing_proposal_make_target_verified": true
+}

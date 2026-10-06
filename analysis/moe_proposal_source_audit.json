@@ -1,0 +1,171 @@
+{
+  "scope": "Independently recheck frozen issue comparisons and PR file/patch coverage.\nCoverage is source inspection, not execution, correctness or deployment verification.\n",
+  "checks_passed": 19,
+  "checks": [
+    "Frozen issue full body and comment content unchanged 8435",
+    "Frozen issue full body and comment content unchanged 8506",
+    "Frozen issue full body and comment content unchanged 8870",
+    "PR complete file list 9832",
+    "PR patch changed-line coverage 9832 lib/levanter/src/levanter/grug/_moe/ep_ragged_all_to_all.py",
+    "PR patch changed-line coverage 9832 lib/levanter/src/levanter/grug/_moe/sonic.py",
+    "PR patch changed-line coverage 9832 lib/levanter/tests/grug/test_grugformer_moe.py",
+    "PR complete file list 9833",
+    "PR patch changed-line coverage 9833 experiments/grug/moe_hero_ep/model.py",
+    "PR patch changed-line coverage 9833 experiments/grug/moe_hero_ep/train.py",
+    "PR patch changed-line coverage 9833 lib/levanter/src/levanter/grug/_moe/common.py",
+    "PR patch changed-line coverage 9833 lib/levanter/src/levanter/grug/_moe/ep_ragged_all_to_all.py",
+    "PR patch changed-line coverage 9833 lib/levanter/src/levanter/grug/_moe/sonic_cute.py",
+    "PR patch changed-line coverage 9833 lib/levanter/src/levanter/grug/grug_moe.py",
+    "PR patch changed-line coverage 9833 lib/levanter/tests/grug/test_grugformer_moe.py",
+    "PR patch changed-line coverage 9833 lib/levanter/tests/kernels/test_quack_expert_mlp.py",
+    "PR patch changed-line coverage 9833 lib/marin/src/marin/testing/moe/ragged_ep.py",
+    "PR patch changed-line coverage 9833 tests/test_moe_hero_ep.py",
+    "All eleven acquired API bytes match provenance"
+  ],
+  "issues": [
+    {
+      "issue": 8435,
+      "body_equal": true,
+      "comment_map_equal": true,
+      "comments": 27
+    },
+    {
+      "issue": 8506,
+      "body_equal": true,
+      "comment_map_equal": true,
+      "comments": 58
+    },
+    {
+      "issue": 8870,
+      "body_equal": true,
+      "comment_map_equal": true,
+      "comments": 30
+    }
+  ],
+  "PRs": [
+    {
+      "number": 9832,
+      "head_sha": "4e533e768d5342e705976bd704cfe63af6b99eed",
+      "base_sha": "fb85462562ab2e59b58f87e6157d9adf71df89ea",
+      "state": "open",
+      "merged": false,
+      "files": [
+        {
+          "file": "lib/levanter/src/levanter/grug/_moe/ep_ragged_all_to_all.py",
+          "added_patch_lines": 224,
+          "removed_patch_lines": 97,
+          "metadata_additions": 224,
+          "metadata_deletions": 97
+        },
+        {
+          "file": "lib/levanter/src/levanter/grug/_moe/sonic.py",
+          "added_patch_lines": 107,
+          "removed_patch_lines": 4,
+          "metadata_additions": 107,
+          "metadata_deletions": 4
+        },
+        {
+          "file": "lib/levanter/tests/grug/test_grugformer_moe.py",
+          "added_patch_lines": 249,
+          "removed_patch_lines": 26,
+          "metadata_additions": 249,
+          "metadata_deletions": 26
+        }
+      ]
+    },
+    {
+      "number": 9833,
+      "head_sha": "1247132fa147f82a14e36757d437ba1507a629b1",
+      "base_sha": "4e533e768d5342e705976bd704cfe63af6b99eed",
+      "state": "open",
+      "merged": false,
+      "files": [
+        {
+          "file": "experiments/grug/moe_hero_ep/model.py",
+          "added_patch_lines": 16,
+          "removed_patch_lines": 1,
+          "metadata_additions": 16,
+          "metadata_deletions": 1
+        },
+        {
+          "file": "experiments/grug/moe_hero_ep/train.py",
+          "added_patch_lines": 36,
+          "removed_patch_lines": 27,
+          "metadata_additions": 36,
+          "metadata_deletions": 27
+        },
+        {
+          "file": "lib/levanter/src/levanter/grug/_moe/common.py",
+          "added_patch_lines": 10,
+          "removed_patch_lines": 0,
+          "metadata_additions": 10,
+          "metadata_deletions": 0
+        },
+        {
+          "file": "lib/levanter/src/levanter/grug/_moe/ep_ragged_all_to_all.py",
+          "added_patch_lines": 387,
+          "removed_patch_lines": 225,
+          "metadata_additions": 387,
+          "metadata_deletions": 225
+        },
+        {
+          "file": "lib/levanter/src/levanter/grug/_moe/sonic_cute.py",
+          "added_patch_lines": 30,
+          "removed_patch_lines": 30,
+          "metadata_additions": 30,
+          "metadata_deletions": 30
+        },
+        {
+          "file": "lib/levanter/src/levanter/grug/grug_moe.py",
+          "added_patch_lines": 23,
+          "removed_patch_lines": 2,
+          "metadata_additions": 23,
+          "metadata_deletions": 2
+        },
+        {
+          "file": "lib/levanter/tests/grug/test_grugformer_moe.py",
+          "added_patch_lines": 201,
+          "removed_patch_lines": 34,
+          "metadata_additions": 201,
+          "metadata_deletions": 34
+        },
+        {
+          "file": "lib/levanter/tests/kernels/test_quack_expert_mlp.py",
+          "added_patch_lines": 29,
+          "removed_patch_lines": 5,
+          "metadata_additions": 29,
+          "metadata_deletions": 5
+        },
+        {
+          "file": "lib/marin/src/marin/testing/moe/ragged_ep.py",
+          "added_patch_lines": 2,
+          "removed_patch_lines": 2,
+          "metadata_additions": 2,
+          "metadata_deletions": 2
+        },
+        {
+          "file": "tests/test_moe_hero_ep.py",
+          "added_patch_lines": 97,
+          "removed_patch_lines": 0,
+          "metadata_additions": 97,
+          "metadata_deletions": 0
+        }
+      ]
+    }
+  ],
+  "source_sha256": {
+    "sources/engineering_current_2026_10_07/issue_8435.json": "a54694915dc162c10a2754ad58dfae46cad0ea9573c01b0db151e42a0743ddc2",
+    "sources/engineering_current_2026_10_07/issue_8506.json": "77e2a282f368870dfe7edcc5460f92582f68a30f9e21947150e047d012939c9a",
+    "sources/engineering_current_2026_10_07/issue_8870.json": "19866ee91b32ada6cc196ad699bdf9dd0eac75dd669add143f4ae4ce6af52ae1",
+    "sources/engineering_current_2026_10_07/comments_8435.json": "961fa251b7b9c11aed54a123c0570414b4c05ba9e9f3106bdcdf59191cef6a58",
+    "sources/engineering_current_2026_10_07/comments_8506.json": "5d7840f10eb28fdc78b229d924a13fdc6626c18b3718c1f41b0ab2a7bb399cb7",
+    "sources/engineering_current_2026_10_07/comments_8870.json": "0b31e85fdbfeb4e938ff4c11dc7736e93ced670dbe838fe54440152bdb9f28ec",
+    "sources/engineering_current_2026_10_07/pull_9708.json": "b453bbd3c2d84a368e1f97c2791f6965c41fb2094dda1aee489c9339bb34e008",
+    "sources/engineering_current_2026_10_07/pull_9832.json": "3a67ac57fefdee39ba5863862bf56908e2ff3044573793dfd5e94a85e40cc49d",
+    "sources/engineering_current_2026_10_07/pull_9832_files.json": "363c4fedec969862698909742c94b3d24d9a83c7221ec08b6b798953b02f590e",
+    "sources/engineering_current_2026_10_07/pull_9833.json": "d605cd1f4f8eb4138725590fbcc3a06ae1fe3b219370ba85a5bc82b08ca38045",
+    "sources/engineering_current_2026_10_07/pull_9833_files.json": "4883565ecafee41c87545a79aa4c6692e1031fcecf424e70eab66155aacc9819"
+  },
+  "actual_GPU_tests_executed_by_us": null,
+  "actual_deployment": null
+}

@@ -1,0 +1,93 @@
+{
+  "records": [
+    {
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8435",
+      "sha256": "a54694915dc162c10a2754ad58dfae46cad0ea9573c01b0db151e42a0743ddc2",
+      "retrieved_utc": "2026-10-06T19:11:34.036339+00:00",
+      "pagination_complete": true,
+      "file": "engineering_current_2026_10_07/issue_8435.json",
+      "bytes": 8902
+    },
+    {
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8506",
+      "sha256": "77e2a282f368870dfe7edcc5460f92582f68a30f9e21947150e047d012939c9a",
+      "retrieved_utc": "2026-10-06T19:11:33.725640+00:00",
+      "pagination_complete": true,
+      "file": "engineering_current_2026_10_07/issue_8506.json",
+      "bytes": 3937
+    },
+    {
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8870",
+      "sha256": "19866ee91b32ada6cc196ad699bdf9dd0eac75dd669add143f4ae4ce6af52ae1",
+      "retrieved_utc": "2026-10-06T19:11:34.302326+00:00",
+      "pagination_complete": true,
+      "file": "engineering_current_2026_10_07/issue_8870.json",
+      "bytes": 7534
+    },
+    {
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8435/comments?per_page=100",
+      "sha256": "961fa251b7b9c11aed54a123c0570414b4c05ba9e9f3106bdcdf59191cef6a58",
+      "retrieved_utc": "2026-10-06T19:11:34.198091+00:00",
+      "pagination_complete": true,
+      "file": "engineering_current_2026_10_07/comments_8435.json",
+      "bytes": 106995
+    },
+    {
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8506/comments?per_page=100",
+      "sha256": "5d7840f10eb28fdc78b229d924a13fdc6626c18b3718c1f41b0ab2a7bb399cb7",
+      "retrieved_utc": "2026-10-06T19:11:37.157455+00:00",
+      "pagination_complete": true,
+      "file": "engineering_current_2026_10_07/comments_8506.json",
+      "bytes": 151775
+    },
+    {
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8870/comments?per_page=100",
+      "sha256": "0b31e85fdbfeb4e938ff4c11dc7736e93ced670dbe838fe54440152bdb9f28ec",
+      "retrieved_utc": "2026-10-06T19:11:36.038668+00:00",
+      "pagination_complete": true,
+      "file": "engineering_current_2026_10_07/comments_8870.json",
+      "bytes": 111784
+    },
+    {
+      "file": "engineering_current_2026_10_07/pull_9708.json",
+      "url": "https://api.github.com/repos/marin-community/marin/pulls/9708",
+      "sha256": "b453bbd3c2d84a368e1f97c2791f6965c41fb2094dda1aee489c9339bb34e008",
+      "retrieved_utc": "2026-10-06T19:12:43.281669+00:00",
+      "bytes": 24608,
+      "pagination_complete": true
+    },
+    {
+      "file": "engineering_current_2026_10_07/pull_9832.json",
+      "url": "https://api.github.com/repos/marin-community/marin/pulls/9832",
+      "sha256": "3a67ac57fefdee39ba5863862bf56908e2ff3044573793dfd5e94a85e40cc49d",
+      "retrieved_utc": "2026-10-06T19:12:42.005729+00:00",
+      "bytes": 20737,
+      "pagination_complete": true
+    },
+    {
+      "file": "engineering_current_2026_10_07/pull_9832_files.json",
+      "url": "https://api.github.com/repos/marin-community/marin/pulls/9832/files?per_page=100",
+      "sha256": "363c4fedec969862698909742c94b3d24d9a83c7221ec08b6b798953b02f590e",
+      "retrieved_utc": "2026-10-06T19:12:46.550483+00:00",
+      "bytes": 50461,
+      "pagination_complete": true
+    },
+    {
+      "file": "engineering_current_2026_10_07/pull_9833.json",
+      "url": "https://api.github.com/repos/marin-community/marin/pulls/9833",
+      "sha256": "d605cd1f4f8eb4138725590fbcc3a06ae1fe3b219370ba85a5bc82b08ca38045",
+      "retrieved_utc": "2026-10-06T19:12:42.354862+00:00",
+      "bytes": 21227,
+      "pagination_complete": true
+    },
+    {
+      "file": "engineering_current_2026_10_07/pull_9833_files.json",
+      "url": "https://api.github.com/repos/marin-community/marin/pulls/9833/files?per_page=100",
+      "sha256": "4883565ecafee41c87545a79aa4c6692e1031fcecf424e70eab66155aacc9819",
+      "retrieved_utc": "2026-10-06T19:12:46.238676+00:00",
+      "bytes": 92779,
+      "pagination_complete": true
+    }
+  ],
+  "scope": "Three full issue/comment snapshots, two PRs with complete file lists, one umbrella PR metadata; no GPU reproduction"
+}

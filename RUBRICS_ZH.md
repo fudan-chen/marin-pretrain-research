@@ -312,3 +312,8 @@ Loss、BPB、正确率与drop口径是否分清？ 度量对象变了，曲线�
 ## V55：小实验库存缩放
 
 pilot库存验收逐桶保存输入库存长度、r、floor保留数、入口互斥约束、适用cap、真实曝光及重复率误差；活跃域保留0时拒绝或重新设计，不无记录抬到1。名义预算比例或重复率接近，不能代替生产配比排名确认。[16项原函数控制](analysis/budget_inventory_cpu.json)。
+
+
+## V56：新MoE提案
+
+未写buffer验收覆盖全部read/write集合、强制drop/padding、NaN poison及每fill重trace；路由梯度保存EXACT基线并检查zero/小乘积/dtype边界。测试排除的输入不能写成已验证等价域。合并状态、短窗GPU测量与生产部署分别记录。[提案审计](RECENT_MOE_CHANGES_ZH.md)。

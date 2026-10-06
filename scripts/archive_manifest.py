@@ -7,6 +7,10 @@ for x in json.loads((S/'source_manifest.json').read_text()):
 extra=ROOT/'analysis/prp_acquisition.json'
 if extra.exists():
     x=json.loads(extra.read_text());known[x['file'][len('sources/'):] if x['file'].startswith('sources/') else x['file']]={k:x[k] for k in ['url','retrieved_utc','sha256']}
+extra_engineering=ROOT/'analysis/engineering_v56_acquisition.json'
+if extra_engineering.exists():
+    for x in json.loads(extra_engineering.read_text())['records']:
+        known[x['file']]={k:x[k] for k in ['url','retrieved_utc','sha256']}
 rows=[]
 for p in sorted(S.rglob('*')):
     if not p.is_file() or p.name=='archive_manifest.json':continue

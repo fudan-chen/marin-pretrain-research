@@ -116,3 +116,8 @@ inner-shuffle:
 .PHONY: budget-inventory
 budget-inventory:
 	$(CPU_PYTHON) scripts/probe_budget_inventory_cpu.py
+
+.PHONY: routing-proposal
+routing-proposal:
+	$(CPU_PYTHON) scripts/probe_routing_gradient_proposal_cpu.py
+	$(PYTHON) scripts/audit_moe_proposal_sources.py

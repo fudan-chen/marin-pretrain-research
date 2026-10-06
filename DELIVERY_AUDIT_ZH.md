@@ -1,6 +1,6 @@
 # 当前交付审计：文件覆盖与真实验证分别核对
 
-当前版本V55，完善[小实验库存缩放](MIXTURE_IDENTITY_ZH.md)：16项原CPU/源码控制，量化逐桶取整导致的重复率偏差与活跃域截零；明确key_iterator与同步长度桥适配。源码444份保持，真实pilot模型loss、生产重复率和token store未测。
+当前版本V56，新增[未合并MoE提案分析](RECENT_MOE_CHANGES_ZH.md)：11份完整API文件，三个主issue正文/评论未变，#9832/#9833仍open且merged=false。7项CPU/源码控制仅执行两条patch语句与人工row-dot，不是GPU MoE或生产部署验证。
 
 |用户要求|当前权威产物|覆盖与实际限制|
 |---|---|---|

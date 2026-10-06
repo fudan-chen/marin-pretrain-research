@@ -1,0 +1,72 @@
+{
+  "scope": "Execute two exact division/masking statements from PR9833's patch on CPU.\nThe row-dot producer is an artificial scalar linear expert, not the ragged MoE kernel.\n",
+  "checks_passed": 7,
+  "checks": [
+    "Genuine CPU backend",
+    "Ordinary scalar expert gradient agrees",
+    "Accepted zero weight loses the otherwise nonzero weight gradient",
+    "Positive normal float16 weight can have rounded zero weighted cotangent",
+    "Same small product survives in this bfloat16 control",
+    "Snapshot PRs are unmerged proposals",
+    "Upstream test excludes expert-side edge assignments from interior tolerance"
+  ],
+  "runtime": {
+    "jax": "0.7.2",
+    "backend": "cpu"
+  },
+  "exact_patch_statements": [
+    "divisible = routing.accepted & (weights_f32 != 0)",
+    "weights_cotangent = jnp.where(divisible, assignment_output_dot / jnp.where(divisible, weights_f32, 1), 0)"
+  ],
+  "cases": [
+    {
+      "name": "ordinary",
+      "dtype": "<class 'jax.numpy.float32'>",
+      "w": 0.25,
+      "dout": 2.0,
+      "rounded_weighted_cotangent": 0.5,
+      "artificial_row_dot": 1.5,
+      "exact_reference_dS": 6.0,
+      "proposal_division_dS": 6.0
+    },
+    {
+      "name": "accepted_zero_weight",
+      "dtype": "<class 'jax.numpy.float32'>",
+      "w": 0.0,
+      "dout": 2.0,
+      "rounded_weighted_cotangent": 0.0,
+      "artificial_row_dot": 0.0,
+      "exact_reference_dS": 6.0,
+      "proposal_division_dS": 0.0
+    },
+    {
+      "name": "positive_fp16_underflow",
+      "dtype": "<class 'jax.numpy.float16'>",
+      "w": 0.0009765625,
+      "dout": 9.5367431640625e-07,
+      "rounded_weighted_cotangent": 0.0,
+      "artificial_row_dot": 0.0,
+      "exact_reference_dS": 2.86102294921875e-06,
+      "proposal_division_dS": 0.0
+    },
+    {
+      "name": "same_small_product_bf16",
+      "dtype": "<class 'jax.numpy.bfloat16'>",
+      "w": 0.0009765625,
+      "dout": 9.5367431640625e-07,
+      "rounded_weighted_cotangent": 9.313225746154785e-10,
+      "artificial_row_dot": 2.7939677238464355e-09,
+      "exact_reference_dS": 2.86102294921875e-06,
+      "proposal_division_dS": 2.86102294921875e-06
+    }
+  ],
+  "source_sha256": {
+    "sources/engineering_current_2026_10_07/pull_9833_files.json": "4883565ecafee41c87545a79aa4c6692e1031fcecf424e70eab66155aacc9819",
+    "sources/engineering_current_2026_10_07/pull_9832.json": "3a67ac57fefdee39ba5863862bf56908e2ff3044573793dfd5e94a85e40cc49d",
+    "sources/engineering_current_2026_10_07/pull_9833.json": "d605cd1f4f8eb4138725590fbcc3a06ae1fe3b219370ba85a5bc82b08ca38045"
+  },
+  "actual_ragged_MoE_execution": null,
+  "actual_GPU_reproduction": null,
+  "actual_Hero_deployment": null,
+  "actual_long_window_stability": null
+}

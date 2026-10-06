@@ -245,3 +245,8 @@ launch-binding-probe:
 .PHONY: clipping-precision-cpu
 clipping-precision-cpu:
 	$(CPU_PYTHON) scripts/probe_clipping_precision_cpu.py
+
+
+.PHONY: decay-resume-cpu
+decay-resume-cpu:
+	$(CPU_PYTHON) scripts/probe_decay_resume_cpu.py

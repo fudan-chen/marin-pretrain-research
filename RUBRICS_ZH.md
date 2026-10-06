@@ -406,3 +406,6 @@ V84阅读补充：每次异常记录症状、实际共同起点、最小区分�
 
 
 V85执行补充：clipping结果有限不证明裁剪正确，有限全零需检查norm overflow，norm=0需检查平方underflow。activation dtype不代替optimizer输入dtype；归档未启用的分支不得归因生产事故。
+
+
+V86执行补充：结构兼容不证明更新等价；保留count不保证衰减计划相同，还依赖N。保留旧mu/nu却重置count会改Adam偏差校正。配比变更与优化状态重置需要分开归因。

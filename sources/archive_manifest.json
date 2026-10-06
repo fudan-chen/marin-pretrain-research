@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-06T22:24:30.975050+00:00",
+  "integrity_manifest_created_utc": "2026-10-06T22:29:41.922953+00:00",
   "files": [
     {
       "file": "accumulation_2026_10_07/grad_accum.py",
@@ -286,6 +286,13 @@
       "sha256": "7bb03ec42887be8fd57cdc61899a8585e465d352aff5ec109e0193ac6726522e",
       "url": "https://storage.googleapis.com/marin-public/held/harrier-k40-cluster-overview/2026.08.18/index.html?revision=uniform-sampling",
       "retrieved_utc": "2026-10-03T21:33:00.184780+00:00"
+    },
+    {
+      "file": "decay_resume_2026_10_07/jax_utils.py",
+      "bytes": 22904,
+      "sha256": "647a16ab5d7adac4166e63a429b112afdda0f11dd4fcb4866dde77cb3a4263d1",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/lib/levanter/src/levanter/utils/jax_utils.py",
+      "retrieved_utc": "2026-10-06T22:26:57.888310+00:00"
     },
     {
       "file": "decision_2026_10_04/issue_9126.json",
@@ -2885,8 +2892,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 223368,
-      "sha256": "9ffe7a3cff80d031bf5e1d44e51d09b4f52bfdbee9e6dc30de4c6c7774a4ede7",
+      "bytes": 223803,
+      "sha256": "eea78e5dcf99f92a3ea0aa74536a9db8cb392089806269a62d0266b1e8a679c3",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

@@ -1,0 +1,439 @@
+{
+  "scope": "Original gate/router decay + real Adam state and original nested path traversal.\nSynthetic CPU parameters; direct state transfer, no checkpoint I/O/full Hero build.\n",
+  "checks_passed": 15,
+  "checks": [
+    "Fixed CPU libraries",
+    "Original nested traversal selects only gate/router weights",
+    "Original group helper uses actual fixture paths",
+    "Static Equinox metadata excluded and raw paths shape matched",
+    "Real artificial warm state count is 50",
+    "Original wrapper accepts ordinary Adam state directly",
+    "Decay excludes moment accumulation and preserves exact next state",
+    "Decay addition is input-count based on exact nested mask",
+    "Original wrapper JIT and eager agree",
+    "Changing horizon alone changes decay at preserved count",
+    "Reinitialization doubles this artificial decay addition",
+    "Count reset alone also changes bias corrected adaptive direction",
+    "Count at horizon eliminates decay without freezing Adam",
+    "All five controls preserve plain Adam next moments",
+    "Original wrapper rejects missing parameter tree"
+  ],
+  "runtime": {
+    "jax": "0.7.2",
+    "optax": "0.2.5",
+    "equinox": "0.13.2",
+    "backend": "cpu"
+  },
+  "source_sha256": {
+    "sources/clipping_precision_2026_10_07/optimizer.py": "50dddad265e18974e8529f7a9df26d37e44430ffc5442d5c93e58cb2e924ae0e",
+    "sources/decay_resume_2026_10_07/jax_utils.py": "647a16ab5d7adac4166e63a429b112afdda0f11dd4fcb4866dde77cb3a4263d1",
+    "sources/live_2026_10_07/meta.json": "21998ecad691e7e66d3680f173bfe9b94c35b9481f28eff4794a23b0c9831487"
+  },
+  "paths": [
+    "blocks.0.mlp.router",
+    "blocks.0.mlp.router_bias",
+    "blocks.0.attn.attn_gate",
+    "blocks.0.weight",
+    "token_embed",
+    "output_proj"
+  ],
+  "groups": [
+    "adam",
+    "adam",
+    "adam",
+    "adam",
+    "adam",
+    "adamh"
+  ],
+  "decay_mask": [
+    true,
+    false,
+    true,
+    false,
+    false,
+    false
+  ],
+  "controls": [
+    {
+      "case": "preserved",
+      "input_count": 50,
+      "output_count": 51,
+      "total_steps": 100,
+      "decay_coefficient": 0.01,
+      "router_adaptive_direction": [
+        [
+          1.0000001192092896,
+          1.0000001192092896
+        ]
+      ],
+      "router_decay_addition": [
+        [
+          0.019999980926513672,
+          0.039999961853027344
+        ]
+      ],
+      "router_final_update": [
+        [
+          -0.010200000368058681,
+          -0.010400000959634781
+        ]
+      ],
+      "next_moments_equal_to_plain_Adam": true,
+      "full_update": [
+        [
+          -0.010200000368058681,
+          -0.010400000959634781
+        ],
+        [
+          -0.010000000707805157,
+          -0.010000000707805157
+        ],
+        [
+          -0.010100000537931919,
+          -0.010200000368058681
+        ],
+        [
+          -0.010000000707805157,
+          -0.010000000707805157
+        ],
+        [
+          [
+            -0.010000000707805157,
+            -0.010000000707805157
+          ],
+          [
+            -0.010000000707805157,
+            -0.010000000707805157
+          ]
+        ],
+        [
+          [
+            -0.010000000707805157,
+            -0.010000000707805157
+          ],
+          [
+            -0.010000000707805157,
+            -0.010000000707805157
+          ]
+        ]
+      ]
+    },
+    {
+      "case": "new_total_steps",
+      "input_count": 50,
+      "output_count": 51,
+      "total_steps": 200,
+      "decay_coefficient": 0.015,
+      "router_adaptive_direction": [
+        [
+          1.0000001192092896,
+          1.0000001192092896
+        ]
+      ],
+      "router_decay_addition": [
+        [
+          0.029999971389770508,
+          0.059999942779541016
+        ]
+      ],
+      "router_final_update": [
+        [
+          -0.010300001129508018,
+          -0.010600000619888306
+        ]
+      ],
+      "next_moments_equal_to_plain_Adam": true,
+      "full_update": [
+        [
+          -0.010300001129508018,
+          -0.010600000619888306
+        ],
+        [
+          -0.010000000707805157,
+          -0.010000000707805157
+        ],
+        [
+          -0.0101500004529953,
+          -0.010300001129508018
+        ],
+        [
+          -0.010000000707805157,
+          -0.010000000707805157
+        ],
+        [
+          [
+            -0.010000000707805157,
+            -0.010000000707805157
+          ],
+          [
+            -0.010000000707805157,
+            -0.010000000707805157
+          ]
+        ],
+        [
+          [
+            -0.010000000707805157,
+            -0.010000000707805157
+          ],
+          [
+            -0.010000000707805157,
+            -0.010000000707805157
+          ]
+        ]
+      ]
+    },
+    {
+      "case": "reset_all_state",
+      "input_count": 0,
+      "output_count": 1,
+      "total_steps": 100,
+      "decay_coefficient": 0.02,
+      "router_adaptive_direction": [
+        [
+          0.9999998807907104,
+          0.9999998807907104
+        ]
+      ],
+      "router_decay_addition": [
+        [
+          0.039999961853027344,
+          0.08000004291534424
+        ]
+      ],
+      "router_final_update": [
+        [
+          -0.010399998165667057,
+          -0.010799999348819256
+        ]
+      ],
+      "next_moments_equal_to_plain_Adam": true,
+      "full_update": [
+        [
+          -0.010399998165667057,
+          -0.010799999348819256
+        ],
+        [
+          -0.009999998845160007,
+          -0.009999998845160007
+        ],
+        [
+          -0.010199998505413532,
+          -0.010399998165667057
+        ],
+        [
+          -0.009999998845160007,
+          -0.009999998845160007
+        ],
+        [
+          [
+            -0.009999998845160007,
+            -0.009999998845160007
+          ],
+          [
+            -0.009999998845160007,
+            -0.009999998845160007
+          ]
+        ],
+        [
+          [
+            -0.009999998845160007,
+            -0.009999998845160007
+          ],
+          [
+            -0.009999998845160007,
+            -0.009999998845160007
+          ]
+        ]
+      ]
+    },
+    {
+      "case": "reset_count_only",
+      "input_count": 0,
+      "output_count": 1,
+      "total_steps": 100,
+      "decay_coefficient": 0.02,
+      "router_adaptive_direction": [
+        [
+          2.3117926120758057,
+          2.3117926120758057
+        ]
+      ],
+      "router_decay_addition": [
+        [
+          0.039999961853027344,
+          0.07999992370605469
+        ]
+      ],
+      "router_final_update": [
+        [
+          -0.023517925292253494,
+          -0.023917924612760544
+        ]
+      ],
+      "next_moments_equal_to_plain_Adam": true,
+      "full_update": [
+        [
+          -0.023517925292253494,
+          -0.023917924612760544
+        ],
+        [
+          -0.023117925971746445,
+          -0.023117925971746445
+        ],
+        [
+          -0.02331792563199997,
+          -0.023517925292253494
+        ],
+        [
+          -0.023117925971746445,
+          -0.023117925971746445
+        ],
+        [
+          [
+            -0.023117925971746445,
+            -0.023117925971746445
+          ],
+          [
+            -0.023117925971746445,
+            -0.023117925971746445
+          ]
+        ],
+        [
+          [
+            -0.023117925971746445,
+            -0.023117925971746445
+          ],
+          [
+            -0.023117925971746445,
+            -0.023117925971746445
+          ]
+        ]
+      ]
+    },
+    {
+      "case": "end_count",
+      "input_count": 100,
+      "output_count": 101,
+      "total_steps": 100,
+      "decay_coefficient": 0.0,
+      "router_adaptive_direction": [
+        [
+          1.0309783220291138,
+          1.0309783220291138
+        ]
+      ],
+      "router_decay_addition": [
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "router_final_update": [
+        [
+          -0.010309782810509205,
+          -0.010309782810509205
+        ]
+      ],
+      "next_moments_equal_to_plain_Adam": true,
+      "full_update": [
+        [
+          -0.010309782810509205,
+          -0.010309782810509205
+        ],
+        [
+          -0.010309782810509205,
+          -0.010309782810509205
+        ],
+        [
+          -0.010309782810509205,
+          -0.010309782810509205
+        ],
+        [
+          -0.010309782810509205,
+          -0.010309782810509205
+        ],
+        [
+          [
+            -0.010309782810509205,
+            -0.010309782810509205
+          ],
+          [
+            -0.010309782810509205,
+            -0.010309782810509205
+          ]
+        ],
+        [
+          [
+            -0.010309782810509205,
+            -0.010309782810509205
+          ],
+          [
+            -0.010309782810509205,
+            -0.010309782810509205
+          ]
+        ]
+      ]
+    }
+  ],
+  "fixture": {
+    "parameters": [
+      [
+        2.0,
+        4.0
+      ],
+      [
+        3.0,
+        6.0
+      ],
+      [
+        1.0,
+        2.0
+      ],
+      [
+        5.0,
+        10.0
+      ],
+      [
+        [
+          1.0,
+          1.0
+        ],
+        [
+          1.0,
+          1.0
+        ]
+      ],
+      [
+        [
+          1.0,
+          1.0
+        ],
+        [
+          1.0,
+          1.0
+        ]
+      ]
+    ],
+    "constant_gradient": 0.25,
+    "warm_steps": 50,
+    "warm_params_held_fixed": true,
+    "artificial_total_steps": 100,
+    "artificial_learning_rate": 0.01,
+    "declared_decay": 0.02,
+    "declared_b1": 0.9,
+    "declared_b2": 0.95,
+    "declared_epsilon": 6.044604247506697e-15
+  },
+  "explicit_substitutions": [
+    "AST extracted original helper methods; full module/build not imported",
+    "NamedArray dispatch type placeholder never exercised; all leaves raw arrays",
+    "synthetic Equinox tree, not Hero parameter tree",
+    "direct in-memory ScaleByAdamState transfer; no checkpoint loader/I/O",
+    "fixed parameters during moment warm-up; five independent state/horizon controls, not training trajectories"
+  ],
+  "actual_Hero_parameter_groups": null,
+  "actual_Hero_state_restore": null,
+  "actual_Hero_clock_mismatch": null,
+  "actual_GPU_execution": null,
+  "actual_training_benefit": null
+}

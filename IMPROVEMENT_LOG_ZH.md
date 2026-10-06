@@ -475,3 +475,6 @@ V84（2026-10-07）：综合首页增加七个可展开症状入口，将已有�
 
 
 V85（2026-10-07）：取得同head optimizer/AdamH，真实Optax和原AdamH19项CPU检查，六组dtype/幅值控制；范数失败与warm状态更新接通。来源新增2份、旧489份非bookkeeping字节保持，无完整Hero build/GPU/训练收益。
+
+
+V86完成：真实Optax与原嵌套路径函数15项CPU检查，五个状态/预算对照。下一步需要真实执行包和checkpoint才能核查Hero时钟一致性；本轮控制不能代填生产异常或配比收益。

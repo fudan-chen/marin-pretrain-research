@@ -4435,5 +4435,13 @@
     "retrieved_utc": "2026-10-06T22:20:47.846689+00:00",
     "bytes": 3475,
     "sha256": "722ed10ea6c36440049c5f5a4eb9ea98abcfe7cd761a52e3973a3031b0755716"
+  },
+  {
+    "file": "decay_resume_2026_10_07/jax_utils.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/lib/levanter/src/levanter/utils/jax_utils.py",
+    "revision": "b65be4c9550c5097f0a3add08933531a1c24d534",
+    "retrieved_utc": "2026-10-06T22:26:57.888310+00:00",
+    "bytes": 22904,
+    "sha256": "647a16ab5d7adac4166e63a429b112afdda0f11dd4fcb4866dde77cb3a4263d1"
   }
 ]

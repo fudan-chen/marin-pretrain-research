@@ -221,3 +221,6 @@ V84把近轮源码控制整理为七个症状入口，按口径/输入、路由/
 
 
 V85执行补充：启用或迁移clipping前，绑定组范围、实际梯度dtype、范数累积dtype、clip系数和clip后cast；对照独立高精度范数与同状态更新。norm=0、梯度全零和更新停止是三个不同命题。
+
+
+V86执行补充：续训验收绑定parameter/mu/nu、Adam count、外层schedule count、trainer.step、N与实际lr，再用共同批次核对下一更新。主动重置优化器或延长预算应作为独立干预字段。

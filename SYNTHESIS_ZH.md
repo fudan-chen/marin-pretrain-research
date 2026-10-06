@@ -204,3 +204,6 @@ V80补上接受mask后的权重路径：丢弃assignment的权重梯度为零，
 
 
 V85补充可选裁剪的数值合同：FP16有限梯度可能在范数平方时溢出/下溢，裁剪输出仍有限；原AdamH已有状态会继续更新。公开归档max_grad_norm=None，不能当作Hero事故。详见[裁剪输入与状态](OPTIMIZER_GROUPS_ZH.md)。
+
+
+V86把“状态结构兼容”推进为真实Adam内存状态对照：相同count和moments在不同总训练步数N下仍产生不同衰减；只重置count还改变偏差校正。15项CPU检查不证明Hero发生过错配。见[续训与配比干预](OPTIMIZER_GROUPS_ZH.md)。

@@ -1,0 +1,16 @@
+{
+  "version": "V86",
+  "checks_passed": 9,
+  "checks": [
+    "index.html unique IDs",
+    "index.html real state and evidence scope",
+    "index.html historical six tables preserved plus state comparison",
+    "report_standalone.html unique IDs",
+    "report_standalone.html real state and evidence scope",
+    "report_standalone.html historical six tables preserved plus state comparison",
+    "493 source hashes exact",
+    "Fresh V86 validation",
+    "one source and 491 preserved"
+  ],
+  "actual_browser_rendering": null
+}

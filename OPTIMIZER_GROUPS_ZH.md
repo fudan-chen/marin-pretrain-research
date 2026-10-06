@@ -156,3 +156,34 @@ V51已验证裁剪位于组内变换，而不是全模型只做一次；本节�
 迁移验收可以按四层保存：原梯度有限性及独立高精度范数；原clip使用的norm/dtype与系数；clip后的梯度；同状态optimizer更新与下一状态。发现有限全零时，先辨别是真正无梯度还是范数溢出；发现norm=0时，检查是否为平方下溢。提升范数精度是本控制中的有效区分手段，但是否要改实现、如何保持分片和性能，仍需实际执行包、GPU与训练评估。
 
 新增2份同head源码，旧489份非bookkeeping来源字节保持，来源现492份；[获取台账](analysis/clipping_precision_acquisition.json)可复核。归档声明裁剪关闭、真实gradient dtype、GPU与训练收益分别记录，不能把可选分支反例改写成生产根因。复现：`make clipping-precision-cpu CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。
+
+
+## V86：状态能接上，续训更新也未必相同
+
+前面的衰减探针替换了Adam和参数路径，本轮补齐这两项：执行Optax 0.2.5真实Adam、原衰减包装、同head原leaf_key_paths，以及原create_mask方法。参数为人工嵌套Equinox树，包含blocks.0.mlp.router、router_bias、attn_gate、普通weight、token_embed和output_proj。原路径函数和掩码选中两份权重而排除router_bias；没有加载实际535B参数树。NamedArray类型分派使用未执行的类型占位，全部实验叶子为普通JAX数组。
+
+原包装读取输入state.count，先执行Adam，再把λ₀×max(1−count/N,0)×param加到目标叶子的方向；外层scale(-lr)才得到最终更新。它不把衰减加入Adam的mu/nu。本轮把普通Adam预热后的ScaleByAdamState直接传入原包装：结构被接受，输出mu、nu、count与同输入普通Adam逐叶完全一致，eager/JIT结果一致。这证明当前依赖版本下的辅助变换可直接接收该内存状态；没有执行磁盘checkpoint恢复、完整multi_transform、inject_hyperparams或Hero build。
+
+### 一个恢复计数器，涉及两种不同机制
+
+人工router参数为[2,4]，固定参数与常量梯度0.25预热50次，仅构造真实moments，不构成训练轨迹。beta1=0.9、beta2=0.95、epsilon和专用λ₀=0.02取归档配置；N=100、学习率0.01为人工值。然后从相同参数分出五个独立对照。
+
+|独立对照|输入Adam count / 本次N|本步衰减系数|router自适应方向每项|最终router更新两项|
+|---|---|---:|---:|---|
+|完整保留内存状态|50 / 100|0.010|约1.000000|−0.010200、−0.010400|
+|只改变训练总步数|50 / 200|0.015|约1.000000|−0.010300、−0.010600|
+|重新初始化整个Adam状态|0 / 100|0.020|约1.000000|−0.010400、−0.010800|
+|保留mu/nu，仅把count改为0|0 / 100|0.020|约2.311793|−0.023518、−0.023918|
+|保留mu/nu，仅把count改为100|100 / 100|0|约1.030978|−0.010310、−0.010310|
+
+第二行与第一行具有相同参数、输入梯度、moments和count，区别仅是N。衰减附加项增加50%；因此“完整保留optimizer state”不足以保证续训采用相同衰减计划，还必须绑定构建时的总训练步数。它不是说延长训练预算不允许，而是应把这种变化纳入干预定义。
+
+第四行是人为破坏计数器一致性的控制：既然mu/nu来自50步，就不能只把count写成0后视为新训练。count还用于Adam偏差校正；本例自适应方向从约1变成2.31，超过衰减变化本身。第五行同样人为修改count，不能称为真的训练至100步；它只说明衰减系数到0不意味着参数冻结。重新初始化全部状态的第三行则有一致的新mu/nu/count，在这个常量梯度首步方向接近1，不能因此外推任意真实梯度历史都等价。
+
+### 续训与数据配比变更应该怎样验收
+
+恢复前保存parameter、mu、nu、Adam count、外层schedule count、trainer.step、原N及实际lr；恢复后按同一批输入检查下一步。把两种目标分别验收：忠实续训要求这些状态与计划保持原定义；主动重启优化或改预算要求明确记录改变哪些字段，再以共同checkpoint和固定评估确认影响。不要把“loader没有报错”当成第一种目标的证明。
+
+改变配比时重置优化器，会同时改变moment适应、Adam偏差校正、专用衰减时钟和可能的外层学习率。此时loss变化不能单归因于数据。若要先观察配比效应，保持共同状态和计划、只改变采样输入；若研究重置是否有利，则把它另列为实验因素。这里是由实现推导的实验要求，尚无真实Hero配比干预结果。
+
+[15项CPU检查](analysis/decay_resume_cpu.json)保存原路径、真实状态控制和逐项更新；[脚本](scripts/probe_decay_resume_cpu.py)可复核。新增1份同head路径源码，491份旧非bookkeeping来源字节保持，归档共493份。本轮没有发现或宣称Hero实际发生count错配，没有执行GPU、磁盘恢复或长期训练收益验证。复现使用已记录的CPU环境及Equinox依赖：`PYTHONPATH=/tmp/marin-tensorstore-lib make decay-resume-cpu CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。

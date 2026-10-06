@@ -1,0 +1,3 @@
+# Independent CPU research runtime; not a reconstruction of Hero's runtime.
+jax==0.7.2
+jaxlib==0.7.2

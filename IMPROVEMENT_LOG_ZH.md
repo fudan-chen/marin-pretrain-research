@@ -297,3 +297,7 @@ V25把`paloma/bpb`错误命名为macro；它在固定公共源码中来自父级
 ## V48应用：训练归约先于配比归因
 
 沿用既有规则与管线。改变microbatch前，先写清目标分母，确认实际调用入口，并记录每块有效T；不能仅凭loss有限与梯度已相加验收。对有效均值，核对整个optimizer step的归约，避免重复除micro步数。再核对RNG、路由、梯度裁剪与状态更新；分母正确不自动证明真实模型拆批等价。[源码与14项检查](GRADIENT_ACCUMULATION_ZH.md)只证明原函数体的串行适配行为和人工反例，没有证明Hero事故或配比收益。下一步需要真实入口的loss函数、逐块N/T与逐参数梯度记录。
+
+## 后续CPU验证：准备完成，结果仍待取得
+
+已核对API与Grug的mean入口不同：Grug内部请求reduction=None，外层才聚合分母，不能认定连续求了两次均值。下一项工作是执行[原归约与backward的CPU自动微分脚本](scripts/probe_masked_numerics_cpu.py)，检查全零分母、inactive非有限值和正常padding正例。独立JAX 0.7.2/jaxlib 0.7.2依赖安装仍在运行；截至[本次观察](analysis/cpu_setup_wait.json)未执行CPU探针、未生成结果章节。保存的状态不是当前活性的证明，下一轮应重新核对同一进程/会话。当前完整报告与ZIP仍为V48，不将计划写成复现或Hero事故。

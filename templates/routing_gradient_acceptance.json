@@ -1,0 +1,30 @@
+{
+  "status": "not_executed",
+  "required_binding": [
+    "implementation_sha",
+    "device_backend",
+    "cotangent_dtype",
+    "checkpoint",
+    "input_hash",
+    "optimizer_state_hash"
+  ],
+  "strata": [
+    "accepted/drop/padding",
+    "weight magnitude",
+    "cotangent magnitude",
+    "input cast zero",
+    "positive operands product zero",
+    "nonfinite"
+  ],
+  "comparisons": {
+    "weighted_cotangent": null,
+    "dS_error": null,
+    "router_gradients": null,
+    "same_state_one_step_update": null,
+    "fixed_heldout_loss": null,
+    "long_window_stability": null
+  },
+  "relative_error_denominator_floor": null,
+  "thresholds_chosen_before_measurement": true,
+  "production_failure_probability": null
+}

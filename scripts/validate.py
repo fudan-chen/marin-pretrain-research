@@ -857,6 +857,15 @@ pt=read(ROOT/'templates/performance_interaction_review.json')
 ok('V57 interaction template remains unexecuted',pt['status']=='not_executed' and all(pt['comparison'][x] is None for x in ['base','A_only','B_only','A_and_B']) and pt['outputs']['interaction_seconds'] is None)
 ok('V57 attribution figure embedded in existing source chapter',soup.select_one('#recent-moe-guide svg') is not None)
 report['highlights']+=['V57 six source/arithmetic checks, 12 author one-rack timings, conditional performance reversal figure and unexecuted interaction template; no local GPU or full causal attribution']
+re=read(A/'routing_gradient_envelope_cpu.json')
+ok('V58 CPU envelope source and unknown scope',re['checks_passed']==len(re['checks'])==10 and len(re['grid'])==48 and re['actual_GPU_reproduction'] is None and re['actual_Hero_input_distribution'] is None and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in re['source_sha256'].items()))
+ok('V58 input casting separated from positive product loss',re['summary']['float16']['input_cast_zero']==12 and all(re['summary'][x]['represented_positive_product_loss']==1 for x in ['float16','bfloat16','float32']))
+rc=re['router_chain_controls']
+ok('V58 local error need not survive router VJP',all(v==0 for k in ['float32_router_vjp_reference','float32_router_vjp_proposal'] for v in rc[0][k]) and any(v!=0 for v in rc[1]['float32_router_vjp_reference']) and all(v==0 for v in rc[1]['float32_router_vjp_proposal']))
+rt=read(ROOT/'templates/routing_gradient_acceptance.json')
+ok('V58 template remains unexecuted',rt['status']=='not_executed' and all(v is None for v in rt['comparisons'].values()) and rt['production_failure_probability'] is None)
+ok('V58 envelope figure embedded',len(soup.select('#recent-moe-guide svg'))==2)
+report['highlights']+=['V58 48 selected scalar CPU controls and two artificial router VJPs, ten checks; no production incidence or GPU/update/loss attribution']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

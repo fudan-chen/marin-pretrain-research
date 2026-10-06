@@ -1,0 +1,13 @@
+{
+  "checks_passed": 6,
+  "checks": [
+    "index.html section figures/tables/text",
+    "index.html unique ids",
+    "report_standalone.html section figures/tables/text",
+    "report_standalone.html unique ids",
+    "455 frozen source hashes valid",
+    "fresh global validation 1440"
+  ],
+  "actual_browser_rendering": null,
+  "PNG_viewed": true
+}

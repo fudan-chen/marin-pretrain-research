@@ -126,3 +126,8 @@ routing-proposal:
 moe-performance:
 	$(PYTHON) scripts/analyze_moe_performance.py
 	$(PYTHON) scripts/plot_moe_performance.py
+
+.PHONY: routing-envelope
+routing-envelope:
+	$(CPU_PYTHON) scripts/probe_routing_gradient_envelope_cpu.py
+	$(PYTHON) scripts/plot_routing_gradient_envelope.py

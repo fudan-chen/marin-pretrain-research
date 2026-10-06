@@ -63,6 +63,10 @@ for slug,label,file in chapters:
         perf_svg=BeautifulSoup((ROOT/'assets/moe_performance_attribution.svg').read_text(),'html.parser').svg
         perf_svg['style']='display:block;width:100%;height:auto'
         result += '<figure class="scientific-figure">'+str(perf_svg)+'<figcaption>图A为作者冻结单rack测量，图B为端点算术，图C为机制示意；没有本地GPU复现或原始device trace。</figcaption></figure>'
+    if slug=='recent-moe-guide':
+        env_svg=BeautifulSoup((ROOT/'assets/routing_gradient_envelope.svg').read_text(),'html.parser').svg
+        env_svg['style']='display:block;width:100%;height:auto'
+        result += '<figure class="scientific-figure">'+str(env_svg)+'<figcaption>48格选定CPU标量输入，非生产发生率；局部dS差异仍需追踪至router梯度、参数更新和固定评估。</figcaption></figure>'
     if slug=='optimizer-guide':
         clip_svg=BeautifulSoup((ROOT/'assets/group_clipping_cpu.svg').read_text(),'html.parser').svg
         clip_svg['style']='display:block;width:100%;height:auto'
@@ -233,6 +237,7 @@ page=re.sub('|'.join(sorted(mapping,key=len,reverse=True)),lambda m:mapping[m[0]
 for slug,_,file in chapters:page=page.replace('href="'+file+'"','href="#'+slug+'"')
 # Retain a downloadable markdown link in the header.
 page=page.replace('<a href="#report">Markdown主报告</a>','<a href="REPORT_ZH.md" download>Markdown主报告</a>')
+page='\n'.join(line.rstrip() for line in page.splitlines())+'\n'
 (ROOT/'index.html').write_text(page)
 standalone=page
 for p in (ROOT/'assets').glob('*.png'):

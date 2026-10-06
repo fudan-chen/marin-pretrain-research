@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1435,
+  "checks_passed": 1440,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -105,7 +105,8 @@
     "V54 fourteen original inner-shuffle/split CPU controls including 130 small PRP domains; same-snapshot disjointness versus cross-snapshot overlap, Hero declared split disabled, no actual token contamination",
     "V55 sixteen original train_sets and post_init CPU controls with explicit cache/key/sync adapters; floor distorts repeat factors and can empty active inventory, no actual Hero simulation or pilot model loss",
     "V56 three full issue refreshes unchanged and two unmerged MoE PR audits; seven patch-statement CPU/source controls, no GPU MoE or production deployment verification",
-    "V57 six source/arithmetic checks, 12 author one-rack timings, conditional performance reversal figure and unexecuted interaction template; no local GPU or full causal attribution"
+    "V57 six source/arithmetic checks, 12 author one-rack timings, conditional performance reversal figure and unexecuted interaction template; no local GPU or full causal attribution",
+    "V58 48 selected scalar CPU controls and two artificial router VJPs, ten checks; no production incidence or GPU/update/loss attribution"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

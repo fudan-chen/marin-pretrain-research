@@ -86,3 +86,22 @@ EXACT模式保留专家输出y，计算combine权重w的梯度`dS=<dout,y>`。#9
 对于配比干预，还需冻结这些系统条件：专家负载和drop变动可能改变计算/通信覆盖，使wall time收益与学习收益同时变化。应同时报告固定token预算下的任务结果、固定wall time下的有效学习进展、drop/路由与可恢复进度；不能把MFU更高自动翻译成每个数据桶更有学习价值。
 
 因此当前能得出的结论是：这组候选在作者单rack测量中整包更快，部分优化存在明显条件依赖；独立组件归因、长窗稳定性、跨rack扩展与实际部署仍未验证。复算与绘图入口为`make moe-performance`，只读冻结来源，不访问GPU或更新PR状态。
+
+
+## V58：局部梯度误差会不会真正传到参数
+
+#9833作者以正的归一化sigmoid权重和bf16较宽的指数范围解释Hero选择EXPERT_SIDE的依据。本轮检查其数值边界。来源仍是[冻结diff](sources/engineering_current_2026_10_07/pull_9833_files.json)及[作者说明](https://github.com/marin-community/marin/pull/9833)，不是新训练事故。
+
+本轮执行48个人工标量控制，跨float16、bf16、float32，各取4个权重指数与4个cotangent指数。专家输出人为设为y=3，row-dot生产者是替身；只有division/mask两条语句来自原patch。先区分输入cast成0与两个输入均非零、乘积却成0。float16的16格中12格已有输入cast成0，不能拿它们证明乘法额外丢信息。每种dtype各有1格在两个正输入可表示的情况下丢失乘积。这是选定CPU网格的存在性反例，不能解释为训练发生率，也不能外推GPU的subnormal处理。
+
+用float32 sigmoid对人工logits[-50,0]归一化，小权重约3.8575e-22，在bf16中仍非零；cotangent取2^-70，约8.4703e-22，也非零。CPU乘积变0，EXPERT_SIDE重建dS为0，标量float32参考为2.5411e-21。bf16没有无限指数范围，“权重正”只排除了代数零除，不能保证乘积保留信息。
+
+**这个局部反例不能直接证明router更新错了。** 把参考与候选dS送进同一个float32归一化sigmoid VJP，极端bf16例的两条logit梯度都为0：进一步乘上小权重后的参考梯度也在本CPU上丢失。局部dS差异未传到该人工router的最终梯度。另一组logits[-7,0]、cotangent=2^-20、float16乘法控制中，参考logit梯度非零而候选为0，差异确实穿过人工router。两例一起看，才知道误差在何处被衰减或抹掉。未执行真实top-k、完整路由实现、ragged专家或优化器更新。
+
+### 数值验收怎么做
+
+沿实际反向链分别查accepted分配上的乘积、dS、router logits/参数梯度、相同参数与优化器状态下的一步更新。随后才讨论固定评估loss与长窗口稳定性。局部差异是定位线索，更新差异更接近训练行为，但都不能单独量化最终能力损失。
+
+按dtype、权重/cotangent大小及accepted/drop/padding分桶，保留绝对误差和有明确分母下限的相对误差。整体中位数可能掩盖尾部；跨dtype也不能只比ulp。输入cast为0、正输入乘积为0、非有限输入应分别统计。不要用同一种低精度乘法当未舍入参考，可离线用更高精度或指数记录查乘积范围。监控与真实GPU验收在本轮均未实现。
+
+[10项CPU检查与全部数值](analysis/routing_gradient_envelope_cpu.json)、[未执行验收模板](templates/routing_gradient_acceptance.json)保留原语句、输入、来源SHA与未知字段。运行`make routing-envelope CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`可复算。图不是生产失败概率；缺Hero输入分布、完整GPU反向、同状态更新和loss反事实，不能据此要求回滚。

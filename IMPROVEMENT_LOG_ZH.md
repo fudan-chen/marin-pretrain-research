@@ -352,3 +352,8 @@ V57复算#9708冻结表18条、12条步时，6项检查；新增性能图和未�
 ## V58：从局部梯度到参数影响
 
 新增48格CPU控制、两个人工router VJP、10项检查及数值范围图。极端bf16局部误差在本CPU的router VJP消失，另一float16例仍传到logits。完整GPU、真实更新、Hero分布与loss影响未测。原455份来源保持。
+
+
+## V59：原router权重路径
+
+执行原moe_route block、四个人工输入与加权和梯度；9项CPU检查、eager/JIT一致。确认biased选择与unbiased权重、epsilon主导及有限极端输入零权重。无完整模型、GPU、Hero分布或训练影响，455份来源保持。

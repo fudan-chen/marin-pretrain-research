@@ -140,3 +140,6 @@ kernel提案顺序：绑定PR head与完整diff→确认输入/未写内存/梯�
 
 
 V58入口：`make routing-envelope CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`执行48个选定CPU输入及两组人工router VJP。下一阶段按`templates/routing_gradient_acceptance.json`采集完整GPU反向、同状态更新和固定评估；模板未执行，CPU存在性结果不触发生产回滚判断。
+
+
+V59入口：make router-weight-path CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python执行原moe_route block，9项CPU检查。下一步需同执行版本的router→EXACT/EXPERT_SIDE→参数梯度，保留选择、epsilon、barrier、cast与accepted mask。

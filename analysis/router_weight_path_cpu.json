@@ -1,0 +1,208 @@
+{
+  "scope": "Execute the original moe_route block from frozen QBRoutedMoE on CPU.\nIdentity reshard and placeholder partition spec; no statistics, QB update, dispatch,\nragged expert, actual mesh, checkpoint, or optimizer execution.\n",
+  "checks_passed": 9,
+  "checks": [
+    "Real CPU execution",
+    "Original route block retains rounding barrier and epsilon",
+    "Eager and JIT agree for all four controls",
+    "Bias chooses IDs while selected weight uses unbiased logits",
+    "This ordinary bf16 control retains the renorm target",
+    "Epsilon-dominated positive sigmoid sum is much below target",
+    "Finite extreme inputs can yield all-zero sigmoid weights on this CPU",
+    "Bias gradient of this surrogate is stopped",
+    "Unselected router parameter gradient is zero for this surrogate"
+  ],
+  "runtime": {
+    "jax": "0.7.2",
+    "backend": "cpu"
+  },
+  "extracted_source_block": "with jax.named_scope('moe_route'):\n    router_logits = jnp.einsum('td,de->te', x, reshard(router, P(None, None))).astype(jnp.float32)\n    biased_logits = router_logits + jax.lax.stop_gradient(router_bias)\n    router_probs = jax.nn.softmax(router_logits, axis=-1)\n    topk_logits, selected_experts = jax.lax.top_k(biased_logits, self.num_experts_per_token + 1)\n    qb_alpha = topk_logits[:, -1:]\n    selected_experts = selected_experts[:, :-1]\n    selected_logits = jnp.take_along_axis(router_logits, selected_experts, axis=-1)\n    combine_weights = jax.nn.sigmoid(selected_logits)\n    combine_weights = jax.lax.optimization_barrier(combine_weights)\n    combine_weights *= self.routing_renorm_sum / (jnp.sum(combine_weights, axis=-1, keepdims=True) + 1e-09)\n    combine_weights = combine_weights.astype(x.dtype)",
+  "source_sha256": {
+    "sources/routing_2026_10_05/grug_moe.py": "5b67e36774981b8e42c753f62b638a5700fbf204c8b16c71df6d72c0b0ea398c"
+  },
+  "cases": [
+    {
+      "name": "ordinary",
+      "input_logits": [
+        2.0,
+        1.0,
+        0.0
+      ],
+      "bias": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "dtype": "<class 'jax.numpy.bfloat16'>",
+      "router_logits": [
+        [
+          2.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "selected_experts": [
+        [
+          0,
+          1
+        ]
+      ],
+      "combine_weights": [
+        [
+          1.3671875,
+          1.1328125
+        ]
+      ],
+      "weight_sum": 2.5,
+      "qb_alpha": [
+        [
+          0.0
+        ]
+      ],
+      "eager_jit_equal": true
+    },
+    {
+      "name": "bias_selects_small_unbiased_sigmoid",
+      "input_logits": [
+        -50.0,
+        0.0,
+        -1.0
+      ],
+      "bias": [
+        100.0,
+        0.0,
+        -100.0
+      ],
+      "dtype": "<class 'jax.numpy.bfloat16'>",
+      "router_logits": [
+        [
+          -50.0,
+          0.0,
+          -1.0
+        ]
+      ],
+      "selected_experts": [
+        [
+          0,
+          1
+        ]
+      ],
+      "combine_weights": [
+        [
+          9.661469554619363e-22,
+          2.5
+        ]
+      ],
+      "weight_sum": 2.5,
+      "qb_alpha": [
+        [
+          -101.0
+        ]
+      ],
+      "eager_jit_equal": true
+    },
+    {
+      "name": "all_selected_tiny_sigmoids",
+      "input_logits": [
+        -50.0,
+        -51.0,
+        -52.0
+      ],
+      "bias": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "dtype": "<class 'jax.numpy.bfloat16'>",
+      "router_logits": [
+        [
+          -50.0,
+          -51.0,
+          -52.0
+        ]
+      ],
+      "selected_experts": [
+        [
+          0,
+          1
+        ]
+      ],
+      "combine_weights": [
+        [
+          4.831690603168681e-13,
+          1.7763568394002505e-13
+        ]
+      ],
+      "weight_sum": 6.608047442568932e-13,
+      "qb_alpha": [
+        [
+          -52.0
+        ]
+      ],
+      "eager_jit_equal": true
+    },
+    {
+      "name": "finite_extreme_sigmoid_zero",
+      "input_logits": [
+        -100.0,
+        -101.0,
+        -102.0
+      ],
+      "bias": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "dtype": "<class 'jax.numpy.bfloat16'>",
+      "router_logits": [
+        [
+          -100.0,
+          -101.0,
+          -102.0
+        ]
+      ],
+      "selected_experts": [
+        [
+          0,
+          1
+        ]
+      ],
+      "combine_weights": [
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "weight_sum": 0.0,
+      "qb_alpha": [
+        [
+          -102.0
+        ]
+      ],
+      "eager_jit_equal": true
+    }
+  ],
+  "surrogate": {
+    "expert_outputs": [
+      3.0,
+      1.0
+    ],
+    "router_parameter_gradient": [
+      [
+        0.1474609375,
+        -0.333984375,
+        0.0
+      ]
+    ],
+    "bias_gradient": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "actual_Hero_extreme_logits": null,
+  "actual_capacity_acceptance": null,
+  "actual_GPU_execution": null,
+  "actual_parameter_update": null,
+  "actual_loss_effect": null
+}

@@ -131,3 +131,7 @@ moe-performance:
 routing-envelope:
 	$(CPU_PYTHON) scripts/probe_routing_gradient_envelope_cpu.py
 	$(PYTHON) scripts/plot_routing_gradient_envelope.py
+
+.PHONY: router-weight-path
+router-weight-path:
+	$(CPU_PYTHON) scripts/probe_router_weight_path_cpu.py

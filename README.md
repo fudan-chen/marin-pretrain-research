@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本V58。新增[MoE数值边界与反向链](RECENT_MOE_CHANGES_ZH.md)：48格CPU控制、两个人工router VJP与数值范围图，补充未执行完整验收模板。
+当前版本V59。深入[原router权重路径](RECENT_MOE_CHANGES_ZH.md)：执行原moe_route block，核对biased top-k、unbiased权重、epsilon及最终cast。
 
 本轮完善[MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)：复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并补未执行的性能交互记录模板。
 

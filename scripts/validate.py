@@ -866,6 +866,11 @@ rt=read(ROOT/'templates/routing_gradient_acceptance.json')
 ok('V58 template remains unexecuted',rt['status']=='not_executed' and all(v is None for v in rt['comparisons'].values()) and rt['production_failure_probability'] is None)
 ok('V58 envelope figure embedded',len(soup.select('#recent-moe-guide svg'))==2)
 report['highlights']+=['V58 48 selected scalar CPU controls and two artificial router VJPs, ten checks; no production incidence or GPU/update/loss attribution']
+rw=read(A/'router_weight_path_cpu.json')
+ok('V59 source hash and unknown scope',rw['checks_passed']==len(rw['checks'])==9 and rw['actual_GPU_execution'] is None and rw['actual_Hero_extreme_logits'] is None and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in rw['source_sha256'].items()))
+ok('V59 epsilon and selection controls',rw['cases'][1]['selected_experts']==[[0,1]] and 0<rw['cases'][2]['weight_sum']<1e-10 and rw['cases'][3]['weight_sum']==0 and all(x['eager_jit_equal'] for x in rw['cases']))
+ok('V59 surrogate stopped bias and unselected parameter',all(x==0 for x in rw['surrogate']['bias_gradient']) and rw['surrogate']['router_parameter_gradient'][0][2]==0)
+report['highlights']+=['V59 original moe_route CPU block with reshard/spec stubs; nine checks, four inputs and surrogate gradients; no complete expert or training attribution']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

@@ -105,3 +105,32 @@ EXACT模式保留专家输出y，计算combine权重w的梯度`dS=<dout,y>`。#9
 按dtype、权重/cotangent大小及accepted/drop/padding分桶，保留绝对误差和有明确分母下限的相对误差。整体中位数可能掩盖尾部；跨dtype也不能只比ulp。输入cast为0、正输入乘积为0、非有限输入应分别统计。不要用同一种低精度乘法当未舍入参考，可离线用更高精度或指数记录查乘积范围。监控与真实GPU验收在本轮均未实现。
 
 [10项CPU检查与全部数值](analysis/routing_gradient_envelope_cpu.json)、[未执行验收模板](templates/routing_gradient_acceptance.json)保留原语句、输入、来源SHA与未知字段。运行`make routing-envelope CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`可复算。图不是生产失败概率；缺Hero输入分布、完整GPU反向、同状态更新和loss反事实，不能据此要求回滚。
+
+
+## V59：把简化梯度实验接回原router的权重路径
+
+V58的sigmoid VJP是人工参考，不能当作Marin整个router执行。本轮从固定84869ae8版本的[QBRoutedMoE](sources/routing_2026_10_05/grug_moe.py)用AST提取原moe_route block，执行原dot、top-k、gather、sigmoid、rounding barrier、归一化和cast。reshard替换为identity，partition spec为占位。K=2、目标2.5，一行一维activation与三专家router，输入全是人工构造。没有统计、QB更新、dispatch、ragged专家、真实mesh、checkpoint或优化器。[9项CPU检查及源码SHA](analysis/router_weight_path_cpu.json)
+
+### 选择分数和权重分数不同
+
+原代码在router_logits加stop_gradient(router_bias)后的biased_logits上取K+1项；最后一项形成alpha，其余K个ID用于选择专家。combine权重却从未加bias的router_logits按ID gather，再做sigmoid。bias改变选择，不直接进入权重的sigmoid。
+
+人工logits[-50,0,-1]、bias[100,0,-100]时，选中ID[0,1]、alpha=-101。第0专家因bias被选中，但bf16权重仍约9.6615e-22；第1为2.5。“进top-k”不保证权重远离零。K+1阈值在biased域，也不能与unbiased权重大小混作一量。
+
+人工专家输出[3,1]只用于加权和梯度检查：选中router参数梯度非零，未选中参数为0，bias梯度为0。这个结论限于加权和路径；QB bias另有状态更新，统计也可能另有用途，不能写成完整训练不更新bias或未选中专家永远无任何梯度。
+
+### 2.5是目标，不是所有输入的严格守恒量
+
+原实现使用float32 sigmoid，加optimization_barrier保留舍入边界，再乘2.5/(sum(sigmoid)+1e-9)，最后cast到x.dtype。省略epsilon、barrier、2.5或最终cast的参考，不能自动证明整个实现的合同。barrier存在已核对，具体GPU编译与性能作用未测。
+
+设选中sigmoid总和为S，cast前总权重为2.5*S/(S+1e-9)。S远大于epsilon才接近2.5；S小时，总权重随S缩小。人工logits[-50,-51,-52]取前两项，最终bf16权重约[4.8317e-13,1.7764e-13]，总和6.6080e-13。每项sigmoid虽为正，却没有恢复为2.5。epsilon避免全零时除零，不能同时保证任意输入保持目标总权重。
+
+更极端的有限logits[-100,-101,-102]在本CPU原sigmoid路径得到全零权重。数学上的严格为正，不等于浮点实现输出必定非零。GPU/backend的subnormal和指数计算路径仍需独立验证。普通[2,1,0]例得到bf16权重[1.3671875,1.1328125]、总和恰为2.5；不能外推所有cast后的总和都严格相等。四例eager/JIT输出一致，仅覆盖这四例。
+
+### 对V58反例的正确使用
+
+V58回答某种正权重/cotangent是否丢失乘积，以及人工sigmoid VJP是否保留差异，没有建模这里确认的完整权重路径。要诊断#9833的训练影响，须在同执行版本下将原router输出交给实际EXACT/EXPERT_SIDE，再查router参数梯度与同状态更新。不能拼接不同时期源码后宣称复现Hero。
+
+下一项生产证据应记录每层选中unbiased logits、S/epsilon、cast后权重零值/幅值分布、accepted/drop，以及同输入下两种反向的参数梯度。仅看entropy、计数或平均权重不能排除少数由bias选中的极小权重。当前没有Hero分布，不能认定实际失稳、无效训练或应修改epsilon。
+
+运行make router-weight-path CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python可复算。这里把验收条件落实到选择、归一化和cast，并未新增未经证实的生产bug。

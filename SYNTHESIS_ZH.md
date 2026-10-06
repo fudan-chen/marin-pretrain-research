@@ -127,3 +127,6 @@
 
 
 V58判断：正bf16输入仍可能乘积下溢，但局部dS差异不必传到router logits。数值优化验收要继续到同状态参数更新与固定评估，见[反向链分析](RECENT_MOE_CHANGES_ZH.md)。
+
+
+V59核对原router：bias决定选择，权重取unbiased logits；epsilon可主导归一化。极端CPU输入说明边界，未证明Hero发生此问题，见[原权重路径](RECENT_MOE_CHANGES_ZH.md)。

@@ -325,3 +325,6 @@ pilot库存验收逐桶保存输入库存长度、r、floor保留数、入口互
 
 
 V58数值验收：局部dS差异继续追踪到router梯度和同状态一步更新；按dtype/幅值分桶，分开输入cast为0与乘积变0。中位ulp、forward一致或正sigmoid声明不能代替反向链证据。
+
+
+V59权重路径验收：区分biased选择与unbiased权重，记录S/epsilon和最终cast。归一化目标不是所有输入的守恒量；人工VJP不能代替真实专家的完整梯度。

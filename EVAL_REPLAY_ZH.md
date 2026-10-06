@@ -6,7 +6,7 @@
 
 ## 1. 每次评估需要保留什么
 
-一份JSON包含全局身份字段和逐批、逐叶子域的records。身份包括checkpoint SHA256、执行SHA、参数视图、pending beta是否应用、计算dtype、backend、tokenizer与byte表SHA256。输入摘要声明覆盖有序tokens、weights、mask与tags，字段名为`input_sha256`；当前没有实现生产导出器或原数组的规范编码，`ordered_tokens_weights_masks_tags_v1`是本地记录契约的声明标记，不是已验证的生产哈希协议。
+一份JSON包含全局身份字段和逐批、逐叶子域的records。身份包括checkpoint SHA256、执行SHA、参数视图、pending beta是否应用、计算dtype、backend、tokenizer与byte表SHA256。输入摘要声明覆盖有序tokens、weights、mask与tags，字段名为`input_sha256`；V39的`ordered_tokens_weights_masks_tags_v1`保留为声明标记。V41新增[NPZ离线导出与typed v2规范](EVAL_ARRAY_EXPORT_ZH.md)，能绑定提供的数组；真实GPU采集与生产身份仍未验证。
 
 |逐批字段|含义|采集要求|
 |---|---|---|
@@ -64,7 +64,7 @@
 
 CLI保留两份输入文件的SHA256，并拒绝覆盖输出。真实管线的接入顺序是：
 
-1. 从实际评估accumulator导出逐批全局N/T/B及域记录；同时绑定真实输入摘要和模型视图。生产导出器尚未实现，不能从最终summary反推这些字段。
+1. 从实际评估accumulator导出逐批全局N/T/B及域记录；同时绑定真实输入摘要和模型视图。[离线数组导出器](EVAL_ARRAY_EXPORT_ZH.md)已实现；实际前向采集与多rank范围仍需接入，不能从最终summary反推这些字段。
 2. 同checkpoint重新评分并导出第二份记录；先运行声明对照，记录第一处输入/分母差异。
 3. 声明对齐后，检查逐批N差异、域CE/BPB和与原日志的重建残差；异常回到数据身份或执行调查。
 4. 重评可重复性通过后，再用多个checkpoint检验PTB/twitterAAE轨迹；这仍不替代独立seed或配比反事实。

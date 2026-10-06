@@ -714,6 +714,12 @@ ok('V40 synthesis is the first reading chapter before interactive labs',soup.sel
 ok('V40 synthesis chapter retains two decision tables',len(soup.select('#synthesis-guide table'))==2)
 ok('V40 synthesis keeps historical evidence and proposed work distinct','本章没有新增训练结果' in (ROOT/'SYNTHESIS_ZH.md').read_text() and '不改动18条规则的版本' in (ROOT/'SYNTHESIS_ZH.md').read_text())
 report['highlights']+=['V40 evidence-bounded synthesis and practical reading / mixture-experiment routes; no new experiments or reader comprehension claim']
+ea=read(A/'eval_array_export_validation.json')
+ok('V41 supplied-array export retains twenty-three synthetic checks',ea['checks_passed']==len(ea['checks'])==23 and ea['actual_Hero_arrays'] is None and ea['actual_GPU_forward'] is None and ea['actual_rank_gather'] is None)
+ok('V41 synthetic array-export reference leaf sums match',[(r['weighted_loss_sum'],r['loss_weight_sum'],r['weighted_byte_sum']) for r in ea['synthetic_export']['records']]==[(2.,1.,3.),(3.,1.,1.)])
+ok('V41 typed v2 hashes bind supplied arrays only',ea['synthetic_export']['input_digest_scheme']=='typed_global_eval_arrays_v2' and ea['synthetic_export']['array_export']['input_hash_verified_against_supplied_arrays'] is True)
+ok('V41 new array export chapter has three evidence tables',len(soup.select('#eval-array-export-guide table'))==3)
+report['highlights']+=['V41 offline supplied-global-array export / canonical typed v2 input digest / computed byte table / CPU synthetic tests; no actual forward, rank gathering or Hero data']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

@@ -1,0 +1,17 @@
+{
+  "status": "planned_not_executed_fill_from_actual_run",
+  "array_scope": null,
+  "domains": [],
+  "mask_spec": null,
+  "identity": {
+    "checkpoint_sha256": null,
+    "execution_sha": null,
+    "parameter_view": null,
+    "pending_beta_policy": null,
+    "compute_dtype": null,
+    "backend": null,
+    "tokenizer_sha256": null,
+    "byte_table_sha256": null
+  },
+  "batches": []
+}

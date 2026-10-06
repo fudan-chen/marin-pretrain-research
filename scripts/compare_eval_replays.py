@@ -12,7 +12,7 @@ def validate(j):
  for k in ['checkpoint_sha256','tokenizer_sha256','byte_table_sha256']:
   if not re.fullmatch('[0-9a-f]{64}',j[k]):raise ValueError('Expected lowercase sha256 '+k)
  if not re.fullmatch('[0-9a-f]{40}',j['execution_sha']):raise ValueError('Expected full execution SHA')
- if j['input_digest_scheme']!='ordered_tokens_weights_masks_tags_v1':raise ValueError('unsupported digest declaration')
+ if j['input_digest_scheme'] not in ('ordered_tokens_weights_masks_tags_v1','typed_global_eval_arrays_v2'):raise ValueError('unsupported digest declaration')
  rows=j.get('records');seen=set()
  if not isinstance(rows,list) or not rows:raise ValueError('records must be nonempty')
  for r in rows:

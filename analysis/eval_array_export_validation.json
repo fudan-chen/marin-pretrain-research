@@ -1,0 +1,78 @@
+{
+  "scope": "Synthetic supplied-array tests; no production forward/export or Hero arrays.",
+  "checks_passed": 23,
+  "checks": [
+    "Exporter computes expected global leaf N/T/B",
+    "Byte-table identity is computed from supplied typed bytes",
+    "Identical arrays compare under matching identities",
+    "Changing loss keeps input digest but changes numeric observation",
+    "Changing input_tokens changes supplied input digest",
+    "Changing scoring_token_ids changes supplied input digest",
+    "Changing weights changes supplied input digest",
+    "Changing tags changes supplied input digest",
+    "Changing mask_doc_ids changes supplied input digest",
+    "C versus Fortran memory layout hashes identically",
+    "Byte order normalization preserves typed value digest",
+    "Dtype width remains part of identity",
+    "Shape remains part of identity",
+    "Reject out of range",
+    "Reject overlap tags",
+    "Reject untagged weights",
+    "Reject NaN",
+    "Reject negative weight",
+    "Reject object mask",
+    "Reject local scope declaration",
+    "Reject false byte table digest",
+    "Actual CLI writes manifest and NPZ digests",
+    "Actual CLI refuses output overwrite"
+  ],
+  "synthetic_export": {
+    "checkpoint_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "execution_sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "parameter_view": "stored_params",
+    "pending_beta_policy": "stored_not_applied",
+    "compute_dtype": "bf16",
+    "backend": "synthetic",
+    "tokenizer_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "schema_version": 1,
+    "array_scope": "global",
+    "leaf_domains_disjoint": true,
+    "input_digest_scheme": "typed_global_eval_arrays_v2",
+    "records": [
+      {
+        "batch": 0,
+        "domain": "A",
+        "input_sha256": "aec2c981d75e74dab9ecb04f2b82392cd732a0eb16fdf4d564eddd5c78e046fb",
+        "weighted_loss_sum": 2.0,
+        "loss_weight_sum": 1.0,
+        "weighted_byte_sum": 3.0
+      },
+      {
+        "batch": 0,
+        "domain": "B",
+        "input_sha256": "2722d2abb5efb0409005fce95672b25e7d844f51af5aa95cc92d4c87b4d69140",
+        "weighted_loss_sum": 3.0,
+        "loss_weight_sum": 1.0,
+        "weighted_byte_sum": 1.0
+      }
+    ],
+    "byte_table_sha256": "34d6952859a0a28f15cf2f519a7bb4c52f78f65cb7d61abfff287404b4867b8b",
+    "array_export": {
+      "sources": [
+        {
+          "batch": 0,
+          "path": "one.npz",
+          "npz_sha256": "1fa5758aaf7e05ee4e2b307ee77766134aa8695ea76cc60bb5ed651046ce8518"
+        }
+      ],
+      "mask_spec": "synthetic document ids; explicit leaves, not GPU AttentionMask",
+      "input_hash_verified_against_supplied_arrays": true,
+      "source_array_scope": "exporter-declared global; ranks not independently verified",
+      "model_checkpoint_and_tokenizer_identity": "declarations only",
+      "losses_origin": "supplied arrays; forward not executed"
+    }
+  },
+  "actual_Hero_arrays": null,
+  "actual_GPU_forward": null,
+  "actual_rank_gather": null
+}

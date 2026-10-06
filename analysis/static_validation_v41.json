@@ -1,0 +1,20 @@
+{
+  "scope": "Static HTML structure and tool links only; no V41 browser rendering or reader study",
+  "actual_browser_rendering": null,
+  "pages": {
+    "index.html": {
+      "chapter": true,
+      "tables": 3,
+      "tool_link": true,
+      "synthesis_first": true,
+      "sha256": "e79c510b83f56ab566cc5aafa838505439b85eae1e0b6144a58acbfe0ef6a2c2"
+    },
+    "report_standalone.html": {
+      "chapter": true,
+      "tables": 3,
+      "tool_link": true,
+      "synthesis_first": true,
+      "sha256": "76ca4d773156ad0a9369e2addbb0248701d9dc5c784bde75492ad1616b357f54"
+    }
+  }
+}

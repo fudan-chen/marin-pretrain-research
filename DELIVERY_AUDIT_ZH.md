@@ -75,3 +75,8 @@ V52新增原异步loader host控制11项，人工store/layout/结果适配边界
 ## V76：原累积与原CE自动微分联动
 
 10项真实JAX/Equinox CPU控制，原微批函数/重排/零状态与原loss语句；显式plain-array、fold/轴/sharding/provider/backend适配。局部空分母可污染非空整步梯度，报告侧分子优先控制通过；无上游修复、Hero路径绑定或GPU验收。462来源保持。
+
+
+## V77：实际工程状态刷新与表述修正
+
+16份新来源、12项离线审计；三issue完整评论，新增第59条运行记录；PR状态及新旧head完整源码，portable残差保存泛化已修正。旧461份非bookkeeping来源保持，当前来源478份。无生产控制面、GPU或部署验证。

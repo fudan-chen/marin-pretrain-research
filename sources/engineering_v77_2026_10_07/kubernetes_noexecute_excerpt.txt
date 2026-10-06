@@ -1,0 +1,4 @@
+Source: https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/
+Acquisition: web tool page and NoExecute search, lines 976-982; browser excerpt, not full HTML.
+Exact short quote: Pods that do not tolerate the taint are evicted immediately
+Scope: NoExecute affects already running pods. Matching tolerations and tolerationSeconds change eviction timing. The effect name alone does not identify the underlying node condition.

@@ -1,0 +1,15 @@
+{
+  "version": "V77",
+  "checks_passed": 8,
+  "checks": [
+    "index.html unique ids",
+    "index.html V77 state refresh and translated retry",
+    "report_standalone.html unique ids",
+    "report_standalone.html V77 state refresh and translated retry",
+    "Historical three tables retained",
+    "Source archive exact bytes",
+    "All 461 prior non-bookkeeping source bytes unchanged",
+    "Fresh V77 global validation"
+  ],
+  "actual_browser_rendering": null
+}

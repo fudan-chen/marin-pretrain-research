@@ -4,7 +4,7 @@ import pathlib,json,base64,html,re
 import markdown
 from bs4 import BeautifulSoup
 ROOT=pathlib.Path(__file__).resolve().parents[1]
-chapters=[('learning','理解文档与自测','LEARNING_GUIDE_ZH.md'),('rubrics','18条判断规则','RUBRICS_ZH.md'),('pipeline','七阶段决策管线','PIPELINE_ZH.md'),('improvement','持续改进队列','IMPROVEMENT_LOG_ZH.md'),('conclusions','第四轮：结论与判断','CONCLUSIONS_ZH.md'),('report','研究主报告','REPORT_ZH.md'),('data','数据配比与顺序','DATA_GUIDE_ZH.md'),('deep','第二轮：搜索、取舍与游标','DEEP_DIVE_ZH.md'),('practical','第三轮：删域、曝光与顺序','PRACTICAL_ZH.md'),('translation','#8435逐条中文解读','ISSUE_8435_ZH.md'),('operations','58条运行记录','OPERATIONS_ZH.md'),('provenance','来源与复核','PROVENANCE_ZH.md')]
+chapters=[('learning','理解文档与自测','LEARNING_GUIDE_ZH.md'),('rubrics','18条判断规则','RUBRICS_ZH.md'),('pipeline','七阶段决策管线','PIPELINE_ZH.md'),('improvement','持续改进队列','IMPROVEMENT_LOG_ZH.md'),('conclusions','第四轮：结论与判断','CONCLUSIONS_ZH.md'),('report','研究主报告','REPORT_ZH.md'),('data','数据配比与顺序','DATA_GUIDE_ZH.md'),('deep','第二轮：搜索、取舍与游标','DEEP_DIVE_ZH.md'),('practical','第三轮：删域、曝光与顺序','PRACTICAL_ZH.md'),('translation','#8435逐条中文解读','ISSUE_8435_ZH.md'),('operations','运行记录与后续更新','OPERATIONS_ZH.md'),('provenance','来源与复核','PROVENANCE_ZH.md')]
 chapters.insert(0,('decision-guide','候选选择与规则回放','DECISION_GUIDE_ZH.md'))
 chapters.insert(0,('transfer-guide','预算分解与供体实验','TRANSFER_GUIDE_ZH.md'))
 chapters.insert(0,('recent-moe-guide','新MoE提案与数值合同','RECENT_MOE_CHANGES_ZH.md'))

@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1511,
+  "checks_passed": 1515,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -18,7 +18,7 @@
     "four new config contrasts / six step393 resume windows",
     "seventeen embedded figures",
     "all relative HTML links valid",
-    "462 source archive checksums valid",
+    "478 source archive checksums valid",
     "18 authored rubrics / seven claim-stage decisions",
     "five interpretation cases / four metrics with switchable baselines",
     "17 figure-reading entries / five preserved collapsed tables",
@@ -124,7 +124,8 @@
     "V73 eighteen original-loss CPU cross-replay checks and descriptive interaction figure; common synthetic targets, missing-cell rejection, no Hero attribution or training effect",
     "V74 twelve original evaluator CPU controls, true Equinox state and original result construction; explicit adapters, root/parent empty policy, fractional denominator and NaN propagation; no Hero incident or GPU proof",
     "V75 sixteen original evaluator callback controls and report-side structural gate; explicit overlap policy and semantic-identity limits, no Hero malformed callback, GPU or production fix",
-    "V76 ten original microbatch/CE CPU autodiff controls with explicit scan/physical/sharding adapters; local-zero gradient contamination and numerator-first control, no Hero path or GPU fix proof"
+    "V76 ten original microbatch/CE CPU autodiff controls with explicit scan/physical/sharding adapters; local-zero gradient contamination and numerator-first control, no Hero path or GPU fix proof",
+    "V77 sixteen new public acquisitions and twelve checks; new NoExecute retry report, unmerged closure, doc-only computational AST comparison and portable residual scope correction; no production logs, GPU or deployment proof"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

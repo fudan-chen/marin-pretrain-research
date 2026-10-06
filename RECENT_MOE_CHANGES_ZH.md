@@ -1,8 +1,11 @@
 # 新MoE性能提案：省掉了什么，数值合同又改变了什么
 
-10月7日重新读取完整公开API：#8435/#8506/#8870正文没有变化，评论仍为27/58/30条，没有新增、删除或正文修改。[当前核对](analysis/engineering_current_v56.json)。网页没有展开全部评论，因而本轮使用API完整页，并对issue.comments与实际条数逐项核对。旧事故翻译不需要补写一个不存在的新结论。
+V77最新复核：[完整API与固定head源码审计](analysis/engineering_current_v77.json)确认#9708已经closed但未合并，#9832/#9833仍open未合并。#9833新head仅修订注释和docstring，补明portable backend仍保存专家输出；两份文件去除文档后的计算AST相同。下面的V56性能窗口和CPU控制保留为历史证据，不能当作新的生产部署或GPU验收。
 
-新的工程材料来自[#9708](https://github.com/marin-community/marin/pull/9708)拆出的[#9832](https://github.com/marin-community/marin/pull/9832)与[#9833](https://github.com/marin-community/marin/pull/9833)。本次API快照中三个PR都open且merged=false。它们是作者已测量的候选实现，不能称为生产已合并修复；非空merge_commit_sha也不能代替merged状态。两份子PR的全部文件列表分别为3和10项，没有漏下一页；各patch新增/删除行数也与API元数据一致。[19项独立源码审计](analysis/moe_proposal_source_audit.json)重算了issue比较与patch覆盖。完整修改覆盖不等于完整head依赖已可运行；本轮未构建PR checkout。[11份新增API文件来源](analysis/engineering_v56_acquisition.json)
+
+V56（10月7日较早快照）读取完整公开API：#8435/#8506/#8870正文没有变化，评论仍为27/58/30条，没有新增、删除或正文修改。[当前核对](analysis/engineering_current_v56.json)。网页没有展开全部评论，因而本轮使用API完整页，并对issue.comments与实际条数逐项核对。旧事故翻译不需要补写一个不存在的新结论。
+
+新的工程材料来自[#9708](https://github.com/marin-community/marin/pull/9708)拆出的[#9832](https://github.com/marin-community/marin/pull/9832)与[#9833](https://github.com/marin-community/marin/pull/9833)。V56 API快照中三个PR都open且merged=false。它们是作者已测量的候选实现，不能称为生产已合并修复；非空merge_commit_sha也不能代替merged状态。两份子PR的全部文件列表分别为3和10项，没有漏下一页；各patch新增/删除行数也与API元数据一致。[19项独立源码审计](analysis/moe_proposal_source_audit.json)重算了issue比较与patch覆盖。完整修改覆盖不等于完整head依赖已可运行；本轮未构建PR checkout。[11份新增API文件来源](analysis/engineering_v56_acquisition.json)
 
 ## 1. 不填充传输缓冲区，需要证明每个消费者都不读未写行
 
@@ -25,7 +28,7 @@
 
 ## 2. 把路由权重梯度搬到专家侧，代数等价还不够
 
-EXACT模式保留专家输出y，计算combine权重w的梯度`dS=<dout,y>`。#9833新增EXPERT_SIDE：专家反向已有`dy=w×dout`和`dh=dy×W2ᵀ`，于是用`rowsum(dh×h)/w`重建同一个标量。反向返回每行一个float32 row-dot，而不是保留并返回完整y。这减少保存、重算和返回通信，同时改变保存的残差与remat图。
+EXACT模式保留专家输出y，计算combine权重w的梯度`dS=<dout,y>`。#9833新增EXPERT_SIDE：专家反向已有`dy=w×dout`和`dh=dy×W2ᵀ`，于是用`rowsum(dh×h)/w`重建同一个标量。反向返回每行一个float32 row-dot，减少返回通信。QuACK路径还省去保存完整y；portable ragged_dot路径仍在残差中保留y来计算row-dot。V77复核修正了此前把“省去保存y”泛化到所有backend的表述；省存储和省通信需要分别核对。
 
 数学恒等式要求信息尚在。若w为0，或w×dout已在cotangent dtype中舍入为0，再除w无法找回丢失的权重梯度。diff把accepted且w非零的行定义为divisible，先选择安全分母，再选择最终梯度；drop/padding不给梯度。默认仍是EXACT，其他后端拒绝EXPERT_SIDE；候选Hero路径选EXPERT_SIDE，作者依据的是正sigmoid权重与bf16 cotangent，而非“所有浮点输入都严格等价”。
 
@@ -42,7 +45,7 @@ EXACT模式保留专家输出y，计算combine权重w的梯度`dS=<dout,y>`。#9
 
 ## 3. 更少重计算为何可能更容易暴露通信与内存问题
 
-省掉完整y后，候选carry-offload策略改为保存up projection之前的routed output。作者报告跨48层约18 GiB额外保存，峰值HBM增加约20 GiB；编译调度预算太紧会重新计算本来想保存的output，使优化收益消失。提案因此调整内存fraction/slop，并把ragged collective overlap limit收紧到1。作者记录多collective并发曾造成不同梯度或挂起；这不等于本报告已复现该故障，也不代表此前#8870的所有hang同属这个机制。
+在QuACK路径省掉完整y后，候选carry-offload策略改为保存up projection之前的routed output。作者报告跨48层约18 GiB额外保存，峰值HBM增加约20 GiB；编译调度预算太紧会重新计算本来想保存的output，使优化收益消失。提案因此调整内存fraction/slop，并把ragged collective overlap limit收紧到1。作者记录多collective并发曾造成不同梯度或挂起；这不等于本报告已复现该故障，也不代表此前#8870的所有hang同属这个机制。
 
 #9708的整体候选还包含prefetch、carry-offload copy与共享GEMM调度。共享专家计算变快，可能暴露原先被它掩盖的通信；一行单独测量为负，不能据此判断删掉后整个组合一定更快。应在相同最终图上做移除对照，检查compute/transport时间线，而不是把每行Gain相加。
 
@@ -163,3 +166,36 @@ V58回答某种正权重/cotangent是否丢失乘积，以及人工sigmoid VJP�
 同输入、同参数、同优化器count/mu/nu、同LR/衰减、同dtype和同路由策略，才是单步更新对照的起点。应同时覆盖新初始化与有代表性的真实恢复状态，不能用fresh对照估计中途切换风险，也不能用一个warm例证明全程安全。再向后做固定输入重放和固定评估，才能讨论累积偏移与训练质量。
 
 本轮证明的是人工集成中误差可跨专家传播并受状态调节。未执行实际EXACT backend、QuACK专家、collective、生产参数分组或Hero checkpoint，没有测真实loss影响，不能据此回滚#9833。运行make router-coupling-update CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python可复算原语句与诊断图。
+
+
+## V77：合并状态、源码修订与新的运行故障分开看
+
+本轮重新取得三个issue的正文/完整评论、三个PR元数据、#9833的完整10项文件列表、新旧head比较，以及两个文件在两版head上的完整源码。另归档Kubernetes官方NoExecute短摘录；16份新来源保留URL、获取时间和SHA，旧461份非bookkeeping来源保持原字节。[来源账本](analysis/engineering_v77_acquisition.json)与[12项独立审计](analysis/engineering_current_v77.json)可复查。
+
+|对象|V56历史状态|V77新快照|能够改变的结论|
+|---|---|---|---|
+|[#9708](https://github.com/marin-community/marin/pull/9708)|open，未合并|closed，merged=false|整包PR已关闭，不能称已合并部署；关闭原因未另行核实|
+|[#9832](https://github.com/marin-community/marin/pull/9832)|open，未合并|仍open，head不变，正文改写|更新了说明的呈现；作者单rack测量不是本轮重跑|
+|[#9833](https://github.com/marin-community/marin/pull/9833)|open，未合并|仍open，head增加1提交，正文改写|澄清不同backend的残差保存范围，不能写成新数值修复|
+|[#8506](https://github.com/marin-community/marin/issues/8506)|58评论|59评论|新增一次NoExecute驱逐/整gang重试报告|
+|#8435与#8870|27/30评论|正文及评论正文均未变化|不制造新的主帖或hang根因结论|
+
+### head变了，不意味着算法变了
+
+#9833旧head与新head b65be4c9550c5097f0a3add08933531a1c24d534比较为ahead一个提交，修改恰为ep_ragged_all_to_all.py与grug_moe.py两份文件。完整原文件逐个解析，移除各模块/类/函数开头的docstring后，AST完全相同；注释本来不进入AST。这证明此次差异不在两份文件的计算语句中，不证明整套PR已通过运行、kernel数值等价或生产稳定性，也不把docstring的可观察变化称作整个程序字节完全不变。
+
+新说明的重要价值是纠正内存收益的范围。原portable `_RaggedDotExpertMlp.forward`返回的残差包含out，backward读取它，执行 `sum(out.astype(float32) * cotangent.astype(float32), axis=-1)`。因此portable backend保留完整输出用于row-dot；QuACK backend才可从专家反向取得row-dot而不保存完整y。两者都可减少返回完整输出的反向通信，但保存量与重计算图不同。此前报告对此范围的泛化已在第二、三节直接修正。
+
+这里把“文档改写”和“代码修复”分开，但文档修订不是无关紧要：若按旧泛化选择portable backend并预算HBM，可能期待一项它并未实现的省存储收益。验收应填写实际backend、残差叶子/shape、编译内存计划和返回通信，而不是只看共同的EXPERT_SIDE配置名。原GPU性能数据仍是作者在特定QuACK/SM100窗口上的报告，本轮未重测。
+
+### 新故障报告：驱逐原因与节点根因不是一层
+
+[10月6日21:00:53 UTC的新评论](https://github.com/marin-community/marin/issues/8506#issuecomment-6025364160)由loom-oa-dev[bot]发布。中文翻译与状态边界已加入[运行索引](OPERATIONS_ZH.md)：task16在s14fys64节点因NoExecute taint被Kubernetes删除；Iris重排整gang；作者报告至21:00 UTC全部176个task运行、训练到step215756。触发taint的节点条件仍未确认。
+
+按[Kubernetes官方说明](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/)，NoExecute可驱逐已运行Pod，是否立即驱逐或延后取决于匹配toleration与tolerationSeconds。这个effect名称不能单独证明硬件损坏、节点重启或网络隔离。公开评论也没有给出taint key、节点condition、Pod UID、事件序列、恢复checkpoint和重放量，本报告没有访问内部incident链接或生产控制面。
+
+“被驱逐→整gang重试”是该评论报告的可追踪事件链；“节点为什么被打taint”仍缺证据。它不同于#8870的collective hang，也不同于9月存储写入暂停；不能把所有重试合成一种训练代码bug。反过来，单个任务退出能影响整gang，使恢复成本进入预训练预算，这一层值得单独记录。
+
+下一次取证应保留节点taint key/effect/timestamp、condition与事件、Pod UID/删除原因、首次rank退出和gang attempt，随后核对实际恢复state.step、首批数据身份及首次持续训练进度。上报到step215756不是本报告独立重建的实时W&B结果，也不证明该节点根因已经修复。训练曲线仍使用已有10月7日独立快照，没有据这一条评论改写token总量、loss或配比收益。
+
+对研究和部署的规则是：PR head变化先查计算差异，PR关闭先查merged，性能收益先查backend，重试恢复先查根因与状态/数据时钟。四类证据分别保存，避免把说明修订、候选提速、任务重排和长程质量改善写成同一项成功。

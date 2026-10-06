@@ -210,3 +210,7 @@ eval-callback-shapes:
 .PHONY: microbatch-loss-cpu
 microbatch-loss-cpu:
 	PYTHONPATH=$(TENSORSTORE_PATH) $(CPU_PYTHON) scripts/probe_microbatch_loss_cpu.py
+
+.PHONY: engineering-audit-v77
+engineering-audit-v77:
+	$(PYTHON) scripts/audit_engineering_v77.py

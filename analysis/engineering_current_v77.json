@@ -1,0 +1,110 @@
+{
+  "scope": "Offline audit of a separately acquired public engineering refresh.\nComputational AST equality excludes docstrings/comments; no kernel execution.\n",
+  "checks_passed": 12,
+  "checks": [
+    "Complete comments 8435",
+    "Complete comments 8506",
+    "Complete comments 8870",
+    "New triage explicitly preserves unknown initiating condition",
+    "Closed umbrella is not a merged production fix",
+    "Both split proposals remain unmerged",
+    "Full revised PR file list covers metadata",
+    "Head delta is one commit and exactly two files",
+    "Computational AST unchanged ep_ragged_all_to_all.py",
+    "Computational AST unchanged grug_moe.py",
+    "Portable residual retains output for output-scale row dot",
+    "Sixteen acquisitions bound to exact bytes"
+  ],
+  "comparisons": [
+    {
+      "issue": 8435,
+      "body_changed": false,
+      "comments": 27,
+      "added_ids": [],
+      "removed_ids": [],
+      "changed_body_ids": []
+    },
+    {
+      "issue": 8506,
+      "body_changed": false,
+      "comments": 59,
+      "added_ids": [
+        6025364160
+      ],
+      "removed_ids": [],
+      "changed_body_ids": []
+    },
+    {
+      "issue": 8870,
+      "body_changed": false,
+      "comments": 30,
+      "added_ids": [],
+      "removed_ids": [],
+      "changed_body_ids": []
+    }
+  ],
+  "pulls": [
+    {
+      "pull": 9708,
+      "state": "closed",
+      "merged": false,
+      "merged_at": null,
+      "old_head": "2b159517c1d266280729b87dc9ab71a7e77c96e3",
+      "new_head": "2b159517c1d266280729b87dc9ab71a7e77c96e3",
+      "head_changed": false,
+      "body_changed": false
+    },
+    {
+      "pull": 9832,
+      "state": "open",
+      "merged": false,
+      "merged_at": null,
+      "old_head": "4e533e768d5342e705976bd704cfe63af6b99eed",
+      "new_head": "4e533e768d5342e705976bd704cfe63af6b99eed",
+      "head_changed": false,
+      "body_changed": true
+    },
+    {
+      "pull": 9833,
+      "state": "open",
+      "merged": false,
+      "merged_at": null,
+      "old_head": "1247132fa147f82a14e36757d437ba1507a629b1",
+      "new_head": "b65be4c9550c5097f0a3add08933531a1c24d534",
+      "head_changed": true,
+      "body_changed": true
+    }
+  ],
+  "ast_comparisons": [
+    {
+      "file": "ep_ragged_all_to_all.py",
+      "computational_ast_equal": true,
+      "prior_sha256": "12b64c20048b1b71e2ff08752d19c0ae70bd27e93294cea121b5416e3669e0bc",
+      "current_sha256": "aa8331d5d7f4d18c4aef2f401271411539ad637c4e458b3f6a33585d2d3ae9cf"
+    },
+    {
+      "file": "grug_moe.py",
+      "computational_ast_equal": true,
+      "prior_sha256": "15783eddba932f2c4c0a25d39c30aabe45836cc19ba1ce794b587f2d3625f4be",
+      "current_sha256": "d2c5f391186488a806116874c971f7e704b0cdc474b70515e3354391f3bbba2d"
+    }
+  ],
+  "portable_forward_returns": [
+    "(out, (x_dispatch, moe_w13_local, moe_w2_local, physical_group_sizes, active_group_sizes, out))"
+  ],
+  "new_comment": {
+    "id": 6025364160,
+    "url": "https://github.com/marin-community/marin/issues/8506#issuecomment-6025364160",
+    "author": "loom-oa-dev[bot]",
+    "author_type": "Bot",
+    "created_utc": "2026-10-06T21:00:53Z",
+    "reported_task": 16,
+    "reported_node": "s14fys64",
+    "reported_training_step": 215756,
+    "underlying_taint_condition_confirmed": false
+  },
+  "actual_incident_logs_read": null,
+  "actual_GPU_test": null,
+  "actual_production_deployment": null,
+  "actual_retry_cost": null
+}

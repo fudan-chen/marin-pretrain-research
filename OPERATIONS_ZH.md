@@ -1,6 +1,6 @@
-# #8506 生产运行时间线：58条记录逐条索引
+# #8506 生产运行时间线：58条历史记录与后续更新
 
-这里按公开评论顺序保留全部58条事件。中文栏概括事件、处理和证据边界；完整英文与元数据保存在[sources/issue_8506_comments.json](sources/issue_8506_comments.json)。工程机制的详细解释见主报告第三部分。日期为UTC，避免把原记录时区隐式改掉。公开评论大量由agent生成，后续的人工纠正和反例优先；内部Echo/Iris链接未被当作已读取证据。
+这里按早期快照顺序保留58条事件；V77在下方补入第59条新评论，历史索引不重编号。中文栏概括事件、处理和证据边界；完整英文与元数据保存在[sources/issue_8506_comments.json](sources/issue_8506_comments.json)。工程机制的详细解释见主报告第三部分。日期为UTC，避免把原记录时区隐式改掉。公开评论大量由agent生成，后续的人工纠正和反例优先；内部Echo/Iris链接未被当作已读取证据。
 
 | 序号 | UTC时间 | 做了什么、解决到哪一步、原因是否确定 | 原评论 |
 |---|---|---|---|
@@ -62,3 +62,10 @@
 | 56 | 2026-10-01 00:33:26 | 9月30日184731临时保存未完成，下次保存checkpoint barrier timeout。先行storage/worker/GPU原因未找到；恢复后继续。 | [定位](https://github.com/marin-community/marin/issues/8506#issuecomment-5922288472) |
 | 57 | 2026-10-02 15:57:11 | 10月2日多个启动重试，RegisterTask超时与multihost tracker初始化失败；起始原因未确认，attempt12恢复至193732。 | [定位](https://github.com/marin-community/marin/issues/8506#issuecomment-5956153758) |
 | 58 | 2026-10-03 11:27:19 | 10月3日198000保存读旧OCDBT object返回HTTP400，其他rank barrier超时。重启时task17四rank卡编译/cache读502，节点健康读取无权限；根因未确认，提出生产owner后续检查。 | [定位](https://github.com/marin-community/marin/issues/8506#issuecomment-5968715246) |
+
+
+## V77新增：第59条，节点NoExecute驱逐与整gang重试
+
+[2026-10-06 21:00:53 UTC，loom-oa-dev[bot]](https://github.com/marin-community/marin/issues/8506#issuecomment-6025364160)：10月6日的训练gang重试由Kubernetes删除task16触发；该任务所在节点s14fys64带NoExecute taint。Iris将整gang重新入队。作者报告至21:00 UTC，176个任务均运行，训练达到step215756。造成taint的条件仍未确认。
+
+这条评论是自动化triage的公开报告，不是本报告读取原始控制面日志后的独立复现。“重排后继续训练”与“节点根因解决”分开；不能把NoExecute直接翻译成GPU损坏，也不能据此计算未给出的停机/重放成本。完整新快照有59条，原58条正文无修改或删除，见[当前API](sources/engineering_v77_2026_10_07/comments_8506.json)与[审计](analysis/engineering_current_v77.json)。内部incident链接未读取。

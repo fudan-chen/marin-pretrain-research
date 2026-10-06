@@ -181,3 +181,6 @@ V75 实验接口的教训：weight单列广播可让原CE翻倍，byte ID单列�
 
 
 V76 原CE自动微分接入原通用累积器：有效T=1/3时head梯度方向反转；T=0/3时loss有限、梯度NaN。分子优先的小例恢复整批结果，但真实训练入口与辅助项仍需验证。详见[梯度累积](GRADIENT_ACCUMULATION_ZH.md)。
+
+
+V77回到实况：新NoExecute驱逐记录，#9708关闭未合并，#9833仅注释/docstring修订但澄清portable仍保存专家输出。当前源码AST与状态证据已核对，生产节点根因、部署与GPU收益未独立验证，见[MoE提案](RECENT_MOE_CHANGES_ZH.md)。

@@ -379,3 +379,6 @@ V75 callback规则：rank=2不足，loss/weight/评分ID必须逐位置同shape�
 
 
 V76 累积规则：整步T>0不保证局部mean梯度安全。先记录各块T并验收梯度有限性；空块mean乘0不能默认修复。正分母的T加权补偿须抵消框架除K，分子优先控制仍需验证实际接口与辅助项。不能把通用累积接口控制归因Hero专用入口。
+
+
+V77 工程证据规则：closed≠merged，head变化≠计算变化，共同模式名≠共同backend残差/内存收益。NoExecute驱逐与打taint的节点根因分开；公开triage恢复报告不代填原始控制面、checkpoint或重放成本。

@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本V76：原CE自动微分接入原通用microbatch累积器，10项CPU检查。整步非空仍可能因局部空块产生NaN梯度；分母补偿的位置决定是否有效。详见 [梯度累积](GRADIENT_ACCUMULATION_ZH.md)。
+当前版本V77：复核实际工程更新，新增NoExecute驱逐记录；#9708关闭未合并，#9833修订说明而非计算语句。更正portable/QuACK输出保存范围，详见 [MoE工程分析](RECENT_MOE_CHANGES_ZH.md)。
 
 [MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并提供未执行的性能交互记录模板。
 
@@ -10,7 +10,7 @@ V26对V25的micro/macro命名错误已[明确更正](EVAL_METRICS_ZH.md)。
 
 |你现在的问题|阅读入口|
 |---|---|
-|这次535B训练到底遇到了什么|[主报告](REPORT_ZH.md) → [主帖解读](ISSUE_8435_ZH.md) → [58条运行索引](OPERATIONS_ZH.md)|
+|这次535B训练到底遇到了什么|[主报告](REPORT_ZH.md) → [主帖解读](ISSUE_8435_ZH.md) → [运行索引与更新](OPERATIONS_ZH.md)|
 |数据比例为何这样设，loss说明什么|[数据配比](DATA_GUIDE_ZH.md) → [16域真实轨迹](MIX_TRAJECTORY_ZH.md) → [评估分母](EVAL_METRICS_ZH.md)|
 |如何为自己的训练选配比和顺序|[候选比较](DECISION_GUIDE_ZH.md) → [供体与预算](TRANSFER_GUIDE_ZH.md) → [顺序账本](ORDER_GUIDE_ZH.md) → [生效时钟](BATCH_CLOCK_ZH.md)|
 |换数据之后loss突然变化|[诊断流程](LOSS_TRIAGE_ZH.md) → [缓存身份](CACHE_PROVENANCE_ZH.md) → [去重](DEDUP_FILTERS_ZH.md)与[质量桶](QUALITY_BUCKETS_ZH.md)|

@@ -4193,5 +4193,134 @@
     "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/utils/tree_utils.py",
     "retrieved_utc": "2026-10-06T20:43:02.230954+00:00",
     "sha256": "c9acb36c912b0bfb6ff7c8b794b38445c52ff48d3f5870db49ce4791761cde6d"
+  },
+  {
+    "file": "engineering_v77_2026_10_07/issue_8435.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8435",
+    "retrieved_utc": "2026-10-06T21:21:38.884440+00:00",
+    "sha256": "a54694915dc162c10a2754ad58dfae46cad0ea9573c01b0db151e42a0743ddc2",
+    "bytes": 8902,
+    "pagination_complete": true
+  },
+  {
+    "file": "engineering_v77_2026_10_07/issue_8506.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8506",
+    "retrieved_utc": "2026-10-06T21:21:38.864099+00:00",
+    "sha256": "2a01e45e4d3fa84f52a4383a942c14fd64e909914a6af1b02cab38df8b854365",
+    "bytes": 3937,
+    "pagination_complete": true
+  },
+  {
+    "file": "engineering_v77_2026_10_07/issue_8870.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8870",
+    "retrieved_utc": "2026-10-06T21:21:38.860693+00:00",
+    "sha256": "19866ee91b32ada6cc196ad699bdf9dd0eac75dd669add143f4ae4ce6af52ae1",
+    "bytes": 7534,
+    "pagination_complete": true
+  },
+  {
+    "file": "engineering_v77_2026_10_07/comments_8435.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8435/comments?per_page=100&page=1",
+    "retrieved_utc": "2026-10-06T21:21:40.380072+00:00",
+    "sha256": "961fa251b7b9c11aed54a123c0570414b4c05ba9e9f3106bdcdf59191cef6a58",
+    "bytes": 106995,
+    "pagination_complete": true
+  },
+  {
+    "file": "engineering_v77_2026_10_07/comments_8506.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8506/comments?per_page=100&page=1",
+    "retrieved_utc": "2026-10-06T21:21:39.958525+00:00",
+    "sha256": "d8225e676fb83d84c3c15e8f4a9ac7a8a2339fca50aadcd9ddd6bfd62c2f4950",
+    "bytes": 155452,
+    "pagination_complete": true
+  },
+  {
+    "file": "engineering_v77_2026_10_07/comments_8870.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8870/comments?per_page=100&page=1",
+    "retrieved_utc": "2026-10-06T21:21:39.913529+00:00",
+    "sha256": "0b31e85fdbfeb4e938ff4c11dc7736e93ced670dbe838fe54440152bdb9f28ec",
+    "bytes": 111784,
+    "pagination_complete": true
+  },
+  {
+    "file": "engineering_v77_2026_10_07/pull_9708.json",
+    "url": "https://api.github.com/repos/marin-community/marin/pulls/9708",
+    "retrieved_utc": "2026-10-06T21:21:41.220760+00:00",
+    "sha256": "f68623fd025852ebf83c2c6d9bfd13c89f0271fa012abbb1f8b13020c0c829c7",
+    "bytes": 24627,
+    "pagination_complete": true
+  },
+  {
+    "file": "engineering_v77_2026_10_07/pull_9832.json",
+    "url": "https://api.github.com/repos/marin-community/marin/pulls/9832",
+    "retrieved_utc": "2026-10-06T21:21:40.909010+00:00",
+    "sha256": "fea828319351f8c6beb1ebc3f0039bec5bf736efa0a10b326998205e8454c051",
+    "bytes": 20145,
+    "pagination_complete": true
+  },
+  {
+    "file": "engineering_v77_2026_10_07/pull_9833.json",
+    "url": "https://api.github.com/repos/marin-community/marin/pulls/9833",
+    "retrieved_utc": "2026-10-06T21:21:41.251496+00:00",
+    "sha256": "47a6d0da17733850e2511dd71983c45e58012168ed3b633242302c2db7560f00",
+    "bytes": 20476,
+    "pagination_complete": true
+  },
+  {
+    "file": "engineering_v77_2026_10_07/pull_9833_files.json",
+    "url": "https://api.github.com/repos/marin-community/marin/pulls/9833/files?per_page=100&page=1",
+    "retrieved_utc": "2026-10-06T21:22:25.257363+00:00",
+    "sha256": "8da435b6d7639e9f32b457e93fd063b892aca84d534cf666985bccb39478ba49",
+    "bytes": 93112,
+    "pagination_complete": true
+  },
+  {
+    "file": "engineering_v77_2026_10_07/compare_9833_heads.json",
+    "url": "https://api.github.com/repos/marin-community/marin/compare/1247132fa147f82a14e36757d437ba1507a629b1...b65be4c9550c5097f0a3add08933531a1c24d534",
+    "retrieved_utc": "2026-10-06T21:22:26.486447+00:00",
+    "sha256": "7a090f4b969d45d74887aec821c32eb02d23cbcd52592544f85c9c0df14afb24",
+    "bytes": 20886,
+    "pagination_complete": true
+  },
+  {
+    "file": "engineering_v77_2026_10_07/prior_ep_ragged_all_to_all.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/1247132fa147f82a14e36757d437ba1507a629b1/lib/levanter/src/levanter/grug/_moe/ep_ragged_all_to_all.py",
+    "retrieved_utc": "2026-10-06T21:23:15.054756+00:00",
+    "sha256": "12b64c20048b1b71e2ff08752d19c0ae70bd27e93294cea121b5416e3669e0bc",
+    "bytes": 33540,
+    "revision": "1247132fa147f82a14e36757d437ba1507a629b1"
+  },
+  {
+    "file": "engineering_v77_2026_10_07/prior_grug_moe.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/1247132fa147f82a14e36757d437ba1507a629b1/lib/levanter/src/levanter/grug/grug_moe.py",
+    "retrieved_utc": "2026-10-06T21:23:15.041614+00:00",
+    "sha256": "15783eddba932f2c4c0a25d39c30aabe45836cc19ba1ce794b587f2d3625f4be",
+    "bytes": 32352,
+    "revision": "1247132fa147f82a14e36757d437ba1507a629b1"
+  },
+  {
+    "file": "engineering_v77_2026_10_07/current_ep_ragged_all_to_all.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/lib/levanter/src/levanter/grug/_moe/ep_ragged_all_to_all.py",
+    "retrieved_utc": "2026-10-06T21:23:15.709645+00:00",
+    "sha256": "aa8331d5d7f4d18c4aef2f401271411539ad637c4e458b3f6a33585d2d3ae9cf",
+    "bytes": 33769,
+    "revision": "b65be4c9550c5097f0a3add08933531a1c24d534"
+  },
+  {
+    "file": "engineering_v77_2026_10_07/current_grug_moe.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/lib/levanter/src/levanter/grug/grug_moe.py",
+    "retrieved_utc": "2026-10-06T21:23:15.706659+00:00",
+    "sha256": "d2c5f391186488a806116874c971f7e704b0cdc474b70515e3354391f3bbba2d",
+    "bytes": 32448,
+    "revision": "b65be4c9550c5097f0a3add08933531a1c24d534"
+  },
+  {
+    "file": "engineering_v77_2026_10_07/kubernetes_noexecute_excerpt.txt",
+    "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/",
+    "retrieved_utc": "2026-10-06T21:24:15.037642+00:00",
+    "retrieval_time_basis": "approximate bookkeeping after web read",
+    "sha256": "ccedfc57ab7a57d0de03429b9bbac8ab20fc301e91391b9451216c06a7fc7cab",
+    "bytes": 446,
+    "origin": "short web excerpt, not full HTML"
   }
 ]

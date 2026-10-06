@@ -678,6 +678,14 @@ ok('V35 equal totals do not imply equal batch prefixes',bc['equal_endpoint_count
 ok('V35 original callback does not write removed component zero','mixture/weight/B' not in bc['original_callback_logs'][-1]['data'])
 ok('V35 new clock chapter has three evidence tables',len(soup.select('#batch-clock-guide table'))==3)
 report['highlights']+=['V35 exact cumulative batch clock / stage alignment rejection / consumed prefix review / configured weights versus block counts; static HTML verification only for new chapter']
+mr=read(A/'mixture_range_probe.json')
+ok('V36 integer range probes retain twenty-two bounded checks',mr['checks_passed']==len(mr['checks'])==22 and mr['actual_historical_overflow'] is None and mr['actual_loader_replay'] is None and mr['actual_Hero_runtime_numpy_version'] is None)
+ok('V36 original source and archived configuration digests match',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in mr['source_sha256'].items()))
+ok('V36 corrupt modulo returns a valid but different synthetic item',mr['synthetic']['corrupt_remapped_index']==553 and mr['synthetic']['expected_remapped_index']==936)
+ok('V36 scalar and batch-style types have distinct range behavior',mr['synthetic']['original_within_stage_index']<0 and mr['synthetic']['batched_int64_block_index']==mr['synthetic']['expected_index'])
+ok('V36 archived Hero bucket count bounds stay below int32',mr['hero_declared_bounds']['max_component_upper_bound']==256996542<mr['hero_declared_bounds']['int32_limit']<mr['hero_declared_bounds']['total_sequences'])
+ok('V36 new range chapter has three evidence tables',len(soup.select('#mixture-range-guide table'))==3)
+report['highlights']+=['V36 int32 intermediate/cumulative overflow and finite restart remap; actual declared Hero per-component upper bounds below limit; no historical overflow claim; static HTML only']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

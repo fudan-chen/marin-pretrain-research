@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本为V35。新增[配比生效时钟](BATCH_CLOCK_ZH.md)：batch变更后的累计索引、恢复前缀和权重日志分别核对；提供可执行的调度审查器。新增[失败边界与数值验收](FAILURE_BOUNDARIES_ZH.md)：loss有限为何仍可能交接异常状态，事件、水位和恢复分别证明什么。新增[监控与事故重放](OBSERVABILITY_ZH.md)，把日志时刻、计算成本和优化器证据连到可执行的离线检查器。先用[排障总图](ENGINEERING_MAP_ZH.md)按症状选择入口，再核对[交付范围](DELIVERY_AUDIT_ZH.md)。优化器可按[参数分组](OPTIMIZER_GROUPS_ZH.md) → [AdamH状态](ADAMH_STATE_ZH.md) → [MuonH投影](MUON_GEOMETRY_ZH.md) → [NS方向与布局](MUON_DIRECTION_ZH.md)阅读：分别回答谁被更新、历史怎样影响下一步、保持哪组范数、方向怎样被计算。
+当前版本为V36。新增[混合计数与索引范围](MIXTURE_RANGE_ZH.md)：复现int32溢出与取模掩盖路径，并核对Hero三阶段的逐桶上界；没有将人工反例写成Hero事故。新增[配比生效时钟](BATCH_CLOCK_ZH.md)：batch变更后的累计索引、恢复前缀和权重日志分别核对；提供可执行的调度审查器。新增[失败边界与数值验收](FAILURE_BOUNDARIES_ZH.md)：loss有限为何仍可能交接异常状态，事件、水位和恢复分别证明什么。新增[监控与事故重放](OBSERVABILITY_ZH.md)，把日志时刻、计算成本和优化器证据连到可执行的离线检查器。先用[排障总图](ENGINEERING_MAP_ZH.md)按症状选择入口，再核对[交付范围](DELIVERY_AUDIT_ZH.md)。优化器可按[参数分组](OPTIMIZER_GROUPS_ZH.md) → [AdamH状态](ADAMH_STATE_ZH.md) → [MuonH投影](MUON_GEOMETRY_ZH.md) → [NS方向与布局](MUON_DIRECTION_ZH.md)阅读：分别回答谁被更新、历史怎样影响下一步、保持哪组范数、方向怎样被计算。
 
 V26对V25的micro/macro命名错误已[明确更正](EVAL_METRICS_ZH.md)。
 

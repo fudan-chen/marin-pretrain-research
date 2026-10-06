@@ -18,6 +18,7 @@ report:
 	$(PYTHON) scripts/probe_routing.py
 	$(PYTHON) scripts/probe_qb_partition.py
 	$(PYTHON) scripts/probe_optimizer.py
+	$(PYTHON) scripts/probe_mixture_range.py
 	$(PYTHON) scripts/probe_batch_clock.py
 	$(PYTHON) scripts/probe_failure_loop.py
 	$(PYTHON) scripts/probe_watch.py

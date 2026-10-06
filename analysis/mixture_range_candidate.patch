@@ -1,0 +1,29 @@
+--- a/lib/levanter/src/levanter/data/mixture.py
++++ b/lib/levanter/src/levanter/data/mixture.py
+@@ -124,7 +124,7 @@
+         counts_after_stage = []
+         unpermuted_ids_per_stage = []
+ 
+-        cumulative_counts = np.zeros(len(self.datasets), dtype=np.int32)
++        cumulative_counts = np.zeros(len(self.datasets), dtype=np.int64)
+ 
+         for stage_idx, (start_seq_index, stage_weights) in enumerate(self.weight_stages):
+             counts_this_stage = self._compute_expected_counts_per_block(stage_weights, self.block_size)
+@@ -134,7 +134,7 @@
+             if stage_idx < len(self.weight_stages) - 1:
+                 next_start = self.weight_stages[stage_idx + 1][0]
+                 num_blocks_in_stage = (next_start - start_seq_index) // self.block_size
+-                stage_total_counts = counts_this_stage * num_blocks_in_stage
++                stage_total_counts = counts_this_stage.astype(np.int64) * num_blocks_in_stage
+                 cumulative_counts += stage_total_counts
+                 counts_after_stage.append(cumulative_counts.copy())
+ 
+@@ -224,7 +224,7 @@
+         base_offset = self._counts_after_stage[stage - 1][dataset_id] if stage > 0 else 0
+         # Add offset within current stage
+         offset_in_stage = (block_id * self.block_size - self.weight_stages[stage][0]) // self.block_size
+-        current_stage_offset = offset_in_stage * self._counts_per_block_per_stage[stage][dataset_id]
++        current_stage_offset = int(offset_in_stage) * int(self._counts_per_block_per_stage[stage][dataset_id])
+ 
+         return dataset_id, int(dataset_index) + int(base_offset) + int(current_stage_offset)
+ 

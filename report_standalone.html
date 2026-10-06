@@ -41,7 +41,7 @@
 @media print{.assessment-lab input,.assessment-lab textarea,.assessment-lab button{display:none}.assessment-flow{break-inside:avoid}}
 
 #engineering-lab select{width:100%;max-width:100%;font-size:1rem;padding:.65rem;border:1px solid #aab5bb;border-radius:5px;background:#fff;color:#182d38}#engineering-lab label{display:block;font-weight:600;margin:.5rem 0}#engineering-lab h2{font-size:1.45rem;margin-bottom:.35rem}.engineering-timeline{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));list-style:none;padding:0;gap:12px;counter-reset:engineering-step}.engineering-timeline li{padding:14px;border-top:3px solid #497b8c;background:#f0f5f6;counter-increment:engineering-step;overflow-wrap:anywhere}.engineering-timeline strong{display:block;font-size:.86rem;color:#365c6c}.engineering-timeline strong:before{content:counter(engineering-step)" · "}.engineering-timeline p{margin:.45rem 0}.engineering-timeline a{font-size:.85rem}.engineering-evidence{display:grid;grid-template-columns:1fr 1fr;gap:12px}.engineering-evidence article{border:1px solid #cfdadd;border-radius:5px;padding:14px;min-width:0}.engineering-evidence h3{font-size:1rem;margin:0 0 .4rem}.engineering-evidence p{margin:0}.engineering-evidence article:last-child{grid-column:1/-1;background:#fff7e9}.engineering-claim,.engineering-next{margin:20px 0;padding:16px;background:#f5f7f7;border-radius:5px}.engineering-next dt{font-weight:600}.engineering-next dd{margin:0 0 .75rem}#engineering-verdict{font-weight:700}#engineering-verdict[data-status=supported]{color:#206347}#engineering-verdict[data-status=refuted]{color:#a33a2c}#engineering-verdict[data-status=unknown]{color:#755815}#engineering-notes{display:block;box-sizing:border-box;width:100%;margin-bottom:.75rem}@media(max-width:700px){.engineering-evidence{grid-template-columns:1fr}.engineering-evidence article:last-child{grid-column:auto}.engineering-timeline{grid-template-columns:1fr}}@media print{.engineering-timeline{grid-template-columns:1fr 1fr}#engineering-lab details{display:none}.engineering-evidence article,.engineering-timeline li{break-inside:avoid}}
-</style></head><body id="top"><div class="layout"><aside class="sidebar"><div class="brand">Marin 535B<br>预训练研究</div><div class="meta">最新观察：2026-10-07 · 旧图快照：10-04<br>重点：故障机制、Loss、数据顺序</div><input id="toc-search" aria-label="筛选章节目录" placeholder="筛选章节标题"><nav><a class="major" href="#synthesis-guide">结论与操作顺序：怎样用这份研究</a><a class="major" href="#engineering-lab">工程证据链与下一项检查</a><a class="major" href="#assessment-lab">理解检查与回答记录</a><a class="major" href="#order-lab">顺序整数账本</a><a class="major" href="#transfer-lab">预算分解与交换草案</a><a class="major" href="#decision-lab">候选决策实验室</a><a class="major" href="#workbench">理解与评审工作台</a><a class="major" href="#optimizer-guide">优化器分组、衰减与状态时钟</a><a class="major" href="#zero-gradient-state-guide">零梯度、空目标与训练时钟</a><a class="major" href="#masked-numerics-guide">零权重、非有限值与反向梯度</a><a class="major" href="#gradient-accumulation-guide">梯度累积、有效分母与更新方向</a><a class="major" href="#eval-weight-guide">micro权重反推与PTB均值贡献</a><a class="major" href="#live-oct7-guide">10月7日：macro回升与micro下降</a><a class="major" href="#repeat-exposure-guide">重复曝光与配比加量</a><a class="major" href="#packing-fields-guide">打包字段对齐与权重坐标</a><a class="major" href="#eval-target-alignment-guide">下一token对齐与有效目标覆盖</a><a class="major" href="#eval-format-guide">Paloma评分格式与连续token流</a><a class="major" href="#eval-array-export-guide">评估数组、输入摘要与记录导出</a><a class="major" href="#eval-replay-guide">重复评分记录、分母与可执行对照</a><a class="major" href="#eval-identity-guide">评估输入身份、重复遍历与末批</a><a class="major" href="#live-observation-guide">10月6日：新进度与16域端点观察</a><a class="major" href="#mixture-range-guide">大曝光量、混合计数与索引范围</a><a class="major" href="#batch-clock-guide">配比阶段、batch前缀与日志时钟</a><a class="major" href="#failure-boundaries-guide">有限loss、失败路径与数值验收水位</a><a class="major" href="#observability-guide">监控成本、记录时刻与事故重放</a><a class="major" href="#muon-direction-guide">Muon方向、NS迭代与矩阵布局</a><a class="major" href="#adamh-state-guide">AdamH动量、计数与恢复方向</a><a class="major" href="#muon-geometry-guide">MuonH范数、分片与更新几何</a><a class="major" href="#engineering-map-guide">按症状阅读：15案与六条检查入口</a><a class="major" href="#delivery-audit-guide">当前交付与真实验证范围</a><a class="major" href="#checkpoint-memory-guide">Checkpoint内存预算、副本与分块</a><a class="major" href="#checkpoint-commit-guide">Checkpoint提交、回退与可恢复进度</a><a class="major" href="#eval-metrics-guide">评估字段、父级聚合与分母</a><a class="major" href="#mix-trajectory-guide">配比切换与16域真实轨迹</a><a class="major" href="#router-precision-guide">Router精度与训练评估策略</a><a class="major" href="#short-conv-guide">ShortConv文档边界、halo与数值</a><a class="major" href="#loss-triage">配比切换后的loss诊断流程</a><a class="major" href="#qb-guide">路由均衡、分位数与数据分组</a><a class="major" href="#routing-guide">MoE分配丢弃、权重与目标</a><a class="major" href="#change-guide">训练变更评审与执行入口</a><a class="major" href="#quality-guide">质量评分、观察窗口与配比</a><a class="major" href="#dedup-guide">去重、样本对齐与曝光解释</a><a class="major" href="#cache-guide">缓存身份、分词与配比归因</a><a class="major" href="#boundary-guide">文档边界、上下文与有效目标</a><a class="major" href="#state-guide">训练状态、精度与切换时刻</a><a class="major" href="#contracts-guide">源码接口、梯度与恢复验收</a><a class="major" href="#scale-guide">跨规模比较、评估口径与确认</a><a class="major" href="#assessment-guide">理解检查、锚点与分歧</a><a class="major" href="#engineering-guide">工程排障、反证与验收</a><a class="major" href="#order-guide">顺序、边缘块与索引</a><a class="major" href="#mixture-identity-guide">混合数据映射身份</a><a class="major" href="#recent-moe-guide">新MoE提案与数值合同</a><a class="major" href="#transfer-guide">预算分解与供体实验</a><a class="major" href="#decision-guide">候选选择与规则回放</a><a class="major" href="#learning">理解文档与自测</a><a class="major" href="#rubrics">18条判断规则</a><a class="major" href="#pipeline">七阶段决策管线</a><a class="major" href="#improvement">持续改进队列</a><a class="major" href="#conclusions">第四轮：结论与判断</a><a class="major" href="#report">研究主报告</a><a class="major" href="#data">数据配比与顺序</a><a class="major" href="#deep">第二轮：搜索、取舍与游标</a><a class="major" href="#practical">第三轮：删域、曝光与顺序</a><a class="major" href="#translation">#8435逐条中文解读</a><a class="major" href="#operations">58条运行记录</a><a class="major" href="#provenance">来源与复核</a><a class="major" href="#planner">自己的配比预算工具</a><a class="major" href="#explorer">200桶查询</a><a class="major" href="#notes">我的研究笔记</a></nav><details><summary>结论与操作顺序：怎样用这份研究 · 章节</summary><a class="" href="#synthesis-guide-1">1. 目前能够下的结论</a><a class="" href="#synthesis-guide-2">2. 想调整数据，先过三道检查</a><a class="minor" href="#synthesis-guide-_2">第一道：计划量与实际量有没有对上</a><a class="minor" href="#synthesis-guide-_3">第二道：验证变化是广泛改善还是集中在少数域</a><a class="minor" href="#synthesis-guide-_4">第三道：让一个实验只回答一个问题</a><a class="" href="#synthesis-guide-3">3. 数据与工程的联合作业顺序</a><a class="" href="#synthesis-guide-4">4. 一套最小而完整的配比实验</a><a class="" href="#synthesis-guide-5">5. 怎样读报告，才不会被专题数量淹没</a><a class="" href="#synthesis-guide-_5">拆批也可能改变目标：先核对分母</a><a class="" href="#synthesis-guide-_6">前向有限仍需检查反向与触发条件</a><a class="" href="#synthesis-guide-v50update0">V50：空目标处理不能只把梯度或update改成0</a><a class="" href="#synthesis-guide-v51">V51：裁剪验收要看归约范围和后续状态</a><a class="" href="#synthesis-guide-v52">V52：加载器恢复控制</a><a class="" href="#synthesis-guide-v53">V53：混合数据身份</a><a class="" href="#synthesis-guide-v54shuffle">V54：桶内shuffle与切分</a><a class="" href="#synthesis-guide-v55">V55：小实验库存缩放</a><a class="" href="#synthesis-guide-v56moe">V56：新MoE提案</a><a class="" href="#synthesis-guide-v57">V57：性能归因</a></details><details><summary>优化器分组、衰减与状态时钟 · 章节</summary><a class="" href="#optimizer-guide-1">1. 参数名决定进入哪一组</a><a class="" href="#optimizer-guide-2">2. 缺失、零与正值不能混为一谈</a><a class="" href="#optimizer-guide-3-router_bias">3. 衰减作用于权重，排除router_bias</a><a class="" href="#optimizer-guide-4-adam-count">4. 衰减时钟来自Adam count</a><a class="" href="#optimizer-guide-5-clipping">5. clipping的位置决定它约束什么</a><a class="" href="#optimizer-guide-6-optimizer">6. 配比实验要冻结的不只是optimizer名称</a><a class="" href="#optimizer-guide-v51cpu">V51：真实CPU裁剪对照与状态验收</a></details><details><summary>零梯度、空目标与训练时钟 · 章节</summary><a class="" href="#zero-gradient-state-guide-_2">三种处理到底改变了什么</a><a class="" href="#zero-gradient-state-guide-moment">为什么moment衰减，参数仍然移动</a><a class="" href="#zero-gradient-state-guide-_3">复现环境也会改变冒烟测试能否运行</a><a class="" href="#zero-gradient-state-guide-_4">完整训练步应逐个决定哪些时钟推进</a></details><details><summary>零权重、非有限值与反向梯度 · 章节</summary><a class="" href="#masked-numerics-guide-_2">从源码追到哪一步</a><a class="" href="#masked-numerics-guide-cpu">实际CPU结果</a><a class="" href="#masked-numerics-guide-_3">怎样解释，怎样修</a><a class="" href="#masked-numerics-guide-_4">复现与证据范围</a><a class="" href="#masked-numerics-guide-hero">这个触发条件是否符合公开Hero配方</a></details><details><summary>梯度累积、有效分母与更新方向 · 章节</summary><a class="" href="#gradient-accumulation-guide-_2">源码在哪一层决定分母</a><a class="" href="#gradient-accumulation-guide-_3">一个会改变更新方向的小例子</a><a class="" href="#gradient-accumulation-guide-_4">修复和验收应按什么顺序做</a><a class="" href="#gradient-accumulation-guide-_5">本轮检查覆盖什么</a></details><details><summary>micro权重反推与PTB均值贡献 · 章节</summary><a class="" href="#eval-weight-guide-_1">固定源码支持哪一种关系</a><a class="" href="#eval-weight-guide-_2">拟合窗口与事后留出</a><a class="" href="#eval-weight-guide-_3">各域条件份额</a><a class="" href="#eval-weight-guide-_4">两个不能跨越的边界</a><a class="" href="#eval-weight-guide-_5">如何用于训练决策</a></details><details><summary>10月7日：macro回升与micro下降 · 章节</summary><a class="" href="#live-oct7-guide-_1">快照与日期</a><a class="" href="#live-oct7-guide-_2">两个平均指标为什么方向不同</a><a class="" href="#live-oct7-guide-16">16域端点变化</a><a class="" href="#live-oct7-guide-_3">如何更新判断</a><a class="" href="#live-oct7-guide-_4">复核材料</a></details><details><summary>重复曝光与配比加量 · 章节</summary><a class="" href="#repeat-exposure-guide-_2">重启与洗牌不是同一个动作</a><a class="" href="#repeat-exposure-guide-_3">两种覆盖不能混用</a><a class="" href="#repeat-exposure-guide-_4">可执行账本</a><a class="" href="#repeat-exposure-guide-_5">怎样指导下一次加量</a></details><details><summary>打包字段对齐与权重坐标 · 章节</summary><a class="" href="#packing-fields-guide-_2">通用接口与调用方不变量</a><a class="" href="#packing-fields-guide-shape">相同shape如何遮住错位</a><a class="" href="#packing-fields-guide-_3">截断策略必须进入曝光账目</a><a class="" href="#packing-fields-guide-_4">验证范围</a></details><details><summary>下一token对齐与有效目标覆盖 · 章节</summary><a class="" href="#eval-target-alignment-guide-_1">从源码到检查条件</a><a class="" href="#eval-target-alignment-guide-_2">一个错位如何污染配比判断</a><a class="" href="#eval-target-alignment-guide-_3">连续窗口的覆盖账目</a><a class="" href="#eval-target-alignment-guide-_4">使用顺序</a></details><details><summary>Paloma评分格式与连续token流 · 章节</summary><a class="" href="#eval-format-guide-_1">论文规定与实际实现</a><a class="" href="#eval-format-guide-_2">人工缓存如何暴露窗口差别</a><a class="" href="#eval-format-guide-_3">对配比实验的影响</a></details><details><summary>评估数组、输入摘要与记录导出 · 章节</summary><a class="" href="#eval-array-export-guide-1-manifest">1. 输入数组与manifest</a><a class="" href="#eval-array-export-guide-2-ntb">2. N/T/B如何产生</a><a class="" href="#eval-array-export-guide-3-v2">3. v2摘要的具体定义</a><a class="" href="#eval-array-export-guide-4">4. 运行与接入</a><a class="" href="#eval-array-export-guide-token">下一token坐标验收</a></details><details><summary>重复评分记录、分母与可执行对照 · 章节</summary><a class="" href="#eval-replay-guide-1">1. 每次评估需要保留什么</a><a class="" href="#eval-replay-guide-2">2. 输出先回答哪个对象不同</a><a class="" href="#eval-replay-guide-3-ntb">3. 为什么总N/T/B相同还不够</a><a class="" href="#eval-replay-guide-4">4. 从练习走到真实记录</a></details><details><summary>评估输入身份、重复遍历与末批 · 章节</summary><a class="" href="#eval-identity-guide-1">1. 数据从哪里来、为什么预期会重复</a><a class="" href="#eval-identity-guide-2">2. 原方法在人工数据上的行为</a><a class="" href="#eval-identity-guide-3-ptb">3. 确认一个进度条问题，也说明它为何不解释PTB</a><a class="" href="#eval-identity-guide-4-ptb">4. 现在怎样调查PTB，才会改变结论</a></details><details><summary>10月6日：新进度与16域端点观察 · 章节</summary><a class="" href="#live-observation-guide-1">1. 先区分训练进度、评估进度和旧图</a><a class="" href="#live-observation-guide-2-step">2. 同step比较后，宏平均被谁推动</a><a class="" href="#live-observation-guide-3">3. 端点变差，不等于持续退化</a><a class="" href="#live-observation-guide-4">4. 对配比调整，下一步应该改变什么</a></details><details><summary>大曝光量、混合计数与索引范围 · 章节</summary><a class="" href="#mixture-range-guide-1">1. 三处运算，不能用一种故障描述代替</a><a class="" href="#mixture-range-guide-2">2. 负索引为何可以悄悄变成正常样本</a><a class="" href="#mixture-range-guide-3-hero">3. 把Hero三阶段配置代进去，风险是否触发</a><a class="" href="#mixture-range-guide-4">4. 修复候选与验收边界</a></details><details><summary>配比阶段、batch前缀与日志时钟 · 章节</summary><a class="" href="#batch-clock-guide-1-stepbatch">1. 切换step必须穿过历史batch账本</a><a class="" href="#batch-clock-guide-2-checkpoint-step">2. 恢复时不能只冻结checkpoint step</a><a class="" href="#batch-clock-guide-3-mixtureweight">3. 曲线中的mixture/weight究竟是什么</a><a class="" href="#batch-clock-guide-4">4. 把这项核对接进配比实验管线</a><a class="" href="#batch-clock-guide-v52">V52：预取位置与恢复位置，走进原异步加载器</a><a class="" href="#batch-clock-guide-v70">V70：把真实恢复步号接到下一批样本与配比阶段</a><a class="minor" href="#batch-clock-guide-loss">对配比与 loss 分析的影响</a><a class="minor" href="#batch-clock-guide-weights-only">完整续训与 weights-only 必须分别记账</a><a class="" href="#batch-clock-guide-v71">V71：配比日志标签是否代表刚训练完的整批样本</a><a class="minor" href="#batch-clock-guide-_1">正常构建路径有批次边界保护</a><a class="minor" href="#batch-clock-guide-callback">原 callback 没有在本例错一拍</a><a class="minor" href="#batch-clock-guide-schedule">故意拼错两个 schedule 后，日志只反映批次起点</a><a class="minor" href="#batch-clock-guide-loss_1">从标签继续走到 loss 的有效证据</a></details><details><summary>有限loss、失败路径与数值验收水位 · 章节</summary><a class="" href="#failure-boundaries-guide-_1">检查发生在更新之后，保存之前</a><a class="" href="#failure-boundaries-guide-_2">人工故障逐项对应源码行为</a><a class="" href="#failure-boundaries-guide-_3">为什么三个检查互不替代</a><a class="" href="#failure-boundaries-guide-_4">数值验收需要自己的水位</a></details><details><summary>监控成本、记录时刻与事故重放 · 章节</summary><a class="" href="#observability-guide-interval">interval控制了什么，没控制什么</a><a class="" href="#observability-guide-step">一个日志step中混合了哪些阶段</a><a class="" href="#observability-guide-_2">最小事故包应能区分什么</a><a class="" href="#observability-guide-_3">已可执行的离线检查器</a><a class="" href="#observability-guide-_4">怎样从观察走向根因</a></details><details><summary>Muon方向、NS迭代与矩阵布局 · 章节</summary><a class="" href="#muon-direction-guide-_1">两层“分组”究竟不同在哪里</a><a class="" href="#muon-direction-guide-_2">“正交化”不是五步以后精确得到极分解</a><a class="" href="#muon-direction-guide-_3">布局分支分别做了什么</a><a class="" href="#muon-direction-guide-_4">把检查转成一次可判定的变更</a></details><details><summary>AdamH动量、计数与恢复方向 · 章节</summary><a class="" href="#adamh-state-guide-_1">原源码怎样完成一步更新</a><a class="" href="#adamh-state-guide-_2">一份两步反例：相同参数与梯度，不同历史</a><a class="" href="#adamh-state-guide-_3">只改计数，有时为什么看不出区别</a><a class="" href="#adamh-state-guide-_4">三种异常要分别记录</a><a class="" href="#adamh-state-guide-_5">对配比实验的影响：完整接续与重置不可混称</a></details><details><summary>MuonH范数、分片与更新几何 · 章节</summary><a class="" href="#muon-geometry-guide-_1">先看一次更新到底做什么</a><a class="" href="#muon-geometry-guide-_2">保持整体范数，不等于每个专家都保持</a><a class="" href="#muon-geometry-guide-_3">为什么分片错误能把投影变成缩小</a><a class="" href="#muon-geometry-guide-8073">#8073四条评论的中文对照：诊断怎样被修正</a><a class="minor" href="#muon-geometry-guide-_4">对第二条评论数学界限的收紧</a><a class="" href="#muon-geometry-guide-_5">零值和异常方向也需要边界</a><a class="" href="#muon-geometry-guide-_6">可以用于自己训练的检查支线</a></details><details><summary>按症状阅读：15案与六条检查入口 · 章节</summary><a class="" href="#engineering-map-guide-1">1. 六个入口，先留下一个能改变判断的产物</a><a class="" href="#engineering-map-guide-2">2. 十五类问题的动作、源码与证据边界</a><a class="minor" href="#engineering-map-guide-31-checkpoint">3.1 · Checkpoint 写得出来，却读不回来</a><a class="minor" href="#engineering-map-guide-32-host-ram">3.2 · 一味加 host RAM，仍然在恢复后被杀</a><a class="minor" href="#engineering-map-guide-33-host-rss">3.3 · 每隔几次保存，host RSS 的地板抬高</a><a class="minor" href="#engineering-map-guide-34-loader">3.4 · Loader 缓存不是越大越好</a><a class="minor" href="#engineering-map-guide-35-nvlinkib">3.5 · NVLink、IB 与节点掉线，不能混为训练数值不稳定</a><a class="minor" href="#engineering-map-guide-36-ragged-ep">3.6 · Ragged EP 第一次切换：短窗数值和速度通过，稳定性没通过</a><a class="minor" href="#engineering-map-guide-37-executable">3.7 · “两个 executable 交替”是曾经的解释，后来被排除</a><a class="minor" href="#engineering-map-guide-38-nccl-headers-runtime">3.8 · NCCL 编译 headers 与 runtime 不一致：实在的缺陷，但不是全部解释</a><a class="minor" href="#engineering-map-guide-39-gpu-dump-pdl">3.9 · GPU dump 收窄机制：PDL 下可能提前读取旧分组边界</a><a class="minor" href="#engineering-map-guide-310-checkpoint">3.10 · 存储策略不让删 checkpoint，却误伤了原子提交</a><a class="minor" href="#engineering-map-guide-311-checkpoint">3.11 · Checkpoint 留得多，反而把训练拖停</a><a class="minor" href="#engineering-map-guide-312">3.12 · 正确的提速改动也需要数值对照</a><a class="minor" href="#engineering-map-guide-313-router">3.13 · Router “提高精度”改变的是路由策略</a><a class="minor" href="#engineering-map-guide-314">3.14 · 参数存了，不代表评估用了完整状态</a><a class="minor" href="#engineering-map-guide-315-drop">3.15 · 拉长上下文：drop 变多，先看分母与数据相关性</a><a class="" href="#engineering-map-guide-3">3. 配比与工程为什么必须共用一次变更记录</a><a class="" href="#engineering-map-guide-4">4. 怎样维护这张总图</a></details><details><summary>当前交付与真实验证范围 · 章节</summary><a class="" href="#delivery-audit-guide-v18">V18及此前的历史审计（保留原文）</a><a class="" href="#delivery-audit-guide-v18_1">V18补充：交付范围与实际训练范围分开</a><a class="" href="#delivery-audit-guide-v52">V52：加载器恢复控制</a></details><details><summary>Checkpoint内存预算、副本与分块 · 章节</summary><a class="" href="#checkpoint-memory-guide-1-host-byte-budgetrss">1. Host byte budget控制的是在途快照，不是整个RSS</a><a class="" href="#checkpoint-memory-guide-2">2. 为什么预算小了，训练可能更慢</a><a class="" href="#checkpoint-memory-guide-3">3. 副本多，不代表所有副本都写一份</a><a class="" href="#checkpoint-memory-guide-4-chunk">4. Chunk目标也有一个整分边界</a><a class="" href="#checkpoint-memory-guide-5-rssallocator">5. RSS没下降，要从引用与allocator两层查</a></details><details><summary>Checkpoint提交、回退与可恢复进度 · 章节</summary><a class="" href="#checkpoint-commit-guide-1">1. 保存返回、标记可见、恢复成功，是三件事</a><a class="" href="#checkpoint-commit-guide-2">2. 对应三类生产事故，不共用一个根因</a><a class="" href="#checkpoint-commit-guide-3">3. 原函数故障注入揭示的四个边界</a><a class="" href="#checkpoint-commit-guide-4">4. 防止白训练，要追踪四个进度水位</a><a class="" href="#checkpoint-commit-guide-5">5. 一条可以交接的保存验收管线</a><a class="" href="#checkpoint-commit-guide-v64">V64：推理恢复消费者如何拒绝错误输入</a><a class="minor" href="#checkpoint-commit-guide-_1">先判定永久元数据，再选择权重视图</a><a class="minor" href="#checkpoint-commit-guide-pending">权重加载成功，还必须有pending状态</a><a class="minor" href="#checkpoint-commit-guide-_2">可转用的验收规则</a><a class="" href="#checkpoint-commit-guide-v65">V65：真实存储读回，为什么“有限值”仍不足以验收</a><a class="" href="#checkpoint-commit-guide-v66-io">V66：原数组保存链的真实 IO 与错误传播</a><a class="" href="#checkpoint-commit-guide-v67">V67：发现候选、严格恢复与内容完整性的接口边界</a><a class="minor" href="#checkpoint-commit-guide-shape">shape 字段为什么没有在这一层拦住不一致</a><a class="minor" href="#checkpoint-commit-guide-_3">把验收拆成四项可核对的合同</a><a class="" href="#checkpoint-commit-guide-v68">V68：上层是否兜底，取决于叶类型与检查对象</a><a class="minor" href="#checkpoint-commit-guide-_4">形状保护在哪一步发生</a><a class="minor" href="#checkpoint-commit-guide-_5">对恢复验收规则的修正</a><a class="" href="#checkpoint-commit-guide-v69-grug-master">V69：多字段 Grug 状态、回退异常与 master 布局转换</a><a class="minor" href="#checkpoint-commit-guide-_6">六个实际存储叶与声明范围</a><a class="minor" href="#checkpoint-commit-guide-_7">同样称为“缺数据”，回退路径为何不同</a><a class="minor" href="#checkpoint-commit-guide-master">master 迁移钩子做了什么</a><a class="minor" href="#checkpoint-commit-guide-_8">可执行检查与边界</a><a class="" href="#checkpoint-commit-guide-v70">V70：恢复水位必须接到数据消费时钟</a></details><details><summary>评估字段、父级聚合与分母 · 章节</summary><a class="" href="#eval-metrics-guide-1">1. 字段先对照，再解释曲线</a><a class="" href="#eval-metrics-guide-2-67step">2. 67个真实日志step把命名错误分离出来</a><a class="" href="#eval-metrics-guide-3-bytestoken">3. 一个变量叫bytes，累计的却是token</a><a class="" href="#eval-metrics-guide-4">4. 修复指标之前，先明确测量目标</a></details><details><summary>配比切换与16域真实轨迹 · 章节</summary><a class="" href="#mix-trajectory-guide-1">1. 先把继承的历史点排除</a><a class="" href="#mix-trajectory-guide-2">2. 三个等长窗口，不是三个受控实验</a><a class="" href="#mix-trajectory-guide-3">3. 实际结果：方向分裂，聚合也会改变判断</a><a class="" href="#mix-trajectory-guide-4">4. 看曲线时，先问变化发生在哪个窗口</a><a class="" href="#mix-trajectory-guide-5">5. 如何把这个观察变成配比决策</a><a class="" href="#mix-trajectory-guide-v61">V61：为什么这份轨迹无法分别估计配比与执行改动</a><a class="minor" href="#mix-trajectory-guide-_2">补评估点和补训练对照，解决的是两层问题</a><a class="minor" href="#mix-trajectory-guide-_3">对目前配比建议的影响</a><a class="" href="#mix-trajectory-guide-v62seed">V62：已有小规模配比对照，逐seed究竟支持什么</a><a class="minor" href="#mix-trajectory-guide-seed">平均收益并非由某一个seed独自拉出来</a><a class="minor" href="#mix-trajectory-guide-_4">为什么不能把三次同方向当作确认结束</a><a class="minor" href="#mix-trajectory-guide-_5">如何用来调整自己的配比</a></details><details><summary>Router精度与训练评估策略 · 章节</summary><a class="" href="#router-precision-guide-1-dot">1. 三种dot写法分别改了哪里</a><a class="" href="#router-precision-guide-2-combine">2. 选择、顺序与combine权重是不同诊断量</a><a class="" href="#router-precision-guide-3-rackschedule">3. 一rack诊断如何保留长期schedule</a><a class="" href="#router-precision-guide-4">4. 现有评估究竟回答哪个问题</a><a class="" href="#router-precision-guide-5">5. 下一项最有区分力的检查</a></details><details><summary>ShortConv文档边界、halo与数值 · 章节</summary><a class="" href="#short-conv-guide-1">1. 它怎么隔离文档</a><a class="" href="#short-conv-guide-2-context-shard">2. context shard怎样保留左侧上下文</a><a class="" href="#short-conv-guide-3-fused-kernel">3. fused kernel为何不能随意改计算顺序</a><a class="" href="#short-conv-guide-4-dtype">4. 后端回退与dtype必须显式记录</a><a class="" href="#short-conv-guide-5-packing">5. 配比与packing实验怎样使用这些检查</a></details><details><summary>配比切换后的loss诊断流程 · 章节</summary><a class="" href="#loss-triage-1">1. 先写清楚这次变化</a><a class="" href="#loss-triage-2">2. 第一站：曲线是否表示同一个量</a><a class="" href="#loss-triage-3">3. 第二站：到底送进了什么数据</a><a class="" href="#loss-triage-4">4. 第三站：执行与更新是否改变</a><a class="" href="#loss-triage-5">5. 怎样决定下一步</a><a class="" href="#loss-triage-6">6. 让每次诊断留下可交接的记录</a><a class="" href="#loss-triage-v72-loss">V72：预测不变，训练 loss 仍能变化多少</a><a class="minor" href="#loss-triage-cross_entropy_loss-z-loss">cross_entropy_loss 字段可能包含输出 z-loss</a><a class="minor" href="#loss-triage-_1">配比决策应查看什么</a></details><details><summary>路由均衡、分位数与数据分组 · 章节</summary><a class="" href="#qb-guide-1-bias">1. 当前批次决定下一步bias</a><a class="" href="#qb-guide-2-topk">2. TOPK：局部分位数的平均不等于全局分位数</a><a class="" href="#qb-guide-3-hist">3. HIST：全局计数减少分组依赖，但网格也会变化</a><a class="" href="#qb-guide-4">4. 怎样接到配比与顺序研究</a></details><details><summary>MoE分配丢弃、权重与目标 · 章节</summary><a class="" href="#routing-guide-1">1. 分母先核对版本，再核对有效性</a><a class="" href="#routing-guide-2-token">2. 同样丢弃八项，到底伤及多少token</a><a class="" href="#routing-guide-3">3. 丢弃权重有多大，也不能靠数量推断</a><a class="" href="#routing-guide-4-tokenloss">4. token没有自动退出语言loss</a><a class="" href="#routing-guide-5-capacity-factoroverflow">5. capacity factor不是不会overflow的保证</a><a class="" href="#routing-guide-6">6. 字段名与零值也需要证据范围</a><a class="" href="#routing-guide-7-drop">7. 怎样把drop检查接到数据配比</a></details><details><summary>训练变更评审与执行入口 · 章节</summary><a class="" href="#change-guide-1">1. 先选择要回答的问题</a><a class="" href="#change-guide-2">2. 用六份真实配置示范，而不是仅列检查清单</a><a class="" href="#change-guide-3">3. 五个对象怎样冻结</a><a class="minor" href="#change-guide-_2">对象一：送入模型的样本</a><a class="minor" href="#change-guide-_3">对象二：下一步的完整训练状态</a><a class="minor" href="#change-guide-_4">对象三：实际更新规则与运行环境</a><a class="minor" href="#change-guide-_5">对象四：评估的模型视图与分母</a><a class="minor" href="#change-guide-_6">对象五：真正花掉的预算</a><a class="" href="#change-guide-4">4. 将“修复有效”拆成三层结论</a><a class="" href="#change-guide-5">5. 下一次实验提交什么</a><a class="" href="#change-guide-6">6. 怎样读完而不淹没在章节中</a></details><details><summary>质量评分、观察窗口与配比 · 章节</summary><a class="" href="#quality-guide-1-whole-doc">1. “whole-doc”实际是三个字符窗口</a><a class="" href="#quality-guide-2">2. 文档还会经过截断与紧凑词表</a><a class="" href="#quality-guide-3">3. 校准改的是尺度与分桶，不会凭空修好排序</a><a class="" href="#quality-guide-4">4. 标签目标、文档说明与实际部署要分清</a><a class="" href="#quality-guide-5">5. 模型文件名与路径不是内容证明</a><a class="" href="#quality-guide-6-q4">6. 怎样据此调整配比，而不是盲目追q4</a></details><details><summary>去重、样本对齐与曝光解释 · 章节</summary><a class="" href="#dedup-guide-1">1. 同一条去重规则对不同内容测量的东西不同</a><a class="" href="#dedup-guide-2-16">2. 16个来源：故障修复与保留政策要分开</a><a class="" href="#dedup-guide-3">3. 三个能直接执行核查的代码细节</a><a class="" href="#dedup-guide-4-sparse">4. sparse属性缺失，为什么可能表现得像“没有重复”</a><a class="" href="#dedup-guide-5">5. 删除计数有先后顺序，不能当成三项独立比例</a><a class="" href="#dedup-guide-6-store">6. 库存表也有身份：文件日期不是store版本</a><a class="" href="#dedup-guide-7">7. 怎样把结论用于自己的预训练</a></details><details><summary>缓存身份、分词与配比归因 · 章节</summary><a class="" href="#cache-guide-1">1. 六份配置实际用了什么</a><a class="" href="#cache-guide-2-enforce_eoseos">2. enforce_eos不等于把旧缓存补上EOS</a><a class="" href="#cache-guide-3">3. 元数据不同，源码会怎么做</a><a class="" href="#cache-guide-4">4. 特殊标记的当前身份与历史身份</a><a class="" href="#cache-guide-5-loss">5. 为什么这会影响配比与loss的解释</a><a class="" href="#cache-guide-6">6. 缓存进入配比实验前的验收管线</a></details><details><summary>文档边界、上下文与有效目标 · 章节</summary><a class="" href="#boundary-guide-1-attention">1. 禁止跨文档 attention，并没有取消跨文档目标</a><a class="" href="#boundary-guide-2-loss">2. Loss有效性与路由有效性为何不同</a><a class="" href="#boundary-guide-3-paddingtile">3. 左侧padding为什么能破坏tile跳过优化</a><a class="" href="#boundary-guide-4-segment">4. segment编号必须满足表示法的假设</a><a class="" href="#boundary-guide-5-prompt">5. Prompt权重也使用“预测位置”坐标</a><a class="" href="#boundary-guide-6">6. 怎样把这些检查接到配比实验</a><a class="" href="#boundary-guide-attentionshortconv">补充：attention之外还要检查ShortConv</a></details><details><summary>训练状态、精度与切换时刻 · 章节</summary><a class="" href="#state-guide-1">1. 哪份参数具有最终权威</a><a class="" href="#state-guide-2-checkpoint-params">2. checkpoint 里的 params 不一定包含下一步将使用的路由偏置</a><a class="" href="#state-guide-3-pending">3. 训练内评估与导出模型，应用 pending 的时刻不同</a><a class="" href="#state-guide-4-run">4. 恢复布局不能只按新 run 的字段读取</a><a class="" href="#state-guide-5-step-0-loss">5. 日志 step 0不是这份实现的初始化 loss</a><a class="" href="#state-guide-6">6. 应怎样验收数据配比切换</a><a class="" href="#state-guide-v63jaxrouter">V63：原JAX偏置与router联合执行的视图检查</a><a class="minor" href="#state-guide-_2">同样的权重数字，可能对应不同专家</a><a class="minor" href="#state-guide-pending">Pending是替换，不能用“多应用一次”解释累计偏移</a><a class="minor" href="#state-guide-_3">非有限状态的传播边界</a></details><details><summary>源码接口、梯度与恢复验收 · 章节</summary><a class="" href="#contracts-guide-1-loss">1. Loss 相同，梯度仍可能不同</a><a class="" href="#contracts-guide-2-reduction">2. 不做 reduction，不代表还没有应用权重</a><a class="" href="#contracts-guide-3-cross_entropy_loss-nll">3. 指标叫 cross_entropy_loss，不保证它是纯 NLL</a><a class="" href="#contracts-guide-4">4. 恢复到“最新”实际意味着最新可读候选</a><a class="" href="#contracts-guide-5">5. 整数计数溢出也会制造“训练出问题”的假象</a><a class="" href="#contracts-guide-6">6. 把这些发现变成训练前的验收规则</a><a class="" href="#contracts-guide-v49maskguard">V49补充：全零mask的前向guard不能证明反向安全</a></details><details><summary>跨规模比较、评估口径与确认 · 章节</summary><a class="" href="#scale-guide-1">1. 先把跨规模“方向不稳”说准确</a><a class="minor" href="#scale-guide-11">1.1 不止代码，有四个子集改变了方向</a><a class="minor" href="#scale-guide-12">1.2 新核对到的混杂：切换前的权重并不相同</a><a class="" href="#scale-guide-2-cebpb">2. CE改善、BPB略差：先检查评估聚合</a><a class="minor" href="#scale-guide-21">2.1 这里确实有指标方向冲突</a><a class="minor" href="#scale-guide-22">2.2 固定公共代码提供了一个具体的可能机制</a><a class="minor" href="#scale-guide-23">2.3 一个保持预测不变、只改变分批的反例</a><a class="" href="#scale-guide-3-120">3. “1.20×等效算力”里，哪些是观测、哪些是假设</a><a class="minor" href="#scale-guide-31">3.1 先核对倒算的对象</a><a class="minor" href="#scale-guide-32-floor">3.2 改floor时必须重新拟合斜率</a><a class="minor" href="#scale-guide-33">3.3 三个点的拟合，不能承担全部确认</a><a class="" href="#scale-guide-4">4. 三种论文方法，到底在迁移什么</a><a class="minor" href="#scale-guide-41-regmix">4.1 RegMix：检验候选排序，不能只核对一个赢家</a><a class="minor" href="#scale-guide-42-data-mixing-laws">4.2 Data Mixing Laws：把规模、步数、混合分开建模</a><a class="minor" href="#scale-guide-43-regmix-d">4.3 RegMix-D：动态配比预测更依赖状态信息</a><a class="" href="#scale-guide-5">5. 怎样把这些结论变成下一轮实验</a><a class="minor" href="#scale-guide-51">5.1 第一项先做测量确认</a><a class="minor" href="#scale-guide-52">5.2 再做同恢复状态的配比确认</a><a class="minor" href="#scale-guide-53-1025">5.3 10%与25%的比较，不等于纯顺序实验</a><a class="" href="#scale-guide-6">6. 本轮规则回放与明确结论</a></details><details><summary>理解检查、锚点与分歧 · 章节</summary><a class="" href="#assessment-guide-1">1. 先声明这次检查在验证什么</a><a class="" href="#assessment-guide-2">2. 题目覆盖什么，怎样读结果</a><a class="" href="#assessment-guide-3">3. 一份回答怎样留下可评审的依据</a><a class="" href="#assessment-guide-4">4. 三个维度，各有锚点</a><a class="" href="#assessment-guide-5">5. 两份评分不同，保留什么</a><a class="" href="#assessment-guide-6">6. 怎样实施一次小规模读者检查</a><a class="" href="#assessment-guide-7">7. 怎样由误读推动改版</a><a class="" href="#assessment-guide-8">8. 本地记录、迁移与复算</a><a class="" href="#assessment-guide-_2">工程文档更新后的来源版本</a><a class="" href="#assessment-guide-v11">V11来源更新说明</a></details><details><summary>工程排障、反证与验收 · 章节</summary><a class="" href="#engineering-guide-1">1. 保存后内存变高，先区分内存还活着还是留在分配器</a><a class="" href="#engineering-guide-2">2. 排除解释，要指出它缺了哪一个必要条件</a><a class="" href="#engineering-guide-3-200">3. 200步通过以后，为什么还要留回退状态</a><a class="" href="#engineering-guide-4-pdlpdl-off">4. PDL机制解释与PDL-off缓解结果，要分开看</a><a class="" href="#engineering-guide-5">5. 配额清理之后，又发生了另一种保存停滞</a><a class="" href="#engineering-guide-6">6. 整包提速以后，最先要避免哪两种过度归因</a><a class="" href="#engineering-guide-7-mask">7. 去mask的证据，应追到最后一个消费者</a><a class="" href="#engineering-guide-8-teardown">8. Teardown报错之前，系统已经停止了什么</a><a class="" href="#engineering-guide-9-r13">9. 把R13落实为一次排障的六个动作</a><a class="" href="#engineering-guide-10">10. 本轮实际改正了什么</a></details><details><summary>顺序、边缘块与索引 · 章节</summary><a class="" href="#order-guide-1">1. 先把四种“相同”分开</a><a class="" href="#order-guide-2">2. 公开窗口其实从块中间开始，也在块中间结束</a><a class="" href="#order-guide-3">3. 八组历史对照，完整块计数已经不同</a><a class="" href="#order-guide-4">4. 边缘块为什么不能简单按比例折算</a><a class="" href="#order-guide-5">5. 先在整数计数上写出补偿方程</a><a class="" href="#order-guide-6">6. 保留总预算，用共同边缘块包住时序变化</a><a class="" href="#order-guide-7">7. 为什么这里能给出条件匹配证明</a><a class="" href="#order-guide-8">8. 一个必须保留的错误设计反例</a><a class="" href="#order-guide-9">9. 怎样把它接进训练决策管线</a><a class="" href="#order-guide-10">10. 下载、复算与尚缺的证据</a></details><details><summary>混合数据映射身份 · 章节</summary><a class="" href="#mixture-identity-guide-1-key">1. 同key、同配比为何仍不一定是同一条数据流</a><a class="" href="#mixture-identity-guide-v54">V54：桶内排列和训练/验证切分还依赖什么</a><a class="" href="#mixture-identity-guide-v55">V55：小规模实验的库存缩放，是否真的保持重复曝光率</a></details><details><summary>新MoE提案与数值合同 · 章节</summary><a class="" href="#recent-moe-guide-1">1. 不填充传输缓冲区，需要证明每个消费者都不读未写行</a><a class="" href="#recent-moe-guide-2">2. 把路由权重梯度搬到专家侧，代数等价还不够</a><a class="" href="#recent-moe-guide-3">3. 更少重计算为何可能更容易暴露通信与内存问题</a><a class="" href="#recent-moe-guide-4">4. 对自己的代码评审，先确定哪一层合同改变了</a><a class="" href="#recent-moe-guide-v57">V57：怎样读逐项优化表，而不把条件收益当独立收益</a><a class="" href="#recent-moe-guide-v58">V58：局部梯度误差会不会真正传到参数</a><a class="minor" href="#recent-moe-guide-_1">数值验收怎么做</a><a class="" href="#recent-moe-guide-v59router">V59：把简化梯度实验接回原router的权重路径</a><a class="minor" href="#recent-moe-guide-_2">选择分数和权重分数不同</a><a class="minor" href="#recent-moe-guide-25">2.5是目标，不是所有输入的严格守恒量</a><a class="minor" href="#recent-moe-guide-v58_1">对V58反例的正确使用</a><a class="" href="#recent-moe-guide-v60">V60：一处舍入误差如何经过归一化与优化器</a><a class="minor" href="#recent-moe-guide-_3">没有下溢，也会影响多个选中专家</a><a class="minor" href="#recent-moe-guide-moments">同样的梯度差异，更新尺度取决于moments</a><a class="minor" href="#recent-moe-guide-_4">验收要求为何必须绑定状态</a></details><details><summary>预算分解与供体实验 · 章节</summary><a class="" href="#transfer-guide-1">1. 比较域份额，会漏掉多少变化</a><a class="" href="#transfer-guide-2">2. 累计量相同，也可能先后不同</a><a class="" href="#transfer-guide-3">3. 下一步先问哪个问题</a><a class="" href="#transfer-guide-4-q">4. 把“加量”和“换Q档”做成四个条件</a><a class="" href="#transfer-guide-5">5. 怎样保持阶段规则一致</a><a class="" href="#transfer-guide-6">6. 为什么看起来局部的设计会改到额外桶</a><a class="" href="#transfer-guide-7">7. 修正到整数块，仍然保留误差</a><a class="" href="#transfer-guide-8">8. 规则这次挡住了哪些错误</a><a class="" href="#transfer-guide-9">9. 真正执行前还差什么</a><a class="" href="#transfer-guide-10">10. 本轮结论与下一步</a></details><details><summary>候选选择与规则回放 · 章节</summary><a class="" href="#decision-guide-1">1. 这轮追查了什么，查到哪一步</a><a class="" href="#decision-guide-2">2. 先划清可接受范围，再在范围内排序</a><a class="" href="#decision-guide-3">3. 九个教学情景的实测重算</a><a class="" href="#decision-guide-4-197c">4. 197c为什么既值得看，又不能直接推荐</a><a class="" href="#decision-guide-5">5. 没有符合条件者，应该怎样办</a><a class="" href="#decision-guide-6-json">6. 从探索JSON到确认契约</a><a class="" href="#decision-guide-7-rubrics">7. 用真实反例回放Rubrics</a><a class="" href="#decision-guide-8">8. 可视化如何帮助你找下一次实验</a><a class="" href="#decision-guide-9">9. 本轮结论和下一问题</a></details><details open><summary>理解文档与自测 · 章节</summary><a class="" href="#learning-1">1. 三条阅读路线</a><a class="" href="#learning-2-ce">2. 训练CE与固定验证为什么可能朝相反方向走</a><a class="" href="#learning-3-bpb">3. BPB更好，为什么还不能说题做得更好</a><a class="" href="#learning-4">4. 怎么读工作台里的三点图</a><a class="" href="#learning-5">5. 库存、权重、曝光：三个不同的账本</a><a class="" href="#learning-6">6. 为什么“把高质量放在最后”需要额外实验</a><a class="" href="#learning-7">7. 常见术语，用本次研究里的对象解释</a><a class="" href="#learning-8">8. 五个自测：能解释反例，比背数字更重要</a><a class="" href="#learning-9">9. 读完以后，把理解写成可检验的问题</a></details><details><summary>18条判断规则 · 章节</summary><a class="" href="#rubrics-1">1. 怎样使用规则</a><a class="" href="#rubrics-2-100">2. 为什么不做一个100分排名</a><a class="" href="#rubrics-3">3. 两个实际练习</a><a class="" href="#rubrics-4">4. 规则如何持续改进</a><a class="" href="#rubrics-_1">完整规则与判断锚点</a><a class="minor" href="#rubrics-r01">R01 · 来源和版本能回查</a><a class="minor" href="#rubrics-r02">R02 · 结论范围写清</a><a class="minor" href="#rubrics-r03">R03 · 指标含义和评估路径一致</a><a class="minor" href="#rubrics-r04">R04 · 包含有竞争力的简单参照</a><a class="minor" href="#rubrics-r05">R05 · 预算从实际区间计算</a><a class="minor" href="#rubrics-r06">R06 · 平均指标可拆回组成项</a><a class="minor" href="#rubrics-r07">R07 · 选择后有独立确认</a><a class="minor" href="#rubrics-r08">R08 · 每次加量都写供体</a><a class="minor" href="#rubrics-r09">R09 · 库存、历史与重复分开</a><a class="minor" href="#rubrics-r10">R10 · 顺序比较匹配累计量和游标</a><a class="minor" href="#rubrics-r11">R11 · 跨规模结论有对应对照</a><a class="minor" href="#rubrics-r12">R12 · 目标和能力保底预先冻结</a><a class="minor" href="#rubrics-r13">R13 · 根因证据和缓解效果分开</a><a class="minor" href="#rubrics-r14">R14 · 执行状态不只看配置路径</a><a class="minor" href="#rubrics-r15">R15 · 能力主张有实际任务验证</a><a class="minor" href="#rubrics-r16">R16 · 图表准备与理解证据分开</a><a class="minor" href="#rubrics-r17">R17 · 结论可离线复算</a><a class="minor" href="#rubrics-r18">R18 · 未解决问题有下一步和退出条件</a><a class="" href="#rubrics-v47macromicro">V47应用：macro与micro相反时怎样评审</a><a class="" href="#rubrics-v48">V48应用：训练归约先于配比归因</a><a class="" href="#rubrics-v49">V49应用：先核对危险分支，再核对实际触发</a><a class="" href="#rubrics-v50update0">V50：空目标处理不能只把梯度或update改成0</a><a class="" href="#rubrics-v51">V51：裁剪验收要看归约范围和后续状态</a><a class="" href="#rubrics-v52">V52：加载器恢复控制</a><a class="" href="#rubrics-v53">V53：混合数据身份</a><a class="" href="#rubrics-v54shuffle">V54：桶内shuffle与切分</a><a class="" href="#rubrics-v55">V55：小实验库存缩放</a><a class="" href="#rubrics-v56moe">V56：新MoE提案</a><a class="" href="#rubrics-v57">V57：性能归因</a></details><details><summary>七阶段决策管线 · 章节</summary><a class="" href="#pipeline-1">1. 七个阶段的输入和产物</a><a class="" href="#pipeline-2">2. 用第四轮发现跑一遍</a><a class="" href="#pipeline-3">3. 对自己的训练，先提交一份实验记录</a><a class="" href="#pipeline-4">4. 管线中的回退分支</a><a class="" href="#pipeline-5">5. 报告自身也走一条构建管线</a><a class="" href="#pipeline-6">6. 如何选择下一项改进</a><a class="" href="#pipeline-_2">工程事故的检查支线</a><a class="" href="#pipeline-_3">源码检查如何进入实际实验</a><a class="" href="#pipeline-loss">loss变化的统一诊断入口</a><a class="" href="#pipeline-_4">自定义打包的入口核查</a><a class="" href="#pipeline-_5">加量前的历史覆盖核查</a><a class="" href="#pipeline-v48">V48应用：训练归约先于配比归因</a><a class="" href="#pipeline-v49">V49应用：先核对危险分支，再核对实际触发</a><a class="" href="#pipeline-v50update0">V50：空目标处理不能只把梯度或update改成0</a><a class="" href="#pipeline-v51">V51：裁剪验收要看归约范围和后续状态</a><a class="" href="#pipeline-v52">V52：加载器恢复控制</a><a class="" href="#pipeline-v53">V53：混合数据身份</a><a class="" href="#pipeline-v54shuffle">V54：桶内shuffle与切分</a><a class="" href="#pipeline-v55">V55：小实验库存缩放</a><a class="" href="#pipeline-v56moe">V56：新MoE提案</a><a class="" href="#pipeline-v57">V57：性能归因</a></details><details><summary>持续改进队列 · 章节</summary><a class="" href="#improvement-1">1. 本轮已经处理的问题</a><a class="" href="#improvement-2">2. 下一轮按结论价值排列</a><a class="" href="#improvement-3">3. 每轮记录格式</a><a class="" href="#improvement-4">4. 版本纪律</a><a class="" href="#improvement-5">5. 本轮回放规则后，实际修正了什么</a><a class="" href="#improvement-6">6. 第六轮：候选选择与规则回放</a><a class="" href="#improvement-7">7. 第七轮：逐桶账本和执行支持范围</a><a class="" href="#improvement-8">8. 第八轮：完整块匹配之外的边缘问题</a><a class="" href="#improvement-9">9. 第九轮：理解证据不能由页面验收代填</a><a class="" href="#improvement-10">10. 第十轮：工程陈述回到事件和代码</a><a class="" href="#improvement-_2">第十一轮：检验跨规模比较的对象和测量是否一致</a><a class="" href="#improvement-_3">第十一至十四轮：从统计比较继续追到执行接口</a><a class="" href="#improvement-_4">第十五轮：先核对缓存身份，再解释权重收益</a><a class="" href="#improvement-_5">第十六轮：去重政策、稀疏属性与样本对齐</a><a class="" href="#improvement-_6">第十七轮：质量评分能否观察并区分目标内容</a><a class="" href="#improvement-_7">第十八轮：将源码发现接回实验规范</a><a class="" href="#improvement-moe">第十九轮：MoE分配丢弃如何进入训练目标</a><a class="" href="#improvement-v20">V20：路由均衡怎样受批次与分组影响</a><a class="" href="#improvement-v21">V21：参数分组与衰减时钟</a><a class="" href="#improvement-v22">V22：整合诊断流程并修正旧入口</a><a class="" href="#improvement-v23attention">V23：attention之外的文档边界</a><a class="" href="#improvement-v24c025">V24：回到C025核对实验实现</a><a class="" href="#improvement-v25">V25：回到配比切换的真实验证轨迹</a><a class="" href="#improvement-v26v25">V26：纠正V25汇总字段并追查累计单位</a><a class="" href="#improvement-v27">V27：保存提交与真正可恢复的进度</a><a class="" href="#improvement-v28">V28：保存内存预算与副本写入计划</a><a class="" href="#improvement-v29">V29：将源码增补收束为症状驱动的交接图</a><a class="" href="#improvement-v30">V30：从优化器分组深入到实际更新几何</a><a class="" href="#improvement-v31">V31：把范数验收扩展为方向与状态验收</a><a class="" href="#improvement-v32">V32：方向算子与布局变换的边界</a><a class="" href="#improvement-v33">V33：将优化器发现连成可执行事故检查</a><a class="" href="#improvement-v34loss">V34：区分loss检查、健康状态和保存交接</a><a class="" href="#improvement-v35batch">V35：配比边界与batch历史不能各自解释</a><a class="" href="#improvement-v36">V36：风险必须代入真实组件规模</a><a class="" href="#improvement-v37">V37：用新评估核查宏平均的解释</a><a class="" href="#improvement-v38">V38：评估随机重抽假设被收紧</a><a class="" href="#improvement-v39">V39：重复评分有了具体比较工具</a><a class="" href="#improvement-v40">V40：把专题收束成实际决策</a><a class="" href="#improvement-v41">V41：提供的全局数组可以导出并复核</a><a class="" href="#improvement-v42">V42 评分格式与缓存访问</a><a class="" href="#improvement-v43-token">V43 下一token坐标与覆盖账目</a><a class="" href="#improvement-v44">V44 打包字段与权重坐标</a><a class="" href="#improvement-v45">V45 重复曝光与新增覆盖</a><a class="" href="#improvement-v46">V46 新端点与均值方向</a><a class="" href="#improvement-v47">V47：解释均值分歧，而不是按总均值改比例</a><a class="" href="#improvement-v48">V48应用：训练归约先于配比归因</a><a class="" href="#improvement-v48cpuv49">V48之后的历史准备记录（CPU验证已在V49完成）</a><a class="" href="#improvement-v49cpu">V49：真实CPU验证与触发条件同时检查</a><a class="" href="#improvement-v50update0">V50：空目标处理不能只把梯度或update改成0</a><a class="" href="#improvement-v51">V51：裁剪验收要看归约范围和后续状态</a><a class="" href="#improvement-v52">V52：加载器恢复控制</a><a class="" href="#improvement-v53">V53：混合数据身份</a><a class="" href="#improvement-v54shuffle">V54：桶内shuffle与切分</a><a class="" href="#improvement-v55">V55：小实验库存缩放</a><a class="" href="#improvement-v56moe">V56：新MoE提案</a><a class="" href="#improvement-v57">V57：性能归因</a><a class="" href="#improvement-v58">V58：从局部梯度到参数影响</a><a class="" href="#improvement-v59router">V59：原router权重路径</a><a class="" href="#improvement-v60">V60：归一化耦合与状态敏感更新</a><a class="" href="#improvement-v61">V61：配比与执行事件的可区分性</a><a class="" href="#improvement-v62seed">V62：逐seed配比证据</a><a class="" href="#improvement-v63pendingrouter">V63：pending与router联合检查</a><a class="" href="#improvement-v64">V64：推理恢复消费者故障路径</a><a class="" href="#improvement-v65">V65：从消费者替身推进到真实本地存储</a><a class="" href="#improvement-v66-host-manager">V66：原保存 host 分支、真实 manager 与失败预算释放</a><a class="" href="#improvement-v67-manifest-schema-leaf">V67：原发现、真实 manifest schema 与原 leaf 恢复贯通</a><a class="" href="#improvement-v68-load-wrapper-namedarray">V68：上层 load wrapper 与原 NamedArray 检查</a><a class="" href="#improvement-v69-grug-io">V69：原 Grug 状态与恢复策略的真实 IO</a><a class="" href="#improvement-v70-loader">V70：恢复、原 loader 与原混合身份联合检查</a><a class="" href="#improvement-v71">V71：原回调时钟、正常边界与错配工件对照</a><a class="" href="#improvement-v72-loss">V72：原 loss 方法的目标组成与输出罚项控制</a></details><details><summary>第四轮：结论与判断 · 章节</summary><a class="" href="#conclusions-1">1. 补上简单基线，才知道搜索额外买到了什么</a><a class="" href="#conclusions-2">2. 平均值在隐藏什么：代码、学术收益被其他文本退步抵消</a><a class="" href="#conclusions-3-seed">3. 三seed告诉了什么，又没有告诉什么</a><a class="" href="#conclusions-4">4. “最终选中”不等于在所有公开指标上最好</a><a class="" href="#conclusions-5">5. 小模型告诉你方向的可能性，大模型负责确认方向是否成立</a><a class="" href="#conclusions-6">6. 关于质量、配比与顺序，我现在更相信哪些解释</a><a class="minor" href="#conclusions-61-q">6.1 Q档提供质量线索，训练价值还取决于缺了什么</a><a class="minor" href="#conclusions-62-bpb">6.2 数学份额降低与数学BPB变差相关，但还没定位到纯效应</a><a class="minor" href="#conclusions-63">6.3 删域实验测的是“删除再分配”，应据此做局部交换</a><a class="minor" href="#conclusions-64">6.4 顺序可能有作用，先排除“总量其实不同”</a><a class="" href="#conclusions-7">7. 如果是我自己的预训练，下一轮会怎样做</a><a class="minor" href="#conclusions-71-token">7.1 用边际交换回答“下一批token给谁”</a><a class="minor" href="#conclusions-72">7.2 什么时候停止搜索</a><a class="" href="#conclusions-8">8. 工程问题给数据研究补上的一课</a><a class="" href="#conclusions-9">9. 最后我会怎样评价这次训练</a><a class="" href="#conclusions-10">10. 本章的证据边界与可复算入口</a><a class="" href="#conclusions-54seed">附录：54项任务相对比例基线的逐seed结果</a></details><details><summary>研究主报告 · 章节</summary><a class="" href="#report-1">1. 先把最容易误读的三个地方说清楚</a><a class="minor" href="#report-11-loss">1.1 通信实现改变，也会让 Loss 下降</a><a class="minor" href="#report-12-loss">1.2 配比改变以后，训练 Loss 上升，也可能是合理的</a><a class="minor" href="#report-13">1.3 某层输出很小，不能据此说它没用</a><a class="" href="#report-2">2. 模型与训练的实际结构</a><a class="minor" href="#report-21-535b-token-23b">2.1 为什么是 535B，但每个 token 只激活约 23B</a><a class="minor" href="#report-22">2.2 专家并行与数据并行分别跨哪里</a><a class="minor" href="#report-23">2.3 注意力的局部层与全局层</a><a class="minor" href="#report-24">2.4 为什么训练中参数范数不动，并不奇怪</a><a class="" href="#report-3">3. 工程问题逐项对应：做了什么、解决了什么、为什么</a><a class="minor" href="#report-31-checkpoint">3.1 Checkpoint 写得出来，却读不回来</a><a class="minor" href="#report-32-host-ram">3.2 一味加 host RAM，仍然在恢复后被杀</a><a class="minor" href="#report-33-host-rss">3.3 每隔几次保存，host RSS 的地板抬高</a><a class="minor" href="#report-34-loader">3.4 Loader 缓存不是越大越好</a><a class="minor" href="#report-35-nvlinkib">3.5 NVLink、IB 与节点掉线，不能混为训练数值不稳定</a><a class="minor" href="#report-36-ragged-ep">3.6 Ragged EP 第一次切换：短窗数值和速度通过，稳定性没通过</a><a class="minor" href="#report-37-executable">3.7 “两个 executable 交替”是曾经的解释，后来被排除</a><a class="minor" href="#report-38-nccl-headers-runtime">3.8 NCCL 编译 headers 与 runtime 不一致：实在的缺陷，但不是全部解释</a><a class="minor" href="#report-39-gpu-dump-pdl">3.9 GPU dump 收窄机制：PDL 下可能提前读取旧分组边界</a><a class="minor" href="#report-310-checkpoint">3.10 存储策略不让删 checkpoint，却误伤了原子提交</a><a class="minor" href="#report-311-checkpoint">3.11 Checkpoint 留得多，反而把训练拖停</a><a class="minor" href="#report-312">3.12 正确的提速改动也需要数值对照</a><a class="minor" href="#report-313-router">3.13 Router “提高精度”改变的是路由策略</a><a class="minor" href="#report-314">3.14 参数存了，不代表评估用了完整状态</a><a class="minor" href="#report-315-drop">3.15 拉长上下文：drop 变多，先看分母与数据相关性</a><a class="" href="#report-4-scaling-ladder">4. 怎样使用 Scaling Ladder，而不把它当承诺</a><a class="" href="#report-5">5. 一张曲线至少对应四种不同量</a><a class="" href="#report-6-pretrain">6. 旧 pretrain 仓库究竟缺了什么</a><a class="" href="#report-7">7. 资料可信到哪一步</a></details><details><summary>数据配比与顺序 · 章节</summary><a class="" href="#data-1">1. 先区分库存、抽样配比和训练顺序</a><a class="" href="#data-2">2. 实际配比改变了什么</a><a class="minor" href="#data-21-agent">2.1 加了 Agent、法律、新闻，减少了一部分代码、数学和历史</a><a class="minor" href="#data-22">2.2 新配比并不是简单地“越高质量越多”</a><a class="minor" href="#data-23">2.3 桶名称为什么只能当导航</a><a class="" href="#data-3-loss">3. 数据与 Loss 的关联：现有证据能走多远</a><a class="minor" href="#data-31-ce">3.1 为什么新配比的训练CE会升高</a><a class="minor" href="#data-32">3.2 固定验证集上，哪些分布改善了</a><a class="minor" href="#data-33-20">3.3 “等效算力提高20%”怎样算，为什么容易夸大</a><a class="" href="#data-4">4. 怎样为自己的模型精心调配比</a><a class="minor" href="#data-41">4.1 第一步不是选百分比，而是固定目标与对照</a><a class="minor" href="#data-42-200">4.2 先把200桶压成几个可解释的方向</a><a class="minor" href="#data-43">4.3 一次改变一个方向，并说清从哪里拿预算</a><a class="minor" href="#data-44-checkpoint">4.4 先做同checkpoint分叉，再做规模确认</a><a class="minor" href="#data-45-ce">4.5 用验证变化决定下一轮，别用训练CE决定</a><a class="" href="#data-5">5. 怎样安排数据顺序</a><a class="minor" href="#data-51">5.1 把“总量”和“何时使用”分成两项实验</a><a class="minor" href="#data-52">5.2 切换后观察多久，取决于要观察什么</a><a class="minor" href="#data-53-token">5.3 上下文变长，会改变顺序，即便每步token数不变</a><a class="minor" href="#data-54">5.4 长上下文需要两套验证口径</a><a class="" href="#data-6">6. 一份可以直接用于你项目的实验记录</a><a class="" href="#data-7">7. 完整配比与曝光附表</a><a class="minor" href="#data-71-40">7.1 40个语义域的全部比例</a><a class="minor" href="#data-72">7.2 计划曝光轮数最高的十个桶</a><a class="minor" href="#data-73-d1536palomabpb">7.3 d1536固定Paloma的全部子集BPB结果</a></details><details><summary>第二轮：搜索、取舍与游标 · 章节</summary><a class="" href="#deep-1-run934915">1. 六个run背后，是934条观测与915对不同权重</a><a class="minor" href="#deep-11">1.1 搜索范围可以数清，选中规则还不能完整复现</a><a class="minor" href="#deep-12-2001000">1.2 他们还保存了200×1000的内容特征，域标签不是全部输入信息</a><a class="" href="#deep-2-token">2. 小模型怎么模拟十几万亿token的重复曝光</a><a class="" href="#deep-3-bpb">3. 代码改善的同时，数学任务BPB怎样变了</a><a class="minor" href="#deep-31-seed">3.1 三个seed里的改善与退化同时存在</a><a class="minor" href="#deep-32-seed">3.2 收益超过seed波动，不等于已经通过独立检验</a><a class="" href="#deep-4">4. 域总比例隐藏了怎样的质量档迁移</a><a class="" href="#deep-5">5. 配置里非零，不代表加载器真的抽到</a><a class="minor" href="#deep-51-49152sequence200">5.1 49152条sequence如何分给200桶</a><a class="minor" href="#deep-52">5.2 一次本地误诊怎样被排除</a><a class="" href="#deep-6-108907b2951b">6. 108.907B与2.951B，已经独立对上了</a><a class="minor" href="#deep-61">6.1 为什么改长度会改历史游标</a><a class="minor" href="#deep-62">6.2 两种方案的逐桶差异</a><a class="minor" href="#deep-63">6.3 工程调整顺序</a><a class="" href="#deep-7">7. 把这些发现落实成下一轮配比实验</a><a class="" href="#deep-54bpb">附录：54项任务BPB完整对照</a></details><details><summary>第三轮：删域、曝光与顺序 · 章节</summary><a class="" href="#practical-_2">一、先找正确参照，再解释删域结果</a><a class="minor" href="#practical-11-80">1.1 80个实验实际上有两套参照</a><a class="minor" href="#practical-12">1.2 删数学：通用文本与数学文本可以方向相反</a><a class="minor" href="#practical-13">1.3 删域后的改善，不等于这个域毫无价值</a><a class="" href="#practical-q4">二、Q4与多轮曝光：为什么不能只按质量标签排序</a><a class="minor" href="#practical-21-q4">2.1 只保留Q4，代理结果反而更差</a><a class="minor" href="#practical-22-q4">2.2 加数学Q4，收益没有单调增长</a><a class="" href="#practical-_3">三、顺序实验：先把阶段曝光账算清楚</a><a class="minor" href="#practical-31">3.1 权重里能读出怎样的补偿</a><a class="minor" href="#practical-32">3.2 终点没有给出一个普遍最好的顺序</a><a class="minor" href="#practical-33">3.3 怎样构造真正匹配预算的顺序对照</a><a class="" href="#practical-loss">四、拿到每域Loss后，到底怎样决定下一次增减</a><a class="minor" href="#practical-41-loss">4.1 先定义目标，避免训练Loss自己当裁判</a><a class="minor" href="#practical-42-1b">4.2 用局部替代试验回答“再给1B是否值得”</a><a class="" href="#practical-_4">五、库存、保底与曝光上限怎样一起约束配比</a><a class="" href="#practical-_5">六、建议怎样安排自己的下一批实验</a><a class="" href="#practical-_6">本轮来源与计算边界</a><a class="" href="#practical-80">附录：80个删域实验的对照与终点评估</a></details><details><summary>#8435逐条中文解读 · 章节</summary><a class="" href="#translation-1-scaling-ladder">主帖｜为什么先花约1%算力做 Scaling Ladder</a><a class="" href="#translation-c001">C001｜完整初始配方与系统设计</a><a class="" href="#translation-c002">C002｜数据从哪里来，怎样去重、分桶</a><a class="" href="#translation-c003-scaling-ladder-wb-report">C003｜贴出 Scaling Ladder 的 W&amp;B report</a><a class="" href="#translation-c004204">C004｜拟合出的终点约2.04，来自条件外推</a><a class="" href="#translation-c005-scaling-law">C005｜怎样和旧模型的 scaling law 比</a><a class="" href="#translation-c006d2048">C006｜d2048崩了，为什么不重跑</a><a class="" href="#translation-c007">C007｜四个风险窗口，十二项健康检查</a><a class="" href="#translation-c008">C008｜初期参数范数检查为健康</a><a class="" href="#translation-c009rms_attn">C009｜rms_attn不动，也可能正常</a><a class="" href="#translation-c010">C010｜预测的适用条件被明确限定</a><a class="" href="#translation-c011">C011｜读者请求补工程代码链接</a><a class="" href="#translation-c012">C012｜作者已经补上链接</a><a class="" href="#translation-c013token-store">C013｜公开组成报告不等于token store能下载</a><a class="" href="#translation-c0143">C014｜读者认为前3%风险已过去</a><a class="" href="#translation-c015nvlink-racklatentmoe">C015｜为什么在NVLink rack内还要LatentMoE</a><a class="" href="#translation-c016">C016｜作者明确不开放完整数据</a><a class="" href="#translation-c017latentmoelearnable-rmsnorm">C017｜LatentMoE需要learnable RMSNorm</a><a class="" href="#translation-c018denserelative-peadamh-embedding">C018｜三个架构问题：dense交替、relative PE、AdamH embedding</a><a class="" href="#translation-c019token">C019｜三项答复，尤其是稀有token的梯度尖峰</a><a class="" href="#translation-c020">C020｜读者补充自己的设计动机</a><a class="" href="#translation-c021">C021｜希望看中途模型生成</a><a class="" href="#translation-c022classifiercluster-weights">C022｜复现分桶还需要classifier与cluster weights</a><a class="" href="#translation-c023weightshf">C023｜相关weights已经给出HF版本</a><a class="" href="#translation-c024generations8827">C024｜中途generations跟踪在#8827</a><a class="" href="#translation-c025router">C025｜Router精度实验：建议保持现状</a><a class="" href="#translation-c026">C026｜无技术信息的中文回复</a><a class="" href="#translation-c0274k8k16krack">C027｜4K/8K/16K的单rack测量</a></details><details><summary>58条运行记录 · 章节</summary></details><details><summary>来源与复核 · 章节</summary><a class="" href="#provenance-1">1. 这次实际读取了哪些材料</a><a class="" href="#provenance-2-run">2. 生产曲线为什么必须按run拼接</a><a class="" href="#provenance-3">3. 配比表与曝光怎样计算</a><a class="" href="#provenance-4">4. 怎样重建和检查</a><a class="" href="#provenance-5">5. 仍然需要额外实验才能回答的问题</a><a class="" href="#provenance-6">6. 第六轮的选择入口与探索性重算</a><a class="" href="#provenance-7">7. 第七轮的预算分解与前瞻性草案</a><a class="" href="#provenance-8">8. 第八轮的顺序整数账本</a><a class="" href="#provenance-_2">第九轮：题库、评分与真实理解的来源范围</a><a class="" href="#provenance-105">10月5日工程补充快照</a><a class="" href="#provenance-_3">第十一轮来源与计算范围</a></details></aside><main><header class="intro"><h1>从一次大规模预训练里，学会定位问题与调整数据</h1><p>逐条读工程记录，把改动、症状、原因和验证对应起来；重新计算配比和曲线，明确哪里仍缺少因果证据。</p><div class="facts"><span>主帖 + 27条评论</span><span>58条生产事件</span><span>40域 × 5质量档</span><span>7段生产run</span><span>934条配比观测</span><span>129个运行配置复核</span></div><div class="actions"><a href="#engineering-map-guide">从症状选择检查入口</a><a href="#delivery-audit-guide">当前交付与证据边界</a><a href="#checkpoint-memory-guide">保存内存与写入分摊</a><a href="#checkpoint-commit-guide">保存提交与可恢复进度</a><a href="#eval-metrics-guide">评估指标与V25更正</a><a href="#mix-trajectory-guide">配比切换与16域曲线</a><a href="#router-precision-guide">Router精度与评估策略</a><a href="#short-conv-guide">ShortConv边界与halo</a><a href="#loss-triage">loss变化诊断流程</a><a href="#optimizer-guide">优化器分组与衰减</a><a href="#qb-guide">路由均衡与数据分组</a><a href="#routing-guide">MoE丢弃与训练目标</a><a href="#change-guide">训练变更评审</a><a href="#quality-guide">评分窗口与质量桶</a><a href="#dedup-guide">去重与样本对齐</a><a href="#cache-guide">缓存身份与配比归因</a><a href="#boundary-guide">文档边界与有效目标</a><a href="#state-guide">训练状态与切换时刻</a><a href="#contracts-guide">源码接口与恢复验收</a><a href="#scale-guide">配比历史与BPB聚合检查</a><a href="#synthesis-guide">先读结论与操作顺序</a><a href="#engineering-lab">核对工程解释与反证</a><a href="#assessment-lab">保存自己的证据判断</a><a href="#order-lab">检查顺序与累计量</a><a href="#transfer-lab">拆预算并设计供体实验</a><a href="#decision-lab">比较候选与退步限制</a><a href="#workbench">从理解与评审工作台开始</a><a href="#learning">理解文档与自测</a><a href="#pipeline">决策管线</a><a href="#conclusions">历史候选结论</a><a href="#report">从三个案例开始</a><a href="#data">直接看数据分析</a><a href="#deep">第二轮新增结论</a><a href="#practical">第三轮：如何设计自己的实验</a><a href="#planner">输入自己的预算</a><a href="REPORT_ZH.md" download>Markdown主报告</a><a href="report_standalone.html" download>下载单文件HTML</a><button class="action" id="print-report">打印 / 保存PDF</button></div></header><section class="chapter" id="synthesis-guide"><h1 id="synthesis-guide-_1">读完这些故障后，自己的预训练应该怎样改</h1>
+</style></head><body id="top"><div class="layout"><aside class="sidebar"><div class="brand">Marin 535B<br>预训练研究</div><div class="meta">最新观察：2026-10-07 · 旧图快照：10-04<br>重点：故障机制、Loss、数据顺序</div><input id="toc-search" aria-label="筛选章节目录" placeholder="筛选章节标题"><nav><a class="major" href="#synthesis-guide">结论与操作顺序：怎样用这份研究</a><a class="major" href="#engineering-lab">工程证据链与下一项检查</a><a class="major" href="#assessment-lab">理解检查与回答记录</a><a class="major" href="#order-lab">顺序整数账本</a><a class="major" href="#transfer-lab">预算分解与交换草案</a><a class="major" href="#decision-lab">候选决策实验室</a><a class="major" href="#workbench">理解与评审工作台</a><a class="major" href="#optimizer-guide">优化器分组、衰减与状态时钟</a><a class="major" href="#zero-gradient-state-guide">零梯度、空目标与训练时钟</a><a class="major" href="#masked-numerics-guide">零权重、非有限值与反向梯度</a><a class="major" href="#gradient-accumulation-guide">梯度累积、有效分母与更新方向</a><a class="major" href="#eval-weight-guide">micro权重反推与PTB均值贡献</a><a class="major" href="#live-oct7-guide">10月7日：macro回升与micro下降</a><a class="major" href="#repeat-exposure-guide">重复曝光与配比加量</a><a class="major" href="#packing-fields-guide">打包字段对齐与权重坐标</a><a class="major" href="#eval-target-alignment-guide">下一token对齐与有效目标覆盖</a><a class="major" href="#eval-format-guide">Paloma评分格式与连续token流</a><a class="major" href="#eval-array-export-guide">评估数组、输入摘要与记录导出</a><a class="major" href="#eval-replay-guide">重复评分记录、分母与可执行对照</a><a class="major" href="#eval-identity-guide">评估输入身份、重复遍历与末批</a><a class="major" href="#live-observation-guide">10月6日：新进度与16域端点观察</a><a class="major" href="#mixture-range-guide">大曝光量、混合计数与索引范围</a><a class="major" href="#batch-clock-guide">配比阶段、batch前缀与日志时钟</a><a class="major" href="#failure-boundaries-guide">有限loss、失败路径与数值验收水位</a><a class="major" href="#observability-guide">监控成本、记录时刻与事故重放</a><a class="major" href="#muon-direction-guide">Muon方向、NS迭代与矩阵布局</a><a class="major" href="#adamh-state-guide">AdamH动量、计数与恢复方向</a><a class="major" href="#muon-geometry-guide">MuonH范数、分片与更新几何</a><a class="major" href="#engineering-map-guide">按症状阅读：15案与六条检查入口</a><a class="major" href="#delivery-audit-guide">当前交付与真实验证范围</a><a class="major" href="#checkpoint-memory-guide">Checkpoint内存预算、副本与分块</a><a class="major" href="#checkpoint-commit-guide">Checkpoint提交、回退与可恢复进度</a><a class="major" href="#eval-metrics-guide">评估字段、父级聚合与分母</a><a class="major" href="#mix-trajectory-guide">配比切换与16域真实轨迹</a><a class="major" href="#router-precision-guide">Router精度与训练评估策略</a><a class="major" href="#short-conv-guide">ShortConv文档边界、halo与数值</a><a class="major" href="#loss-triage">配比切换后的loss诊断流程</a><a class="major" href="#qb-guide">路由均衡、分位数与数据分组</a><a class="major" href="#routing-guide">MoE分配丢弃、权重与目标</a><a class="major" href="#change-guide">训练变更评审与执行入口</a><a class="major" href="#quality-guide">质量评分、观察窗口与配比</a><a class="major" href="#dedup-guide">去重、样本对齐与曝光解释</a><a class="major" href="#cache-guide">缓存身份、分词与配比归因</a><a class="major" href="#boundary-guide">文档边界、上下文与有效目标</a><a class="major" href="#state-guide">训练状态、精度与切换时刻</a><a class="major" href="#contracts-guide">源码接口、梯度与恢复验收</a><a class="major" href="#scale-guide">跨规模比较、评估口径与确认</a><a class="major" href="#assessment-guide">理解检查、锚点与分歧</a><a class="major" href="#engineering-guide">工程排障、反证与验收</a><a class="major" href="#order-guide">顺序、边缘块与索引</a><a class="major" href="#mixture-identity-guide">混合数据映射身份</a><a class="major" href="#recent-moe-guide">新MoE提案与数值合同</a><a class="major" href="#transfer-guide">预算分解与供体实验</a><a class="major" href="#decision-guide">候选选择与规则回放</a><a class="major" href="#learning">理解文档与自测</a><a class="major" href="#rubrics">18条判断规则</a><a class="major" href="#pipeline">七阶段决策管线</a><a class="major" href="#improvement">持续改进队列</a><a class="major" href="#conclusions">第四轮：结论与判断</a><a class="major" href="#report">研究主报告</a><a class="major" href="#data">数据配比与顺序</a><a class="major" href="#deep">第二轮：搜索、取舍与游标</a><a class="major" href="#practical">第三轮：删域、曝光与顺序</a><a class="major" href="#translation">#8435逐条中文解读</a><a class="major" href="#operations">58条运行记录</a><a class="major" href="#provenance">来源与复核</a><a class="major" href="#planner">自己的配比预算工具</a><a class="major" href="#explorer">200桶查询</a><a class="major" href="#notes">我的研究笔记</a></nav><details><summary>结论与操作顺序：怎样用这份研究 · 章节</summary><a class="" href="#synthesis-guide-1">1. 目前能够下的结论</a><a class="" href="#synthesis-guide-2">2. 想调整数据，先过三道检查</a><a class="minor" href="#synthesis-guide-_2">第一道：计划量与实际量有没有对上</a><a class="minor" href="#synthesis-guide-_3">第二道：验证变化是广泛改善还是集中在少数域</a><a class="minor" href="#synthesis-guide-_4">第三道：让一个实验只回答一个问题</a><a class="" href="#synthesis-guide-3">3. 数据与工程的联合作业顺序</a><a class="" href="#synthesis-guide-4">4. 一套最小而完整的配比实验</a><a class="" href="#synthesis-guide-5">5. 怎样读报告，才不会被专题数量淹没</a><a class="" href="#synthesis-guide-_5">拆批也可能改变目标：先核对分母</a><a class="" href="#synthesis-guide-_6">前向有限仍需检查反向与触发条件</a><a class="" href="#synthesis-guide-v50update0">V50：空目标处理不能只把梯度或update改成0</a><a class="" href="#synthesis-guide-v51">V51：裁剪验收要看归约范围和后续状态</a><a class="" href="#synthesis-guide-v52">V52：加载器恢复控制</a><a class="" href="#synthesis-guide-v53">V53：混合数据身份</a><a class="" href="#synthesis-guide-v54shuffle">V54：桶内shuffle与切分</a><a class="" href="#synthesis-guide-v55">V55：小实验库存缩放</a><a class="" href="#synthesis-guide-v56moe">V56：新MoE提案</a><a class="" href="#synthesis-guide-v57">V57：性能归因</a></details><details><summary>优化器分组、衰减与状态时钟 · 章节</summary><a class="" href="#optimizer-guide-1">1. 参数名决定进入哪一组</a><a class="" href="#optimizer-guide-2">2. 缺失、零与正值不能混为一谈</a><a class="" href="#optimizer-guide-3-router_bias">3. 衰减作用于权重，排除router_bias</a><a class="" href="#optimizer-guide-4-adam-count">4. 衰减时钟来自Adam count</a><a class="" href="#optimizer-guide-5-clipping">5. clipping的位置决定它约束什么</a><a class="" href="#optimizer-guide-6-optimizer">6. 配比实验要冻结的不只是optimizer名称</a><a class="" href="#optimizer-guide-v51cpu">V51：真实CPU裁剪对照与状态验收</a></details><details><summary>零梯度、空目标与训练时钟 · 章节</summary><a class="" href="#zero-gradient-state-guide-_2">三种处理到底改变了什么</a><a class="" href="#zero-gradient-state-guide-moment">为什么moment衰减，参数仍然移动</a><a class="" href="#zero-gradient-state-guide-_3">复现环境也会改变冒烟测试能否运行</a><a class="" href="#zero-gradient-state-guide-_4">完整训练步应逐个决定哪些时钟推进</a></details><details><summary>零权重、非有限值与反向梯度 · 章节</summary><a class="" href="#masked-numerics-guide-_2">从源码追到哪一步</a><a class="" href="#masked-numerics-guide-cpu">实际CPU结果</a><a class="" href="#masked-numerics-guide-_3">怎样解释，怎样修</a><a class="" href="#masked-numerics-guide-_4">复现与证据范围</a><a class="" href="#masked-numerics-guide-hero">这个触发条件是否符合公开Hero配方</a></details><details><summary>梯度累积、有效分母与更新方向 · 章节</summary><a class="" href="#gradient-accumulation-guide-_2">源码在哪一层决定分母</a><a class="" href="#gradient-accumulation-guide-_3">一个会改变更新方向的小例子</a><a class="" href="#gradient-accumulation-guide-_4">修复和验收应按什么顺序做</a><a class="" href="#gradient-accumulation-guide-_5">本轮检查覆盖什么</a></details><details><summary>micro权重反推与PTB均值贡献 · 章节</summary><a class="" href="#eval-weight-guide-_1">固定源码支持哪一种关系</a><a class="" href="#eval-weight-guide-_2">拟合窗口与事后留出</a><a class="" href="#eval-weight-guide-_3">各域条件份额</a><a class="" href="#eval-weight-guide-_4">两个不能跨越的边界</a><a class="" href="#eval-weight-guide-_5">如何用于训练决策</a></details><details><summary>10月7日：macro回升与micro下降 · 章节</summary><a class="" href="#live-oct7-guide-_1">快照与日期</a><a class="" href="#live-oct7-guide-_2">两个平均指标为什么方向不同</a><a class="" href="#live-oct7-guide-16">16域端点变化</a><a class="" href="#live-oct7-guide-_3">如何更新判断</a><a class="" href="#live-oct7-guide-_4">复核材料</a></details><details><summary>重复曝光与配比加量 · 章节</summary><a class="" href="#repeat-exposure-guide-_2">重启与洗牌不是同一个动作</a><a class="" href="#repeat-exposure-guide-_3">两种覆盖不能混用</a><a class="" href="#repeat-exposure-guide-_4">可执行账本</a><a class="" href="#repeat-exposure-guide-_5">怎样指导下一次加量</a></details><details><summary>打包字段对齐与权重坐标 · 章节</summary><a class="" href="#packing-fields-guide-_2">通用接口与调用方不变量</a><a class="" href="#packing-fields-guide-shape">相同shape如何遮住错位</a><a class="" href="#packing-fields-guide-_3">截断策略必须进入曝光账目</a><a class="" href="#packing-fields-guide-_4">验证范围</a></details><details><summary>下一token对齐与有效目标覆盖 · 章节</summary><a class="" href="#eval-target-alignment-guide-_1">从源码到检查条件</a><a class="" href="#eval-target-alignment-guide-_2">一个错位如何污染配比判断</a><a class="" href="#eval-target-alignment-guide-_3">连续窗口的覆盖账目</a><a class="" href="#eval-target-alignment-guide-_4">使用顺序</a></details><details><summary>Paloma评分格式与连续token流 · 章节</summary><a class="" href="#eval-format-guide-_1">论文规定与实际实现</a><a class="" href="#eval-format-guide-_2">人工缓存如何暴露窗口差别</a><a class="" href="#eval-format-guide-_3">对配比实验的影响</a></details><details><summary>评估数组、输入摘要与记录导出 · 章节</summary><a class="" href="#eval-array-export-guide-1-manifest">1. 输入数组与manifest</a><a class="" href="#eval-array-export-guide-2-ntb">2. N/T/B如何产生</a><a class="" href="#eval-array-export-guide-3-v2">3. v2摘要的具体定义</a><a class="" href="#eval-array-export-guide-4">4. 运行与接入</a><a class="" href="#eval-array-export-guide-token">下一token坐标验收</a></details><details><summary>重复评分记录、分母与可执行对照 · 章节</summary><a class="" href="#eval-replay-guide-1">1. 每次评估需要保留什么</a><a class="" href="#eval-replay-guide-2">2. 输出先回答哪个对象不同</a><a class="" href="#eval-replay-guide-3-ntb">3. 为什么总N/T/B相同还不够</a><a class="" href="#eval-replay-guide-4">4. 从练习走到真实记录</a></details><details><summary>评估输入身份、重复遍历与末批 · 章节</summary><a class="" href="#eval-identity-guide-1">1. 数据从哪里来、为什么预期会重复</a><a class="" href="#eval-identity-guide-2">2. 原方法在人工数据上的行为</a><a class="" href="#eval-identity-guide-3-ptb">3. 确认一个进度条问题，也说明它为何不解释PTB</a><a class="" href="#eval-identity-guide-4-ptb">4. 现在怎样调查PTB，才会改变结论</a></details><details><summary>10月6日：新进度与16域端点观察 · 章节</summary><a class="" href="#live-observation-guide-1">1. 先区分训练进度、评估进度和旧图</a><a class="" href="#live-observation-guide-2-step">2. 同step比较后，宏平均被谁推动</a><a class="" href="#live-observation-guide-3">3. 端点变差，不等于持续退化</a><a class="" href="#live-observation-guide-4">4. 对配比调整，下一步应该改变什么</a></details><details><summary>大曝光量、混合计数与索引范围 · 章节</summary><a class="" href="#mixture-range-guide-1">1. 三处运算，不能用一种故障描述代替</a><a class="" href="#mixture-range-guide-2">2. 负索引为何可以悄悄变成正常样本</a><a class="" href="#mixture-range-guide-3-hero">3. 把Hero三阶段配置代进去，风险是否触发</a><a class="" href="#mixture-range-guide-4">4. 修复候选与验收边界</a></details><details><summary>配比阶段、batch前缀与日志时钟 · 章节</summary><a class="" href="#batch-clock-guide-1-stepbatch">1. 切换step必须穿过历史batch账本</a><a class="" href="#batch-clock-guide-2-checkpoint-step">2. 恢复时不能只冻结checkpoint step</a><a class="" href="#batch-clock-guide-3-mixtureweight">3. 曲线中的mixture/weight究竟是什么</a><a class="" href="#batch-clock-guide-4">4. 把这项核对接进配比实验管线</a><a class="" href="#batch-clock-guide-v52">V52：预取位置与恢复位置，走进原异步加载器</a><a class="" href="#batch-clock-guide-v70">V70：把真实恢复步号接到下一批样本与配比阶段</a><a class="minor" href="#batch-clock-guide-loss">对配比与 loss 分析的影响</a><a class="minor" href="#batch-clock-guide-weights-only">完整续训与 weights-only 必须分别记账</a><a class="" href="#batch-clock-guide-v71">V71：配比日志标签是否代表刚训练完的整批样本</a><a class="minor" href="#batch-clock-guide-_1">正常构建路径有批次边界保护</a><a class="minor" href="#batch-clock-guide-callback">原 callback 没有在本例错一拍</a><a class="minor" href="#batch-clock-guide-schedule">故意拼错两个 schedule 后，日志只反映批次起点</a><a class="minor" href="#batch-clock-guide-loss_1">从标签继续走到 loss 的有效证据</a></details><details><summary>有限loss、失败路径与数值验收水位 · 章节</summary><a class="" href="#failure-boundaries-guide-_1">检查发生在更新之后，保存之前</a><a class="" href="#failure-boundaries-guide-_2">人工故障逐项对应源码行为</a><a class="" href="#failure-boundaries-guide-_3">为什么三个检查互不替代</a><a class="" href="#failure-boundaries-guide-_4">数值验收需要自己的水位</a></details><details><summary>监控成本、记录时刻与事故重放 · 章节</summary><a class="" href="#observability-guide-interval">interval控制了什么，没控制什么</a><a class="" href="#observability-guide-step">一个日志step中混合了哪些阶段</a><a class="" href="#observability-guide-_2">最小事故包应能区分什么</a><a class="" href="#observability-guide-_3">已可执行的离线检查器</a><a class="" href="#observability-guide-_4">怎样从观察走向根因</a></details><details><summary>Muon方向、NS迭代与矩阵布局 · 章节</summary><a class="" href="#muon-direction-guide-_1">两层“分组”究竟不同在哪里</a><a class="" href="#muon-direction-guide-_2">“正交化”不是五步以后精确得到极分解</a><a class="" href="#muon-direction-guide-_3">布局分支分别做了什么</a><a class="" href="#muon-direction-guide-_4">把检查转成一次可判定的变更</a></details><details><summary>AdamH动量、计数与恢复方向 · 章节</summary><a class="" href="#adamh-state-guide-_1">原源码怎样完成一步更新</a><a class="" href="#adamh-state-guide-_2">一份两步反例：相同参数与梯度，不同历史</a><a class="" href="#adamh-state-guide-_3">只改计数，有时为什么看不出区别</a><a class="" href="#adamh-state-guide-_4">三种异常要分别记录</a><a class="" href="#adamh-state-guide-_5">对配比实验的影响：完整接续与重置不可混称</a></details><details><summary>MuonH范数、分片与更新几何 · 章节</summary><a class="" href="#muon-geometry-guide-_1">先看一次更新到底做什么</a><a class="" href="#muon-geometry-guide-_2">保持整体范数，不等于每个专家都保持</a><a class="" href="#muon-geometry-guide-_3">为什么分片错误能把投影变成缩小</a><a class="" href="#muon-geometry-guide-8073">#8073四条评论的中文对照：诊断怎样被修正</a><a class="minor" href="#muon-geometry-guide-_4">对第二条评论数学界限的收紧</a><a class="" href="#muon-geometry-guide-_5">零值和异常方向也需要边界</a><a class="" href="#muon-geometry-guide-_6">可以用于自己训练的检查支线</a></details><details><summary>按症状阅读：15案与六条检查入口 · 章节</summary><a class="" href="#engineering-map-guide-1">1. 六个入口，先留下一个能改变判断的产物</a><a class="" href="#engineering-map-guide-2">2. 十五类问题的动作、源码与证据边界</a><a class="minor" href="#engineering-map-guide-31-checkpoint">3.1 · Checkpoint 写得出来，却读不回来</a><a class="minor" href="#engineering-map-guide-32-host-ram">3.2 · 一味加 host RAM，仍然在恢复后被杀</a><a class="minor" href="#engineering-map-guide-33-host-rss">3.3 · 每隔几次保存，host RSS 的地板抬高</a><a class="minor" href="#engineering-map-guide-34-loader">3.4 · Loader 缓存不是越大越好</a><a class="minor" href="#engineering-map-guide-35-nvlinkib">3.5 · NVLink、IB 与节点掉线，不能混为训练数值不稳定</a><a class="minor" href="#engineering-map-guide-36-ragged-ep">3.6 · Ragged EP 第一次切换：短窗数值和速度通过，稳定性没通过</a><a class="minor" href="#engineering-map-guide-37-executable">3.7 · “两个 executable 交替”是曾经的解释，后来被排除</a><a class="minor" href="#engineering-map-guide-38-nccl-headers-runtime">3.8 · NCCL 编译 headers 与 runtime 不一致：实在的缺陷，但不是全部解释</a><a class="minor" href="#engineering-map-guide-39-gpu-dump-pdl">3.9 · GPU dump 收窄机制：PDL 下可能提前读取旧分组边界</a><a class="minor" href="#engineering-map-guide-310-checkpoint">3.10 · 存储策略不让删 checkpoint，却误伤了原子提交</a><a class="minor" href="#engineering-map-guide-311-checkpoint">3.11 · Checkpoint 留得多，反而把训练拖停</a><a class="minor" href="#engineering-map-guide-312">3.12 · 正确的提速改动也需要数值对照</a><a class="minor" href="#engineering-map-guide-313-router">3.13 · Router “提高精度”改变的是路由策略</a><a class="minor" href="#engineering-map-guide-314">3.14 · 参数存了，不代表评估用了完整状态</a><a class="minor" href="#engineering-map-guide-315-drop">3.15 · 拉长上下文：drop 变多，先看分母与数据相关性</a><a class="" href="#engineering-map-guide-3">3. 配比与工程为什么必须共用一次变更记录</a><a class="" href="#engineering-map-guide-4">4. 怎样维护这张总图</a></details><details><summary>当前交付与真实验证范围 · 章节</summary><a class="" href="#delivery-audit-guide-v18">V18及此前的历史审计（保留原文）</a><a class="" href="#delivery-audit-guide-v18_1">V18补充：交付范围与实际训练范围分开</a><a class="" href="#delivery-audit-guide-v52">V52：加载器恢复控制</a><a class="" href="#delivery-audit-guide-v73">V73：四格重放与拒绝缺格</a></details><details><summary>Checkpoint内存预算、副本与分块 · 章节</summary><a class="" href="#checkpoint-memory-guide-1-host-byte-budgetrss">1. Host byte budget控制的是在途快照，不是整个RSS</a><a class="" href="#checkpoint-memory-guide-2">2. 为什么预算小了，训练可能更慢</a><a class="" href="#checkpoint-memory-guide-3">3. 副本多，不代表所有副本都写一份</a><a class="" href="#checkpoint-memory-guide-4-chunk">4. Chunk目标也有一个整分边界</a><a class="" href="#checkpoint-memory-guide-5-rssallocator">5. RSS没下降，要从引用与allocator两层查</a></details><details><summary>Checkpoint提交、回退与可恢复进度 · 章节</summary><a class="" href="#checkpoint-commit-guide-1">1. 保存返回、标记可见、恢复成功，是三件事</a><a class="" href="#checkpoint-commit-guide-2">2. 对应三类生产事故，不共用一个根因</a><a class="" href="#checkpoint-commit-guide-3">3. 原函数故障注入揭示的四个边界</a><a class="" href="#checkpoint-commit-guide-4">4. 防止白训练，要追踪四个进度水位</a><a class="" href="#checkpoint-commit-guide-5">5. 一条可以交接的保存验收管线</a><a class="" href="#checkpoint-commit-guide-v64">V64：推理恢复消费者如何拒绝错误输入</a><a class="minor" href="#checkpoint-commit-guide-_1">先判定永久元数据，再选择权重视图</a><a class="minor" href="#checkpoint-commit-guide-pending">权重加载成功，还必须有pending状态</a><a class="minor" href="#checkpoint-commit-guide-_2">可转用的验收规则</a><a class="" href="#checkpoint-commit-guide-v65">V65：真实存储读回，为什么“有限值”仍不足以验收</a><a class="" href="#checkpoint-commit-guide-v66-io">V66：原数组保存链的真实 IO 与错误传播</a><a class="" href="#checkpoint-commit-guide-v67">V67：发现候选、严格恢复与内容完整性的接口边界</a><a class="minor" href="#checkpoint-commit-guide-shape">shape 字段为什么没有在这一层拦住不一致</a><a class="minor" href="#checkpoint-commit-guide-_3">把验收拆成四项可核对的合同</a><a class="" href="#checkpoint-commit-guide-v68">V68：上层是否兜底，取决于叶类型与检查对象</a><a class="minor" href="#checkpoint-commit-guide-_4">形状保护在哪一步发生</a><a class="minor" href="#checkpoint-commit-guide-_5">对恢复验收规则的修正</a><a class="" href="#checkpoint-commit-guide-v69-grug-master">V69：多字段 Grug 状态、回退异常与 master 布局转换</a><a class="minor" href="#checkpoint-commit-guide-_6">六个实际存储叶与声明范围</a><a class="minor" href="#checkpoint-commit-guide-_7">同样称为“缺数据”，回退路径为何不同</a><a class="minor" href="#checkpoint-commit-guide-master">master 迁移钩子做了什么</a><a class="minor" href="#checkpoint-commit-guide-_8">可执行检查与边界</a><a class="" href="#checkpoint-commit-guide-v70">V70：恢复水位必须接到数据消费时钟</a></details><details><summary>评估字段、父级聚合与分母 · 章节</summary><a class="" href="#eval-metrics-guide-1">1. 字段先对照，再解释曲线</a><a class="" href="#eval-metrics-guide-2-67step">2. 67个真实日志step把命名错误分离出来</a><a class="" href="#eval-metrics-guide-3-bytestoken">3. 一个变量叫bytes，累计的却是token</a><a class="" href="#eval-metrics-guide-4">4. 修复指标之前，先明确测量目标</a></details><details><summary>配比切换与16域真实轨迹 · 章节</summary><a class="" href="#mix-trajectory-guide-1">1. 先把继承的历史点排除</a><a class="" href="#mix-trajectory-guide-2">2. 三个等长窗口，不是三个受控实验</a><a class="" href="#mix-trajectory-guide-3">3. 实际结果：方向分裂，聚合也会改变判断</a><a class="" href="#mix-trajectory-guide-4">4. 看曲线时，先问变化发生在哪个窗口</a><a class="" href="#mix-trajectory-guide-5">5. 如何把这个观察变成配比决策</a><a class="" href="#mix-trajectory-guide-v61">V61：为什么这份轨迹无法分别估计配比与执行改动</a><a class="minor" href="#mix-trajectory-guide-_2">补评估点和补训练对照，解决的是两层问题</a><a class="minor" href="#mix-trajectory-guide-_3">对目前配比建议的影响</a><a class="" href="#mix-trajectory-guide-v62seed">V62：已有小规模配比对照，逐seed究竟支持什么</a><a class="minor" href="#mix-trajectory-guide-seed">平均收益并非由某一个seed独自拉出来</a><a class="minor" href="#mix-trajectory-guide-_4">为什么不能把三次同方向当作确认结束</a><a class="minor" href="#mix-trajectory-guide-_5">如何用来调整自己的配比</a></details><details><summary>Router精度与训练评估策略 · 章节</summary><a class="" href="#router-precision-guide-1-dot">1. 三种dot写法分别改了哪里</a><a class="" href="#router-precision-guide-2-combine">2. 选择、顺序与combine权重是不同诊断量</a><a class="" href="#router-precision-guide-3-rackschedule">3. 一rack诊断如何保留长期schedule</a><a class="" href="#router-precision-guide-4">4. 现有评估究竟回答哪个问题</a><a class="" href="#router-precision-guide-5">5. 下一项最有区分力的检查</a></details><details><summary>ShortConv文档边界、halo与数值 · 章节</summary><a class="" href="#short-conv-guide-1">1. 它怎么隔离文档</a><a class="" href="#short-conv-guide-2-context-shard">2. context shard怎样保留左侧上下文</a><a class="" href="#short-conv-guide-3-fused-kernel">3. fused kernel为何不能随意改计算顺序</a><a class="" href="#short-conv-guide-4-dtype">4. 后端回退与dtype必须显式记录</a><a class="" href="#short-conv-guide-5-packing">5. 配比与packing实验怎样使用这些检查</a></details><details><summary>配比切换后的loss诊断流程 · 章节</summary><a class="" href="#loss-triage-1">1. 先写清楚这次变化</a><a class="" href="#loss-triage-2">2. 第一站：曲线是否表示同一个量</a><a class="" href="#loss-triage-3">3. 第二站：到底送进了什么数据</a><a class="" href="#loss-triage-4">4. 第三站：执行与更新是否改变</a><a class="" href="#loss-triage-5">5. 怎样决定下一步</a><a class="" href="#loss-triage-6">6. 让每次诊断留下可交接的记录</a><a class="" href="#loss-triage-v72-loss">V72：预测不变，训练 loss 仍能变化多少</a><a class="minor" href="#loss-triage-cross_entropy_loss-z-loss">cross_entropy_loss 字段可能包含输出 z-loss</a><a class="minor" href="#loss-triage-_1">配比决策应查看什么</a><a class="" href="#loss-triage-v73">V73：用四格重放区分组成、预测与交互</a><a class="minor" href="#loss-triage-_2">三项分解如何闭合</a><a class="minor" href="#loss-triage-_3">哪些条件不满足就不能填四格</a><a class="minor" href="#loss-triage-_4">输出罚项与配比决策分开保存</a></details><details><summary>路由均衡、分位数与数据分组 · 章节</summary><a class="" href="#qb-guide-1-bias">1. 当前批次决定下一步bias</a><a class="" href="#qb-guide-2-topk">2. TOPK：局部分位数的平均不等于全局分位数</a><a class="" href="#qb-guide-3-hist">3. HIST：全局计数减少分组依赖，但网格也会变化</a><a class="" href="#qb-guide-4">4. 怎样接到配比与顺序研究</a></details><details><summary>MoE分配丢弃、权重与目标 · 章节</summary><a class="" href="#routing-guide-1">1. 分母先核对版本，再核对有效性</a><a class="" href="#routing-guide-2-token">2. 同样丢弃八项，到底伤及多少token</a><a class="" href="#routing-guide-3">3. 丢弃权重有多大，也不能靠数量推断</a><a class="" href="#routing-guide-4-tokenloss">4. token没有自动退出语言loss</a><a class="" href="#routing-guide-5-capacity-factoroverflow">5. capacity factor不是不会overflow的保证</a><a class="" href="#routing-guide-6">6. 字段名与零值也需要证据范围</a><a class="" href="#routing-guide-7-drop">7. 怎样把drop检查接到数据配比</a></details><details><summary>训练变更评审与执行入口 · 章节</summary><a class="" href="#change-guide-1">1. 先选择要回答的问题</a><a class="" href="#change-guide-2">2. 用六份真实配置示范，而不是仅列检查清单</a><a class="" href="#change-guide-3">3. 五个对象怎样冻结</a><a class="minor" href="#change-guide-_2">对象一：送入模型的样本</a><a class="minor" href="#change-guide-_3">对象二：下一步的完整训练状态</a><a class="minor" href="#change-guide-_4">对象三：实际更新规则与运行环境</a><a class="minor" href="#change-guide-_5">对象四：评估的模型视图与分母</a><a class="minor" href="#change-guide-_6">对象五：真正花掉的预算</a><a class="" href="#change-guide-4">4. 将“修复有效”拆成三层结论</a><a class="" href="#change-guide-5">5. 下一次实验提交什么</a><a class="" href="#change-guide-6">6. 怎样读完而不淹没在章节中</a></details><details><summary>质量评分、观察窗口与配比 · 章节</summary><a class="" href="#quality-guide-1-whole-doc">1. “whole-doc”实际是三个字符窗口</a><a class="" href="#quality-guide-2">2. 文档还会经过截断与紧凑词表</a><a class="" href="#quality-guide-3">3. 校准改的是尺度与分桶，不会凭空修好排序</a><a class="" href="#quality-guide-4">4. 标签目标、文档说明与实际部署要分清</a><a class="" href="#quality-guide-5">5. 模型文件名与路径不是内容证明</a><a class="" href="#quality-guide-6-q4">6. 怎样据此调整配比，而不是盲目追q4</a></details><details><summary>去重、样本对齐与曝光解释 · 章节</summary><a class="" href="#dedup-guide-1">1. 同一条去重规则对不同内容测量的东西不同</a><a class="" href="#dedup-guide-2-16">2. 16个来源：故障修复与保留政策要分开</a><a class="" href="#dedup-guide-3">3. 三个能直接执行核查的代码细节</a><a class="" href="#dedup-guide-4-sparse">4. sparse属性缺失，为什么可能表现得像“没有重复”</a><a class="" href="#dedup-guide-5">5. 删除计数有先后顺序，不能当成三项独立比例</a><a class="" href="#dedup-guide-6-store">6. 库存表也有身份：文件日期不是store版本</a><a class="" href="#dedup-guide-7">7. 怎样把结论用于自己的预训练</a></details><details><summary>缓存身份、分词与配比归因 · 章节</summary><a class="" href="#cache-guide-1">1. 六份配置实际用了什么</a><a class="" href="#cache-guide-2-enforce_eoseos">2. enforce_eos不等于把旧缓存补上EOS</a><a class="" href="#cache-guide-3">3. 元数据不同，源码会怎么做</a><a class="" href="#cache-guide-4">4. 特殊标记的当前身份与历史身份</a><a class="" href="#cache-guide-5-loss">5. 为什么这会影响配比与loss的解释</a><a class="" href="#cache-guide-6">6. 缓存进入配比实验前的验收管线</a></details><details><summary>文档边界、上下文与有效目标 · 章节</summary><a class="" href="#boundary-guide-1-attention">1. 禁止跨文档 attention，并没有取消跨文档目标</a><a class="" href="#boundary-guide-2-loss">2. Loss有效性与路由有效性为何不同</a><a class="" href="#boundary-guide-3-paddingtile">3. 左侧padding为什么能破坏tile跳过优化</a><a class="" href="#boundary-guide-4-segment">4. segment编号必须满足表示法的假设</a><a class="" href="#boundary-guide-5-prompt">5. Prompt权重也使用“预测位置”坐标</a><a class="" href="#boundary-guide-6">6. 怎样把这些检查接到配比实验</a><a class="" href="#boundary-guide-attentionshortconv">补充：attention之外还要检查ShortConv</a></details><details><summary>训练状态、精度与切换时刻 · 章节</summary><a class="" href="#state-guide-1">1. 哪份参数具有最终权威</a><a class="" href="#state-guide-2-checkpoint-params">2. checkpoint 里的 params 不一定包含下一步将使用的路由偏置</a><a class="" href="#state-guide-3-pending">3. 训练内评估与导出模型，应用 pending 的时刻不同</a><a class="" href="#state-guide-4-run">4. 恢复布局不能只按新 run 的字段读取</a><a class="" href="#state-guide-5-step-0-loss">5. 日志 step 0不是这份实现的初始化 loss</a><a class="" href="#state-guide-6">6. 应怎样验收数据配比切换</a><a class="" href="#state-guide-v63jaxrouter">V63：原JAX偏置与router联合执行的视图检查</a><a class="minor" href="#state-guide-_2">同样的权重数字，可能对应不同专家</a><a class="minor" href="#state-guide-pending">Pending是替换，不能用“多应用一次”解释累计偏移</a><a class="minor" href="#state-guide-_3">非有限状态的传播边界</a></details><details><summary>源码接口、梯度与恢复验收 · 章节</summary><a class="" href="#contracts-guide-1-loss">1. Loss 相同，梯度仍可能不同</a><a class="" href="#contracts-guide-2-reduction">2. 不做 reduction，不代表还没有应用权重</a><a class="" href="#contracts-guide-3-cross_entropy_loss-nll">3. 指标叫 cross_entropy_loss，不保证它是纯 NLL</a><a class="" href="#contracts-guide-4">4. 恢复到“最新”实际意味着最新可读候选</a><a class="" href="#contracts-guide-5">5. 整数计数溢出也会制造“训练出问题”的假象</a><a class="" href="#contracts-guide-6">6. 把这些发现变成训练前的验收规则</a><a class="" href="#contracts-guide-v49maskguard">V49补充：全零mask的前向guard不能证明反向安全</a></details><details><summary>跨规模比较、评估口径与确认 · 章节</summary><a class="" href="#scale-guide-1">1. 先把跨规模“方向不稳”说准确</a><a class="minor" href="#scale-guide-11">1.1 不止代码，有四个子集改变了方向</a><a class="minor" href="#scale-guide-12">1.2 新核对到的混杂：切换前的权重并不相同</a><a class="" href="#scale-guide-2-cebpb">2. CE改善、BPB略差：先检查评估聚合</a><a class="minor" href="#scale-guide-21">2.1 这里确实有指标方向冲突</a><a class="minor" href="#scale-guide-22">2.2 固定公共代码提供了一个具体的可能机制</a><a class="minor" href="#scale-guide-23">2.3 一个保持预测不变、只改变分批的反例</a><a class="" href="#scale-guide-3-120">3. “1.20×等效算力”里，哪些是观测、哪些是假设</a><a class="minor" href="#scale-guide-31">3.1 先核对倒算的对象</a><a class="minor" href="#scale-guide-32-floor">3.2 改floor时必须重新拟合斜率</a><a class="minor" href="#scale-guide-33">3.3 三个点的拟合，不能承担全部确认</a><a class="" href="#scale-guide-4">4. 三种论文方法，到底在迁移什么</a><a class="minor" href="#scale-guide-41-regmix">4.1 RegMix：检验候选排序，不能只核对一个赢家</a><a class="minor" href="#scale-guide-42-data-mixing-laws">4.2 Data Mixing Laws：把规模、步数、混合分开建模</a><a class="minor" href="#scale-guide-43-regmix-d">4.3 RegMix-D：动态配比预测更依赖状态信息</a><a class="" href="#scale-guide-5">5. 怎样把这些结论变成下一轮实验</a><a class="minor" href="#scale-guide-51">5.1 第一项先做测量确认</a><a class="minor" href="#scale-guide-52">5.2 再做同恢复状态的配比确认</a><a class="minor" href="#scale-guide-53-1025">5.3 10%与25%的比较，不等于纯顺序实验</a><a class="" href="#scale-guide-6">6. 本轮规则回放与明确结论</a></details><details><summary>理解检查、锚点与分歧 · 章节</summary><a class="" href="#assessment-guide-1">1. 先声明这次检查在验证什么</a><a class="" href="#assessment-guide-2">2. 题目覆盖什么，怎样读结果</a><a class="" href="#assessment-guide-3">3. 一份回答怎样留下可评审的依据</a><a class="" href="#assessment-guide-4">4. 三个维度，各有锚点</a><a class="" href="#assessment-guide-5">5. 两份评分不同，保留什么</a><a class="" href="#assessment-guide-6">6. 怎样实施一次小规模读者检查</a><a class="" href="#assessment-guide-7">7. 怎样由误读推动改版</a><a class="" href="#assessment-guide-8">8. 本地记录、迁移与复算</a><a class="" href="#assessment-guide-_2">工程文档更新后的来源版本</a><a class="" href="#assessment-guide-v11">V11来源更新说明</a></details><details><summary>工程排障、反证与验收 · 章节</summary><a class="" href="#engineering-guide-1">1. 保存后内存变高，先区分内存还活着还是留在分配器</a><a class="" href="#engineering-guide-2">2. 排除解释，要指出它缺了哪一个必要条件</a><a class="" href="#engineering-guide-3-200">3. 200步通过以后，为什么还要留回退状态</a><a class="" href="#engineering-guide-4-pdlpdl-off">4. PDL机制解释与PDL-off缓解结果，要分开看</a><a class="" href="#engineering-guide-5">5. 配额清理之后，又发生了另一种保存停滞</a><a class="" href="#engineering-guide-6">6. 整包提速以后，最先要避免哪两种过度归因</a><a class="" href="#engineering-guide-7-mask">7. 去mask的证据，应追到最后一个消费者</a><a class="" href="#engineering-guide-8-teardown">8. Teardown报错之前，系统已经停止了什么</a><a class="" href="#engineering-guide-9-r13">9. 把R13落实为一次排障的六个动作</a><a class="" href="#engineering-guide-10">10. 本轮实际改正了什么</a></details><details><summary>顺序、边缘块与索引 · 章节</summary><a class="" href="#order-guide-1">1. 先把四种“相同”分开</a><a class="" href="#order-guide-2">2. 公开窗口其实从块中间开始，也在块中间结束</a><a class="" href="#order-guide-3">3. 八组历史对照，完整块计数已经不同</a><a class="" href="#order-guide-4">4. 边缘块为什么不能简单按比例折算</a><a class="" href="#order-guide-5">5. 先在整数计数上写出补偿方程</a><a class="" href="#order-guide-6">6. 保留总预算，用共同边缘块包住时序变化</a><a class="" href="#order-guide-7">7. 为什么这里能给出条件匹配证明</a><a class="" href="#order-guide-8">8. 一个必须保留的错误设计反例</a><a class="" href="#order-guide-9">9. 怎样把它接进训练决策管线</a><a class="" href="#order-guide-10">10. 下载、复算与尚缺的证据</a></details><details><summary>混合数据映射身份 · 章节</summary><a class="" href="#mixture-identity-guide-1-key">1. 同key、同配比为何仍不一定是同一条数据流</a><a class="" href="#mixture-identity-guide-v54">V54：桶内排列和训练/验证切分还依赖什么</a><a class="" href="#mixture-identity-guide-v55">V55：小规模实验的库存缩放，是否真的保持重复曝光率</a></details><details><summary>新MoE提案与数值合同 · 章节</summary><a class="" href="#recent-moe-guide-1">1. 不填充传输缓冲区，需要证明每个消费者都不读未写行</a><a class="" href="#recent-moe-guide-2">2. 把路由权重梯度搬到专家侧，代数等价还不够</a><a class="" href="#recent-moe-guide-3">3. 更少重计算为何可能更容易暴露通信与内存问题</a><a class="" href="#recent-moe-guide-4">4. 对自己的代码评审，先确定哪一层合同改变了</a><a class="" href="#recent-moe-guide-v57">V57：怎样读逐项优化表，而不把条件收益当独立收益</a><a class="" href="#recent-moe-guide-v58">V58：局部梯度误差会不会真正传到参数</a><a class="minor" href="#recent-moe-guide-_1">数值验收怎么做</a><a class="" href="#recent-moe-guide-v59router">V59：把简化梯度实验接回原router的权重路径</a><a class="minor" href="#recent-moe-guide-_2">选择分数和权重分数不同</a><a class="minor" href="#recent-moe-guide-25">2.5是目标，不是所有输入的严格守恒量</a><a class="minor" href="#recent-moe-guide-v58_1">对V58反例的正确使用</a><a class="" href="#recent-moe-guide-v60">V60：一处舍入误差如何经过归一化与优化器</a><a class="minor" href="#recent-moe-guide-_3">没有下溢，也会影响多个选中专家</a><a class="minor" href="#recent-moe-guide-moments">同样的梯度差异，更新尺度取决于moments</a><a class="minor" href="#recent-moe-guide-_4">验收要求为何必须绑定状态</a></details><details><summary>预算分解与供体实验 · 章节</summary><a class="" href="#transfer-guide-1">1. 比较域份额，会漏掉多少变化</a><a class="" href="#transfer-guide-2">2. 累计量相同，也可能先后不同</a><a class="" href="#transfer-guide-3">3. 下一步先问哪个问题</a><a class="" href="#transfer-guide-4-q">4. 把“加量”和“换Q档”做成四个条件</a><a class="" href="#transfer-guide-5">5. 怎样保持阶段规则一致</a><a class="" href="#transfer-guide-6">6. 为什么看起来局部的设计会改到额外桶</a><a class="" href="#transfer-guide-7">7. 修正到整数块，仍然保留误差</a><a class="" href="#transfer-guide-8">8. 规则这次挡住了哪些错误</a><a class="" href="#transfer-guide-9">9. 真正执行前还差什么</a><a class="" href="#transfer-guide-10">10. 本轮结论与下一步</a></details><details><summary>候选选择与规则回放 · 章节</summary><a class="" href="#decision-guide-1">1. 这轮追查了什么，查到哪一步</a><a class="" href="#decision-guide-2">2. 先划清可接受范围，再在范围内排序</a><a class="" href="#decision-guide-3">3. 九个教学情景的实测重算</a><a class="" href="#decision-guide-4-197c">4. 197c为什么既值得看，又不能直接推荐</a><a class="" href="#decision-guide-5">5. 没有符合条件者，应该怎样办</a><a class="" href="#decision-guide-6-json">6. 从探索JSON到确认契约</a><a class="" href="#decision-guide-7-rubrics">7. 用真实反例回放Rubrics</a><a class="" href="#decision-guide-8">8. 可视化如何帮助你找下一次实验</a><a class="" href="#decision-guide-9">9. 本轮结论和下一问题</a></details><details open><summary>理解文档与自测 · 章节</summary><a class="" href="#learning-1">1. 三条阅读路线</a><a class="" href="#learning-2-ce">2. 训练CE与固定验证为什么可能朝相反方向走</a><a class="" href="#learning-3-bpb">3. BPB更好，为什么还不能说题做得更好</a><a class="" href="#learning-4">4. 怎么读工作台里的三点图</a><a class="" href="#learning-5">5. 库存、权重、曝光：三个不同的账本</a><a class="" href="#learning-6">6. 为什么“把高质量放在最后”需要额外实验</a><a class="" href="#learning-7">7. 常见术语，用本次研究里的对象解释</a><a class="" href="#learning-8">8. 五个自测：能解释反例，比背数字更重要</a><a class="" href="#learning-9">9. 读完以后，把理解写成可检验的问题</a></details><details><summary>18条判断规则 · 章节</summary><a class="" href="#rubrics-1">1. 怎样使用规则</a><a class="" href="#rubrics-2-100">2. 为什么不做一个100分排名</a><a class="" href="#rubrics-3">3. 两个实际练习</a><a class="" href="#rubrics-4">4. 规则如何持续改进</a><a class="" href="#rubrics-_1">完整规则与判断锚点</a><a class="minor" href="#rubrics-r01">R01 · 来源和版本能回查</a><a class="minor" href="#rubrics-r02">R02 · 结论范围写清</a><a class="minor" href="#rubrics-r03">R03 · 指标含义和评估路径一致</a><a class="minor" href="#rubrics-r04">R04 · 包含有竞争力的简单参照</a><a class="minor" href="#rubrics-r05">R05 · 预算从实际区间计算</a><a class="minor" href="#rubrics-r06">R06 · 平均指标可拆回组成项</a><a class="minor" href="#rubrics-r07">R07 · 选择后有独立确认</a><a class="minor" href="#rubrics-r08">R08 · 每次加量都写供体</a><a class="minor" href="#rubrics-r09">R09 · 库存、历史与重复分开</a><a class="minor" href="#rubrics-r10">R10 · 顺序比较匹配累计量和游标</a><a class="minor" href="#rubrics-r11">R11 · 跨规模结论有对应对照</a><a class="minor" href="#rubrics-r12">R12 · 目标和能力保底预先冻结</a><a class="minor" href="#rubrics-r13">R13 · 根因证据和缓解效果分开</a><a class="minor" href="#rubrics-r14">R14 · 执行状态不只看配置路径</a><a class="minor" href="#rubrics-r15">R15 · 能力主张有实际任务验证</a><a class="minor" href="#rubrics-r16">R16 · 图表准备与理解证据分开</a><a class="minor" href="#rubrics-r17">R17 · 结论可离线复算</a><a class="minor" href="#rubrics-r18">R18 · 未解决问题有下一步和退出条件</a><a class="" href="#rubrics-v47macromicro">V47应用：macro与micro相反时怎样评审</a><a class="" href="#rubrics-v48">V48应用：训练归约先于配比归因</a><a class="" href="#rubrics-v49">V49应用：先核对危险分支，再核对实际触发</a><a class="" href="#rubrics-v50update0">V50：空目标处理不能只把梯度或update改成0</a><a class="" href="#rubrics-v51">V51：裁剪验收要看归约范围和后续状态</a><a class="" href="#rubrics-v52">V52：加载器恢复控制</a><a class="" href="#rubrics-v53">V53：混合数据身份</a><a class="" href="#rubrics-v54shuffle">V54：桶内shuffle与切分</a><a class="" href="#rubrics-v55">V55：小实验库存缩放</a><a class="" href="#rubrics-v56moe">V56：新MoE提案</a><a class="" href="#rubrics-v57">V57：性能归因</a></details><details><summary>七阶段决策管线 · 章节</summary><a class="" href="#pipeline-1">1. 七个阶段的输入和产物</a><a class="" href="#pipeline-2">2. 用第四轮发现跑一遍</a><a class="" href="#pipeline-3">3. 对自己的训练，先提交一份实验记录</a><a class="" href="#pipeline-4">4. 管线中的回退分支</a><a class="" href="#pipeline-5">5. 报告自身也走一条构建管线</a><a class="" href="#pipeline-6">6. 如何选择下一项改进</a><a class="" href="#pipeline-_2">工程事故的检查支线</a><a class="" href="#pipeline-_3">源码检查如何进入实际实验</a><a class="" href="#pipeline-loss">loss变化的统一诊断入口</a><a class="" href="#pipeline-_4">自定义打包的入口核查</a><a class="" href="#pipeline-_5">加量前的历史覆盖核查</a><a class="" href="#pipeline-v48">V48应用：训练归约先于配比归因</a><a class="" href="#pipeline-v49">V49应用：先核对危险分支，再核对实际触发</a><a class="" href="#pipeline-v50update0">V50：空目标处理不能只把梯度或update改成0</a><a class="" href="#pipeline-v51">V51：裁剪验收要看归约范围和后续状态</a><a class="" href="#pipeline-v52">V52：加载器恢复控制</a><a class="" href="#pipeline-v53">V53：混合数据身份</a><a class="" href="#pipeline-v54shuffle">V54：桶内shuffle与切分</a><a class="" href="#pipeline-v55">V55：小实验库存缩放</a><a class="" href="#pipeline-v56moe">V56：新MoE提案</a><a class="" href="#pipeline-v57">V57：性能归因</a></details><details><summary>持续改进队列 · 章节</summary><a class="" href="#improvement-1">1. 本轮已经处理的问题</a><a class="" href="#improvement-2">2. 下一轮按结论价值排列</a><a class="" href="#improvement-3">3. 每轮记录格式</a><a class="" href="#improvement-4">4. 版本纪律</a><a class="" href="#improvement-5">5. 本轮回放规则后，实际修正了什么</a><a class="" href="#improvement-6">6. 第六轮：候选选择与规则回放</a><a class="" href="#improvement-7">7. 第七轮：逐桶账本和执行支持范围</a><a class="" href="#improvement-8">8. 第八轮：完整块匹配之外的边缘问题</a><a class="" href="#improvement-9">9. 第九轮：理解证据不能由页面验收代填</a><a class="" href="#improvement-10">10. 第十轮：工程陈述回到事件和代码</a><a class="" href="#improvement-_2">第十一轮：检验跨规模比较的对象和测量是否一致</a><a class="" href="#improvement-_3">第十一至十四轮：从统计比较继续追到执行接口</a><a class="" href="#improvement-_4">第十五轮：先核对缓存身份，再解释权重收益</a><a class="" href="#improvement-_5">第十六轮：去重政策、稀疏属性与样本对齐</a><a class="" href="#improvement-_6">第十七轮：质量评分能否观察并区分目标内容</a><a class="" href="#improvement-_7">第十八轮：将源码发现接回实验规范</a><a class="" href="#improvement-moe">第十九轮：MoE分配丢弃如何进入训练目标</a><a class="" href="#improvement-v20">V20：路由均衡怎样受批次与分组影响</a><a class="" href="#improvement-v21">V21：参数分组与衰减时钟</a><a class="" href="#improvement-v22">V22：整合诊断流程并修正旧入口</a><a class="" href="#improvement-v23attention">V23：attention之外的文档边界</a><a class="" href="#improvement-v24c025">V24：回到C025核对实验实现</a><a class="" href="#improvement-v25">V25：回到配比切换的真实验证轨迹</a><a class="" href="#improvement-v26v25">V26：纠正V25汇总字段并追查累计单位</a><a class="" href="#improvement-v27">V27：保存提交与真正可恢复的进度</a><a class="" href="#improvement-v28">V28：保存内存预算与副本写入计划</a><a class="" href="#improvement-v29">V29：将源码增补收束为症状驱动的交接图</a><a class="" href="#improvement-v30">V30：从优化器分组深入到实际更新几何</a><a class="" href="#improvement-v31">V31：把范数验收扩展为方向与状态验收</a><a class="" href="#improvement-v32">V32：方向算子与布局变换的边界</a><a class="" href="#improvement-v33">V33：将优化器发现连成可执行事故检查</a><a class="" href="#improvement-v34loss">V34：区分loss检查、健康状态和保存交接</a><a class="" href="#improvement-v35batch">V35：配比边界与batch历史不能各自解释</a><a class="" href="#improvement-v36">V36：风险必须代入真实组件规模</a><a class="" href="#improvement-v37">V37：用新评估核查宏平均的解释</a><a class="" href="#improvement-v38">V38：评估随机重抽假设被收紧</a><a class="" href="#improvement-v39">V39：重复评分有了具体比较工具</a><a class="" href="#improvement-v40">V40：把专题收束成实际决策</a><a class="" href="#improvement-v41">V41：提供的全局数组可以导出并复核</a><a class="" href="#improvement-v42">V42 评分格式与缓存访问</a><a class="" href="#improvement-v43-token">V43 下一token坐标与覆盖账目</a><a class="" href="#improvement-v44">V44 打包字段与权重坐标</a><a class="" href="#improvement-v45">V45 重复曝光与新增覆盖</a><a class="" href="#improvement-v46">V46 新端点与均值方向</a><a class="" href="#improvement-v47">V47：解释均值分歧，而不是按总均值改比例</a><a class="" href="#improvement-v48">V48应用：训练归约先于配比归因</a><a class="" href="#improvement-v48cpuv49">V48之后的历史准备记录（CPU验证已在V49完成）</a><a class="" href="#improvement-v49cpu">V49：真实CPU验证与触发条件同时检查</a><a class="" href="#improvement-v50update0">V50：空目标处理不能只把梯度或update改成0</a><a class="" href="#improvement-v51">V51：裁剪验收要看归约范围和后续状态</a><a class="" href="#improvement-v52">V52：加载器恢复控制</a><a class="" href="#improvement-v53">V53：混合数据身份</a><a class="" href="#improvement-v54shuffle">V54：桶内shuffle与切分</a><a class="" href="#improvement-v55">V55：小实验库存缩放</a><a class="" href="#improvement-v56moe">V56：新MoE提案</a><a class="" href="#improvement-v57">V57：性能归因</a><a class="" href="#improvement-v58">V58：从局部梯度到参数影响</a><a class="" href="#improvement-v59router">V59：原router权重路径</a><a class="" href="#improvement-v60">V60：归一化耦合与状态敏感更新</a><a class="" href="#improvement-v61">V61：配比与执行事件的可区分性</a><a class="" href="#improvement-v62seed">V62：逐seed配比证据</a><a class="" href="#improvement-v63pendingrouter">V63：pending与router联合检查</a><a class="" href="#improvement-v64">V64：推理恢复消费者故障路径</a><a class="" href="#improvement-v65">V65：从消费者替身推进到真实本地存储</a><a class="" href="#improvement-v66-host-manager">V66：原保存 host 分支、真实 manager 与失败预算释放</a><a class="" href="#improvement-v67-manifest-schema-leaf">V67：原发现、真实 manifest schema 与原 leaf 恢复贯通</a><a class="" href="#improvement-v68-load-wrapper-namedarray">V68：上层 load wrapper 与原 NamedArray 检查</a><a class="" href="#improvement-v69-grug-io">V69：原 Grug 状态与恢复策略的真实 IO</a><a class="" href="#improvement-v70-loader">V70：恢复、原 loader 与原混合身份联合检查</a><a class="" href="#improvement-v71">V71：原回调时钟、正常边界与错配工件对照</a><a class="" href="#improvement-v72-loss">V72：原 loss 方法的目标组成与输出罚项控制</a><a class="" href="#improvement-v73">V73：预测×权重的交叉重放</a></details><details><summary>第四轮：结论与判断 · 章节</summary><a class="" href="#conclusions-1">1. 补上简单基线，才知道搜索额外买到了什么</a><a class="" href="#conclusions-2">2. 平均值在隐藏什么：代码、学术收益被其他文本退步抵消</a><a class="" href="#conclusions-3-seed">3. 三seed告诉了什么，又没有告诉什么</a><a class="" href="#conclusions-4">4. “最终选中”不等于在所有公开指标上最好</a><a class="" href="#conclusions-5">5. 小模型告诉你方向的可能性，大模型负责确认方向是否成立</a><a class="" href="#conclusions-6">6. 关于质量、配比与顺序，我现在更相信哪些解释</a><a class="minor" href="#conclusions-61-q">6.1 Q档提供质量线索，训练价值还取决于缺了什么</a><a class="minor" href="#conclusions-62-bpb">6.2 数学份额降低与数学BPB变差相关，但还没定位到纯效应</a><a class="minor" href="#conclusions-63">6.3 删域实验测的是“删除再分配”，应据此做局部交换</a><a class="minor" href="#conclusions-64">6.4 顺序可能有作用，先排除“总量其实不同”</a><a class="" href="#conclusions-7">7. 如果是我自己的预训练，下一轮会怎样做</a><a class="minor" href="#conclusions-71-token">7.1 用边际交换回答“下一批token给谁”</a><a class="minor" href="#conclusions-72">7.2 什么时候停止搜索</a><a class="" href="#conclusions-8">8. 工程问题给数据研究补上的一课</a><a class="" href="#conclusions-9">9. 最后我会怎样评价这次训练</a><a class="" href="#conclusions-10">10. 本章的证据边界与可复算入口</a><a class="" href="#conclusions-54seed">附录：54项任务相对比例基线的逐seed结果</a></details><details><summary>研究主报告 · 章节</summary><a class="" href="#report-1">1. 先把最容易误读的三个地方说清楚</a><a class="minor" href="#report-11-loss">1.1 通信实现改变，也会让 Loss 下降</a><a class="minor" href="#report-12-loss">1.2 配比改变以后，训练 Loss 上升，也可能是合理的</a><a class="minor" href="#report-13">1.3 某层输出很小，不能据此说它没用</a><a class="" href="#report-2">2. 模型与训练的实际结构</a><a class="minor" href="#report-21-535b-token-23b">2.1 为什么是 535B，但每个 token 只激活约 23B</a><a class="minor" href="#report-22">2.2 专家并行与数据并行分别跨哪里</a><a class="minor" href="#report-23">2.3 注意力的局部层与全局层</a><a class="minor" href="#report-24">2.4 为什么训练中参数范数不动，并不奇怪</a><a class="" href="#report-3">3. 工程问题逐项对应：做了什么、解决了什么、为什么</a><a class="minor" href="#report-31-checkpoint">3.1 Checkpoint 写得出来，却读不回来</a><a class="minor" href="#report-32-host-ram">3.2 一味加 host RAM，仍然在恢复后被杀</a><a class="minor" href="#report-33-host-rss">3.3 每隔几次保存，host RSS 的地板抬高</a><a class="minor" href="#report-34-loader">3.4 Loader 缓存不是越大越好</a><a class="minor" href="#report-35-nvlinkib">3.5 NVLink、IB 与节点掉线，不能混为训练数值不稳定</a><a class="minor" href="#report-36-ragged-ep">3.6 Ragged EP 第一次切换：短窗数值和速度通过，稳定性没通过</a><a class="minor" href="#report-37-executable">3.7 “两个 executable 交替”是曾经的解释，后来被排除</a><a class="minor" href="#report-38-nccl-headers-runtime">3.8 NCCL 编译 headers 与 runtime 不一致：实在的缺陷，但不是全部解释</a><a class="minor" href="#report-39-gpu-dump-pdl">3.9 GPU dump 收窄机制：PDL 下可能提前读取旧分组边界</a><a class="minor" href="#report-310-checkpoint">3.10 存储策略不让删 checkpoint，却误伤了原子提交</a><a class="minor" href="#report-311-checkpoint">3.11 Checkpoint 留得多，反而把训练拖停</a><a class="minor" href="#report-312">3.12 正确的提速改动也需要数值对照</a><a class="minor" href="#report-313-router">3.13 Router “提高精度”改变的是路由策略</a><a class="minor" href="#report-314">3.14 参数存了，不代表评估用了完整状态</a><a class="minor" href="#report-315-drop">3.15 拉长上下文：drop 变多，先看分母与数据相关性</a><a class="" href="#report-4-scaling-ladder">4. 怎样使用 Scaling Ladder，而不把它当承诺</a><a class="" href="#report-5">5. 一张曲线至少对应四种不同量</a><a class="" href="#report-6-pretrain">6. 旧 pretrain 仓库究竟缺了什么</a><a class="" href="#report-7">7. 资料可信到哪一步</a></details><details><summary>数据配比与顺序 · 章节</summary><a class="" href="#data-1">1. 先区分库存、抽样配比和训练顺序</a><a class="" href="#data-2">2. 实际配比改变了什么</a><a class="minor" href="#data-21-agent">2.1 加了 Agent、法律、新闻，减少了一部分代码、数学和历史</a><a class="minor" href="#data-22">2.2 新配比并不是简单地“越高质量越多”</a><a class="minor" href="#data-23">2.3 桶名称为什么只能当导航</a><a class="" href="#data-3-loss">3. 数据与 Loss 的关联：现有证据能走多远</a><a class="minor" href="#data-31-ce">3.1 为什么新配比的训练CE会升高</a><a class="minor" href="#data-32">3.2 固定验证集上，哪些分布改善了</a><a class="minor" href="#data-33-20">3.3 “等效算力提高20%”怎样算，为什么容易夸大</a><a class="" href="#data-4">4. 怎样为自己的模型精心调配比</a><a class="minor" href="#data-41">4.1 第一步不是选百分比，而是固定目标与对照</a><a class="minor" href="#data-42-200">4.2 先把200桶压成几个可解释的方向</a><a class="minor" href="#data-43">4.3 一次改变一个方向，并说清从哪里拿预算</a><a class="minor" href="#data-44-checkpoint">4.4 先做同checkpoint分叉，再做规模确认</a><a class="minor" href="#data-45-ce">4.5 用验证变化决定下一轮，别用训练CE决定</a><a class="" href="#data-5">5. 怎样安排数据顺序</a><a class="minor" href="#data-51">5.1 把“总量”和“何时使用”分成两项实验</a><a class="minor" href="#data-52">5.2 切换后观察多久，取决于要观察什么</a><a class="minor" href="#data-53-token">5.3 上下文变长，会改变顺序，即便每步token数不变</a><a class="minor" href="#data-54">5.4 长上下文需要两套验证口径</a><a class="" href="#data-6">6. 一份可以直接用于你项目的实验记录</a><a class="" href="#data-7">7. 完整配比与曝光附表</a><a class="minor" href="#data-71-40">7.1 40个语义域的全部比例</a><a class="minor" href="#data-72">7.2 计划曝光轮数最高的十个桶</a><a class="minor" href="#data-73-d1536palomabpb">7.3 d1536固定Paloma的全部子集BPB结果</a></details><details><summary>第二轮：搜索、取舍与游标 · 章节</summary><a class="" href="#deep-1-run934915">1. 六个run背后，是934条观测与915对不同权重</a><a class="minor" href="#deep-11">1.1 搜索范围可以数清，选中规则还不能完整复现</a><a class="minor" href="#deep-12-2001000">1.2 他们还保存了200×1000的内容特征，域标签不是全部输入信息</a><a class="" href="#deep-2-token">2. 小模型怎么模拟十几万亿token的重复曝光</a><a class="" href="#deep-3-bpb">3. 代码改善的同时，数学任务BPB怎样变了</a><a class="minor" href="#deep-31-seed">3.1 三个seed里的改善与退化同时存在</a><a class="minor" href="#deep-32-seed">3.2 收益超过seed波动，不等于已经通过独立检验</a><a class="" href="#deep-4">4. 域总比例隐藏了怎样的质量档迁移</a><a class="" href="#deep-5">5. 配置里非零，不代表加载器真的抽到</a><a class="minor" href="#deep-51-49152sequence200">5.1 49152条sequence如何分给200桶</a><a class="minor" href="#deep-52">5.2 一次本地误诊怎样被排除</a><a class="" href="#deep-6-108907b2951b">6. 108.907B与2.951B，已经独立对上了</a><a class="minor" href="#deep-61">6.1 为什么改长度会改历史游标</a><a class="minor" href="#deep-62">6.2 两种方案的逐桶差异</a><a class="minor" href="#deep-63">6.3 工程调整顺序</a><a class="" href="#deep-7">7. 把这些发现落实成下一轮配比实验</a><a class="" href="#deep-54bpb">附录：54项任务BPB完整对照</a></details><details><summary>第三轮：删域、曝光与顺序 · 章节</summary><a class="" href="#practical-_2">一、先找正确参照，再解释删域结果</a><a class="minor" href="#practical-11-80">1.1 80个实验实际上有两套参照</a><a class="minor" href="#practical-12">1.2 删数学：通用文本与数学文本可以方向相反</a><a class="minor" href="#practical-13">1.3 删域后的改善，不等于这个域毫无价值</a><a class="" href="#practical-q4">二、Q4与多轮曝光：为什么不能只按质量标签排序</a><a class="minor" href="#practical-21-q4">2.1 只保留Q4，代理结果反而更差</a><a class="minor" href="#practical-22-q4">2.2 加数学Q4，收益没有单调增长</a><a class="" href="#practical-_3">三、顺序实验：先把阶段曝光账算清楚</a><a class="minor" href="#practical-31">3.1 权重里能读出怎样的补偿</a><a class="minor" href="#practical-32">3.2 终点没有给出一个普遍最好的顺序</a><a class="minor" href="#practical-33">3.3 怎样构造真正匹配预算的顺序对照</a><a class="" href="#practical-loss">四、拿到每域Loss后，到底怎样决定下一次增减</a><a class="minor" href="#practical-41-loss">4.1 先定义目标，避免训练Loss自己当裁判</a><a class="minor" href="#practical-42-1b">4.2 用局部替代试验回答“再给1B是否值得”</a><a class="" href="#practical-_4">五、库存、保底与曝光上限怎样一起约束配比</a><a class="" href="#practical-_5">六、建议怎样安排自己的下一批实验</a><a class="" href="#practical-_6">本轮来源与计算边界</a><a class="" href="#practical-80">附录：80个删域实验的对照与终点评估</a></details><details><summary>#8435逐条中文解读 · 章节</summary><a class="" href="#translation-1-scaling-ladder">主帖｜为什么先花约1%算力做 Scaling Ladder</a><a class="" href="#translation-c001">C001｜完整初始配方与系统设计</a><a class="" href="#translation-c002">C002｜数据从哪里来，怎样去重、分桶</a><a class="" href="#translation-c003-scaling-ladder-wb-report">C003｜贴出 Scaling Ladder 的 W&amp;B report</a><a class="" href="#translation-c004204">C004｜拟合出的终点约2.04，来自条件外推</a><a class="" href="#translation-c005-scaling-law">C005｜怎样和旧模型的 scaling law 比</a><a class="" href="#translation-c006d2048">C006｜d2048崩了，为什么不重跑</a><a class="" href="#translation-c007">C007｜四个风险窗口，十二项健康检查</a><a class="" href="#translation-c008">C008｜初期参数范数检查为健康</a><a class="" href="#translation-c009rms_attn">C009｜rms_attn不动，也可能正常</a><a class="" href="#translation-c010">C010｜预测的适用条件被明确限定</a><a class="" href="#translation-c011">C011｜读者请求补工程代码链接</a><a class="" href="#translation-c012">C012｜作者已经补上链接</a><a class="" href="#translation-c013token-store">C013｜公开组成报告不等于token store能下载</a><a class="" href="#translation-c0143">C014｜读者认为前3%风险已过去</a><a class="" href="#translation-c015nvlink-racklatentmoe">C015｜为什么在NVLink rack内还要LatentMoE</a><a class="" href="#translation-c016">C016｜作者明确不开放完整数据</a><a class="" href="#translation-c017latentmoelearnable-rmsnorm">C017｜LatentMoE需要learnable RMSNorm</a><a class="" href="#translation-c018denserelative-peadamh-embedding">C018｜三个架构问题：dense交替、relative PE、AdamH embedding</a><a class="" href="#translation-c019token">C019｜三项答复，尤其是稀有token的梯度尖峰</a><a class="" href="#translation-c020">C020｜读者补充自己的设计动机</a><a class="" href="#translation-c021">C021｜希望看中途模型生成</a><a class="" href="#translation-c022classifiercluster-weights">C022｜复现分桶还需要classifier与cluster weights</a><a class="" href="#translation-c023weightshf">C023｜相关weights已经给出HF版本</a><a class="" href="#translation-c024generations8827">C024｜中途generations跟踪在#8827</a><a class="" href="#translation-c025router">C025｜Router精度实验：建议保持现状</a><a class="" href="#translation-c026">C026｜无技术信息的中文回复</a><a class="" href="#translation-c0274k8k16krack">C027｜4K/8K/16K的单rack测量</a></details><details><summary>58条运行记录 · 章节</summary></details><details><summary>来源与复核 · 章节</summary><a class="" href="#provenance-1">1. 这次实际读取了哪些材料</a><a class="" href="#provenance-2-run">2. 生产曲线为什么必须按run拼接</a><a class="" href="#provenance-3">3. 配比表与曝光怎样计算</a><a class="" href="#provenance-4">4. 怎样重建和检查</a><a class="" href="#provenance-5">5. 仍然需要额外实验才能回答的问题</a><a class="" href="#provenance-6">6. 第六轮的选择入口与探索性重算</a><a class="" href="#provenance-7">7. 第七轮的预算分解与前瞻性草案</a><a class="" href="#provenance-8">8. 第八轮的顺序整数账本</a><a class="" href="#provenance-_2">第九轮：题库、评分与真实理解的来源范围</a><a class="" href="#provenance-105">10月5日工程补充快照</a><a class="" href="#provenance-_3">第十一轮来源与计算范围</a></details></aside><main><header class="intro"><h1>从一次大规模预训练里，学会定位问题与调整数据</h1><p>逐条读工程记录，把改动、症状、原因和验证对应起来；重新计算配比和曲线，明确哪里仍缺少因果证据。</p><div class="facts"><span>主帖 + 27条评论</span><span>58条生产事件</span><span>40域 × 5质量档</span><span>7段生产run</span><span>934条配比观测</span><span>129个运行配置复核</span></div><div class="actions"><a href="#engineering-map-guide">从症状选择检查入口</a><a href="#delivery-audit-guide">当前交付与证据边界</a><a href="#checkpoint-memory-guide">保存内存与写入分摊</a><a href="#checkpoint-commit-guide">保存提交与可恢复进度</a><a href="#eval-metrics-guide">评估指标与V25更正</a><a href="#mix-trajectory-guide">配比切换与16域曲线</a><a href="#router-precision-guide">Router精度与评估策略</a><a href="#short-conv-guide">ShortConv边界与halo</a><a href="#loss-triage">loss变化诊断流程</a><a href="#optimizer-guide">优化器分组与衰减</a><a href="#qb-guide">路由均衡与数据分组</a><a href="#routing-guide">MoE丢弃与训练目标</a><a href="#change-guide">训练变更评审</a><a href="#quality-guide">评分窗口与质量桶</a><a href="#dedup-guide">去重与样本对齐</a><a href="#cache-guide">缓存身份与配比归因</a><a href="#boundary-guide">文档边界与有效目标</a><a href="#state-guide">训练状态与切换时刻</a><a href="#contracts-guide">源码接口与恢复验收</a><a href="#scale-guide">配比历史与BPB聚合检查</a><a href="#synthesis-guide">先读结论与操作顺序</a><a href="#engineering-lab">核对工程解释与反证</a><a href="#assessment-lab">保存自己的证据判断</a><a href="#order-lab">检查顺序与累计量</a><a href="#transfer-lab">拆预算并设计供体实验</a><a href="#decision-lab">比较候选与退步限制</a><a href="#workbench">从理解与评审工作台开始</a><a href="#learning">理解文档与自测</a><a href="#pipeline">决策管线</a><a href="#conclusions">历史候选结论</a><a href="#report">从三个案例开始</a><a href="#data">直接看数据分析</a><a href="#deep">第二轮新增结论</a><a href="#practical">第三轮：如何设计自己的实验</a><a href="#planner">输入自己的预算</a><a href="REPORT_ZH.md" download>Markdown主报告</a><a href="report_standalone.html" download>下载单文件HTML</a><button class="action" id="print-report">打印 / 保存PDF</button></div></header><section class="chapter" id="synthesis-guide"><h1 id="synthesis-guide-_1">读完这些故障后，自己的预训练应该怎样改</h1>
 <p>这份研究的中心结论是：预训练配方与实现细节必须一起评审。配比决定计划接触什么数据；缓存、取整、恢复和loss权重决定实际学习什么；优化器状态与路由决定同一批数据怎样更新模型；评估和checkpoint决定我们能否正确判断进展、可靠地继续训练。只盯其中一个loss曲线，无法覆盖这几条链。</p>
 <p>下面把已有研究收束为可执行的判断。作者记录、固定源码、本地人工反例和建议实验分别标明。本章没有新增训练结果，不把本地检查通过当作535B稳定性证明。完整问题—动作—原因对照仍在<a href="#engineering-map-guide">15案工程总图</a>和<a href="#report">主报告</a>；需要精确原值时沿链接进入专题。</p>
 <h2 id="synthesis-guide-1">1. 目前能够下的结论</h2>
@@ -197,7 +197,8 @@
 <p>V69 多字段实测显示，缺 manifest 叶和缺实际数组元数据进入不同异常/回退路径；最后一个 legacy 错误可能把原先缺一叶显示成缺六叶。原 master 布局 hook 的来源选择也被真实 IO 验证。结合源码分析 bug 时，异常产生层与 state 来源比表面报错文字更有诊断价值。</p>
 <p>V70 将恢复研究接回配比：原候选选择相信 metadata 排序，原训练入口用 state.step 启动数据消费。人工水位不一致与历史 batch 改写会改变下一批身份及阶段推算。没有对齐这些时钟，恢复附近 loss 的配比归因会先失去处理时刻依据；本轮没有测真实 loss。</p>
 <p>V71 原 callback 与原混合联合实测排除了本例正常路径的错一拍/半批跨界；只有故意把旧边界拼到新 loader 时出现 A4/B4，而日志仍记起点 stage0。配置标签不是观测域占比，域样本占比也不是有效 loss target 占比，不能连跳两层解释 loss。</p>
-<p>V72 原模型 loss 方法联动显示，同样两条域序列、同样预测，仅有效目标 A1/B3→A3/B1 就使 mean 下降1.5；原 cross_entropy_loss 指标在启用输出罚项时包含它。训练曲线有诊断价值，配比收益仍需固定评估与目标质量分解。</p></section> <section class="chapter" id="engineering-lab">
+<p>V72 原模型 loss 方法联动显示，同样两条域序列、同样预测，仅有效目标 A1/B3→A3/B1 就使 mean 下降1.5；原 cross_entropy_loss 指标在启用输出罚项时包含它。训练曲线有诊断价值，配比收益仍需固定评估与目标质量分解。</p>
+<p>V73 新的理解练习：四格重放显示同一预测变化在旧分布改善、在新分布退步；平均 loss 下降仍可能掩盖域内退化。先查看域内 NLL，再核对参考分布与交互项，详见 <a href="#loss-triage">loss诊断</a>。</p></section> <section class="chapter" id="engineering-lab">
 <h1>工程证据链：从症状到下一项检查</h1>
 <p>八个案例对照原评论与固定 PR diff。这里检查具体陈述是否超出材料；选项和解释由报告作者编写，页面不自动判断自由文本，也不产生训练审批。</p>
 <label for="engineering-case">选择问题</label><select id="engineering-case"></select>
@@ -26643,7 +26644,9 @@ z
 <p>400份源归档包括原始材料、可读拷贝与抓取账本，不能全部叫作400项独立实验。NumPy插值契约保留web工具摘录，直接HTTP抓取的403也注明，未假装下载完整页面。报告内核、恢复、真实token流、实际评分模型和历史执行SHA的未知没有被本地测试代填。</p>
 <p>当前研究材料已覆盖工程问题/动作/机制、配比与loss、执行源码、可视化、理解路径与复用规范。持续研究下一步以新材料是否改变结论为准；当前目标保持进行中。版本与交付哈希见<a href="analysis/release_v18.json">V18历史发布账本</a>。</p>
 <h2 id="delivery-audit-guide-v52">V52：加载器恢复控制</h2>
-<p>V52新增原异步loader host控制11项，人工store/layout/结果适配边界明确；已有BATCH_CLOCK章节与HTML更新。源码归档443份保持；实际token、完整恢复与浏览器渲染尚未验证。</p></section>
+<p>V52新增原异步loader host控制11项，人工store/layout/结果适配边界明确；已有BATCH_CLOCK章节与HTML更新。源码归档443份保持；实际token、完整恢复与浏览器渲染尚未验证。</p>
+<h2 id="delivery-audit-guide-v73">V73：四格重放与拒绝缺格</h2>
+<p>18项 CPU 原 loss 方法检查，新增实测矩阵图、三项/两路径分解和未执行实验模板。共同目标上的权重与预测变化可闭合；没有得到 Hero 的实际归因、模型训练收益或 GPU 验证。462份源归档保持，浏览器渲染尚未验证。</p></section>
 <section class="chapter" id="checkpoint-memory-guide"><h1 id="checkpoint-memory-guide-checkpoint">Checkpoint内存：预算、写入分摊与训练停顿</h1>
 <p>上一章分清了保存交接与真正完成。这一章追问：为什么保存时host内存会升高，为什么同一份模型可能有少数rank成为写入瓶颈，以及减小staging预算会付出什么代价。结论来自固定源码和小型CPU检查，尚没有真实Hero写入计划、RSS或GPU切片测量。</p>
 <h2 id="checkpoint-memory-guide-1-host-byte-budgetrss">1. Host byte budget控制的是在途快照，不是整个RSS</h2>
@@ -39428,7 +39431,1864 @@ z
 <h3 id="loss-triage-_1">配比决策应查看什么</h3>
 <p>训练平均 loss 至少受有效目标组成、loss_weight 与输出罚项影响。低 loss 可能来自更多易预测目标，也可能来自 logit 尺度约束；这些变化各有含义，不能仅凭训练曲线下降判断配比改善了模型能力。应同时保留域内纯 NLL、有效目标质量、输出 z-loss、明确固定分母的评估和能力保底项；按同一评估分布比较，而不是用新训练分布自己的 mean 判断收益。</p>
 <p>这不意味着混合训练 loss 没有价值：它适合监测当前目标和异常。若要分析原因，可先冻结一批 logits/labels，重放旧新 mask/weight 来量化计算口径差，再在固定输入上比较实际模型变化。两项作用可能交互，需要标明基准预测与基准权重，不把其中一个分解叫成唯一因果贡献。</p>
-<p>本轮只给出人工反例与接口事实，Hero 实际 per-domain targets、输出罚项贡献和配比效果仍未知。损失方法的 hidden/router 提供器、router summarizer、named_call 与 mesh 依赖均有显式替代；原 reference、原罚项语句和原归约实际执行，未修改上游。复现：<code>make loss-composition CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python</code>。</p></section>
+<p>本轮只给出人工反例与接口事实，Hero 实际 per-domain targets、输出罚项贡献和配比效果仍未知。损失方法的 hidden/router 提供器、router summarizer、named_call 与 mesh 依赖均有显式替代；原 reference、原罚项语句和原归约实际执行，未修改上游。复现：<code>make loss-composition CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python</code>。</p>
+<h2 id="loss-triage-v73">V73：用四格重放区分组成、预测与交互</h2>
+<p>上一轮证明固定预测也能改变平均 loss。这次再换一组预测，把旧新预测分别放在旧新权重上计算。这里的“新预测”是人工替换 head，不是训练所得；执行的是 V72 的原 loss 方法、原 CPU reference 和原归约，显式替代前向与 GPU dispatcher。<a href="analysis/loss_cross_replay_cpu.json">18项检查及原值</a>包含纯 CE、含输出罚项两套结果。</p>
+<div class="table-wrap" style="overflow-x:auto;"><svg height="316.8pt" style="display:block;width:100%;min-width:700px;height:auto;" version="1.1" viewbox="0 0 792 316.8" width="792pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<metadata>
+<rdf:rdf xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<cc:work>
+<dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"></dc:type>
+<dc:format>image/svg+xml</dc:format>
+<dc:creator>
+<cc:agent>
+<dc:title>Matplotlib v3.9.4, https://matplotlib.org/</dc:title>
+</cc:agent>
+</dc:creator>
+</cc:work>
+</rdf:rdf>
+</metadata>
+<defs>
+<style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+</defs>
+<g id="losscross-figure_1">
+<g id="losscross-patch_1">
+<path d="M 0 316.8
+L 792 316.8
+L 792 0
+L 0 0
+z
+" style="fill: #ffffff"></path>
+</g>
+<g id="losscross-axes_1">
+<g id="losscross-patch_2">
+<path d="M 113.233615 274.84
+L 291.599615 274.84
+L 291.599615 96.474
+L 113.233615 96.474
+z
+" style="fill: #ffffff"></path>
+</g>
+<g clip-path="url(#losscross-p602771770f)">
+<image height="178.56" id="losscross-image44ffeb23fc" transform="scale(1 -1) translate(0 -178.56)" width="178.56" x="113.233615" xlink:href="data:image/png;base64,
+iVBORw0KGgoAAAANSUhEUgAAAPgAAAD4CAYAAADB0SsLAAADDklEQVR4nO3VMRHCUBRFwYQKYejAD0V84CIC8MAMPQUOEhf/zxx2DbzbnHnr6/07Fv7G/vnOnsBAl5HHgLEEDmEChzCBQ5jAIUzgECZwCBM4hAkcwgQOYQKHMIFDmMAhTOAQJnAIEziECRzCBA5hAocwgUOYwCFM4BAmcAgTOIQJHMIEDmEChzCBQ5jAIUzgECZwCBM4hAkcwgQOYQKHMIFDmMAhTOAQJnAIEziECRzCBA5hAocwgUOYwCFM4BAmcAgTOIQJHMIEDmEChzCBQ5jAIUzgECZwCBM4hAkcwgQOYQKHMIFDmMAhTOAQJnAIEziECRzCBA5hAocwgUOYwCFM4BAmcAgTOIQJHMIEDmEChzCBQ5jAIUzgECZwCBM4hAkcwgQOYQKHMIFDmMAhTOAQJnAIEziECRzCBA5hAocwgUOYwCFM4BAmcAgTOIQJHMIEDmEChzCBQ5jAIUzgECZwCBM4hAkcwgQOYQKHMIFDmMAhTOAQJnAIEziECRzCBA5hAocwgUOYwCFM4BAmcAgTOIQJHMIEDmECh7D1enscs0cwznO7z57AQD44hAkcwgQOYQKHMIFDmMAhTOAQJnAIEziECRzCBA5hAocwgUOYwCFM4BAmcAgTOIQJHMIEDmEChzCBQ5jAIUzgECZwCBM4hAkcwgQOYQKHMIFDmMAhTOAQJnAIEziECRzCBA5hAocwgUOYwCFM4BAmcAgTOIQJHMIEDmEChzCBQ5jAIUzgECZwCBM4hAkcwgQOYQKHMIFDmMAhTOAQJnAIEziECRzCBA5hAocwgUOYwCFM4BAmcAgTOIQJHMIEDmEChzCBQ5jAIUzgECZwCBM4hAkcwgQOYQKHMIFDmMAhTOAQJnAIEziECRzCBA5hAocwgUOYwCFM4BAmcAgTOIQJHMIEDmEChzCBQ5jAIUzgECZwCBM4hAkcwgQOYQKHMIFDmMAhTOAQJnAIEziECRzCBA5hAocwgUOYwCFM4BAmcAgTOIQJHMIEDmEChzCBQ5jAIUzgECZwCBM4hAkcwgQOS9cJNi4Lem423NkAAAAASUVORK5CYII=" y="-96.28"/>
+</g>
+<g id="losscross-matplotlib.axis_1">
+<g id="losscross-xtick_1">
+<g id="losscross-line2d_1">
+<defs>
+<path d="M 0 0
+L 0 3.5
+" id="losscross-m7c12e3f186" style="stroke: #000000; stroke-width: 0.8"></path>
+</defs>
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="157.825115" xlink:href="#losscross-m7c12e3f186" y="274.84"></use>
+</g>
+</g>
+<g id="losscross-text_1">
+<!-- Old weights -->
+<g transform="translate(128.274333 289.438438) scale(0.1 -0.1)">
+<defs>
+<path d="M 2522 4238
+Q 1834 4238 1429 3725
+Q 1025 3213 1025 2328
+Q 1025 1447 1429 934
+Q 1834 422 2522 422
+Q 3209 422 3611 934
+Q 4013 1447 4013 2328
+Q 4013 3213 3611 3725
+Q 3209 4238 2522 4238
+z
+M 2522 4750
+Q 3503 4750 4090 4092
+Q 4678 3434 4678 2328
+Q 4678 1225 4090 567
+Q 3503 -91 2522 -91
+Q 1538 -91 948 565
+Q 359 1222 359 2328
+Q 359 3434 948 4092
+Q 1538 4750 2522 4750
+z
+" id="losscross-DejaVuSans-4f" transform="scale(0.015625)"></path>
+<path d="M 603 4863
+L 1178 4863
+L 1178 0
+L 603 0
+L 603 4863
+z
+" id="losscross-DejaVuSans-6c" transform="scale(0.015625)"></path>
+<path d="M 2906 2969
+L 2906 4863
+L 3481 4863
+L 3481 0
+L 2906 0
+L 2906 525
+Q 2725 213 2448 61
+Q 2172 -91 1784 -91
+Q 1150 -91 751 415
+Q 353 922 353 1747
+Q 353 2572 751 3078
+Q 1150 3584 1784 3584
+Q 2172 3584 2448 3432
+Q 2725 3281 2906 2969
+z
+M 947 1747
+Q 947 1113 1208 752
+Q 1469 391 1925 391
+Q 2381 391 2643 752
+Q 2906 1113 2906 1747
+Q 2906 2381 2643 2742
+Q 2381 3103 1925 3103
+Q 1469 3103 1208 2742
+Q 947 2381 947 1747
+z
+" id="losscross-DejaVuSans-64" transform="scale(0.015625)"></path>
+<path id="losscross-DejaVuSans-20" transform="scale(0.015625)"></path>
+<path d="M 269 3500
+L 844 3500
+L 1563 769
+L 2278 3500
+L 2956 3500
+L 3675 769
+L 4391 3500
+L 4966 3500
+L 4050 0
+L 3372 0
+L 2619 2869
+L 1863 0
+L 1184 0
+L 269 3500
+z
+" id="losscross-DejaVuSans-77" transform="scale(0.015625)"></path>
+<path d="M 3597 1894
+L 3597 1613
+L 953 1613
+Q 991 1019 1311 708
+Q 1631 397 2203 397
+Q 2534 397 2845 478
+Q 3156 559 3463 722
+L 3463 178
+Q 3153 47 2828 -22
+Q 2503 -91 2169 -91
+Q 1331 -91 842 396
+Q 353 884 353 1716
+Q 353 2575 817 3079
+Q 1281 3584 2069 3584
+Q 2775 3584 3186 3129
+Q 3597 2675 3597 1894
+z
+M 3022 2063
+Q 3016 2534 2758 2815
+Q 2500 3097 2075 3097
+Q 1594 3097 1305 2825
+Q 1016 2553 972 2059
+L 3022 2063
+z
+" id="losscross-DejaVuSans-65" transform="scale(0.015625)"></path>
+<path d="M 603 3500
+L 1178 3500
+L 1178 0
+L 603 0
+L 603 3500
+z
+M 603 4863
+L 1178 4863
+L 1178 4134
+L 603 4134
+L 603 4863
+z
+" id="losscross-DejaVuSans-69" transform="scale(0.015625)"></path>
+<path d="M 2906 1791
+Q 2906 2416 2648 2759
+Q 2391 3103 1925 3103
+Q 1463 3103 1205 2759
+Q 947 2416 947 1791
+Q 947 1169 1205 825
+Q 1463 481 1925 481
+Q 2391 481 2648 825
+Q 2906 1169 2906 1791
+z
+M 3481 434
+Q 3481 -459 3084 -895
+Q 2688 -1331 1869 -1331
+Q 1566 -1331 1297 -1286
+Q 1028 -1241 775 -1147
+L 775 -588
+Q 1028 -725 1275 -790
+Q 1522 -856 1778 -856
+Q 2344 -856 2625 -561
+Q 2906 -266 2906 331
+L 2906 616
+Q 2728 306 2450 153
+Q 2172 0 1784 0
+Q 1141 0 747 490
+Q 353 981 353 1791
+Q 353 2603 747 3093
+Q 1141 3584 1784 3584
+Q 2172 3584 2450 3431
+Q 2728 3278 2906 2969
+L 2906 3500
+L 3481 3500
+L 3481 434
+z
+" id="losscross-DejaVuSans-67" transform="scale(0.015625)"></path>
+<path d="M 3513 2113
+L 3513 0
+L 2938 0
+L 2938 2094
+Q 2938 2591 2744 2837
+Q 2550 3084 2163 3084
+Q 1697 3084 1428 2787
+Q 1159 2491 1159 1978
+L 1159 0
+L 581 0
+L 581 4863
+L 1159 4863
+L 1159 2956
+Q 1366 3272 1645 3428
+Q 1925 3584 2291 3584
+Q 2894 3584 3203 3211
+Q 3513 2838 3513 2113
+z
+" id="losscross-DejaVuSans-68" transform="scale(0.015625)"></path>
+<path d="M 1172 4494
+L 1172 3500
+L 2356 3500
+L 2356 3053
+L 1172 3053
+L 1172 1153
+Q 1172 725 1289 603
+Q 1406 481 1766 481
+L 2356 481
+L 2356 0
+L 1766 0
+Q 1100 0 847 248
+Q 594 497 594 1153
+L 594 3053
+L 172 3053
+L 172 3500
+L 594 3500
+L 594 4494
+L 1172 4494
+z
+" id="losscross-DejaVuSans-74" transform="scale(0.015625)"></path>
+<path d="M 2834 3397
+L 2834 2853
+Q 2591 2978 2328 3040
+Q 2066 3103 1784 3103
+Q 1356 3103 1142 2972
+Q 928 2841 928 2578
+Q 928 2378 1081 2264
+Q 1234 2150 1697 2047
+L 1894 2003
+Q 2506 1872 2764 1633
+Q 3022 1394 3022 966
+Q 3022 478 2636 193
+Q 2250 -91 1575 -91
+Q 1294 -91 989 -36
+Q 684 19 347 128
+L 347 722
+Q 666 556 975 473
+Q 1284 391 1588 391
+Q 1994 391 2212 530
+Q 2431 669 2431 922
+Q 2431 1156 2273 1281
+Q 2116 1406 1581 1522
+L 1381 1569
+Q 847 1681 609 1914
+Q 372 2147 372 2553
+Q 372 3047 722 3315
+Q 1072 3584 1716 3584
+Q 2034 3584 2315 3537
+Q 2597 3491 2834 3397
+z
+" id="losscross-DejaVuSans-73" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-4f"></use>
+<use x="78.710938" xlink:href="#losscross-DejaVuSans-6c"></use>
+<use x="106.494141" xlink:href="#losscross-DejaVuSans-64"></use>
+<use x="169.970703" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="201.757812" xlink:href="#losscross-DejaVuSans-77"></use>
+<use x="283.544922" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="345.068359" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="372.851562" xlink:href="#losscross-DejaVuSans-67"></use>
+<use x="436.328125" xlink:href="#losscross-DejaVuSans-68"></use>
+<use x="499.707031" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="538.916016" xlink:href="#losscross-DejaVuSans-73"></use>
+</g>
+<!-- A1 / B3 -->
+<g transform="translate(139.749333 300.63625) scale(0.1 -0.1)">
+<defs>
+<path d="M 2188 4044
+L 1331 1722
+L 3047 1722
+L 2188 4044
+z
+M 1831 4666
+L 2547 4666
+L 4325 0
+L 3669 0
+L 3244 1197
+L 1141 1197
+L 716 0
+L 50 0
+L 1831 4666
+z
+" id="losscross-DejaVuSans-41" transform="scale(0.015625)"></path>
+<path d="M 794 531
+L 1825 531
+L 1825 4091
+L 703 3866
+L 703 4441
+L 1819 4666
+L 2450 4666
+L 2450 531
+L 3481 531
+L 3481 0
+L 794 0
+L 794 531
+z
+" id="losscross-DejaVuSans-31" transform="scale(0.015625)"></path>
+<path d="M 1625 4666
+L 2156 4666
+L 531 -594
+L 0 -594
+L 1625 4666
+z
+" id="losscross-DejaVuSans-2f" transform="scale(0.015625)"></path>
+<path d="M 1259 2228
+L 1259 519
+L 2272 519
+Q 2781 519 3026 730
+Q 3272 941 3272 1375
+Q 3272 1813 3026 2020
+Q 2781 2228 2272 2228
+L 1259 2228
+z
+M 1259 4147
+L 1259 2741
+L 2194 2741
+Q 2656 2741 2882 2914
+Q 3109 3088 3109 3444
+Q 3109 3797 2882 3972
+Q 2656 4147 2194 4147
+L 1259 4147
+z
+M 628 4666
+L 2241 4666
+Q 2963 4666 3353 4366
+Q 3744 4066 3744 3513
+Q 3744 3084 3544 2831
+Q 3344 2578 2956 2516
+Q 3422 2416 3680 2098
+Q 3938 1781 3938 1306
+Q 3938 681 3513 340
+Q 3088 0 2303 0
+L 628 0
+L 628 4666
+z
+" id="losscross-DejaVuSans-42" transform="scale(0.015625)"></path>
+<path d="M 2597 2516
+Q 3050 2419 3304 2112
+Q 3559 1806 3559 1356
+Q 3559 666 3084 287
+Q 2609 -91 1734 -91
+Q 1441 -91 1130 -33
+Q 819 25 488 141
+L 488 750
+Q 750 597 1062 519
+Q 1375 441 1716 441
+Q 2309 441 2620 675
+Q 2931 909 2931 1356
+Q 2931 1769 2642 2001
+Q 2353 2234 1838 2234
+L 1294 2234
+L 1294 2753
+L 1863 2753
+Q 2328 2753 2575 2939
+Q 2822 3125 2822 3475
+Q 2822 3834 2567 4026
+Q 2313 4219 1838 4219
+Q 1578 4219 1281 4162
+Q 984 4106 628 3988
+L 628 4550
+Q 988 4650 1302 4700
+Q 1616 4750 1894 4750
+Q 2613 4750 3031 4423
+Q 3450 4097 3450 3541
+Q 3450 3153 3228 2886
+Q 3006 2619 2597 2516
+z
+" id="losscross-DejaVuSans-33" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-41"></use>
+<use x="68.408203" xlink:href="#losscross-DejaVuSans-31"></use>
+<use x="132.03125" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="163.818359" xlink:href="#losscross-DejaVuSans-2f"></use>
+<use x="197.509766" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="229.296875" xlink:href="#losscross-DejaVuSans-42"></use>
+<use x="297.900391" xlink:href="#losscross-DejaVuSans-33"></use>
+</g>
+</g>
+</g>
+<g id="losscross-xtick_2">
+<g id="losscross-line2d_2">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="247.008115" xlink:href="#losscross-m7c12e3f186" y="274.84"></use>
+</g>
+</g>
+<g id="losscross-text_2">
+<!-- New weights -->
+<g transform="translate(215.050302 289.438438) scale(0.1 -0.1)">
+<defs>
+<path d="M 628 4666
+L 1478 4666
+L 3547 763
+L 3547 4666
+L 4159 4666
+L 4159 0
+L 3309 0
+L 1241 3903
+L 1241 0
+L 628 0
+L 628 4666
+z
+" id="losscross-DejaVuSans-4e" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-4e"></use>
+<use x="74.804688" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="136.328125" xlink:href="#losscross-DejaVuSans-77"></use>
+<use x="218.115234" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="249.902344" xlink:href="#losscross-DejaVuSans-77"></use>
+<use x="331.689453" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="393.212891" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="420.996094" xlink:href="#losscross-DejaVuSans-67"></use>
+<use x="484.472656" xlink:href="#losscross-DejaVuSans-68"></use>
+<use x="547.851562" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="587.060547" xlink:href="#losscross-DejaVuSans-73"></use>
+</g>
+<!-- A3 / B1 -->
+<g transform="translate(228.932333 300.63625) scale(0.1 -0.1)">
+<use xlink:href="#losscross-DejaVuSans-41"></use>
+<use x="68.408203" xlink:href="#losscross-DejaVuSans-33"></use>
+<use x="132.03125" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="163.818359" xlink:href="#losscross-DejaVuSans-2f"></use>
+<use x="197.509766" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="229.296875" xlink:href="#losscross-DejaVuSans-42"></use>
+<use x="297.900391" xlink:href="#losscross-DejaVuSans-31"></use>
+</g>
+</g>
+</g>
+</g>
+<g id="losscross-matplotlib.axis_2">
+<g id="losscross-ytick_1">
+<g id="losscross-line2d_3">
+<defs>
+<path d="M 0 0
+L -3.5 0
+" id="losscross-m2ac640ff5f" style="stroke: #000000; stroke-width: 0.8"></path>
+</defs>
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="113.233615" xlink:href="#losscross-m2ac640ff5f" y="141.0655"></use>
+</g>
+</g>
+<g id="losscross-text_3">
+<!-- Old predictions -->
+<g transform="translate(30.68049 144.864719) scale(0.1 -0.1)">
+<defs>
+<path d="M 1159 525
+L 1159 -1331
+L 581 -1331
+L 581 3500
+L 1159 3500
+L 1159 2969
+Q 1341 3281 1617 3432
+Q 1894 3584 2278 3584
+Q 2916 3584 3314 3078
+Q 3713 2572 3713 1747
+Q 3713 922 3314 415
+Q 2916 -91 2278 -91
+Q 1894 -91 1617 61
+Q 1341 213 1159 525
+z
+M 3116 1747
+Q 3116 2381 2855 2742
+Q 2594 3103 2138 3103
+Q 1681 3103 1420 2742
+Q 1159 2381 1159 1747
+Q 1159 1113 1420 752
+Q 1681 391 2138 391
+Q 2594 391 2855 752
+Q 3116 1113 3116 1747
+z
+" id="losscross-DejaVuSans-70" transform="scale(0.015625)"></path>
+<path d="M 2631 2963
+Q 2534 3019 2420 3045
+Q 2306 3072 2169 3072
+Q 1681 3072 1420 2755
+Q 1159 2438 1159 1844
+L 1159 0
+L 581 0
+L 581 3500
+L 1159 3500
+L 1159 2956
+Q 1341 3275 1631 3429
+Q 1922 3584 2338 3584
+Q 2397 3584 2469 3576
+Q 2541 3569 2628 3553
+L 2631 2963
+z
+" id="losscross-DejaVuSans-72" transform="scale(0.015625)"></path>
+<path d="M 3122 3366
+L 3122 2828
+Q 2878 2963 2633 3030
+Q 2388 3097 2138 3097
+Q 1578 3097 1268 2742
+Q 959 2388 959 1747
+Q 959 1106 1268 751
+Q 1578 397 2138 397
+Q 2388 397 2633 464
+Q 2878 531 3122 666
+L 3122 134
+Q 2881 22 2623 -34
+Q 2366 -91 2075 -91
+Q 1284 -91 818 406
+Q 353 903 353 1747
+Q 353 2603 823 3093
+Q 1294 3584 2113 3584
+Q 2378 3584 2631 3529
+Q 2884 3475 3122 3366
+z
+" id="losscross-DejaVuSans-63" transform="scale(0.015625)"></path>
+<path d="M 1959 3097
+Q 1497 3097 1228 2736
+Q 959 2375 959 1747
+Q 959 1119 1226 758
+Q 1494 397 1959 397
+Q 2419 397 2687 759
+Q 2956 1122 2956 1747
+Q 2956 2369 2687 2733
+Q 2419 3097 1959 3097
+z
+M 1959 3584
+Q 2709 3584 3137 3096
+Q 3566 2609 3566 1747
+Q 3566 888 3137 398
+Q 2709 -91 1959 -91
+Q 1206 -91 779 398
+Q 353 888 353 1747
+Q 353 2609 779 3096
+Q 1206 3584 1959 3584
+z
+" id="losscross-DejaVuSans-6f" transform="scale(0.015625)"></path>
+<path d="M 3513 2113
+L 3513 0
+L 2938 0
+L 2938 2094
+Q 2938 2591 2744 2837
+Q 2550 3084 2163 3084
+Q 1697 3084 1428 2787
+Q 1159 2491 1159 1978
+L 1159 0
+L 581 0
+L 581 3500
+L 1159 3500
+L 1159 2956
+Q 1366 3272 1645 3428
+Q 1925 3584 2291 3584
+Q 2894 3584 3203 3211
+Q 3513 2838 3513 2113
+z
+" id="losscross-DejaVuSans-6e" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-4f"></use>
+<use x="78.710938" xlink:href="#losscross-DejaVuSans-6c"></use>
+<use x="106.494141" xlink:href="#losscross-DejaVuSans-64"></use>
+<use x="169.970703" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="201.757812" xlink:href="#losscross-DejaVuSans-70"></use>
+<use x="265.234375" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="304.097656" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="365.621094" xlink:href="#losscross-DejaVuSans-64"></use>
+<use x="429.097656" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="456.880859" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="511.861328" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="551.070312" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="578.853516" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="640.035156" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="703.414062" xlink:href="#losscross-DejaVuSans-73"></use>
+</g>
+</g>
+</g>
+<g id="losscross-ytick_2">
+<g id="losscross-line2d_4">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="113.233615" xlink:href="#losscross-m2ac640ff5f" y="230.2485"></use>
+</g>
+</g>
+<g id="losscross-text_4">
+<!-- New predictions -->
+<g transform="translate(25.866427 234.047719) scale(0.1 -0.1)">
+<use xlink:href="#losscross-DejaVuSans-4e"></use>
+<use x="74.804688" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="136.328125" xlink:href="#losscross-DejaVuSans-77"></use>
+<use x="218.115234" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="249.902344" xlink:href="#losscross-DejaVuSans-70"></use>
+<use x="313.378906" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="352.242188" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="413.765625" xlink:href="#losscross-DejaVuSans-64"></use>
+<use x="477.242188" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="505.025391" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="560.005859" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="599.214844" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="626.998047" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="688.179688" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="751.558594" xlink:href="#losscross-DejaVuSans-73"></use>
+</g>
+</g>
+</g>
+</g>
+<g id="losscross-patch_3">
+<path d="M 113.233615 274.84
+L 113.233615 96.474
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="losscross-patch_4">
+<path d="M 291.599615 274.84
+L 291.599615 96.474
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="losscross-patch_5">
+<path d="M 113.233615 274.84
+L 291.599615 274.84
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="losscross-patch_6">
+<path d="M 113.233615 96.474
+L 291.599615 96.474
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="losscross-text_5">
+<!-- 2.298587 -->
+<g style="fill: #ffffff" transform="translate(133.967302 143.824875) scale(0.1 -0.1)">
+<defs>
+<path d="M 1228 531
+L 3431 531
+L 3431 0
+L 469 0
+L 469 531
+Q 828 903 1448 1529
+Q 2069 2156 2228 2338
+Q 2531 2678 2651 2914
+Q 2772 3150 2772 3378
+Q 2772 3750 2511 3984
+Q 2250 4219 1831 4219
+Q 1534 4219 1204 4116
+Q 875 4013 500 3803
+L 500 4441
+Q 881 4594 1212 4672
+Q 1544 4750 1819 4750
+Q 2544 4750 2975 4387
+Q 3406 4025 3406 3419
+Q 3406 3131 3298 2873
+Q 3191 2616 2906 2266
+Q 2828 2175 2409 1742
+Q 1991 1309 1228 531
+z
+" id="losscross-DejaVuSans-32" transform="scale(0.015625)"></path>
+<path d="M 684 794
+L 1344 794
+L 1344 0
+L 684 0
+L 684 794
+z
+" id="losscross-DejaVuSans-2e" transform="scale(0.015625)"></path>
+<path d="M 703 97
+L 703 672
+Q 941 559 1184 500
+Q 1428 441 1663 441
+Q 2288 441 2617 861
+Q 2947 1281 2994 2138
+Q 2813 1869 2534 1725
+Q 2256 1581 1919 1581
+Q 1219 1581 811 2004
+Q 403 2428 403 3163
+Q 403 3881 828 4315
+Q 1253 4750 1959 4750
+Q 2769 4750 3195 4129
+Q 3622 3509 3622 2328
+Q 3622 1225 3098 567
+Q 2575 -91 1691 -91
+Q 1453 -91 1209 -44
+Q 966 3 703 97
+z
+M 1959 2075
+Q 2384 2075 2632 2365
+Q 2881 2656 2881 3163
+Q 2881 3666 2632 3958
+Q 2384 4250 1959 4250
+Q 1534 4250 1286 3958
+Q 1038 3666 1038 3163
+Q 1038 2656 1286 2365
+Q 1534 2075 1959 2075
+z
+" id="losscross-DejaVuSans-39" transform="scale(0.015625)"></path>
+<path d="M 2034 2216
+Q 1584 2216 1326 1975
+Q 1069 1734 1069 1313
+Q 1069 891 1326 650
+Q 1584 409 2034 409
+Q 2484 409 2743 651
+Q 3003 894 3003 1313
+Q 3003 1734 2745 1975
+Q 2488 2216 2034 2216
+z
+M 1403 2484
+Q 997 2584 770 2862
+Q 544 3141 544 3541
+Q 544 4100 942 4425
+Q 1341 4750 2034 4750
+Q 2731 4750 3128 4425
+Q 3525 4100 3525 3541
+Q 3525 3141 3298 2862
+Q 3072 2584 2669 2484
+Q 3125 2378 3379 2068
+Q 3634 1759 3634 1313
+Q 3634 634 3220 271
+Q 2806 -91 2034 -91
+Q 1263 -91 848 271
+Q 434 634 434 1313
+Q 434 1759 690 2068
+Q 947 2378 1403 2484
+z
+M 1172 3481
+Q 1172 3119 1398 2916
+Q 1625 2713 2034 2713
+Q 2441 2713 2670 2916
+Q 2900 3119 2900 3481
+Q 2900 3844 2670 4047
+Q 2441 4250 2034 4250
+Q 1625 4250 1398 4047
+Q 1172 3844 1172 3481
+z
+" id="losscross-DejaVuSans-38" transform="scale(0.015625)"></path>
+<path d="M 691 4666
+L 3169 4666
+L 3169 4134
+L 1269 4134
+L 1269 2991
+Q 1406 3038 1543 3061
+Q 1681 3084 1819 3084
+Q 2600 3084 3056 2656
+Q 3513 2228 3513 1497
+Q 3513 744 3044 326
+Q 2575 -91 1722 -91
+Q 1428 -91 1123 -41
+Q 819 9 494 109
+L 494 744
+Q 775 591 1075 516
+Q 1375 441 1709 441
+Q 2250 441 2565 725
+Q 2881 1009 2881 1497
+Q 2881 1984 2565 2268
+Q 2250 2553 1709 2553
+Q 1456 2553 1204 2497
+Q 953 2441 691 2322
+L 691 4666
+z
+" id="losscross-DejaVuSans-35" transform="scale(0.015625)"></path>
+<path d="M 525 4666
+L 3525 4666
+L 3525 4397
+L 1831 0
+L 1172 0
+L 2766 4134
+L 525 4134
+L 525 4666
+z
+" id="losscross-DejaVuSans-37" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-32"></use>
+<use x="63.623047" xlink:href="#losscross-DejaVuSans-2e"></use>
+<use x="95.410156" xlink:href="#losscross-DejaVuSans-32"></use>
+<use x="159.033203" xlink:href="#losscross-DejaVuSans-39"></use>
+<use x="222.65625" xlink:href="#losscross-DejaVuSans-38"></use>
+<use x="286.279297" xlink:href="#losscross-DejaVuSans-35"></use>
+<use x="349.902344" xlink:href="#losscross-DejaVuSans-38"></use>
+<use x="413.525391" xlink:href="#losscross-DejaVuSans-37"></use>
+</g>
+</g>
+<g id="losscross-text_6">
+<!-- 0.798587 -->
+<g style="fill: #123342" transform="translate(223.150302 143.824875) scale(0.1 -0.1)">
+<defs>
+<path d="M 2034 4250
+Q 1547 4250 1301 3770
+Q 1056 3291 1056 2328
+Q 1056 1369 1301 889
+Q 1547 409 2034 409
+Q 2525 409 2770 889
+Q 3016 1369 3016 2328
+Q 3016 3291 2770 3770
+Q 2525 4250 2034 4250
+z
+M 2034 4750
+Q 2819 4750 3233 4129
+Q 3647 3509 3647 2328
+Q 3647 1150 3233 529
+Q 2819 -91 2034 -91
+Q 1250 -91 836 529
+Q 422 1150 422 2328
+Q 422 3509 836 4129
+Q 1250 4750 2034 4750
+z
+" id="losscross-DejaVuSans-30" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-30"></use>
+<use x="63.623047" xlink:href="#losscross-DejaVuSans-2e"></use>
+<use x="95.410156" xlink:href="#losscross-DejaVuSans-37"></use>
+<use x="159.033203" xlink:href="#losscross-DejaVuSans-39"></use>
+<use x="222.65625" xlink:href="#losscross-DejaVuSans-38"></use>
+<use x="286.279297" xlink:href="#losscross-DejaVuSans-35"></use>
+<use x="349.902344" xlink:href="#losscross-DejaVuSans-38"></use>
+<use x="413.525391" xlink:href="#losscross-DejaVuSans-37"></use>
+</g>
+</g>
+<g id="losscross-text_7">
+<!-- 0.563262 -->
+<g style="fill: #123342" transform="translate(133.967302 233.007875) scale(0.1 -0.1)">
+<defs>
+<path d="M 2113 2584
+Q 1688 2584 1439 2293
+Q 1191 2003 1191 1497
+Q 1191 994 1439 701
+Q 1688 409 2113 409
+Q 2538 409 2786 701
+Q 3034 994 3034 1497
+Q 3034 2003 2786 2293
+Q 2538 2584 2113 2584
+z
+M 3366 4563
+L 3366 3988
+Q 3128 4100 2886 4159
+Q 2644 4219 2406 4219
+Q 1781 4219 1451 3797
+Q 1122 3375 1075 2522
+Q 1259 2794 1537 2939
+Q 1816 3084 2150 3084
+Q 2853 3084 3261 2657
+Q 3669 2231 3669 1497
+Q 3669 778 3244 343
+Q 2819 -91 2113 -91
+Q 1303 -91 875 529
+Q 447 1150 447 2328
+Q 447 3434 972 4092
+Q 1497 4750 2381 4750
+Q 2619 4750 2861 4703
+Q 3103 4656 3366 4563
+z
+" id="losscross-DejaVuSans-36" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-30"></use>
+<use x="63.623047" xlink:href="#losscross-DejaVuSans-2e"></use>
+<use x="95.410156" xlink:href="#losscross-DejaVuSans-35"></use>
+<use x="159.033203" xlink:href="#losscross-DejaVuSans-36"></use>
+<use x="222.65625" xlink:href="#losscross-DejaVuSans-33"></use>
+<use x="286.279297" xlink:href="#losscross-DejaVuSans-32"></use>
+<use x="349.902344" xlink:href="#losscross-DejaVuSans-36"></use>
+<use x="413.525391" xlink:href="#losscross-DejaVuSans-32"></use>
+</g>
+</g>
+<g id="losscross-text_8">
+<!-- 1.063262 -->
+<g style="fill: #123342" transform="translate(223.150302 233.007875) scale(0.1 -0.1)">
+<use xlink:href="#losscross-DejaVuSans-31"></use>
+<use x="63.623047" xlink:href="#losscross-DejaVuSans-2e"></use>
+<use x="95.410156" xlink:href="#losscross-DejaVuSans-30"></use>
+<use x="159.033203" xlink:href="#losscross-DejaVuSans-36"></use>
+<use x="222.65625" xlink:href="#losscross-DejaVuSans-33"></use>
+<use x="286.279297" xlink:href="#losscross-DejaVuSans-32"></use>
+<use x="349.902344" xlink:href="#losscross-DejaVuSans-36"></use>
+<use x="413.525391" xlink:href="#losscross-DejaVuSans-32"></use>
+</g>
+</g>
+<g id="losscross-text_9">
+<!-- Same labels / context / target support -->
+<g transform="translate(88.378177 90.474) scale(0.12 -0.12)">
+<defs>
+<path d="M 3425 4513
+L 3425 3897
+Q 3066 4069 2747 4153
+Q 2428 4238 2131 4238
+Q 1616 4238 1336 4038
+Q 1056 3838 1056 3469
+Q 1056 3159 1242 3001
+Q 1428 2844 1947 2747
+L 2328 2669
+Q 3034 2534 3370 2195
+Q 3706 1856 3706 1288
+Q 3706 609 3251 259
+Q 2797 -91 1919 -91
+Q 1588 -91 1214 -16
+Q 841 59 441 206
+L 441 856
+Q 825 641 1194 531
+Q 1563 422 1919 422
+Q 2459 422 2753 634
+Q 3047 847 3047 1241
+Q 3047 1584 2836 1778
+Q 2625 1972 2144 2069
+L 1759 2144
+Q 1053 2284 737 2584
+Q 422 2884 422 3419
+Q 422 4038 858 4394
+Q 1294 4750 2059 4750
+Q 2388 4750 2728 4690
+Q 3069 4631 3425 4513
+z
+" id="losscross-DejaVuSans-53" transform="scale(0.015625)"></path>
+<path d="M 2194 1759
+Q 1497 1759 1228 1600
+Q 959 1441 959 1056
+Q 959 750 1161 570
+Q 1363 391 1709 391
+Q 2188 391 2477 730
+Q 2766 1069 2766 1631
+L 2766 1759
+L 2194 1759
+z
+M 3341 1997
+L 3341 0
+L 2766 0
+L 2766 531
+Q 2569 213 2275 61
+Q 1981 -91 1556 -91
+Q 1019 -91 701 211
+Q 384 513 384 1019
+Q 384 1609 779 1909
+Q 1175 2209 1959 2209
+L 2766 2209
+L 2766 2266
+Q 2766 2663 2505 2880
+Q 2244 3097 1772 3097
+Q 1472 3097 1187 3025
+Q 903 2953 641 2809
+L 641 3341
+Q 956 3463 1253 3523
+Q 1550 3584 1831 3584
+Q 2591 3584 2966 3190
+Q 3341 2797 3341 1997
+z
+" id="losscross-DejaVuSans-61" transform="scale(0.015625)"></path>
+<path d="M 3328 2828
+Q 3544 3216 3844 3400
+Q 4144 3584 4550 3584
+Q 5097 3584 5394 3201
+Q 5691 2819 5691 2113
+L 5691 0
+L 5113 0
+L 5113 2094
+Q 5113 2597 4934 2840
+Q 4756 3084 4391 3084
+Q 3944 3084 3684 2787
+Q 3425 2491 3425 1978
+L 3425 0
+L 2847 0
+L 2847 2094
+Q 2847 2600 2669 2842
+Q 2491 3084 2119 3084
+Q 1678 3084 1418 2786
+Q 1159 2488 1159 1978
+L 1159 0
+L 581 0
+L 581 3500
+L 1159 3500
+L 1159 2956
+Q 1356 3278 1631 3431
+Q 1906 3584 2284 3584
+Q 2666 3584 2933 3390
+Q 3200 3197 3328 2828
+z
+" id="losscross-DejaVuSans-6d" transform="scale(0.015625)"></path>
+<path d="M 3116 1747
+Q 3116 2381 2855 2742
+Q 2594 3103 2138 3103
+Q 1681 3103 1420 2742
+Q 1159 2381 1159 1747
+Q 1159 1113 1420 752
+Q 1681 391 2138 391
+Q 2594 391 2855 752
+Q 3116 1113 3116 1747
+z
+M 1159 2969
+Q 1341 3281 1617 3432
+Q 1894 3584 2278 3584
+Q 2916 3584 3314 3078
+Q 3713 2572 3713 1747
+Q 3713 922 3314 415
+Q 2916 -91 2278 -91
+Q 1894 -91 1617 61
+Q 1341 213 1159 525
+L 1159 0
+L 581 0
+L 581 4863
+L 1159 4863
+L 1159 2969
+z
+" id="losscross-DejaVuSans-62" transform="scale(0.015625)"></path>
+<path d="M 3513 3500
+L 2247 1797
+L 3578 0
+L 2900 0
+L 1881 1375
+L 863 0
+L 184 0
+L 1544 1831
+L 300 3500
+L 978 3500
+L 1906 2253
+L 2834 3500
+L 3513 3500
+z
+" id="losscross-DejaVuSans-78" transform="scale(0.015625)"></path>
+<path d="M 544 1381
+L 544 3500
+L 1119 3500
+L 1119 1403
+Q 1119 906 1312 657
+Q 1506 409 1894 409
+Q 2359 409 2629 706
+Q 2900 1003 2900 1516
+L 2900 3500
+L 3475 3500
+L 3475 0
+L 2900 0
+L 2900 538
+Q 2691 219 2414 64
+Q 2138 -91 1772 -91
+Q 1169 -91 856 284
+Q 544 659 544 1381
+z
+M 1991 3584
+L 1991 3584
+z
+" id="losscross-DejaVuSans-75" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-53"></use>
+<use x="63.476562" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="124.755859" xlink:href="#losscross-DejaVuSans-6d"></use>
+<use x="222.167969" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="283.691406" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="315.478516" xlink:href="#losscross-DejaVuSans-6c"></use>
+<use x="343.261719" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="404.541016" xlink:href="#losscross-DejaVuSans-62"></use>
+<use x="468.017578" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="529.541016" xlink:href="#losscross-DejaVuSans-6c"></use>
+<use x="557.324219" xlink:href="#losscross-DejaVuSans-73"></use>
+<use x="609.423828" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="641.210938" xlink:href="#losscross-DejaVuSans-2f"></use>
+<use x="674.902344" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="706.689453" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="761.669922" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="822.851562" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="886.230469" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="925.439453" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="985.212891" xlink:href="#losscross-DejaVuSans-78"></use>
+<use x="1044.392578" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="1083.601562" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="1115.388672" xlink:href="#losscross-DejaVuSans-2f"></use>
+<use x="1149.080078" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="1180.867188" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="1220.076172" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="1281.355469" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="1320.71875" xlink:href="#losscross-DejaVuSans-67"></use>
+<use x="1384.195312" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="1445.71875" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="1484.927734" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="1516.714844" xlink:href="#losscross-DejaVuSans-73"></use>
+<use x="1568.814453" xlink:href="#losscross-DejaVuSans-75"></use>
+<use x="1632.193359" xlink:href="#losscross-DejaVuSans-70"></use>
+<use x="1695.669922" xlink:href="#losscross-DejaVuSans-70"></use>
+<use x="1759.146484" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="1820.328125" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="1861.441406" xlink:href="#losscross-DejaVuSans-74"></use>
+</g>
+</g>
+</g>
+<g id="losscross-axes_2">
+<g id="losscross-patch_7">
+<path d="M 477.283229 274.84
+L 769.17375 274.84
+L 769.17375 96.474
+L 477.283229 96.474
+z
+" style="fill: #ffffff"></path>
+</g>
+<g id="losscross-patch_8">
+<path clip-path="url(#losscross-pd37ddc3a4f)" d="M 623.22849 104.581545
+L 545.043529 104.581545
+L 545.043529 138.718579
+L 623.22849 138.718579
+z
+" style="fill: #176c76"></path>
+</g>
+<g id="losscross-patch_9">
+<path clip-path="url(#losscross-pd37ddc3a4f)" d="M 623.22849 147.252837
+L 532.777575 147.252837
+L 532.777575 181.389871
+L 623.22849 181.389871
+z
+" style="fill: #176c76"></path>
+</g>
+<g id="losscross-patch_10">
+<path clip-path="url(#losscross-pd37ddc3a4f)" d="M 623.22849 189.924129
+L 727.475104 189.924129
+L 727.475104 224.061163
+L 623.22849 224.061163
+z
+" style="fill: #ad641d"></path>
+</g>
+<g id="losscross-patch_11">
+<path clip-path="url(#losscross-pd37ddc3a4f)" d="M 623.22849 232.595421
+L 558.839229 232.595421
+L 558.839229 266.732455
+L 623.22849 266.732455
+z
+" style="fill: #30466b"></path>
+</g>
+<g id="losscross-matplotlib.axis_3">
+<g id="losscross-xtick_3">
+<g id="losscross-line2d_5">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="518.981875" xlink:href="#losscross-m7c12e3f186" y="274.84"></use>
+</g>
+</g>
+<g id="losscross-text_10">
+<!-- −2 -->
+<g transform="translate(511.610781 289.438438) scale(0.1 -0.1)">
+<defs>
+<path d="M 678 2272
+L 4684 2272
+L 4684 1741
+L 678 1741
+L 678 2272
+z
+" id="losscross-DejaVuSans-2212" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-2212"></use>
+<use x="83.789062" xlink:href="#losscross-DejaVuSans-32"></use>
+</g>
+</g>
+</g>
+<g id="losscross-xtick_4">
+<g id="losscross-line2d_6">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="571.105182" xlink:href="#losscross-m7c12e3f186" y="274.84"></use>
+</g>
+</g>
+<g id="losscross-text_11">
+<!-- −1 -->
+<g transform="translate(563.734089 289.438438) scale(0.1 -0.1)">
+<use xlink:href="#losscross-DejaVuSans-2212"></use>
+<use x="83.789062" xlink:href="#losscross-DejaVuSans-31"></use>
+</g>
+</g>
+</g>
+<g id="losscross-xtick_5">
+<g id="losscross-line2d_7">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="623.22849" xlink:href="#losscross-m7c12e3f186" y="274.84"></use>
+</g>
+</g>
+<g id="losscross-text_12">
+<!-- 0 -->
+<g transform="translate(620.04724 289.438438) scale(0.1 -0.1)">
+<use xlink:href="#losscross-DejaVuSans-30"></use>
+</g>
+</g>
+</g>
+<g id="losscross-xtick_6">
+<g id="losscross-line2d_8">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="675.351797" xlink:href="#losscross-m7c12e3f186" y="274.84"></use>
+</g>
+</g>
+<g id="losscross-text_13">
+<!-- 1 -->
+<g transform="translate(672.170547 289.438438) scale(0.1 -0.1)">
+<use xlink:href="#losscross-DejaVuSans-31"></use>
+</g>
+</g>
+</g>
+<g id="losscross-xtick_7">
+<g id="losscross-line2d_9">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="727.475104" xlink:href="#losscross-m7c12e3f186" y="274.84"></use>
+</g>
+</g>
+<g id="losscross-text_14">
+<!-- 2 -->
+<g transform="translate(724.293854 289.438438) scale(0.1 -0.1)">
+<use xlink:href="#losscross-DejaVuSans-32"></use>
+</g>
+</g>
+</g>
+<g id="losscross-text_15">
+<!-- Change in mean pure CE -->
+<g transform="translate(560.977708 303.116562) scale(0.1 -0.1)">
+<defs>
+<path d="M 4122 4306
+L 4122 3641
+Q 3803 3938 3442 4084
+Q 3081 4231 2675 4231
+Q 1875 4231 1450 3742
+Q 1025 3253 1025 2328
+Q 1025 1406 1450 917
+Q 1875 428 2675 428
+Q 3081 428 3442 575
+Q 3803 722 4122 1019
+L 4122 359
+Q 3791 134 3420 21
+Q 3050 -91 2638 -91
+Q 1578 -91 968 557
+Q 359 1206 359 2328
+Q 359 3453 968 4101
+Q 1578 4750 2638 4750
+Q 3056 4750 3426 4639
+Q 3797 4528 4122 4306
+z
+" id="losscross-DejaVuSans-43" transform="scale(0.015625)"></path>
+<path d="M 628 4666
+L 3578 4666
+L 3578 4134
+L 1259 4134
+L 1259 2753
+L 3481 2753
+L 3481 2222
+L 1259 2222
+L 1259 531
+L 3634 531
+L 3634 0
+L 628 0
+L 628 4666
+z
+" id="losscross-DejaVuSans-45" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-43"></use>
+<use x="69.824219" xlink:href="#losscross-DejaVuSans-68"></use>
+<use x="133.203125" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="194.482422" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="257.861328" xlink:href="#losscross-DejaVuSans-67"></use>
+<use x="321.337891" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="382.861328" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="414.648438" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="442.431641" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="505.810547" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="537.597656" xlink:href="#losscross-DejaVuSans-6d"></use>
+<use x="635.009766" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="696.533203" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="757.8125" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="821.191406" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="852.978516" xlink:href="#losscross-DejaVuSans-70"></use>
+<use x="916.455078" xlink:href="#losscross-DejaVuSans-75"></use>
+<use x="979.833984" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="1018.697266" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="1080.220703" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="1112.007812" xlink:href="#losscross-DejaVuSans-43"></use>
+<use x="1181.832031" xlink:href="#losscross-DejaVuSans-45"></use>
+</g>
+</g>
+</g>
+<g id="losscross-matplotlib.axis_4">
+<g id="losscross-ytick_3">
+<g id="losscross-line2d_10">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="477.283229" xlink:href="#losscross-m2ac640ff5f" y="121.650062"></use>
+</g>
+</g>
+<g id="losscross-text_16">
+<!-- Composition at old predictions -->
+<g transform="translate(317.626979 125.449281) scale(0.1 -0.1)">
+<use xlink:href="#losscross-DejaVuSans-43"></use>
+<use x="69.824219" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="131.005859" xlink:href="#losscross-DejaVuSans-6d"></use>
+<use x="228.417969" xlink:href="#losscross-DejaVuSans-70"></use>
+<use x="291.894531" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="353.076172" xlink:href="#losscross-DejaVuSans-73"></use>
+<use x="405.175781" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="432.958984" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="472.167969" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="499.951172" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="561.132812" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="624.511719" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="656.298828" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="717.578125" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="756.787109" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="788.574219" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="849.755859" xlink:href="#losscross-DejaVuSans-6c"></use>
+<use x="877.539062" xlink:href="#losscross-DejaVuSans-64"></use>
+<use x="941.015625" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="972.802734" xlink:href="#losscross-DejaVuSans-70"></use>
+<use x="1036.279297" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="1075.142578" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="1136.666016" xlink:href="#losscross-DejaVuSans-64"></use>
+<use x="1200.142578" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="1227.925781" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="1282.90625" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="1322.115234" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="1349.898438" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="1411.080078" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="1474.458984" xlink:href="#losscross-DejaVuSans-73"></use>
+</g>
+</g>
+</g>
+<g id="losscross-ytick_4">
+<g id="losscross-line2d_11">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="477.283229" xlink:href="#losscross-m2ac640ff5f" y="164.321354"></use>
+</g>
+</g>
+<g id="losscross-text_17">
+<!-- Prediction at old weights -->
+<g transform="translate(346.856667 168.120573) scale(0.1 -0.1)">
+<defs>
+<path d="M 1259 4147
+L 1259 2394
+L 2053 2394
+Q 2494 2394 2734 2622
+Q 2975 2850 2975 3272
+Q 2975 3691 2734 3919
+Q 2494 4147 2053 4147
+L 1259 4147
+z
+M 628 4666
+L 2053 4666
+Q 2838 4666 3239 4311
+Q 3641 3956 3641 3272
+Q 3641 2581 3239 2228
+Q 2838 1875 2053 1875
+L 1259 1875
+L 1259 0
+L 628 0
+L 628 4666
+z
+" id="losscross-DejaVuSans-50" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-50"></use>
+<use x="58.552734" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="97.416016" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="158.939453" xlink:href="#losscross-DejaVuSans-64"></use>
+<use x="222.416016" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="250.199219" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="305.179688" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="344.388672" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="372.171875" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="433.353516" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="496.732422" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="528.519531" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="589.798828" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="629.007812" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="660.794922" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="721.976562" xlink:href="#losscross-DejaVuSans-6c"></use>
+<use x="749.759766" xlink:href="#losscross-DejaVuSans-64"></use>
+<use x="813.236328" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="845.023438" xlink:href="#losscross-DejaVuSans-77"></use>
+<use x="926.810547" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="988.333984" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="1016.117188" xlink:href="#losscross-DejaVuSans-67"></use>
+<use x="1079.59375" xlink:href="#losscross-DejaVuSans-68"></use>
+<use x="1142.972656" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="1182.181641" xlink:href="#losscross-DejaVuSans-73"></use>
+</g>
+</g>
+</g>
+<g id="losscross-ytick_5">
+<g id="losscross-line2d_12">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="477.283229" xlink:href="#losscross-m2ac640ff5f" y="206.992646"></use>
+</g>
+</g>
+<g id="losscross-text_18">
+<!-- Interaction -->
+<g transform="translate(416.030104 210.791865) scale(0.1 -0.1)">
+<defs>
+<path d="M 628 4666
+L 1259 4666
+L 1259 0
+L 628 0
+L 628 4666
+z
+" id="losscross-DejaVuSans-49" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-49"></use>
+<use x="29.492188" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="92.871094" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="132.080078" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="193.603516" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="234.716797" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="295.996094" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="350.976562" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="390.185547" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="417.96875" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="479.150391" xlink:href="#losscross-DejaVuSans-6e"></use>
+</g>
+</g>
+</g>
+<g id="losscross-ytick_6">
+<g id="losscross-line2d_13">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="477.283229" xlink:href="#losscross-m2ac640ff5f" y="249.663938"></use>
+</g>
+</g>
+<g id="losscross-text_19">
+<!-- Total -->
+<g transform="translate(446.930104 253.463157) scale(0.1 -0.1)">
+<defs>
+<path d="M -19 4666
+L 3928 4666
+L 3928 4134
+L 2272 4134
+L 2272 0
+L 1638 0
+L 1638 4134
+L -19 4134
+L -19 4666
+z
+" id="losscross-DejaVuSans-54" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-54"></use>
+<use x="44.083984" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="105.265625" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="144.474609" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="205.753906" xlink:href="#losscross-DejaVuSans-6c"></use>
+</g>
+</g>
+</g>
+</g>
+<g id="losscross-line2d_14">
+<path clip-path="url(#losscross-pd37ddc3a4f)" d="M 623.22849 274.84
+L 623.22849 96.474
+" style="fill: none; stroke: #777777; stroke-width: 0.8; stroke-linecap: square"></path>
+</g>
+<g id="losscross-patch_12">
+<path d="M 477.283229 274.84
+L 477.283229 96.474
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="losscross-patch_13">
+<path d="M 477.283229 274.84
+L 769.17375 274.84
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="losscross-text_20">
+<!-- -1.500000 -->
+<g transform="translate(491.113926 124.409437) scale(0.1 -0.1)">
+<defs>
+<path d="M 313 2009
+L 1997 2009
+L 1997 1497
+L 313 1497
+L 313 2009
+z
+" id="losscross-DejaVuSans-2d" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-2d"></use>
+<use x="36.083984" xlink:href="#losscross-DejaVuSans-31"></use>
+<use x="99.707031" xlink:href="#losscross-DejaVuSans-2e"></use>
+<use x="131.494141" xlink:href="#losscross-DejaVuSans-35"></use>
+<use x="195.117188" xlink:href="#losscross-DejaVuSans-30"></use>
+<use x="258.740234" xlink:href="#losscross-DejaVuSans-30"></use>
+<use x="322.363281" xlink:href="#losscross-DejaVuSans-30"></use>
+<use x="385.986328" xlink:href="#losscross-DejaVuSans-30"></use>
+<use x="449.609375" xlink:href="#losscross-DejaVuSans-30"></use>
+</g>
+</g>
+<g id="losscross-text_21">
+<!-- -1.735326 -->
+<g transform="translate(478.847972 167.080729) scale(0.1 -0.1)">
+<use xlink:href="#losscross-DejaVuSans-2d"></use>
+<use x="36.083984" xlink:href="#losscross-DejaVuSans-31"></use>
+<use x="99.707031" xlink:href="#losscross-DejaVuSans-2e"></use>
+<use x="131.494141" xlink:href="#losscross-DejaVuSans-37"></use>
+<use x="195.117188" xlink:href="#losscross-DejaVuSans-33"></use>
+<use x="258.740234" xlink:href="#losscross-DejaVuSans-35"></use>
+<use x="322.363281" xlink:href="#losscross-DejaVuSans-33"></use>
+<use x="385.986328" xlink:href="#losscross-DejaVuSans-32"></use>
+<use x="449.609375" xlink:href="#losscross-DejaVuSans-36"></use>
+</g>
+</g>
+<g id="losscross-text_22">
+<!-- +2.000000 -->
+<g transform="translate(730.08127 209.752021) scale(0.1 -0.1)">
+<defs>
+<path d="M 2944 4013
+L 2944 2272
+L 4684 2272
+L 4684 1741
+L 2944 1741
+L 2944 0
+L 2419 0
+L 2419 1741
+L 678 1741
+L 678 2272
+L 2419 2272
+L 2419 4013
+L 2944 4013
+z
+" id="losscross-DejaVuSans-2b" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-2b"></use>
+<use x="83.789062" xlink:href="#losscross-DejaVuSans-32"></use>
+<use x="147.412109" xlink:href="#losscross-DejaVuSans-2e"></use>
+<use x="179.199219" xlink:href="#losscross-DejaVuSans-30"></use>
+<use x="242.822266" xlink:href="#losscross-DejaVuSans-30"></use>
+<use x="306.445312" xlink:href="#losscross-DejaVuSans-30"></use>
+<use x="370.068359" xlink:href="#losscross-DejaVuSans-30"></use>
+<use x="433.691406" xlink:href="#losscross-DejaVuSans-30"></use>
+<use x="497.314453" xlink:href="#losscross-DejaVuSans-30"></use>
+</g>
+</g>
+<g id="losscross-text_23">
+<!-- -1.235326 -->
+<g transform="translate(504.909626 252.423313) scale(0.1 -0.1)">
+<use xlink:href="#losscross-DejaVuSans-2d"></use>
+<use x="36.083984" xlink:href="#losscross-DejaVuSans-31"></use>
+<use x="99.707031" xlink:href="#losscross-DejaVuSans-2e"></use>
+<use x="131.494141" xlink:href="#losscross-DejaVuSans-32"></use>
+<use x="195.117188" xlink:href="#losscross-DejaVuSans-33"></use>
+<use x="258.740234" xlink:href="#losscross-DejaVuSans-35"></use>
+<use x="322.363281" xlink:href="#losscross-DejaVuSans-33"></use>
+<use x="385.986328" xlink:href="#losscross-DejaVuSans-32"></use>
+<use x="449.609375" xlink:href="#losscross-DejaVuSans-36"></use>
+</g>
+</g>
+</g>
+<g id="losscross-text_24">
+<!-- Four-cell replay: descriptive allocation depends on the reference distribution -->
+<g transform="translate(186.059844 14.694281) scale(0.11 -0.11)">
+<defs>
+<path d="M 628 4666
+L 3309 4666
+L 3309 4134
+L 1259 4134
+L 1259 2759
+L 3109 2759
+L 3109 2228
+L 1259 2228
+L 1259 0
+L 628 0
+L 628 4666
+z
+" id="losscross-DejaVuSans-46" transform="scale(0.015625)"></path>
+<path d="M 2059 -325
+Q 1816 -950 1584 -1140
+Q 1353 -1331 966 -1331
+L 506 -1331
+L 506 -850
+L 844 -850
+Q 1081 -850 1212 -737
+Q 1344 -625 1503 -206
+L 1606 56
+L 191 3500
+L 800 3500
+L 1894 763
+L 2988 3500
+L 3597 3500
+L 2059 -325
+z
+" id="losscross-DejaVuSans-79" transform="scale(0.015625)"></path>
+<path d="M 750 794
+L 1409 794
+L 1409 0
+L 750 0
+L 750 794
+z
+M 750 3309
+L 1409 3309
+L 1409 2516
+L 750 2516
+L 750 3309
+z
+" id="losscross-DejaVuSans-3a" transform="scale(0.015625)"></path>
+<path d="M 191 3500
+L 800 3500
+L 1894 563
+L 2988 3500
+L 3597 3500
+L 2284 0
+L 1503 0
+L 191 3500
+z
+" id="losscross-DejaVuSans-76" transform="scale(0.015625)"></path>
+<path d="M 2375 4863
+L 2375 4384
+L 1825 4384
+Q 1516 4384 1395 4259
+Q 1275 4134 1275 3809
+L 1275 3500
+L 2222 3500
+L 2222 3053
+L 1275 3053
+L 1275 0
+L 697 0
+L 697 3053
+L 147 3053
+L 147 3500
+L 697 3500
+L 697 3744
+Q 697 4328 969 4595
+Q 1241 4863 1831 4863
+L 2375 4863
+z
+" id="losscross-DejaVuSans-66" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-46"></use>
+<use x="53.894531" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="115.076172" xlink:href="#losscross-DejaVuSans-75"></use>
+<use x="178.455078" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="213.193359" xlink:href="#losscross-DejaVuSans-2d"></use>
+<use x="249.277344" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="304.257812" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="365.78125" xlink:href="#losscross-DejaVuSans-6c"></use>
+<use x="393.564453" xlink:href="#losscross-DejaVuSans-6c"></use>
+<use x="421.347656" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="453.134766" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="491.998047" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="553.521484" xlink:href="#losscross-DejaVuSans-70"></use>
+<use x="616.998047" xlink:href="#losscross-DejaVuSans-6c"></use>
+<use x="644.78125" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="706.060547" xlink:href="#losscross-DejaVuSans-79"></use>
+<use x="757.990234" xlink:href="#losscross-DejaVuSans-3a"></use>
+<use x="791.681641" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="823.46875" xlink:href="#losscross-DejaVuSans-64"></use>
+<use x="886.945312" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="948.46875" xlink:href="#losscross-DejaVuSans-73"></use>
+<use x="1000.568359" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="1055.548828" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="1096.662109" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="1124.445312" xlink:href="#losscross-DejaVuSans-70"></use>
+<use x="1187.921875" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="1227.130859" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="1254.914062" xlink:href="#losscross-DejaVuSans-76"></use>
+<use x="1314.09375" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="1375.617188" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="1407.404297" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="1468.683594" xlink:href="#losscross-DejaVuSans-6c"></use>
+<use x="1496.466797" xlink:href="#losscross-DejaVuSans-6c"></use>
+<use x="1524.25" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="1585.431641" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="1640.412109" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="1701.691406" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="1740.900391" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="1768.683594" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="1829.865234" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="1893.244141" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="1925.03125" xlink:href="#losscross-DejaVuSans-64"></use>
+<use x="1988.507812" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="2050.03125" xlink:href="#losscross-DejaVuSans-70"></use>
+<use x="2113.507812" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="2175.03125" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="2238.410156" xlink:href="#losscross-DejaVuSans-64"></use>
+<use x="2301.886719" xlink:href="#losscross-DejaVuSans-73"></use>
+<use x="2353.986328" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="2385.773438" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="2446.955078" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="2510.333984" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="2542.121094" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="2581.330078" xlink:href="#losscross-DejaVuSans-68"></use>
+<use x="2644.708984" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="2706.232422" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="2738.019531" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="2776.882812" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="2838.40625" xlink:href="#losscross-DejaVuSans-66"></use>
+<use x="2873.611328" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="2935.134766" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="2973.998047" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="3035.521484" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="3098.900391" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="3153.880859" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="3215.404297" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="3247.191406" xlink:href="#losscross-DejaVuSans-64"></use>
+<use x="3310.667969" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="3338.451172" xlink:href="#losscross-DejaVuSans-73"></use>
+<use x="3390.550781" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="3429.759766" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="3470.873047" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="3498.65625" xlink:href="#losscross-DejaVuSans-62"></use>
+<use x="3562.132812" xlink:href="#losscross-DejaVuSans-75"></use>
+<use x="3625.511719" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="3664.720703" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="3692.503906" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="3753.685547" xlink:href="#losscross-DejaVuSans-6e"></use>
+</g>
+<!-- Synthetic CPU source-method control; no Hero or training-effect estimate -->
+<g transform="translate(193.652422 27.011875) scale(0.11 -0.11)">
+<defs>
+<path d="M 556 4666
+L 1191 4666
+L 1191 1831
+Q 1191 1081 1462 751
+Q 1734 422 2344 422
+Q 2950 422 3222 751
+Q 3494 1081 3494 1831
+L 3494 4666
+L 4128 4666
+L 4128 1753
+Q 4128 841 3676 375
+Q 3225 -91 2344 -91
+Q 1459 -91 1007 375
+Q 556 841 556 1753
+L 556 4666
+z
+" id="losscross-DejaVuSans-55" transform="scale(0.015625)"></path>
+<path d="M 750 3309
+L 1409 3309
+L 1409 2516
+L 750 2516
+L 750 3309
+z
+M 750 794
+L 1409 794
+L 1409 256
+L 897 -744
+L 494 -744
+L 750 256
+L 750 794
+z
+" id="losscross-DejaVuSans-3b" transform="scale(0.015625)"></path>
+<path d="M 628 4666
+L 1259 4666
+L 1259 2753
+L 3553 2753
+L 3553 4666
+L 4184 4666
+L 4184 0
+L 3553 0
+L 3553 2222
+L 1259 2222
+L 1259 0
+L 628 0
+L 628 4666
+z
+" id="losscross-DejaVuSans-48" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-53"></use>
+<use x="63.476562" xlink:href="#losscross-DejaVuSans-79"></use>
+<use x="122.65625" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="186.035156" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="225.244141" xlink:href="#losscross-DejaVuSans-68"></use>
+<use x="288.623047" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="350.146484" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="389.355469" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="417.138672" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="472.119141" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="503.90625" xlink:href="#losscross-DejaVuSans-43"></use>
+<use x="573.730469" xlink:href="#losscross-DejaVuSans-50"></use>
+<use x="634.033203" xlink:href="#losscross-DejaVuSans-55"></use>
+<use x="707.226562" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="739.013672" xlink:href="#losscross-DejaVuSans-73"></use>
+<use x="791.113281" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="852.294922" xlink:href="#losscross-DejaVuSans-75"></use>
+<use x="915.673828" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="954.537109" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="1009.517578" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="1071.041016" xlink:href="#losscross-DejaVuSans-2d"></use>
+<use x="1107.125" xlink:href="#losscross-DejaVuSans-6d"></use>
+<use x="1204.537109" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="1266.060547" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="1305.269531" xlink:href="#losscross-DejaVuSans-68"></use>
+<use x="1368.648438" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="1429.830078" xlink:href="#losscross-DejaVuSans-64"></use>
+<use x="1493.306641" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="1525.09375" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="1580.074219" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="1641.255859" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="1704.634766" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="1743.84375" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="1782.707031" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="1843.888672" xlink:href="#losscross-DejaVuSans-6c"></use>
+<use x="1871.671875" xlink:href="#losscross-DejaVuSans-3b"></use>
+<use x="1905.363281" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="1937.150391" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="2000.529297" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="2061.710938" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="2093.498047" xlink:href="#losscross-DejaVuSans-48"></use>
+<use x="2168.693359" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="2230.216797" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="2269.080078" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="2330.261719" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="2362.048828" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="2423.230469" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="2464.34375" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="2496.130859" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="2535.339844" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="2576.453125" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="2637.732422" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="2665.515625" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="2728.894531" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="2756.677734" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="2820.056641" xlink:href="#losscross-DejaVuSans-67"></use>
+<use x="2883.533203" xlink:href="#losscross-DejaVuSans-2d"></use>
+<use x="2919.617188" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="2981.140625" xlink:href="#losscross-DejaVuSans-66"></use>
+<use x="3016.345703" xlink:href="#losscross-DejaVuSans-66"></use>
+<use x="3051.550781" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="3113.074219" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="3168.054688" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="3207.263672" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="3239.050781" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="3300.574219" xlink:href="#losscross-DejaVuSans-73"></use>
+<use x="3352.673828" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="3391.882812" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="3419.666016" xlink:href="#losscross-DejaVuSans-6d"></use>
+<use x="3517.078125" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="3578.357422" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="3617.566406" xlink:href="#losscross-DejaVuSans-65"></use>
+</g>
+</g>
+</g>
+<defs>
+<clippath id="losscross-p602771770f">
+<rect height="178.366" width="178.366" x="113.233615" y="96.474"></rect>
+</clippath>
+<clippath id="losscross-pd37ddc3a4f">
+<rect height="178.366" width="291.890521" x="477.283229" y="96.474"></rect>
+</clippath>
+</defs>
+</svg></div>
+<p><a href="assets/loss_cross_replay.svg">四格图原文件</a>：左侧为共同目标上的纯 CE，右侧为以旧预测/旧权重为基准的三项分解；负值表示均值下降。人工预测及目标，不代表真实训练收益。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>共同输入上的纯 CE</th>
+<th style="text-align: right;">旧权重 A1/B3</th>
+<th style="text-align: right;">新权重 A3/B1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>旧预测：logits [2,-1]</td>
+<td style="text-align: right;">L00 = 2.2985873</td>
+<td style="text-align: right;">L01 = 0.7985873</td>
+</tr>
+<tr>
+<td>新预测：logits [-2,-1]</td>
+<td style="text-align: right;">L10 = 0.5632616</td>
+<td style="text-align: right;">L11 = 1.0632616</td>
+</tr>
+</tbody>
+</table></div>
+<p>从左上到右下，loss 下降1.2353257。只看这一变化，会漏掉重要事实：新预测在旧分布上改善1.7353257，在新分布上却退步0.2646743。原因在域内：A 的 NLL 从0.0485874上升到1.3132617，B 从3.0485874下降到0.3132617。旧分布更重视 B，新分布更重视 A，因此同一预测变化得到相反评价。这不是配比训练收益的证据，而是评价分布决定均值含义的可执行反例。</p>
+<h3 id="loss-triage-_2">三项分解如何闭合</h3>
+<p>以旧预测、旧权重为基准：组成项 C=L01−L00，预测项 P=L10−L00，交互项 I=L11−L10−L01+L00。总变化 Δ=L11−L00=C+P+I。本例为 −1.5−1.7353257+2.0=−1.2353257。若只加前两项，会错算成下降3.2353257；遗漏的2.0正是改权重后各域预测变化被重新计入的部分。</p>
+<p>也可以按实际重放顺序做两段核算：先换权重再换预测，得到 −1.5+0.2646743；先换预测再换权重，得到 −1.7353257+0.5。两条路径都闭合，但分项不同。将两条路径平均，组成项为−0.5、预测项为−0.7353257。这个对称分摊把交互各分一半，是描述约定；它没有证明哪个因素“造成”了训练收益。正文同时保留三项与两种路径，避免一种记账约定被当作唯一因果答案。</p>
+<h3 id="loss-triage-_3">哪些条件不满足就不能填四格</h3>
+<p>四格需要同一目标支持集：相同 token IDs、标签、上下文、tokenizer、packing 与文档边界，且旧新模型对这些目标都已有预测。权重包括 valid mask、loss_weight 和明确的归约分母。域样本各一条不代表域目标质量相同，本例两套分母均为4，A/B质量从1/3变为3/1。</p>
+<p>真实训练前后往往换了样本、上下文长度或 packing。不能把两批不同 token 的旧新 logits 拼成四格。如果只存被采样的旧目标，新加入目标上没有旧预测，交叉格缺失；记录 null 并停止分解。本轮程序分别检查缺格与输入支持不一致时拒绝输出。可在另行冻结的共同评估集上重新运行两个 checkpoint，但所得解释对象是该评估集上的预测与权重，不能直接当成实际训练流的组成变化。</p>
+<p>零权重位置也要核对数值路径；共同支持不是用0代替缺失 logits。这里六个有效候选目标均有两套有限预测，最后的 padding 位置权重为零；没有测试真实数据中的异常值、全零分母或多设备归约。</p>
+<h3 id="loss-triage-_4">输出罚项与配比决策分开保存</h3>
+<p>同样四格另算 logsumexp_weight=1e−4 的原目标，并逐格保存“含罚项−纯 CE”。随后才做各自分解；纯 NLL 与总目标不能交叉混填。router z-loss 另记，本例为人工零值。重放只回答平均数为何不同，不能回答新配方训练出了什么能力。</p>
+<p>实际配比实验按以下次序走：冻结独立评估集及风险上限；从相同初态、优化器状态、训练预算出发比较候选与供体；在相同评估权重下比较域内 NLL、任务能力与回归；最后用四格解释观测值，不以解释替代独立确认。顺序研究还需匹配各域累计曝光并审查历史 batch schedule，见<a href="#batch-clock-guide">BATCH_CLOCK</a>。</p>
+<p>新的<a href="templates/loss_cross_replay_review.json">四格记录模板</a>保存预测/输入身份、目标质量、四格、罚项和两条分解路径。结果全部留 null，状态为 planned_not_executed；这里的 CPU 数值留在探针账本，不写入真实实验模板。复现：<code>make loss-cross-replay CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python</code>。</p></section>
 <section class="chapter" id="qb-guide"><h1 id="qb-guide-shard">路由均衡：分位数估计、shard分组与数据顺序</h1>
 <p>路由均衡有自己的状态更新，不能简单当作“加一个均衡loss”。本章对照固定源码，执行16项原辅助函数检查，分析两条估计路径怎样受批次结构影响。<a href="analysis/qb_partition_probe.json">原值与检查</a></p>
 <p>首先限定适用范围：六份归档ladder配置均声明<code>qb_estimator=HIST</code>、<code>qb_hist_bins=10000</code>。模型源码默认TOPK，不代表这些配置采用默认值；真实部署还需要执行SHA绑定。本章TOPK算例说明另一条可选路径的性质，不能据此认定这些HIST运行有同样的分组问题。HIST算例也没有复现真实模型、collective或历史训练效果。</p>
@@ -51884,7 +53744,8 @@ z
 <p>V69 恢复规则：相同口语“缺数据”可能产生不同异常类与回退策略。分别保留原布局/legacy 的首错，不从后一次包装错误的缺叶数量推原存储损失。明确回退许可，并记录最终读取 master 或 compute 的权威来源；不把同 dtype 当作同内容。</p>
 <p>V70 配比归因规则：完整续训时先核对 marker step、恢复 state.step、optimizer 计数与历史 schedule，再确认真实首批身份/阶段；候选发现 step 不能直接当成数据消费时钟。weights-only 的新 step0 与源 step 分开记录。样本序号被原块置换打乱不单独判错，内容和顺序需按相同 key 重放。</p>
 <p>V71 配比规则：先核对正常 builder 的 step→offset 转换，不能把不匹配工件的跨批控制误称生产路径必然跨界。原 callback 的 completed-step 时钟本例对齐；stage 日志表示批次起点配置，不等于整批域占比或有效目标占比。域 IDs、valid targets 与 NLL 分别取证。</p>
-<p>V72 loss 规则：训练 CE 标签须核对是否含输出 z-loss；域样本占比、有效目标 sum(weight) 与纯 NLL 分开。固定预测重放 mask/weight 可检查组成效应，但不冒充真实模型能力收益；输出罚项与 router 日志项分别记录。</p></section>
+<p>V72 loss 规则：训练 CE 标签须核对是否含输出 z-loss；域样本占比、有效目标 sum(weight) 与纯 NLL 分开。固定预测重放 mask/weight 可检查组成效应，但不冒充真实模型能力收益；输出罚项与 router 日志项分别记录。</p>
+<p>V73 四格规则：只有共同目标、相同上下文与两套完整预测时才分解。报告组成、预测与交互，标明参考分布；缺格保留 null。对称分摊是描述约定，固定评估与独立配比训练才用于收益判断。</p></section>
 <section class="chapter" id="pipeline"><h1 id="pipeline-_1">把研究做成能反复运行的决策管线</h1>
 <p>这条管线的输出是带证据范围的决定：补材料、保留候选、做独立确认、放大或回退。<strong>它不会自动训练模型，也不会因报告写得完整就允许声称生产收益。</strong> 每个阶段都留下文件，后续能复查为什么推进或停止。</p>
 <h2 id="pipeline-1">1. 七个阶段的输入和产物</h2>
@@ -52055,7 +53916,8 @@ z
 <p>V69 管线补充：记录 candidate→原布局→legacy→较早候选的实际调用轨迹、首错及错误类别。只在既定政策允许时退回已验证版本，不笼统吞 ValueError。master-bearing 到 device 模式的恢复核对原布局 hook、权威副本值与转换后保存路径，真实结果仍待执行。</p>
 <p>V70 续训→数据管线补充：标明 full resume 或 weights-only，绑定 marker/state 时钟；冻结已消费 batch 历史与 mixture/子集映射，核对首批 IDs 和配比阶段后再解释 loss。源配置切换 step 相同不足以保证累计曝光相同；真实 token 与 loss 尚待生产重放。</p>
 <p>V71 切换验收：比较批次区间与阶段边界，核对 callback step/next_step、实际 domain IDs 与各域 valid targets/NLL；保留正常无跨界的证据。若重新转换新 schedule 修好批次边界，还须单独审查历史消费重现。配比边界模板待真实执行。</p>
-<p>V72 配比确认管线补充：对固定预测重放旧新 mask/weight，记录分母、域内 NLL 与输出 z-loss；再用固定评估和能力保底确认模型收益。组成和参数变化可能交互，写明分解基准。CPU 人工控制已执行，真实 Hero 分解未知。</p></section>
+<p>V72 配比确认管线补充：对固定预测重放旧新 mask/weight，记录分母、域内 NLL 与输出 z-loss；再用固定评估和能力保底确认模型收益。组成和参数变化可能交互，写明分解基准。CPU 人工控制已执行，真实 Hero 分解未知。</p>
+<p>V73 诊断管线：绑定共同输入和 checkpoint 身份 → 核对有效目标质量与分母 → 两套预测×两套权重重放纯 CE/含罚项目标 → 三项及两条顺序闭合 → 固定分布评估与能力保底。支持集或预测缺失时停止分解；重放解释不替代训练反事实。</p></section>
 <section class="chapter" id="improvement"><h1 id="improvement-_1">持续改进记录：下一步要减少哪种不确定性</h1>
 <p>用户本轮目标是完善可视化和理解文档，并把判断规则与管线提炼出来用于持续改进。本轮首先交付规则1.0和理解/评审工作台，让已有证据能被读懂、复查和用于规划。</p>
 <h2 id="improvement-1">1. 本轮已经处理的问题</h2>
@@ -52419,7 +54281,9 @@ z
 <h2 id="improvement-v71">V71：原回调时钟、正常边界与错配工件对照</h2>
 <p>五输入6检查：原 StepInfo/StateCallbackRunner/LambdaCallback/stage hook、原 loader 与真实 CPU 混合。正常同 schedule 边界对齐；旧边界+新 loader 控制 A4/B4，起点日志仍 stage0。新增域计数图与未执行模板；synthetic loss0不是测量。462来源保持。</p>
 <h2 id="improvement-v72-loss">V72：原 loss 方法的目标组成与输出罚项控制</h2>
-<p>7检查，固定 hidden/head 的原模型 loss、Grug reducer、CPU reference 和原输出罚项语句。权重组成反例、小数分母、统一缩放均值/梯度、logit平移与z-loss指标核对。显式前向/provider/backend替代，无真实Hero loss归因或GPU。462来源保持。</p></section>
+<p>7检查，固定 hidden/head 的原模型 loss、Grug reducer、CPU reference 和原输出罚项语句。权重组成反例、小数分母、统一缩放均值/梯度、logit平移与z-loss指标核对。显式前向/provider/backend替代，无真实Hero loss归因或GPU。462来源保持。</p>
+<h2 id="improvement-v73">V73：预测×权重的交叉重放</h2>
+<p>18检查、纯 CE 与含输出罚项两套四格、独立域 NLL 与分母对照、缺格/不同支持拒绝输出。人工预测改善方向随评价权重反转，交互2.0不可遗漏。新增图与实验记录；不是实际训练干预或 Hero 归因。</p></section>
 <section class="chapter" id="conclusions"><h1 id="conclusions-_1">第四轮：这套配比值得学什么，哪些结论还不能照搬</h1>
 <p>我现在的判断是：<strong>选中配比值得作为代码和学术文本方向的候选方案；公开实验不足以证明它是通用能力最优、数学能力安全、可以直接迁移到535B的配方。</strong> 它相对旧配比的收益是真实的公开观测，但把简单的库存比例基线补上以后，收益的性质发生了变化：通用文本平均值的额外改善很小，代码和学术文本的改善更突出。</p>
 <p>这也改变了我对“该怎样学这次预训练”的回答。最值得复制的是比较方法：把便宜但有竞争力的基线放进来，拆开平均值，核算每桶累计曝光，保留能力退步，并在更大规模上确认候选。200个权重可以作为实验起点，却不能替代这些步骤。</p>

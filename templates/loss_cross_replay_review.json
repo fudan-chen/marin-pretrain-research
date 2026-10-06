@@ -1,0 +1,63 @@
+{
+  "status": "planned_not_executed",
+  "purpose": "descriptive_common_target_replay_not_causal_training_effect",
+  "identity": {
+    "old_checkpoint_sha": null,
+    "new_checkpoint_sha": null,
+    "target_manifest_sha": null,
+    "context_and_label_sha": null,
+    "tokenizer_sha": null,
+    "packing_and_document_boundary_sha": null,
+    "source_sha": null,
+    "backend_and_dtype": null
+  },
+  "eligibility": {
+    "same_target_support": null,
+    "both_predictions_available": null,
+    "finite_nonnegative_weights": null,
+    "positive_denominators": null
+  },
+  "weight_evidence": {
+    "old_target_mass_by_domain": null,
+    "new_target_mass_by_domain": null,
+    "old_denominator": null,
+    "new_denominator": null
+  },
+  "cells": {
+    "pure_ce": {
+      "00": null,
+      "01": null,
+      "10": null,
+      "11": null
+    },
+    "ce_plus_output_z": {
+      "00": null,
+      "01": null,
+      "10": null,
+      "11": null
+    },
+    "output_penalty": {
+      "00": null,
+      "01": null,
+      "10": null,
+      "11": null
+    }
+  },
+  "allocation": {
+    "total": null,
+    "composition_at_old_prediction": null,
+    "prediction_at_old_weights": null,
+    "interaction": null,
+    "prediction_at_new_weights": null,
+    "composition_at_new_prediction": null,
+    "symmetric_composition": null,
+    "symmetric_prediction": null
+  },
+  "independent_confirmation": {
+    "fixed_evaluation_manifest_sha": null,
+    "training_intervention_receipt": null,
+    "per_domain_nll": null,
+    "task_regressions": null
+  },
+  "decision": "pending_evidence"
+}

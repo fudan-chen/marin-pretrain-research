@@ -1,0 +1,137 @@
+{
+  "scope": "Descriptive four-cell replay on common synthetic targets; no causal Hero estimate.",
+  "checks_passed": 18,
+  "checks": [
+    "pure_ce 00 matches target-weight denominator",
+    "pure_ce 01 matches target-weight denominator",
+    "pure_ce 10 matches target-weight denominator",
+    "pure_ce 11 matches target-weight denominator",
+    "pure_ce baseline allocation closes",
+    "pure_ce symmetric allocation closes",
+    "ce_plus_output_z 00 matches target-weight denominator",
+    "ce_plus_output_z 01 matches target-weight denominator",
+    "ce_plus_output_z 10 matches target-weight denominator",
+    "ce_plus_output_z 11 matches target-weight denominator",
+    "ce_plus_output_z baseline allocation closes",
+    "ce_plus_output_z symmetric allocation closes",
+    "Observed training-weight change conceals fixed-old-weight improvement",
+    "Prediction contribution changes with reference distribution",
+    "Nonzero interaction forbids two baseline deltas alone",
+    "Output penalty separately reconciles all cells",
+    "Missing prediction on common support leaves allocation unavailable",
+    "Different target support prevents numerical allocation"
+  ],
+  "observations": {
+    "pure_ce": {
+      "cells": {
+        "00": 2.2985873222351074,
+        "01": 0.7985873222351074,
+        "10": 0.5632616281509399,
+        "11": 1.06326162815094
+      },
+      "allocation": {
+        "total": -1.2353256940841675,
+        "composition_at_old_prediction": -1.5,
+        "prediction_at_old_weights": -1.7353256940841675,
+        "interaction": 2.0,
+        "prediction_at_new_weights": 0.2646743059158325,
+        "composition_at_new_prediction": 0.5,
+        "symmetric_composition": -0.5,
+        "symmetric_prediction": -0.7353256940841675
+      },
+      "per_domain_objective": [
+        [
+          0.048587351573742055,
+          3.048587351573742
+        ],
+        [
+          1.3132616875182228,
+          0.3132616875182228
+        ]
+      ]
+    },
+    "ce_plus_output_z": {
+      "cells": {
+        "00": 2.299006938934326,
+        "01": 0.7990069389343262,
+        "10": 0.5633087754249573,
+        "11": 1.063308835029602
+      },
+      "allocation": {
+        "total": -1.2356981039047241,
+        "composition_at_old_prediction": -1.5,
+        "prediction_at_old_weights": -1.735698163509369,
+        "interaction": 2.0000000596046448,
+        "prediction_at_new_weights": 0.2643018960952759,
+        "composition_at_new_prediction": 0.5000000596046448,
+        "symmetric_composition": -0.4999999701976776,
+        "symmetric_prediction": -0.7356981337070465
+      },
+      "per_domain_objective": [
+        [
+          0.04900702258744485,
+          3.049007022587445
+        ],
+        [
+          1.313308848469206,
+          0.3133088484692058
+        ]
+      ]
+    }
+  },
+  "output_penalty_cells": {
+    "00": 0.00041961669921875,
+    "01": 0.00041961669921875,
+    "10": 4.7147274017333984e-05,
+    "11": 4.7206878662109375e-05
+  },
+  "weighted_target_mass": [
+    [
+      1,
+      3
+    ],
+    [
+      3,
+      1
+    ]
+  ],
+  "denominators": [
+    4,
+    4
+  ],
+  "common_support": {
+    "target_ids": [
+      "A:0",
+      "A:1",
+      "A:2",
+      "B:0",
+      "B:1",
+      "B:2"
+    ],
+    "same_labels_and_context": true,
+    "both_predictions_available": true
+  },
+  "missing_cell_control": {
+    "cells": {
+      "00": 2.2985873222351074,
+      "01": null,
+      "10": 0.5632616281509399,
+      "11": 1.06326162815094
+    },
+    "allocation": null
+  },
+  "explicit_substitutions": [
+    "V72 fixed hidden/router provider",
+    "CPU original reference replaces GPU dispatch",
+    "synthetic heads and targets, no parameter update"
+  ],
+  "source_sha256": {
+    "sources/contracts_2026_10_05/api.py": "5efeea2badba92dbc2dce9d0fc2306f12a2bf754dd2d8bee16b1dcd3ed0e355d",
+    "sources/contracts_2026_10_05/reference.py": "f113b3b6872af2d6aa4658cf4326b6c52c2675bf537690d5653604e9d559c0d5",
+    "sources/scale_2026_10_05/grug_loss.py": "97e86e8a7540cafeb4be9695da9a5c8342f3780b7fee6cbb45de79ffc50c15ba",
+    "sources/contracts_2026_10_05/model.py": "8fdfd89cf6814da05683f134f154525916728370368a2493843195d9a489859c",
+    "scripts/probe_loss_composition_cpu.py": "365f86f94b9faddd4681e8bd75d44ce1f18a464e9a3528043df5ec4e149f4ce6"
+  },
+  "actual_Hero_loss_attribution": null,
+  "actual_mixture_training_experiment": null
+}

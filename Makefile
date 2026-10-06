@@ -193,3 +193,8 @@ mixture-boundary-logging:
 .PHONY: loss-composition
 loss-composition:
 	$(CPU_PYTHON) scripts/probe_loss_composition_cpu.py
+
+.PHONY: loss-cross-replay
+loss-cross-replay:
+	$(CPU_PYTHON) scripts/probe_loss_cross_replay_cpu.py
+	$(PYTHON) scripts/plot_loss_cross_replay.py

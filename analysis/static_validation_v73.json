@@ -1,0 +1,14 @@
+{
+  "version": "V73",
+  "checks_passed": 6,
+  "checks": [
+    "index.html unique ids",
+    "index.html four-cell figure and chapter embedded",
+    "report_standalone.html unique ids",
+    "report_standalone.html four-cell figure and chapter embedded",
+    "Frozen source archive unchanged",
+    "Fresh global validation"
+  ],
+  "png_visually_inspected": true,
+  "actual_browser_rendering": null
+}

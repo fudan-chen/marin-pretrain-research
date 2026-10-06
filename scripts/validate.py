@@ -966,6 +966,14 @@ lo=lc['observations']
 ok('V72 fixed prediction target composition changes mean',abs(lo['fixed_prediction_losses']['A1_B3']-lo['fixed_prediction_losses']['A3_B1']-1.5)<1e-6 and lo['weighted_target_mass']['fractional_A']==[1.5,1])
 ok('V72 logit shift pure CE versus z-loss distinguished',abs(lo['pure_ce']-lo['shifted_pure_ce'])<2e-6 and lo['shifted_with_z_loss']>lo['with_z_loss']>lo['pure_ce'] and 'V72' in soup.select_one('#loss-triage').get_text())
 report['highlights']+=['V72 seven original-loss CPU controls, fixed-prediction composition and output-penalty metric checks; synthetic forward/reference delegate, no Hero loss attribution or GPU execution']
+lr=read(A/'loss_cross_replay_cpu.json')
+ok('V73 four-cell source binding retains unknown training attribution',lr['checks_passed']==len(lr['checks'])==18 and lr['actual_Hero_loss_attribution'] is None and lr['actual_mixture_training_experiment'] is None and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in lr['source_sha256'].items()))
+la=lr['observations']['pure_ce']['allocation']
+ok('V73 reference-distribution reversal and interaction retained',la['prediction_at_old_weights']<0<la['prediction_at_new_weights'] and abs(la['interaction']-2)<1e-6 and abs(la['total']-la['composition_at_old_prediction']-la['prediction_at_old_weights']-la['interaction'])<1e-12)
+lt=read(ROOT/'templates/loss_cross_replay_review.json')
+ok('V73 missing cell and unexecuted receipt never filled',lr['missing_cell_control']['allocation'] is None and lt['status']=='planned_not_executed' and all(v is None for cells in lt['cells'].values() for v in cells.values()))
+ok('V73 four-cell figure embedded',soup.select_one('#loss-triage #losscross-figure_1') is not None)
+report['highlights']+=['V73 eighteen original-loss CPU cross-replay checks and descriptive interaction figure; common synthetic targets, missing-cell rejection, no Hero attribution or training effect']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

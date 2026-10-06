@@ -4443,5 +4443,29 @@
     "retrieved_utc": "2026-10-06T22:26:57.888310+00:00",
     "bytes": 22904,
     "sha256": "647a16ab5d7adac4166e63a429b112afdda0f11dd4fcb4866dde77cb3a4263d1"
+  },
+  {
+    "file": "phase_budget_2026_10_07/harrier.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/experiments/grug/moe_hero_ep/harrier_mix_2026_08_18.py",
+    "revision": "b65be4c9550c5097f0a3add08933531a1c24d534",
+    "retrieved_utc": "2026-10-06T22:32:20.871119+00:00",
+    "bytes": 7104,
+    "sha256": "90b2881c131682567bae111e8d6cf4d104a0a81c0e0bc1f206b96226d1f295d7"
+  },
+  {
+    "file": "phase_budget_2026_10_07/harrier.json",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/experiments/grug/moe_hero_ep/harrier_mix_2026_08_18.json",
+    "revision": "b65be4c9550c5097f0a3add08933531a1c24d534",
+    "retrieved_utc": "2026-10-06T22:32:21.656887+00:00",
+    "bytes": 29521,
+    "sha256": "8f3fd489a6b2bacdcbf61e47577e4e87864e320aece2a62eae64c8f62721344e"
+  },
+  {
+    "file": "phase_budget_2026_10_07/launch_datakit_moe_mix.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/experiments/grug/moe/launch_datakit_moe_mix.py",
+    "revision": "b65be4c9550c5097f0a3add08933531a1c24d534",
+    "retrieved_utc": "2026-10-06T22:32:22.248868+00:00",
+    "bytes": 15701,
+    "sha256": "cb37487c4e716f967be309a3eb51a6f8a6ae407de43cfb739628ffc02936bfa2"
   }
 ]

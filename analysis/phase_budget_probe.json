@@ -1,0 +1,364 @@
+{
+  "scope": "Execute original Harrier phase builder/validation and budget helpers on host.\nRecording config/component adapters; nominal full-sequence exposure, not actual token stream.\n",
+  "checks_passed": 15,
+  "checks": [
+    "Original fixed spec validation passes",
+    "All recorded stage sequence offsets align",
+    "Hero recipe boundaries match pinned source",
+    "One extra planned step delays main phase by a block",
+    "Double horizon moves both planned boundaries",
+    "Same artificial resume step selects different phase under rebuilt horizon",
+    "Short run dict collision removes main phase",
+    "One-step run never consumes recorded cooldown",
+    "Batch alignment changes small run phase presence",
+    "Equal analytic threshold enables simulated budgets",
+    "Next float above threshold disables both budgets",
+    "Raw builder permits nominal weighted exposure beyond fixed spec cap",
+    "Changing batch alone changes nominal exposure scale",
+    "Enabled simulation rejects nominal budget above target",
+    "Raw builder accepts same enlarged nominal token budget"
+  ],
+  "runtime": {
+    "python": "3.12.13"
+  },
+  "cases": [
+    {
+      "case": "hero_recipe",
+      "total_steps": 390251,
+      "batch": 11264,
+      "sequence_length": 4096,
+      "analytic_flops": 2.7e+24,
+      "step_multiple": 48,
+      "phase_stages": [
+        {
+          "start": 0,
+          "end_clipped_to_run": 108000,
+          "steps": 108000,
+          "phase_index": 0
+        },
+        {
+          "start": 108000,
+          "end_clipped_to_run": 312192,
+          "steps": 204192,
+          "phase_index": 1
+        },
+        {
+          "start": 312192,
+          "end_clipped_to_run": 390251,
+          "steps": 78059,
+          "phase_index": 2
+        }
+      ],
+      "target_budget": null,
+      "experiment_budget": null,
+      "nominal_sequence_tokens": 18005144633344,
+      "nominal_weighted_peak_cell": "c27q0",
+      "nominal_weighted_peak_epochs": 6.7408310258676725,
+      "phase_weight_sha256": [
+        "aa8aeddfde3e40b6dfd80d6cf9cb35028f15efba9523f1fcc16fd6b02afe5a1a",
+        "1320e49baac7262ae59320b8f14e9a051abf0b31ccce529ad2d3ec472067549f",
+        "2fd61c531e473186583221570975ca3f5e614778b807c6e796312696b28cbfbe"
+      ]
+    },
+    {
+      "case": "one_extra_step",
+      "total_steps": 390252,
+      "batch": 11264,
+      "sequence_length": 4096,
+      "analytic_flops": 2.7e+24,
+      "step_multiple": 48,
+      "phase_stages": [
+        {
+          "start": 0,
+          "end_clipped_to_run": 108048,
+          "steps": 108048,
+          "phase_index": 0
+        },
+        {
+          "start": 108048,
+          "end_clipped_to_run": 312192,
+          "steps": 204144,
+          "phase_index": 1
+        },
+        {
+          "start": 312192,
+          "end_clipped_to_run": 390252,
+          "steps": 78060,
+          "phase_index": 2
+        }
+      ],
+      "target_budget": null,
+      "experiment_budget": null,
+      "nominal_sequence_tokens": 18005190770688,
+      "nominal_weighted_peak_cell": "c27q0",
+      "nominal_weighted_peak_epochs": 6.739658281135716,
+      "phase_weight_sha256": [
+        "aa8aeddfde3e40b6dfd80d6cf9cb35028f15efba9523f1fcc16fd6b02afe5a1a",
+        "1320e49baac7262ae59320b8f14e9a051abf0b31ccce529ad2d3ec472067549f",
+        "2fd61c531e473186583221570975ca3f5e614778b807c6e796312696b28cbfbe"
+      ]
+    },
+    {
+      "case": "double_horizon",
+      "total_steps": 780502,
+      "batch": 11264,
+      "sequence_length": 4096,
+      "analytic_flops": 5.4e+24,
+      "step_multiple": 48,
+      "phase_stages": [
+        {
+          "start": 0,
+          "end_clipped_to_run": 216000,
+          "steps": 216000,
+          "phase_index": 0
+        },
+        {
+          "start": 216000,
+          "end_clipped_to_run": 624384,
+          "steps": 408384,
+          "phase_index": 1
+        },
+        {
+          "start": 624384,
+          "end_clipped_to_run": 780502,
+          "steps": 156118,
+          "phase_index": 2
+        }
+      ],
+      "target_budget": null,
+      "experiment_budget": null,
+      "nominal_sequence_tokens": 36010289266688,
+      "nominal_weighted_peak_cell": "c27q0",
+      "nominal_weighted_peak_epochs": 13.481662051735345,
+      "phase_weight_sha256": [
+        "aa8aeddfde3e40b6dfd80d6cf9cb35028f15efba9523f1fcc16fd6b02afe5a1a",
+        "1320e49baac7262ae59320b8f14e9a051abf0b31ccce529ad2d3ec472067549f",
+        "2fd61c531e473186583221570975ca3f5e614778b807c6e796312696b28cbfbe"
+      ]
+    },
+    {
+      "case": "changed_batch_same_steps",
+      "total_steps": 390251,
+      "batch": 2048,
+      "sequence_length": 4096,
+      "analytic_flops": 2.7e+24,
+      "step_multiple": 24,
+      "phase_stages": [
+        {
+          "start": 0,
+          "end_clipped_to_run": 108000,
+          "steps": 108000,
+          "phase_index": 0
+        },
+        {
+          "start": 108000,
+          "end_clipped_to_run": 312192,
+          "steps": 204192,
+          "phase_index": 1
+        },
+        {
+          "start": 312192,
+          "end_clipped_to_run": 390251,
+          "steps": 78059,
+          "phase_index": 2
+        }
+      ],
+      "target_budget": null,
+      "experiment_budget": null,
+      "nominal_sequence_tokens": 3273662660608,
+      "nominal_weighted_peak_cell": "c27q0",
+      "nominal_weighted_peak_epochs": 1.2256056410668497,
+      "phase_weight_sha256": [
+        "aa8aeddfde3e40b6dfd80d6cf9cb35028f15efba9523f1fcc16fd6b02afe5a1a",
+        "1320e49baac7262ae59320b8f14e9a051abf0b31ccce529ad2d3ec472067549f",
+        "2fd61c531e473186583221570975ca3f5e614778b807c6e796312696b28cbfbe"
+      ]
+    },
+    {
+      "case": "short_diagnostic",
+      "total_steps": 100,
+      "batch": 1024,
+      "sequence_length": 4096,
+      "analytic_flops": 1e+20,
+      "step_multiple": 48,
+      "phase_stages": [
+        {
+          "start": 0,
+          "end_clipped_to_run": 48,
+          "steps": 48,
+          "phase_index": 0
+        },
+        {
+          "start": 48,
+          "end_clipped_to_run": 100,
+          "steps": 52,
+          "phase_index": 2
+        }
+      ],
+      "target_budget": 18750000000000,
+      "experiment_budget": 419430400,
+      "nominal_sequence_tokens": 419430400,
+      "nominal_weighted_peak_cell": "c27q0",
+      "nominal_weighted_peak_epochs": 8.614647594208773e-05,
+      "phase_weight_sha256": [
+        "aa8aeddfde3e40b6dfd80d6cf9cb35028f15efba9523f1fcc16fd6b02afe5a1a",
+        "2fd61c531e473186583221570975ca3f5e614778b807c6e796312696b28cbfbe"
+      ]
+    },
+    {
+      "case": "one_step",
+      "total_steps": 1,
+      "batch": 1024,
+      "sequence_length": 4096,
+      "analytic_flops": 1e+20,
+      "step_multiple": 48,
+      "phase_stages": [
+        {
+          "start": 0,
+          "end_clipped_to_run": 1,
+          "steps": 1,
+          "phase_index": 0
+        },
+        {
+          "start": 48,
+          "end_clipped_to_run": 1,
+          "steps": 0,
+          "phase_index": 2
+        }
+      ],
+      "target_budget": 18750000000000,
+      "experiment_budget": 4194304,
+      "nominal_sequence_tokens": 4194304,
+      "nominal_weighted_peak_cell": "c27q4",
+      "nominal_weighted_peak_epochs": 6.581491864364027e-07,
+      "phase_weight_sha256": [
+        "aa8aeddfde3e40b6dfd80d6cf9cb35028f15efba9523f1fcc16fd6b02afe5a1a",
+        "2fd61c531e473186583221570975ca3f5e614778b807c6e796312696b28cbfbe"
+      ]
+    },
+    {
+      "case": "aligned_small_batch",
+      "total_steps": 100,
+      "batch": 49152,
+      "sequence_length": 4096,
+      "analytic_flops": 1e+20,
+      "step_multiple": 1,
+      "phase_stages": [
+        {
+          "start": 0,
+          "end_clipped_to_run": 28,
+          "steps": 28,
+          "phase_index": 0
+        },
+        {
+          "start": 28,
+          "end_clipped_to_run": 80,
+          "steps": 52,
+          "phase_index": 1
+        },
+        {
+          "start": 80,
+          "end_clipped_to_run": 100,
+          "steps": 20,
+          "phase_index": 2
+        }
+      ],
+      "target_budget": 18750000000000,
+      "experiment_budget": 20132659200,
+      "nominal_sequence_tokens": 20132659200,
+      "nominal_weighted_peak_cell": "c27q0",
+      "nominal_weighted_peak_epochs": 0.0075022093691385645,
+      "phase_weight_sha256": [
+        "aa8aeddfde3e40b6dfd80d6cf9cb35028f15efba9523f1fcc16fd6b02afe5a1a",
+        "1320e49baac7262ae59320b8f14e9a051abf0b31ccce529ad2d3ec472067549f",
+        "2fd61c531e473186583221570975ca3f5e614778b807c6e796312696b28cbfbe"
+      ]
+    },
+    {
+      "case": "threshold_equal",
+      "total_steps": 100,
+      "batch": 1024,
+      "sequence_length": 4096,
+      "analytic_flops": 1e+23,
+      "step_multiple": 48,
+      "phase_stages": [
+        {
+          "start": 0,
+          "end_clipped_to_run": 48,
+          "steps": 48,
+          "phase_index": 0
+        },
+        {
+          "start": 48,
+          "end_clipped_to_run": 100,
+          "steps": 52,
+          "phase_index": 2
+        }
+      ],
+      "target_budget": 18750000000000,
+      "experiment_budget": 419430400,
+      "nominal_sequence_tokens": 419430400,
+      "nominal_weighted_peak_cell": "c27q0",
+      "nominal_weighted_peak_epochs": 8.614647594208773e-05,
+      "phase_weight_sha256": [
+        "aa8aeddfde3e40b6dfd80d6cf9cb35028f15efba9523f1fcc16fd6b02afe5a1a",
+        "2fd61c531e473186583221570975ca3f5e614778b807c6e796312696b28cbfbe"
+      ]
+    },
+    {
+      "case": "threshold_above",
+      "total_steps": 100,
+      "batch": 1024,
+      "sequence_length": 4096,
+      "analytic_flops": 1.0000000000000001e+23,
+      "step_multiple": 48,
+      "phase_stages": [
+        {
+          "start": 0,
+          "end_clipped_to_run": 48,
+          "steps": 48,
+          "phase_index": 0
+        },
+        {
+          "start": 48,
+          "end_clipped_to_run": 100,
+          "steps": 52,
+          "phase_index": 2
+        }
+      ],
+      "target_budget": null,
+      "experiment_budget": null,
+      "nominal_sequence_tokens": 419430400,
+      "nominal_weighted_peak_cell": "c27q0",
+      "nominal_weighted_peak_epochs": 8.614647594208773e-05,
+      "phase_weight_sha256": [
+        "aa8aeddfde3e40b6dfd80d6cf9cb35028f15efba9523f1fcc16fd6b02afe5a1a",
+        "2fd61c531e473186583221570975ca3f5e614778b807c6e796312696b28cbfbe"
+      ]
+    }
+  ],
+  "artificial_resume_control": {
+    "step": 121638,
+    "old_phase": 1,
+    "rebuilt_phase": 0,
+    "actual_checkpoint_restore": null
+  },
+  "enabled_simulation_error": "experiment_budget 36010289266688 exceeds target_budget 18750000000000",
+  "source_sha256": {
+    "sources/phase_budget_2026_10_07/harrier.py": "90b2881c131682567bae111e8d6cf4d104a0a81c0e0bc1f206b96226d1f295d7",
+    "sources/phase_budget_2026_10_07/launch_datakit_moe_mix.py": "cb37487c4e716f967be309a3eb51a6f8a6ae407de43cfb739628ffc02936bfa2",
+    "sources/phase_budget_2026_10_07/harrier.json": "8f3fd489a6b2bacdcbf61e47577e4e87864e320aece2a62eae64c8f62721344e"
+  },
+  "explicit_substitutions": [
+    "AST-extracted original builder, fixed validation and exact phase/budget helpers",
+    "recording LmDataConfig and DatasetComponent adapters; no config post-init/cache/token reads",
+    "spec data passed into original dataclass without original filesystem loader",
+    "ctx fingerprint adapter and empty validation list",
+    "nominal exposure uses full sequence length and declared continuous weights, not actual integer-block counts or effective loss-token mass"
+  ],
+  "actual_Hero_phase_regression": null,
+  "actual_Hero_overexposure": null,
+  "actual_Hero_loss_effect": null,
+  "actual_token_identity_replay": null,
+  "actual_GPU_execution": null
+}

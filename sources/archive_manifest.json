@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-06T22:29:41.922953+00:00",
+  "integrity_manifest_created_utc": "2026-10-06T22:35:46.992767+00:00",
   "files": [
     {
       "file": "accumulation_2026_10_07/grad_accum.py",
@@ -1498,6 +1498,27 @@
       "retrieved_utc": "2026-10-06T15:44:20.119415+00:00"
     },
     {
+      "file": "phase_budget_2026_10_07/harrier.json",
+      "bytes": 29521,
+      "sha256": "8f3fd489a6b2bacdcbf61e47577e4e87864e320aece2a62eae64c8f62721344e",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/experiments/grug/moe_hero_ep/harrier_mix_2026_08_18.json",
+      "retrieved_utc": "2026-10-06T22:32:21.656887+00:00"
+    },
+    {
+      "file": "phase_budget_2026_10_07/harrier.py",
+      "bytes": 7104,
+      "sha256": "90b2881c131682567bae111e8d6cf4d104a0a81c0e0bc1f206b96226d1f295d7",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/experiments/grug/moe_hero_ep/harrier_mix_2026_08_18.py",
+      "retrieved_utc": "2026-10-06T22:32:20.871119+00:00"
+    },
+    {
+      "file": "phase_budget_2026_10_07/launch_datakit_moe_mix.py",
+      "bytes": 15701,
+      "sha256": "cb37487c4e716f967be309a3eb51a6f8a6ae407de43cfb739628ffc02936bfa2",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/experiments/grug/moe/launch_datakit_moe_mix.py",
+      "retrieved_utc": "2026-10-06T22:32:22.248868+00:00"
+    },
+    {
       "file": "plot_scaling_ladder.py",
       "bytes": 15754,
       "sha256": "35069ff126690dd82fe9aefd768009e1a1073c4e6e1c674e857ee5a3a35fbacb",
@@ -2892,8 +2913,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 223803,
-      "sha256": "eea78e5dcf99f92a3ea0aa74536a9db8cb392089806269a62d0266b1e8a679c3",
+      "bytes": 225142,
+      "sha256": "be987e4b8bae304a3c75d6244a47feea621601b0a801f87d5935a055d034c363",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

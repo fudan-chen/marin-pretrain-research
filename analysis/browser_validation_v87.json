@@ -1,0 +1,16 @@
+{
+  "version": "V87",
+  "created_utc": "2026-10-06T22:40:01.842190+00:00",
+  "url": "http://127.0.0.1:8844/#phasebudget-figure_1",
+  "index_sha256": "332853f71dc641c09c24a2b13c83a56fb410934393536b34a18417f02ed15043",
+  "screenshot": "assets/phase-budget-browser-v87.jpg",
+  "screenshot_sha256": "85cdaf8bb718ab6cef4456ce7d3cc21690518d8a84d6a6118e2365583ab89262",
+  "checks": [
+    "Final index reloaded; native AX includes the phasebudget figure title",
+    "Desktop screenshot shows both absolute-step timelines, boundaries and resume marker",
+    "Nearby explanation visibly distinguishes nominal exposure, fixed validation scope and missing actual token replay"
+  ],
+  "scope": "Manual visual/native accessibility verification; desktop index view only",
+  "actual_mobile_rendering": null,
+  "actual_standalone_browser_rendering": null
+}

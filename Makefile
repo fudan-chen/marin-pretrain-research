@@ -250,3 +250,9 @@ clipping-precision-cpu:
 .PHONY: decay-resume-cpu
 decay-resume-cpu:
 	$(CPU_PYTHON) scripts/probe_decay_resume_cpu.py
+
+
+HOST_PYTHON ?= python3
+.PHONY: phase-budget-probe
+phase-budget-probe:
+	$(HOST_PYTHON) scripts/probe_phase_budget.py

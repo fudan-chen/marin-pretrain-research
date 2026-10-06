@@ -1,0 +1,17 @@
+{
+  "version": "V87",
+  "checks_passed": 10,
+  "checks": [
+    "index.html unique IDs",
+    "index.html phase figure and scope",
+    "index.html six old tables preserved plus stage table",
+    "report_standalone.html unique IDs",
+    "report_standalone.html phase figure and scope",
+    "report_standalone.html six old tables preserved plus stage table",
+    "496 source hashes exact",
+    "Fresh V87 validation",
+    "three same head sources and 492 preserved",
+    "Desktop screenshot receipt binds current page"
+  ],
+  "actual_browser_receipt": "analysis/browser_validation_v87.json"
+}

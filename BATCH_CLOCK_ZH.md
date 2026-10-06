@@ -172,3 +172,48 @@ StateCallbackRunner 接收训练完成后的 state.step；原 StepInfo.step = in
 阶段附近的验收应保存 `[q(step), q(step+1))` 与边界相交结果，抽查或记录实际 domain IDs，再记录各域 valid targets、NLL sum 及权重。对配置日志中的阶段变更，用此记录确认哪批真正包含新域、哪批全部进入新阶段；不能把 stage 标签本身当作已测域组成。若实际没有跨界，则保留正常对齐证据，而不是制造额外的切换延迟解释。
 
 [配比边界验收模板](templates/mixture_boundary_review.json)把 schedule、边界、日志时钟、样本域与有效目标放在同一记录中，生产结果为空。执行范围：原 callback 类通过 AST 提取，Generic 的 TrainerState bound 未用于运行；synthetic state 只提供完成 step；记录 tracker、身份子集及 host loader 适配器替代真实训练与 batchify/watchdog。来源沿用462份归档，没有新增生产观测。复现：`make mixture-boundary-logging CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。
+
+
+## V87：训练预算会重新定义配比时间表
+
+V71检查loader与日志的边界，本轮向上追到实际Harrier配置构建函数。固定head b65be4c9550c5097f0a3add08933531a1c24d534的原函数、原spec校验及三个预算/阶段辅助函数均执行；LmDataConfig、DatasetComponent和ctx替换成记录字段的适配器。200桶、三阶段权重与库存来自同head完整JSON。没有执行真实配置post-init、数据缓存、MixtureDataset、训练、checkpoint或GPU。[原构建代码](https://github.com/marin-community/marin/blob/b65be4c9550c5097f0a3add08933531a1c24d534/experiments/grug/moe_hero_ep/harrier_mix_2026_08_18.py) · [15项host检查](analysis/phase_budget_probe.json)
+
+### 对齐不只是近似误差，还可能覆盖一个阶段
+
+令N为本次total_steps，B为固定batch，数据block为49,152条序列。可对齐的step间隔m=49,152/gcd(49,152,B)。initial→main使用ceil(N×108000/390251÷m)×m，向上对齐；cooldown辅助函数先取max(1,int(0.8N))，再向下对齐到m，且最少为m。两者方向不同。
+
+阶段随后用dict把(0,switch,cooldown)绑定三份权重。若switch与cooldown相同，后写入的cooldown覆盖main。这是源码明确注释的短诊断策略，不能直接当作生产bug；不过实验名写着“三阶段”，不证明实际读到了三阶段。若阶段起点超过终止步，它会存在于配置里，却没有任何训练批次进入它。
+
+|原构建函数的独立输入对照|m|返回阶段起点 / 阶段|解释范围|
+|---|---:|---|---|
+|N=390251，B=11264|48|0 initial；108000 main；312192 cooldown|指定Hero尺度参数的构建输出，不证明历史实际执行|
+|N=390252，B=11264|48|0；108048；312192|只多计划一步，main晚48步；块对齐造成离散跳变|
+|N=780502，B=11264|48|0；216000；624384|人工延长预算，两次边界都随N重算|
+|N=100，B=1024|48|0 initial；48 cooldown|两边界碰撞，main被覆盖；实际48/52步分配|
+|N=1，B=1024|48|0 initial；48 cooldown|cooldown只被声明，本次运行不会读到|
+|N=100，B=49152|1|0 initial；28 main；80 cooldown|不同batch对齐关系让三阶段都出现|
+|N=390251，B=2048|24|0；108000；312192|本例边界相同，名义总token仍下降到约3.274T|
+
+同一人工恢复step=121638，在原N=390251时位于main，在N=780502时位于initial。参数和optimizer state是否完整恢复，不决定这张重新构建的阶段表；它是另一个输入。同一step也不能证明同一域身份/库存offset，因为完整映射还依赖旧阶段已消耗的域配额和key。这里只执行原声明构建，没有将该反例写成Hero的真实阶段回退。
+
+<svg id="phasebudget-figure_1" viewBox="0 0 1000 250" role="img" aria-labelledby="phasebudget-title" style="width:100%;height:auto"><title id="phasebudget-title">同一恢复步，在不同训练预算下对应不同配比阶段。源码声明对照，不是真实训练轨迹。</title><rect width="1000" height="250" fill="#fafaf7"/><text x="12" y="77" font-size="15">N=390,251</text><rect x="150.000" y="55" width="110.698" height="35" fill="#d5e6f2"/><text x="205.349" y="78" text-anchor="middle" font-size="13">initial</text><rect x="260.698" y="55" width="209.293" height="35" fill="#61a8ad"/><text x="365.344" y="78" text-anchor="middle" font-size="13">main</text><rect x="469.991" y="55" width="80.009" height="35" fill="#dcb269"/><text x="509.995" y="78" text-anchor="middle" font-size="13">cooldown</text><text x="260.698" y="47" text-anchor="middle" font-size="12">108,000</text><text x="469.991" y="47" text-anchor="middle" font-size="12">312,192</text><text x="12" y="149" font-size="15">N=780,502</text><rect x="150.000" y="127" width="221.396" height="35" fill="#d5e6f2"/><text x="260.698" y="150" text-anchor="middle" font-size="13">initial</text><rect x="371.396" y="127" width="418.586" height="35" fill="#61a8ad"/><text x="580.689" y="150" text-anchor="middle" font-size="13">main</text><rect x="789.982" y="127" width="160.018" height="35" fill="#dcb269"/><text x="869.991" y="150" text-anchor="middle" font-size="13">cooldown</text><text x="371.396" y="119" text-anchor="middle" font-size="12">216,000</text><text x="789.982" y="119" text-anchor="middle" font-size="12">624,384</text><line x1="274.677" x2="274.677" y1="40" y2="177" stroke="#a32a36" stroke-width="2" stroke-dasharray="5 4"/><text x="274.677" y="198" text-anchor="middle" fill="#a32a36" font-size="13">同一人工恢复步 121,638</text><text x="150" y="232" font-size="13">横轴为绝对 step；上行恢复在 main，下行恢复在 initial。未重放真实 checkpoint 或 token。</text></svg>
+
+图中按共同绝对step轴显示两份构建输出。相对进度都保持相同目标，固定恢复step所处阶段却不同；这说明“按比例扩展实验”与“忠实续训原计划”需要不同配置。
+
+### 八轮上限检查保证了什么
+
+原_validate_spec使用固定18.75T参考预算：initial预算是18.75T×108000/390251，main使用15T减去initial，cooldown为3.75T；逐桶累计除以available_tokens，检查≤8。该函数不接收实际N、B或序列长度。校验的是固定spec在这份参考预算下的曝光约束，不能自动保证任意训练预算仍≤8。
+
+本轮另按原构建返回阶段、连续声明权重与每步B×4096计算**名义完整序列token曝光**。N=390251时总量约18.005T，最大桶为c27q0，约6.7408轮；人工N加倍后总量约36.010T，该桶约13.4817轮。固定spec校验仍通过，原构建函数在raw分支仍能返回字段。因此扩大raw预算需要重新核算曝光，不能把原静态校验当作任意预算的保证。这不是测得真实重复率：真实每块整数配额、被读取边缘块、文档身份、padding/mask和有效loss token均未执行。
+
+还需区别模拟epoching分支。原函数以传入analytic experiment_flops≤1e23决定是否设置target_budget与experiment_budget，等号仍开启；只提高到下一可表示浮点数便切换为两个None。开启时experiment_budget=N×B×L，超过固定18.75T会被预算辅助函数拒绝；关闭时这一检查不在该辅助分支内。这里观察的是原函数控制流和记录配置，未证明完整运行入口接受任意人工参数。analytic FLOP不是实际测量消耗，也不能从None推断训练收益。
+
+短实验开启模拟预算时，真实数据加载器还可能按预算比例截断每桶库存；上面的名义曝光使用完整库存作为分母，不能拿它代表截断后的真实epoching。具体截断与身份变化见[混合身份](MIXTURE_IDENTITY_ZH.md)，本轮不重复执行缓存和取数。
+
+### 配比与顺序实验的验收要求
+
+先导出实际返回的阶段表，再计算每阶段是否有正训练时长、是否发生同step覆盖、每阶段累计序列/token预算及各桶名义曝光。小实验与目标大训练应同时比较阶段时长比例、每桶独特库存、重复预算与有效目标质量，不能只比较同名的三份weight字典。
+
+忠实续训时保存绝对阶段边界和已消耗前缀，延长停止预算应明确是否保持原阶段计划；若按新的N整体重算，则把它当成新的顺序干预，并审核旧数据映射。不要只改num_train_steps后沿用原loss解释。V86显示同一个N还可能改变优化器衰减，因此配比时间表、外层lr计划和状态时钟应共同导出后评审；本轮没有执行外层学习率，也没有证明三者实际错配。
+
+新增3份同head源码/spec，492份旧非bookkeeping来源字节保持，完整来源496份。[获取台账](analysis/phase_budget_acquisition.json)记录SHA。复现入口`make phase-budget-probe HOST_PYTHON=/tmp/marin-jax-cpu-072/bin/python`需要Python≥3.10的严格zip，未运行JAX数值kernel。

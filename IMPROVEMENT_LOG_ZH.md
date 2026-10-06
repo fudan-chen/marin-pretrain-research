@@ -307,3 +307,7 @@ V25把`paloma/bpb`错误命名为macro；它在固定公共源码中来自父级
 ## V49：真实CPU验证与触发条件同时检查
 
 依赖安装已终止成功，见[完成记录](analysis/cpu_setup_completed.json)。[21项JAX CPU检查](analysis/masked_numerics_cpu.json)复现原mean的前向0/反向NaN、inactive非有限传播与局部安全分母对照；[9项默认权重审计](analysis/default_target_weights.json)说明公开text配方正常执行时应有正T。图像已查看，HTML仅静态核对。这两类证据分别回答危险分支是否成立、是否能用于当前Hero归因；真实T、输入、历史运行环境、GPU/TPU和完整状态更新仍未知。
+
+## V50：空目标处理不能只把梯度或update改成0
+
+[原AdamH模块CPU对照](ZERO_GRADIENT_STATE_ZH.md)确认：有历史moment时，零梯度仍产生非零更新；只丢弃最终update，状态仍推进，下一有效步也会改变。空目标应按实际global T与接受策略判断，不能按grad==0跳步，也不能用某个未使用expert的叶梯度为0触发整步跳过。moment/count、训练step、调度、EMA与QB应分别记录接受条件。本轮只执行optimizer局部对照，完整Hero步与事故触发仍未验证；规则锚点不变。

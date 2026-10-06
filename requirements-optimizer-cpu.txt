@@ -1,0 +1,8 @@
+# V50 observed independent CPU optimizer runtime; not historical Hero environment.
+-r requirements-cpu-numerics.txt
+absl-py==2.5.0
+chex==0.1.90
+optax==0.2.5
+setuptools==84.0.0
+toolz==1.1.0
+typing-extensions==4.16.0

@@ -789,6 +789,14 @@ ok('V49 default-mask source identities match',all(hashlib.sha256((ROOT/p).read_b
 ok('V49 chapter retains three evidence tables and CPU figure',len(soup.select('#masked-numerics-guide table'))==3 and soup.select_one('#masked-numerics-guide svg') is not None)
 report['highlights']+=['V49 twenty-one genuine single-device JAX CPU numerical checks and nine conditional default-text-mask checks; forward zero versus reverse NaN, finite padding control, no actual Hero trigger or historical/GPU/TPU/full optimizer binding']
 report['not_verified']+=['Actual Hero global zero-denominator or inactive nonfinite operand event and historical runtime binding', 'V49 complete custom_vjp dispatcher, GPU/TPU/distributed or full optimizer-step execution']
+zs=read(A/'zero_gradient_state_cpu.json')
+ok('V50 fourteen CPU/source optimizer checks preserve original module scope',zs['checks_passed']==len(zs['checks'])==14 and zs['original_AdamH_module_executed'] is True and zs['source_module_altered'] is False and zs['actual_full_train_step'] is None and zs['actual_Hero_optimizer_group_binding'] is None)
+ok('V50 original AdamH and declaration source identities match',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in zs['source_sha256'].items()))
+ok('V50 warm zero gradient updates despite preserved norm',zs['warm_zero']['update_norm']>.1 and zs['warm_zero']['count_before']==1 and zs['warm_zero']['count_after']==2 and abs(zs['warm_zero']['parameter_norm_after']/zs['warm_zero']['parameter_norm_before']-1)<1e-6)
+ok('V50 discarded update does not freeze next-step state',zs['discard_vs_freeze']['next_update_difference_norm']>.001 and zs['discard_vs_freeze']['discard_count_after_next']==3 and zs['discard_vs_freeze']['freeze_count_after_next']==2)
+ok('V50 bare CPU jit compatibility failure remains explicitly recorded','nonempty mesh' in zs['bare_CPU_jit_error'] and zs['named_CPU_mesh_axes']==['cpu'])
+ok('V50 chapter has three evidence tables and original-module CPU figure',len(soup.select('#zero-gradient-state-guide table'))==3 and soup.select_one('#zero-gradient-state-guide svg') is not None)
+report['highlights']+=['V50 full unmodified AdamH module on artificial CPU matrices, fourteen CPU/source checks, nonzero warm-zero update and discard-versus-freeze distinction; bare empty-mesh JIT failure retained, named one-device JIT verified, no Hero full-step binding']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

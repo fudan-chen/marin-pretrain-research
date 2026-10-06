@@ -24,6 +24,7 @@ report:
 	$(PYTHON) scripts/write_live_2026_10_07.py
 	$(PYTHON) scripts/audit_default_target_weights.py
 	$(PYTHON) scripts/write_masked_numerics.py
+	$(PYTHON) scripts/write_zero_gradient_state.py
 	$(PYTHON) scripts/probe_gradient_accumulation.py
 	$(PYTHON) scripts/infer_eval_weights.py
 	$(PYTHON) scripts/write_eval_weight_inference.py
@@ -88,3 +89,8 @@ cpu-numerics:
 	$(CPU_PYTHON) scripts/probe_masked_numerics_cpu.py
 	$(PYTHON) scripts/audit_default_target_weights.py
 	$(PYTHON) scripts/write_masked_numerics.py
+
+.PHONY: optimizer-cpu
+optimizer-cpu:
+	$(CPU_PYTHON) scripts/probe_zero_gradient_state_cpu.py
+	$(PYTHON) scripts/write_zero_gradient_state.py

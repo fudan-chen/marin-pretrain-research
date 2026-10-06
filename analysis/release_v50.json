@@ -1,0 +1,53 @@
+{
+  "edition": "V50",
+  "created_utc": "2026-10-06T18:26:20.994144+00:00",
+  "goal_status": "active",
+  "scope": "Full unmodified original AdamH module on artificial matrices with real JAX/Optax CPU; fourteen CPU/source checks, zero-gradient state trajectories and retained bare-JIT compatibility failure with named-mesh control",
+  "checks_passed": 1393,
+  "source_files": 443,
+  "all_prior_source_bytes_preserved": 443,
+  "new_source_acquisitions": 0,
+  "optimizer_checks": 14,
+  "optimizer_CPU_make_target_verified": true,
+  "runtime": {
+    "python": "3.12.13",
+    "jax": "0.7.2",
+    "jaxlib": "0.7.2",
+    "optax": "0.2.5",
+    "chex": "0.1.90",
+    "numpy": "2.5.3",
+    "backend": "cpu",
+    "devices": [
+      "TFRT_CPU_0"
+    ]
+  },
+  "actual_Hero_optimizer_group_binding": null,
+  "actual_Hero_zero_target_step": null,
+  "actual_full_train_step": null,
+  "actual_checkpoint_restore": null,
+  "actual_GPU_TPU_collectives": null,
+  "actual_browser_rendering": null,
+  "PNG_viewed": true,
+  "artifact_sha256": {
+    "DELIVERY_AUDIT_ZH.md": "0b191810910de156a1fd9f8f6200b92d7a375a5db710626727e206da8ad1ed4c",
+    "IMPROVEMENT_LOG_ZH.md": "7d69ecfdee0c48018b1f2b34e0eb1ece642ebb56f6ef96c86b27588d21da5684",
+    "Makefile": "3534289791ad45e22685b5b130e69d0d6d407c5d767d3665d880ee7b945f8f26",
+    "PIPELINE_ZH.md": "a8bec1c81b74c6560bbbe5f0d48a8dbdd675e16dbbfe55054a2c1c608d28839f",
+    "README.md": "81b96179a8297ecdad35d2b7536c146dbfbd26d21e57f4b047802285b5c47f56",
+    "RUBRICS_ZH.md": "e840d2ba945da6c8cd6d676e78f76bcfd58ca026218b4799ea789bfeb12999c7",
+    "SYNTHESIS_ZH.md": "3fb122dd0c5ed2290618760c21ab0b1da02c8c78eff34c81b001b751f669d11f",
+    "ZERO_GRADIENT_STATE_ZH.md": "2ad7e057f897d5e69158cd0e9692a2ce306b36409c97655fde5caf48c9b5805c",
+    "analysis/static_validation_v50.json": "b55b59f69c4d0bb155926802ecad59255e783ff53c54006683648c392b199073",
+    "analysis/validation.json": "9a64520c0eb8d5331bf79d2355859e0772f57e7c8fe682cae330d43b446edc5f",
+    "analysis/zero_gradient_state_cpu.json": "b771a8003faa8bb1d218994dba3f8adc3716dbf1ef818d93622913b51999498e",
+    "assets/zero_gradient_state_cpu.png": "bdcebe80cbd34bdd1142159f0b54369947cda571af6d0134306b6f00b32436e9",
+    "assets/zero_gradient_state_cpu.svg": "b4be2bbc0aa0b13a50270b2f2198d6c283562ecf9de32865579d483d99fe38d0",
+    "index.html": "33b246db24237046e7efc29e4b8e015f5bec72e0b92658763c09f9fa3e5046e0",
+    "report_standalone.html": "d01779b844f5fd75a2cbd2058ab47062328e13cc82aab1df0022070d3a358dbf",
+    "requirements-optimizer-cpu.txt": "05611e6e18fe1214024d1891e95ba8c1f9687c9b582769087ed106228720df8b",
+    "scripts/build_html.py": "074318337287a5084ad0b51e465ba67e5115900d137fa10e98467bd7646c8cad",
+    "scripts/probe_zero_gradient_state_cpu.py": "db483db2924b23565e16e45ac8398bd3585e98e2ab2a37aaa36b3688f94f7c5b",
+    "scripts/validate.py": "cd4c27f0751b98df336b9d9e7a3e7b086b66a20722f4edf2bebdd4a33e46ae77",
+    "scripts/write_zero_gradient_state.py": "1eac8bb830695ca54656244e1169d765764cf01713838262dc26462b01e2f10c"
+  }
+}

@@ -99,3 +99,7 @@ V22的[诊断流程](LOSS_TRIAGE_ZH.md)把指标/模型视图、样本内容与�
 ## V49应用：先核对危险分支，再核对实际触发
 
 沿用已有锚点。有限loss不能替代有限cotangent/梯度；零权重不能自动排除非有限operand。先核对global T与inactive数值，再区分除法guard和上游计算的处理，最后验证完整状态更新。[CPU原函数结果与默认配方条件](MASKED_NUMERICS_ZH.md)不能自动升级成Hero事故证据。原配方若正常执行应有正T，因此人工全零mask只作回归/迁移反例。
+
+## V50：空目标处理不能只把梯度或update改成0
+
+[原AdamH模块CPU对照](ZERO_GRADIENT_STATE_ZH.md)确认：有历史moment时，零梯度仍产生非零更新；只丢弃最终update，状态仍推进，下一有效步也会改变。空目标应按实际global T与接受策略判断，不能按grad==0跳步，也不能用某个未使用expert的叶梯度为0触发整步跳过。moment/count、训练step、调度、EMA与QB应分别记录接受条件。本轮只执行optimizer局部对照，完整Hero步与事故触发仍未验证；规则锚点不变。

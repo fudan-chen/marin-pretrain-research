@@ -1,0 +1,332 @@
+{
+  "declared_gate_router_weight_decay": 0.02,
+  "scope": "Full original AdamH module with real JAX/Optax CPU transforms on artificial matrices.\nNo Hero loss, checkpoint, multi-transform, GPU/TPU, collective or complete train-step replay.\n",
+  "checks_passed": 14,
+  "checks": [
+    "Observed fixed CPU runtime",
+    "Fresh zero gradient advances AdamH count with near-zero parameter update",
+    "Warm zero gradient decays original moments and advances count",
+    "Warm original AdamH zero-gradient update is nonzero and norm-preserving",
+    "Bare CPU jit exposes empty-mesh reshard compatibility boundary",
+    "Original AdamH named one-device CPU jit agrees with eager warm-zero update",
+    "Discarding update is not freezing state on the next nonzero gradient",
+    "Twenty zero gradients preserve original moment decay and count clocks",
+    "Twenty zero gradients preserve parameter norm while changing direction",
+    "Ordinary Optax Adam has a nonzero warm-zero update",
+    "Ordinary fresh Adam has zero update but increments count",
+    "Independent AdamW control moves fresh parameters by declared decay",
+    "Pinned train envelope updates optimizer and advances step",
+    "Pinned EMA envelope uses new parameters and carries QB pending metrics"
+  ],
+  "runtime": {
+    "python": "3.12.13",
+    "jax": "0.7.2",
+    "jaxlib": "0.7.2",
+    "optax": "0.2.5",
+    "chex": "0.1.90",
+    "numpy": "2.5.3",
+    "backend": "cpu",
+    "devices": [
+      "TFRT_CPU_0"
+    ]
+  },
+  "artificial_recipe": {
+    "p0": [
+      [
+        2.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0
+      ]
+    ],
+    "g1": [
+      [
+        1.0,
+        4.0
+      ],
+      [
+        2.0,
+        3.0
+      ]
+    ],
+    "next_nonzero_g": [
+      [
+        -2.0,
+        0.20000000298023224
+      ],
+      [
+        3.0,
+        -1.0
+      ]
+    ],
+    "b1": 0.9,
+    "b2": 0.95,
+    "eps": 1e-08,
+    "learning_rate": 0.1
+  },
+  "fresh_zero": {
+    "update_norm": 0.0,
+    "count": 1
+  },
+  "warm_zero": {
+    "p1": [
+      [
+        2.0176033973693848,
+        -0.11946580559015274
+      ],
+      [
+        -0.11946580559015274,
+        0.9490688443183899
+      ]
+    ],
+    "update": [
+      [
+        0.0048007965087890625,
+        -0.12595337629318237
+      ],
+      [
+        -0.12595337629318237,
+        -0.06057614088058472
+      ]
+    ],
+    "update_norm": 0.18820473551750183,
+    "parameter_norm_before": 2.236067771911621,
+    "parameter_norm_after": 2.236067771911621,
+    "count_before": 1,
+    "count_after": 2
+  },
+  "discard_vs_freeze": {
+    "next_update_difference_norm": 0.005557927303016186,
+    "next_update_discard": [
+      [
+        0.012826681137084961,
+        -0.10990499705076218
+      ],
+      [
+        -0.15958672761917114,
+        -0.08485150337219238
+      ]
+    ],
+    "next_update_freeze": [
+      [
+        0.013665199279785156,
+        -0.11447491496801376
+      ],
+      [
+        -0.15880849957466125,
+        -0.08780068159103394
+      ]
+    ],
+    "discard_count_after_next": 3,
+    "freeze_count_after_next": 2
+  },
+  "twenty_zero_steps": [
+    {
+      "zero_steps": 1,
+      "count": 2,
+      "moment_mu_norm": 0.49295029044151306,
+      "moment_nu_norm": 0.8937071561813354,
+      "update_norm": 0.18820473551750183,
+      "parameter_norm": 2.236067771911621,
+      "parameter_distance_from_p1": 0.18820473551750183
+    },
+    {
+      "zero_steps": 2,
+      "count": 3,
+      "moment_mu_norm": 0.44365525245666504,
+      "moment_nu_norm": 0.8490217924118042,
+      "update_norm": 0.19820940494537354,
+      "parameter_norm": 2.236067771911621,
+      "parameter_distance_from_p1": 0.3860536217689514
+    },
+    {
+      "zero_steps": 3,
+      "count": 4,
+      "moment_mu_norm": 0.39928969740867615,
+      "moment_nu_norm": 0.8065707087516785,
+      "update_norm": 0.20699356496334076,
+      "parameter_norm": 2.236067771911621,
+      "parameter_distance_from_p1": 0.5918607711791992
+    },
+    {
+      "zero_steps": 4,
+      "count": 5,
+      "moment_mu_norm": 0.3593607246875763,
+      "moment_nu_norm": 0.7662421464920044,
+      "update_norm": 0.21421383321285248,
+      "parameter_norm": 2.236067533493042,
+      "parameter_distance_from_p1": 0.8035109043121338
+    },
+    {
+      "zero_steps": 5,
+      "count": 6,
+      "moment_mu_norm": 0.32342466711997986,
+      "moment_nu_norm": 0.7279300093650818,
+      "update_norm": 0.21957063674926758,
+      "parameter_norm": 2.236067533493042,
+      "parameter_distance_from_p1": 1.0185394287109375
+    },
+    {
+      "zero_steps": 6,
+      "count": 7,
+      "moment_mu_norm": 0.2910821735858917,
+      "moment_nu_norm": 0.6915335059165955,
+      "update_norm": 0.22283780574798584,
+      "parameter_norm": 2.236067533493042,
+      "parameter_distance_from_p1": 1.2342556715011597
+    },
+    {
+      "zero_steps": 7,
+      "count": 8,
+      "moment_mu_norm": 0.26197394728660583,
+      "moment_nu_norm": 0.6569567918777466,
+      "update_norm": 0.2238861471414566,
+      "parameter_norm": 2.236067533493042,
+      "parameter_distance_from_p1": 1.4478986263275146
+    },
+    {
+      "zero_steps": 8,
+      "count": 9,
+      "moment_mu_norm": 0.23577654361724854,
+      "moment_nu_norm": 0.6241089701652527,
+      "update_norm": 0.222696915268898,
+      "parameter_norm": 2.236067771911621,
+      "parameter_distance_from_p1": 1.6568046808242798
+    },
+    {
+      "zero_steps": 9,
+      "count": 10,
+      "moment_mu_norm": 0.212198868393898,
+      "moment_nu_norm": 0.5929034948348999,
+      "update_norm": 0.2193605750799179,
+      "parameter_norm": 2.236067771911621,
+      "parameter_distance_from_p1": 1.8585621118545532
+    },
+    {
+      "zero_steps": 10,
+      "count": 11,
+      "moment_mu_norm": 0.1909789890050888,
+      "moment_nu_norm": 0.5632583498954773,
+      "update_norm": 0.21406510472297668,
+      "parameter_norm": 2.236067771911621,
+      "parameter_distance_from_p1": 2.051135301589966
+    },
+    {
+      "zero_steps": 11,
+      "count": 12,
+      "moment_mu_norm": 0.1718810796737671,
+      "moment_nu_norm": 0.5350953936576843,
+      "update_norm": 0.2070722132921219,
+      "parameter_norm": 2.236067771911621,
+      "parameter_distance_from_p1": 2.232943534851074
+    },
+    {
+      "zero_steps": 12,
+      "count": 13,
+      "moment_mu_norm": 0.15469296276569366,
+      "moment_nu_norm": 0.50834059715271,
+      "update_norm": 0.19869068264961243,
+      "parameter_norm": 2.236067771911621,
+      "parameter_distance_from_p1": 2.4028897285461426
+    },
+    {
+      "zero_steps": 13,
+      "count": 14,
+      "moment_mu_norm": 0.13922367990016937,
+      "moment_nu_norm": 0.48292356729507446,
+      "update_norm": 0.1892472803592682,
+      "parameter_norm": 2.2360680103302,
+      "parameter_distance_from_p1": 2.5603466033935547
+    },
+    {
+      "zero_steps": 14,
+      "count": 15,
+      "moment_mu_norm": 0.1253013014793396,
+      "moment_nu_norm": 0.45877736806869507,
+      "update_norm": 0.17906342446804047,
+      "parameter_norm": 2.236067771911621,
+      "parameter_distance_from_p1": 2.7051072120666504
+    },
+    {
+      "zero_steps": 15,
+      "count": 16,
+      "moment_mu_norm": 0.1127711609005928,
+      "moment_nu_norm": 0.435838520526886,
+      "update_norm": 0.1684361696243286,
+      "parameter_norm": 2.2360680103302,
+      "parameter_distance_from_p1": 2.8373160362243652
+    },
+    {
+      "zero_steps": 16,
+      "count": 17,
+      "moment_mu_norm": 0.10149404406547546,
+      "moment_nu_norm": 0.41404658555984497,
+      "update_norm": 0.1576259583234787,
+      "parameter_norm": 2.236067771911621,
+      "parameter_distance_from_p1": 2.9573934078216553
+    },
+    {
+      "zero_steps": 17,
+      "count": 18,
+      "moment_mu_norm": 0.09134463965892792,
+      "moment_nu_norm": 0.3933442533016205,
+      "update_norm": 0.1468508541584015,
+      "parameter_norm": 2.236067771911621,
+      "parameter_distance_from_p1": 3.06595516204834
+    },
+    {
+      "zero_steps": 18,
+      "count": 19,
+      "moment_mu_norm": 0.08221017569303513,
+      "moment_nu_norm": 0.37367701530456543,
+      "update_norm": 0.1362854242324829,
+      "parameter_norm": 2.236067771911621,
+      "parameter_distance_from_p1": 3.163748264312744
+    },
+    {
+      "zero_steps": 19,
+      "count": 20,
+      "moment_mu_norm": 0.07398916035890579,
+      "moment_nu_norm": 0.35499316453933716,
+      "update_norm": 0.12606275081634521,
+      "parameter_norm": 2.2360680103302,
+      "parameter_distance_from_p1": 3.25158953666687
+    },
+    {
+      "zero_steps": 20,
+      "count": 21,
+      "moment_mu_norm": 0.06659024208784103,
+      "moment_nu_norm": 0.3372434973716736,
+      "update_norm": 0.11627918481826782,
+      "parameter_norm": 2.236067771911621,
+      "parameter_distance_from_p1": 3.330322027206421
+    }
+  ],
+  "ordinary_Optax_controls": {
+    "warm_Adam_update_norm": 0.13572952151298523,
+    "fresh_Adam_update_norm": 0.0,
+    "fresh_AdamW_update_norm": 0.022360682487487793,
+    "AdamW_decay": 0.1
+  },
+  "bare_CPU_jit_error": "Reshard should only be used with out_shardings which are non-None and have a nonempty mesh. Got sharding NamedSharding(mesh=AbstractMesh((), axis_types=()), spec=PartitionSpec(None, None)).",
+  "named_CPU_mesh_axes": [
+    "cpu"
+  ],
+  "original_AdamH_module_executed": true,
+  "source_module_altered": false,
+  "actual_Hero_zero_target_step": null,
+  "actual_Hero_optimizer_group_binding": null,
+  "actual_full_train_step": null,
+  "actual_checkpoint_restore": null,
+  "actual_GPU_TPU_collectives": null,
+  "source_sha256": {
+    "sources/adamh_2026_10_05/adamh.py": "722ed10ea6c36440049c5f5a4eb9ea98abcfe7cd761a52e3973a3031b0755716",
+    "sources/scale_2026_10_05/train_hero_ep.py": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7",
+    "sources/live_2026_10_07/meta.json": "21998ecad691e7e66d3680f173bfe9b94c35b9481f28eff4794a23b0c9831487"
+  },
+  "library_function_source_sha256": {
+    "optax.scale_by_adam": "00b33f95f4b5e6b8efc90f896be753a32864cfaa865b7fce2b19e9aac6198282"
+  }
+}

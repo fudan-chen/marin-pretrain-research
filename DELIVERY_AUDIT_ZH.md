@@ -1,6 +1,6 @@
 # 当前交付审计：文件覆盖与真实验证分别核对
 
-当前版本V49，新增[零权重与反向数值审计](MASKED_NUMERICS_ZH.md)：21项真实JAX 0.7.2 CPU检查，9项默认mask条件审计，源码SHA与固定依赖可复查。PNG已查看，HTML仅静态核对。未执行Hero checkpoint、GPU/TPU、collective或完整optimizer step，也未证明实际触发条件。
+当前版本V50，新增[零梯度与状态审计](ZERO_GRADIENT_STATE_ZH.md)：未修改的完整AdamH模块、真实JAX/Optax CPU、14项核对和20步人工矩阵轨迹。保留无mesh JIT异常与named-mesh成功对照。PNG已查看，HTML仅静态核对；未执行实际Hero loss、分组multi_transform、checkpoint或完整训练步。
 
 |用户要求|当前权威产物|覆盖与实际限制|
 |---|---|---|

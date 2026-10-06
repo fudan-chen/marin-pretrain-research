@@ -86,3 +86,7 @@
 ## 前向有限仍需检查反向与触发条件
 
 [零权重审计](MASKED_NUMERICS_ZH.md)已经在真实JAX CPU上复现：原mean全零weight时loss为0、反向为NaN；安全分母对照解决局部除零，但不能排除上游NaN。另一个有限输入padding正例与reference梯度一致。公开text配方在固定代码正常执行条件下应有46,126,080有效目标，因此这项局部复现不能解释Hero历史事故，需先取得实际T与inactive非有限值记录。
+
+## V50：空目标处理不能只把梯度或update改成0
+
+[原AdamH模块CPU对照](ZERO_GRADIENT_STATE_ZH.md)确认：有历史moment时，零梯度仍产生非零更新；只丢弃最终update，状态仍推进，下一有效步也会改变。空目标应按实际global T与接受策略判断，不能按grad==0跳步，也不能用某个未使用expert的叶梯度为0触发整步跳过。moment/count、训练step、调度、EMA与QB应分别记录接受条件。本轮只执行optimizer局部对照，完整Hero步与事故触发仍未验证；规则锚点不变。

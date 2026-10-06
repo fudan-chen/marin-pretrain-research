@@ -240,3 +240,8 @@ V67 把形状不一致的保护留为未知。这次继续执行原 `load_checkp
 恢复管线增加三项记录：每个 candidate 的原布局与 legacy 尝试分别保存首错；错误分类明确允许回退还是中止；最终参数来源标明 master/compute 与转换前后路径。不要仅保留最后一条异常，也不要用“成功读回”替代权威副本选择。
 
 本轮状态类和策略为原源码 AST 提取，真实 Optax 与 Equinox 参与；params 字典是人工替代。写入前转换为 NumPy，原 host writer 执行；metadata 手工写入，没执行原 production publisher。barrier 只记录调用，未做 collective；单设备 sharding、本地 StoragePath 适配继承 V68。没有完整 Transformer、真实优化器分组、训练 next-step 或多 rank restore。新增一份固定版本 tree_utils 来源，其他旧材料字节保留，来源清单扩展。复现：`make grug-state-restore CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。
+
+
+## V70：恢复水位必须接到数据消费时钟
+
+原恢复策略与真实小数组已接到原 loader/mixture 方法，7 项检查。人工 marker100/state20 的候选按 marker 被选择，下一批却按 state20 消费 A 域；batch 历史变化会再改变 offset 与身份。完整续训要求水位对照，weights-only 初始化另记源 step 与新 step。详细表、样本顺序图与配比归因含义见 [batch 时钟](BATCH_CLOCK_ZH.md)。未测真实 loss/token 流或 Hero 的水位事故。

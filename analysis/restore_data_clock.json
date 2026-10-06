@@ -1,0 +1,108 @@
+{
+  "scope": "Real original checkpoint policy joined to original loader/mixture methods.\nSynthetic checkpoint markers and identity child stores; no Hero token stream or training step.\n",
+  "checks_passed": 7,
+  "checks": [
+    "Original candidate selection follows marker rank not loaded state progress",
+    "Restored-state clock feeds original loader cumulative offset",
+    "Marker-clock counterfactual changes phase and sample identities",
+    "Original schedule conversion aligns phase at restored next boundary",
+    "Rewriting history changes sample identity at same loaded step",
+    "Same original schedule and mixture key reproduce ordered identities",
+    "Host-state marker mismatch should fail independent identity audit"
+  ],
+  "observations": {
+    "checkpoint": {
+      "marker_step": 100,
+      "loaded_state_step": 20,
+      "other_candidate_marker_and_state_step": 90,
+      "selected_calls": [
+        "candidate"
+      ]
+    },
+    "restored_step_batch": {
+      "step": 20,
+      "offset": 148,
+      "size": 8,
+      "identities": [
+        "A:149",
+        "A:148",
+        "A:150",
+        "A:151",
+        "A:154",
+        "A:153",
+        "A:152",
+        "A:155"
+      ]
+    },
+    "marker_step_counterfactual_batch": {
+      "step": 100,
+      "offset": 788,
+      "size": 8,
+      "identities": [
+        "B:635",
+        "B:632",
+        "B:633",
+        "B:634",
+        "B:636",
+        "B:639",
+        "B:637",
+        "B:638"
+      ]
+    },
+    "rewritten_history_batch": {
+      "step": 20,
+      "offset": 160,
+      "size": 8,
+      "identities": [
+        "A:162",
+        "A:161",
+        "A:160",
+        "A:163",
+        "A:167",
+        "A:165",
+        "A:164",
+        "A:166"
+      ]
+    },
+    "mixture_boundary_batch": {
+      "step": 21,
+      "offset": 156,
+      "size": 8,
+      "identities": [
+        "B:3",
+        "B:1",
+        "B:0",
+        "B:2",
+        "B:6",
+        "B:5",
+        "B:4",
+        "B:7"
+      ]
+    }
+  },
+  "metadata_state_guard": "audit mismatch demonstrated; upstream policy not modified",
+  "training_entry_source_binding": {
+    "file": "sources/scale_2026_10_05/train_hero_ep.py",
+    "line": 1101,
+    "expression": "train_loader.iter_from_step(int(state.step))",
+    "executed_full_training_entry": false
+  },
+  "explicit_substitutions": {
+    "metadata": "deliberately mismatched manual marker",
+    "params": "synthetic small dictionary",
+    "data": "finite identity child stores, not tokens",
+    "loader": "three original async methods, host layout/batchify/watchdog adapters",
+    "collective": "barrier recording adapter",
+    "save": "original flatten+host writer, NumPy payload conversion"
+  },
+  "actual_Hero_marker_step_mismatch": null,
+  "actual_Hero_next_tokens": null,
+  "actual_full_training_step": null,
+  "source_sha256": {
+    "sources/scale_2026_10_05/train_hero_ep.py": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7",
+    "sources/contracts_2026_10_05/checkpointing.py": "1f7395e4caeb60f31db7d84e32e972b75791e43e454dafd146449b9148e5016d",
+    "sources/eval_identity_2026_10_06/loader.py": "d8c14060286d9998c8784ce945694958b7c61a5404bcede6e77ba34c467e077d",
+    "sources/deepening_2026_10_04/schedule_production.py": "01a2faa0d7a0b5cca4aad4cd702ed9aed5114111293970d8ea379d36f40ff281",
+    "sources/deepening_2026_10_04/mixture_production.py": "67e97941a79753b2e5865f7f41c7762436a428599ecd1a60d643aa891a817685"
+  }
+}

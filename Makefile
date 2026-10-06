@@ -179,3 +179,8 @@ tree-restore-contracts:
 .PHONY: grug-state-restore
 grug-state-restore:
 	PYTHONPATH=$(TENSORSTORE_PATH) $(CPU_PYTHON) scripts/probe_grug_state_restore_real_io.py
+
+.PHONY: restore-data-clock
+restore-data-clock:
+	PYTHONPATH=$(TENSORSTORE_PATH) $(CPU_PYTHON) scripts/probe_restore_data_clock.py
+	$(PYTHON) scripts/plot_restore_data_clock.py

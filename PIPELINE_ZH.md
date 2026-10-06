@@ -173,3 +173,6 @@ V68 管线补充：先导出真实训练状态叶类型/schema inventory，再�
 
 
 V69 管线补充：记录 candidate→原布局→legacy→较早候选的实际调用轨迹、首错及错误类别。只在既定政策允许时退回已验证版本，不笼统吞 ValueError。master-bearing 到 device 模式的恢复核对原布局 hook、权威副本值与转换后保存路径，真实结果仍待执行。
+
+
+V70 续训→数据管线补充：标明 full resume 或 weights-only，绑定 marker/state 时钟；冻结已消费 batch 历史与 mixture/子集映射，核对首批 IDs 和配比阶段后再解释 loss。源配置切换 step 相同不足以保证累计曝光相同；真实 token 与 loss 尚待生产重放。

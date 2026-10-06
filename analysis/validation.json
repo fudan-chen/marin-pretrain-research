@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1482,
+  "checks_passed": 1486,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -117,7 +117,8 @@
     "V66 nine real local IO controls in original host serializer with original budget and installed single-process JAX manager; explicit omissions, no full tree or distributed/production restore",
     "V67 nine actual original leaf restore/discovery controls, real manifest schema and fsspec with local StoragePath adapter; synthetic markers, no full state, production publisher or multirank restore",
     "V68 six actual local wrapper controls and seven checks, original NamedArray class with explicit single-device sharding adapter; no full model, Hero dtype event or execution-package reconstruction",
-    "V69 nine original Grug-schema policy controls with six-leaf real IO, actual Optax fixture and explicit payload/barrier/publisher adapters; no full Hero state or production incident"
+    "V69 nine original Grug-schema policy controls with six-leaf real IO, actual Optax fixture and explicit payload/barrier/publisher adapters; no full Hero state or production incident",
+    "V70 seven joined original-policy/loader/mixture controls and measured sample-order figure; synthetic marker and identity data, no Hero token stream, training step or loss attribution"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

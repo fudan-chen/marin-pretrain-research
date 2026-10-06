@@ -128,6 +128,11 @@ for slug,label,file in chapters:
         muon_svg['style']='display:block;width:100%;min-width:700px;height:auto;'
         muon_wrap=soup.new_tag('div',attrs={'class':'table-wrap','style':'overflow-x:auto;'})
         muon_wrap.append(muon_svg);muon_placeholder.replace_with(muon_wrap)
+    clock_placeholder=soup.select_one('#restore-data-clock-placeholder')
+    if clock_placeholder is not None:
+        clock_svg=BeautifulSoup((ROOT/'assets/restore_data_clock.svg').read_text(),'html.parser').svg
+        clock_svg['style']='display:block;width:100%;height:auto;'
+        clock_placeholder.replace_with(clock_svg)
     ts_placeholder=soup.select_one('#tensorstore-io-placeholder')
     if ts_placeholder is not None:
         ts_svg=BeautifulSoup((ROOT/'assets/tensorstore_roundtrip.svg').read_text(),'html.parser').svg

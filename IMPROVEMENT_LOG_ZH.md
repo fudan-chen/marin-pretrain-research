@@ -407,3 +407,8 @@ V57复算#9708冻结表18条、12条步时，6项检查；新增性能图和未�
 ## V69：原 Grug 状态与恢复策略的真实 IO
 
 9 检查、六叶完整恢复、两类缺失错误、legacy 错误证据及 master 迁移来源选择。原 GrugTrainState，params 字典代替 Transformer，实际 Optax 小状态不等于 Hero optimizer；barrier 记录适配、人工 metadata。新增固定 tree_utils，460 旧文件字节保持，仅 source_manifest 扩展。无实际生产事故/完整状态树验收。
+
+
+## V70：恢复、原 loader 与原混合身份联合检查
+
+7 检查，真实小 checkpoint 与原恢复策略，原 schedule/三个 loader 方法/混合类连接身份子集；核对 marker100/state20、首批偏移148、marker反事实788、历史改写160和阶段边界156。新增实测顺序图与 full-resume/weights-only 验收区分。462 来源保持；无真实 token、完整训练或 loss 结果。

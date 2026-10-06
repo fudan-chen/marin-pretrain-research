@@ -9,7 +9,8 @@
     "checkpoint_path": null,
     "attempt_id": null,
     "reused_path": null,
-    "retention_class": null
+    "retention_class": null,
+    "resume_mode": null
   },
   "watermarks": {
     "trained_step": null,
@@ -58,7 +59,8 @@
     "candidate_qualification": {
       "successful_publisher_attempt_id": null,
       "marker_attempt_binding_evidence": null,
-      "reused_path_stale_marker_check": null
+      "reused_path_stale_marker_check": null,
+      "marker_loaded_step_comparison_result": null
     },
     "layout_validation": {
       "expected_schema_digest": null,
@@ -83,7 +85,10 @@
     "behavior": {
       "full_state_restore_result": null,
       "next_batch_and_step_result": null,
-      "fixed_eval_result": null
+      "fixed_eval_result": null,
+      "historical_batch_schedule_digest": null,
+      "restored_first_batch_identity": null,
+      "restored_first_batch_mixture_stage": null
     }
   }
 }

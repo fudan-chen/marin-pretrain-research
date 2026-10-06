@@ -1,0 +1,13 @@
+{
+  "checks_passed": 6,
+  "checks": [
+    "index.html unique ids",
+    "index.html joined clock text and figure",
+    "report_standalone.html unique ids",
+    "report_standalone.html joined clock text and figure",
+    "Four historical clock tables unchanged",
+    "462 frozen source hashes valid"
+  ],
+  "actual_browser_rendering": null,
+  "actual_PNG_visual_inspection": true
+}

@@ -97,3 +97,37 @@ Hero入口以 `train_loader.iter_from_step(int(state.step))`恢复批次，并�
 原host重建路径并没有独立持久化本探针store的cursor：batch号经当前schedule重新计算offset，再取得样本。因此恢复评审至少绑定完成step、历史batch前缀、当前next offset、数据身份与连续若干批次的token/hash；若数据源有在线增长、非确定性读取或外部游标，还需额外恢复合同。确认下一批后，继续核对optimizer、router、EMA/RNG等完整状态；数据一致不能替代更新一致。[状态审计](TRAIN_STATE_ZH.md) · [保存提交与独立恢复](CHECKPOINT_COMMIT_ZH.md)
 
 [11项原函数控制结果](analysis/loader_resume_probe.json)保留每批身份、原函数行号和源码SHA。[可执行脚本](scripts/probe_loader_resume.py)要求Python 3.10以上，因为原函数使用`zip(strict=False)`；本次运行是Python 3.12.13，没有修改原函数来兼容3.9。入口为`make loader-resume CPU_PYTHON=/你的Python3.10以上/bin/python`。实际Hero next tokens、完整checkpoint恢复、JAX batchification和background线程仍为空。
+
+
+## V70：把真实恢复步号接到下一批样本与配比阶段
+
+这次把原 checkpoint 发现/Grug 恢复、原 BatchSchedule、原三个 loader 异步方法与原 MixtureDataset 串起来。checkpoint 数组真实读写，数据子集是 A/B 身份字符串；没有真实 token、训练更新或完整 DataLoader。7 项检查通过，[原始样本顺序与接口范围](analysis/restore_data_clock.json)可复查。
+
+人工 root 下有两份完整小状态：old 的 marker/state 都为 90；candidate 的 marker 为 100、state 为 20。原策略按 marker 选择 candidate，返回 state.step=20，没有在这条受控路径拒绝两种时钟的不一致。归档训练入口第 1101 行使用 `train_loader.iter_from_step(int(state.step))`；本轮依照这一源码调用关系，把读回步号传给原 loader 方法，没有执行整个训练 main。
+
+人工 batch 声明为前 3 step 每批 4，之后每批 8；配比在 step21 从 A 全量切到 B 全量，原转换函数给出序列边界 156。结果如下：
+
+|控制|采用的 step|累计序列 offset|返回样本集合，完整顺序见图|
+|---|---:|---:|---|
+|恢复状态时钟|20|148|A:148…155|
+|仅用于比较：误用 marker 时钟|100|788|B:632…639|
+|step 不变，历史 batch 改为全程 8|20|160|A:160…167|
+|下一配比边界|21|156|B:0…7|
+
+<div id="restore-data-clock-placeholder"></div>
+
+图中的身份是实际原混合代码输出的顺序，不是按数字排序后的展示。即使一个块全来自 A，原 block permutation 也会改变该块样本顺序；不能拿序号不单调直接判 loader 错。用相同声明和 key 再取一次，顺序一致。
+
+### 对配比与 loss 分析的影响
+
+第一，候选的 metadata step 用于选择路径，恢复的 state.step 用于消费数据；二者不能在研究账本里不加核对地互换。人工不一致例子会让“已进入 B 阶段”的推算与实际下一批 A 样本冲突。此时把恢复附近的 loss 变化归因于 B 配比，就连处理发生的时刻都没有核对。
+
+第二，batch 的历史累积影响下一序列索引。改为全程 batch8 后，step20 的下一批移了 12 个逻辑序列；对应的 step21 配比边界也从 156 改为 168。配置中同一个切换 step 和同一组权重，不代表此前每域已消费数量相同。要比较配比收益，应冻结历史 batch 声明与 mixture key/子集映射，并记录恢复后实际首批身份。
+
+第三，这些结果只说明恢复与配比对齐的必要检查，没有测 loss，也没有确认 Hero 实际发生 marker/state 不一致。人工 marker 是故意注入的；正常保存调用路径把 state 与 step 传给 checkpointer，是否有路径复用、旧 marker 或历史工件问题需要独立材料。
+
+### 完整续训与 weights-only 必须分别记账
+
+对自己 run 的完整续训，验收应比较同 attempt 的 marker step、恢复 state.step、optimizer 时钟及声明的累积样本 offset；不一致时先阻断配比归因和未经审核的训练继续。对于有意的 weights-only 初始化，源 checkpoint 的 step 可以是 100，而新 run 的 state.step 是 0；这是另一种恢复意图，不能用完整续训的等号直接拒绝。要明确源权重 step、新时钟起点、optimizer/pending 哪些继承或重置，再制定数据消费账本。
+
+下一步验收字段已补进保存模板：resume mode、marker/state 对照、历史 schedule digest、恢复首批身份与实际配比阶段；真实结果仍为空。完整生产验证还缺真实下一批 token IDs、同一存储/内部 shuffle 的映射以及 next-step 指标。复现：`make restore-data-clock CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。

@@ -1,0 +1,32 @@
+{
+  "version": "V66",
+  "created_utc": "2026-10-06T20:28:10.764688+00:00",
+  "goal_status": "active",
+  "scope": "Original host-array serializer, original HostByteBudget, real TensorStore and installed single-process JAX manager; failure budget release and error consumption",
+  "checks_passed": 1470,
+  "real_serializer_checks": 9,
+  "source_files": 455,
+  "all_prior_source_bytes_preserved": 455,
+  "new_source_acquisitions": 0,
+  "actual_full_tree_serializer": null,
+  "actual_multirank_commit": null,
+  "actual_production_metadata_publication": null,
+  "actual_browser_rendering": null,
+  "artifact_sha256": {
+    "README.md": "42d0400f17684436ef1e67af1b978705f523757d20a782f4e9a68de818cb61fc",
+    "DELIVERY_AUDIT_ZH.md": "5d87de3c133dd77c817eb97d1cd395a13e6fee84065ae3df7e41451d90c5d2e0",
+    "CHECKPOINT_COMMIT_ZH.md": "9c66f5242511d3c73b67b1f7051414d9eed837f2706a8cf7f96b2514ab79dece",
+    "SYNTHESIS_ZH.md": "e8d432badf63045afdae2a7e184d027cfa47fae21496a5efb300d0f111da9f5d",
+    "RUBRICS_ZH.md": "e469e957293768e0a2601715478fb3a257c16b515ef0dbdecab6d36e4c3e5a1e",
+    "PIPELINE_ZH.md": "3ccc4a8917e91a9e479bb8ce4cfc5457a78c903a87487fda1ee43191eb9e974a",
+    "IMPROVEMENT_LOG_ZH.md": "0c67c5ffc4072593df76a36b23dfb0c6671490de48388ef5a752c574123b0dfc",
+    "Makefile": "065d7ce8889e59b7d898294fae35d11996ae6a800170f60fb08a95aea881106c",
+    "scripts/validate.py": "a1539ed463e8504049c677afb615314e48526ae07da2ce5f006c1e02091e1ec9",
+    "scripts/probe_serialize_arrays_real_io.py": "d8651706d87d978832c65eaa7e662469970adaf651fad65f3c1b2b5f811f1e0b",
+    "analysis/serialize_arrays_real_io.json": "adfd5e09efccb40b1032712e9fadffc419d6a7903ee13378756cafae00681c35",
+    "analysis/validation.json": "3b531063ce1cfc3caa50414410f7af04aaf430f97f490d8552b77947051beeff",
+    "analysis/static_validation_v66.json": "e9b258e5c08389c536d35b9c486a261f04abe8b88c1efbf01137721c861a9081",
+    "index.html": "20a2056d417cd03a1ae5cf707950e4612416c361daada63cb7e924283689989a",
+    "report_standalone.html": "fe8a5df8494ce66d8ed82a3e10d98a188c06364fd904b852807be7a4754b029d"
+  }
+}

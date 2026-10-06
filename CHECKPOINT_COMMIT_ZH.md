@@ -117,3 +117,27 @@
 这个实验没有执行 Marin 的完整 save/load 函数、CheckpointArray 类、分布式 coordinator 或生产 checkpoint。元数据 entry 用 SimpleNamespace 提供 shape/dtype/chunk_shape。因此不能声称 Marin 保存链缺少保护，不能把这里的零值解释成 Hero 的历史事故。它只把“缺块可能怎样被底层读出”的一个分支从推测推进到了真实本地 IO。
 
 复现：在 Python 3.12 环境安装 requirements-tensorstore-io.txt；本轮依赖隔离在 /tmp/marin-tensorstore-lib，命令为 `make tensorstore-io CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。临时数组由探针创建并自动清理。下一步需要完整序列化链的同 attempt 保存回执、内容摘要和独立恢复，才能评判系统层面的保护覆盖。
+
+
+## V66：原数组保存链的真实 IO 与错误传播
+
+V65 只跑了原 spec 构造函数。这次把执行范围推进到原 `_serialize_arrays`：原 HostByteBudget、原写入 context、原 host-array snapshot、真实 TensorStore 0.1.69 和 JAX 0.7.2 的 GlobalAsyncCheckpointManager 均参与执行。两个 6×4 float32 数组各占 96 字节，预算设为 96 字节，使第二个数组必须等待前一个释放预算。9 项检查通过，[逐项结果](analysis/serialize_arrays_real_io.json)保留回调、错误和读回值。
+
+|检查对象|实际操作与结果|工程含义|
+|---|---|---|
+|保存快照的所有权|原函数返回后将两个调用方数组改成 -999；等待完成后，存储仍为保存时的 1…24 与 101…124|host 分支的 `np.array(copy=True)` 保住本例保存值；没有测试 GPU donation|
+|峰值预算|两份 96 字节数据，峰值记录为 96|本例预算阻止两份 snapshot 同时占用；不是整个进程 RSS 上界|
+|失败时释放预算|第一个数组的已有 float32 元数据与请求 int32 冲突；第二个数组仍完成，内容与预期一致|失败 future 的回调也会释放预算，不把后续写入永久堵住|
+|保存成功的边界|上述混合成功/失败案例出现 `local_failed`，manager.wait 抛 ValueError，成功 callback 未执行|部分数组已写完不能代表整次保存成功；本例异步 open 错误没有被吞掉|
+|错误归属的时刻|不先取出上次失败，直接发起下一次原函数；入口 wait 抛上次错误，新路径尚未创建、未 staging|新 save 处看到报错，可能来自上一轮在途任务；应按 attempt 追踪首个异常|
+|已报告异常的保留|安装版 manager 的 check_for_errors 清除已取出的异常；再次 wait 返回正常|异常只报一次，不代表失败 checkpoint 变成完整；不能靠后一次 wait 正常抹去失败账本|
+
+这里有两种不同的“完成”。释放 host 预算意味着相关写入 future 已结束，成功或失败都可以释放；它不表示数据保存成功。成功 callback 是另一条水位，要求 manager 汇合写入 future 后进入成功分支。本例使用真实单进程 manager，但没有多 rank barrier，不能把它提升成全局提交验证。
+
+源码也解释了为何 manifest 可见不是提交证明：`tree_serialize_leaves_tensorstore` 在调用 `_serialize_arrays` **之前**由 process 0 写出 manifest；manifest 的数组字段列出 path、shape、dtype、chunk_shape，格式字段列出版本与 driver，没有保存值的内容摘要。它承担布局清单的职责，最终 metadata/成功标志要看上层 callback 链。这个顺序由归档源码核对，本次没有执行完整 tree serializer 或生产 metadata 发布。
+
+把 V65 与 V66 放在一起，较准确的结论是：底层缺逻辑 chunk 的填充值语义，不能单独用来判断保存系统是否漏检；本例原保存链确实传播了一个真实异步打开错误。但还有未覆盖的分支：提交成功后内容变化、分片覆盖不足、多 rank 首错、metadata 发布失败及 consumer 是否只选择成功版本。应逐项取证，不能将一个失败案例的绿灯当作全保存链安全证明。
+
+验收管线应保存每个 attempt 的失败状态，即使 manager 已消费异常也不清除失败记录。下次 save 的入口 wait、local 回调、成功回调分别关联到它们所属 attempt。评估或恢复候选同时核对布局身份、成功版本选择及内容证据；“当前 wait 无异常”仅说明当前没有待报告异常。
+
+范围：原源码用 AST 提取执行，不导入完整 Marin 包。heap trim 显式替为 no-op；host 分支不使用 write plan，传入 None；entry 仍为 SimpleNamespace。JAX manager 来自本轮安装环境，源码摘要与 check_for_errors 源文保留在结果中，没有证明 Hero 当时使用同一版本。没有执行设备分片、tree flatten、真正 CheckpointArray、完整 restore、生产 metadata 或分布式提交。复现：`make serialize-real-io CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。

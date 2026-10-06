@@ -163,3 +163,7 @@ weights-consumer-faults:
 .PHONY: tensorstore-io
 tensorstore-io:
 	PYTHONPATH=$(TENSORSTORE_PATH) $(CPU_PYTHON) scripts/probe_tensorstore_roundtrip.py
+
+.PHONY: serialize-real-io
+serialize-real-io:
+	PYTHONPATH=$(TENSORSTORE_PATH) $(CPU_PYTHON) scripts/probe_serialize_arrays_real_io.py

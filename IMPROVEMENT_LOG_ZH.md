@@ -387,3 +387,8 @@ V57复算#9708冻结表18条、12条步时，6项检查；新增性能图和未�
 ## V65：从消费者替身推进到真实本地存储
 
 执行原 spec helpers、TensorStore 0.1.69、小数组与独立进程，8 检查；完整、部分写入、删除逻辑 chunk、缺元数据及 dtype 约束分别验证。新增矩阵图与内容验收规则。完整 Marin serializer、物理 blob 损坏、GPU/生产恢复未知；455 份来源保持。
+
+
+## V66：原保存 host 分支、真实 manager 与失败预算释放
+
+9 项检查；执行原 _serialize_arrays、HostByteBudget 与真实 TensorStore/JAX 单进程 manager。核对快照值、96 字节峰值、真实异步元数据冲突、失败释放预算、成功 callback 守卫、上次错误阻止下次 staging，以及已报告异常只消费一次。无多 rank、完整 tree/restore、生产 metadata 验证。455 份来源保持。

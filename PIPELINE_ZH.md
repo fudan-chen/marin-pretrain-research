@@ -161,3 +161,6 @@ V64入口：make weights-consumer-faults CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/p
 
 
 V65 管线补充：在 metadata/layout 守卫之后加入同 attempt 的内容完整性核对，再执行 next-step 与固定 eval。记录摘要覆盖是全量还是抽样、回执覆盖哪些 rank。全量 chunk 键计数不能代替内容对照。探针已完成小数组本地 IO，生产恢复尚未执行。
+
+
+V66 保存管线补充：为 stage、每个 future 的成功/失败、local 状态、全局 callback 和消费异常记录同一 attempt。失败 future 也应释放预算，但已写成的部分数组不发布成成功版本。异常已消费与失败版本已恢复是两个状态。单进程真实 IO 已检查，多 rank 与上层发布仍待执行。

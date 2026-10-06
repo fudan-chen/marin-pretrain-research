@@ -911,6 +911,12 @@ to=ti['observations'];te=ti['fixture']['expected_values']
 ok('V65 complete fresh process versus default fill controls',to['complete_child']['values']==te and to['partial_child']['values'][:2]==te[:2] and to['partial_child']['values'][2:]==[[0.0]*4]*4 and to['deleted_chunk_child']['values']==[[0.0]*4]*2+te[2:])
 ok('V65 real storage figure embedded',soup.select_one('#checkpoint-commit-guide #tsio-figure_1') is not None)
 report['highlights']+=['V65 eight actual local TensorStore Zarr3/OCDBT IO checks with original spec helpers and independent read processes; synthetic arrays, no full Marin serializer or production restore']
+si=read(A/'serialize_arrays_real_io.json')
+ok('V66 original host serializer real manager scope and source binding',si['checks_passed']==len(si['checks'])==9 and si['actual_GlobalAsyncCheckpointManager'] and si['actual_HostByteBudget'] and si['actual_full_tree_serializer'] is None and si['actual_multirank_commit'] is None and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in si['source_sha256'].items()))
+so=si['observations']
+ok('V66 failed future budget release does not trigger success',so['success']['peak_bytes']==so['failure']['peak_bytes']==96 and 'commit_callback' in so['success']['events'] and 'commit_callback' not in so['failure']['events'] and 'local_failed' in so['failure']['events'] and so['failure']['second_array_restored_values']==so['success']['restored_values'][1])
+ok('V66 previous attempt error and reader explanation retained',so['failure']['next_save_events']==[] and so['failure']['next_save_error'] is not None and 'V66' in soup.select_one('#checkpoint-commit-guide').get_text())
+report['highlights']+=['V66 nine real local IO controls in original host serializer with original budget and installed single-process JAX manager; explicit omissions, no full tree or distributed/production restore']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

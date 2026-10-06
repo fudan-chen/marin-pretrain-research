@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本V65：真实本地 Zarr3/OCDBT 小数组 IO，8 项检查；未写或删除逻辑 chunk 会读为零，有限值不能证明内容完整。完整 Marin 保存链与生产恢复仍未知。详见 [checkpoint 提交与恢复](CHECKPOINT_COMMIT_ZH.md)。
+当前版本V66：执行原 host-array 保存链、真实 TensorStore 与单进程 JAX manager，9 项检查。失败释放预算、整次错误传播与下一次 save 的错误归属得到实测。完整 tree/分布式提交及生产恢复仍未知。详见 [checkpoint 提交与恢复](CHECKPOINT_COMMIT_ZH.md)。
 
 本轮完善[MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)：复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并补未执行的性能交互记录模板。
 

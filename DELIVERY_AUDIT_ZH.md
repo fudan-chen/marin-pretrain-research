@@ -1,6 +1,6 @@
 # 当前交付审计：文件覆盖与真实验证分别核对
 
-当前版本V65：真实本地 Zarr3/OCDBT 小数组 IO，8 项检查；未写或删除逻辑 chunk 会读为零，有限值不能证明内容完整。完整 Marin 保存链与生产恢复仍未知。详见 [checkpoint 提交与恢复](CHECKPOINT_COMMIT_ZH.md)。
+当前版本V66：执行原 host-array 保存链、真实 TensorStore 与单进程 JAX manager，9 项检查。失败释放预算、整次错误传播与下一次 save 的错误归属得到实测。完整 tree/分布式提交及生产恢复仍未知。详见 [checkpoint 提交与恢复](CHECKPOINT_COMMIT_ZH.md)。
 
 |用户要求|当前权威产物|覆盖与实际限制|
 |---|---|---|

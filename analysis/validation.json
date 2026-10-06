@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1467,
+  "checks_passed": 1470,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -113,7 +113,8 @@
     "V62 six swarm observations, 25 endpoints and 75 descriptive seed-label pairs; nine checks, consistent gains and regressions; no independent confirmation or post-selection p-value",
     "V63 nine JAX CPU/source controls, ID/weight pairing and pending centering with explicit tree_at stub; no checkpoint IO or production view/NaN attribution",
     "V64 ten original-consumer fault controls, nine checks; real temporary metadata IO with explicit layout/array/digest/template/tree stubs, no actual checkpoint or OCDBT restore",
-    "V65 eight actual local TensorStore Zarr3/OCDBT IO checks with original spec helpers and independent read processes; synthetic arrays, no full Marin serializer or production restore"
+    "V65 eight actual local TensorStore Zarr3/OCDBT IO checks with original spec helpers and independent read processes; synthetic arrays, no full Marin serializer or production restore",
+    "V66 nine real local IO controls in original host serializer with original budget and installed single-process JAX manager; explicit omissions, no full tree or distributed/production restore"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

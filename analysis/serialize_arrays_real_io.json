@@ -1,0 +1,177 @@
+{
+  "scope": "Original host-array serialization with real TensorStore and single-process JAX manager.\nNot full tree serialization, production metadata publication, or distributed execution.\n",
+  "checks_passed": 9,
+  "checks": [
+    "Original host snapshots preserve pre-mutation values",
+    "Single-process actual manager commits before wait returns",
+    "Two host arrays respect one-array budget",
+    "Actual manager wait propagates real TensorStore metadata conflict",
+    "Failed local commit never invokes success callback",
+    "Failure releases budget allowing second real write to complete",
+    "Previous pending failure blocks next original serialization before staging",
+    "Installed manager consumes reported exception once",
+    "Extracted six original declarations"
+  ],
+  "runtime": {
+    "python": "3.12.13",
+    "jax": "0.7.2",
+    "tensorstore": "0.1.69",
+    "process_count": 1,
+    "manager_source_sha256": "df089154e31d0f7a1d25bc453f02b7823d6db54864ad659312eb4317f5d73c12",
+    "manager_check_for_errors_source": "  def check_for_errors(self):\n    if self._exception is not None:\n      # Clears self._exception so it is only raised once.\n      exception = self._exception\n      self._exception = None\n      if (isinstance(exception, _jax.XlaRuntimeError) and\n          'DEADLINE_EXCEEDED: Barrier timed out' in str(exception)):\n        raise BarrierTimeoutError(\n            '\\n'.join([str(exception), _BARRIER_TIMED_OUT_MSG]))\n      raise exception  # pylint: disable=raising-bad-type\n"
+  },
+  "observations": {
+    "success": {
+      "events": [
+        {
+          "staged": 96
+        },
+        "local_completed",
+        "commit_callback"
+      ],
+      "peak_bytes": 96,
+      "restored_values": [
+        [
+          [
+            1.0,
+            2.0,
+            3.0,
+            4.0
+          ],
+          [
+            5.0,
+            6.0,
+            7.0,
+            8.0
+          ],
+          [
+            9.0,
+            10.0,
+            11.0,
+            12.0
+          ],
+          [
+            13.0,
+            14.0,
+            15.0,
+            16.0
+          ],
+          [
+            17.0,
+            18.0,
+            19.0,
+            20.0
+          ],
+          [
+            21.0,
+            22.0,
+            23.0,
+            24.0
+          ]
+        ],
+        [
+          [
+            101.0,
+            102.0,
+            103.0,
+            104.0
+          ],
+          [
+            105.0,
+            106.0,
+            107.0,
+            108.0
+          ],
+          [
+            109.0,
+            110.0,
+            111.0,
+            112.0
+          ],
+          [
+            113.0,
+            114.0,
+            115.0,
+            116.0
+          ],
+          [
+            117.0,
+            118.0,
+            119.0,
+            120.0
+          ],
+          [
+            121.0,
+            122.0,
+            123.0,
+            124.0
+          ]
+        ]
+      ]
+    },
+    "failure": {
+      "events": [
+        {
+          "staged": 96
+        },
+        "local_failed"
+      ],
+      "peak_bytes": 96,
+      "wait_error": "ValueError: FAILED_PRECONDITION: Error opening \"zarr3\" driver: Expected \"data_type\" of \"int32\" but received: \"float32\" [tensorstore_spec='{\\\"context\\\":{\\\"cache_pool\\\":{},\\\"data_copy_concurrency\\\":{\\\"limit\\\":16},\\\"file_io_concurrency\\\":{\\\"limit\\\":128},\\\"file_io_locking\\\":{},\\\"file_io_memmap\\\":false,\\\"file_io_sync\\\":true,\\\"ocdbt_coordinator\\\":{}},\\\"create\\\":true,\\\"driver\\\":\\\"zarr3\\\",\\\"dtype\\\":\\\"int32\\\",\\\"kvstore\\\":{\\\"base\\\":{\\\"driver\\\":\\\"file\\\",\\\"path\\\":\\\"/var/folders/fr/z9sql57n2gx7wp37d74d4bg40000gn/T/marin-real-serialize-pnahu2sp/fail/\\\"},\\\"driver\\\":\\\"ocdbt\\\",\\\"path\\\":\\\"a/\\\"},\\\"metadata\\\":{\\\"chunk_grid\\\":{\\\"configuration\\\":{\\\"chunk_shape\\\":[2,4]},\\\"name\\\":\\\"regular\\\"},\\\"data_type\\\":\\\"int32\\\",\\\"node_type\\\":\\\"array\\\",\\\"shape\\\":[6,4]},\\\"open\\\":true,\\\"transform\\\":{\\\"input_exclusive_max\\\":[[6],[4]],\\\"input_inclusive_min\\\":[0,0]}}'] [source locations='tensorstore/driver/zarr3/driver.cc:599\\ntensorstore/driver/kvs_backed_chunk_driver.cc:1290\\ntensorstore/driver/driver.cc:112']",
+      "second_array_restored_values": [
+        [
+          101.0,
+          102.0,
+          103.0,
+          104.0
+        ],
+        [
+          105.0,
+          106.0,
+          107.0,
+          108.0
+        ],
+        [
+          109.0,
+          110.0,
+          111.0,
+          112.0
+        ],
+        [
+          113.0,
+          114.0,
+          115.0,
+          116.0
+        ],
+        [
+          117.0,
+          118.0,
+          119.0,
+          120.0
+        ],
+        [
+          121.0,
+          122.0,
+          123.0,
+          124.0
+        ]
+      ],
+      "next_save_error": "ValueError: FAILED_PRECONDITION: Error opening \"zarr3\" driver: Expected \"data_type\" of \"int32\" but received: \"float32\" [tensorstore_spec='{\\\"context\\\":{\\\"cache_pool\\\":{},\\\"data_copy_concurrency\\\":{\\\"limit\\\":16},\\\"file_io_concurrency\\\":{\\\"limit\\\":128},\\\"file_io_locking\\\":{},\\\"file_io_memmap\\\":false,\\\"file_io_sync\\\":true,\\\"ocdbt_coordinator\\\":{}},\\\"create\\\":true,\\\"driver\\\":\\\"zarr3\\\",\\\"dtype\\\":\\\"int32\\\",\\\"kvstore\\\":{\\\"base\\\":{\\\"driver\\\":\\\"file\\\",\\\"path\\\":\\\"/var/folders/fr/z9sql57n2gx7wp37d74d4bg40000gn/T/marin-real-serialize-pnahu2sp/fail/\\\"},\\\"driver\\\":\\\"ocdbt\\\",\\\"path\\\":\\\"a/\\\"},\\\"metadata\\\":{\\\"chunk_grid\\\":{\\\"configuration\\\":{\\\"chunk_shape\\\":[2,4]},\\\"name\\\":\\\"regular\\\"},\\\"data_type\\\":\\\"int32\\\",\\\"node_type\\\":\\\"array\\\",\\\"shape\\\":[6,4]},\\\"open\\\":true,\\\"transform\\\":{\\\"input_exclusive_max\\\":[[6],[4]],\\\"input_inclusive_min\\\":[0,0]}}'] [source locations='tensorstore/driver/zarr3/driver.cc:599\\ntensorstore/driver/kvs_backed_chunk_driver.cc:1290\\ntensorstore/driver/driver.cc:112']",
+      "next_save_events": []
+    }
+  },
+  "explicit_substitutions": {
+    "heap_trim": "no-op",
+    "write_plans": "None entries; host branch does not consume plans",
+    "entry": "SimpleNamespace"
+  },
+  "actual_GlobalAsyncCheckpointManager": true,
+  "actual_HostByteBudget": true,
+  "actual_full_tree_serializer": null,
+  "actual_multirank_commit": null,
+  "actual_production_metadata_publication": null,
+  "source_sha256": {
+    "sources/checkpoint_commit_2026_10_05/tensorstore_serialization.py": "5dddf8c6cc87cb062593482abe6775eee59eea443c28c7fd8d8b7ddf261f89ea",
+    "sources/checkpoint_memory_2026_10_05/byte_budget.py": "5e1dbcd8bcae899f295952236269b0b439e308b54c6a120da43eda3441ec4f34"
+  }
+}

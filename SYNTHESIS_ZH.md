@@ -142,3 +142,6 @@ V62补充正面证据与取舍：d512选中配方在三pair的Paloma/代码/Unch
 
 
 V63原JAX控制显示：专家ID变化时，bf16权重数组仍可能相同；单个非有限pending可经中心化传播到整层bias。恢复和评估比较应联合绑定ID/权重与消费者状态视图。人工控制非生产事故证据，见[状态章节](TRAIN_STATE_ZH.md)。
+
+
+V64原恢复入口控制核对永久元数据、master权威布局、严格加载及pending请求。manifest存在时不从陈旧目录改选master；损坏与缺失分开。推理恢复不等于训练恢复，真实数组IO仍未知，见[保存与恢复](CHECKPOINT_COMMIT_ZH.md)。

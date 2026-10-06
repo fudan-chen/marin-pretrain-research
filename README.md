@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本V63。深入[恢复状态与评估视图](TRAIN_STATE_ZH.md)：原JAX偏置与router联合执行，核对ID/权重配对、pending替换语义与非有限状态传播。
+当前版本V64。深入[checkpoint恢复错误路径](CHECKPOINT_COMMIT_ZH.md)：原推理消费者、永久元数据、master权威布局、严格数组/pending请求及旧布局边界。
 
 本轮完善[MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)：复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并补未执行的性能交互记录模板。
 

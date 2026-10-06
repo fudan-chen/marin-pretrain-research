@@ -154,3 +154,7 @@ swarm-seed-pairs:
 .PHONY: pending-router-view
 pending-router-view:
 	$(CPU_PYTHON) scripts/probe_pending_router_view_cpu.py
+
+.PHONY: weights-consumer-faults
+weights-consumer-faults:
+	$(CPU_PYTHON) scripts/probe_weights_consumer_faults.py

@@ -1,0 +1,11 @@
+{
+  "checks_passed": 5,
+  "checks": [
+    "index.html V64 recovery text",
+    "index.html unique ids",
+    "report_standalone.html V64 recovery text",
+    "report_standalone.html unique ids",
+    "455 frozen source hashes valid"
+  ],
+  "actual_browser_rendering": null
+}

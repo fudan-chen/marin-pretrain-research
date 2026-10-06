@@ -377,3 +377,8 @@ V57复算#9708冻结表18条、12条步时，6项检查；新增性能图和未�
 ## V63：pending与router联合检查
 
 真实JAX执行原apply_qb_betas及moe_route；9项CPU/来源核对。ID由[1,0]变[0,2]而权重数组相同，非有限pending经mean传播。tree_at/reshard/spec替身，无checkpoint IO、完整模型或GPU复现。455份来源保持。
+
+
+## V64：推理恢复消费者故障路径
+
+执行原restore_weights与checkpoint_stores_master，10输入、9检查；真实临时metadata JSON IO，manifest/array/digest/template/tree替身。核对strict False、权威master选择、legacy marker、缺失/损坏分支和allow_partial=False。无OCDBT、实际checkpoint或生产恢复，455来源保持。

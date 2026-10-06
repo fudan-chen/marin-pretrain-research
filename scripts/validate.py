@@ -900,6 +900,11 @@ ok('V63 same numeric weights differ in expert pairing',pf['stored_view']['combin
 ok('V63 nonfinite propagation not a production event',pf['nonfinite_bias_output']==['inf','nan','inf'] and pv['actual_Hero_nonfinite_beta_event'] is None)
 ok('V63 state chapter explanation present','V63' in soup.select_one('#state-guide').get_text())
 report['highlights']+=['V63 nine JAX CPU/source controls, ID/weight pairing and pending centering with explicit tree_at stub; no checkpoint IO or production view/NaN attribution']
+wc=read(A/'weights_consumer_faults.json')
+ok('V64 consumer checks retain actual array IO unknown',wc['checks_passed']==len(wc['checks'])==9 and len(wc['cases'])==10 and wc['actual_checkpoint_array_IO'] is None and wc['actual_OCDBT_execution'] is None and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in wc['source_sha256'].items()))
+ok('V64 metadata guards precede layout calls',all(wc['cases'][i]['error']=='ValueError' and wc['cases'][i]['calls']==[] for i in [2,3,4,5]))
+ok('V64 layout and failure propagation retained',wc['cases'][0]['calls'][1]['requested_keys']==['master_params','pending_qb_betas'] and wc['cases'][7]['calls'][1]['requested_keys']==['params','pending_qb_betas'] and wc['cases'][9]['calls']==['manifest'])
+report['highlights']+=['V64 ten original-consumer fault controls, nine checks; real temporary metadata IO with explicit layout/array/digest/template/tree stubs, no actual checkpoint or OCDBT restore']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

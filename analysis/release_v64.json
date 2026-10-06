@@ -1,0 +1,32 @@
+{
+  "version": "V64",
+  "created_utc": "2026-10-06T20:11:49.050638+00:00",
+  "goal_status": "active",
+  "scope": "Original weight restore and master layout consumers; 10 artificial cases with real temporary JSON metadata IO and layout/array/digest/template/tree stubs",
+  "checks_passed": 1464,
+  "consumer_checks": 9,
+  "source_files": 455,
+  "all_prior_source_bytes_preserved": 455,
+  "new_source_acquisitions": 0,
+  "actual_checkpoint_array_IO": null,
+  "actual_OCDBT_execution": null,
+  "actual_production_recovery": null,
+  "actual_browser_rendering": null,
+  "artifact_sha256": {
+    "README.md": "3eaa1c6d6a7ca5f6e48221e39f68d5e61283810e1df832bfb6d5864451b6dee0",
+    "DELIVERY_AUDIT_ZH.md": "d4b1ac4b23a9e46ea716688cdc34e2abcedefab94171e6f1be10850b7be41f37",
+    "CHECKPOINT_COMMIT_ZH.md": "7fd8f2ddcdbb9f58251afe0606dd7b97d30a0bf628b44afd2eec1e9e82aca0b0",
+    "SYNTHESIS_ZH.md": "534cf6c924910868cf0605a50c85f5e90d870add7db9489a16d8fcf6799371d4",
+    "RUBRICS_ZH.md": "5094a55e2d09c8de54fc4a20c00bb330c625bb5778eb2e6ae3f5b2250585e96f",
+    "PIPELINE_ZH.md": "eaec41d0a0223cbc8caf7f7cc5c9705428fc4b672276d1ac20e9b0584854d9e5",
+    "IMPROVEMENT_LOG_ZH.md": "ca3db58efc003d8580cf94c548d32edb3ee17a30086cbc069637a57cac9179f6",
+    "Makefile": "fd6ec464ddb522d44d8e4468ed7ae9e1261aed5dfe0c24875eb512185ab01496",
+    "scripts/validate.py": "8c1a1a80c3743c3aa0af57698d46519f724e1949059ec2abef577a77445efc86",
+    "scripts/probe_weights_consumer_faults.py": "fc35142aaa300a918f2df10912381b2f569245f161c5d281ba3e12cd2c569538",
+    "analysis/weights_consumer_faults.json": "76d2ebc054cc412fd154994505c9e27eb57723b3b3a8a320b57b8238273a5195",
+    "analysis/validation.json": "49606c92f1a198d54b86935f15aa43c6cb7d412d7f30e14771232a16f8d7b5ec",
+    "analysis/static_validation_v64.json": "0ff9242ed2fcd5779cece647ff2746db89b539f7c94318da27eb4aca4f1aa253",
+    "index.html": "6290bc5b70ee56d2b68259364d71e1d870adfc56710953994edce0d7342426b4",
+    "report_standalone.html": "59b2e925c8cdea10cbb348a719f4b0d11efbaa5f5135d3c5930899eed2f5cadf"
+  }
+}

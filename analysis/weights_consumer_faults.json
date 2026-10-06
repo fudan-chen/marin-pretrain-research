@@ -1,0 +1,196 @@
+{
+  "scope": "Execute original restore_weights consumer with real temporary JSON IO and explicit\nlayout/array-loader/digest/template/tree stubs. No actual checkpoint arrays or OCDBT.\n",
+  "checks_passed": 9,
+  "checks": [
+    "permanent_master requests expected authoritative view",
+    "permanent_params requests expected authoritative view",
+    "legacy_local_master_marker requests expected authoritative view",
+    "manifest_params_overrides_stale_local_master_marker requests expected authoritative view",
+    "Temporary/missing/integer-zero metadata rejected before layout read",
+    "Digest mismatch rejected before layout read",
+    "Every reached load forbids partial and binds original candidate",
+    "Consumer does not hide propagated missing-array failure",
+    "Malformed manifest error is not treated as manifest absence"
+  ],
+  "cases": [
+    {
+      "name": "permanent_master",
+      "metadata": {
+        "is_temporary": false
+      },
+      "calls": [
+        "manifest",
+        {
+          "requested_keys": [
+            "master_params",
+            "pending_qb_betas"
+          ],
+          "allow_partial": false,
+          "candidate_matches": true
+        }
+      ],
+      "error": null,
+      "returned_bias": [
+        [
+          1.0,
+          -2.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "permanent_params",
+      "metadata": {
+        "is_temporary": false
+      },
+      "calls": [
+        "manifest",
+        {
+          "requested_keys": [
+            "params",
+            "pending_qb_betas"
+          ],
+          "allow_partial": false,
+          "candidate_matches": true
+        }
+      ],
+      "error": null,
+      "returned_bias": [
+        [
+          1.0,
+          -2.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "temporary",
+      "metadata": {
+        "is_temporary": true
+      },
+      "calls": [],
+      "error": "ValueError",
+      "returned_bias": null
+    },
+    {
+      "name": "missing_permanent_flag",
+      "metadata": {},
+      "calls": [],
+      "error": "ValueError",
+      "returned_bias": null
+    },
+    {
+      "name": "integer_zero_is_not_false",
+      "metadata": {
+        "is_temporary": 0
+      },
+      "calls": [],
+      "error": "ValueError",
+      "returned_bias": null
+    },
+    {
+      "name": "digest_mismatch",
+      "metadata": {
+        "is_temporary": false
+      },
+      "calls": [],
+      "error": "ValueError",
+      "returned_bias": null
+    },
+    {
+      "name": "legacy_local_master_marker",
+      "metadata": {
+        "is_temporary": false
+      },
+      "calls": [
+        "manifest",
+        {
+          "requested_keys": [
+            "master_params",
+            "pending_qb_betas"
+          ],
+          "allow_partial": false,
+          "candidate_matches": true
+        }
+      ],
+      "error": null,
+      "returned_bias": [
+        [
+          1.0,
+          -2.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "manifest_params_overrides_stale_local_master_marker",
+      "metadata": {
+        "is_temporary": false
+      },
+      "calls": [
+        "manifest",
+        {
+          "requested_keys": [
+            "params",
+            "pending_qb_betas"
+          ],
+          "allow_partial": false,
+          "candidate_matches": true
+        }
+      ],
+      "error": null,
+      "returned_bias": [
+        [
+          1.0,
+          -2.0,
+          1.0
+        ]
+      ]
+    },
+    {
+      "name": "load_missing_array",
+      "metadata": {
+        "is_temporary": false
+      },
+      "calls": [
+        "manifest",
+        {
+          "requested_keys": [
+            "params",
+            "pending_qb_betas"
+          ],
+          "allow_partial": false,
+          "candidate_matches": true
+        }
+      ],
+      "error": "FileNotFoundError",
+      "returned_bias": null
+    },
+    {
+      "name": "malformed_manifest",
+      "metadata": {
+        "is_temporary": false
+      },
+      "calls": [
+        "manifest"
+      ],
+      "error": "ValueError",
+      "returned_bias": null
+    }
+  ],
+  "stubs": [
+    "metadata digest algorithm is diagnostic SHA256, not original digest",
+    "read_manifest/layout metadata",
+    "load_grug_checkpoint array loader",
+    "filter_eval_shape Transformer template",
+    "eqx tree_at from prior explicit stub"
+  ],
+  "actual_checkpoint_array_IO": null,
+  "actual_OCDBT_execution": null,
+  "actual_production_recovery": null,
+  "source_sha256": {
+    "sources/state_2026_10_05/weights.py": "495de05281ce1cd01d2ad187aafd43e7d89833d42109c63fe63db3d80d21f231",
+    "sources/contracts_2026_10_05/checkpointing.py": "1f7395e4caeb60f31db7d84e32e972b75791e43e454dafd146449b9148e5016d",
+    "sources/contracts_2026_10_05/model.py": "8fdfd89cf6814da05683f134f154525916728370368a2493843195d9a489859c"
+  }
+}

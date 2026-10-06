@@ -1,6 +1,6 @@
 # 当前交付审计：文件覆盖与真实验证分别核对
 
-当前版本V63：9项CPU/来源检查执行原偏置helper与router block；tree_at/reshard/spec替身，无真实checkpoint IO、完整模型、GPU或生产异常确认。原455份来源保持。
+当前版本V64：9项消费者控制、10个人工输入，临时metadata JSON IO真实；manifest/数组/digest/模板/tree为替身，OCDBT与生产恢复未知。原455份来源保持。
 
 |用户要求|当前权威产物|覆盖与实际限制|
 |---|---|---|

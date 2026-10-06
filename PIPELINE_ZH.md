@@ -155,3 +155,6 @@ V62入口：make swarm-seed-pairs，复算6份公开观察、25终点与75差值
 
 
 V63入口：make pending-router-view CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python执行原偏置helper和router block，9项CPU/来源控制。tree_at/reshard/spec为替身；真实checkpoint IO、全模型输出和GPU仍待验证。
+
+
+V64入口：make weights-consumer-faults CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python。10个人工输入、9项原消费者控制；metadata本地IO真实，manifest/array/digest/template/tree替身。后续须真实save→独立restore→下一步，不能由此认定生产可靠。

@@ -67,3 +67,30 @@
 5. **清理与复盘**：只清理授权范围内的版本，保留预定且经过恢复验证的回退点；实际容量与删除成功读回确认。将根因已证实、缓解、恢复进度和未知分别填写。
 
 [保存验收记录模板](templates/checkpoint_commit_review.json)把四个水位、各阶段证据和回退点放在同一交接里。它是待执行模板，实测状态为空；本轮没有进行任何生产删除、权限修改或真实恢复。最优先的后续检查是：取得一次真实save的各rank提交轨迹与自己save后restore结果，再判断哪种保存阶段最值得优化。
+
+
+## V64：推理恢复消费者如何拒绝错误输入
+
+本轮执行固定weights.py的完整restore_weights函数及checkpoint_stores_master函数。临时目录中的metadata.json读写是真实本地IO；manifest读取、数组加载、Transformer模板、digest算法与tree_at是明确替身。原偏置计算使用真实JAX。10个人工输入、9项控制检查不构成实际TensorStore/OCDBT恢复测试。[原值和调用轨迹](analysis/weights_consumer_faults.json)
+
+### 先判定永久元数据，再选择权重视图
+
+原入口要求调用方提供metadata_digest，并判断metadata.get('is_temporary') is False。true、缺失字段或整数0均被拒绝，且尚未进入layout/array读取。JSON的false与0不是相同的接口声明；不能用一般的真假值判断替代此合同。digest不一致也在layout读取前拒绝。本轮digest使用人工SHA256回调，仅验证原条件分支，没有执行或证明实际digest算法。
+
+通过后，manifest中出现master_params及其子路径时选择master；没有master时选择params。控制中即便本地有一个陈旧master_params目录，只要manifest说params，就不会因为目录存在而改选master。有manifest时权威布局应来自manifest，不能把多个历史文件的存在性混作当前状态。
+
+只有manifest缺失所引发的FileNotFoundError才进入旧布局探测。原消费者另有OCDBT KV marker探测；本轮只执行本地目录marker分支，没有执行OCDBT。人工malformed manifest的ValueError直接传播，不会被当作“没有manifest”而继续。缺失与损坏应该区分，但实际manifest parser对各种损坏抛什么异常仍需其真实路径验证。
+
+### 权重加载成功，还必须有pending状态
+
+该推理入口的请求模板包含权威权重键和pending_qb_betas，且传入allow_partial=False，candidate保持调用方指定路径。返回前block_until_ready，再应用pending。四个正常控制返回相同的人工centered bias[1,-2,1]。这些调用证明此入口的请求合同，不能证明替身返回的数组来自真实checkpoint、shape完整或payload无损。
+
+人工loader将缺失数组错误传播到消费者时，外层消费者不会改选另一个checkpoint。必须同时限定：真实load_grug_checkpoint内部包含root到legacy wrapped布局的FileNotFoundError重试，两次仍使用同一candidate；本轮数组loader是替身，没有执行这个内层重试，不能宣称整条恢复链只有一次底层读取。
+
+推理restore_weights不恢复optimizer，因此不能拿它的成功作为续训恢复合格。训练恢复仍需完整params/master、opt_state、pending、step和下一输入身份。metadata一致也不能自动证明数组提交完整；实际save/commit、manifest解析、strict array load与后续执行分别需要对应证据。
+
+### 可转用的验收规则
+
+记录失败发生于元数据、布局选择、数组读取、pending应用还是首次执行，并保留异常类型；不要把损坏输入随意当成旧布局。对照需明确消费者用途：推理权重恢复和完整训练状态恢复是不同合同。保持指定candidate和权威视图，避免回退后只记录“恢复成功”。
+
+运行make weights-consumer-faults CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python可复算。下一项强证据仍是候选代码自己保存、独立新进程实际恢复并运行下一步，而非增加替身控制后宣布生产恢复完成。

@@ -1,6 +1,20 @@
 {
-  "integrity_manifest_created_utc": "2026-10-06T16:44:31.327096+00:00",
+  "integrity_manifest_created_utc": "2026-10-06T17:27:58.057372+00:00",
   "files": [
+    {
+      "file": "accumulation_2026_10_07/grad_accum.py",
+      "bytes": 7735,
+      "sha256": "047a8bad9a9a9bdd837680c4fdb440fb19c12dc3001a56ab5c1b78521cba949b",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/grad_accum.py",
+      "retrieved_utc": "2026-10-06T17:14:50.300194+00:00"
+    },
+    {
+      "file": "accumulation_2026_10_07/trainer.py",
+      "bytes": 48104,
+      "sha256": "280284a5bf7461a9a8871e0773cc1f1ec9ef1c92a7a58d224e68ba06d2aa76d3",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/trainer.py",
+      "retrieved_utc": "2026-10-06T17:14:57.037835+00:00"
+    },
     {
       "file": "adamh_2026_10_05/adamh.py",
       "bytes": 3475,
@@ -2577,8 +2591,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 207769,
-      "sha256": "72a07abddcc8f8791730821f7b5427159dce3caed08f38c9476d54204382aea1",
+      "bytes": 209184,
+      "sha256": "8b86e728a5753f460213a82c19c00f5aef8eb32f18657bf463d1941c574ae4c9",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

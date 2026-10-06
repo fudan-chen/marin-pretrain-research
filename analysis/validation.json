@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1371,
+  "checks_passed": 1377,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -18,7 +18,7 @@
     "four new config contrasts / six step393 resume windows",
     "seventeen embedded figures",
     "all relative HTML links valid",
-    "441 source archive checksums valid",
+    "443 source archive checksums valid",
     "18 authored rubrics / seven claim-stage decisions",
     "five interpretation cases / four metrics with switchable baselines",
     "17 figure-reading entries / five preserved collapsed tables",
@@ -95,7 +95,8 @@
     "V44 synthetic parallel packing boundaries, clipping/drop/cap and weight-mask checks; declared Hero 223 text non-packing components; no TensorStore/GPU/Hero mismatch claim",
     "V45 finite fixed-order repeat exposure projection; window versus lifetime index coverage; original helper and synthetic permutation, no actual Hero inventory/cursor/block shuffle or training benefit",
     "V46 independent 9.915T / 4K snapshot; new 212999 evaluation and 216 unchanged old values; micro decline versus macro rebound, descriptive PTB decomposition; no causal or GPU claim",
-    "V47 conditional eval weight inference, 18 fit and five post-hoc points; eight bounded checks, perturbation sensitivity and nonidentifiability; no actual denominator or training mixture benefit"
+    "V47 conditional eval weight inference, 18 fit and five post-hoc points; eight bounded checks, perturbation sensitivity and nonidentifiability; no actual denominator or training mixture benefit",
+    "V48 generic accumulation versus specialized Hero path; fourteen original-body/serial/artificial objective checks; unequal denominator gradient reversal, no actual Hero bug or JAX/model/distributed parity"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

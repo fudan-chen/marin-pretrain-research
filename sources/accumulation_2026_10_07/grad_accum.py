@@ -1,0 +1,184 @@
+# Copyright The Levanter Authors
+# SPDX-License-Identifier: Apache-2.0
+
+import functools
+from typing import Any, Callable, Optional, ParamSpec, TypeVar, cast
+
+import equinox as eqx
+import haliax as hax
+import haliax.quantization as hq
+import jax
+import jax.numpy as jnp
+from haliax import Axis
+from haliax.partitioning import ResourceAxis
+from haliax.util import is_named_array
+from jax.lax import with_sharding_constraint
+from jax.sharding import PartitionSpec
+
+from levanter.metrics import Metric
+from levanter.metrics import fold as fold_metric
+from levanter.pipeline import reshape_array_into_microbatches
+from levanter.utils.jax_utils import zeros_like_tree
+
+Args = ParamSpec("Args")
+R = TypeVar("R")
+
+
+# TODO: should we use a custom_jvp on microbatched?
+
+
+# cf https://github.com/google-research/t5x/blob/main/t5x/trainer.py#L617
+def microbatched(
+    fn: Callable[Args, R],
+    Batch: Axis,
+    microbatch_size: int,
+    accum_axis_mapping,
+    compute_axis_mapping,
+    patch_in_rng_key: Optional[str] = "key",
+    accum_dtype: Optional[jnp.dtype] = None,
+) -> Callable[Args, R]:
+    """
+    Wraps a gradient-and-loss function so it runs over microbatches and accumulates the results.
+
+    ``fn`` must return ``((loss, metrics), grads)`` (i.e. the output of
+    ``eqx.filter_value_and_grad(loss_fn, has_aux=True)`` where ``loss_fn`` returns
+    ``(loss, metrics)``). The batch axis is split into microbatches; the loss and ordinary gradients
+    are summed then averaged, custom gradient state uses its own reduction without averaging, and
+    ``metrics`` are folded with their own reductions.
+    Named arrays with ``Batch`` and plain arrays whose leading dimension is ``Batch.size`` are split;
+    other inputs are reused for every microbatch.
+
+    Args:
+        fn: the value-and-grad function to wrap.
+        Batch: the batch axis.
+        microbatch_size: how many examples to process at once (must divide the batch size).
+        accum_axis_mapping:  the axis mapping for the accumulator (typically this is the same as the params)
+        compute_axis_mapping:  the axis mapping for the computation (typically this is the same as the inputs)
+        patch_in_rng_key: if provided, this kwarg will be split, 1 for each accum step. It won't work if the
+            PRNGKey is passed in as a positional argument.
+        accum_dtype: the dtype of floating point values in the accumulator. If None, this will be inferred from the return type of `fn`.
+
+    Returns:
+        a function that splits the batch into microbatches, calls the function on each microbatch, and
+        accumulates the results.
+    """
+    batch_size = Batch.size
+    data_axis_size = hax.partitioning.physical_axis_size(Batch, compute_axis_mapping)
+    if data_axis_size is None:
+        raise ValueError(f"{Batch} axis must be sharded")
+    physical_axis_name = hax.partitioning.physical_axis_name(Batch, compute_axis_mapping)
+    assert physical_axis_name is not None
+
+    if microbatch_size <= 0:
+        raise ValueError(f"Bad value for {microbatch_size=}")
+
+    if microbatch_size >= batch_size:
+        return fn
+
+    num_micro_steps = batch_size // microbatch_size
+
+    if num_micro_steps <= 0:
+        raise ValueError(
+            f"microbatch_size ({microbatch_size}) must be less than batch size ({batch_size}) or divisible into it"
+        )
+
+    Microbatch = Batch.resize(microbatch_size)
+    AccumStep = Axis("accum_step", num_micro_steps)
+    if num_micro_steps * microbatch_size != batch_size:
+        raise ValueError(
+            "Batch size must be an integer multiple of microbatch_size. "
+            f"Got batch size {batch_size} and microbatch_size {microbatch_size}."
+        )
+
+    @functools.wraps(fn)
+    def wrapped_fn(*args, **kwargs):
+
+        # first, determine the shape and make accumulator arrays
+        r_shape = eqx.filter_eval_shape(fn, *args, **kwargs)
+        acc = zeros_like_tree(r_shape, accum_axis_mapping, accum_dtype)
+
+        # then, reshape the inputs from (Batch, ...) to (AccumStep, Microbatch, ...)
+
+        # Special handling for PRNGKey: it comes in as a single key, but we need to split it for each microbatch
+        key = kwargs.get(patch_in_rng_key, None)
+        if key is not None:
+            key = jax.random.split(key, num_micro_steps)
+            kwargs = kwargs.copy()
+            kwargs.pop(patch_in_rng_key)
+
+        def is_batched(value):
+            if isinstance(value, hax.NamedArray):
+                return value.has_axis(Batch.name)
+            return isinstance(value, jnp.ndarray) and value.ndim > 0 and value.shape[0] == Batch.size
+
+        def is_input_leaf(value):
+            return is_named_array(value) or isinstance(value, hq.CustomGradientAccumulation)
+
+        batched_inputs, unbatched_inputs = eqx.partition((args, kwargs), is_batched, is_leaf=is_input_leaf)
+        batched_inputs = _reshape_for_microbatch(Batch, Microbatch, AccumStep, batched_inputs, compute_axis_mapping)
+
+        def loop(acc, microbatch_and_key):
+            microbatch_inputs, key = microbatch_and_key
+            microbatch, microbatch_kwargs = eqx.combine(microbatch_inputs, unbatched_inputs, is_leaf=is_input_leaf)
+            with jax.named_scope("compute"):
+                microbatch_kwargs = microbatch_kwargs.copy()
+                if key is not None:
+                    microbatch_kwargs[patch_in_rng_key] = key
+                this_r = cast(tuple[tuple[Any, Any], Any], fn(*microbatch, **microbatch_kwargs))
+
+            with jax.named_scope("accum"):
+                # Unpack structure: ((loss, metrics_dict), grads)
+                (this_loss, this_metrics), this_grads = this_r
+                (acc_loss, acc_metrics), acc_grads = acc
+
+                # Accumulate loss (scalar)
+                new_loss = acc_loss + this_loss
+
+                new_metrics = jax.tree_util.tree_map(
+                    lambda a, b: fold_metric(a, b),
+                    acc_metrics,
+                    this_metrics,
+                    is_leaf=lambda x: isinstance(x, Metric),
+                )
+
+                new_grads = hq.accumulate_gradients(acc_grads, this_grads)
+
+                # Repack and shard
+                acc = ((new_loss, new_metrics), new_grads)
+                acc = hax.shard_with_axis_mapping(acc, accum_axis_mapping)
+
+            return acc
+
+        with jax.named_scope("microbatched"):
+            acc = hax.fold(loop, AccumStep)(acc, (batched_inputs, key))
+
+            # Average loss and grads over microbatches. Metrics handle their own reduction internally.
+            (loss, metrics), grads = acc
+            loss = loss / num_micro_steps
+            grads = jax.tree_util.tree_map(
+                lambda x: x if isinstance(x, hq.CustomGradientAccumulation) else x / num_micro_steps,
+                grads,
+                is_leaf=lambda x: isinstance(x, hq.CustomGradientAccumulation),
+            )
+            acc = ((loss, metrics), grads)
+
+        return cast(R, acc)
+
+    return wrapped_fn
+
+
+def _reshape_for_microbatch(Batch: Axis, Microbatch: Axis, AccumStep: Axis, inputs, axis_mapping):
+    def _reshape(x):
+        if isinstance(x, hax.NamedArray):
+            if not x.has_axis(Batch.name):
+                return x
+            x = x.unflatten_axis(Batch, (AccumStep, Microbatch))
+            return hax.shard(x, axis_mapping)
+        elif isinstance(x, jnp.ndarray) and x.ndim > 0 and x.shape[0] == Batch.size:
+            x = reshape_array_into_microbatches(x, AccumStep.size)
+            return with_sharding_constraint(x, PartitionSpec(None, ResourceAxis.DATA, *(None,) * (len(x.shape) - 2)))
+        else:
+            # assert jnp.isscalar(x)
+            return x
+
+    return jax.tree_util.tree_map(_reshape, inputs, is_leaf=is_named_array)

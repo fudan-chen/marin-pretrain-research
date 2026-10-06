@@ -1,0 +1,1215 @@
+# Copyright The Levanter Authors
+# SPDX-License-Identifier: Apache-2.0
+
+import atexit
+import copy
+import functools
+import logging as pylogging
+import os
+import sys
+import typing
+import warnings
+from dataclasses import dataclass
+from functools import cached_property, partial
+from pathlib import Path
+from typing import (
+    Any,
+    Callable,
+    ContextManager,
+    Dict,
+    Iterable,
+    List,
+    Mapping,
+    Optional,
+    Protocol,
+    Sequence,
+    Tuple,
+    TypeVar,
+    Union,
+)
+
+import equinox as eqx
+import haliax as hax
+from rigging.filesystem.storage_path import StoragePath
+import haliax.tree_util
+import jax
+import jax.numpy as jnp
+import jmp
+import numpy as np
+from draccus import field
+from haliax import Axis
+from haliax.partitioning import ResourceMapping, named_jit
+from haliax.quantization import QuantizationConfig
+from haliax.types import Scalar
+from jax.experimental import multihost_utils
+from jax.sharding import AxisType, Mesh
+from jax.tree_util import register_dataclass
+from jaxtyping import PRNGKeyArray, PyTree
+from optax import GradientTransformation
+
+import levanter.callbacks
+import levanter.callbacks._metrics
+import levanter.checkpoint
+import levanter.tracker
+import levanter.tracker.wandb
+import levanter.utils.logging
+from levanter.callbacks import (
+    Callback,
+    CBInfo,
+    JitCallback,
+    LambdaCallback,
+    ProgressEvent,
+    StepInfo,
+    progress_event_scope,
+)
+from levanter.callbacks.profiler import ProfilerConfig, XlaDumpUploadConfig
+from levanter.callbacks.progress_watchdog import ProgressWatchdogConfig
+from levanter.callbacks.watch import WatchConfig
+from levanter.checkpoint import (
+    Checkpointer,
+    CheckpointerConfig,
+    CheckpointRetention,
+    is_checkpoint_path,
+    load_checkpoint_or_initialize,
+)
+from levanter.config import JsonAtom
+from levanter.cutlass_kernel_cache import cutlass_kernel_cache
+from levanter.cutlass_kernel_cache import install as install_cutlass_kernel_cache
+from levanter.data.dataset import AsyncDataset
+from levanter.data.loader import DataLoader
+from levanter.data.loader import _round_to_nearest_multiple
+from levanter.distributed import DistributedConfig
+from levanter.grad_accum import microbatched
+from levanter.metrics import Metric, auto_metric_from_name, unwrap_metrics
+from levanter.optim.model_averaging import ModelAveragingConfig
+from levanter.schedule import BatchSchedule, IntSchedule, ScheduleStep, distinct_values, value_at_step
+from levanter.tracker import TrackerConfig, capture_time
+from levanter.tracker.telemetry import TelemetryConfig, capture_stall_diagnostics
+from levanter.tracker.wandb import WandbConfig
+from levanter.trainer_state import InsideJitInfo, TrainerState, saveable_training_mask
+from levanter.utils import cloud_utils
+from levanter.utils.hardware_topology import hardware_topology_summary
+from levanter.utils.jax_utils import zeros_like_tree
+from levanter.utils.mesh import MeshConfig, create_mesh_from_axis_specs
+from levanter.utils.tree_utils import inference_mode
+from levanter.utils.types import ComputeLossFunction, FilterSpec
+
+logger = pylogging.getLogger(__name__)
+
+X = TypeVar("X")  # Input
+M = TypeVar("M")  # Model
+S = TypeVar("S", bound=TrainerState)  # State
+
+DEFAULT_JAX_CONFIG: Dict[str, JsonAtom] = {
+    "jax_threefry_partitionable": True,
+    "jax_softmax_custom_jvp": True,
+}
+
+
+# A note on the semantics of "step" vs "next_step":
+# The "step" of a TrainerState is the state after `step` steps have been taken.
+# A "StepInfo"'s step is the step that was just completed. If you want the next step, use `next_step`.
+
+
+@dataclass
+class _Hook:
+    fn: Callback
+    every: int
+
+
+@dataclass
+class _JitHook:
+    fn: JitCallback
+    every: int
+
+
+@dataclass
+class TrainStepResult(typing.Generic[S]):
+    """Result of a training step, returned from the JIT-compiled _train_step function."""
+
+    loss: Scalar
+    new_state: S
+    loss_metrics: Dict[str, jax.Array]
+    hook_infos: Optional[Sequence[CBInfo]]  # type: ignore
+
+
+register_dataclass(TrainStepResult)
+
+
+class TrainerHooks:
+    hooks: List[_Hook]
+    jit_hooks: List[_JitHook]
+
+    def __init__(self):
+        self.hooks = []
+        self.jit_hooks = []
+
+    def run_hooks(self, info: StepInfo, force: bool = False):
+        for hook in self.hooks:
+            if force or (info.step > 1 and info.step % hook.every == 0):
+                hook.fn.on_step(info, force=force)
+
+    def emit_event(self, event: ProgressEvent) -> None:
+        for hook in self.hooks:
+            hook.fn.on_event(event)
+
+    def run_jit_hooks_outside_step(self, info: StepInfo, cb_infos: Sequence[PyTree], force: bool = False):
+        for s_hook, cb_info in zip(self.jit_hooks, cb_infos):
+            if force or (info.step > 1 and info.step % s_hook.every == 0):
+                s_hook.fn.on_step(info, cb_info)
+
+    def run_jit_hooks(self, state: TrainerState, jit_info: InsideJitInfo, force: bool = False) -> tuple[PyTree, ...]:
+        hook: _JitHook
+        hook_infos = []
+        for hook in self.jit_hooks:
+            hook_shape = eqx.filter_eval_shape(hook.fn.inside_step, state, jit_info)
+            fires = (state.step > 1) & (state.step % hook.every == 0)
+            new_s = jax.lax.cond(
+                force or fires,
+                lambda: hook.fn.inside_step(state, jit_info),
+                lambda: zeros_like_tree(hook_shape),
+            )
+            hook_infos.append(new_s)
+
+        return tuple(hook_infos)
+
+    def add_hook(self, fn: Optional[Callable[[StepInfo], Any] | JitCallback | Callback] = None, *, every: int = 1):
+        def decorator(fn):
+            is_something = False
+
+            if isinstance(fn, Callback):
+                self.hooks.append(_Hook(fn, every))
+                is_something = True
+
+            if isinstance(fn, JitCallback):
+                self.jit_hooks.append(_JitHook(fn, every))
+                is_something = True
+
+            if not is_something:
+                if not callable(fn):
+                    raise ValueError(f"fn must be callable, got {fn}")
+                self.hooks.append(_Hook(LambdaCallback(fn), every))
+
+        if fn is None:
+            return decorator
+        else:
+            return decorator(fn)
+
+
+def _unify_model_and_model_init(model: Optional[M], model_init: Optional[Callable[[], M]]) -> Callable[[], M]:
+    if model is not None:
+        if model_init is not None:
+            raise ValueError("only one of model and model_init should be specified")
+
+        # we can't just use `lambda: model` because JAX jit can't see captures, but it can see jax partials
+        model_init = jax.tree_util.Partial(lambda m: m, model)
+    elif model_init is None:
+        raise ValueError("one of model and model_init must be specified")
+
+    assert model_init is not None
+    return model_init
+
+
+class WrappedLossFunction:
+    """
+    Wrapper around a loss function that provides a uniform interface.
+
+    Handles casting & executing in the proper axis mapping.
+
+    Always returns (loss, wrapped_metrics_dict). The user loss function
+    may return `Metric` objects or floats. Floats are automatically coerced to Metrics
+    based on their name.
+    """
+
+    _raw_fn: ComputeLossFunction
+    _mp: jmp.Policy
+    _compute_axis_mapping: ResourceMapping
+
+    def __init__(
+        self,
+        raw_fn: ComputeLossFunction,
+        mp: jmp.Policy,
+        compute_axis_mapping: ResourceMapping,
+    ):
+        """
+        Args:
+            raw_fn: The underlying loss function
+            mp: Mixed precision policy for casting
+            compute_axis_mapping: Axis mapping for compute
+        """
+        self._raw_fn = raw_fn
+        self._mp = mp
+        self._compute_axis_mapping = compute_axis_mapping
+
+    def __call__(self, model, *batch, **batch_kwargs) -> Tuple[Scalar, Dict[str, Metric]]:
+        """
+        Call the loss function with model casting and axis mapping.
+        Always returns (loss, wrapped_metrics) where metrics are Metric objects.
+        """
+        with hax.axis_mapping(self._compute_axis_mapping):
+            model = self._mp.cast_to_compute(model)
+            result = self._raw_fn(model, *batch, **batch_kwargs)
+
+        if isinstance(result, tuple) and len(result) == 2:
+            loss, metrics = result
+        else:
+            # Treat scalar return as (loss, {})
+            loss = result
+            metrics = {}
+
+        if not isinstance(metrics, dict):
+            raise ValueError(f"Expected metrics to be dict, got {type(metrics)}")
+
+        # Auto-wrap plain values into Metric objects
+        wrapped_metrics = {}
+        for key, value in metrics.items():
+            if isinstance(value, Metric):
+                wrapped_metrics[key] = value
+            else:
+                # Infer type from name and wrap
+                wrapped_metrics[key] = auto_metric_from_name(key, value)
+
+        return _ensure_scalar(loss.mean()), wrapped_metrics
+
+
+class Trainer:
+    config: "TrainerConfig"
+    optimizer: GradientTransformation
+    hooks: TrainerHooks
+    tracker: levanter.tracker.Tracker
+    is_trainable_param: PyTree[FilterSpec]
+    _raw_loss_function: Callable
+    _cmanagers: List[typing.ContextManager] = []
+
+    def __init__(
+        self,
+        config: "TrainerConfig",
+        optimizer: GradientTransformation,
+        loss_fn: ComputeLossFunction,
+        *,
+        add_default_hooks: bool = True,
+    ):
+        """
+        Args:
+            config:  the trainer config
+            optimizer: the optimizer, e.g. `optax.adam(1e-3)` or produced by [levanter.optim.OptimizerConfig][]
+            loss_fn (Callable): the loss function. This should be a function that takes a model and some inputs and returns
+                either a scalar loss, or a tuple of (scalar loss, metrics_dict). The metrics dict will be automatically
+                logged to the tracker with appropriate prefixes (e.g., "train/accuracy", "eval/perplexity").
+                The function should be jit-able and should not have any side effects.
+        """
+        self.hooks = TrainerHooks()
+        self.config = config
+        self.optimizer = optimizer
+        self._raw_loss_function = loss_fn
+        self._checkpointer: Optional[Checkpointer] = None
+        self._xla_dump_upload: Callable[[StepInfo], None] | None = None
+
+        # Use existing global tracker if available (e.g., from levanter.initialize()),
+        # otherwise create a new one. This avoids calling wandb.init() twice.
+        try:
+            self.tracker = levanter.tracker.current_tracker()
+        except RuntimeError:
+            # No global tracker set, create one
+            self.tracker = levanter.tracker.CompositeTracker(
+                [c.init(self.run_id) for c in _compose_with_telemetry(config.tracker)]
+            )
+
+        if add_default_hooks:
+            self._add_default_hooks()
+
+        self._cmanagers = []
+        self._logged_jaxprs: set[str] = set()
+
+    @cached_property
+    def loss_fn(self) -> WrappedLossFunction:
+        """
+        Wrapped loss function that always returns (loss, metrics_dict).
+        Casts the model to compute precision and sets the context axis mapping to compute.
+        """
+        return WrappedLossFunction(
+            self._raw_loss_function,
+            self.mp,
+            self.compute_axis_mapping,
+        )
+
+    @property
+    def run_id(self) -> str:
+        """Returns the run id"""
+        assert self.config.id is not None
+        return self.config.id
+
+    @property
+    def mp(self) -> jmp.Policy:
+        """Returns the mixed precision policy"""
+        return self.config.mp
+
+    @property
+    def num_train_steps(self) -> int:
+        return self.config.num_train_steps
+
+    @typing.overload
+    def add_hook(self, fn: Callable[[StepInfo], Any], *, every: int = 1): ...
+
+    @typing.overload
+    def add_hook(self, fn: JitCallback, *, every: int = 1): ...
+
+    @typing.overload
+    def add_hook(self, fn: Callback, *, every: int = 1): ...
+
+    @typing.overload
+    def add_hook(self, *, every: int = 1): ...
+
+    def add_hook(self, fn: Optional[Callable[[StepInfo], Any] | Callback | JitCallback] = None, *, every: int = 1):
+        return self.hooks.add_hook(fn, every=every)
+
+    def run_hooks(self, info: StepInfo, force: bool = False):
+        self.hooks.run_hooks(info, force=force)
+        if self._xla_dump_upload is not None:
+            self._xla_dump_upload(info)
+
+    def request_checkpoint(self, retention: CheckpointRetention) -> None:
+        """Request a checkpoint after the current step with the given retention."""
+        if self._checkpointer is None:
+            raise RuntimeError("Checkpointing is not configured")
+        self._checkpointer.request_checkpoint(retention)
+
+    @property
+    def parameter_axis_mapping(self) -> ResourceMapping:
+        return self.config.parameter_axis_mapping
+
+    @property
+    def compute_axis_mapping(self) -> ResourceMapping:
+        return self.config.compute_axis_mapping
+
+    @property
+    def device_mesh(self) -> Mesh:
+        return self.config.device_mesh
+
+    @property
+    def TrainBatch(self):
+        return self.config.TrainBatch
+
+    @property
+    def EvalBatch(self):
+        return self.config.EvalBatch
+
+    def __enter__(self):
+        if len(self._cmanagers) > 0:
+            raise RuntimeError("Trainer is already entered")
+
+        self._cmanagers = [
+            levanter.tracker.current_tracker(self.tracker),
+            haliax.partitioning.set_mesh(self.device_mesh),
+            hax.axis_mapping(self.parameter_axis_mapping),
+        ]
+
+        for cmanager in self._cmanagers:
+            cmanager.__enter__()
+
+        return self
+
+    def __exit__(self, *args):
+        problems = []
+
+        # Block on any in-flight async checkpoint serialization before tearing down the tracker
+        # and mesh. A run that has returned must have durably written its final checkpoint, and
+        # letting the background commit thread finish here also avoids it logging into the
+        # already-closed tracker/stdout during teardown.
+        if self._checkpointer is not None:
+            with progress_event_scope(
+                self.hooks.emit_event,
+                ProgressEvent.CHECKPOINT_STARTED,
+                ProgressEvent.CHECKPOINT_FINISHED,
+            ):
+                try:
+                    self._checkpointer.wait_until_finished()
+                except Exception as e:
+                    problems.append(e)
+
+        for cmanager in reversed(self._cmanagers):
+            try:
+                cmanager.__exit__(*args)
+            except Exception as e:
+                problems.append(e)
+
+        self._cmanagers = []
+        self.hooks.emit_event(ProgressEvent.TRAINING_FINISHED)
+
+        if len(problems) > 0:
+            raise RuntimeError("Exception(s) occurred while exiting trainer", problems) from problems[0]
+
+    def initial_state(
+        self,
+        training_key: PRNGKeyArray,
+        model: Optional[M] = None,
+        model_init: Optional[Callable[[], M]] = None,
+        *,
+        is_trainable: PyTree[FilterSpec] = True,
+    ) -> TrainerState[M]:
+        """
+        Either loads a checkpoint or initializes a fresh trainer state. This is the recommended way to initialize
+        a trainer state.
+
+        This method is smart enough to handle subclasses of TrainerState. If you want to extend TrainerState, you
+        can override _initialize_state_from_scratch
+
+        Args
+            is_trainable: optional filter spec for the trainable parameters. This is used to filter out non-trainable
+                parameters for the optimizer state and for computing gradients. Non-trainable parameters are also
+                not checkpointed. If you don't specify this, all parameters are assumed to be trainable.
+
+        Returns:
+            TrainerState: the initial state,
+        """
+        model_init = _unify_model_and_model_init(model, model_init)
+        assert model_init is not None
+
+        # first try to load a full trainer state checkpoint
+        checkpoint_search_paths, load_checkpoint = self.checkpoint_load_plan()
+
+        def init_state_and_model(model_init, training_key):
+            model = model_init()
+            # only force trainable params to param precision. Other params are cast to compute precision
+            state = TrainerState.init(
+                self.optimizer,
+                model,
+                key=training_key,
+                is_trainable=is_trainable,
+                mp=self.mp,
+                quantization=self.config.quantization,
+                model_averaging=self.config.model_averaging,
+            )
+            return state
+
+        if model is not None and not load_checkpoint:
+            # The concrete model is on its target mesh. Avoid a compiled init/merge with
+            # another live copy of its parameters.
+            return init_state_and_model(model_init, training_key)
+
+        trainer_state_shape = eqx.filter_eval_shape(init_state_and_model, model_init, training_key)
+        saveable_train_state = saveable_training_mask(trainer_state_shape, is_trainable)
+
+        state = load_checkpoint_or_initialize(
+            init_state_and_model,
+            checkpoint_search_paths,
+            axis_mapping=self.parameter_axis_mapping,
+            mesh=self.device_mesh,
+            is_checkpointed=saveable_train_state,
+            do_load=load_checkpoint,
+            allow_partial=self.config.allow_partial_checkpoint,
+        )(model_init, training_key)
+
+        return state
+
+    def checkpoint_load_plan(self) -> tuple[list[str], bool]:
+        """Resolve whether to restore a trainer checkpoint and where to find it."""
+        checkpoint_search_paths = self.checkpoint_search_paths
+        load_checkpoint = self.config.load_checkpoint
+        if load_checkpoint is True and not any(StoragePath(path).exists() for path in checkpoint_search_paths):
+            raise FileNotFoundError(f"Checkpoint search paths do not exist: {checkpoint_search_paths}")
+        elif load_checkpoint is None:
+            load_checkpoint = any(levanter.checkpoint.is_checkpoint_path(path) for path in checkpoint_search_paths)
+
+        if load_checkpoint is False and self.config.initialize_from is not None:
+            # we're not going to load a checkpoint from this run, so instead we can initialize from a different run
+            logger.info(f"Initializing from {self.config.initialize_from}")
+            load_checkpoint = True
+            checkpoint_path = self.config.initialize_from
+            checkpoint_search_paths = [checkpoint_path]
+            if not is_checkpoint_path(checkpoint_path):
+                raise ValueError(f"initialize_from must be a checkpoint path, got {checkpoint_path}")
+
+        return checkpoint_search_paths, load_checkpoint
+
+    @property
+    def checkpoint_search_paths(self) -> list[str]:
+        return self.config.checkpoint_search_paths(self.run_id)
+
+    @property
+    def checkpoint_path(self) -> str:
+        return self.checkpoint_search_paths[0]
+
+    def train_step(self, state: S, *batch: X, **batch_kwargs) -> StepInfo[S]:
+        """
+        Performs a single training step.
+        """
+        # jit hooks impose a nontrivial cost even when they're not run (since they defeat some compiler optimizations)
+        # so we avoid running them when they're not needed
+        # this results in two compiles, but the cost of the second compile is worth it
+        hooks_this_time = any(state.step % h.every == 0 for h in self.hooks.jit_hooks)
+
+        self.hooks.emit_event(ProgressEvent.TRAIN_STEP_STARTED)
+        with capture_time() as step_time:
+            # Annotation scoped to the compiled step only (not hooks/logging below) so
+            # that GPU host-side step_num timing matches TPU device-side "Steps" semantics.
+            with jax.profiler.StepTraceAnnotation("train", step_num=int(state.step)):
+                if hooks_this_time:
+                    result = self._maybe_save_jaxpr("train_step", self._jit_train_step_fn, state, batch, batch_kwargs)
+                else:
+                    result = self._maybe_save_jaxpr(
+                        "train_step_hooks", self._jit_train_step_fn_no_hook, state, batch, batch_kwargs
+                    )
+
+            loss = result.loss.item()
+            self.hooks.emit_event(ProgressEvent.TRAIN_STEP_FINISHED)
+
+            if self.config.crash_on_nan and jnp.isnan(loss):
+                raise RuntimeError("Loss is NaN")
+
+            if self.config.crash_on_inf and jnp.isinf(loss):
+                raise RuntimeError("Loss is Inf")
+
+            info = StepInfo(result.new_state, loss, step_time(), _event_handler=self.hooks.emit_event)
+
+            with capture_time() as hook_time:
+                self.run_hooks(info)
+                if hooks_this_time:
+                    self.hooks.run_jit_hooks_outside_step(info, result.hook_infos)
+
+            # Log metrics from loss function and throughput metrics
+            metrics_to_log = {**result.loss_metrics, "throughput/hook_time": hook_time()}
+            levanter.tracker.log(metrics_to_log, step=info.step)
+
+        return info
+
+    def training_steps(self, state: S, train_loader) -> typing.Iterator[StepInfo[S]]:
+        """
+        Generator that yields training steps and runs hooks.
+        """
+        iter_data = iter(train_loader)
+        is_first_step = True
+
+        while int(state.step) < self.num_train_steps:
+            with capture_time() as loading_time:
+                try:
+                    example = next(iter_data)
+                except StopIteration:
+                    logger.info("Reached end of training data loader")
+                    break
+
+            if is_first_step:
+                logger.info(
+                    "First batch loaded in %.1fs, starting first train step (includes JIT compilation)...",
+                    loading_time(),
+                )
+
+            info = self.train_step(state, example)
+            state = info.state
+
+            if is_first_step:
+                logger.info("First train step completed in %.1fs (step %d)", info.step_duration, info.step)
+                is_first_step = False
+
+            levanter.tracker.log({"throughput/loading_time": loading_time()}, step=info.step)
+
+            yield info
+
+    def train(self, state: S, train_loader: Iterable[X]) -> StepInfo[S]:
+        """
+        Performs training until the number of steps is reached.
+        """
+        # Handle case where training is already complete (e.g., resuming from final checkpoint)
+        if int(state.step) >= self.num_train_steps:
+            logger.info(
+                f"Training already complete at step {state.step} (target: {self.num_train_steps}). "
+                "Running final hooks only."
+            )
+            info = StepInfo(state, 0.0, 0.0, _event_handler=self.hooks.emit_event)
+            self.run_hooks(info, force=True)
+            return info
+
+        info: Optional[StepInfo[S]] = None
+        for info in self.training_steps(state, train_loader):
+            pass
+
+        if info is None:
+            raise RuntimeError(
+                "No training steps were executed. The dataset may be empty or there are no steps left to run."
+            )
+
+        self.run_hooks(info, force=True)
+
+        return info
+
+    def _add_default_hooks(self):
+        progress_watchdog = self.config.progress_watchdog.create(
+            process_index=jax.process_index(),
+            diagnostic=capture_stall_diagnostics,
+        )
+        if progress_watchdog is not None:
+            self.add_hook(progress_watchdog, every=1)
+
+        self.add_hook(levanter.callbacks.pbar_logger(total=self.config.num_train_steps), every=1)
+        self.add_hook(
+            levanter.callbacks.log_step_info(self.config.num_train_steps, self.config.batch_schedule), every=1
+        )
+        # engine.add_hook(callbacks.log_memory_usage(), every=1)
+        checkpointer = self.config.checkpointer.create(self.run_id)
+        self._checkpointer = checkpointer
+
+        def checkpoint_hook(info, force=False):
+            with progress_event_scope(
+                info.emit_event,
+                ProgressEvent.CHECKPOINT_STARTED,
+                ProgressEvent.CHECKPOINT_FINISHED,
+            ):
+                checkpointer.on_step(tree=info.state.saveable_state, step=info.step, force=force)
+
+        self.add_hook(checkpoint_hook, every=1)  # checkpointer manages its own frequency
+
+        # Add watch callback if configured
+        if self.config.watch.is_enabled:
+            self.add_hook(self.config.watch.build(), every=self.config.watch.interval)
+
+        profiler = self.config.profiler
+        total_prof_steps = profiler.resolve_num_profile_steps(num_train_steps=self.config.num_train_steps)
+        if profiler.is_enabled and total_prof_steps > 0:
+            self.add_hook(
+                profiler.build(
+                    str(self.config.log_dir / self.run_id / "profiler"),
+                    run_id=self.run_id,
+                    num_steps=total_prof_steps,
+                ),
+                every=1,
+            )
+
+        self._xla_dump_upload = self.config.xla_dump_upload.build(self.run_id)
+
+    def add_eval_hook(self, eval_dataset, name: Optional[str] = None):
+        eval_loader = self.data_loader(eval_dataset, self.EvalBatch)
+
+        if eval_loader and (self.config.max_eval_batches is None or self.config.max_eval_batches > 0):
+
+            @eqx.filter_jit
+            def eval_loss(model, *batch, **batch_kwargs):
+                model = self.mp.cast_to_compute(model)
+                return self.loss_fn(model, *batch, **batch_kwargs, key=None)
+
+            self.add_hook(
+                levanter.callbacks.compute_validation_loss(
+                    eval_loss,
+                    eval_loader,
+                    max_batches=self.config.max_eval_batches,
+                    name=name,
+                ),
+                every=self.config.steps_per_eval,
+            )
+
+    def data_loader(self, dataset: AsyncDataset[X], batch: Optional[hax.Axis | int] = None) -> DataLoader[X]:
+        """Creates a data loader for the given dataset and batch axis.
+
+        Args:
+            dataset (AsyncDataset): the dataset to load
+            batch: Optional batch axis or integer batch size. If None, uses the trainer batch axis
+                (and schedule, if applicable).
+
+        Returns:
+            DataLoader: the data loader
+        """
+        if isinstance(batch, int):
+            batch_name = self.config.batch_axis_name
+            batch_size = batch
+        elif batch is not None:
+            batch_name = batch.name
+            batch_size = batch.size
+        else:
+            batch_name = self.config.batch_axis_name
+            batch_size = self.config.train_batch_size
+
+        return DataLoader(
+            dataset,
+            batch_size=batch_size,
+            max_buffered_batches=128,
+            mesh=self.device_mesh,
+            axis_resources=self.compute_axis_mapping,
+            fetch_batch_size=32,
+            batch_axis_name=batch_name,
+            allow_nondivisible_batch_size=self.config.allow_nondivisible_batch_size,
+        )
+
+    @cached_property
+    def _jit_train_step_fn(self):
+        return named_jit(
+            self._train_step,
+            axis_resources=self.parameter_axis_mapping,
+            out_axis_resources=self.parameter_axis_mapping,
+            donate_args=(True,),
+        )
+
+    @cached_property
+    def _jit_train_step_fn_no_hook(self):
+        return named_jit(
+            functools.partial(self._train_step, _no_hooks=True),
+            axis_resources=self.parameter_axis_mapping,
+            out_axis_resources=self.parameter_axis_mapping,
+            donate_args=(True,),
+        )
+
+    def _train_step(self, state: S, batch, batch_kwargs, _no_hooks=False) -> TrainStepResult[S]:
+        key, new_key = jax.random.split(state.training_key)
+        model = inference_mode(state.model, False)
+
+        # Returns (loss, grads, wrapped_metrics) where wrapped_metrics is Dict[str, Metric]
+        loss, grads, wrapped_metrics = self._compute_gradients_microbatched(
+            self.loss_fn, model, *batch, **batch_kwargs, key=key
+        )
+
+        # Some optimizers need to be able to access the loss function
+        def obj_fun(trainable_model):
+            model = eqx.combine(trainable_model, state.model)
+            with hax.axis_mapping(self.compute_axis_mapping):
+                model = self.mp.cast_to_compute(model)
+                result = self._raw_loss_function(model, *batch, **batch_kwargs, key=key)
+                # result is (loss, metrics) tuple
+                loss_for_opt, _metrics = result
+                return loss_for_opt.scalar()
+
+        new_state, updates = state.take_step(grads, obj_fun=obj_fun, loss=loss, key=new_key)
+        new_state = hax.shard(new_state, self.parameter_axis_mapping)
+
+        hook_infos = None
+        if not _no_hooks:
+            with hax.axis_mapping(self.parameter_axis_mapping):
+                jit_info: InsideJitInfo = InsideJitInfo(grads=grads, updates=updates)
+                hook_infos = self.hooks.run_jit_hooks(state, jit_info, force=False)
+
+        # extract plain metrics and prefix their keys
+        plain_metrics = unwrap_metrics(wrapped_metrics)
+        train_metrics = {f"train/{k}": v for k, v in plain_metrics.items()}
+
+        result = TrainStepResult(
+            loss=loss,
+            new_state=new_state,
+            loss_metrics=train_metrics,
+            hook_infos=hook_infos,
+        )
+        return hax.shard_with_axis_mapping(result, self.parameter_axis_mapping)
+
+    def _compute_gradients_microbatched(
+        self, loss_fn: WrappedLossFunction, model: M, *batch, **batch_kwargs
+    ) -> Tuple[Scalar, M, Dict[str, Metric]]:
+        """
+        Compute gradients, optionally with microbatching.
+        Returns (loss, grads, dict[str, Metric]).
+        """
+        Batch = _resolve_axis_in_tree((batch, batch_kwargs), self.config.batch_axis_name)
+
+        # loss_fn always returns (loss, metrics), so has_aux=True
+        # Only batch inputs should be split; raw model dimensions can match the batch size.
+        grad_fn = partial(eqx.filter_value_and_grad(loss_fn, has_aux=True), model)
+
+        mbs = self.config.microbatch_size
+        if mbs is not None:
+            grad_fn = microbatched(
+                grad_fn,
+                Batch,
+                mbs,
+                self.parameter_axis_mapping,
+                self.compute_axis_mapping,
+            )
+
+        with hax.axis_mapping(self.compute_axis_mapping):
+            (loss, metrics), grads = grad_fn(*batch, **batch_kwargs)
+
+        return loss, grads, metrics
+
+    def write_artifact(self, name: str, artifact: Any, type: Optional[str] = None):
+        """Saves an artifact to disk (in the run dir) and logs it to the tracker."""
+        dir = self.config.log_dir / self.run_id / "artifacts"
+        if not os.path.exists(dir):
+            os.makedirs(dir, exist_ok=True)
+        artifact_path = dir / name
+
+        if isinstance(artifact, str):
+            StoragePath(str(artifact_path)).write_text(artifact, compression="infer")
+        else:
+            StoragePath(str(artifact_path)).write_bytes(artifact, compression="infer")
+
+        self.tracker.log_artifact(artifact_path, name=name, type=type)
+
+    def _maybe_save_jaxpr(self, name: str, fn, *args, **kwargs):
+        logged = False
+        if self.config.log_jaxprs and name not in self._logged_jaxprs:
+            logger.info("Tracing %s for jaxpr...", name)
+            with capture_time() as t:
+                jaxpr, _, _ = eqx.filter_make_jaxpr(fn)(*args, **kwargs)
+            logger.info("Traced %s in %.1fs", name, t())
+            pretty = jaxpr.pretty_print(name_stack=True, use_color=False)
+            self.write_artifact(f"{name}.jaxpr.txt.gz", pretty, type="jaxpr")
+            logged = True
+
+        if self.config.log_xla_hlo and name not in self._logged_jaxprs:
+            logger.info("Lowering %s to HLO...", name)
+            with capture_time() as t:
+                hlo = fn.lower(*args, **kwargs).as_text("stablehlo")
+            logger.info("Lowered %s in %.1fs", name, t())
+            self.write_artifact(f"{name}.hlo.txt", hlo, type="hlo")
+            logged = True
+
+        if logged:
+            self._logged_jaxprs.add(name)
+
+        return fn(*args, **kwargs)
+
+
+def _compose_with_telemetry(config: TrackerConfig | Sequence[TrackerConfig]) -> list[TrackerConfig]:
+    """The configured tracker(s), with telemetry appended unless already present."""
+    configs = list(config) if isinstance(config, Sequence) else [config]
+    if not any(isinstance(c, TelemetryConfig) for c in configs):
+        configs = [*configs, TelemetryConfig()]
+    return configs
+
+
+def _initialize_global_tracker(config, run_id):
+    tracker = levanter.tracker.CompositeTracker([c.init(run_id) for c in _compose_with_telemetry(config)])
+    levanter.tracker.set_global_tracker(tracker)
+
+
+@dataclass
+class TrainerConfig:
+    seed: int = 0  # random seed
+    mp: jmp.Policy = jmp.get_policy("f32")  # mixed precision policy
+    quantization: Optional[QuantizationConfig] = None
+    model_averaging: ModelAveragingConfig | None = None
+
+    wandb: Optional[WandbConfig] = None
+    log_dir: Path = Path("logs/")
+    id: Optional[str] = None  # run id. if None, will be set to a random string
+
+    tracker: TrackerConfig | Tuple[TrackerConfig, ...] = field(default_factory=WandbConfig)
+    watch: WatchConfig = WatchConfig()
+    profiler: ProfilerConfig = ProfilerConfig()
+    xla_dump_upload: XlaDumpUploadConfig = XlaDumpUploadConfig()
+    progress_watchdog: ProgressWatchdogConfig = ProgressWatchdogConfig()
+    """Optional deadlines for training-step and whole-process progress events."""
+
+    log_jaxprs: bool = True
+    """Whether to log the jaxpr of the training step. This is useful for debugging and understanding the model."""
+    log_xla_hlo: bool = True
+    """Whether to log the XLA HLO of the training step. This is useful for debugging and understanding the model."""
+
+    # helpful checks
+    crash_on_nan: bool = True
+    crash_on_inf: bool = True
+
+    # config related to partitioning
+    mesh: MeshConfig = MeshConfig()
+    use_explicit_mesh_axes: bool = False
+    """If True, build the device mesh with `AxisType.Explicit` axes.
+
+    This is required for code paths that call `jax.sharding.reshard(..., PartitionSpec(...))`,
+    because JAX disallows using named `PartitionSpec`s under `AxisType.Auto`/`AxisType.Manual` meshes.
+    """
+
+    @property
+    def batch_axis_name(self) -> str | None:
+        return self.mesh.batch_axis_name
+
+    # Config related to batch sizes
+    train_batch_size: int | IntSchedule = 512
+    per_device_parallelism: int = -1
+    """how many examples to process in parallel on each device. -1 (default) means train_batch_size/num_devices"""
+
+    per_device_eval_parallelism: int = -1
+    """how many examples to process in parallel on each device. -1 (default) means same as per_device_parallelism"""
+
+    allow_nondivisible_batch_size: bool = False
+    """
+    Allow batch sizes to be non-divisible by the number of devices (or data axis size).
+
+    This is typically used when you want a specific batch size but have a weird number of devices.
+    """
+
+    # Config related to duration
+    num_train_steps: int = 400_000  # number of training steps
+    steps_per_eval: int = 1_000  # how often to evaluate
+    max_eval_batches: Optional[int] = None  # max number of batches to evaluate on. None means all batches
+
+    checkpointer: CheckpointerConfig = field(default_factory=CheckpointerConfig)
+    load_checkpoint: Optional[bool] = None
+    """if None (default), we'll load a checkpoint if it exists. If true, we must load a checkpoint"""
+    load_checkpoint_path: Optional[str | list[str]] = None
+    """One checkpoint root/path, or ordered roots searched for the newest checkpoint.
+
+    If None, search the checkpointer's permanent and temporary roots.
+    """
+
+    def checkpoint_search_paths(self, run_id: str) -> list[str]:
+        if isinstance(self.load_checkpoint_path, str):
+            return [self.load_checkpoint_path]
+        if self.load_checkpoint_path is not None:
+            return list(self.load_checkpoint_path)
+
+        paths = [self.checkpointer.expanded_path(run_id)]
+        temp_path = self.checkpointer.expanded_temporary_path(run_id)
+        if temp_path is not None:
+            paths.append(temp_path)
+        return paths
+
+    initialize_from: Optional[str] = None  # Levanter trainer checkpoint to initialize from
+    """Load and continue training from a checkpoint. If None, will initialize from model_init."""
+    allow_partial_checkpoint: bool = False
+    """If True, we allow loading a checkpoint that doesn't have all the parameters in the model.
+        Missing parameters are initialized from the model_init function."""
+
+    jax_config: Mapping[str, JsonAtom] = field(
+        default_factory=lambda: copy.deepcopy(DEFAULT_JAX_CONFIG)
+    )  # config to pass to jax.config.update
+    jax_compilation_cache_dir: Optional[str] = None
+
+    distributed: DistributedConfig = DistributedConfig()
+
+    # whether or not to require an accelerator (e.g. TPU or GPU).
+    # default depends on the platform: on macos False, else True
+    require_accelerator: Optional[bool] = None
+
+    # whether or not to shutdown the tpu at exit. If a float, shutdown after that many seconds. True = 5 minutes
+    shutdown_at_exit: Union[bool, float] = False
+
+    @property
+    def TrainBatch(self):
+        if not isinstance(self.train_batch_size, int):
+            raise ValueError("TrainBatch is only valid for a single batch size. Use batch_axis_at_step instead")
+        return Axis(self.batch_axis_name, self.train_batch_size)
+
+    @cached_property
+    def batch_schedule(self):
+        return BatchSchedule(self.train_batch_size)
+
+    def batch_axis_at_step(self, step: int) -> Axis:
+        bs = value_at_step(self.train_batch_size, step)
+        return Axis(self.batch_axis_name, bs)
+
+    @property
+    def EvalBatch(self):
+        return Axis(self.batch_axis_name, self.eval_batch_size)
+
+    @property
+    def microbatch_size(self) -> int | None:
+        if self.per_device_parallelism < 0:
+            return None
+        return self.per_device_parallelism * self.data_axis_size
+
+    def __post_init__(self):
+        if self.wandb is not None:
+            warnings.warn(
+                "wandb is deprecated. use tracker with type wandb instead",
+                DeprecationWarning,
+            )
+            self.tracker = self.wandb
+
+    def initialize(self):
+        """Initializes jax, logging, setting the run name/id in the process"""
+        self._initialize_jax_config()
+        # Can't do full logging setup until we've initialized jax b/c we use jax for rank id
+        pylogging.basicConfig(level=pylogging.WARNING)
+        self.distributed.initialize()
+        # Importing cutlass.jax may initialize the XLA backend, so install its
+        # cache only after jax.distributed.initialize().
+        install_cutlass_kernel_cache(cutlass_kernel_cache())
+
+        if self.require_accelerator is None:
+            self.require_accelerator = not sys.platform.startswith("darwin")
+
+        if self.require_accelerator and jax.default_backend() == "cpu":
+            raise RuntimeError("No accelerator found. Please run on a TPU or GPU.")
+
+        self._validate_and_set_defaults()
+
+        id = self._maybe_set_id()
+        levanter.utils.logging.init_logging(self.log_dir, f"{id}.log")
+        _initialize_global_tracker(self.tracker, id)
+        levanter.tracker.log_summary({"hardware_topology": hardware_topology_summary()})
+
+        if self.shutdown_at_exit is not False:
+            if isinstance(self.shutdown_at_exit, bool):
+                self.shutdown_at_exit = 5.0 * 60
+            logger.info(f"At end of run, shutting down TPU VM in {self.shutdown_at_exit} seconds")
+            atexit.register(cloud_utils.shutdown_tpu_vm, self.shutdown_at_exit)
+
+    @property
+    def device_mesh(self) -> Mesh:
+        ici, dcn = self.mesh.axis_shapes(jax.device_count(), self.num_slices)
+        axis_types = None
+        if self.use_explicit_mesh_axes:
+            axis_names = list(ici.keys()) + [k for k in dcn.keys() if k not in ici]
+            axis_types = tuple(AxisType.Explicit for _ in axis_names)
+        return create_mesh_from_axis_specs(ici_axes=ici, dcn_axes=dcn, axis_types=axis_types)
+
+    def use_device_mesh(self) -> ContextManager[None]:
+        """
+        Context manager that sets the device mesh for jax, using Haliax's wrapper.
+
+        In recent jax, this is the same as `jax.set_mesh(self.device_mesh)`, but we use Haliax's wrapper for
+        compatibility with older jax versions.
+        """
+        return haliax.partitioning.set_mesh(self.device_mesh)
+
+    @property
+    def eval_batch_size(self):
+        return self.per_device_eval_parallelism * self.data_axis_size
+
+    @cached_property
+    def num_slices(self):
+        """number of nodes"""
+        return max(getattr(device, "slice_index", 0) for device in jax.devices()) + 1
+
+    @cached_property
+    def mesh_axis_specs(self) -> List[str]:
+        """Materialized mesh axis names; validates mesh config."""
+        ici, dcn = self.mesh.axis_shapes(jax.device_count(), self.num_slices)
+        return list(ici.keys() | dcn.keys())
+
+    @cached_property
+    def _mesh_axis_totals(self) -> Dict[str, int]:
+        ici, dcn = self.mesh.axis_shapes(jax.device_count(), self.num_slices)
+        return {name: ici.get(name, 1) * dcn.get(name, 1) for name in set(ici) | set(dcn)}
+
+    def _axis_size(self, axis: str) -> int:
+        return self._mesh_axis_totals.get(axis, 1)
+
+    @property
+    def data_axis_size(self):
+        """size of the data parallel/batch parallel axis."""
+        batch_map = self.compute_axis_mapping.get(self.batch_axis_name, self.compute_axis_mapping.get("batch"))
+        if batch_map is None:
+            raise ValueError(
+                f"No mapping found for batch axis {self.batch_axis_name} in compute axis mapping."
+                f"In Levanter, you must specify a mapping for the batch axis. For instance, the default is:"
+                """
+                             mesh:
+                               compute_mapping:
+                                 batch: [replica_dcn, replica, data]
+                             """
+            )
+        axes = batch_map if isinstance(batch_map, tuple) else (batch_map,)
+        prod_size = 1
+        for ax in axes:
+            prod_size *= self._axis_size(ax)
+        return prod_size
+
+    @property
+    def compute_axis_mapping(self) -> ResourceMapping:
+        """Mapping from logical axis to physical axis for compute."""
+        return self.mesh.resolved_compute_mapping
+
+    @property
+    def parameter_axis_mapping(self) -> ResourceMapping:
+        return self.mesh.resolved_param_mapping
+
+    def _initialize_jax_config(self):
+        for key, value in self.jax_config.items():
+            jax.config.update(key, value)
+
+        if self.jax_compilation_cache_dir is not None:
+            jax.config.update("jax_compilation_cache_dir", self.jax_compilation_cache_dir)
+
+    def _maybe_set_id(self):
+        # always do this so we don't get weird hangs if the id isn't set right
+        # for random ids, we want to ensure that all hosts have the same id
+        # NB: do NOT use the run seed here. we want the run id to be independent of the seed
+        seed = np.random.randint(0, 2**31 - 1)
+        seed = multihost_utils.broadcast_one_to_all(jax.numpy.array(seed, dtype=np.int32)).item()
+
+        # RUN ID comes from a few places: the config, the environment, or wandb, or a random string
+        if self.id is None:
+            # TODO: this doesn't work with wandb sweeps. need to reconcile when we merge
+            if "RUN_ID" in os.environ:
+                self.id = os.environ["RUN_ID"]
+            elif self.wandb is not None and self.wandb.id is not None:
+                self.id = self.wandb.id
+            else:
+                # wandb run ids are 8 characters [a-z0-9], which we'll emulate here
+                # we also want to ensure that all hosts have the same run id
+                # we do this by syncing a random seed across all hosts and then using that to generate the run id
+                gen = np.random.default_rng(seed)
+                self.id = "".join(gen.choice(list("abcdefghijklmnopqrstuvwxyz0123456789"), 8))
+
+            logger.info(f"Setting run id to {self.id}")
+
+        return self.id
+
+    # we can't do this in post_init because we don't want to call jax.device_count before calling distributed.initialize
+    def _validate_and_set_defaults(self):
+        # Validate mesh early
+        _ = self.mesh_axis_specs
+
+        if self.train_batch_size == -1 and self.per_device_parallelism == -1:
+            raise ValueError("either train_batch_size or per_device_parallelism must be specified (not -1)")
+
+        if self.per_device_parallelism == -1:
+            if isinstance(self.train_batch_size, int):
+                self.per_device_parallelism = self.train_batch_size // self.data_axis_size
+            else:
+                logger.info(
+                    "per_device_parallelism is not set and train_batch_size is not an int. "
+                    "Not using microbatching and just maxing out the per_device_parallelism."
+                )
+
+        if self.train_batch_size == -1:
+            self.train_batch_size = self.per_device_parallelism * self.data_axis_size
+
+        # validate size of per_device_parallelism
+        if self.per_device_parallelism != -1:
+            if isinstance(self.train_batch_size, Sequence):
+                for phase in self.train_batch_size:
+                    assert isinstance(phase, ScheduleStep)
+                    if phase.value % (self.per_device_parallelism * self.data_axis_size) != 0:
+                        raise ValueError(
+                            f"At step {phase.start}, train_batch_size ({phase.value}) must be divisible by "
+                            "per_device_parallelism * data_axis_size "
+                            f"({self.per_device_parallelism}, {self.data_axis_size})"
+                        )
+            elif self.train_batch_size % (self.per_device_parallelism * self.data_axis_size) != 0:
+                raise ValueError(
+                    f"train_batch_size ({self.train_batch_size}) must be divisible by per_device_parallelism *"
+                    f" data_axis_size ({self.per_device_parallelism}, {self.data_axis_size})"
+                )
+
+        if self.per_device_eval_parallelism == -1:
+            if self.per_device_parallelism == -1:
+                tbs = max(distinct_values(self.train_batch_size))
+                self.per_device_eval_parallelism = (
+                    _round_to_nearest_multiple(tbs, self.data_axis_size) // self.data_axis_size
+                )
+            else:
+                self.per_device_eval_parallelism = self.per_device_parallelism
+
+            logger.info(f"Setting per_device_eval_parallelism to {self.per_device_eval_parallelism}")
+
+
+class AllConfig(Protocol):
+    trainer: TrainerConfig
+
+
+def initialize(config: TrainerConfig | AllConfig):
+    """Initializes jax and logging, then initializes tracking and logs config hyperparameters."""
+    if isinstance(config, TrainerConfig):
+        trainer_config = config
+    else:
+        trainer_config = config.trainer
+
+    trainer_config.initialize()
+    levanter.tracker.log_configuration(config)
+
+
+def _ensure_scalar(x: hax.types.Scalar | hax.NamedArray) -> hax.types.Scalar:
+    if isinstance(x, hax.NamedArray):
+        return x.scalar()
+    else:
+        return x
+
+
+def _resolve_axis_in_tree(tree, axis):
+    """
+    Resolves an axis in a tree of NamedArrays. This is useful for finding the batch axis in a batch of data.
+    """
+    for leaf in haliax.tree_util.tree_leaves(tree):
+        if isinstance(leaf, haliax.NamedArray):
+            try:
+                return leaf.resolve_axis(axis)
+            except ValueError:
+                pass
+
+    raise ValueError(f"Could not find axis {axis} in tree {tree}")

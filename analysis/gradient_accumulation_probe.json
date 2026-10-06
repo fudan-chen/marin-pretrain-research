@@ -1,0 +1,83 @@
+{
+  "scope": "Original generic microbatched bodies with serial NumPy adapters, not JAX execution.",
+  "checks_passed": 14,
+  "checks": [
+    "Variable effective denominators change objective and reverse analytic gradient",
+    "Repartitioning same weighted targets changes mean-of-means",
+    "Equal fixed position denominators preserve full-batch objective",
+    "Equal effective denominators preserve objective and derivative",
+    "Effective-denominator weighting recovers full objective and derivative",
+    "Empty microbatch can halve ordinary mean result",
+    "All-empty artificial batches return declared zero policy",
+    "Original large microbatch shortcut returns original function",
+    "Original invalid microbatch size rejected 0",
+    "Original invalid microbatch size rejected -1",
+    "Original invalid microbatch size rejected 3",
+    "Pinned generic trainer closes model before wrapping microbatched",
+    "Pinned Hero train step has no generic microbatched call",
+    "Pinned grug reducer globally sums numerator and effective denominator"
+  ],
+  "synthetic_variable_denominator": {
+    "effective_targets_by_microbatch": [
+      1.0,
+      3.0
+    ],
+    "full_loss_gradient": [
+      2.625,
+      0.75
+    ],
+    "ordinary_accumulated_loss_gradient": [
+      3.25,
+      -0.5
+    ],
+    "repartitioned_loss_gradient": [
+      2.416666666666667,
+      1.1666666666666667
+    ],
+    "denominator_weighted_loss_gradient": [
+      2.625,
+      0.75
+    ]
+  },
+  "synthetic_fixed_positions": {
+    "full_loss_gradient": [
+      1.3125,
+      0.375
+    ],
+    "accumulated_loss_gradient": [
+      1.3125,
+      0.375
+    ]
+  },
+  "synthetic_empty_microbatch": {
+    "full_loss_gradient": [
+      2.0,
+      2.0
+    ],
+    "accumulated_loss_gradient": [
+      1.0,
+      1.0
+    ]
+  },
+  "adapters": [
+    "NumPy scalar/array operations",
+    "serial tree partition/combine and fold",
+    "shape inference replaced by numerical pure function call",
+    "ordinary gradients only; no custom quantized gradient state",
+    "single-device physical axis stub",
+    "reshape adapter and identity sharding constraints",
+    "no RNG key supplied",
+    "analytic scalar squared-error derivatives, no model or autodiff"
+  ],
+  "actual_JAX_execution": null,
+  "actual_distributed_collectives": null,
+  "actual_Hero_accumulation_bug": null,
+  "actual_training_loss_function_binding": null,
+  "actual_optimizer_trajectory": null,
+  "source_sha256": {
+    "sources/accumulation_2026_10_07/grad_accum.py": "047a8bad9a9a9bdd837680c4fdb440fb19c12dc3001a56ab5c1b78521cba949b",
+    "sources/accumulation_2026_10_07/trainer.py": "280284a5bf7461a9a8871e0773cc1f1ec9ef1c92a7a58d224e68ba06d2aa76d3",
+    "sources/scale_2026_10_05/train_hero_ep.py": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7",
+    "sources/scale_2026_10_05/grug_loss.py": "97e86e8a7540cafeb4be9695da9a5c8342f3780b7fee6cbb45de79ffc50c15ba"
+  }
+}

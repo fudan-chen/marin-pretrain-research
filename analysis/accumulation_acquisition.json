@@ -1,0 +1,27 @@
+{
+  "files": [
+    {
+      "file": "accumulation_2026_10_07/grad_accum.py",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/grad_accum.py",
+      "bytes": 7735,
+      "sha256": "047a8bad9a9a9bdd837680c4fdb440fb19c12dc3001a56ab5c1b78521cba949b",
+      "retrieved_utc": "2026-10-06T17:14:50.300194+00:00",
+      "git_revision": "84869ae8c91ffe64e9f761c5bd714542eb1876e0",
+      "execution_binding": "Pinned public code, not verified historical Hero execution",
+      "transport": "Complete raw download staged earlier in this research turn",
+      "retrieval_time_basis": "Approximate local download completion mtime; exact server timestamp unrecorded"
+    },
+    {
+      "file": "accumulation_2026_10_07/trainer.py",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/trainer.py",
+      "bytes": 48104,
+      "sha256": "280284a5bf7461a9a8871e0773cc1f1ec9ef1c92a7a58d224e68ba06d2aa76d3",
+      "retrieved_utc": "2026-10-06T17:14:57.037835+00:00",
+      "git_revision": "84869ae8c91ffe64e9f761c5bd714542eb1876e0",
+      "execution_binding": "Pinned public code, not verified historical Hero execution",
+      "transport": "Complete raw download staged earlier in this research turn",
+      "retrieval_time_basis": "Approximate local download completion mtime; exact server timestamp unrecorded"
+    }
+  ],
+  "incomplete_downloads_not_archived": true
+}

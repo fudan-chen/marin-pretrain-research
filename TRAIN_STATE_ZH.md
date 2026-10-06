@@ -90,3 +90,28 @@ Hero 的训练状态包含六个字段：`step`、`params`、`master_params`、`
 | 不中断/中断对照 | 同一状态与数据下的一步、若干步差值 | 恢复等价仍未验证 |
 
 本轮没有新的配方收益结果。得到的是更严格的解释条件：**同状态续训需要恢复“能决定下一步”的状态，而不是只恢复可用于推理的权重。** 要研究配比和顺序，必须把这两种恢复目的分开。下一轮应继续检查 attention mask、segment 边界与打包 token，因为即使状态完全相同，样本能看到的上下文不同，也会改变所优化的任务。
+
+
+## V63：原JAX偏置与router联合执行的视图检查
+
+本轮在原控制流分析之外，用真实JAX CPU执行原apply_qb_betas与原moe_route block。eqx.tree_at明确替换为返回新人工模型的stub，reshard与partition spec也为替身。人工模型只有一层bias，没有真实Transformer、checkpoint IO或跨设备状态。不能将本轮称为真实恢复测试。[9项CPU/来源核对](analysis/pending_router_view_cpu.json)
+
+### 同样的权重数字，可能对应不同专家
+
+固定人工logits[0.1,0.2,0]、K=2、stored bias全零时，原router选择[1,0]。pending beta为[0,3,0]，原helper取负并中心化，得到[1,-2,1]；应用后选择变为[0,2]。两份bf16 combine数组却恰好都是[1.28125,1.21875]，alpha分别为0和约-1.8。相同数字没有对应同一个专家函数，不能通过只比较combine tensor认定路由行为相同。
+
+这也区分三种检查：ID集合是否相同；ID顺序是否相同；按ID配对的权重是否相同。同集合的顺序交换需要连同权重与transport映射一起检查；集合变化则直接换了专家，不能仅从权重范数相同推断前向一致。这里尚未执行专家计算，不能给出真实输出或能力差异。
+
+### Pending是替换，不能用“多应用一次”解释累计偏移
+
+在本控制中，重复应用同一pending所得bias相同；给beta整体加7也得到相同bias，原输入模型在stub替换后保持不变。原helper是替换而非累加。连续调用不等于把bias加了两遍，但这些整数控制并不保证极端浮点值的中心化总能严格保留常数平移不变性。
+
+真正需要绑定的是消费者语义：训练下一步先应用pending；普通训练callback读取stored params；固定推理restore读取权威master（存在时）并应用pending。哪个视图适合评估要先定义，不能未经实际比较就宣布只有某一个视图正确。特别是配比切换或kernel续训比较，不能让一边用stored、另一边用pending-applied，然后把差异归给候选改动。
+
+### 非有限状态的传播边界
+
+人工pending[0,+inf,0]经原中心化得到[+inf,NaN,+inf]。一项异常通过mean影响整层bias。原helper本身没有finite guard，这不证明整个训练/保存/恢复管线没有其他检查，也不证明Hero曾产生这种pending。当前尚未运行异常bias下的完整专家前向。
+
+恢复验收应在原始pending上记录逐层shape、dtype、finite状态，再记录应用后bias；若异常，保留原值与来源并拒绝该诊断输入，不能默默将其置零当作等价恢复。生产错误处理还须遵循已有分布式终止协议，本轮未实现它。只在损失曲线异常后检查params是否finite，会漏掉先进入路由状态的故障线索。
+
+运行make pending-router-view CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python可复算。要落实到真实checkpoint，下一步仍需相同权威参数、pending、EMA/非EMA、dtype、backend和容量策略的固定输入对照；当前实际视图误差、非有限事件和GPU结果均保留未知。

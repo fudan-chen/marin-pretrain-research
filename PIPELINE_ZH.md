@@ -152,3 +152,6 @@ V61入口：make mix-event-identifiability。9项归档/代数检查确认108000
 
 
 V62入口：make swarm-seed-pairs，复算6份公开观察、25终点与75差值。下一步冻结候选/保底项，使用未参与选择的续训重复和同身份评估；不得把三次同方向或compute-equivalent倍数写成已确认535B收益。
+
+
+V63入口：make pending-router-view CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python执行原偏置helper和router block，9项CPU/来源控制。tree_at/reshard/spec为替身；真实checkpoint IO、全模型输出和GPU仍待验证。

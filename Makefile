@@ -150,3 +150,7 @@ mix-event-identifiability:
 swarm-seed-pairs:
 	$(PYTHON) scripts/analyze_swarm_seed_pairs.py
 	$(PYTHON) scripts/plot_swarm_seed_pairs.py
+
+.PHONY: pending-router-view
+pending-router-view:
+	$(CPU_PYTHON) scripts/probe_pending_router_view_cpu.py

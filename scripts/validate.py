@@ -893,6 +893,13 @@ ok('V62 all endpoints and mixed direction retained',len(sp['endpoints'])==25 and
 ok('V62 three-pair resolution remains synthetic',sp['synthetic_sign_flip_resolution']['patterns']==8 and sp['synthetic_sign_flip_resolution']['two_sided_min_probability']==.25 and sp['synthetic_sign_flip_resolution']['not_a_selected_mixture_p_value'])
 ok('V62 paired figure embedded beside event audit',soup.select_one('#mix-trajectory-guide #swarmpair-figure_1') is not None and soup.select_one('#mix-trajectory-guide #mixevent-figure_1') is not None)
 report['highlights']+=['V62 six swarm observations, 25 endpoints and 75 descriptive seed-label pairs; nine checks, consistent gains and regressions; no independent confirmation or post-selection p-value']
+pv=read(A/'pending_router_view_cpu.json')
+ok('V63 original pending/router source hashes and unknown IO',pv['checks_passed']==len(pv['checks'])==9 and not pv['actual_eqx_tree_at'] and pv['actual_checkpoint_IO'] is None and pv['actual_GPU_execution'] is None and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in pv['source_sha256'].items()))
+pf=pv['fixture']
+ok('V63 same numeric weights differ in expert pairing',pf['stored_view']['combine_weights']==pf['pending_applied_view']['combine_weights'] and pf['stored_view']['selected_experts']==[[1,0]] and pf['pending_applied_view']['selected_experts']==[[0,2]])
+ok('V63 nonfinite propagation not a production event',pf['nonfinite_bias_output']==['inf','nan','inf'] and pv['actual_Hero_nonfinite_beta_event'] is None)
+ok('V63 state chapter explanation present','V63' in soup.select_one('#state-guide').get_text())
+report['highlights']+=['V63 nine JAX CPU/source controls, ID/weight pairing and pending centering with explicit tree_at stub; no checkpoint IO or production view/NaN attribution']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

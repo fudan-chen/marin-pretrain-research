@@ -1,0 +1,108 @@
+{
+  "scope": "Original apply_qb_betas function with an explicit tree_at stub, then original\nrouter block on CPU. Synthetic beta/parameters; no checkpoint IO or full model.\n",
+  "checks_passed": 9,
+  "checks": [
+    "Real CPU backend",
+    "Original helper centers and replaces bias",
+    "Input stored model remains unchanged under stub replacement",
+    "Applying same pending twice is idempotent",
+    "Constant beta shift cancels in this exact-input control",
+    "Same logits but different state view changes selected set",
+    "Same weight numbers need not mean same expert pairing",
+    "One nonfinite beta contaminates centered layer bias in this control",
+    "Frozen training and inference consumers have different pending handling"
+  ],
+  "runtime": {
+    "jax": "0.7.2",
+    "backend": "cpu"
+  },
+  "fixture": {
+    "router_logits": [
+      [
+        0.1,
+        0.2,
+        0.0
+      ]
+    ],
+    "stored_bias": [
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "pending_beta": [
+      [
+        0.0,
+        3.0,
+        0.0
+      ]
+    ],
+    "pending_applied_bias": [
+      [
+        1.0,
+        -2.0,
+        1.0
+      ]
+    ],
+    "stored_view": {
+      "selected_experts": [
+        [
+          1,
+          0
+        ]
+      ],
+      "combine_weights": [
+        [
+          1.28125,
+          1.21875
+        ]
+      ],
+      "qb_alpha": [
+        [
+          0.0
+        ]
+      ]
+    },
+    "pending_applied_view": {
+      "selected_experts": [
+        [
+          0,
+          2
+        ]
+      ],
+      "combine_weights": [
+        [
+          1.28125,
+          1.21875
+        ]
+      ],
+      "qb_alpha": [
+        [
+          -1.7999999523162842
+        ]
+      ]
+    },
+    "nonfinite_beta_input": [
+      "0",
+      "Infinity",
+      "0"
+    ],
+    "nonfinite_bias_output": [
+      "inf",
+      "nan",
+      "inf"
+    ]
+  },
+  "actual_eqx_tree_at": false,
+  "actual_checkpoint_IO": null,
+  "actual_Hero_view_error_magnitude": null,
+  "actual_Hero_nonfinite_beta_event": null,
+  "actual_GPU_execution": null,
+  "source_sha256": {
+    "sources/contracts_2026_10_05/model.py": "8fdfd89cf6814da05683f134f154525916728370368a2493843195d9a489859c",
+    "sources/routing_2026_10_05/grug_moe.py": "5b67e36774981b8e42c753f62b638a5700fbf204c8b16c71df6d72c0b0ea398c",
+    "sources/scale_2026_10_05/train_hero_ep.py": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7",
+    "sources/state_2026_10_05/weights.py": "495de05281ce1cd01d2ad187aafd43e7d89833d42109c63fe63db3d80d21f231"
+  }
+}

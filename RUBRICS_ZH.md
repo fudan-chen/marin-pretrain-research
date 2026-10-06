@@ -337,3 +337,6 @@ V61配比归因规则：先检查事件标记在实际评估时刻是否可区�
 
 
 V62配比规则：同时展示逐续训seed收益、稳定退步与删pair敏感性。共享checkpoint不等于独立初始化；参与选优的数据不充当独立确认。cluster标签与评估域不一一对应，整配方收益不拆成单桶边际效应。
+
+
+V63恢复/评估规则：联合比较专家ID与按ID配对的权重；同combine数组不保证同专家。记录stored/pending-applied、master/EMA和dtype。检查原始pending及应用后bias有限性，不用静默置零代替等价恢复。

@@ -139,3 +139,6 @@ V61收紧配比结论：67个保留评估点无法区分108000配比与108778执
 
 
 V62补充正面证据与取舍：d512选中配方在三pair的Paloma/代码/Uncheatable macro都改善，但manosphere和BBC news均退步。swarm参与过选择，不是独立确认；V61仅限制535B长期轨迹的事件拆分。见[逐seed结果](MIX_TRAJECTORY_ZH.md)。
+
+
+V63原JAX控制显示：专家ID变化时，bf16权重数组仍可能相同；单个非有限pending可经中心化传播到整层bias。恢复和评估比较应联合绑定ID/权重与消费者状态视图。人工控制非生产事故证据，见[状态章节](TRAIN_STATE_ZH.md)。

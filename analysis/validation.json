@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1457,
+  "checks_passed": 1461,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -110,7 +110,8 @@
     "V59 original moe_route CPU block with reshard/spec stubs; nine checks, four inputs and surrogate gradients; no complete expert or training attribution",
     "V60 ten synthetic integration CPU controls, coupling and fresh/warm update figure; constant experts, path/reshard stubs, no full Hero execution or loss attribution",
     "V61 nine archived design/algebra checks; aliased mix/execution events, no causal estimates; synthetic timestamp rank controls and unexecuted comparison template",
-    "V62 six swarm observations, 25 endpoints and 75 descriptive seed-label pairs; nine checks, consistent gains and regressions; no independent confirmation or post-selection p-value"
+    "V62 six swarm observations, 25 endpoints and 75 descriptive seed-label pairs; nine checks, consistent gains and regressions; no independent confirmation or post-selection p-value",
+    "V63 nine JAX CPU/source controls, ID/weight pairing and pending centering with explicit tree_at stub; no checkpoint IO or production view/NaN attribution"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

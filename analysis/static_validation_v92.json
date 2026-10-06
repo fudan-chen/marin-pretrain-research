@@ -1,0 +1,14 @@
+{
+  "version": "V92",
+  "checks_passed": 7,
+  "checks": [
+    "index.html unique IDs",
+    "index.html prior cache tables preserved plus dispatch table",
+    "index.html source limits and exception distinction present",
+    "report_standalone.html unique IDs",
+    "report_standalone.html prior cache tables preserved plus dispatch table",
+    "report_standalone.html source limits and exception distinction present",
+    "1572 fresh checks"
+  ],
+  "actual_browser_rendering": null
+}

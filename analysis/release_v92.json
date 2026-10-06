@@ -1,0 +1,31 @@
+{
+  "version": "V92",
+  "created_utc": "2026-10-06T23:07:01.700432+00:00",
+  "goal_status": "active",
+  "scope": "Original cache build classification/dispatch method on real gated threads, explicit IO and build adapters",
+  "checks_passed": 1572,
+  "local_thread_checks": 10,
+  "static_checks": 7,
+  "source_files": 498,
+  "new_source_files": 0,
+  "actual_distributed_hang": null,
+  "actual_cross_host_cache_visibility": null,
+  "actual_Hero_execution": null,
+  "actual_browser_rendering": null,
+  "artifact_sha256": {
+    "README.md": "d79ec39fda829056e40acb00e1dd180108154c38cb377cc029e1a5651c1b3d9c",
+    "DELIVERY_AUDIT_ZH.md": "9e0fec07594db30bae70b0eb899d292515084a7267c4f9c06a09793600f06122",
+    "IMPROVEMENT_LOG_ZH.md": "32d481dd039ad5b9a4cde1016b85fa57d7b297b9b1259e39702bfc697abbc733",
+    "CACHE_PROVENANCE_ZH.md": "0281b0ccdba371b4697ac4cbc13024c651a18a0031b53b57131722983863de39",
+    "PIPELINE_ZH.md": "5d2eaf5c239786ce5bb8727a5c0000eeff357fe43828ccf278de40f31a673016",
+    "RUBRICS_ZH.md": "571f9ffc005cdf1e79a3236ec3e337e558aa179f67b44dac4cb6aa8c79974fbf",
+    "SYNTHESIS_ZH.md": "a45d135f1d1d364b8cf482febf938adbb3dc8c6d20417553a8473ff1ae024af4",
+    "analysis/validation.json": "15b76e272e31e472a03806ea3f91cc7b3b257a26f666aba3b6416414af5e6a05",
+    "index.html": "8eaf17eabffbb535cd3839f40bd8c8271ab5eaac6474bb331d5e3354b5ff0363",
+    "report_standalone.html": "0d0258744e9963fc2e24ba52db1c847babe3401171c81ed78887b52d5808cb37",
+    "scripts/validate.py": "92d41066130f21b08670e79931c0e96a2581ee8b6b13dbad6106e47bad17505e",
+    "scripts/probe_cache_dispatch.py": "082ffd97a27d6fa515cfb95cecf049522fc45bd92d4367a5c5d44ac15a01777a",
+    "analysis/cache_dispatch_probe.json": "7c9185ae4d2af55937a190f114a86f5e21333434d989a808147fd723b3e65405",
+    "analysis/static_validation_v92.json": "d3318dd22033991643f198f9512748972a7edb2669e1165374b065561a7ae252"
+  }
+}

@@ -1098,6 +1098,11 @@ ok('V91 component construction source-bound with explicit IO limits',cc['checks_
 ok('V91 normal missing train cache differs from empty concat chain',cc['cases']['ordinary_train_missing']['error']=='ValueError' and cc['cases']['empty_concat_actual_names']==['A'] and cc['cases']['empty_concat_integer_quota']==[10] and len(cc['cases']['empty_concat_identity'])==10)
 ok('V91 partial validation content and archived scope distinguished',len(cc['cases']['partial_concat_identity'])==3 and len(cc['cases']['full_concat_identity'])==6 and cc['archived_components']=={'count':223,'concat_shapes':[]})
 report['highlights']+=['V91 fifteen original component/config/build/concat/mixture checks; missing training cache protection, partial validation panel and empty concat boundary, no Hero incident claim']
+cd=read(A/'cache_dispatch_probe.json')
+ok('V92 real-thread original cache dispatch checks source-bound',cd['checks_passed']==len(cd['checks'])==10 and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in cd['source_sha256'].items()) and cd['actual_distributed_hang'] is None)
+ok('V92 completion order does not become build order',cd['cases']['completion_cba']['observed_completion']==['C','B','A'] and cd['cases']['completion_bac']['observed_completion']==['B','A','C'] and cd['cases']['completion_cba']['build_dispatch']==cd['cases']['completion_bac']['build_dispatch']==['A','B','C'])
+ok('V92 error cleanup and visibility boundaries explicit',cd['cases']['metadata_failure']['error_observed_before_caller_exit'] and cd['cases']['metadata_failure']['cleanup_exception_type']=='RuntimeError' and cd['cases']['metadata_failure']['build_dispatch']==[] and cd['cases']['hit_A']['build_dispatch']!=cd['cases']['hit_B']['build_dispatch'])
+report['highlights']+=['V92 ten original build_caches real-thread controls; preserved dispatch order and waiting exception cleanup, no distributed IO or Hero hang claim']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

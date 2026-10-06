@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1569,
+  "checks_passed": 1572,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -139,7 +139,8 @@
     "V88 eighteen original quota/packed ID/CPU permutation checks and 200-cell logical exposure CSV; no production key/token identity claim",
     "V89 original normalization in two actual Python runtimes, isolated sum controls and historical scope correction; production quota and token stream unknown",
     "V90 twenty-five original mixture/entry support controls; guard versus actual children distinguished, no Hero missing-child incident claim",
-    "V91 fifteen original component/config/build/concat/mixture checks; missing training cache protection, partial validation panel and empty concat boundary, no Hero incident claim"
+    "V91 fifteen original component/config/build/concat/mixture checks; missing training cache protection, partial validation panel and empty concat boundary, no Hero incident claim",
+    "V92 ten original build_caches real-thread controls; preserved dispatch order and waiting exception cleanup, no distributed IO or Hero hang claim"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

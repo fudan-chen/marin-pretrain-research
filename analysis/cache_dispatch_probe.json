@@ -1,0 +1,220 @@
+{
+  "scope": "Original build_caches with real ThreadPoolExecutor/as_completed and gated IO adapters.\nNo distributed collectives, storage reads or cache builds executed.\n",
+  "checks_passed": 10,
+  "checks": [
+    "Real completion traces differ",
+    "Original component order survives both real completion orders",
+    "Actual build adapters run serially on caller thread",
+    "Cache hit excluded from serial build plan",
+    "Component dictionary reorder changes build dispatch",
+    "Different cache visibility changes hypothetical host plan",
+    "Completed error future surfaced while caller waits for cleanup",
+    "Original metadata error propagated after sibling release",
+    "Metadata failure prevents all serial cache builds",
+    "Archived active children declare existing cache and no source"
+  ],
+  "python": "3.12.13",
+  "cases": {
+    "completion_cba": {
+      "component_order": [
+        "A",
+        "B",
+        "C"
+      ],
+      "forced_completion": [
+        "C",
+        "B",
+        "A"
+      ],
+      "observed_completion": [
+        "C",
+        "B",
+        "A"
+      ],
+      "build_dispatch": [
+        "A",
+        "B",
+        "C"
+      ],
+      "build_threads": [
+        "probe-caller",
+        "probe-caller",
+        "probe-caller"
+      ],
+      "error": null,
+      "error_observed_before_caller_exit": null,
+      "returned_caches": {
+        "A": "built:A",
+        "B": "built:B",
+        "C": "built:C"
+      }
+    },
+    "completion_bac": {
+      "component_order": [
+        "A",
+        "B",
+        "C"
+      ],
+      "forced_completion": [
+        "B",
+        "A",
+        "C"
+      ],
+      "observed_completion": [
+        "B",
+        "A",
+        "C"
+      ],
+      "build_dispatch": [
+        "A",
+        "B",
+        "C"
+      ],
+      "build_threads": [
+        "probe-caller",
+        "probe-caller",
+        "probe-caller"
+      ],
+      "error": null,
+      "error_observed_before_caller_exit": null,
+      "returned_caches": {
+        "A": "built:A",
+        "B": "built:B",
+        "C": "built:C"
+      }
+    },
+    "hit_A": {
+      "component_order": [
+        "A",
+        "B",
+        "C"
+      ],
+      "forced_completion": [
+        "C",
+        "A",
+        "B"
+      ],
+      "observed_completion": [
+        "C",
+        "A",
+        "B"
+      ],
+      "build_dispatch": [
+        "B",
+        "C"
+      ],
+      "build_threads": [
+        "probe-caller",
+        "probe-caller"
+      ],
+      "error": null,
+      "error_observed_before_caller_exit": null,
+      "returned_caches": {
+        "A": "loaded:A",
+        "B": "built:B",
+        "C": "built:C"
+      }
+    },
+    "reordered_components": {
+      "component_order": [
+        "C",
+        "B",
+        "A"
+      ],
+      "forced_completion": [
+        "B",
+        "A",
+        "C"
+      ],
+      "observed_completion": [
+        "B",
+        "A",
+        "C"
+      ],
+      "build_dispatch": [
+        "C",
+        "B",
+        "A"
+      ],
+      "build_threads": [
+        "probe-caller",
+        "probe-caller",
+        "probe-caller"
+      ],
+      "error": null,
+      "error_observed_before_caller_exit": null,
+      "returned_caches": {
+        "C": "built:C",
+        "B": "built:B",
+        "A": "built:A"
+      }
+    },
+    "hit_B": {
+      "component_order": [
+        "A",
+        "B",
+        "C"
+      ],
+      "forced_completion": [
+        "C",
+        "B",
+        "A"
+      ],
+      "observed_completion": [
+        "C",
+        "B",
+        "A"
+      ],
+      "build_dispatch": [
+        "A",
+        "C"
+      ],
+      "build_threads": [
+        "probe-caller",
+        "probe-caller"
+      ],
+      "error": null,
+      "error_observed_before_caller_exit": null,
+      "returned_caches": {
+        "B": "loaded:B",
+        "A": "built:A",
+        "C": "built:C"
+      }
+    },
+    "metadata_failure": {
+      "component_order": [
+        "A",
+        "B",
+        "C"
+      ],
+      "forced_completion": [
+        "B"
+      ],
+      "observed_completion": [
+        "B"
+      ],
+      "build_dispatch": [],
+      "build_threads": [],
+      "error": {
+        "type": "RuntimeError",
+        "message": "Injected metadata failure B"
+      },
+      "error_observed_before_caller_exit": true,
+      "cleanup_exception_type": "RuntimeError"
+    }
+  },
+  "archived_active_components": {
+    "count": 200,
+    "source_none": true,
+    "cache_dir_declared": true
+  },
+  "adapters": "Real executor subclass records __exit__ then delegates unchanged shutdown; real completion iterator observer records yields. Event-gated path/source/storage/cache adapters impose finite artificial IO states. Original build_caches body unchanged.",
+  "source_sha256": {
+    "sources/boundaries_2026_10_05/datasets.py": "4fd44ff53067beb7a2ac05cc4d41f0dda18012691751a85e7c5eb65c4849823b",
+    "analysis/mixture_support_source_binding.json": "7311866e10a9feecdeb273bc6f5b94bf7582a11b33d16b148a4e0a99718550cd",
+    "sources/live_2026_10_07/meta.json": "21998ecad691e7e66d3680f173bfe9b94c35b9481f28eff4794a23b0c9831487"
+  },
+  "actual_distributed_hang": null,
+  "actual_cross_host_cache_visibility": null,
+  "actual_Hero_execution": null
+}

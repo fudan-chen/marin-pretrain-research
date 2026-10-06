@@ -1,0 +1,2147 @@
+{
+  "scope": "Original finite-mixture length and strict identity reads on real CPU permutations.\nNo real token inventory, loader or training; strict child enforces finite bounds.\n",
+  "checks_passed": 8,
+  "checks": [
+    "Unrandomized finite controls have safe reported prefixes",
+    "Randomized reported finite range can contain invalid child indices",
+    "Both actual APIs reject the invalid position inside reported length",
+    "Stage change retains exhaustion mismatch under permuted local offsets",
+    "Restart remaps finite child and avoids these finite bounds errors",
+    "All-stop count equals inventory but not unique inventory coverage",
+    "Unrandomized all-stop covers this inventory without repeats",
+    "Archived Hero declares restart, not finite-first policy"
+  ],
+  "grid_cells": 32,
+  "rows": [
+    {
+      "randomize": false,
+      "seed": 7,
+      "A_length": 1,
+      "reported_length": 1,
+      "safe_prefix_length": 1,
+      "within_reported_prefix_invalid": [],
+      "read_error": null,
+      "first_block": [
+        {
+          "position": 0,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "A",
+          "logical_index": 1,
+          "valid": false
+        },
+        {
+          "position": 2,
+          "name": "A",
+          "logical_index": 2,
+          "valid": false
+        },
+        {
+          "position": 3,
+          "name": "A",
+          "logical_index": 3,
+          "valid": false
+        },
+        {
+          "position": 4,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": false,
+      "seed": 7,
+      "A_length": 2,
+      "reported_length": 2,
+      "safe_prefix_length": 2,
+      "within_reported_prefix_invalid": [],
+      "read_error": null,
+      "first_block": [
+        {
+          "position": 0,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "A",
+          "logical_index": 2,
+          "valid": false
+        },
+        {
+          "position": 3,
+          "name": "A",
+          "logical_index": 3,
+          "valid": false
+        },
+        {
+          "position": 4,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": false,
+      "seed": 7,
+      "A_length": 3,
+      "reported_length": 3,
+      "safe_prefix_length": 3,
+      "within_reported_prefix_invalid": [],
+      "read_error": null,
+      "first_block": [
+        {
+          "position": 0,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "A",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 3,
+          "name": "A",
+          "logical_index": 3,
+          "valid": false
+        },
+        {
+          "position": 4,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": false,
+      "seed": 7,
+      "A_length": 4,
+      "reported_length": 4,
+      "safe_prefix_length": 8,
+      "within_reported_prefix_invalid": [],
+      "read_error": null,
+      "first_block": [
+        {
+          "position": 0,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "A",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 3,
+          "name": "A",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 4,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": false,
+      "seed": 7,
+      "A_length": 5,
+      "reported_length": 9,
+      "safe_prefix_length": 9,
+      "within_reported_prefix_invalid": [],
+      "read_error": null,
+      "first_block": [
+        {
+          "position": 0,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "A",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 3,
+          "name": "A",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 4,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": false,
+      "seed": 7,
+      "A_length": 6,
+      "reported_length": 10,
+      "safe_prefix_length": 10,
+      "within_reported_prefix_invalid": [],
+      "read_error": null,
+      "first_block": [
+        {
+          "position": 0,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "A",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 3,
+          "name": "A",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 4,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": false,
+      "seed": 7,
+      "A_length": 7,
+      "reported_length": 11,
+      "safe_prefix_length": 11,
+      "within_reported_prefix_invalid": [],
+      "read_error": null,
+      "first_block": [
+        {
+          "position": 0,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "A",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 3,
+          "name": "A",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 4,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": false,
+      "seed": 7,
+      "A_length": 8,
+      "reported_length": 12,
+      "safe_prefix_length": 16,
+      "within_reported_prefix_invalid": [],
+      "read_error": null,
+      "first_block": [
+        {
+          "position": 0,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "A",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 3,
+          "name": "A",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 4,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": false,
+      "seed": 8,
+      "A_length": 1,
+      "reported_length": 1,
+      "safe_prefix_length": 1,
+      "within_reported_prefix_invalid": [],
+      "read_error": null,
+      "first_block": [
+        {
+          "position": 0,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "A",
+          "logical_index": 1,
+          "valid": false
+        },
+        {
+          "position": 2,
+          "name": "A",
+          "logical_index": 2,
+          "valid": false
+        },
+        {
+          "position": 3,
+          "name": "A",
+          "logical_index": 3,
+          "valid": false
+        },
+        {
+          "position": 4,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": false,
+      "seed": 8,
+      "A_length": 2,
+      "reported_length": 2,
+      "safe_prefix_length": 2,
+      "within_reported_prefix_invalid": [],
+      "read_error": null,
+      "first_block": [
+        {
+          "position": 0,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "A",
+          "logical_index": 2,
+          "valid": false
+        },
+        {
+          "position": 3,
+          "name": "A",
+          "logical_index": 3,
+          "valid": false
+        },
+        {
+          "position": 4,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": false,
+      "seed": 8,
+      "A_length": 3,
+      "reported_length": 3,
+      "safe_prefix_length": 3,
+      "within_reported_prefix_invalid": [],
+      "read_error": null,
+      "first_block": [
+        {
+          "position": 0,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "A",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 3,
+          "name": "A",
+          "logical_index": 3,
+          "valid": false
+        },
+        {
+          "position": 4,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": false,
+      "seed": 8,
+      "A_length": 4,
+      "reported_length": 4,
+      "safe_prefix_length": 8,
+      "within_reported_prefix_invalid": [],
+      "read_error": null,
+      "first_block": [
+        {
+          "position": 0,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "A",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 3,
+          "name": "A",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 4,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": false,
+      "seed": 8,
+      "A_length": 5,
+      "reported_length": 9,
+      "safe_prefix_length": 9,
+      "within_reported_prefix_invalid": [],
+      "read_error": null,
+      "first_block": [
+        {
+          "position": 0,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "A",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 3,
+          "name": "A",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 4,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": false,
+      "seed": 8,
+      "A_length": 6,
+      "reported_length": 10,
+      "safe_prefix_length": 10,
+      "within_reported_prefix_invalid": [],
+      "read_error": null,
+      "first_block": [
+        {
+          "position": 0,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "A",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 3,
+          "name": "A",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 4,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": false,
+      "seed": 8,
+      "A_length": 7,
+      "reported_length": 11,
+      "safe_prefix_length": 11,
+      "within_reported_prefix_invalid": [],
+      "read_error": null,
+      "first_block": [
+        {
+          "position": 0,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "A",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 3,
+          "name": "A",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 4,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": false,
+      "seed": 8,
+      "A_length": 8,
+      "reported_length": 12,
+      "safe_prefix_length": 16,
+      "within_reported_prefix_invalid": [],
+      "read_error": null,
+      "first_block": [
+        {
+          "position": 0,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "A",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 3,
+          "name": "A",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 4,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": true,
+      "seed": 7,
+      "A_length": 1,
+      "reported_length": 1,
+      "safe_prefix_length": 0,
+      "within_reported_prefix_invalid": [
+        {
+          "position": 0,
+          "name": "A",
+          "logical_index": 1,
+          "valid": false
+        }
+      ],
+      "read_error": {
+        "type": "IndexError",
+        "message": "A finite inventory index out of bounds"
+      },
+      "first_block": [
+        {
+          "position": 0,
+          "name": "A",
+          "logical_index": 1,
+          "valid": false
+        },
+        {
+          "position": 1,
+          "name": "A",
+          "logical_index": 2,
+          "valid": false
+        },
+        {
+          "position": 2,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 3,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 4,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "A",
+          "logical_index": 3,
+          "valid": false
+        },
+        {
+          "position": 6,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": true,
+      "seed": 7,
+      "A_length": 2,
+      "reported_length": 2,
+      "safe_prefix_length": 1,
+      "within_reported_prefix_invalid": [
+        {
+          "position": 1,
+          "name": "A",
+          "logical_index": 2,
+          "valid": false
+        }
+      ],
+      "read_error": {
+        "type": "IndexError",
+        "message": "A finite inventory index out of bounds"
+      },
+      "first_block": [
+        {
+          "position": 0,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "A",
+          "logical_index": 2,
+          "valid": false
+        },
+        {
+          "position": 2,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 3,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 4,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "A",
+          "logical_index": 3,
+          "valid": false
+        },
+        {
+          "position": 6,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": true,
+      "seed": 7,
+      "A_length": 3,
+      "reported_length": 6,
+      "safe_prefix_length": 5,
+      "within_reported_prefix_invalid": [
+        {
+          "position": 5,
+          "name": "A",
+          "logical_index": 3,
+          "valid": false
+        }
+      ],
+      "read_error": {
+        "type": "IndexError",
+        "message": "A finite inventory index out of bounds"
+      },
+      "first_block": [
+        {
+          "position": 0,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "A",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 3,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 4,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "A",
+          "logical_index": 3,
+          "valid": false
+        },
+        {
+          "position": 6,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": true,
+      "seed": 7,
+      "A_length": 4,
+      "reported_length": 7,
+      "safe_prefix_length": 9,
+      "within_reported_prefix_invalid": [],
+      "read_error": null,
+      "first_block": [
+        {
+          "position": 0,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "A",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 3,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 4,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "A",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": true,
+      "seed": 7,
+      "A_length": 5,
+      "reported_length": 10,
+      "safe_prefix_length": 11,
+      "within_reported_prefix_invalid": [],
+      "read_error": null,
+      "first_block": [
+        {
+          "position": 0,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "A",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 3,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 4,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "A",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": true,
+      "seed": 7,
+      "A_length": 6,
+      "reported_length": 12,
+      "safe_prefix_length": 12,
+      "within_reported_prefix_invalid": [],
+      "read_error": null,
+      "first_block": [
+        {
+          "position": 0,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "A",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 3,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 4,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "A",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": true,
+      "seed": 7,
+      "A_length": 7,
+      "reported_length": 13,
+      "safe_prefix_length": 15,
+      "within_reported_prefix_invalid": [],
+      "read_error": null,
+      "first_block": [
+        {
+          "position": 0,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "A",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 3,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 4,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "A",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": true,
+      "seed": 7,
+      "A_length": 8,
+      "reported_length": 16,
+      "safe_prefix_length": 17,
+      "within_reported_prefix_invalid": [],
+      "read_error": null,
+      "first_block": [
+        {
+          "position": 0,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "A",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 3,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 4,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "A",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": true,
+      "seed": 8,
+      "A_length": 1,
+      "reported_length": 3,
+      "safe_prefix_length": 2,
+      "within_reported_prefix_invalid": [
+        {
+          "position": 2,
+          "name": "A",
+          "logical_index": 2,
+          "valid": false
+        }
+      ],
+      "read_error": {
+        "type": "IndexError",
+        "message": "A finite inventory index out of bounds"
+      },
+      "first_block": [
+        {
+          "position": 0,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "A",
+          "logical_index": 2,
+          "valid": false
+        },
+        {
+          "position": 3,
+          "name": "A",
+          "logical_index": 1,
+          "valid": false
+        },
+        {
+          "position": 4,
+          "name": "A",
+          "logical_index": 3,
+          "valid": false
+        },
+        {
+          "position": 5,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": true,
+      "seed": 8,
+      "A_length": 2,
+      "reported_length": 4,
+      "safe_prefix_length": 2,
+      "within_reported_prefix_invalid": [
+        {
+          "position": 2,
+          "name": "A",
+          "logical_index": 2,
+          "valid": false
+        }
+      ],
+      "read_error": {
+        "type": "IndexError",
+        "message": "A finite inventory index out of bounds"
+      },
+      "first_block": [
+        {
+          "position": 0,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "A",
+          "logical_index": 2,
+          "valid": false
+        },
+        {
+          "position": 3,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 4,
+          "name": "A",
+          "logical_index": 3,
+          "valid": false
+        },
+        {
+          "position": 5,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": true,
+      "seed": 8,
+      "A_length": 3,
+      "reported_length": 5,
+      "safe_prefix_length": 4,
+      "within_reported_prefix_invalid": [
+        {
+          "position": 4,
+          "name": "A",
+          "logical_index": 3,
+          "valid": false
+        }
+      ],
+      "read_error": {
+        "type": "IndexError",
+        "message": "A finite inventory index out of bounds"
+      },
+      "first_block": [
+        {
+          "position": 0,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "A",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 3,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 4,
+          "name": "A",
+          "logical_index": 3,
+          "valid": false
+        },
+        {
+          "position": 5,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": true,
+      "seed": 8,
+      "A_length": 4,
+      "reported_length": 6,
+      "safe_prefix_length": 9,
+      "within_reported_prefix_invalid": [],
+      "read_error": null,
+      "first_block": [
+        {
+          "position": 0,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "A",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 3,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 4,
+          "name": "A",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": true,
+      "seed": 8,
+      "A_length": 5,
+      "reported_length": 10,
+      "safe_prefix_length": 9,
+      "within_reported_prefix_invalid": [
+        {
+          "position": 9,
+          "name": "A",
+          "logical_index": 6,
+          "valid": false
+        }
+      ],
+      "read_error": {
+        "type": "IndexError",
+        "message": "A finite inventory index out of bounds"
+      },
+      "first_block": [
+        {
+          "position": 0,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "A",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 3,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 4,
+          "name": "A",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": true,
+      "seed": 8,
+      "A_length": 6,
+      "reported_length": 13,
+      "safe_prefix_length": 9,
+      "within_reported_prefix_invalid": [
+        {
+          "position": 9,
+          "name": "A",
+          "logical_index": 6,
+          "valid": false
+        }
+      ],
+      "read_error": {
+        "type": "IndexError",
+        "message": "A finite inventory index out of bounds"
+      },
+      "first_block": [
+        {
+          "position": 0,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "A",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 3,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 4,
+          "name": "A",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": true,
+      "seed": 8,
+      "A_length": 7,
+      "reported_length": 14,
+      "safe_prefix_length": 14,
+      "within_reported_prefix_invalid": [],
+      "read_error": null,
+      "first_block": [
+        {
+          "position": 0,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "A",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 3,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 4,
+          "name": "A",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        }
+      ]
+    },
+    {
+      "randomize": true,
+      "seed": 8,
+      "A_length": 8,
+      "reported_length": 15,
+      "safe_prefix_length": 16,
+      "within_reported_prefix_invalid": [],
+      "read_error": null,
+      "first_block": [
+        {
+          "position": 0,
+          "name": "B",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 1,
+          "name": "B",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 2,
+          "name": "A",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 3,
+          "name": "A",
+          "logical_index": 1,
+          "valid": true
+        },
+        {
+          "position": 4,
+          "name": "A",
+          "logical_index": 3,
+          "valid": true
+        },
+        {
+          "position": 5,
+          "name": "A",
+          "logical_index": 0,
+          "valid": true
+        },
+        {
+          "position": 6,
+          "name": "B",
+          "logical_index": 2,
+          "valid": true
+        },
+        {
+          "position": 7,
+          "name": "B",
+          "logical_index": 0,
+          "valid": true
+        }
+      ]
+    }
+  ],
+  "failing_grid_cells": 8,
+  "example_single_error": {
+    "type": "IndexError",
+    "message": "A finite inventory index out of bounds"
+  },
+  "staged": {
+    "reported_length": 9,
+    "trace": [
+      {
+        "position": 0,
+        "name": "A",
+        "logical_index": 1,
+        "valid": true
+      },
+      {
+        "position": 1,
+        "name": "A",
+        "logical_index": 2,
+        "valid": true
+      },
+      {
+        "position": 2,
+        "name": "B",
+        "logical_index": 3,
+        "valid": true
+      },
+      {
+        "position": 3,
+        "name": "B",
+        "logical_index": 0,
+        "valid": true
+      },
+      {
+        "position": 4,
+        "name": "B",
+        "logical_index": 2,
+        "valid": true
+      },
+      {
+        "position": 5,
+        "name": "A",
+        "logical_index": 3,
+        "valid": true
+      },
+      {
+        "position": 6,
+        "name": "A",
+        "logical_index": 0,
+        "valid": true
+      },
+      {
+        "position": 7,
+        "name": "B",
+        "logical_index": 1,
+        "valid": true
+      },
+      {
+        "position": 8,
+        "name": "A",
+        "logical_index": 10,
+        "valid": false
+      },
+      {
+        "position": 9,
+        "name": "A",
+        "logical_index": 4,
+        "valid": true
+      },
+      {
+        "position": 10,
+        "name": "A",
+        "logical_index": 8,
+        "valid": false
+      },
+      {
+        "position": 11,
+        "name": "A",
+        "logical_index": 5,
+        "valid": false
+      },
+      {
+        "position": 12,
+        "name": "A",
+        "logical_index": 6,
+        "valid": false
+      },
+      {
+        "position": 13,
+        "name": "A",
+        "logical_index": 9,
+        "valid": false
+      },
+      {
+        "position": 14,
+        "name": "A",
+        "logical_index": 11,
+        "valid": false
+      },
+      {
+        "position": 15,
+        "name": "A",
+        "logical_index": 7,
+        "valid": false
+      }
+    ],
+    "read_error": {
+      "type": "IndexError",
+      "message": "A finite inventory index out of bounds"
+    }
+  },
+  "restart_identity": [
+    "A:0",
+    "A:0",
+    "B:3",
+    "B:0",
+    "B:2",
+    "A:0",
+    "A:0",
+    "B:1",
+    "B:6",
+    "A:0",
+    "B:4",
+    "A:0",
+    "A:0",
+    "B:5",
+    "B:7",
+    "A:0"
+  ],
+  "all_stop": {
+    "reported_length": 5,
+    "identities": [
+      "A:1",
+      "A:2",
+      "A:2",
+      "A:4",
+      "A:1"
+    ],
+    "unique_count": 3,
+    "unrandomized": [
+      "A:0",
+      "A:1",
+      "A:2",
+      "A:3",
+      "A:4"
+    ]
+  },
+  "runtime": {
+    "python": "3.12.13",
+    "numpy": "2.5.3",
+    "jax": "0.7.2"
+  },
+  "reference_scope": "Original packed IDs reused, independently unpacked and accumulated with Python integers; no independent permutation or real token verification.",
+  "source_sha256": {
+    "sources/integer_exposure_2026_10_07/mixture.py": "67e97941a79753b2e5865f7f41c7762436a428599ecd1a60d643aa891a817685",
+    "sources/live_2026_10_07/meta.json": "21998ecad691e7e66d3680f173bfe9b94c35b9481f28eff4794a23b0c9831487",
+    "scripts/probe_mixture_support_cpu.py": "55bb444594d8935a510dbbfe0cc5f46867b54968c4978e56d1f90431648f9afa",
+    "scripts/probe_mixture_identity_cpu.py": "9537f8a87ed09c702fc696c351f496eba84297ad53bcafd3c398729732f2d9c5"
+  },
+  "actual_Hero_exhaustion_incident": null,
+  "actual_token_stream": null,
+  "actual_loader_behavior": null,
+  "actual_training_benefit": null
+}

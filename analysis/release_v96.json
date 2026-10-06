@@ -1,0 +1,32 @@
+{
+  "version": "V96",
+  "created_utc": "2026-10-06T23:32:07.851584+00:00",
+  "goal_status": "active",
+  "scope": "Original finite mixture length and strict identity reads on CPU, partial block and count versus coverage",
+  "checks_passed": 1584,
+  "local_original_cpu_checks": 8,
+  "finite_grid_cells": 32,
+  "static_checks": 7,
+  "source_files": 498,
+  "new_source_files": 0,
+  "actual_Hero_exhaustion_incident": null,
+  "actual_loader_behavior": null,
+  "actual_token_stream": null,
+  "actual_browser_rendering": null,
+  "artifact_sha256": {
+    "README.md": "aadc662aa3ea464606db46a76de591f3b2fe274e0e95ebe21aa99395271d81da",
+    "DELIVERY_AUDIT_ZH.md": "017c3ee000334b76604c6dafd4d0ef954bf8cd8da6cab68012e111516ccde797",
+    "IMPROVEMENT_LOG_ZH.md": "ab087c5b1229f862103aac1003c570136f6bbb99e3180b164b6cf4d4d803510d",
+    "MIXTURE_IDENTITY_ZH.md": "d9b082664805bf55afa1418a482e24fbc2f618da55633a8f1d7f918e792f7402",
+    "PIPELINE_ZH.md": "6aa732812bfc8c58bfd8f8391fc5e073a9f8c8bf054d36eb836435e8c87e78d9",
+    "RUBRICS_ZH.md": "c66e407bfb3a0050181665e26dd8e28bba80dc5b78f7aa9a136e15d474a2fdc4",
+    "SYNTHESIS_ZH.md": "4d47422d7ece335b2eeec1a0a5a50a99a4d771add18121f8d6f8ba31fe45c513",
+    "analysis/validation.json": "9862c93181a9b31b750f3d2df1d0bb03867432135f084a4bd523580b4cb3780a",
+    "index.html": "d272a86b5488b3f3a00ecdf91cd35910e14e33746b751c9cc347f98e2957910a",
+    "report_standalone.html": "3b677f0041900ab73cef3f367358711b38fb7794f91563391519110c02f5224a",
+    "scripts/validate.py": "2cb67b5dcb5d916041609b839d630d4207370550747981b84df4669f816bfa8c",
+    "scripts/probe_mixture_exhaustion_cpu.py": "5592a3b2cb28728ea3b648e7ad203d3cc7ab23d4dfec0ebf7229ad425c16f4a2",
+    "analysis/mixture_exhaustion_cpu.json": "0d00e33ee7240f977729d02e87bf7e9a2887a949e9c1bcb7218c4154ff2cd26d",
+    "analysis/static_validation_v96.json": "80e5f111d797d1c1d55ce7c72b3ce8a783b7d80656b3d73f8673cbaf7989e21f"
+  }
+}

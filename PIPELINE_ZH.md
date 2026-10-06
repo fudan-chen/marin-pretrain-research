@@ -308,3 +308,6 @@ python scripts/check_data_execution_record_v94.py templates/data_execution_recor
 
 
 V95补充：整数验收同时运行原单条/批量读取，并用独立宽整数参考核对restart前索引。两接口一致可能共享溢出的阶段前缀；有限取模可隐藏错误。Hero本地声明上界安全不等于真实token已验证。[端到端原类控制](MIXTURE_RANGE_ZH.md)
+
+
+V96补充：有限停止验收覆盖实际库存的部分块，检查原报告长度内每个位置可读，并分别统计总读数和unique身份。随机域出现次序不等于打包offset次序；当前Hero声明restart，不能把first反例归因该运行。[有限停止边界](MIXTURE_IDENTITY_ZH.md)

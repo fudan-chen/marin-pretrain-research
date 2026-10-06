@@ -818,7 +818,7 @@ ok('V53 dictionary order changes tie allocation',mi['tie_counts']['ABC']=={'A':4
 ok('V53 key preserves whole-block multiset but changes partial content',sorted(mi['whole_seed7'])==sorted(mi['whole_seed8']) and sorted(mi['partial_seed7'])!=sorted(mi['partial_seed8']))
 ok('V53 finite restart separates exposure from unique identity',len(mi['finite_length3_stream'])==24 and len(set(mi['finite_length3_stream']))==6)
 report['highlights']+=['V53 fourteen original mixture class and real JAX CPU identity controls; ordered dataset IDs, integer ties, finite modulo and partial windows; no actual Hero token/shuffle/restore']
-ok('V53 mixture identity chapter retains original and V54 V55 control tables',len(soup.select('#mixture-identity-guide table'))==5)
+ok('V53 mixture identity chapter retains original and V54 V55 control tables',len(soup.select('#mixture-identity-guide table'))==6)
 ish=read(A/'inner_shuffle_cpu.json')
 ok('V54 fourteen CPU/source controls with bounded Hero claims',ish['checks_passed']==len(ish['checks'])==14 and ish['runtime']['backend']=='cpu' and ish['actual_Hero_inner_shuffle'] is None and ish['actual_Hero_split_leakage'] is None and ish['declared_num_validation_sequences'] is None)
 ok('V54 PRP and dataset source identities match',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in ish['source_sha256'].items()))
@@ -1118,6 +1118,11 @@ ok('V95 current original constructor/read controls source-bound',mr['checks_pass
 ok('V95 distinct APIs and shared corrupt prefix retain wide reference',mr['cases']['one_stage']['single']=='A:319' and mr['cases']['one_stage']['batch']=='A:702' and mr['cases']['staged']['single']==mr['cases']['staged']['batch']=='A:319' and mr['cases']['staged']['reference']['expected_identity']=='A:702')
 ok('V95 declared Hero bound distinguished from synthetic overflow',mr['cases']['hero_declaration']['all_child_max_full_block_count_bound']==253722855 and mr['cases']['hero_declaration']['single']==mr['cases']['hero_declaration']['batch'] and mr['cases']['too_large_multiplier']['type']=='OverflowError')
 report['highlights']+=['V95 thirteen current original mixture constructor/read CPU controls; API type divergence and shared prefix corruption, Hero declaration bound below int32, no actual token replay']
+me=read(A/'mixture_exhaustion_cpu.json')
+ok('V96 finite original-class controls source-bound',me['checks_passed']==len(me['checks'])==8 and me['grid_cells']==32 and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in me['source_sha256'].items()) and me['actual_Hero_exhaustion_incident'] is None)
+ok('V96 randomized finite prefix errors distinguished from ordered controls',me['failing_grid_cells']==8 and all(r['read_error'] is None for r in me['rows'] if not r['randomize']) and any(r['reported_length']==1 and r['safe_prefix_length']==0 and r['read_error'] is not None for r in me['rows']))
+ok('V96 all-stop count versus identity coverage retained',me['all_stop']['reported_length']==5 and me['all_stop']['unique_count']==3 and me['all_stop']['unrandomized']==['A:0','A:1','A:2','A:3','A:4'] and me['example_single_error']['type']=='IndexError')
+report['highlights']+=['V96 thirty-two original finite-length/read controls, eight checks; partial-block bounds and count versus coverage, Hero declares restart, no actual loader incident']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

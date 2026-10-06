@@ -1,0 +1,14 @@
+{
+  "version": "V96",
+  "checks_passed": 7,
+  "checks": [
+    "index.html unique IDs",
+    "index.html prior five identity tables preserved plus stopping table",
+    "index.html finite bounds and production limits present",
+    "report_standalone.html unique IDs",
+    "report_standalone.html prior five identity tables preserved plus stopping table",
+    "report_standalone.html finite bounds and production limits present",
+    "1584 fresh checks"
+  ],
+  "actual_browser_rendering": null
+}

@@ -234,3 +234,6 @@ V94：数据记录建议使用[严格版本](scripts/check_data_execution_record
 
 
 V95补证：单条/批量原读取在集中人工配额下可以不同；阶段prefix坏掉时则一致地读错。restart可返回合法身份而隐藏负索引。Hero声明下本地原前缀与宽参考相同、逐桶上界安全，未认定生产事故。[端到端读取对照](MIXTURE_RANGE_ZH.md)
+
+
+V96：原first_exhausted在人工部分块中可以报告包含越界读取的长度；all_exhausted总次数也不等于unique覆盖。Hero归档声明restart，所以不是该运行的有限停止事故证据。自己的有限策略应做末块读取与覆盖验收。[停止合同](MIXTURE_IDENTITY_ZH.md)

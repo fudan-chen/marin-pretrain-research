@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1581,
+  "checks_passed": 1584,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -143,7 +143,8 @@
     "V92 ten original build_caches real-thread controls; preserved dispatch order and waiting exception cleanup, no distributed IO or Hero hang claim",
     "V93 proposed record checker with eighteen tamper controls; archived declarations plus local quota retain missing execution evidence, no production approval",
     "V94 strict proposed checker layer and twelve old/new regressions; field shape and explicit host coverage, no production validation",
-    "V95 thirteen current original mixture constructor/read CPU controls; API type divergence and shared prefix corruption, Hero declaration bound below int32, no actual token replay"
+    "V95 thirteen current original mixture constructor/read CPU controls; API type divergence and shared prefix corruption, Hero declaration bound below int32, no actual token replay",
+    "V96 thirty-two original finite-length/read controls, eight checks; partial-block bounds and count versus coverage, Hero declares restart, no actual loader incident"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

@@ -4322,5 +4322,14 @@
     "sha256": "ccedfc57ab7a57d0de03429b9bbac8ab20fc301e91391b9451216c06a7fc7cab",
     "bytes": 446,
     "origin": "short web excerpt, not full HTML"
+  },
+  {
+    "file": "portable_ep_2026_10_07/ragged_dot.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/lib/haliax/src/haliax/nn/ragged_dot.py",
+    "revision": "b65be4c9550c5097f0a3add08933531a1c24d534",
+    "retrieved_utc": "2026-10-06T21:29:22.141340+00:00",
+    "retrieval_time_basis": "local completed-download mtime approximation",
+    "bytes": 16781,
+    "sha256": "c12a1370bf77f3b775358b20e8900b255af80cfd7bbfe0777a8ee046ddf8ec28"
   }
 ]

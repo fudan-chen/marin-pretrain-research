@@ -199,3 +199,50 @@ V58回答某种正权重/cotangent是否丢失乘积，以及人工sigmoid VJP�
 下一次取证应保留节点taint key/effect/timestamp、condition与事件、Pod UID/删除原因、首次rank退出和gang attempt，随后核对实际恢复state.step、首批数据身份及首次持续训练进度。上报到step215756不是本报告独立重建的实时W&B结果，也不证明该节点根因已经修复。训练曲线仍使用已有10月7日独立快照，没有据这一条评论改写token总量、loss或配比收益。
 
 对研究和部署的规则是：PR head变化先查计算差异，PR关闭先查merged，性能收益先查backend，重试恢复先查根因与状态/数据时钟。四类证据分别保存，避免把说明修订、候选提速、任务重排和长程质量改善写成同一项成功。
+
+
+## V78：原portable专家的前向、反向与row-dot一起验收
+
+V77澄清portable保存输出。现在执行固定PR head的原 `_RaggedDotExpertMlp`，并补齐同head的原Haliax ragged_dot包装：CPU auto selector选择XLA，实际执行ragged_dot_general、512行补齐与原输出切片。没有用普通matmul替换该包装；独立按专家分组的dense matmul只作为对照。14项检查通过，[梯度、有限元素计数与源码SHA](analysis/portable_expert_mlp_cpu.json)保存完整范围。
+
+原类采用Silu，本例capacity=10、hidden=4、intermediate=6、两专家；active sizes=[3,4]，physical sizes=[3,7]，最后三行是静态尾部padding。参数和cotangent为人工FP32。AST加载跳过不执行的GPU/TPU定义和包导入，CPU没有backend环境覆盖；实际JAX/jaxlib=0.7.2，未重建生产执行包。没有运行QuACK、all-to-all、真实routing planner或生产输入。
+
+<div id="portable-expert-placeholder"></div>
+
+[图原文件](assets/portable_expert_mlp.svg)：有效普通梯度均有限，原row-dot的三个闲置行允许NaN；原调用方选择语句在本地身份行映射中将它们排除。图中百分比按各自数组元素数计算，不是token dropping比例或真实故障率。
+
+### NaN尾部没有进入普通梯度，原因不是乘零
+
+干净控制将尾部输入和cotangent清零；poison控制将两者都设NaN。原_apply先以where选择有效输入，再执行两个ragged GEMM，最后以where选择有效输出。反向重新对_apply建立VJP，输出选择也限制传回的cotangent。两种控制的有效输出与全部dx/dW13/dW2逐元素相同且有限；独立dense分组参考的前向及三种普通梯度在atol=1e−6、rtol=1e−5内一致。
+
+但原backward还直接计算 `sum(out.astype(float32)*cotangent.astype(float32), axis=-1)`。尾部out=0、cotangent=NaN，得到三个NaN row-dot。普通梯度安全与row-dot全数组有限，是不同命题。接口已声明active计数之后的行允许未指定；该NaN不自动构成bug。
+
+|本地poison控制中的返回量|元素数|非有限元素|验收范围|
+|---|---:|---:|---|
+|dx|40|0|有效与尾部普通输入梯度均有限|
+|dW13|96|0|所有专家参数梯度有限|
+|dW2|48|0|所有专家参数梯度有限|
+|原row-dot|10|3|七个active行有限；三个尾部行未指定|
+|原caller选择后的weight梯度|10|0|七个active行匹配参考；三个inactive行归零|
+
+### 为什么caller还必须有自己的选择
+
+原调用方先令divisible=accepted且weight非零，再以安全分母除row-dot，并通过where选择最终weight梯度。测试中将receiver行到assignment行的映射设为身份，七个有效权重均为正，cotangent=weight×dout；执行两条原除法/选择语句后，结果全部有限，有效行匹配直接的dot(out,dout)，闲置行归零。这个局部对照验证了选择语句的作用，**没有证明真实transport、排序或accepted映射正确**。
+
+若改造通信接口，把未定义行参加全局求和，或者先按错误索引读取再选择，合法局部NaN可能进入有效结果。每个consumer都要承接active范围与映射合同；不能仅要求生产者所有padding都填0，也不能把一项局部CPU通过代替#9832的GPU未写buffer poison/recompute验收。
+
+另执行空首专家active=[0,7]/physical=[0,10]和全inactive=[0,0]/physical=[0,10]：普通输出与三种普通梯度保持有限，空专家参数梯度为零；全inactive时三种普通梯度范数均为0，row-dot的10个闲置行仍NaN。这是局部专家调用的输入边界，不涉及整步optimizer是否推进或全空训练loss的分母。
+
+### 保存的out对应哪一条梯度支线
+
+本例原forward残差有六项，末项为完整[10,4]输出；raw数组有40个FP32值。但不能据此把编译峰值HBM增加写成160字节，实际内存还取决于alias、生命周期、重计算和offload安排。
+
+独立对每行输出scale求JAX梯度，结果与原row-dot的七个active行一致。再故意把保存的out第一行每个分量加3，保留其他残差、参数与cotangent：dx/dW13/dW2逐元素不变，首行row-dot却从−0.3376771变成−2.4502907。原因是普通梯度由重新计算的_apply VJP产生，row-dot直接读取保存的out。仅对照输入和专家参数梯度，会漏掉这条支线的一致性问题。
+
+这是人为破坏残差的控制，没有真实缓存损坏或offload错误证据。它给出可验证要求：保存与重算视图应对应同一次前向；全部有效梯度验收应包括row-dot及最终routing-weight梯度，而不是只检查专家参数梯度。构建remat/offload优化时，应分别核对这两条读路径。
+
+### 可复用的验收顺序
+
+先固定backend、activation、dtype及物理/active布局，说明padding仅在静态尾部；核对原前向与独立分组参考；再用尾部NaN检验所有有效输出和普通参数梯度；单独核对row-dot的输出scale导数；最后检查caller的accepted/索引/非零权重合同，再扩大到真实collective、recompute与GPU。实际batch或配比改变active分布后，要在新负载下重新审查这些边界，而不是把局部通过当作所有配比下的性能和质量保证。
+
+本轮新增一份固定head包装源码，旧477份非bookkeeping来源保持原字节，来源总数479；实际生产输入、通信poison、GPU与节省内存量仍未知。复现：`make portable-expert-cpu CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。

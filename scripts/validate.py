@@ -141,7 +141,7 @@ alt=all_rows[f['counterexample_run']]
 ok('197c dominates selected seed0 on three axes but not all tasks',all(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in [PM,HE,GM]) and sum(metric_value(alt,k)>metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==31 and sum(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==23)
 ok('197c has no independent seed1 or seed2 counterpart in this registry',sum('197c9f5ceff6b9ee-' in r['run_name'] for r in rows)==1)
 F=S/'findings_2026_10_04'
-ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/','contracts_2026_10_05/','state_2026_10_05/','boundaries_2026_10_05/','cache_2026_10_05/','dedup_2026_10_05/','quality_2026_10_05/','routing_2026_10_05/','optimizer_2026_10_05/','short_conv_2026_10_05/','router_precision_2026_10_05/','eval_metrics_2026_10_05/','checkpoint_commit_2026_10_05/','checkpoint_memory_2026_10_05/','muon_geometry_2026_10_05/','adamh_2026_10_05/','muon_direction_2026_10_05/','watch_2026_10_06/','live_2026_10_06/','eval_identity_2026_10_06/','paloma_protocol_2026_10_06/','packing_2026_10_07/','live_2026_10_07/','accumulation_2026_10_07/','prp_2026_10_07/','engineering_current_2026_10_07/','tree_restore_2026_10_07/','state_restore_2026_10_07/','engineering_v77_2026_10_07/')) for x in manifest['files'])==313)
+ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/','contracts_2026_10_05/','state_2026_10_05/','boundaries_2026_10_05/','cache_2026_10_05/','dedup_2026_10_05/','quality_2026_10_05/','routing_2026_10_05/','optimizer_2026_10_05/','short_conv_2026_10_05/','router_precision_2026_10_05/','eval_metrics_2026_10_05/','checkpoint_commit_2026_10_05/','checkpoint_memory_2026_10_05/','muon_geometry_2026_10_05/','adamh_2026_10_05/','muon_direction_2026_10_05/','watch_2026_10_06/','live_2026_10_06/','eval_identity_2026_10_06/','paloma_protocol_2026_10_06/','packing_2026_10_07/','live_2026_10_07/','accumulation_2026_10_07/','prp_2026_10_07/','engineering_current_2026_10_07/','tree_restore_2026_10_07/','state_restore_2026_10_07/','engineering_v77_2026_10_07/','portable_ep_2026_10_07/')) for x in manifest['files'])==313)
 for i,row in enumerate(f['configs']):
     def source_run(name):return read((F if 'mixprior-' in name else P)/('config_'+name+'.json'))['data']['project']['run']
     ra,rb=source_run(row['run_a']),source_run(row['run_b']);ca,cb=json.loads(ra['config']),json.loads(rb['config'])
@@ -192,7 +192,7 @@ for scenario in decision_checks['scenarios']:
 doc_tables=soup.select('#decision-guide table')
 ok('Decision documentation preserves nine scenarios and six rule counterexamples',len(doc_tables)==3 and len(doc_tables[1].select('tbody tr'))==9 and len(doc_tables[2].select('tbody tr'))==6 and all(int(t.select('td')[2].text)==s['eligible'] and (s['best'] is None or s['best']==t.select('td')[3].text) for s,t in zip(decision_checks['scenarios'],doc_tables[1].select('tbody tr'))))
 ok('Selector trace reports bounded search rather than universal absence',trace['status']=='not_recovered_in_checked_public_entries' and trace['tree_truncated'] is False and len(trace['limitations'])==4 and all(q['total_count']==q['items_returned']==1 and q['issue_numbers']==[9126] and q['incomplete_results'] is False for q in trace['issue_queries']) and trace['issue_9126_body_unchanged_from_prior_archive'])
-ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==478 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
+ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==479 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
 contract=read(ROOT/'templates/selection_contract.json')
 ok('Confirmation contract cannot retroactively assert prior registration',contract['status']=='planned_not_executed' and contract['prior_search_results_already_seen'] is True and contract['contract_frozen_utc'] is None and contract['results'] is None and contract['independent_confirmation']['used_during_search'] is None)
 embedded=json.loads(soup.select_one('#decision-data').text)
@@ -844,7 +844,7 @@ for n in [9832,9833]:
     ok('V56 unmerged PR and complete file connection '+str(n),not pr['merged'] and pr['state']=='open' and pr['changed_files']==len(fs))
 ec=read(A/'engineering_current_v56.json')
 ok('V56 primary issue bodies and comment IDs unchanged',len(ec['comparisons'])==3 and all(not x['body_changed'] and not x['added'] and not x['removed'] and not x['changed'] for x in ec['comparisons']))
-ok('V56/V57 historical tables plus V77 state refresh retained',len(soup.select('#recent-moe-guide table'))==4)
+ok('V56/V57 historical tables plus V77 state refresh retained',len(soup.select('#recent-moe-guide table'))==5)
 report['highlights']=[x.replace('444 source archive checksums valid','455 source archive checksums valid') for x in report['highlights']]
 report['highlights']+=['V56 three full issue refreshes unchanged and two unmerged MoE PR audits; seven patch-statement CPU/source controls, no GPU MoE or production deployment verification']
 ps=read(A/'moe_proposal_source_audit.json')
@@ -877,7 +877,7 @@ cf=cu['fixture'];co=cu['optimizer_control']
 ok('V60 rounding without underflow retained',all(x>0 for x in cf['rounded_weighted_cotangents'][0]) and sum(a!=b for a,b in zip(cf['dS_reference'][0],cf['dS_candidate'][0]))==1)
 ok('V60 selected gradient coupling retained',all(x==0 for x in cf['router_gradient_reference'][0]) and all(x!=0 for x in cf['router_gradient_candidate'][0][:2]) and cf['router_gradient_candidate'][0][2]==0)
 ok('V60 state-sensitive updates and diagnostic schedule retained',co['fresh_update_difference_norm']>1e-4 and co['warm_update_difference_norm']<1e-6 and co['actual_live_lr_schedule'] is None and co['leaf_key_paths_stub'])
-ok('V60 coupling figure embedded',len(soup.select('#recent-moe-guide svg'))==3)
+ok('V60 coupling and V78 portable figures embedded',len(soup.select('#recent-moe-guide svg'))==4)
 report['highlights']+=['V60 ten synthetic integration CPU controls, coupling and fresh/warm update figure; constant experts, path/reshard stubs, no full Hero execution or loss attribution']
 mi=read(A/'mix_event_identifiability.json')
 ok('V61 design audit source binding and causal unknowns',mi['checks_passed']==len(mi['checks'])==9 and mi['actual_independent_mix_effect'] is None and mi['actual_independent_execution_effect'] is None and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in mi['source_sha256'].items()))
@@ -1002,6 +1002,14 @@ ok('V77 closed umbrella remains unmerged and split proposals open',ev['pulls'][0
 ok('V77 two computational AST comparisons and portable residual correction',len(ev['ast_comparisons'])==2 and all(x['computational_ast_equal'] for x in ev['ast_comparisons']) and 'V77' in soup.select_one('#recent-moe-guide').get_text() and ev['actual_GPU_test'] is None)
 report['highlights']=[x.replace('462 source archive checksums valid','478 source archive checksums valid') for x in report['highlights']]
 report['highlights']+=['V77 sixteen new public acquisitions and twelve checks; new NoExecute retry report, unmerged closure, doc-only computational AST comparison and portable residual scope correction; no production logs, GPU or deployment proof']
+pe=read(A/'portable_expert_mlp_cpu.json');pa=read(A/'portable_ep_acquisition.json')
+ok('V78 original portable CPU controls bound to fixed sources',pe['checks_passed']==len(pe['checks'])==14 and pe['actual_GPU_execution'] is None and pe['actual_transport_poison_test'] is None and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in pe['source_sha256'].items()))
+pc=pe['numeric_coverage'];po=pe['observations']
+ok('V78 inactive row-dot versus finite ordinary and selected gradients',pc['row_dot']=={'elements':10,'finite':7,'nonfinite':3} and all(pc[k]['nonfinite']==0 for k in ['dx','dw13','dw2','selected_weight_gradient']) and po['edge_cases'][1]['ordinary_gradient_norms']==[0,0,0])
+ok('V78 saved-output branch and figure retained',po['mutated_saved_output_control']['ordinary_gradients_equal'] and po['mutated_saved_output_control']['row_dot_before']!=po['mutated_saved_output_control']['row_dot_after'] and po['mutated_saved_output_control']['actual_corruption_event'] is None and soup.select_one('#recent-moe-guide #portableep-figure_1') is not None)
+ok('V78 one acquisition and old bytes preserved except bookkeeping',len(pa['records'])==1 and pa['prior_bytes_preserved']==477 and all(hashlib.sha256((S/x['file']).read_bytes()).hexdigest()==x['sha256'] for x in pa['prior_integrity_manifest']['files'] if x['file']!='source_manifest.json'))
+report['highlights']=[x.replace('478 source archive checksums valid','479 source archive checksums valid') for x in report['highlights']]
+report['highlights']+=['V78 fourteen original portable expert/CPU ragged wrapper checks and measured finite-element figure; dense gradient reference, allowed inactive row-dot and saved-output control, no GPU/transport/production proof']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

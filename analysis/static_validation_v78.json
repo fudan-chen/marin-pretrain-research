@@ -1,0 +1,16 @@
+{
+  "version": "V78",
+  "checks_passed": 8,
+  "checks": [
+    "index.html unique ids",
+    "index.html V78 original CPU figure and scope",
+    "report_standalone.html unique ids",
+    "report_standalone.html V78 original CPU figure and scope",
+    "Historical four tables retained",
+    "Source archive exact bytes",
+    "All 477 prior non-bookkeeping source bytes unchanged",
+    "Fresh V78 global validation"
+  ],
+  "png_visually_inspected": true,
+  "actual_browser_rendering": null
+}

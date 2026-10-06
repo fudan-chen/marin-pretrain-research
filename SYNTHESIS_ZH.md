@@ -184,3 +184,6 @@ V76 原CE自动微分接入原通用累积器：有效T=1/3时head梯度方向�
 
 
 V77回到实况：新NoExecute驱逐记录，#9708关闭未合并，#9833仅注释/docstring修订但澄清portable仍保存专家输出。当前源码AST与状态证据已核对，生产节点根因、部署与GPU收益未独立验证，见[MoE提案](RECENT_MOE_CHANGES_ZH.md)。
+
+
+V78把portable残差分析接到原CPU/XLA执行：尾部NaN未污染普通梯度，但raw row-dot允许未定义；保存out破坏控制只改变row-dot支线。完整梯度合同必须覆盖caller选择和映射，详见[MoE工程分析](RECENT_MOE_CHANGES_ZH.md)。

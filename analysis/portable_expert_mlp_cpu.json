@@ -1,0 +1,160 @@
+{
+  "scope": "Original portable expert class and original ragged_dot CPU/XLA wrapper.\nSynthetic local rows/weights, independent dense grouped reference; no EP collective,\nQuACK, production input, GPU or runtime reconstruction.\n",
+  "checks_passed": 14,
+  "checks": [
+    "CPU wrapper auto chooses original XLA branch",
+    "Original forward matches independent dense grouped reference",
+    "All original ordinary gradients match dense reference",
+    "Inactive poison leaves active outputs and ordinary gradients exactly equal",
+    "Ordinary gradients remain finite despite inactive NaN",
+    "Original row dot equals independently differentiated output scale",
+    "Inactive row-dot NaN is confined to unspecified rows",
+    "Original caller selection masks inactive row-dot and recovers positive-weight gradient",
+    "Portable residual actually retains entire output array",
+    "Mutating saved active output changes only row-dot branch in this control",
+    "empty_first_expert ordinary outputs/gradients remain finite",
+    "empty_first_expert empty expert weight gradients are zero",
+    "all_inactive ordinary outputs/gradients remain finite",
+    "all_inactive empty expert weight gradients are zero"
+  ],
+  "runtime": {
+    "jax": "0.7.2",
+    "jaxlib": "0.7.2",
+    "numpy": "2.5.3"
+  },
+  "observations": {
+    "capacity": 10,
+    "hidden": 4,
+    "intermediate": 6,
+    "experts": 2,
+    "active_rows": 7,
+    "physical_group_sizes": [
+      3,
+      7
+    ],
+    "active_group_sizes": [
+      3,
+      4
+    ],
+    "row_dot_active": [
+      -0.3376770615577698,
+      -0.015161285176873207,
+      0.06483172625303268,
+      1.106618881225586,
+      -0.5297768115997314,
+      0.03801031410694122,
+      0.024563930928707123
+    ],
+    "inactive_row_dot_nonfinite": 3,
+    "recovered_weight_gradient": [
+      -1.350708246231079,
+      -0.030322570353746414,
+      0.06483172625303268,
+      0.553309440612793,
+      -0.7063691020011902,
+      0.025340208783745766,
+      0.19651144742965698,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "residual_output_shape": [
+      10,
+      4
+    ],
+    "mutated_saved_output_control": {
+      "ordinary_gradients_equal": true,
+      "row_dot_before": -0.3376770615577698,
+      "row_dot_after": -2.4502906799316406,
+      "actual_corruption_event": null
+    },
+    "ordinary_gradient_norms": [
+      1.8210430145263672,
+      5.577393054962158,
+      5.3941569328308105
+    ],
+    "edge_cases": [
+      {
+        "case": "empty_first_expert",
+        "active_group_sizes": [
+          0,
+          7
+        ],
+        "physical_group_sizes": [
+          0,
+          10
+        ],
+        "ordinary_gradient_norms": [
+          1.8056385517120361,
+          4.981418609619141,
+          5.150996685028076
+        ],
+        "inactive_row_dot_nonfinite": 3
+      },
+      {
+        "case": "all_inactive",
+        "active_group_sizes": [
+          0,
+          0
+        ],
+        "physical_group_sizes": [
+          0,
+          10
+        ],
+        "ordinary_gradient_norms": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "inactive_row_dot_nonfinite": 10
+      }
+    ]
+  },
+  "executed_original": [
+    "portable _apply/forward/backward class",
+    "CPU auto selector/run_impl/XLA ragged_dot_general",
+    "512-row padding and output slice",
+    "caller accepted/nonzero weight division and selection"
+  ],
+  "explicit_substitutions": [
+    "AST load skips unrelated imports and GPU/TPU definitions; no Haliax installation",
+    "fixed synthetic FP32 local fixtures and independent dense reference",
+    "caller receiver-to-assignment mapping identity; no all-to-all or routing planner",
+    "_has_pallas_triton=False on CPU; no environment override"
+  ],
+  "actual_GPU_execution": null,
+  "actual_Hero_input": null,
+  "actual_transport_poison_test": null,
+  "actual_memory_saved": null,
+  "source_sha256": {
+    "sources/engineering_v77_2026_10_07/current_ep_ragged_all_to_all.py": "aa8331d5d7f4d18c4aef2f401271411539ad637c4e458b3f6a33585d2d3ae9cf",
+    "sources/portable_ep_2026_10_07/ragged_dot.py": "c12a1370bf77f3b775358b20e8900b255af80cfd7bbfe0777a8ee046ddf8ec28"
+  },
+  "numeric_coverage": {
+    "dx": {
+      "elements": 40,
+      "finite": 40,
+      "nonfinite": 0
+    },
+    "dw13": {
+      "elements": 96,
+      "finite": 96,
+      "nonfinite": 0
+    },
+    "dw2": {
+      "elements": 48,
+      "finite": 48,
+      "nonfinite": 0
+    },
+    "row_dot": {
+      "elements": 10,
+      "finite": 7,
+      "nonfinite": 3
+    },
+    "selected_weight_gradient": {
+      "elements": 10,
+      "finite": 10,
+      "nonfinite": 0
+    }
+  }
+}

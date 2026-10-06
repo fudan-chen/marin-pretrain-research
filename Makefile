@@ -214,3 +214,8 @@ microbatch-loss-cpu:
 .PHONY: engineering-audit-v77
 engineering-audit-v77:
 	$(PYTHON) scripts/audit_engineering_v77.py
+
+.PHONY: portable-expert-cpu
+portable-expert-cpu:
+	$(CPU_PYTHON) scripts/probe_portable_expert_mlp_cpu.py
+	$(PYTHON) scripts/plot_portable_expert_mlp.py

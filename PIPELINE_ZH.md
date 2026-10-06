@@ -197,3 +197,6 @@ V76 拆批验收：确认真实调用路径 → 记录各块/整步有效质量 
 
 
 V77 工程复核管线：完整评论与PR元数据/分页 → 新旧head固定源码差异 → backend残差和通信合同 → 节点/Pod事件与首次rank退出 → 恢复state/数据时钟 → 独立稳定性与质量确认。说明修订、合并状态和生产恢复分别验收。
+
+
+V78 portable专家验收：固定backend/activation/dtype与尾部布局 → dense分组前向/普通梯度参考 → inactive NaN → 输出scale导数/row-dot → saved-out与重算一致性 → caller accepted/索引合同 → 真正collective/recompute/GPU。保留未定义行允许范围。

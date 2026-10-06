@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-06T21:24:15.280925+00:00",
+  "integrity_manifest_created_utc": "2026-10-06T21:30:40.456550+00:00",
   "files": [
     {
       "file": "accumulation_2026_10_07/grad_accum.py",
@@ -1463,6 +1463,13 @@
       "retrieved_utc": "2026-10-03T21:34:45.257818+00:00"
     },
     {
+      "file": "portable_ep_2026_10_07/ragged_dot.py",
+      "bytes": 16781,
+      "sha256": "c12a1370bf77f3b775358b20e8900b255af80cfd7bbfe0777a8ee046ddf8ec28",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/lib/haliax/src/haliax/nn/ragged_dot.py",
+      "retrieved_utc": "2026-10-06T21:29:22.141340+00:00"
+    },
+    {
       "file": "practical_2026_10_04/config_h100-d512-mix-baseline-seed0-from10pct-20260826-rno2a.json",
       "bytes": 124785,
       "sha256": "773f421ac03e28f6ebf9306cb85d2f04afb2dabadd96b02500b01e48f449cfa7",
@@ -2787,8 +2794,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 217759,
-      "sha256": "df13cef9a777d7bf3cca2ad4a8216342b53ae072b4f554431aa2d18c86982893",
+      "bytes": 218264,
+      "sha256": "c7f069dece4b42753c384afb39fe3240c26f4c59d5be5cfe73ad71f33e9171d2",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

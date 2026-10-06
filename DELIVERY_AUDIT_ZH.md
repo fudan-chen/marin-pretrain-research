@@ -80,3 +80,8 @@ V52新增原异步loader host控制11项，人工store/layout/结果适配边界
 ## V77：实际工程状态刷新与表述修正
 
 16份新来源、12项离线审计；三issue完整评论，新增第59条运行记录；PR状态及新旧head完整源码，portable残差保存泛化已修正。旧461份非bookkeeping来源保持，当前来源478份。无生产控制面、GPU或部署验证。
+
+
+## V78：原portable专家与原CPU包装
+
+14项检查，原_apply/forward/backward、原XLA ragged包装/512行补齐与caller选择；dense分组参考、inactive poison、空专家与保存out破坏控制。新增实测图。1新来源，旧477份非bookkeeping保持，479来源。无GPU、真实通信或生产输入验证。

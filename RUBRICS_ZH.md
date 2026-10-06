@@ -382,3 +382,6 @@ V76 累积规则：整步T>0不保证局部mean梯度安全。先记录各块T�
 
 
 V77 工程证据规则：closed≠merged，head变化≠计算变化，共同模式名≠共同backend残差/内存收益。NoExecute驱逐与打taint的节点根因分开；公开triage恢复报告不代填原始控制面、checkpoint或重放成本。
+
+
+V78 专家接口规则：有效行与未定义尾部分别验收。普通梯度有限不证明row-dot或routing-weight梯度一致；saved-out与重算支线分别核对。局部caller选择通过不证明transport索引映射；CPU包装通过不证明GPU未写buffer安全。

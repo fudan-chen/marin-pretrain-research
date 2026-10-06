@@ -1,6 +1,8 @@
 # Marin 535B 预训练研究
 
-当前版本为V44。[打包字段核查](PACKING_FIELDS_ZH.md)复现同shape但逐文档token/权重坐标不同的人工反例；223个Hero声明component仍走文本连续流，不能据此认定当前事故。[目标坐标核查](EVAL_TARGET_ALIGNMENT_ZH.md)新增可选下一token约束，拒绝有效评分ID错位与窗口末位绕回计分，空白manifest默认启用。[评估格式核查](EVAL_FORMAT_ZH.md)说明文本pack=False为何仍是连续token流，以及窗口切分、余数和论文评分格式的区别。[评估数组导出](EVAL_ARRAY_EXPORT_ZH.md)补齐离线数组→逐批记录→对照工具；真实GPU采集与Hero记录仍缺。先读[结论与操作指南](SYNTHESIS_ZH.md)：把工程故障、有效曝光、评估变化和配比实验接成一条工作路线，再按问题进入专题。最新数值见[10月6日观察](LIVE_2026_10_06_ZH.md)，约9.75T/4K；[重复评分工具](EVAL_REPLAY_ZH.md)已可运行，真实Hero逐批记录仍缺。
+当前版本V45。先读[结论与操作指南](SYNTHESIS_ZH.md)，再按问题进入工程案例、数据配比和可执行检查工具。最新训练数值来自[10月6日独立快照](LIVE_2026_10_06_ZH.md)，约9.75T/4K；它不等于当前实时进度。
+
+本轮新增[重复曝光账本](REPEAT_EXPOSURE_ZH.md)：区分窗口内覆盖与历史新增覆盖，库存或游标未知时保留空值。近几轮补齐[评分目标对齐](EVAL_TARGET_ALIGNMENT_ZH.md)、[打包字段坐标](PACKING_FIELDS_ZH.md)和[评估格式](EVAL_FORMAT_ZH.md)。原方法/人工数据检查已有结果，真实Hero缓存、逐批数组与GPU重评仍缺，不能据这些工具判定配比收益或事故根因。
 
 V26对V25的micro/macro命名错误已[明确更正](EVAL_METRICS_ZH.md)。
 

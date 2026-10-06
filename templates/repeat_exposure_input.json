@@ -1,0 +1,11 @@
+{
+  "index_policy": "fixed_order_modulo_restart",
+  "components": [
+    {
+      "name": "fill_actual_component_name",
+      "inventory_sequences": null,
+      "draws": null,
+      "start_sequence_index": null
+    }
+  ]
+}

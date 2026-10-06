@@ -1,0 +1,70 @@
+{
+  "checks_passed": 22,
+  "checks": [
+    "Independent enumeration n=3 draws=0 cursor=0",
+    "Extra intervals exactly represent count excess (3, 0, 0)",
+    "Independent enumeration n=3 draws=2 cursor=0",
+    "Extra intervals exactly represent count excess (3, 2, 0)",
+    "Independent enumeration n=3 draws=8 cursor=0",
+    "Extra intervals exactly represent count excess (3, 8, 0)",
+    "Independent enumeration n=3 draws=2 cursor=3",
+    "Extra intervals exactly represent count excess (3, 2, 3)",
+    "Independent enumeration n=5 draws=8 cursor=4",
+    "Extra intervals exactly represent count excess (5, 8, 4)",
+    "Independent enumeration n=1 draws=4 cursor=9",
+    "Extra intervals exactly represent count excess (1, 4, 9)",
+    "Unknown inventory stays unknown",
+    "Unknown cursor does not invent lifetime coverage",
+    "Reject invalid integer declaration (0, 1, 0)",
+    "Reject invalid integer declaration (3, -1, 0)",
+    "Reject invalid integer declaration (3, 1, True)",
+    "Original restart helper remaps repeated ordinal indices",
+    "Original full-shuffle cache repeats the same supplied permutation",
+    "Hero snapshot declares restart and block shuffle rather than full shuffle",
+    "Actual CLI writes a bounded projection with input digest",
+    "Actual CLI refuses overwrite"
+  ],
+  "synthetic_after_one_cycle": {
+    "name": "A",
+    "inventory_sequences": 3,
+    "draws": 2,
+    "start_sequence_index": 3,
+    "status": "declared_projection_only",
+    "window_distinct_sequence_indices": 2,
+    "window_repeat_draws": 0,
+    "new_sequence_indices_since_lifetime_start": 0,
+    "repeat_draws_against_lifetime_history": 2,
+    "extra_draw_index_intervals": [
+      {
+        "start": 0,
+        "stop": 2
+      }
+    ],
+    "full_cycles_in_window": 0,
+    "extra_draws": 2,
+    "min_draws_per_inventory_index": 0,
+    "max_draws_per_inventory_index": 1,
+    "next_sequence_index": 5,
+    "next_modulo_index": 2
+  },
+  "synthetic_order": [
+    2,
+    0,
+    1,
+    2,
+    0,
+    1,
+    2,
+    0
+  ],
+  "source_sha256": {
+    "sources/deepening_2026_10_04/mixture_production.py": "67e97941a79753b2e5865f7f41c7762436a428599ecd1a60d643aa891a817685",
+    "sources/deepening_2026_10_04/dataset_production.py": "563ffddbf46ea665d00c71f92614dadd6d13478c91b9753b00dbbf21f88288a5",
+    "sources/live_2026_10_06/meta.json": "4b709c0b6440366aec7fa4ec65e6ff4b9881c3e2201082ffef036ca40547d80a"
+  },
+  "actual_Hero_inventory": null,
+  "actual_Hero_cursor": null,
+  "actual_JAX_permutation": null,
+  "actual_block_shuffle_replay": null,
+  "actual_training_benefit": null
+}

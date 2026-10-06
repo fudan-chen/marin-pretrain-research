@@ -746,6 +746,13 @@ ok('V44 artificial N T and actual declared applicability stay separate',pp['synt
 ok('V44 packing chapter has three evidence tables',len(soup.select('#packing-fields-guide table'))==3)
 report['highlights']=[x.replace('438 source archive checksums valid','439 source archive checksums valid') for x in report['highlights']]
 report['highlights']+=['V44 synthetic parallel packing boundaries, clipping/drop/cap and weight-mask checks; declared Hero 223 text non-packing components; no TensorStore/GPU/Hero mismatch claim']
+rexp=read(A/'repeat_exposure_validation.json')
+ok('V45 repeat exposure checks retain twenty-two bounded tests',rexp['checks_passed']==len(rexp['checks'])==22 and rexp['actual_Hero_inventory'] is None and rexp['actual_Hero_cursor'] is None and rexp['actual_block_shuffle_replay'] is None and rexp['actual_training_benefit'] is None)
+ok('V45 repeat helper source identities match',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in rexp['source_sha256'].items()))
+ok('V45 new within-window indices may all be historically repeated',rexp['synthetic_after_one_cycle']['window_repeat_draws']==0 and rexp['synthetic_after_one_cycle']['new_sequence_indices_since_lifetime_start']==0 and rexp['synthetic_after_one_cycle']['repeat_draws_against_lifetime_history']==2)
+ok('V45 artificial full permutation does not stand for actual block shuffle',rexp['synthetic_order']==[2,0,1,2,0,1,2,0] and rexp['actual_JAX_permutation'] is None)
+ok('V45 repeat chapter retains two decision tables',len(soup.select('#repeat-exposure-guide table'))==2)
+report['highlights']+=['V45 finite fixed-order repeat exposure projection; window versus lifetime index coverage; original helper and synthetic permutation, no actual Hero inventory/cursor/block shuffle or training benefit']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

@@ -19,6 +19,7 @@ report:
 	$(PYTHON) scripts/probe_qb_partition.py
 	$(PYTHON) scripts/probe_optimizer.py
 	$(PYTHON) scripts/probe_eval_format.py
+	$(PYTHON) scripts/test_repeat_exposure.py
 	$(PYTHON) scripts/probe_parallel_packing.py
 	$(PYTHON) scripts/test_eval_target_alignment.py
 	$(PYTHON) scripts/test_eval_array_export.py

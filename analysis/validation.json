@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1352,
+  "checks_passed": 1358,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -92,7 +92,8 @@
     "V41 offline supplied-global-array export / canonical typed v2 input digest / computed byte table / CPU synthetic tests; no actual forward, rank gathering or Hero data",
     "V42 original continuous stream / format / tail checks on synthetic CPU cache; public pinned Paloma card and final paper; anonymous ledger 403; no actual Hero tail or PTB cause claim",
     "V43 optional supplied-active-next-token coordinate contract and original default-window coverage checks; generic mode explicitly unverified; no actual model loss alignment, GPU forward or Hero data",
-    "V44 synthetic parallel packing boundaries, clipping/drop/cap and weight-mask checks; declared Hero 223 text non-packing components; no TensorStore/GPU/Hero mismatch claim"
+    "V44 synthetic parallel packing boundaries, clipping/drop/cap and weight-mask checks; declared Hero 223 text non-packing components; no TensorStore/GPU/Hero mismatch claim",
+    "V45 finite fixed-order repeat exposure projection; window versus lifetime index coverage; original helper and synthetic permutation, no actual Hero inventory/cursor/block shuffle or training benefit"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

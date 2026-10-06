@@ -1,0 +1,129 @@
+{
+  "scope": "Original component dataclasses, config guards/build methods and mixture/concat classes.\nCache-to-dataset adapter returns finite identity children; no actual IO/tokenization.\n",
+  "checks_passed": 15,
+  "checks": [
+    "Active ordinary train child missing cache raises",
+    "Ordinary missing validation cache omitted",
+    "Future-active child included in initial train cache inventory",
+    "Future-active child missing cache fails before phase switch",
+    "Permanently zero-weight train child omitted",
+    "Direct missing train split rejected",
+    "Direct missing validation split omitted",
+    "Concat missing train child rejected",
+    "Validation concat retains only available children",
+    "Original concat reads shortened actual identity panel",
+    "Original config accepts empty concat and builder omits it",
+    "Empty concat has no cache items",
+    "Valid config empty concat reaches shifted all-A quota",
+    "Original mixture reads only surviving child after construction",
+    "Archived components have no declared concat shapes"
+  ],
+  "runtime": "3.12.13",
+  "cases": {
+    "ordinary_train_missing": {
+      "error": "ValueError",
+      "message": "No cache available for component B in train split"
+    },
+    "ordinary_validation_names": [
+      "A"
+    ],
+    "partial_concat_identity": [
+      "x:0",
+      "x:1",
+      "x:2"
+    ],
+    "full_concat_identity": [
+      "x:0",
+      "x:1",
+      "x:2",
+      "y:0",
+      "y:1",
+      "y:2"
+    ],
+    "empty_concat_declared_weights": {
+      "A": 0.4,
+      "B": 0.6
+    },
+    "empty_concat_actual_names": [
+      "A"
+    ],
+    "empty_concat_integer_quota": [
+      10
+    ],
+    "empty_concat_identity": [
+      "cacheA:1",
+      "cacheA:2",
+      "cacheA:1",
+      "cacheA:1",
+      "cacheA:0",
+      "cacheA:0",
+      "cacheA:2",
+      "cacheA:0",
+      "cacheA:0",
+      "cacheA:2"
+    ],
+    "adapter_calls": [
+      {
+        "cache": "cacheA",
+        "eos_id": 99,
+        "attention": true
+      },
+      {
+        "cache": "cacheA",
+        "eos_id": 99,
+        "attention": true
+      },
+      {
+        "cache": "cacheA",
+        "eos_id": 99,
+        "attention": true
+      },
+      {
+        "cache": "cacheA",
+        "eos_id": 99,
+        "attention": true
+      },
+      {
+        "cache": "x",
+        "eos_id": 99,
+        "attention": true
+      },
+      {
+        "cache": "x",
+        "eos_id": 99,
+        "attention": true
+      },
+      {
+        "cache": "x",
+        "eos_id": 99,
+        "attention": true
+      },
+      {
+        "cache": "y",
+        "eos_id": 99,
+        "attention": true
+      },
+      {
+        "cache": "cacheA",
+        "eos_id": 99,
+        "attention": true
+      }
+    ]
+  },
+  "archived_components": {
+    "count": 223,
+    "concat_shapes": []
+  },
+  "source_sha256": {
+    "sources/boundaries_2026_10_05/datasets.py": "4fd44ff53067beb7a2ac05cc4d41f0dda18012691751a85e7c5eb65c4849823b",
+    "sources/integer_exposure_2026_10_07/mixture.py": "67e97941a79753b2e5865f7f41c7762436a428599ecd1a60d643aa891a817685",
+    "sources/live_2026_10_07/meta.json": "21998ecad691e7e66d3680f173bfe9b94c35b9481f28eff4794a23b0c9831487",
+    "scripts/probe_mixture_support_cpu.py": "55bb444594d8935a510dbbfe0cc5f46867b54968c4978e56d1f90431648f9afa",
+    "scripts/probe_mixture_identity_cpu.py": "9537f8a87ed09c702fc696c351f496eba84297ad53bcafd3c398729732f2d9c5"
+  },
+  "adapters": "Base registry and format-default placeholder; dataset_for_component returns finite identity stores. Original component dataclass fields, guard/build bodies, concat/mixture class bodies executed.",
+  "actual_Hero_missing_cache": null,
+  "actual_Hero_empty_concat": null,
+  "actual_token_stream": null,
+  "actual_model_loss": null
+}

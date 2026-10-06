@@ -1,0 +1,32 @@
+{
+  "version": "V91",
+  "created_utc": "2026-10-06T23:00:56.191643+00:00",
+  "goal_status": "active",
+  "scope": "Original component/config/build/concat/mixture methods with explicit IO and identity adapters",
+  "checks_passed": 1569,
+  "local_cpu_checks": 15,
+  "static_checks": 7,
+  "source_files": 498,
+  "new_source_files": 0,
+  "actual_Hero_empty_concat": null,
+  "actual_Hero_missing_cache": null,
+  "actual_token_stream": null,
+  "actual_model_loss": null,
+  "actual_browser_rendering": null,
+  "artifact_sha256": {
+    "README.md": "edcddb60dd18a19027b187fda03f0258a001281dbf3135841e38c04bf5563dd1",
+    "DELIVERY_AUDIT_ZH.md": "502752912c7e5e757e6cc0fc32785399491b88fcf387299b25335b234e98333d",
+    "IMPROVEMENT_LOG_ZH.md": "b2b47c634fded2ccbda87a6aee63ccfe97718c4ab10f5c5c7b5ea1bb031dc0cf",
+    "MIXTURE_IDENTITY_ZH.md": "2baaf6e8d523c1e478c7146456a02c02ce93dbf3a4f970122034319addf7817a",
+    "PIPELINE_ZH.md": "36d88e88f8c3014d9da5f974c511303b20709236950d6b95f96edfa337283364",
+    "RUBRICS_ZH.md": "1e2b152125b87937f775290bd5a9f42f208e68b22f5e5aca6eff2cc0256190f2",
+    "SYNTHESIS_ZH.md": "b5e11d16fc04ba4227f249749e356d306291fc1cbe8c3e283e186db2513d7e4d",
+    "analysis/validation.json": "4c29b4f80f5b93003f78156f02c5d1ff4bba4f1de3de1c5944ccddd3ad2367a4",
+    "index.html": "bc8150180f2bec53070450b5c51c3a04a3795a37a9988dbbb9ed8df626ed870d",
+    "report_standalone.html": "aea0f92dc0262148d001ddf94f618918a891e52171ea271a328d95bb68d0db32",
+    "scripts/validate.py": "847de2d13f1584986e757b8fadee9fed1733c3077591e55a77b0452175026461",
+    "scripts/probe_component_construction_cpu.py": "2bea304c00ad0a21a5abd5d5c46a15f2d0b5e63ea6e358d2389d80ffd3571657",
+    "analysis/component_construction_cpu.json": "509489e5aa0a8df7f819ede1b09ba3f027901fe4f03ff1f756c0fb62c23a8548",
+    "analysis/static_validation_v91.json": "7cbd2f0f54493991d8f2516f594795e26a2f2d32c9ecbf40faf59fd5a64e96b8"
+  }
+}

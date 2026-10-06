@@ -118,3 +118,34 @@ V53已经验证顺序、库存与key怎样改变身份。这次转向入口边�
 把这条规则接入训练管线，可以保留四份清单：①声明components；②每阶段正权重支持；③构造后的实际子数据集及有序ID；④实际读取的身份摘要。前两份一致只是配置验收，第三份核对能发现构造层的差异，第四份才能接近执行证据。配额数和token内容还须分别核对。恢复训练时使用相同清单和映射版本，不能只比较seed与百分比。
 
 [25项原类/入口CPU检查](analysis/mixture_support_cpu.json)保存实际人工读取流、错误类型、九组归档支持对照和依赖SHA。[可复现脚本](scripts/probe_mixture_support_cpu.py)：`CPU_PYTHON scripts/probe_mixture_support_cpu.py`，其中CPU_PYTHON替换为安装了[CPU依赖](requirements-cpu-numerics.txt)的Python路径。完整入口构造、真实缓存可用性、生产执行和loss因果验证仍未完成。
+
+
+## V91：实际子域构造会报错、跳过，还是改变评估内容
+
+V90要求核对实际子域，但普通缓存缺失是否真的会静默改训练配比？这次继续执行同版本 `LmDataConfig` 的 `_cache_items`、`_has_nonzero_weight`、`build_token_datasets`、`__post_init__` 原方法，以及原组件dataclass字段、原ConcatDataset和MixtureDataset类体。缓存到序列的 `dataset_for_component` 用有限人工identity store替代；格式默认值和组件注册基类用最小占位。没有执行build_caches的网络读取、分词、packing或完整配置解析。[同版本绑定](analysis/mixture_support_source_binding.json) · [数据构造源码](https://github.com/marin-community/marin/blob/b65be4c9550c5097f0a3add08933531a1c24d534/lib/levanter/src/levanter/data/text/datasets.py)
+
+**普通训练缓存缺失已有拒绝路径。** 不能把V90的底层缺桶反例直接描述成“训练缓存少一个就会重配权重”。实际构造方法对活跃普通桶、非空concat的缺失训练子桶、缺train split的direct组件都报错；阶段权重取所有阶段的正支持并集，未来才活跃的桶也在最初构造时检查。永久零权重训练桶则跳过，是预期的过滤条件。
+
+|原方法控制|实际执行结果|需要保存的合同|
+|---|---|---|
+|A/B正权重，普通B缺训练缓存|ValueError定位B|训练缺失应拒绝，别绕过已有保护|
+|B当前零权重、后续阶段正权重，B缺训练缓存|cache items含A/B，构造仍拒绝B|验收全部阶段的正支持并集|
+|B所有阶段均零权重，B缺训练缓存|训练构造只保留A|不要把合法非活跃域当成缺失活跃域|
+|direct组件没有train split|训练ValueError；缺validation split时warning并省略|训练与验证的容错政策不同|
+|concat有x/y两个子桶，只提供x训练缓存|训练ValueError定位A/y|非空concat已有逐子桶检查|
+|同一concat只提供x验证缓存|验证长度3；两子桶齐全时长度6|顶层桶名未变，桶内部评估内容已改变|
+|普通验证桶B缺缓存|验证返回A，省略B|仅核对总loss字段存在不能确认评估域集合|
+|配置B为正权重空concat，A为普通缓存桶|原配置接受；cache items与实际子域均只有A|空children绕过逐子桶检查，仍需构造后支持验收|
+|上述A/B权重0.4/0.6，block=10，接原MixtureDataset|整数配额变成A=10，实际10条全读A|声明合法也可能改变实际配比；仅人工空concat反例|
+
+空concat的路径有明确原因：组件只声明 `children: dict`，原dataclass没有非空约束；配置检查只看顶层权重名是否属于components。构造时遍历空children没有机会触发“缺缓存”错误；`if child_datasets`为假，顶层B也不进入返回字典。随后底层采样器仍按A/B的完整权重归一化，A先得4条，再接收剩余6条。本轮接通这几段原方法并读取人工身份，因此比V90的直接底层调用更接近正常构造路径；但仍不是完整入口运行，更不是生产事故记录。
+
+**10月7日元数据声明223个组件，没有children字段或concat类型形状。** 因而目前没有证据把空concat控制用于解释Hero训练曲线。元数据形状检查也不证明生产对象类型、缓存完整性或实际token内容。它只用于限制反例的适用范围，避免以一个可触发的小样本边界概括整个运行。
+
+验证集的省略政策值得单独验收：训练数据可以按阶段有意过滤，评估基准则必须有稳定身份。顶层A仍存在，并不保证concat内部x/y仍齐全。应同时保存顶层评估域清单、每域子桶清单、每子桶序列/有效目标数和内容摘要。这里原concat实际返回了不同长度和人工身份，尚未运行模型；不能称为真实评估分数偏差。
+
+一个解释风险的算术例子：若两个固定评估域的loss为0.5和1.1，等权macro为0.8；后一个域缺失且聚合仅剩第一个域，macro变0.5，模型没有任何更新。这些数字是假设值，只解释为什么“loss有限且更低”不能替代面板身份验收。真实micro还依赖各域有效分母，不能直接沿用这个等权平均。[真实评估聚合口径](EVAL_METRICS_ZH.md)
+
+可操作规则有三条。第一，按全部阶段的正权重并集核对构造后子域，concat还需非空children和每个活跃子缓存的可用性；不要只检查当前阶段。第二，训练和验证分别记录省略/拒绝政策，验证缺失可以在探索模式容忍，但需要显式标记不可与完整面板作同口径比较。第三，顶层名称相同仍需核对concat的子集合与分母。若决定修复空concat，可在配置构造处拒绝并在实际子域构造后再次检查支持差集；这属于建议，本轮没有修改上游。
+
+[15项原方法与真实CPU控制](analysis/component_construction_cpu.json)记录错误、人工concat身份、有效配置的空concat链和归档形状。[脚本](scripts/probe_component_construction_cpu.py)使用已有CPU依赖，执行方式同V90。它没有执行build_caches并发/分布式构建、存储读取、真实模型评估或生产修复。新增检查的意义是分清实际保护与遗漏条件，而不是以检查数声称训练已验证。

@@ -200,3 +200,6 @@ V77 工程复核管线：完整评论与PR元数据/分页 → 新旧head固定�
 
 
 V78 portable专家验收：固定backend/activation/dtype与尾部布局 → dense分组前向/普通梯度参考 → inactive NaN → 输出scale导数/row-dot → saved-out与重算一致性 → caller accepted/索引合同 → 真正collective/recompute/GPU。保留未定义行允许范围。
+
+
+V79 接受路径管线：实际需求/容量 → 原prefix裁剪 → dispatch起点/size与receiver压实 → active/physical尾部合同 → return镜像/身份 → 来源分组接受率 → 固定评估。host元数据重放是前置检查，不替代真实collective或GPU验证。

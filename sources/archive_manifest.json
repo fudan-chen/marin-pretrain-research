@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-06T21:30:40.456550+00:00",
+  "integrity_manifest_created_utc": "2026-10-06T21:38:28.116825+00:00",
   "files": [
     {
       "file": "accumulation_2026_10_07/grad_accum.py",
@@ -2590,6 +2590,13 @@
       "retrieved_utc": "2026-10-05T09:56:37.865606+00:00"
     },
     {
+      "file": "receiver_layout_2026_10_07/ep_common.py",
+      "bytes": 7629,
+      "sha256": "c9d6511f1cd5d69be168a701dc92742ccc26f09d69bbb144fc53d1c9ea934bbd",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/lib/levanter/src/levanter/grug/_moe/ep_common.py",
+      "retrieved_utc": "2026-10-06T21:38:27.835978+00:00"
+    },
+    {
       "file": "router_precision_2026_10_05/launch_diagnostics.py",
       "bytes": 23757,
       "sha256": "bd223c9c3c8de1e1d693aa4b680f115edefcff2d03d7cc7fb3df922fa0a81270",
@@ -2794,8 +2801,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 218264,
-      "sha256": "c7f069dece4b42753c384afb39fe3240c26f4c59d5be5cfe73ad71f33e9171d2",
+      "bytes": 218705,
+      "sha256": "e9f742df6728b50c03ee0a8b1a3bbaa2c9120f934d3a620c23b39289a985245e",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

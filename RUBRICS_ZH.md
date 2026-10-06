@@ -385,3 +385,6 @@ V77 工程证据规则：closed≠merged，head变化≠计算变化，共同模
 
 
 V78 专家接口规则：有效行与未定义尾部分别验收。普通梯度有限不证明row-dot或routing-weight梯度一致；saved-out与重算支线分别核对。局部caller选择通过不证明transport索引映射；CPU包装通过不证明GPU未写buffer安全。
+
+
+V79 布局/容量规则：sender未裁剪起点与接受前缀长度分别保存；receiver压实和最后expert尾部padding须对应portable前缀mask。核对return镜像与真实身份。总drop相同不证明接受身份相同；expert/chunk重排可改变前缀优先政策，实际域偏置须绑定样本证据。

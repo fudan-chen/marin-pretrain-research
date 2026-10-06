@@ -1,0 +1,1364 @@
+{
+  "scope": "Original JAX clipping/chunk-plan/A2A parameter helpers with host transfer replay.\nSynthetic identity rows; no actual collective, GPU, routing planner or model forward.\n",
+  "checks_passed": 10,
+  "checks": [
+    "low_capacity original plans pack active prefix and put padding only last",
+    "low_capacity host replay roundtrips exactly accepted original identity prefixes",
+    "aggregate_room original plans pack active prefix and put padding only last",
+    "aggregate_room host replay roundtrips exactly accepted original identity prefixes",
+    "expert_relabeling original plans pack active prefix and put padding only last",
+    "expert_relabeling host replay roundtrips exactly accepted original identity prefixes",
+    "Earlier experts/senders bias visible at low capacity",
+    "Aggregate logical capacity equal to demand does not prevent local drops",
+    "Relabeling preserves demand/capacity/count but changes accepted identities",
+    "Relabeling changes sender acceptance without changing global count"
+  ],
+  "runtime": {
+    "jax": "0.7.2",
+    "numpy": "2.5.3"
+  },
+  "observations": {
+    "low_capacity": {
+      "logical_chunk_capacity": 3,
+      "physical_chunk_capacity": 5,
+      "demand": 32,
+      "total_logical_capacity": 12,
+      "accepted": 12,
+      "dropped": 20,
+      "accepted_by_sender": [
+        8,
+        4
+      ],
+      "accepted_by_semantic_expert": [
+        3,
+        0,
+        3,
+        0,
+        3,
+        0,
+        3,
+        0
+      ],
+      "chunks": [
+        {
+          "receiver": 0,
+          "chunk": 0,
+          "raw_demand": 10,
+          "active_group_sizes": [
+            3,
+            0
+          ],
+          "physical_group_sizes": [
+            3,
+            2
+          ],
+          "receiver_ids_active": [
+            0,
+            1,
+            2
+          ],
+          "tail_unwritten_rows": 2,
+          "dispatch_params": {
+            "input_offsets": [
+              0,
+              4,
+              5,
+              8,
+              8,
+              10,
+              14,
+              14
+            ],
+            "send_sizes": [
+              3,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              0
+            ],
+            "output_offsets": [
+              0,
+              3,
+              3,
+              3,
+              0,
+              3,
+              3,
+              3
+            ],
+            "recv_sizes": [
+              3,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "return_params": {
+            "input_offsets": [
+              0,
+              3,
+              3,
+              3,
+              3,
+              3,
+              3,
+              3
+            ],
+            "send_sizes": [
+              3,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "output_offsets": [
+              0,
+              4,
+              5,
+              8,
+              0,
+              2,
+              5,
+              5
+            ],
+            "recv_sizes": [
+              3,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "receiver": 0,
+          "chunk": 1,
+          "raw_demand": 5,
+          "active_group_sizes": [
+            3,
+            0
+          ],
+          "physical_group_sizes": [
+            3,
+            2
+          ],
+          "receiver_ids_active": [
+            200,
+            201,
+            202
+          ],
+          "tail_unwritten_rows": 2,
+          "dispatch_params": {
+            "input_offsets": [
+              0,
+              4,
+              5,
+              8,
+              8,
+              10,
+              14,
+              14
+            ],
+            "send_sizes": [
+              0,
+              0,
+              3,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "output_offsets": [
+              0,
+              0,
+              0,
+              3,
+              0,
+              0,
+              0,
+              3
+            ],
+            "recv_sizes": [
+              0,
+              0,
+              3,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "return_params": {
+            "input_offsets": [
+              0,
+              0,
+              0,
+              3,
+              0,
+              0,
+              3,
+              3
+            ],
+            "send_sizes": [
+              0,
+              0,
+              3,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "output_offsets": [
+              0,
+              4,
+              5,
+              8,
+              0,
+              2,
+              5,
+              5
+            ],
+            "recv_sizes": [
+              0,
+              0,
+              3,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "receiver": 1,
+          "chunk": 0,
+          "raw_demand": 11,
+          "active_group_sizes": [
+            3,
+            0
+          ],
+          "physical_group_sizes": [
+            3,
+            2
+          ],
+          "receiver_ids_active": [
+            400,
+            401,
+            10400
+          ],
+          "tail_unwritten_rows": 2,
+          "dispatch_params": {
+            "input_offsets": [
+              0,
+              2,
+              5,
+              5,
+              7,
+              11,
+              12,
+              15
+            ],
+            "send_sizes": [
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0
+            ],
+            "output_offsets": [
+              3,
+              3,
+              3,
+              3,
+              2,
+              3,
+              3,
+              3
+            ],
+            "recv_sizes": [
+              2,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0
+            ]
+          },
+          "return_params": {
+            "input_offsets": [
+              0,
+              3,
+              3,
+              3,
+              2,
+              3,
+              3,
+              3
+            ],
+            "send_sizes": [
+              2,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0
+            ],
+            "output_offsets": [
+              8,
+              10,
+              14,
+              14,
+              7,
+              11,
+              12,
+              15
+            ],
+            "recv_sizes": [
+              0,
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "receiver": 1,
+          "chunk": 1,
+          "raw_demand": 6,
+          "active_group_sizes": [
+            3,
+            0
+          ],
+          "physical_group_sizes": [
+            3,
+            2
+          ],
+          "receiver_ids_active": [
+            10600,
+            10601,
+            10602
+          ],
+          "tail_unwritten_rows": 2,
+          "dispatch_params": {
+            "input_offsets": [
+              0,
+              2,
+              5,
+              5,
+              7,
+              11,
+              12,
+              15
+            ],
+            "send_sizes": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              3,
+              0
+            ],
+            "output_offsets": [
+              0,
+              0,
+              3,
+              3,
+              0,
+              0,
+              0,
+              3
+            ],
+            "recv_sizes": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              3,
+              0
+            ]
+          },
+          "return_params": {
+            "input_offsets": [
+              0,
+              0,
+              0,
+              3,
+              0,
+              0,
+              0,
+              3
+            ],
+            "send_sizes": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              3,
+              0
+            ],
+            "output_offsets": [
+              8,
+              10,
+              14,
+              14,
+              7,
+              11,
+              12,
+              15
+            ],
+            "recv_sizes": [
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              3,
+              0
+            ]
+          }
+        }
+      ],
+      "accepted_identity_roundtrip": true,
+      "actual_collective": null
+    },
+    "aggregate_room": {
+      "logical_chunk_capacity": 8,
+      "physical_chunk_capacity": 10,
+      "demand": 32,
+      "total_logical_capacity": 32,
+      "accepted": 27,
+      "dropped": 5,
+      "accepted_by_sender": [
+        13,
+        14
+      ],
+      "accepted_by_semantic_expert": [
+        6,
+        2,
+        3,
+        2,
+        6,
+        2,
+        3,
+        3
+      ],
+      "chunks": [
+        {
+          "receiver": 0,
+          "chunk": 0,
+          "raw_demand": 10,
+          "active_group_sizes": [
+            6,
+            2
+          ],
+          "physical_group_sizes": [
+            6,
+            4
+          ],
+          "receiver_ids_active": [
+            0,
+            1,
+            2,
+            3,
+            10000,
+            10001,
+            100,
+            10100
+          ],
+          "tail_unwritten_rows": 2,
+          "dispatch_params": {
+            "input_offsets": [
+              0,
+              4,
+              5,
+              8,
+              8,
+              10,
+              14,
+              14
+            ],
+            "send_sizes": [
+              4,
+              1,
+              0,
+              0,
+              2,
+              2,
+              0,
+              0
+            ],
+            "output_offsets": [
+              0,
+              6,
+              8,
+              8,
+              0,
+              6,
+              8,
+              8
+            ],
+            "recv_sizes": [
+              4,
+              1,
+              0,
+              0,
+              2,
+              1,
+              0,
+              0
+            ]
+          },
+          "return_params": {
+            "input_offsets": [
+              0,
+              6,
+              8,
+              8,
+              4,
+              7,
+              8,
+              8
+            ],
+            "send_sizes": [
+              4,
+              1,
+              0,
+              0,
+              2,
+              1,
+              0,
+              0
+            ],
+            "output_offsets": [
+              0,
+              4,
+              5,
+              8,
+              0,
+              2,
+              5,
+              5
+            ],
+            "recv_sizes": [
+              4,
+              1,
+              0,
+              0,
+              2,
+              2,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "receiver": 0,
+          "chunk": 1,
+          "raw_demand": 5,
+          "active_group_sizes": [
+            3,
+            2
+          ],
+          "physical_group_sizes": [
+            3,
+            7
+          ],
+          "receiver_ids_active": [
+            200,
+            201,
+            202,
+            10300,
+            10301
+          ],
+          "tail_unwritten_rows": 5,
+          "dispatch_params": {
+            "input_offsets": [
+              0,
+              4,
+              5,
+              8,
+              8,
+              10,
+              14,
+              14
+            ],
+            "send_sizes": [
+              0,
+              0,
+              3,
+              0,
+              0,
+              0,
+              0,
+              1
+            ],
+            "output_offsets": [
+              0,
+              0,
+              0,
+              3,
+              0,
+              0,
+              0,
+              3
+            ],
+            "recv_sizes": [
+              0,
+              0,
+              3,
+              0,
+              0,
+              0,
+              0,
+              2
+            ]
+          },
+          "return_params": {
+            "input_offsets": [
+              0,
+              0,
+              0,
+              3,
+              0,
+              0,
+              3,
+              3
+            ],
+            "send_sizes": [
+              0,
+              0,
+              3,
+              0,
+              0,
+              0,
+              0,
+              2
+            ],
+            "output_offsets": [
+              0,
+              4,
+              5,
+              8,
+              0,
+              2,
+              5,
+              5
+            ],
+            "recv_sizes": [
+              0,
+              0,
+              3,
+              0,
+              0,
+              0,
+              0,
+              1
+            ]
+          }
+        },
+        {
+          "receiver": 1,
+          "chunk": 0,
+          "raw_demand": 11,
+          "active_group_sizes": [
+            6,
+            2
+          ],
+          "physical_group_sizes": [
+            6,
+            4
+          ],
+          "receiver_ids_active": [
+            400,
+            401,
+            10400,
+            10401,
+            10402,
+            10403,
+            500,
+            501
+          ],
+          "tail_unwritten_rows": 2,
+          "dispatch_params": {
+            "input_offsets": [
+              0,
+              2,
+              5,
+              5,
+              7,
+              11,
+              12,
+              15
+            ],
+            "send_sizes": [
+              2,
+              1,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0
+            ],
+            "output_offsets": [
+              4,
+              7,
+              8,
+              8,
+              2,
+              8,
+              8,
+              8
+            ],
+            "recv_sizes": [
+              2,
+              2,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0
+            ]
+          },
+          "return_params": {
+            "input_offsets": [
+              0,
+              6,
+              8,
+              8,
+              2,
+              8,
+              8,
+              8
+            ],
+            "send_sizes": [
+              2,
+              2,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0
+            ],
+            "output_offsets": [
+              8,
+              10,
+              14,
+              14,
+              7,
+              11,
+              12,
+              15
+            ],
+            "recv_sizes": [
+              2,
+              1,
+              0,
+              0,
+              4,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "receiver": 1,
+          "chunk": 1,
+          "raw_demand": 6,
+          "active_group_sizes": [
+            3,
+            3
+          ],
+          "physical_group_sizes": [
+            3,
+            7
+          ],
+          "receiver_ids_active": [
+            10600,
+            10601,
+            10602,
+            700,
+            10700,
+            10701
+          ],
+          "tail_unwritten_rows": 4,
+          "dispatch_params": {
+            "input_offsets": [
+              0,
+              2,
+              5,
+              5,
+              7,
+              11,
+              12,
+              15
+            ],
+            "send_sizes": [
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              3,
+              2
+            ],
+            "output_offsets": [
+              0,
+              0,
+              3,
+              3,
+              0,
+              0,
+              0,
+              4
+            ],
+            "recv_sizes": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              3,
+              2
+            ]
+          },
+          "return_params": {
+            "input_offsets": [
+              0,
+              0,
+              0,
+              3,
+              0,
+              0,
+              0,
+              4
+            ],
+            "send_sizes": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              3,
+              2
+            ],
+            "output_offsets": [
+              8,
+              10,
+              14,
+              14,
+              7,
+              11,
+              12,
+              15
+            ],
+            "recv_sizes": [
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              3,
+              2
+            ]
+          }
+        }
+      ],
+      "accepted_identity_roundtrip": true,
+      "actual_collective": null
+    },
+    "expert_relabeling": {
+      "logical_chunk_capacity": 3,
+      "physical_chunk_capacity": 5,
+      "demand": 32,
+      "total_logical_capacity": 12,
+      "accepted": 12,
+      "dropped": 20,
+      "accepted_by_sender": [
+        6,
+        6
+      ],
+      "accepted_by_semantic_expert": [
+        0,
+        3,
+        1,
+        2,
+        0,
+        3,
+        0,
+        3
+      ],
+      "chunks": [
+        {
+          "receiver": 0,
+          "chunk": 0,
+          "raw_demand": 10,
+          "active_group_sizes": [
+            3,
+            0
+          ],
+          "physical_group_sizes": [
+            3,
+            2
+          ],
+          "receiver_ids_active": [
+            100,
+            10100,
+            10101
+          ],
+          "tail_unwritten_rows": 2,
+          "dispatch_params": {
+            "input_offsets": [
+              0,
+              1,
+              5,
+              5,
+              8,
+              12,
+              14,
+              15
+            ],
+            "send_sizes": [
+              1,
+              0,
+              0,
+              0,
+              3,
+              0,
+              0,
+              0
+            ],
+            "output_offsets": [
+              0,
+              3,
+              3,
+              3,
+              0,
+              3,
+              3,
+              3
+            ],
+            "recv_sizes": [
+              1,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              0
+            ]
+          },
+          "return_params": {
+            "input_offsets": [
+              0,
+              3,
+              3,
+              3,
+              1,
+              3,
+              3,
+              3
+            ],
+            "send_sizes": [
+              1,
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              0
+            ],
+            "output_offsets": [
+              0,
+              1,
+              5,
+              5,
+              0,
+              3,
+              5,
+              7
+            ],
+            "recv_sizes": [
+              1,
+              0,
+              0,
+              0,
+              3,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "receiver": 0,
+          "chunk": 1,
+          "raw_demand": 5,
+          "active_group_sizes": [
+            2,
+            1
+          ],
+          "physical_group_sizes": [
+            2,
+            3
+          ],
+          "receiver_ids_active": [
+            10300,
+            10301,
+            200
+          ],
+          "tail_unwritten_rows": 2,
+          "dispatch_params": {
+            "input_offsets": [
+              0,
+              1,
+              5,
+              5,
+              8,
+              12,
+              14,
+              15
+            ],
+            "send_sizes": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              1,
+              0
+            ],
+            "output_offsets": [
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              0,
+              3
+            ],
+            "recv_sizes": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              2,
+              0
+            ]
+          },
+          "return_params": {
+            "input_offsets": [
+              0,
+              0,
+              0,
+              2,
+              0,
+              0,
+              0,
+              3
+            ],
+            "send_sizes": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              2,
+              0
+            ],
+            "output_offsets": [
+              0,
+              1,
+              5,
+              5,
+              0,
+              3,
+              5,
+              7
+            ],
+            "recv_sizes": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              0,
+              1,
+              0
+            ]
+          }
+        },
+        {
+          "receiver": 1,
+          "chunk": 0,
+          "raw_demand": 11,
+          "active_group_sizes": [
+            3,
+            0
+          ],
+          "physical_group_sizes": [
+            3,
+            2
+          ],
+          "receiver_ids_active": [
+            500,
+            501,
+            502
+          ],
+          "tail_unwritten_rows": 2,
+          "dispatch_params": {
+            "input_offsets": [
+              0,
+              3,
+              5,
+              7,
+              7,
+              8,
+              12,
+              14
+            ],
+            "send_sizes": [
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "output_offsets": [
+              1,
+              3,
+              3,
+              3,
+              3,
+              3,
+              3,
+              3
+            ],
+            "recv_sizes": [
+              3,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "return_params": {
+            "input_offsets": [
+              0,
+              3,
+              3,
+              3,
+              3,
+              3,
+              3,
+              3
+            ],
+            "send_sizes": [
+              3,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ],
+            "output_offsets": [
+              8,
+              12,
+              14,
+              15,
+              7,
+              8,
+              12,
+              14
+            ],
+            "recv_sizes": [
+              2,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        },
+        {
+          "receiver": 1,
+          "chunk": 1,
+          "raw_demand": 6,
+          "active_group_sizes": [
+            3,
+            0
+          ],
+          "physical_group_sizes": [
+            3,
+            2
+          ],
+          "receiver_ids_active": [
+            700,
+            10700,
+            10701
+          ],
+          "tail_unwritten_rows": 2,
+          "dispatch_params": {
+            "input_offsets": [
+              0,
+              3,
+              5,
+              7,
+              7,
+              8,
+              12,
+              14
+            ],
+            "send_sizes": [
+              0,
+              0,
+              2,
+              0,
+              0,
+              0,
+              2,
+              0
+            ],
+            "output_offsets": [
+              0,
+              0,
+              0,
+              3,
+              0,
+              0,
+              1,
+              3
+            ],
+            "recv_sizes": [
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              2,
+              0
+            ]
+          },
+          "return_params": {
+            "input_offsets": [
+              0,
+              0,
+              0,
+              3,
+              0,
+              0,
+              1,
+              3
+            ],
+            "send_sizes": [
+              0,
+              0,
+              1,
+              0,
+              0,
+              0,
+              2,
+              0
+            ],
+            "output_offsets": [
+              8,
+              12,
+              14,
+              15,
+              7,
+              8,
+              12,
+              14
+            ],
+            "recv_sizes": [
+              0,
+              0,
+              2,
+              0,
+              0,
+              0,
+              2,
+              0
+            ]
+          }
+        }
+      ],
+      "accepted_identity_roundtrip": true,
+      "actual_collective": null
+    }
+  },
+  "explicit_substitutions": [
+    "two synthetic shards, eight expert demand counts and integer identity rows",
+    "original plan functions called via structural namespace rather than full routing/layout constructors",
+    "host copies execute original offset/size metadata; no ragged_all_to_all",
+    "fixed logical/physical capacities, no production capacity-factor planner"
+  ],
+  "actual_Hero_acceptance": null,
+  "actual_GPU_execution": null,
+  "actual_domain_drop_bias": null,
+  "source_sha256": {
+    "sources/receiver_layout_2026_10_07/ep_common.py": "c9d6511f1cd5d69be168a701dc92742ccc26f09d69bbb144fc53d1c9ea934bbd",
+    "sources/engineering_v77_2026_10_07/current_ep_ragged_all_to_all.py": "aa8331d5d7f4d18c4aef2f401271411539ad637c4e458b3f6a33585d2d3ae9cf"
+  }
+}

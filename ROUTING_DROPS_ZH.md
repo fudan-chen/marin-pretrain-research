@@ -91,3 +91,46 @@ routing_counts由dispatch前selected experts统计，表示有效token原本选�
 | 最终决定 | 固定预算稳定性、独立评估、能力退步与回退记录 | 接受完整变更；拆开对照后才讨论单项收益 |
 
 这些检查接到[训练变更评审](CHANGE_REVIEW_ZH.md)的“样本、更新、评估与预算”，不另增一套总分。原探针只支持计数和combine辅助接口；collective、自动微分、真实输入drop图与历史代码绑定均没有结果。
+
+
+## V79：active前缀不是假设，须由裁剪和传输offset一起保证
+
+V78的portable专家只用sum(active_group_sizes)定义有效前缀，因此布局必须先把所有有效行连续放在前面。本轮取得同一固定PR head的ep_common.py，执行原_prefix_cap_counts、_clip_receiver_group_sizes、_expert_granular_a2a_params与_chunk_plans，使用真实JAX CPU数组计算元数据，再按原offset/size做host拷贝重放。三组人工控制、10项检查通过，[原参数向量与返回身份](analysis/receiver_layout_cpu.json)完整保留。没有执行all_gather、ragged_all_to_all、GPU或真实routing planner。
+
+### 四种坐标如何接上
+
+sender输入按全局expert排序，未裁剪的各group占用原起点。接收端裁剪按每个receiver独立进行，优先较早expert，再优先该expert的较早sender。dispatch使用**未裁剪起点、裁剪后的长度**读取各group前缀；receiver output offsets按expert-major、sender-major连续压实到前部。这样接受的行不需要先在sender压缩，也不会在receiver中间留下padding孔洞。
+
+原_chunk_plans汇总每个本地expert的active数，再按chunk截取；physical_group_sizes只有最后一项增加chunk_capacity−sum(active)，其余项与active相同。因此padding只落在该chunk的最后一个expert段末尾。V78按总active数选择前缀，依赖的正是这个条件，不能将它推广到“每个expert段各自夹带padding”的其他布局。
+
+return参数反向读取接收端压实区域，把有效前缀写回各sender原来的未裁剪起点。host重放逐项核对dispatch/return的send/recv size相互一致、写入无重叠、有效区恰为[0,total_active)、expert归属顺序正确；所有被接受的人工身份返回原位置，被丢弃位置保持未写NaN。这验证原元数据在本地模拟拷贝中的一致性，不证明真实collective发包、设备读写或非有限buffer安全。
+
+### 总容量等于总需求，为什么仍丢5条
+
+人工计数矩阵有两个sender、八个expert；每个receiver四个本地expert，分两chunk，每chunk两expert。sender0需求为[4,1,3,0,2,4,0,1]，sender1为[2,3,0,2,4,1,3,2]，总需求32。手动给每个receiver/chunk逻辑容量8、物理buffer10，四块总逻辑容量也是32，却只接受27。
+
+<div id="receiver-layout-placeholder"></div>
+
+[图原文件](assets/receiver_layout.svg)：需求10/5/11/6分别落在四个receiver/chunk，接受8/5/8/6；拥挤块丢2和3，另一侧剩余3和2不能跨块借用。灰色是未用逻辑容量，不是物理padding；每块物理buffer10又有单独的静态尾部。本图是人工需求下的原计划结果，不是Hero实际负载。
+
+|控制|逻辑/物理容量，每块|总接受/丢弃|按sender接受量|
+|---|---|---|---|
+|低容量原顺序|3 / 5|12 / 20|8 / 4|
+|较高容量原顺序|8 / 10|27 / 5|13 / 14|
+|低容量、chunk内expert重编号|3 / 5|12 / 20|6 / 6|
+
+本例逻辑与物理容量都直接给定，没有执行真实capacity_factor、minimum/maximum或动态chunk容量计划。它把本章此前的静态“局部容量不能借用”说明接到了原裁剪、offset与返回身份，不能据此推荐生产直接设成某个容量数值。
+
+### 总drop相同，接受身份仍会改变
+
+低容量原顺序中，按原语义expert0到7计，接受量为[3,0,3,0,3,0,3,0]。在每个chunk内部交换expert顺序，并将需求及人工身份同时对应重编号，需求、容量、接受总数12和丢弃总数20都不变；按原语义身份还原后，接受量变成[0,3,1,2,0,3,0,3]，sender接受份额也从8/4变成6/6。
+
+这是前缀优先政策的可复现结果，不是随机drop，也不是等概率分配。expert编号/映射在无裁剪数学计算中可做对应重排，但裁剪规则显式依赖先后位置；不能只凭无drop公式判断编号重排、chunk划分或transport改造保持了实际接受语义。本轮没有执行完整模型去比较两种编号下的最终输出或训练收益。
+
+### 数据配比研究要增加哪层记录
+
+数据来源不能从expert ID直接推断。若要判断某种文档、语言或质量桶是否更受容量丢弃影响，需要把实际样本身份、selected assignments、sender/receiver/chunk归属、接受mask和最终loss位置连接起来。全局drop rate相同不足以证明各来源受到同样影响；反过来，这个人工编号反例也不能证明Hero存在域偏置。
+
+对自己的改动，先绑定原group起点与接受长度，再验receiver压实、active/physical的最后padding关系、return镜像和有效身份；随后按来源及位置统计实际接受率，再做固定评估。提高容量、换chunk或换sender分布会同时影响HBM、通信和接受政策，只有整个路径的性能/稳定性与模型评估都完成，才能讨论配比收益。不要直接将assignment丢弃数从语言目标token分母扣除。
+
+新增一份固定head helper源码，旧478份非bookkeeping来源保持原字节，当前来源480份。实际通信、生产接受mask、域偏置及GPU仍待验证。复现：`make receiver-layout-cpu CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。

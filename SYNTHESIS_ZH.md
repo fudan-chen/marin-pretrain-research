@@ -187,3 +187,6 @@ V77回到实况：新NoExecute驱逐记录，#9708关闭未合并，#9833仅注�
 
 
 V78把portable残差分析接到原CPU/XLA执行：尾部NaN未污染普通梯度，但raw row-dot允许未定义；保存out破坏控制只改变row-dot支线。完整梯度合同必须覆盖caller选择和映射，详见[MoE工程分析](RECENT_MOE_CHANGES_ZH.md)。
+
+
+V79 原裁剪/offset/chunk计划与host身份重放：总逻辑容量32仍丢5；编号重排保持总接受数却改变接受身份。数据配比要从真实样本追到assignment接受mask，不能仅看全局drop，详见[路由容量](ROUTING_DROPS_ZH.md)。

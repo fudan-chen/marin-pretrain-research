@@ -128,6 +128,12 @@ for slug,label,file in chapters:
         muon_svg['style']='display:block;width:100%;min-width:700px;height:auto;'
         muon_wrap=soup.new_tag('div',attrs={'class':'table-wrap','style':'overflow-x:auto;'})
         muon_wrap.append(muon_svg);muon_placeholder.replace_with(muon_wrap)
+    receiver_placeholder=soup.select_one('#receiver-layout-placeholder')
+    if receiver_placeholder is not None:
+        receiver_svg=BeautifulSoup((ROOT/'assets/receiver_layout.svg').read_text(),'html.parser').svg
+        receiver_svg['style']='display:block;width:100%;min-width:700px;height:auto;'
+        receiver_wrap=soup.new_tag('div',attrs={'class':'table-wrap','style':'overflow-x:auto;'})
+        receiver_wrap.append(receiver_svg);receiver_placeholder.replace_with(receiver_wrap)
     portable_placeholder=soup.select_one('#portable-expert-placeholder')
     if portable_placeholder is not None:
         portable_svg=BeautifulSoup((ROOT/'assets/portable_expert_mlp.svg').read_text(),'html.parser').svg

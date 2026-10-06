@@ -219,3 +219,8 @@ engineering-audit-v77:
 portable-expert-cpu:
 	$(CPU_PYTHON) scripts/probe_portable_expert_mlp_cpu.py
 	$(PYTHON) scripts/plot_portable_expert_mlp.py
+
+.PHONY: receiver-layout-cpu
+receiver-layout-cpu:
+	$(CPU_PYTHON) scripts/probe_receiver_layout_cpu.py
+	$(PYTHON) scripts/plot_receiver_layout.py

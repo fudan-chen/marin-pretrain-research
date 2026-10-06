@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1519,
+  "checks_passed": 1523,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -18,7 +18,7 @@
     "four new config contrasts / six step393 resume windows",
     "seventeen embedded figures",
     "all relative HTML links valid",
-    "479 source archive checksums valid",
+    "480 source archive checksums valid",
     "18 authored rubrics / seven claim-stage decisions",
     "five interpretation cases / four metrics with switchable baselines",
     "17 figure-reading entries / five preserved collapsed tables",
@@ -126,7 +126,8 @@
     "V75 sixteen original evaluator callback controls and report-side structural gate; explicit overlap policy and semantic-identity limits, no Hero malformed callback, GPU or production fix",
     "V76 ten original microbatch/CE CPU autodiff controls with explicit scan/physical/sharding adapters; local-zero gradient contamination and numerator-first control, no Hero path or GPU fix proof",
     "V77 sixteen new public acquisitions and twelve checks; new NoExecute retry report, unmerged closure, doc-only computational AST comparison and portable residual scope correction; no production logs, GPU or deployment proof",
-    "V78 fourteen original portable expert/CPU ragged wrapper checks and measured finite-element figure; dense gradient reference, allowed inactive row-dot and saved-output control, no GPU/transport/production proof"
+    "V78 fourteen original portable expert/CPU ragged wrapper checks and measured finite-element figure; dense gradient reference, allowed inactive row-dot and saved-output control, no GPU/transport/production proof",
+    "V79 ten original JAX clip/offset/chunk-plan checks with host identity replay and measured capacity figure; local capacity and numbering policy, no collective/GPU/domain-bias proof"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

@@ -85,3 +85,8 @@ V52新增原异步loader host控制11项，人工store/layout/结果适配边界
 ## V78：原portable专家与原CPU包装
 
 14项检查，原_apply/forward/backward、原XLA ragged包装/512行补齐与caller选择；dense分组参考、inactive poison、空专家与保存out破坏控制。新增实测图。1新来源，旧477份非bookkeeping保持，479来源。无GPU、真实通信或生产输入验证。
+
+
+## V79：接收前缀、返回身份与局部容量
+
+10检查，原JAX元数据helper/chunk-plan和host拷贝重放，三个人工容量/编号控制；新增需求/容量图。1新来源、旧478非bookkeeping保持、480来源。未执行真实通信、GPU、生产mask或域偏置测量。

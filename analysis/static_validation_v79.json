@@ -1,0 +1,16 @@
+{
+  "version": "V79",
+  "checks_passed": 8,
+  "checks": [
+    "index.html unique ids",
+    "index.html V79 receiver scope and measured figure",
+    "report_standalone.html unique ids",
+    "report_standalone.html V79 receiver scope and measured figure",
+    "All prior routing table values retained",
+    "Source archive exact bytes",
+    "All 478 prior non-bookkeeping source bytes unchanged",
+    "Fresh V79 global validation"
+  ],
+  "png_visually_inspected": true,
+  "actual_browser_rendering": null
+}

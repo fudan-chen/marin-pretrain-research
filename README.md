@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本V78：执行原portable专家与原ragged_dot CPU/XLA包装，14项检查。普通梯度、row-dot与caller选择须分别验收；新增NaN尾部图与残差一致性控制。详见 [MoE工程分析](RECENT_MOE_CHANGES_ZH.md)。
+当前版本V79：原裁剪、offset与chunk计划接入host身份重放，10项检查。总容量够仍可局部丢弃；总drop相同不保证接受身份相同。新增容量图与布局验收，详见 [路由容量](ROUTING_DROPS_ZH.md)。
 
 [MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并提供未执行的性能交互记录模板。
 

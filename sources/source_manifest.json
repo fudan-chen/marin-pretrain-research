@@ -4331,5 +4331,13 @@
     "retrieval_time_basis": "local completed-download mtime approximation",
     "bytes": 16781,
     "sha256": "c12a1370bf77f3b775358b20e8900b255af80cfd7bbfe0777a8ee046ddf8ec28"
+  },
+  {
+    "file": "receiver_layout_2026_10_07/ep_common.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/lib/levanter/src/levanter/grug/_moe/ep_common.py",
+    "revision": "b65be4c9550c5097f0a3add08933531a1c24d534",
+    "retrieved_utc": "2026-10-06T21:38:27.835978+00:00",
+    "bytes": 7629,
+    "sha256": "c9d6511f1cd5d69be168a701dc92742ccc26f09d69bbb144fc53d1c9ea934bbd"
   }
 ]

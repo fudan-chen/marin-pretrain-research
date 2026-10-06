@@ -94,3 +94,26 @@
 记录失败发生于元数据、布局选择、数组读取、pending应用还是首次执行，并保留异常类型；不要把损坏输入随意当成旧布局。对照需明确消费者用途：推理权重恢复和完整训练状态恢复是不同合同。保持指定candidate和权威视图，避免回退后只记录“恢复成功”。
 
 运行make weights-consumer-faults CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python可复算。下一项强证据仍是候选代码自己保存、独立新进程实际恢复并运行下一步，而非增加替身控制后宣布生产恢复完成。
+
+
+## V65：真实存储读回，为什么“有限值”仍不足以验收
+
+这次沿用归档源码的 `build_kvstore_spec` 与 `_create_ocdbt_spec`，实际执行 TensorStore 0.1.69 的本地 Zarr3/OCDBT 读写。输入是 6×4 的 float32 人工数组，三块各占两行，值为 1 至 24；等待 copy 与 commit 完成后，另起 Python 进程读回。8 项检查通过，[原值与错误记录](analysis/tensorstore_roundtrip.json)可复查。
+
+|受控操作|新进程读到什么|能确认什么|
+|---|---|---|
+|全数组写入并等待提交|24 个值全部一致，shape/dtype 一致|这一个本地样例能够跨进程读回|
+|请求不存在的 pending 数组|打开时报 NOT_FOUND|缺数组元数据与缺数据块不是同一分支|
+|用 int32 约束打开 float32 数组|FAILED_PRECONDITION|本例会拒绝 dtype 不一致|
+|创建数组，只写前两行|前两行一致，其余四行全零|元数据可见不代表所有预期值写入|
+|完整写入后删除逻辑键 c/0/0|前两行全零，其余行一致，全部有限|读成功和 finite 检查会漏掉本例的内容变化|
+
+<div id="tensorstore-io-placeholder"></div>
+
+为什么会这样？在本例的默认 Zarr3 配置中，没有存储的 chunk 读作填充值零。数组元数据描述形状、类型与块布局，不能单独证明原定的 24 个值都已写入。这里删除的是 OCDBT 内的逻辑 Zarr chunk 键，使用 [KvStore.write(key, None)](https://google.github.io/tensorstore/python/api/tensorstore.KvStore.write.html)；没有删除或破坏 OCDBT 物理 blob，也没有测试断电、损坏 manifest 或多 rank 故障。
+
+**验收规则应增加内容完整性证据，但不能简单要求每个 chunk 键都存在。** 合法的全填充值块可以不占独立键；真实参数也可能含零。应将保存时预期状态与恢复内容对应：记录 step、树/叶身份、shape/dtype、各 rank 写入及全局提交回执，并在预算允许时核对保存端与恢复端的内容摘要。抽样校验只提供抽样范围内的证据，下一步训练与固定 eval 是行为补充，也不能替代字节完整性判断。摘要生成与数据写入必须属于同一 attempt，避免用旧摘要验收新路径。
+
+这个实验没有执行 Marin 的完整 save/load 函数、CheckpointArray 类、分布式 coordinator 或生产 checkpoint。元数据 entry 用 SimpleNamespace 提供 shape/dtype/chunk_shape。因此不能声称 Marin 保存链缺少保护，不能把这里的零值解释成 Hero 的历史事故。它只把“缺块可能怎样被底层读出”的一个分支从推测推进到了真实本地 IO。
+
+复现：在 Python 3.12 环境安装 requirements-tensorstore-io.txt；本轮依赖隔离在 /tmp/marin-tensorstore-lib，命令为 `make tensorstore-io CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。临时数组由探针创建并自动清理。下一步需要完整序列化链的同 attempt 保存回执、内容摘要和独立恢复，才能评判系统层面的保护覆盖。

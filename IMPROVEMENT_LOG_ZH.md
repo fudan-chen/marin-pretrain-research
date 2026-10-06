@@ -382,3 +382,8 @@ V57复算#9708冻结表18条、12条步时，6项检查；新增性能图和未�
 ## V64：推理恢复消费者故障路径
 
 执行原restore_weights与checkpoint_stores_master，10输入、9检查；真实临时metadata JSON IO，manifest/array/digest/template/tree替身。核对strict False、权威master选择、legacy marker、缺失/损坏分支和allow_partial=False。无OCDBT、实际checkpoint或生产恢复，455来源保持。
+
+
+## V65：从消费者替身推进到真实本地存储
+
+执行原 spec helpers、TensorStore 0.1.69、小数组与独立进程，8 检查；完整、部分写入、删除逻辑 chunk、缺元数据及 dtype 约束分别验证。新增矩阵图与内容验收规则。完整 Marin serializer、物理 blob 损坏、GPU/生产恢复未知；455 份来源保持。

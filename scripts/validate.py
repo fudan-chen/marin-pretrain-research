@@ -905,6 +905,12 @@ ok('V64 consumer checks retain actual array IO unknown',wc['checks_passed']==len
 ok('V64 metadata guards precede layout calls',all(wc['cases'][i]['error']=='ValueError' and wc['cases'][i]['calls']==[] for i in [2,3,4,5]))
 ok('V64 layout and failure propagation retained',wc['cases'][0]['calls'][1]['requested_keys']==['master_params','pending_qb_betas'] and wc['cases'][7]['calls'][1]['requested_keys']==['params','pending_qb_betas'] and wc['cases'][9]['calls']==['manifest'])
 report['highlights']+=['V64 ten original-consumer fault controls, nine checks; real temporary metadata IO with explicit layout/array/digest/template/tree stubs, no actual checkpoint or OCDBT restore']
+ti=read(A/'tensorstore_roundtrip.json')
+ok('V65 real storage source helpers and production unknowns',ti['checks_passed']==len(ti['checks'])==8 and ti['actual_full_Marin_serializer'] is None and ti['actual_production_missing_chunk_event'] is None and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in ti['source_sha256'].items()))
+to=ti['observations'];te=ti['fixture']['expected_values']
+ok('V65 complete fresh process versus default fill controls',to['complete_child']['values']==te and to['partial_child']['values'][:2]==te[:2] and to['partial_child']['values'][2:]==[[0.0]*4]*4 and to['deleted_chunk_child']['values']==[[0.0]*4]*2+te[2:])
+ok('V65 real storage figure embedded',soup.select_one('#checkpoint-commit-guide #tsio-figure_1') is not None)
+report['highlights']+=['V65 eight actual local TensorStore Zarr3/OCDBT IO checks with original spec helpers and independent read processes; synthetic arrays, no full Marin serializer or production restore']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

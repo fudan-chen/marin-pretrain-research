@@ -1,6 +1,6 @@
 # 当前交付审计：文件覆盖与真实验证分别核对
 
-当前版本V64：9项消费者控制、10个人工输入，临时metadata JSON IO真实；manifest/数组/digest/模板/tree为替身，OCDBT与生产恢复未知。原455份来源保持。
+当前版本V65：真实本地 Zarr3/OCDBT 小数组 IO，8 项检查；未写或删除逻辑 chunk 会读为零，有限值不能证明内容完整。完整 Marin 保存链与生产恢复仍未知。详见 [checkpoint 提交与恢复](CHECKPOINT_COMMIT_ZH.md)。
 
 |用户要求|当前权威产物|覆盖与实际限制|
 |---|---|---|

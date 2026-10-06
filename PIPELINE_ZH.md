@@ -158,3 +158,6 @@ V63入口：make pending-router-view CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/pytho
 
 
 V64入口：make weights-consumer-faults CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python。10个人工输入、9项原消费者控制；metadata本地IO真实，manifest/array/digest/template/tree替身。后续须真实save→独立restore→下一步，不能由此认定生产可靠。
+
+
+V65 管线补充：在 metadata/layout 守卫之后加入同 attempt 的内容完整性核对，再执行 next-step 与固定 eval。记录摘要覆盖是全量还是抽样、回执覆盖哪些 rank。全量 chunk 键计数不能代替内容对照。探针已完成小数组本地 IO，生产恢复尚未执行。

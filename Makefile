@@ -1,6 +1,7 @@
 PYTHON ?= .venv/bin/python
 NODE ?= node
 CPU_PYTHON ?= python3
+TENSORSTORE_PATH ?= /tmp/marin-tensorstore-lib
 
 .PHONY: report serve
 report:
@@ -158,3 +159,7 @@ pending-router-view:
 .PHONY: weights-consumer-faults
 weights-consumer-faults:
 	$(CPU_PYTHON) scripts/probe_weights_consumer_faults.py
+
+.PHONY: tensorstore-io
+tensorstore-io:
+	PYTHONPATH=$(TENSORSTORE_PATH) $(CPU_PYTHON) scripts/probe_tensorstore_roundtrip.py

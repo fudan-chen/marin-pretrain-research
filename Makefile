@@ -25,6 +25,7 @@ report:
 	$(PYTHON) scripts/audit_default_target_weights.py
 	$(PYTHON) scripts/write_masked_numerics.py
 	$(PYTHON) scripts/write_zero_gradient_state.py
+	$(PYTHON) scripts/write_group_clipping.py
 	$(PYTHON) scripts/probe_gradient_accumulation.py
 	$(PYTHON) scripts/infer_eval_weights.py
 	$(PYTHON) scripts/write_eval_weight_inference.py
@@ -94,3 +95,8 @@ cpu-numerics:
 optimizer-cpu:
 	$(CPU_PYTHON) scripts/probe_zero_gradient_state_cpu.py
 	$(PYTHON) scripts/write_zero_gradient_state.py
+
+.PHONY: clipping-cpu
+clipping-cpu:
+	$(CPU_PYTHON) scripts/probe_group_clipping_cpu.py
+	$(PYTHON) scripts/write_group_clipping.py

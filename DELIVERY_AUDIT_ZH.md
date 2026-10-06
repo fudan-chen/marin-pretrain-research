@@ -1,6 +1,6 @@
 # 当前交付审计：文件覆盖与真实验证分别核对
 
-当前版本V50，新增[零梯度与状态审计](ZERO_GRADIENT_STATE_ZH.md)：未修改的完整AdamH模块、真实JAX/Optax CPU、14项核对和20步人工矩阵轨迹。保留无mesh JIT异常与named-mesh成功对照。PNG已查看，HTML仅静态核对；未执行实际Hero loss、分组multi_transform、checkpoint或完整训练步。
+当前版本V51，完善[优化器分组](OPTIMIZER_GROUPS_ZH.md)：10项真实CPU/源码核对，Optax人工标签裁剪控制与原AdamH固定后续输入的状态对照。PNG已查看，HTML仅静态核对；实际Hero参数分组、完整optimizer build和裁剪事件仍未验证。
 
 |用户要求|当前权威产物|覆盖与实际限制|
 |---|---|---|

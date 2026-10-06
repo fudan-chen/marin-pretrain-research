@@ -797,6 +797,13 @@ ok('V50 discarded update does not freeze next-step state',zs['discard_vs_freeze'
 ok('V50 bare CPU jit compatibility failure remains explicitly recorded','nonempty mesh' in zs['bare_CPU_jit_error'] and zs['named_CPU_mesh_axes']==['cpu'])
 ok('V50 chapter has three evidence tables and original-module CPU figure',len(soup.select('#zero-gradient-state-guide table'))==3 and soup.select_one('#zero-gradient-state-guide svg') is not None)
 report['highlights']+=['V50 full unmodified AdamH module on artificial CPU matrices, fourteen CPU/source checks, nonzero warm-zero update and discard-versus-freeze distinction; bare empty-mesh JIT failure retained, named one-device JIT verified, no Hero full-step binding']
+gc=read(A/'group_clipping_cpu.json')
+ok('V51 ten clipping CPU/source checks retain bounded labels and build scope',gc['checks_passed']==len(gc['checks'])==10 and gc['actual_Hero_group_assignment'] is None and gc['actual_complete_Hero_optimizer_build'] is None and gc['declared_latest_max_grad_norm'] is None)
+ok('V51 clipping source identities match',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in gc['source_sha256'].items()))
+ok('V51 real group clipping differs from whole model control',abs(gc['group_control']['group_clipped_combined_norm']-3**.5)<1e-6 and abs(gc['group_control']['whole_clipped_combined_norm']-1)<1e-6)
+ok('V51 shared next inputs expose distinct clipping moment history',gc['original_AdamH_control']['first_update_difference_norm']<1e-6 and gc['original_AdamH_control']['common_next_update_difference_norm']>.1 and gc['original_AdamH_control']['next_parameter_input_shared'] is True)
+ok('V51 existing optimizer chapter has five tables and new CPU figure',len(soup.select('#optimizer-guide table'))==5 and soup.select_one('#optimizer-guide svg') is not None)
+report['highlights']+=['V51 real Optax grouped clipping controls and original AdamH fixed-next-input state comparison; ten checks, latest declared clipping disabled, no real Hero group/build/clipping event']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

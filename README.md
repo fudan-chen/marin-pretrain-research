@@ -1,8 +1,8 @@
 # Marin 535B 预训练研究
 
-当前版本V50。先读[结论与操作指南](SYNTHESIS_ZH.md)，再按问题进入工程案例、数据配比和可执行检查工具。最新训练数值来自[10月7日独立快照](LIVE_2026_10_07_ZH.md)，约9.915T/4K；它不等于当前实时进度。
+当前版本V51。先读[结论与操作指南](SYNTHESIS_ZH.md)，再按问题进入工程案例、数据配比和可执行检查工具。最新训练数值来自[10月7日独立快照](LIVE_2026_10_07_ZH.md)，约9.915T/4K；它不等于当前实时进度。
 
-本轮执行[原AdamH模块的CPU状态对照](ZERO_GRADIENT_STATE_ZH.md)：零梯度仍可能更新参数，丢弃update也不同于保留整份状态；14项CPU与源码核对、20步人工轨迹和named-mesh复现边界均可复查。空目标应按实际T判断，不能按grad==0跳步。
+本轮完善已有[优化器分组章节](OPTIMIZER_GROUPS_ZH.md)：真实Optax CPU确认组内裁剪与全模型裁剪不同；原AdamH对照说明首次更新近乎相同，moment差异仍会改变后续有效步。最新归档max_grad_norm=None，没有把人工裁剪控制写成Hero实际事件。
 
 V26对V25的micro/macro命名错误已[明确更正](EVAL_METRICS_ZH.md)。
 

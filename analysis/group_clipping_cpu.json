@@ -1,0 +1,89 @@
+{
+  "scope": "Real Optax grouped clipping controls and original AdamH on artificial CPU data.\nNot the complete Hero optimizer build, real parameter-group assignment or training replay.\n",
+  "checks_passed": 10,
+  "checks": [
+    "Fixed genuine CPU runtime",
+    "Artificial raw whole norm is thirteen",
+    "Real multi_transform clips each active group to one",
+    "Whole-model control clips combined norm to one",
+    "No-clip grouped identity preserves artificial input",
+    "Tiny clipped gradient does not cap original AdamH parameter-update norm",
+    "First-step near-equal updates can hide different moment state",
+    "Common next gradient exposes first-step clipping history",
+    "Latest archived recipe declares clipping disabled",
+    "Pinned builder places three optional clippers inside groups"
+  ],
+  "runtime": {
+    "jax": "0.7.2",
+    "optax": "0.2.5",
+    "backend": "cpu"
+  },
+  "declared_latest_max_grad_norm": null,
+  "artificial_group_labels": {
+    "u": "muonh",
+    "h": "adamh",
+    "a": "adam"
+  },
+  "group_control": {
+    "raw": {
+      "u": [
+        3.0
+      ],
+      "h": [
+        4.0
+      ],
+      "a": [
+        12.0
+      ]
+    },
+    "group_clipped": {
+      "a": [
+        1.0
+      ],
+      "h": [
+        1.0
+      ],
+      "u": [
+        1.0
+      ]
+    },
+    "whole_clipped": {
+      "a": [
+        0.9230769276618958
+      ],
+      "h": [
+        0.3076923191547394
+      ],
+      "u": [
+        0.23076923191547394
+      ]
+    },
+    "raw_combined_norm": 13.0,
+    "group_clipped_combined_norm": 1.7320507764816284,
+    "whole_clipped_combined_norm": 1.0
+  },
+  "original_AdamH_control": {
+    "clip_threshold": 0.01,
+    "clipped_gradient_norm": 0.009999999776482582,
+    "first_parameter_update_norm": 0.17733611166477203,
+    "first_update_difference_norm": 3.7851589240744943e-07,
+    "first_moment_difference_norm": 0.5467225313186646,
+    "common_next_update_difference_norm": 0.14979304373264313,
+    "next_parameter_input_shared": true,
+    "lr": 0.1,
+    "epsilon": 1e-08
+  },
+  "actual_Hero_clipping_event": null,
+  "actual_Hero_group_assignment": null,
+  "actual_complete_Hero_optimizer_build": null,
+  "actual_GPU_TPU_execution": null,
+  "source_sha256": {
+    "sources/adamh_2026_10_05/adamh.py": "722ed10ea6c36440049c5f5a4eb9ea98abcfe7cd761a52e3973a3031b0755716",
+    "sources/optimizer_2026_10_05/optimizer.py": "50dddad265e18974e8529f7a9df26d37e44430ffc5442d5c93e58cb2e924ae0e",
+    "sources/live_2026_10_07/meta.json": "21998ecad691e7e66d3680f173bfe9b94c35b9481f28eff4794a23b0c9831487"
+  },
+  "library_source_sha256": {
+    "clip_by_global_norm": "6fe01ccddf2169f3b55a9dd68b66ba1f7ac302a1699fc6739b145fb51bd0fd70",
+    "multi_transform": "9088cfd7f474dc486c641a93aeec918c14f32e11eae415d0d989fc7daedd7214"
+  }
+}

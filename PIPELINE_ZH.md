@@ -103,3 +103,7 @@ V22的[诊断流程](LOSS_TRIAGE_ZH.md)把指标/模型视图、样本内容与�
 ## V50：空目标处理不能只把梯度或update改成0
 
 [原AdamH模块CPU对照](ZERO_GRADIENT_STATE_ZH.md)确认：有历史moment时，零梯度仍产生非零更新；只丢弃最终update，状态仍推进，下一有效步也会改变。空目标应按实际global T与接受策略判断，不能按grad==0跳步，也不能用某个未使用expert的叶梯度为0触发整步跳过。moment/count、训练step、调度、EMA与QB应分别记录接受条件。本轮只执行optimizer局部对照，完整Hero步与事故触发仍未验证；规则锚点不变。
+
+## V51：裁剪验收要看归约范围和后续状态
+
+[分组章节的CPU对照](OPTIMIZER_GROUPS_ZH.md)确认三组各裁剪到1时合并范数为√3，且原AdamH首步近乎相同的参数更新可留下不同moment；固定后续参数与梯度，差异仍进入下一次update。验收需记录clip范围、系数/触发率、moment/count和后续有效步，不能只看首次更新相似。最新归档max_grad_norm=None；这不是Hero已启用裁剪的事件证据，规则锚点不变。

@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本为V37。[10月6日新观察](LIVE_2026_10_06_ZH.md)：训练记录约9.75T名义token，仍为4K；16域中15个端点改善，但PTB贡献约66%的宏平均CE改善，twitterAAE端点上升。新源档与旧曲线分别保留。工程问题先读[排障总图](ENGINEERING_MAP_ZH.md)，配比与恢复另见[生效时钟](BATCH_CLOCK_ZH.md)和[计数范围](MIXTURE_RANGE_ZH.md)。
+当前版本为V38。[评估身份核查](EVAL_IDENTITY_ZH.md)追查PTB变化：默认入口重复遍历而非每轮重抽；进度长度估计问题与真实评分范围分开。[10月6日新观察](LIVE_2026_10_06_ZH.md)：训练记录约9.75T名义token，仍为4K；16域中15个端点改善，但PTB贡献约66%的宏平均CE改善，twitterAAE端点上升。新源档与旧曲线分别保留。工程问题先读[排障总图](ENGINEERING_MAP_ZH.md)，配比与恢复另见[生效时钟](BATCH_CLOCK_ZH.md)和[计数范围](MIXTURE_RANGE_ZH.md)。
 
 V26对V25的micro/macro命名错误已[明确更正](EVAL_METRICS_ZH.md)。
 

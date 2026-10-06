@@ -141,7 +141,7 @@ alt=all_rows[f['counterexample_run']]
 ok('197c dominates selected seed0 on three axes but not all tasks',all(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in [PM,HE,GM]) and sum(metric_value(alt,k)>metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==31 and sum(metric_value(alt,k)<metric_value(paired['new'][0],k) for k in alt['grouped_bpb'])==23)
 ok('197c has no independent seed1 or seed2 counterpart in this registry',sum('197c9f5ceff6b9ee-' in r['run_name'] for r in rows)==1)
 F=S/'findings_2026_10_04'
-ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/','contracts_2026_10_05/','state_2026_10_05/','boundaries_2026_10_05/','cache_2026_10_05/','dedup_2026_10_05/','quality_2026_10_05/','routing_2026_10_05/','optimizer_2026_10_05/','short_conv_2026_10_05/','router_precision_2026_10_05/','eval_metrics_2026_10_05/','checkpoint_commit_2026_10_05/','checkpoint_memory_2026_10_05/','muon_geometry_2026_10_05/','adamh_2026_10_05/','muon_direction_2026_10_05/','watch_2026_10_06/','live_2026_10_06/')) for x in manifest['files'])==313)
+ok('Four source configurations and six resume windows remain archived',len(list(F.glob('config_*.json')))==4 and len(list(F.glob('window_*.json')))==6 and sum(not x['file'].startswith(('decision_2026_10_04/','engineering_2026_10_05/','scale_2026_10_05/','execution_2026_10_05/','contracts_2026_10_05/','state_2026_10_05/','boundaries_2026_10_05/','cache_2026_10_05/','dedup_2026_10_05/','quality_2026_10_05/','routing_2026_10_05/','optimizer_2026_10_05/','short_conv_2026_10_05/','router_precision_2026_10_05/','eval_metrics_2026_10_05/','checkpoint_commit_2026_10_05/','checkpoint_memory_2026_10_05/','muon_geometry_2026_10_05/','adamh_2026_10_05/','muon_direction_2026_10_05/','watch_2026_10_06/','live_2026_10_06/','eval_identity_2026_10_06/')) for x in manifest['files'])==313)
 for i,row in enumerate(f['configs']):
     def source_run(name):return read((F if 'mixprior-' in name else P)/('config_'+name+'.json'))['data']['project']['run']
     ra,rb=source_run(row['run_a']),source_run(row['run_b']);ca,cb=json.loads(ra['config']),json.loads(rb['config'])
@@ -192,7 +192,7 @@ for scenario in decision_checks['scenarios']:
 doc_tables=soup.select('#decision-guide table')
 ok('Decision documentation preserves nine scenarios and six rule counterexamples',len(doc_tables)==3 and len(doc_tables[1].select('tbody tr'))==9 and len(doc_tables[2].select('tbody tr'))==6 and all(int(t.select('td')[2].text)==s['eligible'] and (s['best'] is None or s['best']==t.select('td')[3].text) for s,t in zip(decision_checks['scenarios'],doc_tables[1].select('tbody tr'))))
 ok('Selector trace reports bounded search rather than universal absence',trace['status']=='not_recovered_in_checked_public_entries' and trace['tree_truncated'] is False and len(trace['limitations'])==4 and all(q['total_count']==q['items_returned']==1 and q['issue_numbers']==[9126] and q['incomplete_results'] is False for q in trace['issue_queries']) and trace['issue_9126_body_unchanged_from_prior_archive'])
-ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==433 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
+ok('Five selector provenance files retain fixed revision in expanded archive',len(list((S/'decision_2026_10_04').glob('*.json')))==5 and len(manifest['files'])==435 and read(S/'decision_2026_10_04/marin_head.json')['sha']==read(S/'decision_2026_10_04/marin_tree.json')['sha']==trace['pinned_marin_revision'])
 contract=read(ROOT/'templates/selection_contract.json')
 ok('Confirmation contract cannot retroactively assert prior registration',contract['status']=='planned_not_executed' and contract['prior_search_results_already_seen'] is True and contract['contract_frozen_utc'] is None and contract['results'] is None and contract['independent_confirmation']['used_during_search'] is None)
 embedded=json.loads(soup.select_one('#decision-data').text)
@@ -615,7 +615,7 @@ report['highlights']+=['V29 fifteen-case symptom / source / local-scope / next-c
 browser29=read(A/'browser_validation_v29.json')
 ok('V29 fifteen-case map and six routes fit and load offline',browser29['desktop']['width']<=browser29['desktop']['viewport'] and browser29['mobile']['width']<=browser29['mobile']['viewport'] and browser29['offline']['figures']==browser29['offline']['loaded']==17 and browser29['offline']['cases']==15 and browser29['offline']['entryRows']==6 and browser29['offline']['historicalAudit'] and browser29['offline']['requests']==browser29['offline']['errors']==[])
 mg=read(A/'muon_geometry_probe.json');refresh=read(A/'issue_refresh_v30.json')
-ok('V30 original geometry helper retains twenty bounded checks',mg['checks_passed']==len(mg['checks'])==20 and mg['actual_Muon_direction'] is None and mg['actual_JAX_SPMD'] is None and mg['actual_GPU_result'] is None and mg['historical_execution_sha'] is None)
+ok('V30 original geometry helper retains twenty-one bounded checks',mg['checks_passed']==len(mg['checks'])==20 and mg['actual_Muon_direction'] is None and mg['actual_JAX_SPMD'] is None and mg['actual_GPU_result'] is None and mg['historical_execution_sha'] is None)
 ok('V30 fixed geometry source digest matches',mg['source_sha256']==hashlib.sha256((S/'optimizer_2026_10_05/optimizer.py').read_bytes()).hexdigest())
 ok('V30 four-dimensional counterexample conserves joint norm only',abs(mg['four_dimensional_joint_norm_before']-mg['four_dimensional_joint_norm_after'])<1e-5 and mg['four_dimensional_inner_norm_before']!=mg['four_dimensional_inner_norm_after'])
 ok('V30 postprojection bound counterexample exceeds eta',mg['tangent_update_norm_eta_0p2']>mg['artificial_lr'] and abs(mg['tangent_update_norm_eta_0p2']-mg['postprojection_tight_bound_eta_0p2'])<1e-6)
@@ -695,6 +695,15 @@ ok('V37 macro sensitivity is descriptive and preserves improvement without ptb',
 ok('V37 new observed chapter has three tables and inline scientific figure',len(soup.select('#live-observation-guide table'))==3 and soup.select_one('#live-observation-guide svg') is not None)
 report['highlights']=[x.replace('430 source archive checksums valid','433 source archive checksums valid') for x in report['highlights']]
 report['highlights']+=['V37 new independent 9.75T / 4K snapshot; four new exact eval steps, 72 unchanged overlapping values; endpoint and PTB sensitivity decomposition; static HTML only for new chapter']
+ei=read(A/'eval_identity_probe.json')
+ok('V38 evaluation identity checks retain twenty-one bounded checks',ei['checks_passed']==len(ei['checks'])==21 and ei['actual_historical_execution_SHA'] is None and ei['actual_cache_content_hash'] is None and ei['actual_sharded_loader'] is None and ei['actual_eval_metric_replay'] is None and ei['actual_GPU_behavior'] is None)
+ok('V38 archived source and declared config digests match',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in ei['source_sha256'].items()))
+ok('V38 progress estimate differs from actual synthetic stream count',ei['synthetic_exact_multiple']=={'actual_batches':2,'len_estimate':3})
+ok('V38 synthetic default stream includes finite partial items once',ei['synthetic_default_batches']==[[0,1,2,3],[4,5,6,7],[8,9]])
+ok('V38 declared current evaluation has batch 704 and no cap',ei['declared_eval']['batch']==704 and ei['declared_eval']['max_eval_batches'] is None)
+ok('V38 new identity chapter has three evidence tables',len(soup.select('#eval-identity-guide table'))==3)
+report['highlights']=[x.replace('433 source archive checksums valid','435 source archive checksums valid') for x in report['highlights']]
+report['highlights']+=['V38 domain mapping / fresh default logical eval iteration / finite partial batch / progress-length overestimate; no actual cache or repeated model-score verification']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

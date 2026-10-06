@@ -1,0 +1,69 @@
+{
+  "scope": "Execute archived domain-index and loader planning bodies on synthetic finite\nCPU datasets. No JAX permutation, background worker, model loss or sharded arrays.\n",
+  "checks_passed": 21,
+  "checks": [
+    "Domain finite length equals concatenated child lengths",
+    "Domain offsets are stable cumulative boundaries",
+    "Boundary selects first item of next dataset",
+    "Original batch mapping restores unsorted duplicate indices",
+    "Tag vectors stay attached to the original item",
+    "Positive cap takes a prefix from each domain",
+    "Original planning restarts the default iterator from zero",
+    "Final partial batch retains all logical items exactly once",
+    "Exact-multiple stream yields two batches rather than len estimate",
+    "Original len overcounts exact-multiple progress estimate",
+    "Partial-length progress estimate matches three logical batches",
+    "Disabling partial padding drops the partial logical batch",
+    "Changing fetch grouping does not change logical stream",
+    "Explicit start from batch one omits only the first logical batch",
+    "Original __iter__ creates a new default-start iterator",
+    "Original timing wrapper immediately creates a new loader iterator",
+    "Hero builder omits shuffle and archived evaluator defaults false",
+    "Latest declared eval has no cap and batch 704",
+    "Latest eval uses explicit validation caches without train validation split",
+    "PTB and Twitter declarations keep fixed dated cache paths",
+    "Padding helper explicitly delegates to tree_zeros_like"
+  ],
+  "synthetic_default_batches": [
+    [
+      0,
+      1,
+      2,
+      3
+    ],
+    [
+      4,
+      5,
+      6,
+      7
+    ],
+    [
+      8,
+      9
+    ]
+  ],
+  "synthetic_exact_multiple": {
+    "actual_batches": 2,
+    "len_estimate": 3
+  },
+  "declared_eval": {
+    "batch": 704,
+    "max_eval_batches": null,
+    "num_validation_sequences": null,
+    "builder_shuffle_argument": "omitted; archived default false",
+    "PTB_cache": "s3://marin-us-east-02a/marin/paloma/ptb-llama3/2026.06.28",
+    "Twitter_cache": "s3://marin-us-east-02a/marin/paloma/twitterAAE_HELM_fixed-llama3/2026.06.28"
+  },
+  "source_sha256": {
+    "sources/scale_2026_10_05/eval.py": "b67cc96335f667982a0fe43618215734140c28392be215a88177979c712dee2c",
+    "sources/eval_identity_2026_10_06/loader.py": "d8c14060286d9998c8784ce945694958b7c61a5404bcede6e77ba34c467e077d",
+    "sources/eval_identity_2026_10_06/logging.py": "31884eb029c19631401dea85539943b7495bb37c150d7078d33041dad7e2cb86",
+    "sources/scale_2026_10_05/train_hero_ep.py": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7",
+    "sources/live_2026_10_06/meta.json": "4b709c0b6440366aec7fa4ec65e6ff4b9881c3e2201082ffef036ca40547d80a"
+  },
+  "actual_historical_execution_SHA": null,
+  "actual_cache_content_hash": null,
+  "actual_sharded_loader": null,
+  "actual_eval_metric_replay": null,
+  "actual_GPU_behavior": null
+}

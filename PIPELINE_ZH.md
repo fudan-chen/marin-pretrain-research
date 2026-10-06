@@ -179,3 +179,6 @@ V70 续训→数据管线补充：标明 full resume 或 weights-only，绑定 m
 
 
 V71 切换验收：比较批次区间与阶段边界，核对 callback step/next_step、实际 domain IDs 与各域 valid targets/NLL；保留正常无跨界的证据。若重新转换新 schedule 修好批次边界，还须单独审查历史消费重现。配比边界模板待真实执行。
+
+
+V72 配比确认管线补充：对固定预测重放旧新 mask/weight，记录分母、域内 NLL 与输出 z-loss；再用固定评估和能力保底确认模型收益。组成和参数变化可能交互，写明分解基准。CPU 人工控制已执行，真实 Hero 分解未知。

@@ -1,0 +1,31 @@
+{
+  "version": "V72",
+  "created_utc": "2026-10-06T21:00:49.549053+00:00",
+  "goal_status": "active",
+  "scope": "Original model loss method, Grug reducer and CPU reference/penalty controls on fixed predictions with explicit provider/backend substitutes",
+  "checks_passed": 1495,
+  "loss_checks": 7,
+  "source_files": 462,
+  "all_prior_source_bytes_preserved": 462,
+  "new_source_acquisitions": 0,
+  "actual_Hero_loss_effect": null,
+  "actual_GPU_execution": null,
+  "actual_browser_rendering": null,
+  "artifact_sha256": {
+    "README.md": "e1850fac729166c61cded6ec1c8b0a922a17bad06df70a63530dde1dbfccba7c",
+    "DELIVERY_AUDIT_ZH.md": "42963b0da974eff5f8390a0aa8eb4e2f9dc5820a2195c159bde08b41f078f6b6",
+    "LOSS_TRIAGE_ZH.md": "8c146145f9f3bf7a4fba77b1155a9d535cc737becdd119319750ae22c644631a",
+    "SYNTHESIS_ZH.md": "1df4b2bb62dbbb442cbefe4e723782ac1511adcb686bcd48810ab05bf64d76fb",
+    "RUBRICS_ZH.md": "cafb61d7041d2283d607547936d8ecbf6c5a1c2ae48915a25888bd743162b342",
+    "PIPELINE_ZH.md": "52b95a4f30d81963106523e2056cea991ddea6c4b1076f15a084adf8536f3340",
+    "IMPROVEMENT_LOG_ZH.md": "86e425623b9e987ffab3b46d6a628100d8934043e82a8dbb3fe2d4a1ad14458b",
+    "Makefile": "9db74ad86ccadf949de8bb7e75ace124830140781de4896e271d98d05a6a6587",
+    "scripts/validate.py": "2477c558616fcc42d58bff660a6135bfd2f3be3b07aabe0cece381964ee0cb0e",
+    "scripts/probe_loss_composition_cpu.py": "365f86f94b9faddd4681e8bd75d44ce1f18a464e9a3528043df5ec4e149f4ce6",
+    "analysis/loss_composition_cpu.json": "a1e818b7a99c9c19dfef3411fbead08f9982ba303baf0c40c9bbc08ad84af155",
+    "analysis/validation.json": "13e98c04d4e9437f256de2a3c68e9040a71a4e4e09c67179fb96195dd950f08e",
+    "analysis/static_validation_v72.json": "08a45627234db47f18e4142e83b2a22c9610681e606f7ae61f6208d0727a54fa",
+    "index.html": "36fc8b244b037dd1fc18917c76a738556dd6d843edc24b3457934a573c17edde",
+    "report_standalone.html": "cf7443fd1cf7af866faf5ee83400c54caab5e8762cfe8deb38a09a24c354b554"
+  }
+}

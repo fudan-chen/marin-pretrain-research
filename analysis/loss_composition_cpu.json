@@ -1,0 +1,73 @@
+{
+  "scope": "Original model loss method, Grug reduction and reference CE on fixed predictions.\nSynthetic hidden/router providers and CPU reference delegate; no actual model or measured Hero loss.\n",
+  "checks_passed": 7,
+  "checks": [
+    "Fixed predictions produce different loss under changed valid-target composition",
+    "Original fractional mean uses weight sum not active count",
+    "Uniform positive weight scaling leaves mean and gradient unchanged",
+    "Common logit shift preserves pure CE in CPU tolerance",
+    "Same probabilities change total objective when output z-loss enabled",
+    "Output z-loss changes head gradient",
+    "Original cross_entropy_loss metric includes enabled output penalty"
+  ],
+  "runtime": {
+    "jax": "0.7.2",
+    "numpy": "2.5.3"
+  },
+  "observations": {
+    "per_domain_pure_ce": [
+      0.048587351573742055,
+      3.048587351573742
+    ],
+    "fixed_prediction_losses": {
+      "A1_B3": 2.2985873222351074,
+      "A3_B1": 0.7985873222351074,
+      "fractional_A": 1.2485873699188232
+    },
+    "pure_ce": 0.7985873222351074,
+    "shifted_pure_ce": 0.7985877990722656,
+    "with_z_loss": 0.7990069389343262,
+    "shifted_with_z_loss": 0.8131046295166016,
+    "head_gradient_pure": [
+      [
+        0.20257413387298584,
+        -0.20257413387298584
+      ]
+    ],
+    "head_gradient_with_z": [
+      [
+        0.2029644250869751,
+        -0.20255470275878906
+      ]
+    ],
+    "weighted_target_mass": {
+      "A1_B3": [
+        1,
+        3
+      ],
+      "A3_B1": [
+        3,
+        1
+      ],
+      "fractional_A": [
+        1.5,
+        1
+      ]
+    }
+  },
+  "explicit_substitutions": [
+    "fixed hidden/router provider instead of Transformer forward",
+    "CPU original reference delegate replaces xla_fast_bwd dispatch",
+    "mesh=None; no collective",
+    "identity named_call; router summarizer identity"
+  ],
+  "actual_Hero_loss_effect": null,
+  "actual_Hero_target_composition": null,
+  "actual_GPU_kernel": null,
+  "source_sha256": {
+    "sources/contracts_2026_10_05/api.py": "5efeea2badba92dbc2dce9d0fc2306f12a2bf754dd2d8bee16b1dcd3ed0e355d",
+    "sources/contracts_2026_10_05/reference.py": "f113b3b6872af2d6aa4658cf4326b6c52c2675bf537690d5653604e9d559c0d5",
+    "sources/scale_2026_10_05/grug_loss.py": "97e86e8a7540cafeb4be9695da9a5c8342f3780b7fee6cbb45de79ffc50c15ba",
+    "sources/contracts_2026_10_05/model.py": "8fdfd89cf6814da05683f134f154525916728370368a2493843195d9a489859c"
+  }
+}

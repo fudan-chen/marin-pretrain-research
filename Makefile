@@ -189,3 +189,7 @@ restore-data-clock:
 mixture-boundary-logging:
 	$(CPU_PYTHON) scripts/probe_mixture_boundary_logging.py
 	$(PYTHON) scripts/plot_mixture_boundary_logging.py
+
+.PHONY: loss-composition
+loss-composition:
+	$(CPU_PYTHON) scripts/probe_loss_composition_cpu.py

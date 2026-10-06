@@ -417,3 +417,8 @@ V57复算#9708冻结表18条、12条步时，6项检查；新增性能图和未�
 ## V71：原回调时钟、正常边界与错配工件对照
 
 五输入6检查：原 StepInfo/StateCallbackRunner/LambdaCallback/stage hook、原 loader 与真实 CPU 混合。正常同 schedule 边界对齐；旧边界+新 loader 控制 A4/B4，起点日志仍 stage0。新增域计数图与未执行模板；synthetic loss0不是测量。462来源保持。
+
+
+## V72：原 loss 方法的目标组成与输出罚项控制
+
+7检查，固定 hidden/head 的原模型 loss、Grug reducer、CPU reference 和原输出罚项语句。权重组成反例、小数分母、统一缩放均值/梯度、logit平移与z-loss指标核对。显式前向/provider/backend替代，无真实Hero loss归因或GPU。462来源保持。

@@ -1,0 +1,11 @@
+{
+  "checks_passed": 5,
+  "checks": [
+    "index.html unique ids",
+    "index.html V72 loss decomposition",
+    "report_standalone.html unique ids",
+    "report_standalone.html V72 loss decomposition",
+    "462 source hashes valid"
+  ],
+  "actual_browser_rendering": null
+}

@@ -960,6 +960,12 @@ bt=read(ROOT/'templates/mixture_boundary_review.json')
 ok('V71 boundary review has no unexecuted loss results',bt['status']=='planned_not_executed' and all(v is None for v in bt['loss_evidence'].values()) and bt['decision']['loss_attribution_supported'] is None)
 ok('V71 boundary-count figure embedded',soup.select_one('#batch-clock-guide #mixboundary-figure_1') is not None)
 report['highlights']+=['V71 five original callback/loader/mixture controls, six checks and measured domain-count figure; normal alignment and deliberately mismatched schedule separated, no measured loss or Hero crossing event']
+lc=read(A/'loss_composition_cpu.json')
+ok('V72 source-bound original loss controls retain real Hero effect unknown',lc['checks_passed']==len(lc['checks'])==7 and lc['actual_Hero_loss_effect'] is None and lc['actual_GPU_kernel'] is None and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in lc['source_sha256'].items()))
+lo=lc['observations']
+ok('V72 fixed prediction target composition changes mean',abs(lo['fixed_prediction_losses']['A1_B3']-lo['fixed_prediction_losses']['A3_B1']-1.5)<1e-6 and lo['weighted_target_mass']['fractional_A']==[1.5,1])
+ok('V72 logit shift pure CE versus z-loss distinguished',abs(lo['pure_ce']-lo['shifted_pure_ce'])<2e-6 and lo['shifted_with_z_loss']>lo['with_z_loss']>lo['pure_ce'] and 'V72' in soup.select_one('#loss-triage').get_text())
+report['highlights']+=['V72 seven original-loss CPU controls, fixed-prediction composition and output-penalty metric checks; synthetic forward/reference delegate, no Hero loss attribution or GPU execution']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

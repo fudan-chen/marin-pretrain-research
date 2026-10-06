@@ -364,3 +364,6 @@ V70 配比归因规则：完整续训时先核对 marker step、恢复 state.ste
 
 
 V71 配比规则：先核对正常 builder 的 step→offset 转换，不能把不匹配工件的跨批控制误称生产路径必然跨界。原 callback 的 completed-step 时钟本例对齐；stage 日志表示批次起点配置，不等于整批域占比或有效目标占比。域 IDs、valid targets 与 NLL 分别取证。
+
+
+V72 loss 规则：训练 CE 标签须核对是否含输出 z-loss；域样本占比、有效目标 sum(weight) 与纯 NLL 分开。固定预测重放 mask/weight 可检查组成效应，但不冒充真实模型能力收益；输出罚项与 router 日志项分别记录。

@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1492,
+  "checks_passed": 1495,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -119,7 +119,8 @@
     "V68 six actual local wrapper controls and seven checks, original NamedArray class with explicit single-device sharding adapter; no full model, Hero dtype event or execution-package reconstruction",
     "V69 nine original Grug-schema policy controls with six-leaf real IO, actual Optax fixture and explicit payload/barrier/publisher adapters; no full Hero state or production incident",
     "V70 seven joined original-policy/loader/mixture controls and measured sample-order figure; synthetic marker and identity data, no Hero token stream, training step or loss attribution",
-    "V71 five original callback/loader/mixture controls, six checks and measured domain-count figure; normal alignment and deliberately mismatched schedule separated, no measured loss or Hero crossing event"
+    "V71 five original callback/loader/mixture controls, six checks and measured domain-count figure; normal alignment and deliberately mismatched schedule separated, no measured loss or Hero crossing event",
+    "V72 seven original-loss CPU controls, fixed-prediction composition and output-penalty metric checks; synthetic forward/reference delegate, no Hero loss attribution or GPU execution"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

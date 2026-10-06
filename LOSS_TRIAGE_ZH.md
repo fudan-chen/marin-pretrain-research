@@ -86,3 +86,30 @@ HIST的共享margin范围会影响网格精度；TOPK的局部阈值平均具有
 
 
 V61在归因之前增加一项检查：事件记录映射到实际评估时刻后，各改动列是否可区分？当前配比/执行两个标记完全相同。矩阵审计不替代反事实，但能提前阻止无依据的分项回归结论，见[MIX_TRAJECTORY](MIX_TRAJECTORY_ZH.md)。
+
+
+## V72：预测不变，训练 loss 仍能变化多少
+
+V71 分开配置权重、域样本与有效目标。这轮执行原 Transformer.next_token_loss 方法、原 Grug mean reducer、原 CPU reference CE，以及原 API 的输出 logsumexp 罚项语句。固定 hidden/provider 与 head，人工两域各一条序列；7 项检查通过，[输出值与梯度](analysis/loss_composition_cpu.json)可复查。没有执行 Transformer 前向或真实数据。
+
+|控制，预测参数保持固定|有效目标权重质量 A/B|原路径纯 CE|
+|---|---|---:|
+|A 1个有效目标，B 3个|1 / 3|2.2985873|
+|A 3个有效目标，B 1个|3 / 1|0.7985873|
+|后一输入的 A 权重乘0.5|1.5 / 1|1.2485874|
+
+本例所有位置的 logits 为 [2,-1]，A 的标签为0、B为1，故每域纯 CE 分别为0.04858735与3.04858735。把有效目标占比换向后，loss 下降1.5，没有任何参数更新。两个域的序列数始终各1，名义样本占比都是一半；目标质量与样本数量却不同。小数权重的分母是 sum(weight)，本例2.5，不是4个非零位置。将全部正权重统一乘7，mean 与 head 梯度在1e−6容差内保持；这只验证有限正分母的 CPU 小例，不能推广到下溢、全零分母或 GPU kernel。
+
+### cross_entropy_loss 字段可能包含输出 z-loss
+
+对 A3/B1 输入，纯 CE 为0.7985873；输出 logsumexp_weight=1e−4 时，原方法返回0.7990069，train/cross_entropy_loss 字段也等于这个含罚项的值。给两项 logits 都加10，softmax 概率不变，纯 CE 为0.7985878，与原值相差不足2e−6；含罚项的目标却变为0.8131046。head 梯度也随输出罚项改变。
+
+为什么？原 API 先执行 `loss = loss + logsumexp_weight * (lse**2)`，再加权归约；原 model 方法把返回值直接赋给 cross_entropy_loss 及同名指标。输出 z-loss 限制 logit 的绝对尺度，所以并不对共同平移不变。router z-loss 是另一条日志项，本例 provider 把它设为零；不能用 router 指标替代输出罚项分解。这里实际执行了含罚项的原模型 loss 方法，但 backend dispatcher 明确被 CPU reference delegate 替代，未复现 xla_fast_bwd/GPU 数值。
+
+### 配比决策应查看什么
+
+训练平均 loss 至少受有效目标组成、loss_weight 与输出罚项影响。低 loss 可能来自更多易预测目标，也可能来自 logit 尺度约束；这些变化各有含义，不能仅凭训练曲线下降判断配比改善了模型能力。应同时保留域内纯 NLL、有效目标质量、输出 z-loss、明确固定分母的评估和能力保底项；按同一评估分布比较，而不是用新训练分布自己的 mean 判断收益。
+
+这不意味着混合训练 loss 没有价值：它适合监测当前目标和异常。若要分析原因，可先冻结一批 logits/labels，重放旧新 mask/weight 来量化计算口径差，再在固定输入上比较实际模型变化。两项作用可能交互，需要标明基准预测与基准权重，不把其中一个分解叫成唯一因果贡献。
+
+本轮只给出人工反例与接口事实，Hero 实际 per-domain targets、输出罚项贡献和配比效果仍未知。损失方法的 hidden/router 提供器、router summarizer、named_call 与 mesh 依赖均有显式替代；原 reference、原罚项语句和原归约实际执行，未修改上游。复现：`make loss-composition CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。

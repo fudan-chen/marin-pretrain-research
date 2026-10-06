@@ -818,7 +818,7 @@ ok('V53 dictionary order changes tie allocation',mi['tie_counts']['ABC']=={'A':4
 ok('V53 key preserves whole-block multiset but changes partial content',sorted(mi['whole_seed7'])==sorted(mi['whole_seed8']) and sorted(mi['partial_seed7'])!=sorted(mi['partial_seed8']))
 ok('V53 finite restart separates exposure from unique identity',len(mi['finite_length3_stream'])==24 and len(set(mi['finite_length3_stream']))==6)
 report['highlights']+=['V53 fourteen original mixture class and real JAX CPU identity controls; ordered dataset IDs, integer ties, finite modulo and partial windows; no actual Hero token/shuffle/restore']
-ok('V53 mixture identity chapter retains original and V54 V55 control tables',len(soup.select('#mixture-identity-guide table'))==6)
+ok('V53 mixture identity chapter retains original and V54 V55 control tables',len(soup.select('#mixture-identity-guide table'))==7)
 ish=read(A/'inner_shuffle_cpu.json')
 ok('V54 fourteen CPU/source controls with bounded Hero claims',ish['checks_passed']==len(ish['checks'])==14 and ish['runtime']['backend']=='cpu' and ish['actual_Hero_inner_shuffle'] is None and ish['actual_Hero_split_leakage'] is None and ish['declared_num_validation_sequences'] is None)
 ok('V54 PRP and dataset source identities match',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in ish['source_sha256'].items()))
@@ -1128,6 +1128,11 @@ ok('V97 original restart and conditional formula controls source-bound',rc['chec
 ok('V97 partial prefix counters cannot substitute contiguous index coverage',rc['cases']['one_A']['actual_prefix_unique']==3 and rc['cases']['one_A']['conditional_prefix_projection']['window_distinct_sequence_indices']==5 and rc['cases']['one_A']['actual_new_against_history']==['A:0','A:3'])
 ok('V97 complete staged blocks preserve reference multisets',len(rc['staged_full_blocks'])==8 and all(x['actual_multiset']==x['reference_multiset'] for x in rc['staged_full_blocks']) and rc['cases']['one_A']['actual_window_internal_repeats']==1)
 report['highlights']+=['V97 sixteen original restart/coverage controls; contiguous formula narrowed to actual index intervals and complete blocks, edge coverage unknown for Hero']
+mh=read(A/'mixture_resume_history_cpu.json')
+ok('V98 original history replay controls source-bound',mh['checks_passed']==len(mh['checks'])==16 and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in mh['source_sha256'].items()) and mh['actual_loader_resume'] is None and mh['actual_Hero_stage_rewrite'] is None)
+ok('V98 same current quota and names do not imply same identities',mh['same_current_quota']==[4,4] and mh['old_prefix']==[8,8] and mh['changed_prefix']==[12,4] and all(x.split(':')[0]==y.split(':')[0] and x!=y for x,y in zip(mh['old_read'],mh['changed_past_read'])))
+ok('V98 modulo alias retains distinct logical offsets',mh['modulo_masked_old']==mh['modulo_masked_changed'] and mh['old_logical']!=mh['changed_logical'] and mh['reset_cursor_read']!=mh['old_read'])
+report['highlights']+=['V98 sixteen original-class historical-stage replay controls; unchanged current quota with shifted base and modulo-masked history, no actual loader restore']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

@@ -1,0 +1,31 @@
+{
+  "version": "V98",
+  "created_utc": "2026-10-06T23:44:58.151793+00:00",
+  "goal_status": "active",
+  "scope": "Original mixture reconstruction from past stage declarations and modulo-masked offsets; no loader restore",
+  "checks_passed": 1590,
+  "local_original_cpu_checks": 16,
+  "static_checks": 7,
+  "source_files": 498,
+  "new_source_files": 0,
+  "actual_loader_resume": null,
+  "actual_Hero_stage_rewrite": null,
+  "actual_training_benefit": null,
+  "actual_browser_rendering": null,
+  "artifact_sha256": {
+    "README.md": "fed25ccc5ee3f38ba8f51d393d9e1c18574c3ed53008e82591d1e9fcb658c168",
+    "DELIVERY_AUDIT_ZH.md": "2b60b7d3f03c612c101661db852dc070170a404889ce66993f2d4faf6eda3232",
+    "IMPROVEMENT_LOG_ZH.md": "c0458a4f6c7c6be6e5951fa6387deeb2e261c32f1f33ce80fe9902949672a787",
+    "MIXTURE_IDENTITY_ZH.md": "6283d9c4e4ca34cab93a221debbf9e83cbc46e99e1407922e11b0461d77628e5",
+    "PIPELINE_ZH.md": "9f6c0f69424f177580db908734e555da5d19ef89e2c775b1fecce2b1e19a97f0",
+    "RUBRICS_ZH.md": "a1d60fa34c3b54873378ba501b3a6350a13cafdfcbe06372d6f29b1fe4d53249",
+    "SYNTHESIS_ZH.md": "1148a5d43ae2444f8791329d649aaf94276f4e1d82f05d4077acd7bcdddb0b7a",
+    "analysis/validation.json": "80247d1c30766d898541286acd03570a1a9cef6403695b028e98154c5129aaa9",
+    "index.html": "18a74eca7cfbf81f0c7eb242c2308876e206e88bb90eb284a3aa6fe4c9bb8b72",
+    "report_standalone.html": "30f1268c0177c2d45b5e30a103a6ad240a6897cd6eaea6149c85fcfdab254181",
+    "scripts/validate.py": "59a5a57c1e1a0518d7ae87d572de737237dd708548c9e90f205c80780eb8a767",
+    "scripts/probe_mixture_resume_history_cpu.py": "178d5dde3be3a8f2bba7f1876ea7a1fe93ce06574ec3d640bc2063c566986624",
+    "analysis/mixture_resume_history_cpu.json": "7b7e22c6863316e2bb3c10c8e1d3c0590664aa301b8f374c43fcc7c4b89eb4d6",
+    "analysis/static_validation_v98.json": "6a6926fd30f4e7b5e9f3899bc31f8d6ab2a68923bd53466f541616a3813a0a05"
+  }
+}

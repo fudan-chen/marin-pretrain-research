@@ -1,0 +1,401 @@
+{
+  "scope": "Original fixed-head mixture replay with past-stage declarations changed.\nFinite identity children, real JAX CPU; no loader cursor or model checkpoint restore.\n",
+  "checks_passed": 16,
+  "checks": [
+    "CPU original permutation",
+    "Current named quotas equal",
+    "Past stage prefixes differ",
+    "Current domain sequence unchanged",
+    "All logical A offsets shift plus four and B minus four",
+    "All current identities differ for inventory five seven",
+    "Fresh object reconstructs unchanged declaration",
+    "Singleton and batch reads agree in bounded range",
+    "Different read partition preserves replay",
+    "Out of order duplicate reads preserve replay",
+    "LRU eviction and access history preserve replay",
+    "Modulo inventory can mask changed logical offsets",
+    "Masked sequence still has distinct unwrapped history",
+    "Resetting mixture index changes replay even with same current quotas",
+    "Same global index with flattened current schedule reproduces baseline coincidentally",
+    "That flattened schedule does not reproduce changed past prefix"
+  ],
+  "runtime": {
+    "python": "3.12.13",
+    "numpy": "2.5.3",
+    "jax": "0.7.2",
+    "backend": "cpu"
+  },
+  "indices": [
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23,
+    24,
+    25,
+    26,
+    27,
+    28,
+    29,
+    30,
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39
+  ],
+  "old_prefix": [
+    8,
+    8
+  ],
+  "changed_prefix": [
+    12,
+    4
+  ],
+  "same_current_quota": [
+    4,
+    4
+  ],
+  "old_read": [
+    "B:1",
+    "A:1",
+    "A:0",
+    "A:4",
+    "B:2",
+    "B:4",
+    "B:3",
+    "A:3",
+    "A:4",
+    "A:2",
+    "A:3",
+    "B:5",
+    "B:1",
+    "A:0",
+    "B:6",
+    "B:0",
+    "A:2",
+    "B:3",
+    "B:5",
+    "A:1",
+    "A:3",
+    "B:2",
+    "A:4",
+    "B:4"
+  ],
+  "changed_past_read": [
+    "B:4",
+    "A:0",
+    "A:4",
+    "A:3",
+    "B:5",
+    "B:0",
+    "B:6",
+    "A:2",
+    "A:3",
+    "A:1",
+    "A:2",
+    "B:1",
+    "B:4",
+    "A:4",
+    "B:2",
+    "B:3",
+    "A:1",
+    "B:6",
+    "B:1",
+    "A:0",
+    "A:2",
+    "B:5",
+    "A:3",
+    "B:0"
+  ],
+  "old_logical": [
+    [
+      "B",
+      8
+    ],
+    [
+      "A",
+      11
+    ],
+    [
+      "A",
+      10
+    ],
+    [
+      "A",
+      9
+    ],
+    [
+      "B",
+      9
+    ],
+    [
+      "B",
+      11
+    ],
+    [
+      "B",
+      10
+    ],
+    [
+      "A",
+      8
+    ],
+    [
+      "A",
+      14
+    ],
+    [
+      "A",
+      12
+    ],
+    [
+      "A",
+      13
+    ],
+    [
+      "B",
+      12
+    ],
+    [
+      "B",
+      15
+    ],
+    [
+      "A",
+      15
+    ],
+    [
+      "B",
+      13
+    ],
+    [
+      "B",
+      14
+    ],
+    [
+      "A",
+      17
+    ],
+    [
+      "B",
+      17
+    ],
+    [
+      "B",
+      19
+    ],
+    [
+      "A",
+      16
+    ],
+    [
+      "A",
+      18
+    ],
+    [
+      "B",
+      16
+    ],
+    [
+      "A",
+      19
+    ],
+    [
+      "B",
+      18
+    ]
+  ],
+  "changed_logical": [
+    [
+      "B",
+      4
+    ],
+    [
+      "A",
+      15
+    ],
+    [
+      "A",
+      14
+    ],
+    [
+      "A",
+      13
+    ],
+    [
+      "B",
+      5
+    ],
+    [
+      "B",
+      7
+    ],
+    [
+      "B",
+      6
+    ],
+    [
+      "A",
+      12
+    ],
+    [
+      "A",
+      18
+    ],
+    [
+      "A",
+      16
+    ],
+    [
+      "A",
+      17
+    ],
+    [
+      "B",
+      8
+    ],
+    [
+      "B",
+      11
+    ],
+    [
+      "A",
+      19
+    ],
+    [
+      "B",
+      9
+    ],
+    [
+      "B",
+      10
+    ],
+    [
+      "A",
+      21
+    ],
+    [
+      "B",
+      13
+    ],
+    [
+      "B",
+      15
+    ],
+    [
+      "A",
+      20
+    ],
+    [
+      "A",
+      22
+    ],
+    [
+      "B",
+      12
+    ],
+    [
+      "A",
+      23
+    ],
+    [
+      "B",
+      14
+    ]
+  ],
+  "modulo_masked_old": [
+    "B:0",
+    "A:3",
+    "A:2",
+    "A:1",
+    "B:1",
+    "B:3",
+    "B:2",
+    "A:0",
+    "A:2",
+    "A:0",
+    "A:1",
+    "B:0",
+    "B:3",
+    "A:3",
+    "B:1",
+    "B:2",
+    "A:1",
+    "B:1",
+    "B:3",
+    "A:0",
+    "A:2",
+    "B:0",
+    "A:3",
+    "B:2"
+  ],
+  "modulo_masked_changed": [
+    "B:0",
+    "A:3",
+    "A:2",
+    "A:1",
+    "B:1",
+    "B:3",
+    "B:2",
+    "A:0",
+    "A:2",
+    "A:0",
+    "A:1",
+    "B:0",
+    "B:3",
+    "A:3",
+    "B:1",
+    "B:2",
+    "A:1",
+    "B:1",
+    "B:3",
+    "A:0",
+    "A:2",
+    "B:0",
+    "A:3",
+    "B:2"
+  ],
+  "reset_cursor_read": [
+    "A:1",
+    "A:2",
+    "B:3",
+    "B:0",
+    "B:2",
+    "A:3",
+    "A:0",
+    "B:1",
+    "B:6",
+    "A:4",
+    "B:4",
+    "A:0",
+    "A:1",
+    "B:5",
+    "B:0",
+    "A:2",
+    "B:1",
+    "A:1",
+    "A:0",
+    "A:4",
+    "B:2",
+    "B:4",
+    "B:3",
+    "A:3"
+  ],
+  "actual_loader_resume": null,
+  "actual_Hero_stage_rewrite": null,
+  "actual_training_benefit": null,
+  "source_sha256": {
+    "sources/integer_exposure_2026_10_07/mixture.py": "67e97941a79753b2e5865f7f41c7762436a428599ecd1a60d643aa891a817685",
+    "scripts/probe_mixture_support_cpu.py": "55bb444594d8935a510dbbfe0cc5f46867b54968c4978e56d1f90431648f9afa",
+    "scripts/probe_mixture_identity_cpu.py": "9537f8a87ed09c702fc696c351f496eba84297ad53bcafd3c398729732f2d9c5",
+    "scripts/probe_mixture_resume_history_cpu.py": "178d5dde3be3a8f2bba7f1876ea7a1fe93ce06574ec3d640bc2063c566986624"
+  }
+}

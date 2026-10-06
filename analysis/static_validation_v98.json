@@ -1,0 +1,14 @@
+{
+  "version": "V98",
+  "checks_passed": 7,
+  "checks": [
+    "index.html unique IDs",
+    "index.html six historical tables preserved plus resume comparison",
+    "index.html history mapping and production limits",
+    "report_standalone.html unique IDs",
+    "report_standalone.html six historical tables preserved plus resume comparison",
+    "report_standalone.html history mapping and production limits",
+    "1590 fresh checks"
+  ],
+  "actual_browser_rendering": null
+}

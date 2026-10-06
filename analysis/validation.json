@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1587,
+  "checks_passed": 1590,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -145,7 +145,8 @@
     "V94 strict proposed checker layer and twelve old/new regressions; field shape and explicit host coverage, no production validation",
     "V95 thirteen current original mixture constructor/read CPU controls; API type divergence and shared prefix corruption, Hero declaration bound below int32, no actual token replay",
     "V96 thirty-two original finite-length/read controls, eight checks; partial-block bounds and count versus coverage, Hero declares restart, no actual loader incident",
-    "V97 sixteen original restart/coverage controls; contiguous formula narrowed to actual index intervals and complete blocks, edge coverage unknown for Hero"
+    "V97 sixteen original restart/coverage controls; contiguous formula narrowed to actual index intervals and complete blocks, edge coverage unknown for Hero",
+    "V98 sixteen original-class historical-stage replay controls; unchanged current quota with shifted base and modulo-masked history, no actual loader restore"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

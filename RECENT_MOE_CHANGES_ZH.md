@@ -134,3 +134,32 @@ V58回答某种正权重/cotangent是否丢失乘积，以及人工sigmoid VJP�
 下一项生产证据应记录每层选中unbiased logits、S/epsilon、cast后权重零值/幅值分布、accepted/drop，以及同输入下两种反向的参数梯度。仅看entropy、计数或平均权重不能排除少数由bias选中的极小权重。当前没有Hero分布，不能认定实际失稳、无效训练或应修改epsilon。
 
 运行make router-weight-path CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python可复算。这里把验收条件落实到选择、归一化和cast，并未新增未经证实的生产bug。
+
+
+## V60：一处舍入误差如何经过归一化与优化器
+
+本轮把三段固定源码接成CPU诊断：V59的原router block、#9833 portable分支原row-dot与division/mask语句、原gate/router衰减包装和真实Optax。router activation为bf16，诊断参数为float32；expert输出人为固定为3，实际MLP没有执行。reshard/spec仍为替身，leaf_key_paths用人工扁平路径代替。不同冻结来源的组合不代表同一个真实Hero执行版本。[10项检查、输入与原值](analysis/router_coupling_update_cpu.json)
+
+### 没有下溢，也会影响多个选中专家
+
+人工router参数[-4,0,-10]选中专家顺序[1,0]，bf16权重[2.40625,0.0869140625]。两专家人工输出相同，cotangent为bf16的0.001，即0.00099945068359375。两个weighted cotangent都大于0，本例没有乘积下溢。
+
+参考dS为[0.00299072265625,0.00299072265625]。原portable row-dot语句先在float32中对人工专家输出与已经舍入的weighted cotangent相乘并归约；再执行原division语句，送回bf16权重VJP。候选变为[0.0030059814453125,0.00299072265625]：只一个assignment相差一个bf16步距。
+
+参考router参数梯度在此CPU控制中为[0,0,0]，候选为[-1.2556e-6,6.3935e-7,0]。没有局部dS误差的另一个选中专家，也出现了参数梯度变化。原因是两个权重共享归一化分母，Jacobian不是对角阵。令s_i=sigmoid(z_i)、D=sum(s)+epsilon，cast前w_i=C*s_i/D，则加权和对z_j的梯度为C*s'_j*(dS_j*D-sum(dS_i*s_i))/D²。改变一个dS会改变公共和项。epsilon不可无条件忽略，最终cast的数值也需沿原路径验证；这个公式用于解释耦合，不代替CPU/GPU实现。
+
+因此按assignment检查局部误差，还不足以解释router参数误差。应保存同token的整组dS及归一化权重，观察误差的共同部分和差分部分。相近的局部误差可以因共同项而抵消，也可以因不均匀误差改变相对路由压力。不能把“中位数约1 ulp”直接翻译为更新差异同样很小。
+
+### 同样的梯度差异，更新尺度取决于moments
+
+原优化器源码将标准.router路径放入Adam组，不能因为router为矩阵而改用AdamH。这里执行原专用衰减包装，但人工path不证明实际Hero参数树分组。beta1=.9、beta2=.95、epsilon约6.0446e-15、衰减.02取自最新归档声明。把声明adam_lr约7.5934e-4作为诊断常数，total_steps人为设1000；未执行实际LR schedule，不能当作生产当前学习率。
+
+共同新初始化状态下，参考仅产生共同衰减；候选另产生Adam方向。两份更新之差范数约1.0739e-3。因为首次偏差修正后m_hat=g、v_hat=g²，当abs(g)远大于epsilon时，Adam项近似sign(g)，很小的非零梯度也可能对应接近学习率的变化。这里衰减在两份对照相同，未选中参数的更新也相同，不能把梯度为0误写成参数不动。真实apply_updates后的参数距离另有记录。
+
+再先向双方同一状态注入人工梯度[.1,-.2,.3]预热一次，保持下一步参数输入共同不变：相同局部梯度差异产生的更新差异约7.4824e-9。此例历史moments主导了下一次更新，显著衰减了差异；这是构造的共同状态对照，不是某个真实checkpoint。也不能外推所有warm state都会降低误差。
+
+### 验收要求为何必须绑定状态
+
+同输入、同参数、同优化器count/mu/nu、同LR/衰减、同dtype和同路由策略，才是单步更新对照的起点。应同时覆盖新初始化与有代表性的真实恢复状态，不能用fresh对照估计中途切换风险，也不能用一个warm例证明全程安全。再向后做固定输入重放和固定评估，才能讨论累积偏移与训练质量。
+
+本轮证明的是人工集成中误差可跨专家传播并受状态调节。未执行实际EXACT backend、QuACK专家、collective、生产参数分组或Hero checkpoint，没有测真实loss影响，不能据此回滚#9833。运行make router-coupling-update CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python可复算原语句与诊断图。

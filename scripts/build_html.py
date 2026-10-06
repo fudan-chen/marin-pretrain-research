@@ -67,6 +67,10 @@ for slug,label,file in chapters:
         env_svg=BeautifulSoup((ROOT/'assets/routing_gradient_envelope.svg').read_text(),'html.parser').svg
         env_svg['style']='display:block;width:100%;height:auto'
         result += '<figure class="scientific-figure">'+str(env_svg)+'<figcaption>48格选定CPU标量输入，非生产发生率；局部dS差异仍需追踪至router梯度、参数更新和固定评估。</figcaption></figure>'
+    if slug=='recent-moe-guide':
+        coupling_svg=BeautifulSoup((ROOT/'assets/router_coupling_update.svg').read_text(),'html.parser').svg
+        coupling_svg['style']='display:block;width:100%;height:auto'
+        result += '<figure class="scientific-figure">'+str(coupling_svg)+'<figcaption>人工CPU集成：原router/portable梯度/衰减包装与真实Optax；expert常数、路径与reshard替身。fresh/warm差异非生产风险估计。</figcaption></figure>'
     if slug=='optimizer-guide':
         clip_svg=BeautifulSoup((ROOT/'assets/group_clipping_cpu.svg').read_text(),'html.parser').svg
         clip_svg['style']='display:block;width:100%;height:auto'

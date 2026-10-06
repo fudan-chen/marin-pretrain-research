@@ -1,0 +1,154 @@
+{
+  "scope": "Synthetic integration: original router block, portable PR row-dot and division,\noriginal decay wrapper with path stub, real Optax CPU. Expert outputs are constants;\nnot a complete ragged expert, GPU, Hero group build or checkpoint replay.\n",
+  "checks_passed": 10,
+  "checks": [
+    "Executed CPU runtime",
+    "Selected expert order is recorded",
+    "All weighted cotangents stay positive; this is rounding not underflow",
+    "Reference dS equal but candidate differs at exactly one assignment",
+    "Reference router parameter gradient is zero in this control",
+    "One assignment error reaches both selected parameters",
+    "Original source mask selects artificial router path",
+    "Identical fresh state gives differing updates beyond common decay",
+    "Both fresh optimizer counts advance equally",
+    "Common warm state reduces this example update difference"
+  ],
+  "runtime": {
+    "jax": "0.7.2",
+    "optax": "0.2.5",
+    "backend": "cpu"
+  },
+  "source_sha256": {
+    "sources/routing_2026_10_05/grug_moe.py": "5b67e36774981b8e42c753f62b638a5700fbf204c8b16c71df6d72c0b0ea398c",
+    "sources/engineering_current_2026_10_07/pull_9833_files.json": "4883565ecafee41c87545a79aa4c6692e1031fcecf424e70eab66155aacc9819",
+    "sources/optimizer_2026_10_05/optimizer.py": "50dddad265e18974e8529f7a9df26d37e44430ffc5442d5c93e58cb2e924ae0e",
+    "sources/live_2026_10_07/meta.json": "21998ecad691e7e66d3680f173bfe9b94c35b9481f28eff4794a23b0c9831487"
+  },
+  "original_portable_rowdot_statement": "output_dot_cotangent = jnp.sum(out.astype(jnp.float32) * cotangent.astype(jnp.float32), axis=-1)",
+  "original_division_statements": [
+    "divisible = routing.accepted & (weights_f32 != 0)",
+    "weights_cotangent = jnp.where(divisible, assignment_output_dot / jnp.where(divisible, weights_f32, 1), 0)"
+  ],
+  "fixture": {
+    "params": [
+      [
+        -4.0,
+        0.0,
+        -10.0
+      ]
+    ],
+    "activation_dtype": "bfloat16",
+    "parameter_dtype": "float32",
+    "selected_experts": [
+      [
+        1,
+        0
+      ]
+    ],
+    "combine_weights": [
+      [
+        2.40625,
+        0.0869140625
+      ]
+    ],
+    "cotangent": 0.00099945068359375,
+    "constant_expert_outputs": [
+      [
+        3.0
+      ],
+      [
+        3.0
+      ]
+    ],
+    "rounded_weighted_cotangents": [
+      [
+        0.002410888671875,
+        8.678436279296875e-05
+      ]
+    ],
+    "dS_reference": [
+      [
+        0.00299072265625,
+        0.00299072265625
+      ]
+    ],
+    "dS_candidate": [
+      [
+        0.0030059814453125,
+        0.00299072265625
+      ]
+    ],
+    "router_gradient_reference": [
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "router_gradient_candidate": [
+      [
+        -1.2556038200273179e-06,
+        6.39352947473526e-07,
+        0.0
+      ]
+    ]
+  },
+  "optimizer_control": {
+    "b1": 0.9,
+    "b2": 0.95,
+    "epsilon": 6.044604247506697e-15,
+    "diagnostic_constant_lr_from_declared_adam_lr": 0.0007593392684441868,
+    "weight_decay": 0.02,
+    "artificial_total_steps": 1000,
+    "actual_live_lr_schedule": null,
+    "artificial_flat_path": "layer.router",
+    "leaf_key_paths_stub": true,
+    "fresh_reference_update": [
+      [
+        6.074713746784255e-05,
+        -0.0,
+        0.00015186784730758518
+      ]
+    ],
+    "fresh_candidate_update": [
+      [
+        0.0008200863376259804,
+        -0.0007593391928821802,
+        0.00015186784730758518
+      ]
+    ],
+    "fresh_update_difference_norm": 0.0010738677810877562,
+    "warm_reference_update": [
+      [
+        -0.00045463748392648995,
+        0.0005153238889761269,
+        -0.00036360780359245837
+      ]
+    ],
+    "warm_candidate_update": [
+      [
+        -0.0004546302370727062,
+        0.0005153220263309777,
+        -0.00036360780359245837
+      ]
+    ],
+    "warm_update_difference_norm": 7.482401365166425e-09,
+    "warm_common_gradient": [
+      [
+        0.1,
+        -0.2,
+        0.3
+      ]
+    ],
+    "warm_parameter_input_held_common": true,
+    "fresh_parameter_distance_after_apply": 0.001073884661309421
+  },
+  "actual_Hero_parameter_group": null,
+  "actual_GPU_execution": null,
+  "actual_checkpoint_replay": null,
+  "actual_Hero_loss_effect": null,
+  "library_source_sha256": {
+    "scale_by_adam": "00b33f95f4b5e6b8efc90f896be753a32864cfaa865b7fce2b19e9aac6198282",
+    "apply_updates": "8e3ace354d41cdf200a9edc79829155977b3bfc8e8639b9198c79992cdef6dfa"
+  }
+}

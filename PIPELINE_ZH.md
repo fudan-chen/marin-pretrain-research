@@ -143,3 +143,6 @@ V58入口：`make routing-envelope CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`
 
 
 V59入口：make router-weight-path CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python执行原moe_route block，9项CPU检查。下一步需同执行版本的router→EXACT/EXPERT_SIDE→参数梯度，保留选择、epsilon、barrier、cast与accepted mask。
+
+
+V60入口：make router-coupling-update CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python。10项人工集成检查执行原router/portable row-dot/衰减包装及真实Optax；真实专家、生产checkpoint、GPU和loss仍为下一阶段证据。

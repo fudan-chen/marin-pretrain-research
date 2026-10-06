@@ -864,13 +864,21 @@ rc=re['router_chain_controls']
 ok('V58 local error need not survive router VJP',all(v==0 for k in ['float32_router_vjp_reference','float32_router_vjp_proposal'] for v in rc[0][k]) and any(v!=0 for v in rc[1]['float32_router_vjp_reference']) and all(v==0 for v in rc[1]['float32_router_vjp_proposal']))
 rt=read(ROOT/'templates/routing_gradient_acceptance.json')
 ok('V58 template remains unexecuted',rt['status']=='not_executed' and all(v is None for v in rt['comparisons'].values()) and rt['production_failure_probability'] is None)
-ok('V58 envelope figure embedded',len(soup.select('#recent-moe-guide svg'))==2)
+ok('V58 envelope figure embedded',len(soup.select('#recent-moe-guide svg'))>=2)
 report['highlights']+=['V58 48 selected scalar CPU controls and two artificial router VJPs, ten checks; no production incidence or GPU/update/loss attribution']
 rw=read(A/'router_weight_path_cpu.json')
 ok('V59 source hash and unknown scope',rw['checks_passed']==len(rw['checks'])==9 and rw['actual_GPU_execution'] is None and rw['actual_Hero_extreme_logits'] is None and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in rw['source_sha256'].items()))
 ok('V59 epsilon and selection controls',rw['cases'][1]['selected_experts']==[[0,1]] and 0<rw['cases'][2]['weight_sum']<1e-10 and rw['cases'][3]['weight_sum']==0 and all(x['eager_jit_equal'] for x in rw['cases']))
 ok('V59 surrogate stopped bias and unselected parameter',all(x==0 for x in rw['surrogate']['bias_gradient']) and rw['surrogate']['router_parameter_gradient'][0][2]==0)
 report['highlights']+=['V59 original moe_route CPU block with reshard/spec stubs; nine checks, four inputs and surrogate gradients; no complete expert or training attribution']
+cu=read(A/'router_coupling_update_cpu.json')
+ok('V60 source hashes and untested full production',cu['checks_passed']==len(cu['checks'])==10 and cu['actual_GPU_execution'] is None and cu['actual_Hero_parameter_group'] is None and cu['actual_Hero_loss_effect'] is None and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in cu['source_sha256'].items()))
+cf=cu['fixture'];co=cu['optimizer_control']
+ok('V60 rounding without underflow retained',all(x>0 for x in cf['rounded_weighted_cotangents'][0]) and sum(a!=b for a,b in zip(cf['dS_reference'][0],cf['dS_candidate'][0]))==1)
+ok('V60 selected gradient coupling retained',all(x==0 for x in cf['router_gradient_reference'][0]) and all(x!=0 for x in cf['router_gradient_candidate'][0][:2]) and cf['router_gradient_candidate'][0][2]==0)
+ok('V60 state-sensitive updates and diagnostic schedule retained',co['fresh_update_difference_norm']>1e-4 and co['warm_update_difference_norm']<1e-6 and co['actual_live_lr_schedule'] is None and co['leaf_key_paths_stub'])
+ok('V60 coupling figure embedded',len(soup.select('#recent-moe-guide svg'))==3)
+report['highlights']+=['V60 ten synthetic integration CPU controls, coupling and fresh/warm update figure; constant experts, path/reshard stubs, no full Hero execution or loss attribution']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

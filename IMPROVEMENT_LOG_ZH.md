@@ -357,3 +357,8 @@ V57复算#9708冻结表18条、12条步时，6项检查；新增性能图和未�
 ## V59：原router权重路径
 
 执行原moe_route block、四个人工输入与加权和梯度；9项CPU检查、eager/JIT一致。确认biased选择与unbiased权重、epsilon主导及有限极端输入零权重。无完整模型、GPU、Hero分布或训练影响，455份来源保持。
+
+
+## V60：归一化耦合与状态敏感更新
+
+接通原router、portable row-dot/division、原衰减包装与真实Optax CPU。10项控制证明一个局部舍入差异传到两个选中参数；fresh更新差异约1.07e-3，人工warm约7.48e-9。新增机制图。专家输出常数、路径/reshard替身，不是Hero生产执行。来源455份保持。

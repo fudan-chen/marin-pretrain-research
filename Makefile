@@ -135,3 +135,8 @@ routing-envelope:
 .PHONY: router-weight-path
 router-weight-path:
 	$(CPU_PYTHON) scripts/probe_router_weight_path_cpu.py
+
+.PHONY: router-coupling-update
+router-coupling-update:
+	$(CPU_PYTHON) scripts/probe_router_coupling_update_cpu.py
+	$(PYTHON) scripts/plot_router_coupling_update.py

@@ -130,3 +130,6 @@ V58判断：正bf16输入仍可能乘积下溢，但局部dS差异不必传到ro
 
 
 V59核对原router：bias决定选择，权重取unbiased logits；epsilon可主导归一化。极端CPU输入说明边界，未证明Hero发生此问题，见[原权重路径](RECENT_MOE_CHANGES_ZH.md)。
+
+
+V60观察：一个assignment的一档bf16舍入误差，在人工集成中改变两个选中专家的router梯度；同差异在fresh与共同warm状态产生的更新尺度相差很大。评审必须检查归一化耦合与moments，见[反向链与更新](RECENT_MOE_CHANGES_ZH.md)。

@@ -917,6 +917,14 @@ so=si['observations']
 ok('V66 failed future budget release does not trigger success',so['success']['peak_bytes']==so['failure']['peak_bytes']==96 and 'commit_callback' in so['success']['events'] and 'commit_callback' not in so['failure']['events'] and 'local_failed' in so['failure']['events'] and so['failure']['second_array_restored_values']==so['success']['restored_values'][1])
 ok('V66 previous attempt error and reader explanation retained',so['failure']['next_save_events']==[] and so['failure']['next_save_error'] is not None and 'V66' in soup.select_one('#checkpoint-commit-guide').get_text())
 report['highlights']+=['V66 nine real local IO controls in original host serializer with original budget and installed single-process JAX manager; explicit omissions, no full tree or distributed/production restore']
+ri=read(A/'restore_candidate_real_io.json')
+ok('V67 original discovery reader source and production boundary',ri['checks_passed']==len(ri['checks'])==9 and ri['original_CheckpointArray_schema'] and ri['original_leaf_read_pipeline'] and ri['actual_full_state_restore'] is None and ri['actual_production_stale_marker_event'] is None and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in ri['source_sha256'].items()))
+ro=ri['observations']
+ok('V67 marker qualification and partial contents separated',ro['discovered_steps']==[10,20,30] and ro['selected_after_removing_step30_marker']=='step20' and ro['partial']['values'][1][2:]==[[0.0]*4]*4 and 'NOT_FOUND' in ro['missing_array_error'])
+ok('V67 stored shape versus manifest field kept explicit',len(ro['manifest_shape_mismatch']['values'][1])==2 and 'V67' in soup.select_one('#checkpoint-commit-guide').get_text())
+cr=read(ROOT/'templates/checkpoint_commit_review.json')
+ok('V67 four restore contract template results remain unexecuted',cr['status']=='planned_not_executed' and len(cr['restore_contracts'])==4 and all(v is None for row in cr['restore_contracts'].values() for v in row.values()))
+report['highlights']+=['V67 nine actual original leaf restore/discovery controls, real manifest schema and fsspec with local StoragePath adapter; synthetic markers, no full state, production publisher or multirank restore']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

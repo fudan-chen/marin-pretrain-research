@@ -164,3 +164,6 @@ V65 管线补充：在 metadata/layout 守卫之后加入同 attempt 的内容�
 
 
 V66 保存管线补充：为 stage、每个 future 的成功/失败、local 状态、全局 callback 和消费异常记录同一 attempt。失败 future 也应释放预算，但已写成的部分数组不发布成成功版本。异常已消费与失败版本已恢复是两个状态。单进程真实 IO 已检查，多 rank 与上层发布仍待执行。
+
+
+V67 恢复管线补充：目录候选先绑定成功发布 attempt；随后独立比较预期 schema、manifest schema、TensorStore 元数据与实际 JAX 数组。内容对照及 full-state/next-step 另列。发现函数返回的最高 step 不能自动视为已验证回退点。保存验收模板增加对应证据栏，仍待真实执行。

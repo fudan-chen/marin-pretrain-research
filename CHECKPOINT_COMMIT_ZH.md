@@ -141,3 +141,35 @@ V65 只跑了原 spec 构造函数。这次把执行范围推进到原 `_seriali
 验收管线应保存每个 attempt 的失败状态，即使 manager 已消费异常也不清除失败记录。下次 save 的入口 wait、local 回调、成功回调分别关联到它们所属 attempt。评估或恢复候选同时核对布局身份、成功版本选择及内容证据；“当前 wait 无异常”仅说明当前没有待报告异常。
 
 范围：原源码用 AST 提取执行，不导入完整 Marin 包。heap trim 显式替为 no-op；host 分支不使用 write plan，传入 None；entry 仍为 SimpleNamespace。JAX manager 来自本轮安装环境，源码摘要与 check_for_errors 源文保留在结果中，没有证明 Hero 当时使用同一版本。没有执行设备分片、tree flatten、真正 CheckpointArray、完整 restore、生产 metadata 或分布式提交。复现：`make serialize-real-io CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。
+
+
+## V67：发现候选、严格恢复与内容完整性的接口边界
+
+这次执行原 checkpoint discovery、原 Pydantic manifest 类和原 `_restore_ocdbt` → `_deserialize_leaves` → read-plan → shard-read → JAX materialization 链。完整样例由 V66 的原 host writer 写入，两份数组读回值一致；单 CPU 设备、EVERY_REPLICA 模式、96 字节读取预算下，9 项检查通过。没有把数组加载器换成替身。[原值、错误与源码摘要](analysis/restore_candidate_real_io.json)保留复现证据。
+
+|受控目录或调用|原发现/恢复行为|实际边界|
+|---|---|---|
+|step10：完整写入 a、b，标志有效|发现并恢复两份 JAX 数组，内容一致|原 writer 与原 reader 的本地 host 样例贯通|
+|step20：a 完整，b 仅写首块；人工放 metadata|发现为候选；allow_missing=False 仍读出 b 后四行零|严格参数限制缺叶，不保证每个预期数据块都已写入|
+|step30：manifest 列有 b，但 b 元数据不存在；人工放 metadata|发现最高 step30；实际恢复报 NOT_FOUND|发现阶段未读取所有数组，因此候选资格不是恢复验收|
+|step40：有 manifest 与部分数组，无 metadata|不进入候选集合|manifest 自身不充当完成标志|
+|删除人工 step30 标志，再次发现|选择 step20|重新选择路径仍不能证明内容完整；本例没有自动故障回退|
+|请求 manifest 中不存在的 required_missing 叶|allow_missing=False 抛 FileNotFoundError|这一层严格检查叶存在性确实生效|
+|manifest 声明 b 为 6×4，实际 b 元数据为 2×4|原 leaf reader 恢复 2×4 数组，没有在该层比较 manifest shape|布局字段存在，并不证明这一层把它当约束使用；完整状态重建的上层检查未执行|
+
+这里的 step20/30 标志由探针人工写入，用于测试消费者边界；并不是原生产 callback 发布。V66 的真实异步错误案例没有触发成功 callback，所以不能把这里的候选选择推成“生产系统会将失败保存标记成功”。真正需要追查的是：谁有权发布 metadata、复用路径是否残留旧标志，以及发布后发生内容变化时如何验收。没有这类生产证据，保持事故归因未知。
+
+### shape 字段为什么没有在这一层拦住不一致
+
+原 `_restore_ocdbt` 从 manifest 取得的是 array_paths，用来筛选路径。构造读取 spec 时只传 checkpoint_root 与 path；原 `_leaf_read_plan` 随后从 TensorStore 元数据取得 shape/dtype，再按目标 sharding 读入。这条路径没有使用对应 manifest entry 的 shape 作为 TensorStore 打开约束。上层 NamedArray 重建、模型 schema 或状态合并是否拒绝不一致，是另一项必须单独验证的合同。本例没有执行它们，不能断言完整模型会接受错误形状。
+
+### 把验收拆成四项可核对的合同
+
+1. **候选资格**：metadata 是否由当前 attempt 的成功发布链产生；step、时间与路径是否对应。目录扫描结果只回答“哪些路径符合发现条件”。
+2. **状态布局**：预期叶与实际叶、预期 shape/dtype 与实际存储/恢复 shape/dtype 都核对；不能用“清单里有字段”代替“消费者执行了约束”。
+3. **内容完整性**：保存预期值与恢复值的摘要或明确覆盖的抽样证据。strict、finite、目录键数、形状正确各自都不能独立完成这项验收。
+4. **恢复后的行为**：完整 optimizer/master/pending、下一批输入、下一步更新和固定 eval。行为验收补充前面三项，不把一次 loss 正常当作字节内容证明。
+
+[保存验收模板](templates/checkpoint_commit_review.json)已增加这四项的证据栏，并保留失败 attempt 是否已报告的状态；所有真实验收结果仍为空。这不是已经通过的生产检查清单。
+
+范围：LocalStoragePath 为 pathlib 适配器，替代 rigging 存储接口，仅用于本地 manifest 读写；候选扫描使用真实 fsspec。原 schema 使用实际 Pydantic 2.11.7，AST 环境显式 rebuild forward annotations；reader 使用真实 JAX 0.7.2/TensorStore 0.1.69。heap trim 和 host write-plan 范围继承 V66。没有远端一致性、ONE_REPLICA collective、完整 tree restore、生产 metadata 发布或真实旧标志事故。复现：安装 requirements-cpu-numerics.txt 与 requirements-tensorstore-io.txt 后，`make restore-real-io CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。

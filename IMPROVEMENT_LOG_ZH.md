@@ -392,3 +392,8 @@ V57复算#9708冻结表18条、12条步时，6项检查；新增性能图和未�
 ## V66：原保存 host 分支、真实 manager 与失败预算释放
 
 9 项检查；执行原 _serialize_arrays、HostByteBudget 与真实 TensorStore/JAX 单进程 manager。核对快照值、96 字节峰值、真实异步元数据冲突、失败释放预算、成功 callback 守卫、上次错误阻止下次 staging，以及已报告异常只消费一次。无多 rank、完整 tree/restore、生产 metadata 验证。455 份来源保持。
+
+
+## V67：原发现、真实 manifest schema 与原 leaf 恢复贯通
+
+9 项真实 IO 控制；原 writer 的两叶读回为真实 JAX 数组，核对人工 marker、缺叶/缺 metadata、部分块填充及 manifest/store shape 不一致。Pydantic 与 fsspec 真实，StoragePath 本地适配；无完整 tree/state、生产发布、多 rank 或旧 marker 事故证据。更新四合同验收模板。455 来源保持。

@@ -24,7 +24,10 @@
     "metadata_readback_sha": null,
     "metadata_clock_timezone": null,
     "post_metadata_callback_result": null,
-    "deletion_readback_result": null
+    "deletion_readback_result": null,
+    "failure_attempt_id": null,
+    "reported_exception_consumed": null,
+    "persistent_failure_record": null
   },
   "restore_acceptance": {
     "full_state_read": null,
@@ -47,5 +50,32 @@
     "mitigation": null,
     "unresolved": [],
     "acceptance_result": "pending"
+  },
+  "restore_contracts": {
+    "candidate_qualification": {
+      "successful_publisher_attempt_id": null,
+      "marker_attempt_binding_evidence": null,
+      "reused_path_stale_marker_check": null
+    },
+    "layout_validation": {
+      "expected_schema_digest": null,
+      "manifest_schema_digest": null,
+      "store_metadata_schema_digest": null,
+      "restored_array_schema_digest": null,
+      "shape_dtype_comparison_result": null,
+      "missing_leaf_result": null
+    },
+    "content_integrity": {
+      "save_attempt_digest": null,
+      "restored_digest": null,
+      "coverage_full_or_sampled": null,
+      "sample_plan_and_coverage": null,
+      "comparison_result": null
+    },
+    "behavior": {
+      "full_state_restore_result": null,
+      "next_batch_and_step_result": null,
+      "fixed_eval_result": null
+    }
   }
 }

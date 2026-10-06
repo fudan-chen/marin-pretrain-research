@@ -1,0 +1,281 @@
+{
+  "scope": "Real local original leaf restore, manifest schema, and checkpoint discovery.\nSynthetic markers; local StoragePath adapter; not full production publisher or state restore.\n",
+  "checks_passed": 9,
+  "checks": [
+    "Original real reader restores both original writer arrays",
+    "Strict leaf presence still permits legal missing-chunk fill",
+    "Filled original reader output is finite but differs from intended values",
+    "Actual discovery ignores manifest without metadata marker",
+    "Discovery selects highest marker step without array validation",
+    "Manifest-listed but absent metadata fails original real reader",
+    "Next discovery selects marker-valid partially written fixture",
+    "Strict restore rejects leaf absent from actual manifest",
+    "Original leaf reader uses stored shape without matching manifest shape"
+  ],
+  "runtime": {
+    "jax": "0.7.2",
+    "tensorstore": "0.1.69",
+    "pydantic": "2.11.7",
+    "fsspec": "2025.3.0"
+  },
+  "observations": {
+    "complete": {
+      "values": [
+        [
+          [
+            1.0,
+            2.0,
+            3.0,
+            4.0
+          ],
+          [
+            5.0,
+            6.0,
+            7.0,
+            8.0
+          ],
+          [
+            9.0,
+            10.0,
+            11.0,
+            12.0
+          ],
+          [
+            13.0,
+            14.0,
+            15.0,
+            16.0
+          ],
+          [
+            17.0,
+            18.0,
+            19.0,
+            20.0
+          ],
+          [
+            21.0,
+            22.0,
+            23.0,
+            24.0
+          ]
+        ],
+        [
+          [
+            101.0,
+            102.0,
+            103.0,
+            104.0
+          ],
+          [
+            105.0,
+            106.0,
+            107.0,
+            108.0
+          ],
+          [
+            109.0,
+            110.0,
+            111.0,
+            112.0
+          ],
+          [
+            113.0,
+            114.0,
+            115.0,
+            116.0
+          ],
+          [
+            117.0,
+            118.0,
+            119.0,
+            120.0
+          ],
+          [
+            121.0,
+            122.0,
+            123.0,
+            124.0
+          ]
+        ]
+      ],
+      "indices": [
+        0,
+        1
+      ],
+      "jax_arrays": true
+    },
+    "partial": {
+      "values": [
+        [
+          [
+            1.0,
+            2.0,
+            3.0,
+            4.0
+          ],
+          [
+            5.0,
+            6.0,
+            7.0,
+            8.0
+          ],
+          [
+            9.0,
+            10.0,
+            11.0,
+            12.0
+          ],
+          [
+            13.0,
+            14.0,
+            15.0,
+            16.0
+          ],
+          [
+            17.0,
+            18.0,
+            19.0,
+            20.0
+          ],
+          [
+            21.0,
+            22.0,
+            23.0,
+            24.0
+          ]
+        ],
+        [
+          [
+            101.0,
+            102.0,
+            103.0,
+            104.0
+          ],
+          [
+            105.0,
+            106.0,
+            107.0,
+            108.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ]
+        ]
+      ],
+      "indices": [
+        0,
+        1
+      ],
+      "jax_arrays": true
+    },
+    "discovered_steps": [
+      10,
+      20,
+      30
+    ],
+    "missing_array_error": "ValueError: NOT_FOUND: Error opening \"zarr3\" driver: Metadata at \"b/zarr.json\" in OCDBT database at local file \"/var/folders/fr/z9sql57n2gx7wp37d74d4bg40000gn/T/marin-restore-candidate-yaqmcyyq/step30/\" does not exist [tensorstore_spec='{\\\"context\\\":{\\\"cache_pool\\\":{\\\"total_bytes_limit\\\":10000000000},\\\"data_copy_concurrency\\\":{\\\"limit\\\":128},\\\"file_io_concurrency\\\":{\\\"limit\\\":128},\\\"file_io_locking\\\":{},\\\"file_io_memmap\\\":false,\\\"file_io_sync\\\":true,\\\"ocdbt_coordinator\\\":{}},\\\"driver\\\":\\\"zarr3\\\",\\\"kvstore\\\":{\\\"base\\\":{\\\"driver\\\":\\\"file\\\",\\\"path\\\":\\\"/var/folders/fr/z9sql57n2gx7wp37d74d4bg40000gn/T/marin-restore-candidate-yaqmcyyq/step30/\\\"},\\\"driver\\\":\\\"ocdbt\\\",\\\"path\\\":\\\"b/\\\"}}'] [source locations='tensorstore/driver/kvs_backed_chunk_driver.cc:1290\\ntensorstore/driver/driver.cc:112']",
+    "selected_after_removing_step30_marker": "step20",
+    "missing_manifest_leaf_error": "Missing 1 arrays in OCDBT checkpoint /var/folders/fr/z9sql57n2gx7wp37d74d4bg40000gn/T/marin-restore-candidate-yaqmcyyq/step10: ['required_missing']. The checkpoint holds ['a', 'b']",
+    "manifest_shape_mismatch": {
+      "values": [
+        [
+          [
+            1.0,
+            2.0,
+            3.0,
+            4.0
+          ],
+          [
+            5.0,
+            6.0,
+            7.0,
+            8.0
+          ],
+          [
+            9.0,
+            10.0,
+            11.0,
+            12.0
+          ],
+          [
+            13.0,
+            14.0,
+            15.0,
+            16.0
+          ],
+          [
+            17.0,
+            18.0,
+            19.0,
+            20.0
+          ],
+          [
+            21.0,
+            22.0,
+            23.0,
+            24.0
+          ]
+        ],
+        [
+          [
+            101.0,
+            102.0,
+            103.0,
+            104.0
+          ],
+          [
+            105.0,
+            106.0,
+            107.0,
+            108.0
+          ]
+        ]
+      ],
+      "indices": [
+        0,
+        1
+      ],
+      "jax_arrays": true
+    }
+  },
+  "explicit_substitutions": {
+    "StoragePath": "local pathlib adapter; no remote semantics",
+    "metadata_markers": "manually injected controls, not original publication callback",
+    "heap_trim": "no-op inherited",
+    "write_plans": "None, host branch only"
+  },
+  "original_CheckpointArray_schema": true,
+  "original_leaf_read_pipeline": true,
+  "original_checkpoint_discovery": true,
+  "restore_mode": "EVERY_REPLICA, one CPU device",
+  "actual_full_state_restore": null,
+  "actual_production_stale_marker_event": null,
+  "actual_multirank_commit": null,
+  "source_sha256": {
+    "sources/checkpoint_commit_2026_10_05/tensorstore_serialization.py": "5dddf8c6cc87cb062593482abe6775eee59eea443c28c7fd8d8b7ddf261f89ea",
+    "sources/checkpoint_commit_2026_10_05/checkpoint_manifest.py": "ae7a3535d2721bcd4ac598bd3f75c9bb8878fbbb1656f87f22b0c988dd0d9b3b",
+    "sources/checkpoint_commit_2026_10_05/checkpoint.py": "3997faa8082442fcdf16df2fd0c13bf30a26a9c5db62eb81cce0758bff4a2274",
+    "sources/checkpoint_memory_2026_10_05/byte_budget.py": "5e1dbcd8bcae899f295952236269b0b439e308b54c6a120da43eda3441ec4f34"
+  }
+}

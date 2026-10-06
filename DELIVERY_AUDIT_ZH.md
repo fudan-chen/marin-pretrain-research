@@ -1,6 +1,6 @@
 # 当前交付审计：文件覆盖与真实验证分别核对
 
-当前版本V66：执行原 host-array 保存链、真实 TensorStore 与单进程 JAX manager，9 项检查。失败释放预算、整次错误传播与下一次 save 的错误归属得到实测。完整 tree/分布式提交及生产恢复仍未知。详见 [checkpoint 提交与恢复](CHECKPOINT_COMMIT_ZH.md)。
+当前版本V67：原候选发现、manifest schema 与原 leaf 恢复链贯通真实 IO，9 项检查。明确 strict 的缺叶范围及 manifest/store shape 校验边界；完整状态、生产发布与多机验证未知。详见 [checkpoint 提交与恢复](CHECKPOINT_COMMIT_ZH.md)。
 
 |用户要求|当前权威产物|覆盖与实际限制|
 |---|---|---|

@@ -167,3 +167,7 @@ tensorstore-io:
 .PHONY: serialize-real-io
 serialize-real-io:
 	PYTHONPATH=$(TENSORSTORE_PATH) $(CPU_PYTHON) scripts/probe_serialize_arrays_real_io.py
+
+.PHONY: restore-real-io
+restore-real-io:
+	PYTHONPATH=$(TENSORSTORE_PATH) $(CPU_PYTHON) scripts/probe_restore_candidate_real_io.py

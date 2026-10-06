@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-06T01:28:20.615700+00:00",
+  "integrity_manifest_created_utc": "2026-10-06T01:35:36.505565+00:00",
   "files": [
     {
       "file": "adamh_2026_10_05/adamh.py",
@@ -1097,6 +1097,27 @@
       "sha256": "cb37487c4e716f967be309a3eb51a6f8a6ae407de43cfb739628ffc02936bfa2",
       "url": "https://raw.githubusercontent.com/marin-community/marin/12d8b6f09f96ad4f0277445765c1a00dbc81d5be/experiments/grug/moe/launch_datakit_moe_mix.py",
       "retrieved_utc": "2026-10-03T21:37:15.789315+00:00"
+    },
+    {
+      "file": "live_2026_10_06/dense.json",
+      "bytes": 369167,
+      "sha256": "f1ed835359f50822cb12aef4b5917149a3d1001a087c8234073202875a7a7141",
+      "url": "https://api.wandb.ai/graphql",
+      "retrieved_utc": "2026-10-06T01:31:53.482979+00:00"
+    },
+    {
+      "file": "live_2026_10_06/eval.json",
+      "bytes": 32277,
+      "sha256": "0da6a50945d62ea6ad05416f4f9e5d391931e30a2735f9f9172cc7eac07f5c39",
+      "url": "https://api.wandb.ai/graphql",
+      "retrieved_utc": "2026-10-06T01:31:53.464026+00:00"
+    },
+    {
+      "file": "live_2026_10_06/meta.json",
+      "bytes": 405166,
+      "sha256": "4b709c0b6440366aec7fa4ec65e6ff4b9881c3e2201082ffef036ca40547d80a",
+      "url": "https://api.wandb.ai/graphql",
+      "retrieved_utc": "2026-10-06T01:31:53.462427+00:00"
     },
     {
       "file": "marin_repo.json",
@@ -2500,8 +2521,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 203563,
-      "sha256": "5c36c5bf31cdbb4884cf3f8c01c66e515be5d86e5f7b0aa1db0630b0fa785ade",
+      "bytes": 204943,
+      "sha256": "c66b57d611e0ac2eefb930b19875dfcc6baff59b0edd925f9f2f1e52b5d156a7",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

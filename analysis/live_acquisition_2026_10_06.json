@@ -1,0 +1,32 @@
+{
+  "files": [
+    {
+      "file": "live_2026_10_06/meta.json",
+      "url": "https://api.wandb.ai/graphql",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-fa4sm100-nomask-step146k",
+      "request_scope": "anonymous GraphQL metadata or sampledHistory; specifications embedded in payload",
+      "bytes": 405166,
+      "sha256": "4b709c0b6440366aec7fa4ec65e6ff4b9881c3e2201082ffef036ca40547d80a",
+      "retrieved_utc": "2026-10-06T01:31:53.462427+00:00"
+    },
+    {
+      "file": "live_2026_10_06/eval.json",
+      "url": "https://api.wandb.ai/graphql",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-fa4sm100-nomask-step146k",
+      "request_scope": "anonymous GraphQL metadata or sampledHistory; specifications embedded in payload",
+      "bytes": 32277,
+      "sha256": "0da6a50945d62ea6ad05416f4f9e5d391931e30a2735f9f9172cc7eac07f5c39",
+      "retrieved_utc": "2026-10-06T01:31:53.464026+00:00"
+    },
+    {
+      "file": "live_2026_10_06/dense.json",
+      "url": "https://api.wandb.ai/graphql",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-fa4sm100-nomask-step146k",
+      "request_scope": "anonymous GraphQL metadata or sampledHistory; specifications embedded in payload",
+      "bytes": 369167,
+      "sha256": "f1ed835359f50822cb12aef4b5917149a3d1001a087c8234073202875a7a7141",
+      "retrieved_utc": "2026-10-06T01:31:53.482979+00:00"
+    }
+  ],
+  "old_snapshots_preserved": true
+}

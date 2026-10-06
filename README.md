@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本为V36。新增[混合计数与索引范围](MIXTURE_RANGE_ZH.md)：复现int32溢出与取模掩盖路径，并核对Hero三阶段的逐桶上界；没有将人工反例写成Hero事故。新增[配比生效时钟](BATCH_CLOCK_ZH.md)：batch变更后的累计索引、恢复前缀和权重日志分别核对；提供可执行的调度审查器。新增[失败边界与数值验收](FAILURE_BOUNDARIES_ZH.md)：loss有限为何仍可能交接异常状态，事件、水位和恢复分别证明什么。新增[监控与事故重放](OBSERVABILITY_ZH.md)，把日志时刻、计算成本和优化器证据连到可执行的离线检查器。先用[排障总图](ENGINEERING_MAP_ZH.md)按症状选择入口，再核对[交付范围](DELIVERY_AUDIT_ZH.md)。优化器可按[参数分组](OPTIMIZER_GROUPS_ZH.md) → [AdamH状态](ADAMH_STATE_ZH.md) → [MuonH投影](MUON_GEOMETRY_ZH.md) → [NS方向与布局](MUON_DIRECTION_ZH.md)阅读：分别回答谁被更新、历史怎样影响下一步、保持哪组范数、方向怎样被计算。
+当前版本为V37。[10月6日新观察](LIVE_2026_10_06_ZH.md)：训练记录约9.75T名义token，仍为4K；16域中15个端点改善，但PTB贡献约66%的宏平均CE改善，twitterAAE端点上升。新源档与旧曲线分别保留。工程问题先读[排障总图](ENGINEERING_MAP_ZH.md)，配比与恢复另见[生效时钟](BATCH_CLOCK_ZH.md)和[计数范围](MIXTURE_RANGE_ZH.md)。
 
 V26对V25的micro/macro命名错误已[明确更正](EVAL_METRICS_ZH.md)。
 
@@ -16,9 +16,9 @@ V26对V25的micro/macro命名错误已[明确更正](EVAL_METRICS_ZH.md)。
 |MoE和文档边界有哪些具体陷阱|[路由丢弃](ROUTING_DROPS_ZH.md)、[分位数均衡](QB_ESTIMATION_ZH.md)、[router精度](ROUTER_PRECISION_ZH.md)、[文档边界](DOCUMENT_BOUNDARIES_ZH.md)、[ShortConv](SHORT_CONV_ZH.md)|
 |训练在跑，但不知道checkpoint是否可靠|[保存提交与恢复](CHECKPOINT_COMMIT_ZH.md) → [保存内存与写入计划](CHECKPOINT_MEMORY_ZH.md) → [工程证据链](ENGINEERING_GUIDE_ZH.md)|
 
-离线HTML包含18张科学图及原值入口，另有机制与提交控制流示意图。各原函数探针明确列出替代依赖，没有运行真实GPU训练、模型checkpoint恢复或分布式提交。各版本来源、验证范围与历史更正分别保留。
+离线HTML包含19张科学图及原值入口，另有机制与提交控制流示意图。各原函数探针明确列出替代依赖，没有运行真实GPU训练、模型checkpoint恢复或分布式提交。各版本来源、验证范围与历史更正分别保留。
 
-这是一份独立的中文研究报告，重点是读懂故障机制、核实Loss变化、还原实际数据配比，以及设计自己的配比与顺序实验。训练数值快照截止北京时间2026年10月4日约05:38；18T是目标，该快照约51%，仍为4K。工程GitHub于10月5日另行核对，未刷新训练进度。
+这是一份独立的中文研究报告，重点是读懂故障机制、核实Loss变化、还原实际数据配比，以及设计自己的配比与顺序实验。最新独立观察为北京时间2026年10月6日上午，约54.18%，仍为4K；18T是目标。旧数值图与其分析保持10月4日快照，工程issue于10月6日复核正文和评论未变。
 
 直接打开 [index.html](index.html) 阅读全部内容。需要单文件分享正文时使用 [report_standalone.html](report_standalone.html)：图、样本片段、配比和查询器已内嵌。来源JSON/CSV链接需要配套目录，外部原文需要网络。本地笔记仅保存在当前浏览器，可导出，不会上传。
 

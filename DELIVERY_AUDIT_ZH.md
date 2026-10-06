@@ -1,6 +1,6 @@
 # 当前交付审计：文件覆盖与真实验证分别核对
 
-当前为V36，新增[计数范围审计](MIXTURE_RANGE_ZH.md)：22项NumPy原方法与三处候选改动检查，Hero声明下的逐桶上界未触及int32限制；没有历史事故或token流复现。本轮新增章节仅作静态HTML核对。此前新增[配比生效时钟](BATCH_CLOCK_ZH.md)及27项调度/回调/评审检查：所有例子为人工构造，没有历史cursor重放。本轮HTML新增章节做静态结构、链接和嵌入内容核对，未补做浏览器视觉验收；V34的浏览器记录仅代表该版本。此前新增[失败边界与数值验收](FAILURE_BOUNDARIES_ZH.md)，17项原主循环片段的合成控制流检查；此前[监控与事故重放](OBSERVABILITY_ZH.md)，22项辅助函数/静态核对与27项合成事故包检查；此前[Muon方向、NS迭代与布局](MUON_DIRECTION_ZH.md)，20项float32/恒等布局替代检查；与此前AdamH状态和MuonH投影检查组成完整阅读链。未执行生产BF16、QuACK、多卡方向对照或真实checkpoint恢复。下方V18旧审计保留为历史材料，其旧文件数和版本链接不代表当前发布。
+当前为V37，新增[10月6日观察](LIVE_2026_10_06_ZH.md)：独立W&B源档、四个新增完整评估step、72个旧值接续核对、16域端点与PTB敏感性分解。最新summary约9.75T/4K；旧曲线与历史审计保留。新章节做静态HTML核对，图的PNG已查看，没有新增浏览器或GPU验收。此前[计数范围](MIXTURE_RANGE_ZH.md)的22项检查仅证明声明/合成方法范围，没有Hero历史事故结论。
 
 |用户要求|当前权威产物|覆盖与实际限制|
 |---|---|---|
@@ -8,13 +8,13 @@
 |结合源码深入分析|接口、状态、边界、缓存、去重、质量、路由、优化器、ShortConv、router精度、评估、保存提交/内存等章节；[原源码归档](sources/archive_manifest.json)|固定代码解释与原辅助函数检查可复查；替代依赖逐项注明；没有自动证明历史执行SHA或真实GPU行为|
 |数据配比与loss对应|[200桶数据](DATA_GUIDE_ZH.md)、[候选比较](DECISION_GUIDE_ZH.md)、[真实轨迹](MIX_TRAJECTORY_ZH.md)、[评估口径](EVAL_METRICS_ZH.md)|库存、权重、曝光分母分别计算；67个完整日志step；V25的micro/macro误称已在V26修正；生产曲线没有独立配比反事实|
 |调整配比与顺序的方法|[供体预算](TRANSFER_GUIDE_ZH.md)、[顺序账本](ORDER_GUIDE_ZH.md)、[七阶段管线](PIPELINE_ZH.md)|简单基线、供体、整数/边缘块、独立确认和保底项均有执行入口；草案没有被写成已训练结果|
-|可读、可离线的可视化与理解文档|[独立HTML](report_standalone.html)、[理解路线](LEARNING_GUIDE_ZH.md)、[问题阅读入口](README.md)|18张科学图及机制图、数据查询与交互工具；当前验证结果见[validation](analysis/validation.json)，各版本浏览器范围独立保留；页面操作不证明理解效果|
+|可读、可离线的可视化与理解文档|[独立HTML](report_standalone.html)、[理解路线](LEARNING_GUIDE_ZH.md)、[问题阅读入口](README.md)|19张科学图及机制图、数据查询与交互工具；当前验证结果见[validation](analysis/validation.json)，各版本浏览器范围独立保留；页面操作不证明理解效果|
 |提炼rubrics并持续改进|[18条规则](RUBRICS_ZH.md)、[15案/六入口规则映射](analysis/engineering_case_map.json)、[改进记录](IMPROVEMENT_LOG_ZH.md)|仍使用1.1规则；不增加总分或自动根因判定；外部评分效度与迁移理解未测|
 |可重建、可分享与版本可追溯|[Makefile](Makefile)、scripts、sources、analysis、HTML与ZIP|本轮构建从已归档材料出发，来源哈希与发布产物验证；本地交付不冒充远端发布|
 
 现在最缺的不是更多章节数量，而是能改变结论的材料：真实执行包绑定、同checkpoint输入/状态重放、固定评估逐批N/T/B、独立GPU重复、真实save后restore，以及各rank首个异常和提交轨迹。它们分别限制历史归因、配比收益、评估排序、恢复可靠性和hang机制；没有这些材料时保留未知，不用本地绿灯补齐。
 
-总图按症状给出每项下一步与接受/继续调查边界；[可机读配置](config/engineering_case_map.json)将作者做过的动作和建议检查分开。长期研究目标保持进行中，V36没有以文件齐全为理由宣布全部研究已完成。V30的机制与范围见[原值账本](analysis/muon_geometry_probe.json)，此前V29发布见[历史账本](analysis/release_v29.json)。
+总图按症状给出每项下一步与接受/继续调查边界；[可机读配置](config/engineering_case_map.json)将作者做过的动作和建议检查分开。长期研究目标保持进行中，V37没有以文件齐全为理由宣布全部研究已完成。V30的机制与范围见[原值账本](analysis/muon_geometry_probe.json)，此前V29发布见[历史账本](analysis/release_v29.json)。
 
 ## V18及此前的历史审计（保留原文）
 

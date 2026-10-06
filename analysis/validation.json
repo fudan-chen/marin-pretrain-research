@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1303,
+  "checks_passed": 1310,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -18,7 +18,7 @@
     "four new config contrasts / six step393 resume windows",
     "seventeen embedded figures",
     "all relative HTML links valid",
-    "430 source archive checksums valid",
+    "433 source archive checksums valid",
     "18 authored rubrics / seven claim-stage decisions",
     "five interpretation cases / four metrics with switchable baselines",
     "17 figure-reading entries / five preserved collapsed tables",
@@ -84,7 +84,8 @@
     "V33 watch computation versus logging clocks; exact preupdate views; executable normalized-bundle observations without automatic root cause",
     "V34 finite-loss versus next-state health / original failure-loop control flow / proposed numeric acceptance watermark; no actual contaminated checkpoint claim",
     "V35 exact cumulative batch clock / stage alignment rejection / consumed prefix review / configured weights versus block counts; static HTML verification only for new chapter",
-    "V36 int32 intermediate/cumulative overflow and finite restart remap; actual declared Hero per-component upper bounds below limit; no historical overflow claim; static HTML only"
+    "V36 int32 intermediate/cumulative overflow and finite restart remap; actual declared Hero per-component upper bounds below limit; no historical overflow claim; static HTML only",
+    "V37 new independent 9.75T / 4K snapshot; four new exact eval steps, 72 unchanged overlapping values; endpoint and PTB sensitivity decomposition; static HTML only for new chapter"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

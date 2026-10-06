@@ -1,0 +1,21 @@
+{
+  "scope": "Static HTML structure and inline figure checks; PNG directly visually inspected through view_image; no V37 browser rendering or reader study",
+  "actual_browser_rendering": null,
+  "PNG_visual_inspection": "view_image returned full plotted artifact; domain labels and two endpoint-delta panels inspected",
+  "pages": {
+    "index.html": {
+      "chapter": true,
+      "tables": 3,
+      "inline_scientific_figure": true,
+      "raw_values_link": true,
+      "sha256": "3e72dd16ef1ba495c48503237590314dea4fdf661defa12dd3aca6206e916f4e"
+    },
+    "report_standalone.html": {
+      "chapter": true,
+      "tables": 3,
+      "inline_scientific_figure": true,
+      "raw_values_link": true,
+      "sha256": "6f4ca71e5728b3612c3f2e86e72ca5ee9b7636b77d799bcf1cc12ad933727f02"
+    }
+  }
+}

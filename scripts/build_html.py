@@ -37,13 +37,20 @@ chapters.insert(0,('observability-guide','监控成本、记录时刻与事故�
 chapters.insert(0,('failure-boundaries-guide','有限loss、失败路径与数值验收水位','FAILURE_BOUNDARIES_ZH.md'))
 chapters.insert(0,('batch-clock-guide','配比阶段、batch前缀与日志时钟','BATCH_CLOCK_ZH.md'))
 chapters.insert(0,('mixture-range-guide','大曝光量、混合计数与索引范围','MIXTURE_RANGE_ZH.md'))
-priority=['mixture-range-guide','batch-clock-guide','failure-boundaries-guide','observability-guide','muon-direction-guide','adamh-state-guide','muon-geometry-guide','engineering-map-guide','delivery-audit-guide','checkpoint-memory-guide','checkpoint-commit-guide','eval-metrics-guide','mix-trajectory-guide','router-precision-guide','short-conv-guide','loss-triage','optimizer-guide','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
+chapters.insert(0,('live-observation-guide','10月6日：新进度与16域端点观察','LIVE_2026_10_06_ZH.md'))
+priority=['live-observation-guide','mixture-range-guide','batch-clock-guide','failure-boundaries-guide','observability-guide','muon-direction-guide','adamh-state-guide','muon-geometry-guide','engineering-map-guide','delivery-audit-guide','checkpoint-memory-guide','checkpoint-commit-guide','eval-metrics-guide','mix-trajectory-guide','router-precision-guide','short-conv-guide','loss-triage','optimizer-guide','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
 chapters.sort(key=lambda c:priority.index(c[0]) if c[0] in priority else len(priority))
 readings={x['file']:x for x in json.loads((ROOT/'analysis/figure_readings.json').read_text())}
 sections=[];toc=[]
 for slug,label,file in chapters:
     result=markdown.markdown((ROOT/file).read_text(),extensions=['tables','fenced_code','toc'])
     soup=BeautifulSoup(result,'html.parser')
+    live_placeholder=soup.select_one('#live-observation-placeholder')
+    if live_placeholder is not None:
+        live_svg=BeautifulSoup((ROOT/'assets/live_2026_10_06.svg').read_text(),'html.parser').svg
+        live_svg['style']='display:block;width:100%;min-width:800px;height:auto;'
+        live_wrap=soup.new_tag('div',attrs={'class':'table-wrap','style':'overflow-x:auto;'})
+        live_wrap.append(live_svg);live_placeholder.replace_with(live_wrap)
     direction_placeholder=soup.select_one('#muon-direction-placeholder')
     if direction_placeholder is not None:
         direction_svg=BeautifulSoup((ROOT/'assets/muon_direction.svg').read_text(),'html.parser').svg
@@ -143,7 +150,7 @@ template=template.replace('WORKBENCH DECISIONLAB','ENGINEERINGLAB ASSESSMENTLAB 
 template=template.replace('<script>ORDERUI</script>','<script>ORDERUI</script><script type="application/json" id="assessment-data">ASSESSMENTDATA</script><script>ASSESSMENTCORE</script><script>ASSESSMENTUI</script>')
 template=template.replace('<a href="#order-lab">检查顺序与累计量</a>','<a href="#assessment-lab">保存自己的证据判断</a><a href="#order-lab">检查顺序与累计量</a>')
 template=template.replace('<script>ASSESSMENTUI</script>','<script>ASSESSMENTUI</script><script type="application/json" id="engineering-data">ENGINEERINGDATA</script><script>ENGINEERINGUI</script>')
-template=template.replace('公开快照：2026-10-04','训练快照：2026-10-04 · 工程核对：10-05')
+template=template.replace('公开快照：2026-10-04','最新观察：2026-10-06 · 旧图快照：10-04')
 template=template.replace('<a href="#assessment-lab">保存自己的证据判断</a>','<a href="#engineering-lab">核对工程解释与反证</a><a href="#assessment-lab">保存自己的证据判断</a>')
 template=template.replace('<a href="#engineering-lab">核对工程解释与反证</a>', '<a href="#engineering-map-guide">从症状选择检查入口</a><a href="#delivery-audit-guide">当前交付与证据边界</a><a href="#checkpoint-memory-guide">保存内存与写入分摊</a><a href="#checkpoint-commit-guide">保存提交与可恢复进度</a><a href="#eval-metrics-guide">评估指标与V25更正</a><a href="#mix-trajectory-guide">配比切换与16域曲线</a><a href="#router-precision-guide">Router精度与评估策略</a><a href="#short-conv-guide">ShortConv边界与halo</a><a href="#loss-triage">loss变化诊断流程</a><a href="#optimizer-guide">优化器分组与衰减</a><a href="#qb-guide">路由均衡与数据分组</a><a href="#routing-guide">MoE丢弃与训练目标</a><a href="#change-guide">训练变更评审</a><a href="#quality-guide">评分窗口与质量桶</a><a href="#dedup-guide">去重与样本对齐</a><a href="#cache-guide">缓存身份与配比归因</a><a href="#boundary-guide">文档边界与有效目标</a><a href="#state-guide">训练状态与切换时刻</a><a href="#contracts-guide">源码接口与恢复验收</a><a href="#scale-guide">配比历史与BPB聚合检查</a><a href="#engineering-lab">核对工程解释与反证</a>')
 workbench=json.loads((ROOT/'analysis/workbench_data.json').read_text());rubric=json.loads((ROOT/'analysis/rubrics.json').read_text());chapter_paths={file:'#'+slug for slug,_,file in chapters}

@@ -403,3 +403,6 @@ V83执行补充：保存父helper前、dispatcher过滤/resolve后、child初始
 
 
 V84阅读补充：每次异常记录症状、实际共同起点、最小区分实验、通过项及仍缺证据。不要累加CPU/IO/静态检查数量作为生产可信度总分。七个症状入口是阅读工具，原18条规则不变，理解效果未测。
+
+
+V85执行补充：clipping结果有限不证明裁剪正确，有限全零需检查norm overflow，norm=0需检查平方underflow。activation dtype不代替optimizer输入dtype；归档未启用的分支不得归因生产事故。

@@ -241,3 +241,7 @@ runtime-defaults-probe:
 .PHONY: launch-binding-probe
 launch-binding-probe:
 	$(PYTHON) scripts/probe_launch_binding.py
+
+.PHONY: clipping-precision-cpu
+clipping-precision-cpu:
+	$(CPU_PYTHON) scripts/probe_clipping_precision_cpu.py

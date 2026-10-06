@@ -1,0 +1,16 @@
+{
+  "version": "V85",
+  "checks_passed": 9,
+  "checks": [
+    "index.html unique IDs",
+    "index.html optional clip scope",
+    "index.html historical five tables and new precision table",
+    "report_standalone.html unique IDs",
+    "report_standalone.html optional clip scope",
+    "report_standalone.html historical five tables and new precision table",
+    "492 source hashes exact",
+    "Fresh V85 validation",
+    "two same head sources and 489 preserved"
+  ],
+  "actual_browser_rendering": null
+}

@@ -116,3 +116,43 @@ AdamH对Adam方向做归一化。在首步、epsilon影响很小的人工例子�
 当前公开归档max_grad_norm=None，危险/差异分支是迁移与配置变更的验收对象，不能作为已发生的Hero裁剪事故。没有执行真实create_mask、MuonH Newton–Schulz、完整multi_transform组链、调度、GPU/TPU或历史状态重放。
 
 [10项CPU与源码检查](analysis/group_clipping_cpu.json)记录原值、人工标签、模块SHA和Optax函数来源SHA。[脚本](scripts/probe_group_clipping_cpu.py)使用真实Optax分组控制与未修改的AdamH模块；完整Hero build仍未知。使用V50的[CPU依赖](requirements-optimizer-cpu.txt)，入口为`make clipping-cpu CPU_PYTHON=/你的环境/bin/python`；通常report构建只读取冻结结果。
+
+
+## V85：梯度有限，范数仍可能坏掉；裁剪全零也不等于停止更新
+
+本节针对**可选裁剪分支**。公开10月7日配置归档的max_grad_norm=None；没有证据表明Hero实际启用了它。因此以下是迁移和配置变更的数值合同检查，不是Hero裁剪事故。本轮取得与近期train.py同一head b65be4c9550c5097f0a3add08933531a1c24d534的完整optimizer.py和adamh.py；执行真实Optax 0.2.5 clip与原AdamH模块，没有完整Hero build、模型loss或GPU。
+
+### 溢出发生在梯度平方，不必发生在梯度本身
+
+安装的Optax 0.2.5源码中，global_norm先对每个leaf做abs_sq和sum，再将各leaf求和并sqrt；clip比较g_norm<max_norm，否则每个leaf执行(t/g_norm.astype(t.dtype))*max_norm。它没有在这里显式把每个梯度leaf转成FP32。对有限FP16矩阵，平方已经可能超出表示范围；先出错再求和，后面的有限性检查无法恢复原范数。
+
+用2×2同值人工梯度，执行原库函数、独立float64范数参考和“先整体转FP32裁剪，再cast回原dtype”的比较控制。[19项CPU检查](analysis/clipping_precision_cpu.json)包括eager/JIT一致性；比较控制没有修改上游，也不是经过训练验证的修复。
+
+|梯度dtype / 每项数值 / 阈值|原计算范数|原裁剪后的独立float64范数|FP32裁剪再cast回后的独立范数|
+|---|---:|---:|---:|
+|FP16 / 300 / 1|Infinity|0|1|
+|FP16 / 0.0001 / 0.00001|0|0.0002000332|0.00001001358|
+|BF16 / 300 / 1|600|1|1|
+|BF16 / 0.0001 / 0.00001|0.0002002716|0.00001001358|0.00001001358|
+|FP32 / 300 / 1|600|1|1|
+|FP32 / 0.0001 / 0.00001|0.0002000000|0.0000100000|0.0000100000|
+
+第一行的四项梯度均有限，真实范数600；原FP16平方/累积得到无穷，有限梯度除以它成为全零，输出也全有限。第二行的实际范数约0.0002000332，约为阈值20倍；平方下溢得到范数0，trigger选择原梯度，裁剪根本没有触发。两种情况都不能靠“裁剪结果没有NaN”排除。
+
+FP32比较控制避免了这两例的范数失败，但cast回低精度仍有舍入。小值控制的最终范数0.00001001358略高于阈值；不能把该控制写成“任何dtype下严格保证≤阈值”。本轮的BF16/FP32六个对应值没有出现FP16这两类失败，不能外推任意幅值、leaf数量或分布式归约都安全。
+
+### 范数失败会怎样进入已有动量
+
+人工FP32参数从[[2,0],[0,1]]开始，原AdamH用梯度[[1,4],[2,3]]预热一次。然后从同一预热参数和moment/count分成两路：FP16范数溢出得到的全零梯度，以及FP32范数控制得到的范数1梯度；两路均转FP32后送入同一原AdamH，排除其输入dtype差异。
+
+全零一路的count仍从1到2，mu和nu分别按0.9、0.95衰减，参数update范数为0.1882047；正确保留梯度的一路update范数为0.1802129，两路update差的L2为0.0146983。这个合成控制把“范数溢出→有限全零梯度→已有状态继续更新”接到实际原模块。它没有语言loss，没有完整分组、学习率调度或生产checkpoint；数值不表示Hero的实际误差量级。
+
+### 应该检查哪个dtype
+
+不能从activation dtype直接推断进入裁剪的gradient dtype。近期原train_step在FP32 pinned-host master模式下先_FP32_POLICY.cast_to_param(grads)，再调用optimizer.update；另一分支直接传grads。该顺序是固定源码静态证据，本轮没有执行完整master路径，也不知道某次Hero实际gradient dtype。
+
+V51已验证裁剪位于组内变换，而不是全模型只做一次；本节则检查同一leaf的范数数值。组范围、实际梯度dtype、范数平方/累积dtype和裁剪后cast必须一起记录。给一个max_grad_norm数字不足以定义完整行为，训练CE有限或activation为BF16也不能代填这些字段。
+
+迁移验收可以按四层保存：原梯度有限性及独立高精度范数；原clip使用的norm/dtype与系数；clip后的梯度；同状态optimizer更新与下一状态。发现有限全零时，先辨别是真正无梯度还是范数溢出；发现norm=0时，检查是否为平方下溢。提升范数精度是本控制中的有效区分手段，但是否要改实现、如何保持分片和性能，仍需实际执行包、GPU与训练评估。
+
+新增2份同head源码，旧489份非bookkeeping来源字节保持，来源现492份；[获取台账](analysis/clipping_precision_acquisition.json)可复核。归档声明裁剪关闭、真实gradient dtype、GPU与训练收益分别记录，不能把可选分支反例改写成生产根因。复现：`make clipping-precision-cpu CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。

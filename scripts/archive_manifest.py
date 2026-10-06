@@ -13,7 +13,7 @@ if extra_engineering.exists():
         known[x['file']]={k:x[k] for k in ['url','retrieved_utc','sha256']}
 rows=[]
 for p in sorted(S.rglob('*')):
-    if not p.is_file() or p.name=='archive_manifest.json':continue
+    if not p.is_file() or p.name=='archive_manifest.json' or '__pycache__' in p.parts or p.suffix=='.pyc':continue
     rel=str(p.relative_to(S));b=p.read_bytes();r={'file':rel,'bytes':len(b),'sha256':hashlib.sha256(b).hexdigest()}
     if rel in known:
         orig=known[rel];assert r['sha256']==orig['sha256'],rel

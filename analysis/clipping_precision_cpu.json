@@ -1,0 +1,315 @@
+{
+  "scope": "Real Optax clipping and original AdamH on synthetic finite gradient matrices.\nOptional clipping branch; archived Hero max_grad_norm=None, no production attribution.\n",
+  "checks_passed": 19,
+  "checks": [
+    "Fixed CPU runtime",
+    "<class 'jax.numpy.float16'> large finite original gradients and clipped outputs",
+    "<class 'jax.numpy.float16'> large direct eager and JIT agree",
+    "<class 'jax.numpy.float16'> small finite original gradients and clipped outputs",
+    "<class 'jax.numpy.float16'> small direct eager and JIT agree",
+    "<class 'jax.numpy.bfloat16'> large finite original gradients and clipped outputs",
+    "<class 'jax.numpy.bfloat16'> large direct eager and JIT agree",
+    "<class 'jax.numpy.bfloat16'> small finite original gradients and clipped outputs",
+    "<class 'jax.numpy.bfloat16'> small direct eager and JIT agree",
+    "<class 'jax.numpy.float32'> large finite original gradients and clipped outputs",
+    "<class 'jax.numpy.float32'> large direct eager and JIT agree",
+    "<class 'jax.numpy.float32'> small finite original gradients and clipped outputs",
+    "<class 'jax.numpy.float32'> small direct eager and JIT agree",
+    "Finite float16 squaring overflows norm and erases clipped gradient",
+    "Float16 small squaring underflows norm and fails to trigger clipping",
+    "Collapsed clipped gradient still advances original warm AdamH and moves parameters",
+    "Same warm state distinguishes true zeroed path from FP32 norm control",
+    "Frozen Hero declaration keeps optional clipping disabled",
+    "Three optional group clip branches and master casting source order retained"
+  ],
+  "cases": [
+    {
+      "dtype": "float16",
+      "case": "large",
+      "threshold": 1.0,
+      "gradient": [
+        [
+          300.0,
+          300.0
+        ],
+        [
+          300.0,
+          300.0
+        ]
+      ],
+      "source_norm": "Infinity",
+      "source_norm_dtype": "float16",
+      "independent_input_norm_float64": 600.0,
+      "direct_clipped": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "direct_clipped_norm_float64": 0.0,
+      "fp32_norm_control_cast_back": [
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ]
+      ],
+      "fp32_control_norm_float64": 1.0,
+      "direct_output_finite": true
+    },
+    {
+      "dtype": "float16",
+      "case": "small",
+      "threshold": 1e-05,
+      "gradient": [
+        [
+          0.00010001659393310547,
+          0.00010001659393310547
+        ],
+        [
+          0.00010001659393310547,
+          0.00010001659393310547
+        ]
+      ],
+      "source_norm": 0.0,
+      "source_norm_dtype": "float16",
+      "independent_input_norm_float64": 0.00020003318786621094,
+      "direct_clipped": [
+        [
+          0.00010001659393310547,
+          0.00010001659393310547
+        ],
+        [
+          0.00010001659393310547,
+          0.00010001659393310547
+        ]
+      ],
+      "direct_clipped_norm_float64": 0.00020003318786621094,
+      "fp32_norm_control_cast_back": [
+        [
+          5.0067901611328125e-06,
+          5.0067901611328125e-06
+        ],
+        [
+          5.0067901611328125e-06,
+          5.0067901611328125e-06
+        ]
+      ],
+      "fp32_control_norm_float64": 1.0013580322265625e-05,
+      "direct_output_finite": true
+    },
+    {
+      "dtype": "bfloat16",
+      "case": "large",
+      "threshold": 1.0,
+      "gradient": [
+        [
+          300.0,
+          300.0
+        ],
+        [
+          300.0,
+          300.0
+        ]
+      ],
+      "source_norm": 600.0,
+      "source_norm_dtype": "bfloat16",
+      "independent_input_norm_float64": 600.0,
+      "direct_clipped": [
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ]
+      ],
+      "direct_clipped_norm_float64": 1.0,
+      "fp32_norm_control_cast_back": [
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ]
+      ],
+      "fp32_control_norm_float64": 1.0,
+      "direct_output_finite": true
+    },
+    {
+      "dtype": "bfloat16",
+      "case": "small",
+      "threshold": 1e-05,
+      "gradient": [
+        [
+          0.00010013580322265625,
+          0.00010013580322265625
+        ],
+        [
+          0.00010013580322265625,
+          0.00010013580322265625
+        ]
+      ],
+      "source_norm": 0.0002002716064453125,
+      "source_norm_dtype": "bfloat16",
+      "independent_input_norm_float64": 0.0002002716064453125,
+      "direct_clipped": [
+        [
+          5.0067901611328125e-06,
+          5.0067901611328125e-06
+        ],
+        [
+          5.0067901611328125e-06,
+          5.0067901611328125e-06
+        ]
+      ],
+      "direct_clipped_norm_float64": 1.0013580322265625e-05,
+      "fp32_norm_control_cast_back": [
+        [
+          5.0067901611328125e-06,
+          5.0067901611328125e-06
+        ],
+        [
+          5.0067901611328125e-06,
+          5.0067901611328125e-06
+        ]
+      ],
+      "fp32_control_norm_float64": 1.0013580322265625e-05,
+      "direct_output_finite": true
+    },
+    {
+      "dtype": "float32",
+      "case": "large",
+      "threshold": 1.0,
+      "gradient": [
+        [
+          300.0,
+          300.0
+        ],
+        [
+          300.0,
+          300.0
+        ]
+      ],
+      "source_norm": 600.0,
+      "source_norm_dtype": "float32",
+      "independent_input_norm_float64": 600.0,
+      "direct_clipped": [
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ]
+      ],
+      "direct_clipped_norm_float64": 1.0,
+      "fp32_norm_control_cast_back": [
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ]
+      ],
+      "fp32_control_norm_float64": 1.0,
+      "direct_output_finite": true
+    },
+    {
+      "dtype": "float32",
+      "case": "small",
+      "threshold": 1e-05,
+      "gradient": [
+        [
+          9.999999747378752e-05,
+          9.999999747378752e-05
+        ],
+        [
+          9.999999747378752e-05,
+          9.999999747378752e-05
+        ]
+      ],
+      "source_norm": 0.00019999999494757503,
+      "source_norm_dtype": "float32",
+      "independent_input_norm_float64": 0.00019999999494757503,
+      "direct_clipped": [
+        [
+          4.999999873689376e-06,
+          4.999999873689376e-06
+        ],
+        [
+          4.999999873689376e-06,
+          4.999999873689376e-06
+        ]
+      ],
+      "direct_clipped_norm_float64": 9.999999747378752e-06,
+      "fp32_norm_control_cast_back": [
+        [
+          4.999999873689376e-06,
+          4.999999873689376e-06
+        ],
+        [
+          4.999999873689376e-06,
+          4.999999873689376e-06
+        ]
+      ],
+      "fp32_control_norm_float64": 9.999999747378752e-06,
+      "direct_output_finite": true
+    }
+  ],
+  "warm_AdamH": {
+    "direct_clipped_gradient_norm": 0.0,
+    "fp32_control_gradient_norm": 1.0,
+    "direct_warm_update_norm": 0.18820473551750183,
+    "fp32_warm_update_norm": 0.18021294474601746,
+    "update_difference_norm": 0.014698336832225323,
+    "count_before": 1,
+    "count_after_direct": 2,
+    "count_after_control": 2,
+    "original_mu_decay_error": 0.0,
+    "original_nu_decay_error": 0.0
+  },
+  "archived_Hero_max_grad_norm": null,
+  "runtime": {
+    "jax": "0.7.2",
+    "optax": "0.2.5",
+    "backend": "cpu"
+  },
+  "source_sha256": {
+    "sources/clipping_precision_2026_10_07/adamh.py": "722ed10ea6c36440049c5f5a4eb9ea98abcfe7cd761a52e3973a3031b0755716",
+    "sources/clipping_precision_2026_10_07/optimizer.py": "50dddad265e18974e8529f7a9df26d37e44430ffc5442d5c93e58cb2e924ae0e",
+    "sources/runtime_defaults_2026_10_07/train.py": "2c4d648db684d8109ee241e2e69dad3fe42b5e41760f6114706c6134e35a786b",
+    "sources/live_2026_10_07/meta.json": "21998ecad691e7e66d3680f173bfe9b94c35b9481f28eff4794a23b0c9831487"
+  },
+  "library_source": {
+    "optax.global_norm": "def global_norm(updates: base.PyTree) -> chex.Array:\n  \"\"\"Compute the global norm across a nested structure of tensors.\"\"\"\n  return jnp.sqrt(\n      sum(jnp.sum(numerics.abs_sq(x)) for x in jax.tree.leaves(updates))\n  )\n",
+    "optax.clip_by_global_norm": "def clip_by_global_norm(max_norm: float) -> base.GradientTransformation:\n  \"\"\"Clips updates using their global norm.\n\n  Args:\n    max_norm: The maximum global norm for an update.\n\n  Returns:\n    A :class:`optax.GradientTransformation` object.\n\n  References:\n    Pascanu et al., `On the difficulty of training Recurrent Neural Networks\n    <https://arxiv.org/abs/1211.5063>`_, 2012\n  \"\"\"\n\n  def update_fn(updates, state, params=None):\n    del params\n    g_norm = linear_algebra.global_norm(updates)\n    # TODO(b/163995078): revert back to the following (faster) implementation\n    # once analyzed how it affects backprop through update (e.g. meta-gradients)\n    # g_norm = jnp.maximum(max_norm, g_norm)\n    # updates = jax.tree.map(lambda t: (t / g_norm) * max_norm, updates)\n    trigger = jnp.squeeze(g_norm < max_norm)\n    chex.assert_shape(trigger, ())  # A scalar.\n\n    def clip_fn(t):\n      return jax.lax.select(trigger, t, (t / g_norm.astype(t.dtype)) * max_norm)\n\n    updates = jax.tree.map(clip_fn, updates)\n    return updates, state\n\n  return base.GradientTransformation(base.init_empty_state, update_fn)\n"
+  },
+  "library_source_sha256": {
+    "optax.global_norm": "fc46e9cad3eba726a86a0fcfa7940259630e59283f4c8d7d76b4c8a617204cb2",
+    "optax.clip_by_global_norm": "6fe01ccddf2169f3b55a9dd68b66ba1f7ac302a1699fc6739b145fb51bd0fd70"
+  },
+  "explicit_substitutions": [
+    "manual 2x2 gradients; optional clip transform not full Hero build",
+    "FP32 norm control casts entire gradient to FP32 then clipped result back; not upstream fix",
+    "original AdamH warm state is artificial and FP32; both compared gradients cast to FP32 before AdamH",
+    "master policy inspected statically, not full train-step execution"
+  ],
+  "actual_Hero_clipping_incident": null,
+  "actual_Hero_gradient_dtype": null,
+  "actual_GPU_execution": null,
+  "actual_training_benefit": null
+}

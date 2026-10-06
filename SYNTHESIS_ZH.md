@@ -201,3 +201,6 @@ V79 原裁剪/offset/chunk计划与host身份重放：总逻辑容量32仍丢5�
 
 
 V80补上接受mask后的权重路径：丢弃assignment的权重梯度为零，不保证已选router logit梯度为零，因为它仍在归一化分母中。原函数15项CPU控制验证这一点；assignment接受率之外还需看保留权重质量。裁剪后重归一化改变前向及router梯度，不能当成等价修复。详见[权重路径](ROUTING_DROPS_ZH.md)。
+
+
+V85补充可选裁剪的数值合同：FP16有限梯度可能在范数平方时溢出/下溢，裁剪输出仍有限；原AdamH已有状态会继续更新。公开归档max_grad_norm=None，不能当作Hero事故。详见[裁剪输入与状态](OPTIMIZER_GROUPS_ZH.md)。

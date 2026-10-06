@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-06T22:03:57.137463+00:00",
+  "integrity_manifest_created_utc": "2026-10-06T22:24:30.975050+00:00",
   "files": [
     {
       "file": "accumulation_2026_10_07/grad_accum.py",
@@ -182,6 +182,20 @@
       "sha256": "5e1dbcd8bcae899f295952236269b0b439e308b54c6a120da43eda3441ec4f34",
       "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/utils/byte_budget.py",
       "retrieved_utc": "2026-10-05T14:18:12.404213+00:00"
+    },
+    {
+      "file": "clipping_precision_2026_10_07/adamh.py",
+      "bytes": 3475,
+      "sha256": "722ed10ea6c36440049c5f5a4eb9ea98abcfe7cd761a52e3973a3031b0755716",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/experiments/grug/moe_hero_ep/adamh.py",
+      "retrieved_utc": "2026-10-06T22:20:47.846689+00:00"
+    },
+    {
+      "file": "clipping_precision_2026_10_07/optimizer.py",
+      "bytes": 11656,
+      "sha256": "50dddad265e18974e8529f7a9df26d37e44430ffc5442d5c93e58cb2e924ae0e",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/experiments/grug/moe_hero_ep/optimizer.py",
+      "retrieved_utc": "2026-10-06T22:20:47.258818+00:00"
     },
     {
       "file": "code_launch_scaling_ladder.py",
@@ -2871,8 +2885,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 222501,
-      "sha256": "11a62c8c437d26d0ed9788bb3f2ce3fecc45261625fc17cafa5ad6c53dcc1abd",
+      "bytes": 223368,
+      "sha256": "9ffe7a3cff80d031bf5e1d44e51d09b4f52bfdbee9e6dc30de4c6c7774a4ede7",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

@@ -4419,5 +4419,21 @@
     "retrieved_utc": "2026-10-06T22:02:49.426959+00:00",
     "bytes": 2102,
     "sha256": "3e1b0cca3563df838b178254f76ace751521e3fb829de22cd40220ffaea41151"
+  },
+  {
+    "file": "clipping_precision_2026_10_07/optimizer.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/experiments/grug/moe_hero_ep/optimizer.py",
+    "revision": "b65be4c9550c5097f0a3add08933531a1c24d534",
+    "retrieved_utc": "2026-10-06T22:20:47.258818+00:00",
+    "bytes": 11656,
+    "sha256": "50dddad265e18974e8529f7a9df26d37e44430ffc5442d5c93e58cb2e924ae0e"
+  },
+  {
+    "file": "clipping_precision_2026_10_07/adamh.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/experiments/grug/moe_hero_ep/adamh.py",
+    "revision": "b65be4c9550c5097f0a3add08933531a1c24d534",
+    "retrieved_utc": "2026-10-06T22:20:47.846689+00:00",
+    "bytes": 3475,
+    "sha256": "722ed10ea6c36440049c5f5a4eb9ea98abcfe7cd761a52e3973a3031b0755716"
   }
 ]

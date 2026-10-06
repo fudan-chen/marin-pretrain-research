@@ -472,3 +472,6 @@ V83（2026-10-07）：新增固定head dispatcher/training/run_environment三份
 
 
 V84（2026-10-07）：综合首页增加七个可展开症状入口，将已有源码机制、结果文件、下一实验与判断边界对应；保留所有原表和专题。入口与十份既有结果SHA绑定，无新数值训练实验或理解效果证明。
+
+
+V85（2026-10-07）：取得同head optimizer/AdamH，真实Optax和原AdamH19项CPU检查，六组dtype/幅值控制；范数失败与warm状态更新接通。来源新增2份、旧489份非bookkeeping字节保持，无完整Hero build/GPU/训练收益。

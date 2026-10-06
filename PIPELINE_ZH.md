@@ -132,3 +132,8 @@ V22的[诊断流程](LOSS_TRIAGE_ZH.md)把指标/模型视图、样本内容与�
 ## V56：新MoE提案
 
 kernel提案顺序：绑定PR head与完整diff→确认输入/未写内存/梯度合同→执行对应数值与poison测试→最终组合移除对照→长窗稳定性与自身保存恢复→再判断部署。性能表的逐行gain不相加，数据配比变更单独记录。[当前分析](RECENT_MOE_CHANGES_ZH.md)。
+
+
+## V57：性能归因
+
+整包优化增加性能归因步骤：源码合同/兼容性→共同身份与输入→预热和profile排除→配对测量→原始trace、HBM及通信覆盖→最终图移除或合法四臂→长窗/保存恢复/跨rack。报告端点算术与独立组件效应分开。[来源复算](analysis/moe_performance_attribution.json)。

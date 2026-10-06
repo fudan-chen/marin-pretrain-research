@@ -1,0 +1,44 @@
+{
+  "scope": "Unexecuted performance interaction record; do not treat empty arms as passing measurements",
+  "status": "not_executed",
+  "comparison": {
+    "base": null,
+    "A_only": null,
+    "B_only": null,
+    "A_and_B": null,
+    "arm_compatibility_evidence": null,
+    "final_tip_removal_pairs": []
+  },
+  "identity": {
+    "hardware": null,
+    "mesh": null,
+    "checkpoint": null,
+    "next_batch_token_hashes": null,
+    "optimizer_router_state": null,
+    "execution_SHA": null,
+    "StableHLO_hash": null,
+    "wheel_versions": null,
+    "flags": null,
+    "dtype_contract": null
+  },
+  "measurement_policy": {
+    "warmup_steps": null,
+    "profiled_steps_excluded": null,
+    "order_randomization_or_pairing": null,
+    "statistic": null,
+    "raw_step_traces": [],
+    "stop_rules": null
+  },
+  "outputs": {
+    "step_seconds": null,
+    "HBM_peak": null,
+    "compute_transport_copy_trace": null,
+    "gradient_difference": null,
+    "interaction_seconds": null
+  },
+  "followup": {
+    "long_window_stability": null,
+    "self_save_restore": null,
+    "cross_rack_confirmation": null
+  }
+}

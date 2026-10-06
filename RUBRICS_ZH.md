@@ -317,3 +317,8 @@ pilot库存验收逐桶保存输入库存长度、r、floor保留数、入口互
 ## V56：新MoE提案
 
 未写buffer验收覆盖全部read/write集合、强制drop/padding、NaN poison及每fill重trace；路由梯度保存EXACT基线并检查zero/小乘积/dtype边界。测试排除的输入不能写成已验证等价域。合并状态、短窗GPU测量与生产部署分别记录。[提案审计](RECENT_MOE_CHANGES_ZH.md)。
+
+
+## V57：性能归因
+
+性能评审先核对每行实际base和测量窗口，再做最终图移除对照；只有兼容的四臂、共同输入与原始trace齐全，才估计指定条件下的交互量。空白步时不当0收益，scope时间不直接相加。[未执行记录模板](templates/performance_interaction_review.json)。

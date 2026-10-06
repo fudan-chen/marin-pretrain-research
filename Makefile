@@ -121,3 +121,8 @@ budget-inventory:
 routing-proposal:
 	$(CPU_PYTHON) scripts/probe_routing_gradient_proposal_cpu.py
 	$(PYTHON) scripts/audit_moe_proposal_sources.py
+
+.PHONY: moe-performance
+moe-performance:
+	$(PYTHON) scripts/analyze_moe_performance.py
+	$(PYTHON) scripts/plot_moe_performance.py

@@ -844,11 +844,19 @@ for n in [9832,9833]:
     ok('V56 unmerged PR and complete file connection '+str(n),not pr['merged'] and pr['state']=='open' and pr['changed_files']==len(fs))
 ec=read(A/'engineering_current_v56.json')
 ok('V56 primary issue bodies and comment IDs unchanged',len(ec['comparisons'])==3 and all(not x['body_changed'] and not x['added'] and not x['removed'] and not x['changed'] for x in ec['comparisons']))
-ok('V56 new engineering chapter retains two source-control tables',len(soup.select('#recent-moe-guide table'))==2)
+ok('V56 engineering chapter retains original plus V57 attribution table',len(soup.select('#recent-moe-guide table'))==3)
 report['highlights']=[x.replace('444 source archive checksums valid','455 source archive checksums valid') for x in report['highlights']]
 report['highlights']+=['V56 three full issue refreshes unchanged and two unmerged MoE PR audits; seven patch-statement CPU/source controls, no GPU MoE or production deployment verification']
 ps=read(A/'moe_proposal_source_audit.json')
 ok('V56 nineteen independent raw API source audits retain deployment unknown',ps['checks_passed']==len(ps['checks'])==19 and ps['actual_deployment'] is None and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in ps['source_sha256'].items()))
+pa=read(A/'moe_performance_attribution.json')
+ok('V57 source table arithmetic preserves author and unknown scope',pa['checks_passed']==len(pa['checks'])==6 and len(pa['rows'])==18 and len(pa['timed_rows'])==12 and pa['unidentified']['component_independent_causal_effects'] is None and pa['unidentified']['actual_GPU_reproduction'] is None)
+ok('V57 frozen performance source hash matches',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in pa['source_sha256'].items()))
+ok('V57 conditional reversal retained with raw pairs unknown',pa['shared_epilogue']['sequential_delta_seconds']>0 and pa['shared_epilogue']['author_final_tip_removal_slowdowns']==[.0035,.0022] and pa['shared_epilogue']['raw_pair_step_traces'] is None)
+pt=read(ROOT/'templates/performance_interaction_review.json')
+ok('V57 interaction template remains unexecuted',pt['status']=='not_executed' and all(pt['comparison'][x] is None for x in ['base','A_only','B_only','A_and_B']) and pt['outputs']['interaction_seconds'] is None)
+ok('V57 attribution figure embedded in existing source chapter',soup.select_one('#recent-moe-guide svg') is not None)
+report['highlights']+=['V57 six source/arithmetic checks, 12 author one-rack timings, conditional performance reversal figure and unexecuted interaction template; no local GPU or full causal attribution']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

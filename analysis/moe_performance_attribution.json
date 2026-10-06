@@ -1,0 +1,323 @@
+{
+  "scope": "Recompute the frozen PR9708 performance table. Author measurements, not local GPU runs.",
+  "checks_passed": 6,
+  "checks": [
+    "Complete eighteen-row author table parsed",
+    "Frozen endpoints preserved",
+    "Shared epilogue row is a sequential regression",
+    "Final-tip removal pairs have opposite effect in author description",
+    "Last gain uses a fresh adjacent baseline",
+    "Snapshot remains an unmerged proposal"
+  ],
+  "rows": [
+    {
+      "change": "main",
+      "commit": "b4d1761ff2",
+      "seconds": 13.899,
+      "MFU_percent": 28.24,
+      "author_gain_label": "",
+      "table_previous_seconds": null,
+      "table_time_delta_seconds": null,
+      "table_relative_speed_gain": null
+    },
+    {
+      "change": "Remat discounts the host-offloaded carry",
+      "commit": "13448300c6",
+      "seconds": 13.737,
+      "MFU_percent": 28.57,
+      "author_gain_label": "+1.18%",
+      "table_previous_seconds": 13.899,
+      "table_time_delta_seconds": -0.16199999999999903,
+      "table_relative_speed_gain": 0.011792967896920636
+    },
+    {
+      "change": "Unfilled ragged transport buffers",
+      "commit": "a544f2571c",
+      "seconds": 13.542,
+      "MFU_percent": 28.99,
+      "author_gain_label": "+1.44%",
+      "table_previous_seconds": 13.737,
+      "table_time_delta_seconds": -0.19500000000000028,
+      "table_relative_speed_gain": 0.014399645547186646
+    },
+    {
+      "change": "Expert-side routing-weight gradient",
+      "commit": "9383ef90cc",
+      "seconds": 13.13,
+      "MFU_percent": 29.9,
+      "author_gain_label": "+3.14%",
+      "table_previous_seconds": 13.542,
+      "table_time_delta_seconds": -0.41199999999999903,
+      "table_relative_speed_gain": 0.03137852246763129
+    },
+    {
+      "change": "Streaming Triton short convolution",
+      "commit": "5600e67b2e",
+      "seconds": 13.059,
+      "MFU_percent": 30.06,
+      "author_gain_label": "+0.55%",
+      "table_previous_seconds": 13.13,
+      "table_time_delta_seconds": -0.0710000000000015,
+      "table_relative_speed_gain": 0.005436863465809072
+    },
+    {
+      "change": "SwiGLU backward in the dh GEMM epilogue",
+      "commit": "c573fecfe0",
+      "seconds": 12.943,
+      "MFU_percent": 30.33,
+      "author_gain_label": "+0.89%",
+      "table_previous_seconds": 13.059,
+      "table_time_delta_seconds": -0.11599999999999966,
+      "table_relative_speed_gain": 0.008962373483736297
+    },
+    {
+      "change": "Device-side kernel availability check",
+      "commit": "99d961ed43",
+      "seconds": null,
+      "MFU_percent": null,
+      "author_gain_label": "no hero change"
+    },
+    {
+      "change": "Triton router top-k",
+      "commit": "7d28781d70",
+      "seconds": 12.875,
+      "MFU_percent": 30.49,
+      "author_gain_label": "+0.53%",
+      "table_previous_seconds": 12.943,
+      "table_time_delta_seconds": -0.06799999999999962,
+      "table_relative_speed_gain": 0.005281553398058136
+    },
+    {
+      "change": "Token-major dispatch scatter",
+      "commit": "3ebb6f91b1",
+      "seconds": 12.73,
+      "MFU_percent": 30.83,
+      "author_gain_label": "+1.14%",
+      "table_previous_seconds": 12.875,
+      "table_time_delta_seconds": -0.14499999999999957,
+      "table_relative_speed_gain": 0.011390416339355891
+    },
+    {
+      "change": "Shared and chunk GEMMs under the MoE transports",
+      "commit": "a225408148",
+      "seconds": 12.638,
+      "MFU_percent": 31.06,
+      "author_gain_label": "+0.73%",
+      "table_previous_seconds": 12.73,
+      "table_time_delta_seconds": -0.09200000000000053,
+      "table_relative_speed_gain": 0.007279632853299578
+    },
+    {
+      "change": "Synchronous collectives without the carry offload",
+      "commit": "7caae09edc",
+      "seconds": null,
+      "MFU_percent": null,
+      "author_gain_label": "no hero change"
+    },
+    {
+      "change": "Shared-expert SwiGLU in QuACK epilogues",
+      "commit": "b24cfe37f8",
+      "seconds": 12.652,
+      "MFU_percent": 31.03,
+      "author_gain_label": "-0.11%",
+      "table_previous_seconds": 12.638,
+      "table_time_delta_seconds": 0.013999999999999346,
+      "table_relative_speed_gain": -0.0011065444198544716
+    },
+    {
+      "change": "No routed pre-activation store under remat",
+      "commit": "332b1f0b02",
+      "seconds": 12.611,
+      "MFU_percent": 31.13,
+      "author_gain_label": "+0.33%",
+      "table_previous_seconds": 12.652,
+      "table_time_delta_seconds": -0.04099999999999859,
+      "table_relative_speed_gain": 0.0032511299659025994
+    },
+    {
+      "change": "PGLE profile builder",
+      "commit": "379fdf0e66",
+      "seconds": null,
+      "MFU_percent": null,
+      "author_gain_label": "no hero change by default"
+    },
+    {
+      "change": "End-to-end test that no transport consumer reads unwritten rows",
+      "commit": "ea02772298",
+      "seconds": null,
+      "MFU_percent": null,
+      "author_gain_label": "no hero change"
+    },
+    {
+      "change": "Short conv and router top-k in Pallas instead of raw Triton",
+      "commit": "729a0757f4, fea1451269",
+      "seconds": 12.591,
+      "MFU_percent": 31.18,
+      "author_gain_label": "+0.15%",
+      "table_previous_seconds": 12.611,
+      "table_time_delta_seconds": -0.02000000000000135,
+      "table_relative_speed_gain": 0.0015884361845763806
+    },
+    {
+      "change": "Packed bf16 short-conv rounding only on SM90 and newer",
+      "commit": "088095b07f",
+      "seconds": null,
+      "MFU_percent": null,
+      "author_gain_label": "no hero change"
+    },
+    {
+      "change": "Poisoning test retraces its recompute for each fill",
+      "commit": "2b159517c1",
+      "seconds": null,
+      "MFU_percent": null,
+      "author_gain_label": "no hero change"
+    }
+  ],
+  "timed_rows": [
+    {
+      "change": "main",
+      "commit": "b4d1761ff2",
+      "seconds": 13.899,
+      "MFU_percent": 28.24,
+      "author_gain_label": "",
+      "table_previous_seconds": null,
+      "table_time_delta_seconds": null,
+      "table_relative_speed_gain": null
+    },
+    {
+      "change": "Remat discounts the host-offloaded carry",
+      "commit": "13448300c6",
+      "seconds": 13.737,
+      "MFU_percent": 28.57,
+      "author_gain_label": "+1.18%",
+      "table_previous_seconds": 13.899,
+      "table_time_delta_seconds": -0.16199999999999903,
+      "table_relative_speed_gain": 0.011792967896920636
+    },
+    {
+      "change": "Unfilled ragged transport buffers",
+      "commit": "a544f2571c",
+      "seconds": 13.542,
+      "MFU_percent": 28.99,
+      "author_gain_label": "+1.44%",
+      "table_previous_seconds": 13.737,
+      "table_time_delta_seconds": -0.19500000000000028,
+      "table_relative_speed_gain": 0.014399645547186646
+    },
+    {
+      "change": "Expert-side routing-weight gradient",
+      "commit": "9383ef90cc",
+      "seconds": 13.13,
+      "MFU_percent": 29.9,
+      "author_gain_label": "+3.14%",
+      "table_previous_seconds": 13.542,
+      "table_time_delta_seconds": -0.41199999999999903,
+      "table_relative_speed_gain": 0.03137852246763129
+    },
+    {
+      "change": "Streaming Triton short convolution",
+      "commit": "5600e67b2e",
+      "seconds": 13.059,
+      "MFU_percent": 30.06,
+      "author_gain_label": "+0.55%",
+      "table_previous_seconds": 13.13,
+      "table_time_delta_seconds": -0.0710000000000015,
+      "table_relative_speed_gain": 0.005436863465809072
+    },
+    {
+      "change": "SwiGLU backward in the dh GEMM epilogue",
+      "commit": "c573fecfe0",
+      "seconds": 12.943,
+      "MFU_percent": 30.33,
+      "author_gain_label": "+0.89%",
+      "table_previous_seconds": 13.059,
+      "table_time_delta_seconds": -0.11599999999999966,
+      "table_relative_speed_gain": 0.008962373483736297
+    },
+    {
+      "change": "Triton router top-k",
+      "commit": "7d28781d70",
+      "seconds": 12.875,
+      "MFU_percent": 30.49,
+      "author_gain_label": "+0.53%",
+      "table_previous_seconds": 12.943,
+      "table_time_delta_seconds": -0.06799999999999962,
+      "table_relative_speed_gain": 0.005281553398058136
+    },
+    {
+      "change": "Token-major dispatch scatter",
+      "commit": "3ebb6f91b1",
+      "seconds": 12.73,
+      "MFU_percent": 30.83,
+      "author_gain_label": "+1.14%",
+      "table_previous_seconds": 12.875,
+      "table_time_delta_seconds": -0.14499999999999957,
+      "table_relative_speed_gain": 0.011390416339355891
+    },
+    {
+      "change": "Shared and chunk GEMMs under the MoE transports",
+      "commit": "a225408148",
+      "seconds": 12.638,
+      "MFU_percent": 31.06,
+      "author_gain_label": "+0.73%",
+      "table_previous_seconds": 12.73,
+      "table_time_delta_seconds": -0.09200000000000053,
+      "table_relative_speed_gain": 0.007279632853299578
+    },
+    {
+      "change": "Shared-expert SwiGLU in QuACK epilogues",
+      "commit": "b24cfe37f8",
+      "seconds": 12.652,
+      "MFU_percent": 31.03,
+      "author_gain_label": "-0.11%",
+      "table_previous_seconds": 12.638,
+      "table_time_delta_seconds": 0.013999999999999346,
+      "table_relative_speed_gain": -0.0011065444198544716
+    },
+    {
+      "change": "No routed pre-activation store under remat",
+      "commit": "332b1f0b02",
+      "seconds": 12.611,
+      "MFU_percent": 31.13,
+      "author_gain_label": "+0.33%",
+      "table_previous_seconds": 12.652,
+      "table_time_delta_seconds": -0.04099999999999859,
+      "table_relative_speed_gain": 0.0032511299659025994
+    },
+    {
+      "change": "Short conv and router top-k in Pallas instead of raw Triton",
+      "commit": "729a0757f4, fea1451269",
+      "seconds": 12.591,
+      "MFU_percent": 31.18,
+      "author_gain_label": "+0.15%",
+      "table_previous_seconds": 12.611,
+      "table_time_delta_seconds": -0.02000000000000135,
+      "table_relative_speed_gain": 0.0015884361845763806
+    }
+  ],
+  "aggregate": {
+    "step_seconds_saved": 1.3079999999999998,
+    "time_reduction_fraction": 0.09410748974746386,
+    "relative_speed_gain": 0.10388372647128907,
+    "MFU_percentage_point_change": 2.9400000000000013
+  },
+  "shared_epilogue": {
+    "sequential_delta_seconds": 0.013999999999999346,
+    "sequential_relative_speed_gain": -0.0011065444198544716,
+    "author_final_tip_removal_slowdowns": [
+      0.0035,
+      0.0022
+    ],
+    "raw_pair_step_traces": null
+  },
+  "unidentified": {
+    "component_independent_causal_effects": null,
+    "full_factorial_interactions": null,
+    "actual_device_trace": null,
+    "cross_rack_scaling": null,
+    "actual_GPU_reproduction": null
+  },
+  "source_sha256": {
+    "sources/engineering_current_2026_10_07/pull_9708.json": "b453bbd3c2d84a368e1f97c2791f6965c41fb2094dda1aee489c9339bb34e008"
+  }
+}

@@ -1,6 +1,6 @@
 # 当前交付审计：文件覆盖与真实验证分别核对
 
-当前版本V56，新增[未合并MoE提案分析](RECENT_MOE_CHANGES_ZH.md)：11份完整API文件，三个主issue正文/评论未变，#9832/#9833仍open且merged=false。7项CPU/源码控制仅执行两条patch语句与人工row-dot，不是GPU MoE或生产部署验证。
+当前版本V57，完善[性能归因](RECENT_MOE_CHANGES_ZH.md)：6项来源/算术核对、12条作者单rack步时、新SVG/PNG及空测量模板。没有新GPU测量、lowering复编译、完整因果交互估计或跨rack确认；原455份来源保持。
 
 |用户要求|当前权威产物|覆盖与实际限制|
 |---|---|---|

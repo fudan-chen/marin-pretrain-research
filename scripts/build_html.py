@@ -59,6 +59,10 @@ readings={x['file']:x for x in json.loads((ROOT/'analysis/figure_readings.json')
 sections=[];toc=[]
 for slug,label,file in chapters:
     result=markdown.markdown((ROOT/file).read_text(),extensions=['tables','fenced_code','toc'])
+    if slug=='recent-moe-guide':
+        perf_svg=BeautifulSoup((ROOT/'assets/moe_performance_attribution.svg').read_text(),'html.parser').svg
+        perf_svg['style']='display:block;width:100%;height:auto'
+        result += '<figure class="scientific-figure">'+str(perf_svg)+'<figcaption>图A为作者冻结单rack测量，图B为端点算术，图C为机制示意；没有本地GPU复现或原始device trace。</figcaption></figure>'
     if slug=='optimizer-guide':
         clip_svg=BeautifulSoup((ROOT/'assets/group_clipping_cpu.svg').read_text(),'html.parser').svg
         clip_svg['style']='display:block;width:100%;height:auto'

@@ -1,0 +1,18 @@
+{
+  "pages": {
+    "index.html": {
+      "recent_moe_tables": 3,
+      "performance_inline_SVG": true,
+      "sha256": "912ef80ce5c1d49dc59a30eafcf05f3602e5cea1a8607817c5145fafba225b6c"
+    },
+    "report_standalone.html": {
+      "recent_moe_tables": 3,
+      "performance_inline_SVG": true,
+      "sha256": "10ee608da4963fdcf5806e88c209a63c287be2d41808c5c732a7ae93fe9c90d6"
+    }
+  },
+  "prior_source_bytes_preserved": 455,
+  "actual_browser_rendering": null,
+  "PNG_viewed": true,
+  "moe_performance_make_target_verified": true
+}

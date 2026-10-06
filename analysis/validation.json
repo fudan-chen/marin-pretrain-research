@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1339,
+  "checks_passed": 1346,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -90,7 +90,8 @@
     "V39 executable declared global leaf-domain transcript comparison; token-weighted BPB regrouping counterexample; no raw-array identity verification or actual Hero replay",
     "V40 evidence-bounded synthesis and practical reading / mixture-experiment routes; no new experiments or reader comprehension claim",
     "V41 offline supplied-global-array export / canonical typed v2 input digest / computed byte table / CPU synthetic tests; no actual forward, rank gathering or Hero data",
-    "V42 original continuous stream / format / tail checks on synthetic CPU cache; public pinned Paloma card and final paper; anonymous ledger 403; no actual Hero tail or PTB cause claim"
+    "V42 original continuous stream / format / tail checks on synthetic CPU cache; public pinned Paloma card and final paper; anonymous ledger 403; no actual Hero tail or PTB cause claim",
+    "V43 optional supplied-active-next-token coordinate contract and original default-window coverage checks; generic mode explicitly unverified; no actual model loss alignment, GPU forward or Hero data"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

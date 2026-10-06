@@ -72,3 +72,8 @@ mask可能是文档ID、布尔条件或其他显式叶子，导出器绑定它�
 [23项检查](analysis/eval_array_export_validation.json)使用人工两行、两域输入，覆盖N/T/B参考值、typed摘要、loss/input差异、非法标签/值/范围、byte表声明和真实CLI拒绝覆盖；它们不是生产评估成绩。旧[27项记录比较检查](analysis/eval_replay_validation.json)也重新通过。
 
 已有能力是离线、可复核的“全局数组→逐批记录→重复评分对照”；尚缺实际前向采集、rank范围证明及Hero记录。拿到这些材料后，才能把PTB调查从声明比较推进到真实输入与数值重放。
+
+
+## 下一token坐标验收
+
+新增可选`target_contract="causal_next_token_v1"`，空白manifest默认启用。它要求输入与评分ID同形、末位权重为零、所有正权重位置的评分ID等于右侧输入token；零权重ID仍受范围与摘要约束。缺省通用接口会明确标记未验证此性质。该检查仅验证提供的数组坐标，不验证loss来源、真实前向或缓存。详见[目标对齐与覆盖](EVAL_TARGET_ALIGNMENT_ZH.md)。

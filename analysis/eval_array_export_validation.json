@@ -69,7 +69,9 @@
       "input_hash_verified_against_supplied_arrays": true,
       "source_array_scope": "exporter-declared global; ranks not independently verified",
       "model_checkpoint_and_tokenizer_identity": "declarations only",
-      "losses_origin": "supplied arrays; forward not executed"
+      "losses_origin": "supplied arrays; forward not executed",
+      "target_contract": null,
+      "active_next_token_alignment_verified": false
     }
   },
   "actual_Hero_arrays": null,

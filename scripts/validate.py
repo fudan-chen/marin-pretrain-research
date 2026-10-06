@@ -730,6 +730,14 @@ ok('V42 public source payload checksums match',all(hashlib.sha256((S/x['file']).
 ok('V42 format chapter keeps three distinct evidence tables',len(soup.select('#eval-format-guide table'))==3)
 report['highlights']=[x.replace('435 source archive checksums valid','438 source archive checksums valid') for x in report['highlights']]
 report['highlights']+=['V42 original continuous stream / format / tail checks on synthetic CPU cache; public pinned Paloma card and final paper; anonymous ledger 403; no actual Hero tail or PTB cause claim']
+ta=read(A/'eval_target_alignment_validation.json')
+ok('V43 target alignment checks retain synthetic and static scope',ta['checks_passed']==len(ta['checks'])==18 and ta['actual_Hero_arrays'] is None and ta['actual_GPU_forward'] is None and ta['actual_loss_array_alignment'] is None)
+ok('V43 archived target/mask/length source identities match',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in ta['source_sha256'].items()))
+ok('V43 contract marks supplied active next-token check explicitly',ta['synthetic_export']['array_export']['target_contract']=='causal_next_token_v1' and ta['synthetic_export']['array_export']['active_next_token_alignment_verified'] is True)
+ok('V43 original mask and length coverage retain exact assumptions',len(ta['synthetic_coverage'])==5 and ta['synthetic_coverage'][1]['default_unit_weight_targets']==6 and all(x['positions_not_scored_as_targets']==x['remainder']+x['full_windows'] for x in ta['synthetic_coverage']))
+ok('V43 blank production manifest defaults to causal target contract',read(ROOT/'templates/eval_array_manifest.json')['target_contract']=='causal_next_token_v1')
+ok('V43 new target alignment chapter has two evidence tables',len(soup.select('#eval-target-alignment-guide table'))==2)
+report['highlights']+=['V43 optional supplied-active-next-token coordinate contract and original default-window coverage checks; generic mode explicitly unverified; no actual model loss alignment, GPU forward or Hero data']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

@@ -13,5 +13,6 @@
     "tokenizer_sha256": null,
     "byte_table_sha256": null
   },
-  "batches": []
+  "batches": [],
+  "target_contract": "causal_next_token_v1"
 }

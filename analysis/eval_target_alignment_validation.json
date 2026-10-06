@@ -1,0 +1,113 @@
+{
+  "checks_passed": 18,
+  "checks": [
+    "Valid active next-token alignment is explicitly verified",
+    "Synthetic leaf N T B uses shifted targets and active weights",
+    "Zero-weight wrapped id may differ without changing N T B",
+    "Reject active input-id rather than successor-id export",
+    "Reject positive wrap-around final weight",
+    "Reject unequal input/scored lengths under causal contract",
+    "Reject unknown target contract",
+    "Reject boolean target contract",
+    "Fractional positive weights still require next-token alignment",
+    "Reject shifted error even at fractional positive weight",
+    "Zero-weight positions need no active-target alignment",
+    "Generic export remains explicit about unverified alignment",
+    "Archived default evaluator explicitly rolls targets left by one",
+    "Original default target coverage M=3 L=4",
+    "Original default target coverage M=9 L=4",
+    "Original default target coverage M=8 L=4",
+    "Original default target coverage M=409617 L=4096",
+    "Original default target coverage M=7 L=1"
+  ],
+  "synthetic_export": {
+    "checkpoint_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "execution_sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+    "parameter_view": "stored_params",
+    "pending_beta_policy": "stored_not_applied",
+    "compute_dtype": "bf16",
+    "backend": "synthetic",
+    "tokenizer_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+    "schema_version": 1,
+    "array_scope": "global",
+    "leaf_domains_disjoint": true,
+    "input_digest_scheme": "typed_global_eval_arrays_v2",
+    "records": [
+      {
+        "batch": 0,
+        "domain": "A",
+        "input_sha256": "59ce5a6ff3a4f2270da16c07d2d87a1fe00c7a28c60e7a385be0883dd57d67dc",
+        "weighted_loss_sum": 9.0,
+        "loss_weight_sum": 3.0,
+        "weighted_byte_sum": 5.0
+      }
+    ],
+    "byte_table_sha256": "5ae605fcf0d507a31723c70c60ecb9c20190fd88ccba1a8824bba7ff02c7e608",
+    "array_export": {
+      "sources": [
+        {
+          "batch": 0,
+          "path": "one.npz",
+          "npz_sha256": "7a494729e3c9b1f3a9c8244857e3f91e61b685b4537f63cb33c3f67426f5ae95"
+        }
+      ],
+      "mask_spec": "synthetic EOS segments only",
+      "input_hash_verified_against_supplied_arrays": true,
+      "source_array_scope": "exporter-declared global; ranks not independently verified",
+      "model_checkpoint_and_tokenizer_identity": "declarations only",
+      "losses_origin": "supplied arrays; forward not executed",
+      "target_contract": "causal_next_token_v1",
+      "active_next_token_alignment_verified": true
+    }
+  },
+  "synthetic_coverage": [
+    {
+      "cached_input_positions": 3,
+      "window_length": 4,
+      "full_windows": 0,
+      "remainder": 3,
+      "default_unit_weight_targets": 0,
+      "positions_not_scored_as_targets": 3
+    },
+    {
+      "cached_input_positions": 9,
+      "window_length": 4,
+      "full_windows": 2,
+      "remainder": 1,
+      "default_unit_weight_targets": 6,
+      "positions_not_scored_as_targets": 3
+    },
+    {
+      "cached_input_positions": 8,
+      "window_length": 4,
+      "full_windows": 2,
+      "remainder": 0,
+      "default_unit_weight_targets": 6,
+      "positions_not_scored_as_targets": 2
+    },
+    {
+      "cached_input_positions": 409617,
+      "window_length": 4096,
+      "full_windows": 100,
+      "remainder": 17,
+      "default_unit_weight_targets": 409500,
+      "positions_not_scored_as_targets": 117
+    },
+    {
+      "cached_input_positions": 7,
+      "window_length": 1,
+      "full_windows": 7,
+      "remainder": 0,
+      "default_unit_weight_targets": 0,
+      "positions_not_scored_as_targets": 7
+    }
+  ],
+  "source_sha256": {
+    "sources/scale_2026_10_05/eval.py": "b67cc96335f667982a0fe43618215734140c28392be215a88177979c712dee2c",
+    "sources/boundaries_2026_10_05/examples.py": "199a86abfd0f85eca39e6e73042c05ba56822dc35c26a5ed048dbb2f1299ec49",
+    "sources/deepening_2026_10_04/datasets_production.py": "47d95f41313356831bcc4b8861ecc765cbc04c6e8c32dc2c5a35abd74c619e4d"
+  },
+  "actual_Hero_arrays": null,
+  "actual_GPU_forward": null,
+  "actual_loss_array_alignment": null
+}

@@ -25,6 +25,8 @@ def export(manifest,base):
  j=dict(manifest['identity']);j.update(schema_version=1,array_scope='global',leaf_domains_disjoint=True,input_digest_scheme=SCHEME,records=[])
  if manifest.get('array_scope')!='global':raise ValueError('global arrays must be explicitly declared')
  batches=manifest.get('batches');domains=manifest.get('domains');mask_spec=manifest.get('mask_spec')
+ contract=manifest.get('target_contract')
+ if contract not in (None,'causal_next_token_v1'):raise ValueError('unsupported target contract')
  if not isinstance(domains,list) or not domains or any(not isinstance(x,str) or not x for x in domains) or len(set(domains))!=len(domains):raise ValueError('unique ordered domain names required')
  if not isinstance(mask_spec,str) or not mask_spec.strip():raise ValueError('mask representation declaration required')
  if not isinstance(batches,list) or not batches:raise ValueError('nonempty batches required')
@@ -43,6 +45,11 @@ def export(manifest,base):
   if tokens.ndim!=2 or ids.ndim!=2 or loss.shape!=ids.shape or w.shape!=ids.shape or tokens.shape[0]!=ids.shape[0] or not all(tokens.shape):raise ValueError('rank-two batch arrays and matching scored shapes required')
   if tokens.dtype.kind not in 'iu' or ids.dtype.kind not in 'iu' or table.ndim!=1 or not len(table) or np.any(ids<0) or np.any(ids>=len(table)) or np.any(tokens<0) or np.any(tokens>=len(table)):raise ValueError('token ids outside byte table or invalid type')
   if loss.dtype.kind!='f' or w.dtype.kind!='f' or np.any(loss<0) or np.any(w<0) or np.any(table<0):raise ValueError('nonnegative losses, weights and bytes required')
+  if contract=='causal_next_token_v1':
+   if tokens.shape!=ids.shape:raise ValueError('causal target contract requires matching input/scoring shapes')
+   if np.any(w[:,-1]!=0):raise ValueError('causal target contract requires zero final-position weight')
+   active=w>0
+   if np.any(ids[active]!=np.roll(tokens,-1,axis=-1)[active]):raise ValueError('active scoring ids must equal next input tokens')
   if tags.shape!=(tokens.shape[0],len(domains)) or not np.isin(tags,[0,1]).all() or np.any(tags.sum(axis=1)>1):raise ValueError('exclusive one-hot or padded zero domain tags required')
   if np.any((w.sum(axis=1)>0)&(tags.sum(axis=1)!=1)):raise ValueError('positive-weight row must belong to one domain')
   th=array_digest({'bytes_per_token':table},{'kind':'byte_table_v2'})
@@ -59,7 +66,7 @@ def export(manifest,base):
    j['records'].append({'batch':bn,'domain':d,'input_sha256':digest,'weighted_loss_sum':n,'loss_weight_sum':t,'weighted_byte_sum':b})
   sources.append({'batch':bn,'path':entry['path'],'npz_sha256':hashlib.sha256(raw).hexdigest()})
  if j.get('byte_table_sha256') not in (None,table_hash):raise ValueError('declared byte-table digest disagrees with computed digest')
- j['byte_table_sha256']=table_hash;validate(j);aggregate(j['records']);j['array_export']={'sources':sources,'mask_spec':mask_spec,'input_hash_verified_against_supplied_arrays':True,'source_array_scope':'exporter-declared global; ranks not independently verified','model_checkpoint_and_tokenizer_identity':'declarations only','losses_origin':'supplied arrays; forward not executed'}
+ j['byte_table_sha256']=table_hash;validate(j);aggregate(j['records']);j['array_export']={'sources':sources,'mask_spec':mask_spec,'input_hash_verified_against_supplied_arrays':True,'source_array_scope':'exporter-declared global; ranks not independently verified','model_checkpoint_and_tokenizer_identity':'declarations only','losses_origin':'supplied arrays; forward not executed','target_contract':contract,'active_next_token_alignment_verified':contract=='causal_next_token_v1'}
  return j
 if __name__=='__main__':
  if len(sys.argv)!=3:raise SystemExit(__doc__)

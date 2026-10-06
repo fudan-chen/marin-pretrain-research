@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本为V42。[评估格式核查](EVAL_FORMAT_ZH.md)说明文本pack=False为何仍是连续token流，以及窗口切分、余数和论文评分格式的区别。[评估数组导出](EVAL_ARRAY_EXPORT_ZH.md)补齐离线数组→逐批记录→对照工具；真实GPU采集与Hero记录仍缺。先读[结论与操作指南](SYNTHESIS_ZH.md)：把工程故障、有效曝光、评估变化和配比实验接成一条工作路线，再按问题进入专题。最新数值见[10月6日观察](LIVE_2026_10_06_ZH.md)，约9.75T/4K；[重复评分工具](EVAL_REPLAY_ZH.md)已可运行，真实Hero逐批记录仍缺。
+当前版本为V43。[目标坐标核查](EVAL_TARGET_ALIGNMENT_ZH.md)新增可选下一token约束，拒绝有效评分ID错位与窗口末位绕回计分，空白manifest默认启用。[评估格式核查](EVAL_FORMAT_ZH.md)说明文本pack=False为何仍是连续token流，以及窗口切分、余数和论文评分格式的区别。[评估数组导出](EVAL_ARRAY_EXPORT_ZH.md)补齐离线数组→逐批记录→对照工具；真实GPU采集与Hero记录仍缺。先读[结论与操作指南](SYNTHESIS_ZH.md)：把工程故障、有效曝光、评估变化和配比实验接成一条工作路线，再按问题进入专题。最新数值见[10月6日观察](LIVE_2026_10_06_ZH.md)，约9.75T/4K；[重复评分工具](EVAL_REPLAY_ZH.md)已可运行，真实Hero逐批记录仍缺。
 
 V26对V25的micro/macro命名错误已[明确更正](EVAL_METRICS_ZH.md)。
 

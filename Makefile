@@ -256,3 +256,8 @@ HOST_PYTHON ?= python3
 .PHONY: phase-budget-probe
 phase-budget-probe:
 	$(HOST_PYTHON) scripts/probe_phase_budget.py
+
+
+.PHONY: integer-exposure-cpu
+integer-exposure-cpu:
+	$(CPU_PYTHON) scripts/probe_integer_exposure_cpu.py

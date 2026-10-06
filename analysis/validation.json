@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1555,
+  "checks_passed": 1559,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -18,7 +18,7 @@
     "four new config contrasts / six step393 resume windows",
     "seventeen embedded figures",
     "all relative HTML links valid",
-    "496 source archive checksums valid",
+    "497 source archive checksums valid",
     "18 authored rubrics / seven claim-stage decisions",
     "five interpretation cases / four metrics with switchable baselines",
     "17 figure-reading entries / five preserved collapsed tables",
@@ -135,7 +135,8 @@
     "V84 seven native symptom routes bind ten prior result records; curated navigation/control plans, no new training or comprehension results",
     "V85 nineteen optional clip precision and original same-head AdamH CPU checks; production clipping declared disabled, no actual Hero incident/dtype/GPU claim",
     "V86 fifteen real Adam and original nested-path CPU checks; state/horizon/bias correction controls, no disk restore or Hero clock/GPU proof",
-    "V87 fifteen original Harrier builder/spec/helper host checks; nine stage/budget controls and nominal exposure diagram, no actual token stream or GPU claim"
+    "V87 fifteen original Harrier builder/spec/helper host checks; nine stage/budget controls and nominal exposure diagram, no actual token stream or GPU claim",
+    "V88 eighteen original quota/packed ID/CPU permutation checks and 200-cell logical exposure CSV; no production key/token identity claim"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-06T22:35:46.992767+00:00",
+  "integrity_manifest_created_utc": "2026-10-06T22:44:45.941455+00:00",
   "files": [
     {
       "file": "accumulation_2026_10_07/grad_accum.py",
@@ -1000,6 +1000,13 @@
       "sha256": "8ce21440371c8efd367fe52d950af9a461e1ad52e8736909748b8689b8828fa1",
       "url": "https://api.github.com/search/issues?q=repo%3Amarin-community%2Fmarin+hero+gate+router&per_page=20",
       "retrieved_utc": "2026-10-03T21:34:50.604354+00:00"
+    },
+    {
+      "file": "integer_exposure_2026_10_07/mixture.py",
+      "bytes": 22896,
+      "sha256": "67e97941a79753b2e5865f7f41c7762436a428599ecd1a60d643aa891a817685",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/lib/levanter/src/levanter/data/mixture.py",
+      "retrieved_utc": "2026-10-06T22:41:50.049314+00:00"
     },
     {
       "file": "issue.json",
@@ -2913,8 +2920,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 225142,
-      "sha256": "be987e4b8bae304a3c75d6244a47feea621601b0a801f87d5935a055d034c363",
+      "bytes": 225576,
+      "sha256": "698fc0e0e7c230b41baa5dc46b0f76ae547dcc5c4b9418da81c785192eb423a7",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

@@ -4467,5 +4467,13 @@
     "retrieved_utc": "2026-10-06T22:32:22.248868+00:00",
     "bytes": 15701,
     "sha256": "cb37487c4e716f967be309a3eb51a6f8a6ae407de43cfb739628ffc02936bfa2"
+  },
+  {
+    "file": "integer_exposure_2026_10_07/mixture.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/lib/levanter/src/levanter/data/mixture.py",
+    "revision": "b65be4c9550c5097f0a3add08933531a1c24d534",
+    "retrieved_utc": "2026-10-06T22:41:50.049314+00:00",
+    "bytes": 22896,
+    "sha256": "67e97941a79753b2e5865f7f41c7762436a428599ecd1a60d643aa891a817685"
   }
 ]

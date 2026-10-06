@@ -1,0 +1,16 @@
+{
+  "version": "V88",
+  "checks_passed": 9,
+  "checks": [
+    "index.html unique IDs",
+    "index.html integer scope",
+    "index.html three old tables preserved plus exposure table",
+    "report_standalone.html unique IDs",
+    "report_standalone.html integer scope",
+    "report_standalone.html three old tables preserved plus exposure table",
+    "497 source hashes exact",
+    "Fresh V88 validation",
+    "200 row CSV accounts exact logical total"
+  ],
+  "actual_browser_rendering": null
+}

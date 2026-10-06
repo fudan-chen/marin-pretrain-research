@@ -1,0 +1,3323 @@
+{
+  "scope": "Original block quota and real JAX permutation on same-head Harrier weights.\nCounts logical sequence assignments, not real document/token reads or effective loss mass.\n",
+  "checks_passed": 18,
+  "checks": [
+    "Fixed CPU permutation backend",
+    "Stage 0 block quota conserved",
+    "Stage 0 original remainder concentrated at largest count",
+    "Stage 0 encoded IDs have exact quota",
+    "Stage 1 block quota conserved",
+    "Stage 1 original remainder concentrated at largest count",
+    "Stage 1 encoded IDs have exact quota",
+    "Stage 2 block quota conserved",
+    "Stage 2 original remainder concentrated at largest count",
+    "Stage 2 encoded IDs have exact quota",
+    "Only final phase has partial block",
+    "Seed 7 full permutation preserves quota",
+    "Seed 7 tail length and bounds exact",
+    "Seed 8 full permutation preserves quota",
+    "Seed 8 tail length and bounds exact",
+    "Final integer assignment total exact for both seeds",
+    "Partial tail quotas differ across artificial keys",
+    "Positive continuous budget can have zero integer assignment"
+  ],
+  "runtime": {
+    "jax": "0.7.2",
+    "numpy": "2.5.3",
+    "backend": "cpu"
+  },
+  "source_sha256": {
+    "sources/integer_exposure_2026_10_07/mixture.py": "67e97941a79753b2e5865f7f41c7762436a428599ecd1a60d643aa891a817685",
+    "sources/phase_budget_2026_10_07/harrier.py": "90b2881c131682567bae111e8d6cf4d104a0a81c0e0bc1f206b96226d1f295d7",
+    "sources/phase_budget_2026_10_07/launch_datakit_moe_mix.py": "cb37487c4e716f967be309a3eb51a6f8a6ae407de43cfb739628ffc02936bfa2",
+    "sources/phase_budget_2026_10_07/harrier.json": "8f3fd489a6b2bacdcbf61e47577e4e87864e320aece2a62eae64c8f62721344e",
+    "scripts/probe_phase_budget.py": "f4c06eaa7201a6c3b44d454e630934e31c20c425b7ac074a51c235c127077e7a"
+  },
+  "stages": [
+    {
+      "phase_index": 0,
+      "start_step": 0,
+      "full_blocks": 24750,
+      "tail_sequences": 0,
+      "positive_weight_zero_quota": [
+        "c00q0",
+        "c02q0",
+        "c04q0",
+        "c06q0",
+        "c08q0",
+        "c09q0",
+        "c13q0",
+        "c15q0",
+        "c19q0",
+        "c22q0",
+        "c26q0",
+        "c27q0",
+        "c28q0",
+        "c30q0",
+        "c31q0",
+        "c33q0",
+        "c34q0"
+      ],
+      "warning_count": 17,
+      "remainder": 98,
+      "remainder_recipient": "c30q4"
+    },
+    {
+      "phase_index": 1,
+      "start_step": 108000,
+      "full_blocks": 46794,
+      "tail_sequences": 0,
+      "positive_weight_zero_quota": [],
+      "warning_count": 0,
+      "remainder": 0,
+      "remainder_recipient": "c28q4"
+    },
+    {
+      "phase_index": 2,
+      "start_step": 312192,
+      "full_blocks": 17888,
+      "tail_sequences": 25600,
+      "positive_weight_zero_quota": [],
+      "warning_count": 0,
+      "remainder": 0,
+      "remainder_recipient": "c30q4"
+    }
+  ],
+  "tail_controls": [
+    {
+      "artificial_seed": 7,
+      "last_block_id": 89432,
+      "tail_sequences": 25600,
+      "tail_counts": {
+        "c00q0": 0,
+        "c00q1": 42,
+        "c00q2": 319,
+        "c00q3": 21,
+        "c00q4": 62,
+        "c01q0": 31,
+        "c01q1": 48,
+        "c01q2": 76,
+        "c01q3": 173,
+        "c01q4": 281,
+        "c02q0": 0,
+        "c02q1": 17,
+        "c02q2": 68,
+        "c02q3": 14,
+        "c02q4": 32,
+        "c03q0": 12,
+        "c03q1": 159,
+        "c03q2": 194,
+        "c03q3": 320,
+        "c03q4": 55,
+        "c04q0": 2,
+        "c04q1": 54,
+        "c04q2": 27,
+        "c04q3": 28,
+        "c04q4": 3,
+        "c05q0": 2,
+        "c05q1": 21,
+        "c05q2": 217,
+        "c05q3": 116,
+        "c05q4": 623,
+        "c06q0": 1,
+        "c06q1": 1,
+        "c06q2": 105,
+        "c06q3": 111,
+        "c06q4": 48,
+        "c07q0": 3,
+        "c07q1": 19,
+        "c07q2": 105,
+        "c07q3": 248,
+        "c07q4": 15,
+        "c08q0": 2,
+        "c08q1": 3,
+        "c08q2": 61,
+        "c08q3": 143,
+        "c08q4": 12,
+        "c09q0": 35,
+        "c09q1": 24,
+        "c09q2": 84,
+        "c09q3": 56,
+        "c09q4": 8,
+        "c10q0": 2,
+        "c10q1": 75,
+        "c10q2": 199,
+        "c10q3": 19,
+        "c10q4": 20,
+        "c11q0": 2,
+        "c11q1": 15,
+        "c11q2": 135,
+        "c11q3": 65,
+        "c11q4": 2,
+        "c12q0": 1,
+        "c12q1": 397,
+        "c12q2": 61,
+        "c12q3": 390,
+        "c12q4": 11,
+        "c13q0": 1,
+        "c13q1": 224,
+        "c13q2": 159,
+        "c13q3": 1006,
+        "c13q4": 277,
+        "c14q0": 12,
+        "c14q1": 290,
+        "c14q2": 123,
+        "c14q3": 328,
+        "c14q4": 28,
+        "c15q0": 6,
+        "c15q1": 76,
+        "c15q2": 139,
+        "c15q3": 30,
+        "c15q4": 48,
+        "c16q0": 22,
+        "c16q1": 50,
+        "c16q2": 94,
+        "c16q3": 330,
+        "c16q4": 45,
+        "c17q0": 77,
+        "c17q1": 66,
+        "c17q2": 211,
+        "c17q3": 295,
+        "c17q4": 28,
+        "c18q0": 12,
+        "c18q1": 56,
+        "c18q2": 127,
+        "c18q3": 42,
+        "c18q4": 53,
+        "c19q0": 25,
+        "c19q1": 21,
+        "c19q2": 41,
+        "c19q3": 108,
+        "c19q4": 22,
+        "c20q0": 5,
+        "c20q1": 96,
+        "c20q2": 38,
+        "c20q3": 39,
+        "c20q4": 19,
+        "c21q0": 3,
+        "c21q1": 21,
+        "c21q2": 315,
+        "c21q3": 99,
+        "c21q4": 61,
+        "c22q0": 0,
+        "c22q1": 3,
+        "c22q2": 10,
+        "c22q3": 10,
+        "c22q4": 9,
+        "c23q0": 10,
+        "c23q1": 142,
+        "c23q2": 171,
+        "c23q3": 56,
+        "c23q4": 68,
+        "c24q0": 26,
+        "c24q1": 39,
+        "c24q2": 158,
+        "c24q3": 83,
+        "c24q4": 57,
+        "c25q0": 113,
+        "c25q1": 219,
+        "c25q2": 444,
+        "c25q3": 201,
+        "c25q4": 256,
+        "c26q0": 19,
+        "c26q1": 213,
+        "c26q2": 79,
+        "c26q3": 116,
+        "c26q4": 206,
+        "c27q0": 1,
+        "c27q1": 5,
+        "c27q2": 9,
+        "c27q3": 7,
+        "c27q4": 6,
+        "c28q0": 2,
+        "c28q1": 210,
+        "c28q2": 232,
+        "c28q3": 1118,
+        "c28q4": 1400,
+        "c29q0": 190,
+        "c29q1": 83,
+        "c29q2": 333,
+        "c29q3": 386,
+        "c29q4": 20,
+        "c30q0": 7,
+        "c30q1": 13,
+        "c30q2": 167,
+        "c30q3": 352,
+        "c30q4": 2361,
+        "c31q0": 3,
+        "c31q1": 24,
+        "c31q2": 63,
+        "c31q3": 65,
+        "c31q4": 20,
+        "c32q0": 33,
+        "c32q1": 405,
+        "c32q2": 365,
+        "c32q3": 902,
+        "c32q4": 398,
+        "c33q0": 2,
+        "c33q1": 56,
+        "c33q2": 73,
+        "c33q3": 98,
+        "c33q4": 77,
+        "c34q0": 1,
+        "c34q1": 9,
+        "c34q2": 5,
+        "c34q3": 24,
+        "c34q4": 12,
+        "c35q0": 23,
+        "c35q1": 156,
+        "c35q2": 76,
+        "c35q3": 68,
+        "c35q4": 31,
+        "c36q0": 2,
+        "c36q1": 113,
+        "c36q2": 53,
+        "c36q3": 77,
+        "c36q4": 6,
+        "c37q0": 14,
+        "c37q1": 31,
+        "c37q2": 173,
+        "c37q3": 340,
+        "c37q4": 191,
+        "c38q0": 33,
+        "c38q1": 183,
+        "c38q2": 404,
+        "c38q3": 94,
+        "c38q4": 254,
+        "c39q0": 5,
+        "c39q1": 23,
+        "c39q2": 130,
+        "c39q3": 142,
+        "c39q4": 70
+      },
+      "packed_id_sha256": "8c16c316788ee86ba54f5ddd1298457cc384790ce31111e7fbf5a6d2ed1a4338"
+    },
+    {
+      "artificial_seed": 8,
+      "last_block_id": 89432,
+      "tail_sequences": 25600,
+      "tail_counts": {
+        "c00q0": 0,
+        "c00q1": 32,
+        "c00q2": 327,
+        "c00q3": 19,
+        "c00q4": 53,
+        "c01q0": 30,
+        "c01q1": 47,
+        "c01q2": 78,
+        "c01q3": 146,
+        "c01q4": 301,
+        "c02q0": 2,
+        "c02q1": 19,
+        "c02q2": 63,
+        "c02q3": 18,
+        "c02q4": 31,
+        "c03q0": 10,
+        "c03q1": 161,
+        "c03q2": 178,
+        "c03q3": 325,
+        "c03q4": 69,
+        "c04q0": 2,
+        "c04q1": 47,
+        "c04q2": 28,
+        "c04q3": 20,
+        "c04q4": 5,
+        "c05q0": 3,
+        "c05q1": 18,
+        "c05q2": 196,
+        "c05q3": 133,
+        "c05q4": 655,
+        "c06q0": 2,
+        "c06q1": 1,
+        "c06q2": 107,
+        "c06q3": 109,
+        "c06q4": 45,
+        "c07q0": 4,
+        "c07q1": 10,
+        "c07q2": 112,
+        "c07q3": 225,
+        "c07q4": 8,
+        "c08q0": 3,
+        "c08q1": 2,
+        "c08q2": 62,
+        "c08q3": 141,
+        "c08q4": 11,
+        "c09q0": 38,
+        "c09q1": 30,
+        "c09q2": 77,
+        "c09q3": 59,
+        "c09q4": 5,
+        "c10q0": 2,
+        "c10q1": 75,
+        "c10q2": 208,
+        "c10q3": 18,
+        "c10q4": 20,
+        "c11q0": 0,
+        "c11q1": 20,
+        "c11q2": 111,
+        "c11q3": 70,
+        "c11q4": 2,
+        "c12q0": 1,
+        "c12q1": 411,
+        "c12q2": 63,
+        "c12q3": 389,
+        "c12q4": 16,
+        "c13q0": 0,
+        "c13q1": 243,
+        "c13q2": 141,
+        "c13q3": 974,
+        "c13q4": 310,
+        "c14q0": 18,
+        "c14q1": 294,
+        "c14q2": 119,
+        "c14q3": 330,
+        "c14q4": 20,
+        "c15q0": 6,
+        "c15q1": 81,
+        "c15q2": 153,
+        "c15q3": 26,
+        "c15q4": 44,
+        "c16q0": 22,
+        "c16q1": 46,
+        "c16q2": 93,
+        "c16q3": 368,
+        "c16q4": 41,
+        "c17q0": 75,
+        "c17q1": 68,
+        "c17q2": 214,
+        "c17q3": 304,
+        "c17q4": 36,
+        "c18q0": 10,
+        "c18q1": 62,
+        "c18q2": 123,
+        "c18q3": 40,
+        "c18q4": 53,
+        "c19q0": 21,
+        "c19q1": 23,
+        "c19q2": 47,
+        "c19q3": 107,
+        "c19q4": 25,
+        "c20q0": 6,
+        "c20q1": 95,
+        "c20q2": 41,
+        "c20q3": 40,
+        "c20q4": 16,
+        "c21q0": 4,
+        "c21q1": 19,
+        "c21q2": 347,
+        "c21q3": 83,
+        "c21q4": 57,
+        "c22q0": 0,
+        "c22q1": 3,
+        "c22q2": 11,
+        "c22q3": 8,
+        "c22q4": 10,
+        "c23q0": 12,
+        "c23q1": 147,
+        "c23q2": 167,
+        "c23q3": 59,
+        "c23q4": 63,
+        "c24q0": 28,
+        "c24q1": 47,
+        "c24q2": 136,
+        "c24q3": 94,
+        "c24q4": 46,
+        "c25q0": 132,
+        "c25q1": 236,
+        "c25q2": 434,
+        "c25q3": 185,
+        "c25q4": 239,
+        "c26q0": 22,
+        "c26q1": 221,
+        "c26q2": 88,
+        "c26q3": 112,
+        "c26q4": 211,
+        "c27q0": 0,
+        "c27q1": 4,
+        "c27q2": 15,
+        "c27q3": 10,
+        "c27q4": 4,
+        "c28q0": 1,
+        "c28q1": 213,
+        "c28q2": 256,
+        "c28q3": 1062,
+        "c28q4": 1381,
+        "c29q0": 211,
+        "c29q1": 92,
+        "c29q2": 346,
+        "c29q3": 398,
+        "c29q4": 19,
+        "c30q0": 8,
+        "c30q1": 14,
+        "c30q2": 180,
+        "c30q3": 362,
+        "c30q4": 2319,
+        "c31q0": 4,
+        "c31q1": 26,
+        "c31q2": 64,
+        "c31q3": 51,
+        "c31q4": 20,
+        "c32q0": 38,
+        "c32q1": 389,
+        "c32q2": 341,
+        "c32q3": 916,
+        "c32q4": 419,
+        "c33q0": 2,
+        "c33q1": 57,
+        "c33q2": 75,
+        "c33q3": 101,
+        "c33q4": 67,
+        "c34q0": 3,
+        "c34q1": 6,
+        "c34q2": 6,
+        "c34q3": 25,
+        "c34q4": 12,
+        "c35q0": 32,
+        "c35q1": 197,
+        "c35q2": 93,
+        "c35q3": 60,
+        "c35q4": 32,
+        "c36q0": 6,
+        "c36q1": 114,
+        "c36q2": 50,
+        "c36q3": 77,
+        "c36q4": 5,
+        "c37q0": 14,
+        "c37q1": 23,
+        "c37q2": 160,
+        "c37q3": 322,
+        "c37q4": 173,
+        "c38q0": 31,
+        "c38q1": 157,
+        "c38q2": 424,
+        "c38q3": 82,
+        "c38q4": 249,
+        "c39q0": 7,
+        "c39q1": 20,
+        "c39q2": 122,
+        "c39q3": 147,
+        "c39q4": 57
+      },
+      "packed_id_sha256": "c7808542ef90a82f997ee266d3b2135e20a121db7517549a6b368df97ee639a5"
+    }
+  ],
+  "cells": [
+    {
+      "cell": "c00q0",
+      "continuous_sequence_budget": 117142.76734208845,
+      "full_block_sequences": 111476,
+      "exact_sequence_budget_seed7": 111476,
+      "exact_sequence_budget_seed8": 111476,
+      "continuous_full_token_epochs": 0.05257117070278233,
+      "integer_full_token_epochs_seed7": 0.05002804661554004,
+      "block_counts": [
+        0,
+        2,
+        1
+      ]
+    },
+    {
+      "cell": "c00q1",
+      "continuous_sequence_budget": 11926742.832247106,
+      "full_block_sequences": 11918966,
+      "exact_sequence_budget_seed7": 11919008,
+      "exact_sequence_budget_seed8": 11918998,
+      "continuous_full_token_epochs": 0.5287296396452531,
+      "integer_full_token_epochs_seed7": 0.5283867434225165,
+      "block_counts": [
+        35,
+        206,
+        79
+      ]
+    },
+    {
+      "cell": "c00q2",
+      "continuous_sequence_budget": 58365966.380784675,
+      "full_block_sequences": 58342534,
+      "exact_sequence_budget_seed7": 58342853,
+      "exact_sequence_budget_seed8": 58342861,
+      "continuous_full_token_epochs": 1.0924669033157937,
+      "integer_full_token_epochs_seed7": 1.0920342778476184,
+      "block_counts": [
+        127,
+        930,
+        653
+      ]
+    },
+    {
+      "cell": "c00q3",
+      "continuous_sequence_budget": 6938317.9325112775,
+      "full_block_sequences": 6934512,
+      "exact_sequence_budget_seed7": 6934533,
+      "exact_sequence_budget_seed8": 6934531,
+      "continuous_full_token_epochs": 0.12720609346050754,
+      "integer_full_token_epochs_seed7": 0.1271367010683666,
+      "block_counts": [
+        138,
+        58,
+        45
+      ]
+    },
+    {
+      "cell": "c00q4",
+      "continuous_sequence_budget": 8961346.37486103,
+      "full_block_sequences": 8936750,
+      "exact_sequence_budget_seed7": 8936812,
+      "exact_sequence_budget_seed8": 8936803,
+      "continuous_full_token_epochs": 0.2915848269372828,
+      "integer_full_token_epochs_seed7": 0.29078652597349725,
+      "block_counts": [
+        80,
+        107,
+        109
+      ]
+    },
+    {
+      "cell": "c01q0",
+      "continuous_sequence_budget": 14257715.114262978,
+      "full_block_sequences": 14255584,
+      "exact_sequence_budget_seed7": 14255615,
+      "exact_sequence_budget_seed8": 14255614,
+      "continuous_full_token_epochs": 0.6106467327977,
+      "integer_full_token_epochs_seed7": 0.6105567865543565,
+      "block_counts": [
+        112,
+        224,
+        56
+      ]
+    },
+    {
+      "cell": "c01q1",
+      "continuous_sequence_budget": 16197998.590356525,
+      "full_block_sequences": 16175146,
+      "exact_sequence_budget_seed7": 16175194,
+      "exact_sequence_budget_seed8": 16175193,
+      "continuous_full_token_epochs": 0.6423454102949299,
+      "integer_full_token_epochs_seed7": 0.6414410748693242,
+      "block_counts": [
+        180,
+        213,
+        98
+      ]
+    },
+    {
+      "cell": "c01q2",
+      "continuous_sequence_budget": 27588507.898479324,
+      "full_block_sequences": 27564962,
+      "exact_sequence_budget_seed7": 27565038,
+      "exact_sequence_budget_seed8": 27565040,
+      "continuous_full_token_epochs": 0.6019414181983813,
+      "integer_full_token_epochs_seed7": 0.6014293388924761,
+      "block_counts": [
+        428,
+        313,
+        130
+      ]
+    },
+    {
+      "cell": "c01q3",
+      "continuous_sequence_budget": 45555633.67703951,
+      "full_block_sequences": 45537862,
+      "exact_sequence_budget_seed7": 45538035,
+      "exact_sequence_budget_seed8": 45538008,
+      "continuous_full_token_epochs": 0.6829997786197758,
+      "integer_full_token_epochs_seed7": 0.6827359277729804,
+      "block_counts": [
+        639,
+        514,
+        317
+      ]
+    },
+    {
+      "cell": "c01q4",
+      "continuous_sequence_budget": 53364405.97339576,
+      "full_block_sequences": 53341816,
+      "exact_sequence_budget_seed7": 53342097,
+      "exact_sequence_budget_seed8": 53342117,
+      "continuous_full_token_epochs": 0.7751872023639548,
+      "integer_full_token_epochs_seed7": 0.7748631355940017,
+      "block_counts": [
+        705,
+        561,
+        539
+      ]
+    },
+    {
+      "cell": "c02q0",
+      "continuous_sequence_budget": 129733.68176683126,
+      "full_block_sequences": 129364,
+      "exact_sequence_budget_seed7": 129364,
+      "exact_sequence_budget_seed8": 129366,
+      "continuous_full_token_epochs": 0.4183589246691773,
+      "integer_full_token_epochs_seed7": 0.4171667927236792,
+      "block_counts": [
+        0,
+        2,
+        2
+      ]
+    },
+    {
+      "cell": "c02q1",
+      "continuous_sequence_budget": 2365527.7852217434,
+      "full_block_sequences": 2349610,
+      "exact_sequence_budget_seed7": 2349627,
+      "exact_sequence_budget_seed8": 2349629,
+      "continuous_full_token_epochs": 0.6918239118482201,
+      "integer_full_token_epochs_seed7": 0.6871735570723054,
+      "block_counts": [
+        41,
+        14,
+        38
+      ]
+    },
+    {
+      "cell": "c02q2",
+      "continuous_sequence_budget": 9452565.547221826,
+      "full_block_sequences": 9447234,
+      "exact_sequence_budget_seed7": 9447302,
+      "exact_sequence_budget_seed8": 9447297,
+      "continuous_full_token_epochs": 0.8324278331829558,
+      "integer_full_token_epochs_seed7": 0.8319643057747793,
+      "block_counts": [
+        141,
+        78,
+        129
+      ]
+    },
+    {
+      "cell": "c02q3",
+      "continuous_sequence_budget": 10113220.631459974,
+      "full_block_sequences": 10093054,
+      "exact_sequence_budget_seed7": 10093068,
+      "exact_sequence_budget_seed8": 10093072,
+      "continuous_full_token_epochs": 0.6182731871920204,
+      "integer_full_token_epochs_seed7": 0.6170411531904775,
+      "block_counts": [
+        201,
+        96,
+        35
+      ]
+    },
+    {
+      "cell": "c02q4",
+      "continuous_sequence_budget": 10927690.245761398,
+      "full_block_sequences": 10903596,
+      "exact_sequence_budget_seed7": 10903628,
+      "exact_sequence_budget_seed8": 10903627,
+      "continuous_full_token_epochs": 0.6698090994509167,
+      "integer_full_token_epochs_seed7": 0.6683342121873013,
+      "block_counts": [
+        200,
+        102,
+        66
+      ]
+    },
+    {
+      "cell": "c03q0",
+      "continuous_sequence_budget": 4238995.036177715,
+      "full_block_sequences": 4225756,
+      "exact_sequence_budget_seed7": 4225768,
+      "exact_sequence_budget_seed8": 4225766,
+      "continuous_full_token_epochs": 0.3253310252639907,
+      "integer_full_token_epochs_seed7": 0.32431588719372295,
+      "block_counts": [
+        92,
+        34,
+        20
+      ]
+    },
+    {
+      "cell": "c03q1",
+      "continuous_sequence_budget": 31221262.77449609,
+      "full_block_sequences": 31205074,
+      "exact_sequence_budget_seed7": 31205233,
+      "exact_sequence_budget_seed8": 31205235,
+      "continuous_full_token_epochs": 0.3974312807643475,
+      "integer_full_token_epochs_seed7": 0.39722722963885787,
+      "block_counts": [
+        585,
+        242,
+        302
+      ]
+    },
+    {
+      "cell": "c03q2",
+      "continuous_sequence_budget": 30966389.839523524,
+      "full_block_sequences": 30947318,
+      "exact_sequence_budget_seed7": 30947512,
+      "exact_sequence_budget_seed8": 30947496,
+      "continuous_full_token_epochs": 0.49867214808321003,
+      "integer_full_token_epochs_seed7": 0.4983681458138092,
+      "block_counts": [
+        593,
+        212,
+        355
+      ]
+    },
+    {
+      "cell": "c03q3",
+      "continuous_sequence_budget": 58410363.05949633,
+      "full_block_sequences": 58408566,
+      "exact_sequence_budget_seed7": 58408886,
+      "exact_sequence_budget_seed8": 58408891,
+      "continuous_full_token_epochs": 1.0089201293486385,
+      "integer_full_token_epochs_seed7": 1.0088946161523487,
+      "block_counts": [
+        910,
+        549,
+        570
+      ]
+    },
+    {
+      "cell": "c03q4",
+      "continuous_sequence_budget": 24025617.497951113,
+      "full_block_sequences": 24002130,
+      "exact_sequence_budget_seed7": 24002185,
+      "exact_sequence_budget_seed8": 24002199,
+      "continuous_full_token_epochs": 0.7112219175321434,
+      "integer_full_token_epochs_seed7": 0.710528253524266,
+      "block_counts": [
+        590,
+        155,
+        120
+      ]
+    },
+    {
+      "cell": "c04q0",
+      "continuous_sequence_budget": 132917.8296873304,
+      "full_block_sequences": 129364,
+      "exact_sequence_budget_seed7": 129366,
+      "exact_sequence_budget_seed8": 129366,
+      "continuous_full_token_epochs": 0.1809567345777004,
+      "integer_full_token_epochs_seed7": 0.176121209475407,
+      "block_counts": [
+        0,
+        2,
+        2
+      ]
+    },
+    {
+      "cell": "c04q1",
+      "continuous_sequence_budget": 11534740.220224569,
+      "full_block_sequences": 11531528,
+      "exact_sequence_budget_seed7": 11531582,
+      "exact_sequence_budget_seed8": 11531575,
+      "continuous_full_token_epochs": 1.5383620504837738,
+      "integer_full_token_epochs_seed7": 1.537940845840428,
+      "block_counts": [
+        2,
+        206,
+        103
+      ]
+    },
+    {
+      "cell": "c04q2",
+      "continuous_sequence_budget": 8635823.470274433,
+      "full_block_sequences": 8634024,
+      "exact_sequence_budget_seed7": 8634051,
+      "exact_sequence_budget_seed8": 8634052,
+      "continuous_full_token_epochs": 0.43626604663454605,
+      "integer_full_token_epochs_seed7": 0.43617650466995334,
+      "block_counts": [
+        87,
+        119,
+        51
+      ]
+    },
+    {
+      "cell": "c04q3",
+      "continuous_sequence_budget": 9447247.26292396,
+      "full_block_sequences": 9430322,
+      "exact_sequence_budget_seed7": 9430350,
+      "exact_sequence_budget_seed8": 9430342,
+      "continuous_full_token_epochs": 0.7862179008711239,
+      "integer_full_token_epochs_seed7": 0.7848116784851935,
+      "block_counts": [
+        52,
+        153,
+        55
+      ]
+    },
+    {
+      "cell": "c04q4",
+      "continuous_sequence_budget": 1976087.8344462793,
+      "full_block_sequences": 1959556,
+      "exact_sequence_budget_seed7": 1959559,
+      "exact_sequence_budget_seed8": 1959561,
+      "continuous_full_token_epochs": 0.805437179227875,
+      "integer_full_token_epochs_seed7": 0.7987001619960139,
+      "block_counts": [
+        11,
+        33,
+        8
+      ]
+    },
+    {
+      "cell": "c05q0",
+      "continuous_sequence_budget": 483133.91029027064,
+      "full_block_sequences": 471910,
+      "exact_sequence_budget_seed7": 471912,
+      "exact_sequence_budget_seed8": 471913,
+      "continuous_full_token_epochs": 0.230790482342005,
+      "integer_full_token_epochs_seed7": 0.22542983587623686,
+      "block_counts": [
+        6,
+        5,
+        5
+      ]
+    },
+    {
+      "cell": "c05q1",
+      "continuous_sequence_budget": 2209940.8328029127,
+      "full_block_sequences": 2186130,
+      "exact_sequence_budget_seed7": 2186151,
+      "exact_sequence_budget_seed8": 2186148,
+      "continuous_full_token_epochs": 0.24859146351616443,
+      "integer_full_token_epochs_seed7": 0.24591539668871903,
+      "block_counts": [
+        28,
+        17,
+        39
+      ]
+    },
+    {
+      "cell": "c05q2",
+      "continuous_sequence_budget": 22998353.17709062,
+      "full_block_sequences": 22979786,
+      "exact_sequence_budget_seed7": 22980003,
+      "exact_sequence_budget_seed8": 22979982,
+      "continuous_full_token_epochs": 0.6947420748895116,
+      "integer_full_token_epochs_seed7": 0.6941877464987629,
+      "block_counts": [
+        123,
+        280,
+        382
+      ]
+    },
+    {
+      "cell": "c05q3",
+      "continuous_sequence_budget": 22350201.771802995,
+      "full_block_sequences": 22329534,
+      "exact_sequence_budget_seed7": 22329650,
+      "exact_sequence_budget_seed8": 22329667,
+      "continuous_full_token_epochs": 0.2918608255964942,
+      "integer_full_token_epochs_seed7": 0.29159244962623965,
+      "block_counts": [
+        292,
+        231,
+        240
+      ]
+    },
+    {
+      "cell": "c05q4",
+      "continuous_sequence_budget": 66473038.74584383,
+      "full_block_sequences": 66465778,
+      "exact_sequence_budget_seed7": 66466401,
+      "exact_sequence_budget_seed8": 66466433,
+      "continuous_full_token_epochs": 1.3747728860944277,
+      "integer_full_token_epochs_seed7": 1.3746356064817749,
+      "block_counts": [
+        189,
+        838,
+        1262
+      ]
+    },
+    {
+      "cell": "c06q0",
+      "continuous_sequence_budget": 130490.70315390069,
+      "full_block_sequences": 129364,
+      "exact_sequence_budget_seed7": 129365,
+      "exact_sequence_budget_seed8": 129366,
+      "continuous_full_token_epochs": 0.6632859477156502,
+      "integer_full_token_epochs_seed7": 0.6575639838880747,
+      "block_counts": [
+        0,
+        2,
+        2
+      ]
+    },
+    {
+      "cell": "c06q1",
+      "continuous_sequence_budget": 825254.5368006451,
+      "full_block_sequences": 810486,
+      "exact_sequence_budget_seed7": 810487,
+      "exact_sequence_budget_seed8": 810487,
+      "continuous_full_token_epochs": 0.23919763172041453,
+      "integer_full_token_epochs_seed7": 0.2349173040499328,
+      "block_counts": [
+        6,
+        13,
+        3
+      ]
+    },
+    {
+      "cell": "c06q2",
+      "continuous_sequence_budget": 11646344.084517937,
+      "full_block_sequences": 11629564,
+      "exact_sequence_budget_seed7": 11629669,
+      "exact_sequence_budget_seed8": 11629671,
+      "continuous_full_token_epochs": 0.8306759529213749,
+      "integer_full_token_epochs_seed7": 0.8294866018579459,
+      "block_counts": [
+        29,
+        151,
+        215
+      ]
+    },
+    {
+      "cell": "c06q3",
+      "continuous_sequence_budget": 29779966.23776082,
+      "full_block_sequences": 29769350,
+      "exact_sequence_budget_seed7": 29769461,
+      "exact_sequence_budget_seed8": 29769459,
+      "continuous_full_token_epochs": 1.6898984317289558,
+      "integer_full_token_epochs_seed7": 1.6893022999309808,
+      "block_counts": [
+        136,
+        479,
+        223
+      ]
+    },
+    {
+      "cell": "c06q4",
+      "continuous_sequence_budget": 12216900.52412083,
+      "full_block_sequences": 12210258,
+      "exact_sequence_budget_seed7": 12210306,
+      "exact_sequence_budget_seed8": 12210303,
+      "continuous_full_token_epochs": 0.8570935866096416,
+      "integer_full_token_epochs_seed7": 0.8566309386311673,
+      "block_counts": [
+        112,
+        165,
+        96
+      ]
+    },
+    {
+      "cell": "c07q0",
+      "continuous_sequence_budget": 1402864.4049890798,
+      "full_block_sequences": 1392616,
+      "exact_sequence_budget_seed7": 1392619,
+      "exact_sequence_budget_seed8": 1392620,
+      "continuous_full_token_epochs": 0.14518500063583262,
+      "integer_full_token_epochs_seed7": 0.14412468495274597,
+      "block_counts": [
+        7,
+        23,
+        8
+      ]
+    },
+    {
+      "cell": "c07q1",
+      "continuous_sequence_budget": 6131500.169346068,
+      "full_block_sequences": 6123166,
+      "exact_sequence_budget_seed7": 6123185,
+      "exact_sequence_budget_seed8": 6123176,
+      "continuous_full_token_epochs": 0.32225160356238347,
+      "integer_full_token_epochs_seed7": 0.32181458544582864,
+      "block_counts": [
+        110,
+        57,
+        41
+      ]
+    },
+    {
+      "cell": "c07q2",
+      "continuous_sequence_budget": 17598885.053611152,
+      "full_block_sequences": 17591462,
+      "exact_sequence_budget_seed7": 17591567,
+      "exact_sequence_budget_seed8": 17591574,
+      "continuous_full_token_epochs": 0.7993249112152995,
+      "integer_full_token_epochs_seed7": 0.7989925320597345,
+      "block_counts": [
+        270,
+        141,
+        241
+      ]
+    },
+    {
+      "cell": "c07q3",
+      "continuous_sequence_budget": 31569864.994082235,
+      "full_block_sequences": 31553966,
+      "exact_sequence_budget_seed7": 31554214,
+      "exact_sequence_budget_seed8": 31554191,
+      "continuous_full_token_epochs": 1.8487362263772829,
+      "integer_full_token_epochs_seed7": 1.8478197017185913,
+      "block_counts": [
+        237,
+        380,
+        442
+      ]
+    },
+    {
+      "cell": "c07q4",
+      "continuous_sequence_budget": 4165787.8358635614,
+      "full_block_sequences": 4152306,
+      "exact_sequence_budget_seed7": 4152321,
+      "exact_sequence_budget_seed8": 4152314,
+      "continuous_full_token_epochs": 1.041582861816564,
+      "integer_full_token_epochs_seed7": 1.0382157135144772,
+      "block_counts": [
+        54,
+        51,
+        24
+      ]
+    },
+    {
+      "cell": "c08q0",
+      "continuous_sequence_budget": 241659.6555760853,
+      "full_block_sequences": 240840,
+      "exact_sequence_budget_seed7": 240842,
+      "exact_sequence_budget_seed8": 240843,
+      "continuous_full_token_epochs": 3.1522651661234042,
+      "integer_full_token_epochs_seed7": 3.1415994752192447,
+      "block_counts": [
+        0,
+        4,
+        3
+      ]
+    },
+    {
+      "cell": "c08q1",
+      "continuous_sequence_budget": 406543.6631509042,
+      "full_block_sequences": 397660,
+      "exact_sequence_budget_seed7": 397663,
+      "exact_sequence_budget_seed8": 397662,
+      "continuous_full_token_epochs": 0.2932702773913162,
+      "integer_full_token_epochs_seed7": 0.28686399245380445,
+      "block_counts": [
+        3,
+        5,
+        5
+      ]
+    },
+    {
+      "cell": "c08q2",
+      "continuous_sequence_budget": 9029361.902692212,
+      "full_block_sequences": 9019252,
+      "exact_sequence_budget_seed7": 9019313,
+      "exact_sequence_budget_seed8": 9019314,
+      "continuous_full_token_epochs": 0.9093418776478776,
+      "integer_full_token_epochs_seed7": 0.9083298583999048,
+      "block_counts": [
+        24,
+        138,
+        110
+      ]
+    },
+    {
+      "cell": "c08q3",
+      "continuous_sequence_budget": 18211465.62033064,
+      "full_block_sequences": 18187148,
+      "exact_sequence_budget_seed7": 18187291,
+      "exact_sequence_budget_seed8": 18187289,
+      "continuous_full_token_epochs": 1.2764589362930692,
+      "integer_full_token_epochs_seed7": 1.2747645141748358,
+      "block_counts": [
+        36,
+        258,
+        292
+      ]
+    },
+    {
+      "cell": "c08q4",
+      "continuous_sequence_budget": 2096852.3425604417,
+      "full_block_sequences": 2094812,
+      "exact_sequence_budget_seed7": 2094824,
+      "exact_sequence_budget_seed8": 2094823,
+      "continuous_full_token_epochs": 0.36500549764628704,
+      "integer_full_token_epochs_seed7": 0.36465241785585834,
+      "block_counts": [
+        52,
+        10,
+        19
+      ]
+    },
+    {
+      "cell": "c09q0",
+      "continuous_sequence_budget": 1501887.7693080672,
+      "full_block_sequences": 1501296,
+      "exact_sequence_budget_seed7": 1501331,
+      "exact_sequence_budget_seed8": 1501334,
+      "continuous_full_token_epochs": 1.251135347317959,
+      "integer_full_token_epochs_seed7": 1.2506715351904085,
+      "block_counts": [
+        0,
+        8,
+        63
+      ]
+    },
+    {
+      "cell": "c09q1",
+      "continuous_sequence_budget": 3494865.389561609,
+      "full_block_sequences": 3480328,
+      "exact_sequence_budget_seed7": 3480352,
+      "exact_sequence_budget_seed8": 3480358,
+      "continuous_full_token_epochs": 0.4543954427520279,
+      "integer_full_token_epochs_seed7": 0.452508440724603,
+      "block_counts": [
+        7,
+        55,
+        41
+      ]
+    },
+    {
+      "cell": "c09q2",
+      "continuous_sequence_budget": 5807237.280957113,
+      "full_block_sequences": 5806976,
+      "exact_sequence_budget_seed7": 5807060,
+      "exact_sequence_budget_seed8": 5807053,
+      "continuous_full_token_epochs": 0.3349251422304013,
+      "integer_full_token_epochs_seed7": 0.3349149177730728,
+      "block_counts": [
+        18,
+        58,
+        148
+      ]
+    },
+    {
+      "cell": "c09q3",
+      "continuous_sequence_budget": 17558310.743759565,
+      "full_block_sequences": 17542614,
+      "exact_sequence_budget_seed7": 17542670,
+      "exact_sequence_budget_seed8": 17542673,
+      "continuous_full_token_epochs": 1.5828110784017881,
+      "integer_full_token_epochs_seed7": 1.5814011282728508,
+      "block_counts": [
+        26,
+        321,
+        105
+      ]
+    },
+    {
+      "cell": "c09q4",
+      "continuous_sequence_budget": 622715.3099050551,
+      "full_block_sequences": 608144,
+      "exact_sequence_budget_seed7": 608152,
+      "exact_sequence_budget_seed8": 608149,
+      "continuous_full_token_epochs": 0.24875578856683936,
+      "integer_full_token_epochs_seed7": 0.24293819008812587,
+      "block_counts": [
+        6,
+        6,
+        10
+      ]
+    },
+    {
+      "cell": "c10q0",
+      "continuous_sequence_budget": 745931.5197216674,
+      "full_block_sequences": 729374,
+      "exact_sequence_budget_seed7": 729376,
+      "exact_sequence_budget_seed8": 729376,
+      "continuous_full_token_epochs": 0.2668973038114926,
+      "integer_full_token_epochs_seed7": 0.26097367213742184,
+      "block_counts": [
+        2,
+        13,
+        4
+      ]
+    },
+    {
+      "cell": "c10q1",
+      "continuous_sequence_budget": 11142549.107622955,
+      "full_block_sequences": 11130280,
+      "exact_sequence_budget_seed7": 11130355,
+      "exact_sequence_budget_seed8": 11130355,
+      "continuous_full_token_epochs": 0.58522781314423,
+      "integer_full_token_epochs_seed7": 0.5845873554833753,
+      "block_counts": [
+        26,
+        166,
+        152
+      ]
+    },
+    {
+      "cell": "c10q2",
+      "continuous_sequence_budget": 24852244.091308616,
+      "full_block_sequences": 24832754,
+      "exact_sequence_budget_seed7": 24832953,
+      "exact_sequence_budget_seed8": 24832962,
+      "continuous_full_token_epochs": 1.1000638347238108,
+      "integer_full_token_epochs_seed7": 1.0992099306738186,
+      "block_counts": [
+        42,
+        359,
+        391
+      ]
+    },
+    {
+      "cell": "c10q3",
+      "continuous_sequence_budget": 4990664.339237765,
+      "full_block_sequences": 4984000,
+      "exact_sequence_budget_seed7": 4984019,
+      "exact_sequence_budget_seed8": 4984018,
+      "continuous_full_token_epochs": 0.4090842810105101,
+      "integer_full_token_epochs_seed7": 0.4085395631855146,
+      "block_counts": [
+        34,
+        74,
+        38
+      ]
+    },
+    {
+      "cell": "c10q4",
+      "continuous_sequence_budget": 1443532.4913704838,
+      "full_block_sequences": 1422640,
+      "exact_sequence_budget_seed7": 1422660,
+      "exact_sequence_budget_seed8": 1422660,
+      "continuous_full_token_epochs": 0.31807362411637013,
+      "integer_full_token_epochs_seed7": 0.3134744973116493,
+      "block_counts": [
+        13,
+        9,
+        38
+      ]
+    },
+    {
+      "cell": "c11q0",
+      "continuous_sequence_budget": 272715.0662165076,
+      "full_block_sequences": 253114,
+      "exact_sequence_budget_seed7": 253116,
+      "exact_sequence_budget_seed8": 253114,
+      "continuous_full_token_epochs": 0.15680298474799692,
+      "integer_full_token_epochs_seed7": 0.14553410942087355,
+      "block_counts": [
+        5,
+        2,
+        2
+      ]
+    },
+    {
+      "cell": "c11q1",
+      "continuous_sequence_budget": 4630515.878980845,
+      "full_block_sequences": 4624224,
+      "exact_sequence_budget_seed7": 4624239,
+      "exact_sequence_budget_seed8": 4624244,
+      "continuous_full_token_epochs": 0.4228208567815369,
+      "integer_full_token_epochs_seed7": 0.4222477035048918,
+      "block_counts": [
+        59,
+        55,
+        33
+      ]
+    },
+    {
+      "cell": "c11q2",
+      "continuous_sequence_budget": 31981751.83826618,
+      "full_block_sequences": 31975198,
+      "exact_sequence_budget_seed7": 31975333,
+      "exact_sequence_budget_seed8": 31975309,
+      "continuous_full_token_epochs": 1.2573703163343637,
+      "integer_full_token_epochs_seed7": 1.257117958153922,
+      "block_counts": [
+        146,
+        509,
+        254
+      ]
+    },
+    {
+      "cell": "c11q3",
+      "continuous_sequence_budget": 8815070.252109312,
+      "full_block_sequences": 8813116,
+      "exact_sequence_budget_seed7": 8813181,
+      "exact_sequence_budget_seed8": 8813186,
+      "continuous_full_token_epochs": 0.4659561337237091,
+      "integer_full_token_epochs_seed7": 0.4658562696746082,
+      "block_counts": [
+        125,
+        71,
+        134
+      ]
+    },
+    {
+      "cell": "c11q4",
+      "continuous_sequence_budget": 1662535.2583069701,
+      "full_block_sequences": 1642418,
+      "exact_sequence_budget_seed7": 1642420,
+      "exact_sequence_budget_seed8": 1642420,
+      "continuous_full_token_epochs": 0.34554774869302807,
+      "integer_full_token_epochs_seed7": 0.34136691572264616,
+      "block_counts": [
+        37,
+        14,
+        4
+      ]
+    },
+    {
+      "cell": "c12q0",
+      "continuous_sequence_budget": 1204781.4461473324,
+      "full_block_sequences": 1197112,
+      "exact_sequence_budget_seed7": 1197113,
+      "exact_sequence_budget_seed8": 1197113,
+      "continuous_full_token_epochs": 0.5360527511991912,
+      "integer_full_token_epochs_seed7": 0.5326407699906113,
+      "block_counts": [
+        11,
+        19,
+        2
+      ]
+    },
+    {
+      "cell": "c12q1",
+      "continuous_sequence_budget": 43005286.610649645,
+      "full_block_sequences": 42984090,
+      "exact_sequence_budget_seed7": 42984487,
+      "exact_sequence_budget_seed8": 42984501,
+      "continuous_full_token_epochs": 2.679650947965094,
+      "integer_full_token_epochs_seed7": 2.678354928317574,
+      "block_counts": [
+        179,
+        520,
+        795
+      ]
+    },
+    {
+      "cell": "c12q2",
+      "continuous_sequence_budget": 16581998.790526018,
+      "full_block_sequences": 16566216,
+      "exact_sequence_budget_seed7": 16566277,
+      "exact_sequence_budget_seed8": 16566279,
+      "continuous_full_token_epochs": 0.4641209227410741,
+      "integer_full_token_epochs_seed7": 0.4636808785691829,
+      "block_counts": [
+        406,
+        98,
+        108
+      ]
+    },
+    {
+      "cell": "c12q3",
+      "continuous_sequence_budget": 53445938.656029515,
+      "full_block_sequences": 53431594,
+      "exact_sequence_budget_seed7": 53431984,
+      "exact_sequence_budget_seed8": 53431983,
+      "continuous_full_token_epochs": 1.6941153935989979,
+      "integer_full_token_epochs_seed7": 1.6936730625596998,
+      "block_counts": [
+        421,
+        634,
+        746
+      ]
+    },
+    {
+      "cell": "c12q4",
+      "continuous_sequence_budget": 4632742.860490101,
+      "full_block_sequences": 4621570,
+      "exact_sequence_budget_seed7": 4621581,
+      "exact_sequence_budget_seed8": 4621586,
+      "continuous_full_token_epochs": 0.5257732201656617,
+      "integer_full_token_epochs_seed7": 0.5245064528294104,
+      "block_counts": [
+        115,
+        28,
+        26
+      ]
+    },
+    {
+      "cell": "c13q0",
+      "continuous_sequence_budget": 223264.3995295559,
+      "full_block_sequences": 222952,
+      "exact_sequence_budget_seed7": 222953,
+      "exact_sequence_budget_seed8": 222952,
+      "continuous_full_token_epochs": 6.737387316900289,
+      "integer_full_token_epochs_seed7": 6.727990300424132,
+      "block_counts": [
+        0,
+        4,
+        2
+      ]
+    },
+    {
+      "cell": "c13q1",
+      "continuous_sequence_budget": 21592000.30656877,
+      "full_block_sequences": 21581624,
+      "exact_sequence_budget_seed7": 21581848,
+      "exact_sequence_budget_seed8": 21581867,
+      "continuous_full_token_epochs": 1.661156610776273,
+      "integer_full_token_epochs_seed7": 1.6603755543233323,
+      "block_counts": [
+        48,
+        268,
+        439
+      ]
+    },
+    {
+      "cell": "c13q2",
+      "continuous_sequence_budget": 16981273.145403262,
+      "full_block_sequences": 16971028,
+      "exact_sequence_budget_seed7": 16971187,
+      "exact_sequence_budget_seed8": 16971169,
+      "continuous_full_token_epochs": 0.5474220697115547,
+      "integer_full_token_epochs_seed7": 0.5470969245622607,
+      "block_counts": [
+        132,
+        182,
+        290
+      ]
+    },
+    {
+      "cell": "c13q3",
+      "continuous_sequence_budget": 137071200.20215327,
+      "full_block_sequences": 137066906,
+      "exact_sequence_budget_seed7": 137067912,
+      "exact_sequence_budget_seed8": 137067880,
+      "continuous_full_token_epochs": 1.9633235544017178,
+      "integer_full_token_epochs_seed7": 1.9632764562167626,
+      "block_counts": [
+        317,
+        2026,
+        1924
+      ]
+    },
+    {
+      "cell": "c13q4",
+      "continuous_sequence_budget": 36769769.13308112,
+      "full_block_sequences": 36756600,
+      "exact_sequence_budget_seed7": 36756877,
+      "exact_sequence_budget_seed8": 36756910,
+      "continuous_full_token_epochs": 1.225089190315465,
+      "integer_full_token_epochs_seed7": 1.224659652321342,
+      "block_counts": [
+        147,
+        491,
+        567
+      ]
+    },
+    {
+      "cell": "c14q0",
+      "continuous_sequence_budget": 8910955.9851141,
+      "full_block_sequences": 8909066,
+      "exact_sequence_budget_seed7": 8909078,
+      "exact_sequence_budget_seed8": 8909084,
+      "continuous_full_token_epochs": 0.6708251198713479,
+      "integer_full_token_epochs_seed7": 0.670683743391497,
+      "block_counts": [
+        41,
+        158,
+        28
+      ]
+    },
+    {
+      "cell": "c14q1",
+      "continuous_sequence_budget": 57393912.31738548,
+      "full_block_sequences": 57387568,
+      "exact_sequence_budget_seed7": 57387858,
+      "exact_sequence_budget_seed8": 57387862,
+      "continuous_full_token_epochs": 0.4389448315166494,
+      "integer_full_token_epochs_seed7": 0.4388985284991792,
+      "block_counts": [
+        550,
+        726,
+        548
+      ]
+    },
+    {
+      "cell": "c14q2",
+      "continuous_sequence_budget": 49593114.373964384,
+      "full_block_sequences": 49580838,
+      "exact_sequence_budget_seed7": 49580961,
+      "exact_sequence_budget_seed8": 49580957,
+      "continuous_full_token_epochs": 0.42226608686475997,
+      "integer_full_token_epochs_seed7": 0.4221626056107406,
+      "block_counts": [
+        1506,
+        177,
+        225
+      ]
+    },
+    {
+      "cell": "c14q3",
+      "continuous_sequence_budget": 98516653.42140472,
+      "full_block_sequences": 98500636,
+      "exact_sequence_budget_seed7": 98500964,
+      "exact_sequence_budget_seed8": 98500966,
+      "continuous_full_token_epochs": 0.9790349212849873,
+      "integer_full_token_epochs_seed7": 0.9788790035704028,
+      "block_counts": [
+        1460,
+        1082,
+        656
+      ]
+    },
+    {
+      "cell": "c14q4",
+      "continuous_sequence_budget": 10767249.828191577,
+      "full_block_sequences": 10759558,
+      "exact_sequence_budget_seed7": 10759586,
+      "exact_sequence_budget_seed8": 10759578,
+      "continuous_full_token_epochs": 0.6075562561679327,
+      "integer_full_token_epochs_seed7": 0.6071238145660116,
+      "block_counts": [
+        300,
+        51,
+        53
+      ]
+    },
+    {
+      "cell": "c15q0",
+      "continuous_sequence_budget": 727192.503906308,
+      "full_block_sequences": 725242,
+      "exact_sequence_budget_seed7": 725248,
+      "exact_sequence_budget_seed8": 725248,
+      "continuous_full_token_epochs": 0.47645237441564176,
+      "integer_full_token_epochs_seed7": 0.47517834656435864,
+      "block_counts": [
+        0,
+        9,
+        17
+      ]
+    },
+    {
+      "cell": "c15q1",
+      "continuous_sequence_budget": 11607577.120723372,
+      "full_block_sequences": 11597368,
+      "exact_sequence_budget_seed7": 11597444,
+      "exact_sequence_budget_seed8": 11597449,
+      "continuous_full_token_epochs": 1.0648586642003783,
+      "integer_full_token_epochs_seed7": 1.0639290695670238,
+      "block_counts": [
+        3,
+        187,
+        155
+      ]
+    },
+    {
+      "cell": "c15q2",
+      "continuous_sequence_budget": 20545761.31266212,
+      "full_block_sequences": 20526166,
+      "exact_sequence_budget_seed7": 20526305,
+      "exact_sequence_budget_seed8": 20526319,
+      "continuous_full_token_epochs": 0.812200967183727,
+      "integer_full_token_epochs_seed7": 0.8114318335545797,
+      "block_counts": [
+        8,
+        327,
+        281
+      ]
+    },
+    {
+      "cell": "c15q3",
+      "continuous_sequence_budget": 5111164.231162687,
+      "full_block_sequences": 5105666,
+      "exact_sequence_budget_seed7": 5105696,
+      "exact_sequence_budget_seed8": 5105692,
+      "continuous_full_token_epochs": 0.2418608149784918,
+      "integer_full_token_epochs_seed7": 0.24160205771973758,
+      "block_counts": [
+        8,
+        85,
+        52
+      ]
+    },
+    {
+      "cell": "c15q4",
+      "continuous_sequence_budget": 11541493.567997608,
+      "full_block_sequences": 11533814,
+      "exact_sequence_budget_seed7": 11533862,
+      "exact_sequence_budget_seed8": 11533858,
+      "continuous_full_token_epochs": 1.0096388025615464,
+      "integer_full_token_epochs_seed7": 1.008971200302846,
+      "block_counts": [
+        24,
+        199,
+        91
+      ]
+    },
+    {
+      "cell": "c16q0",
+      "continuous_sequence_budget": 1708621.7682988567,
+      "full_block_sequences": 1700520,
+      "exact_sequence_budget_seed7": 1700542,
+      "exact_sequence_budget_seed8": 1700542,
+      "continuous_full_token_epochs": 0.5900494989952095,
+      "integer_full_token_epochs_seed7": 0.5872592599117614,
+      "block_counts": [
+        17,
+        9,
+        48
+      ]
+    },
+    {
+      "cell": "c16q1",
+      "continuous_sequence_budget": 6171969.379756632,
+      "full_block_sequences": 6156922,
+      "exact_sequence_budget_seed7": 6156972,
+      "exact_sequence_budget_seed8": 6156968,
+      "continuous_full_token_epochs": 0.5567075645386285,
+      "integer_full_token_epochs_seed7": 0.5553548107828888,
+      "block_counts": [
+        71,
+        60,
+        89
+      ]
+    },
+    {
+      "cell": "c16q2",
+      "continuous_sequence_budget": 19213088.326350886,
+      "full_block_sequences": 19203022,
+      "exact_sequence_budget_seed7": 19203116,
+      "exact_sequence_budget_seed8": 19203115,
+      "continuous_full_token_epochs": 0.7930646001589251,
+      "integer_full_token_epochs_seed7": 0.7926529693541433,
+      "block_counts": [
+        163,
+        250,
+        194
+      ]
+    },
+    {
+      "cell": "c16q3",
+      "continuous_sequence_budget": 52209373.040883616,
+      "full_block_sequences": 52186234,
+      "exact_sequence_budget_seed7": 52186564,
+      "exact_sequence_budget_seed8": 52186602,
+      "continuous_full_token_epochs": 1.9429417060646288,
+      "integer_full_token_epochs_seed7": 1.942092880763214,
+      "block_counts": [
+        188,
+        757,
+        677
+      ]
+    },
+    {
+      "cell": "c16q4",
+      "continuous_sequence_budget": 6183667.83114311,
+      "full_block_sequences": 6166482,
+      "exact_sequence_budget_seed7": 6166527,
+      "exact_sequence_budget_seed8": 6166523,
+      "continuous_full_token_epochs": 0.6992242620906063,
+      "integer_full_token_epochs_seed7": 0.6972860459161704,
+      "block_counts": [
+        75,
+        60,
+        84
+      ]
+    },
+    {
+      "cell": "c17q0",
+      "continuous_sequence_budget": 12314544.764091125,
+      "full_block_sequences": 12311352,
+      "exact_sequence_budget_seed7": 12311429,
+      "exact_sequence_budget_seed8": 12311427,
+      "continuous_full_token_epochs": 0.7605077883069804,
+      "integer_full_token_epochs_seed7": 0.7603153684568583,
+      "block_counts": [
+        194,
+        102,
+        153
+      ]
+    },
+    {
+      "cell": "c17q1",
+      "continuous_sequence_budget": 24580188.20819393,
+      "full_block_sequences": 24567694,
+      "exact_sequence_budget_seed7": 24567760,
+      "exact_sequence_budget_seed8": 24567762,
+      "continuous_full_token_epochs": 0.6541364216939418,
+      "integer_full_token_epochs_seed7": 0.6538056779434389,
+      "block_counts": [
+        475,
+        226,
+        125
+      ]
+    },
+    {
+      "cell": "c17q2",
+      "continuous_sequence_budget": 61132410.94516761,
+      "full_block_sequences": 61123124,
+      "exact_sequence_budget_seed7": 61123335,
+      "exact_sequence_budget_seed8": 61123338,
+      "continuous_full_token_epochs": 0.9888036960121938,
+      "integer_full_token_epochs_seed7": 0.9886568945367116,
+      "block_counts": [
+        799,
+        733,
+        394
+      ]
+    },
+    {
+      "cell": "c17q3",
+      "continuous_sequence_budget": 40322183.59699236,
+      "full_block_sequences": 40304740,
+      "exact_sequence_budget_seed7": 40305035,
+      "exact_sequence_budget_seed8": 40305044,
+      "continuous_full_token_epochs": 0.8659133650725201,
+      "integer_full_token_epochs_seed7": 0.8655451013029699,
+      "block_counts": [
+        619,
+        321,
+        557
+      ]
+    },
+    {
+      "cell": "c17q4",
+      "continuous_sequence_budget": 8251732.944730225,
+      "full_block_sequences": 8245426,
+      "exact_sequence_budget_seed7": 8245454,
+      "exact_sequence_budget_seed8": 8245462,
+      "continuous_full_token_epochs": 0.6644823292979022,
+      "integer_full_token_epochs_seed7": 0.6639767084970573,
+      "block_counts": [
+        166,
+        67,
+        56
+      ]
+    },
+    {
+      "cell": "c18q0",
+      "continuous_sequence_budget": 1167454.6458769348,
+      "full_block_sequences": 1155762,
+      "exact_sequence_budget_seed7": 1155774,
+      "exact_sequence_budget_seed8": 1155772,
+      "continuous_full_token_epochs": 0.4338220013784093,
+      "integer_full_token_epochs_seed7": 0.42948151484249086,
+      "block_counts": [
+        11,
+        12,
+        18
+      ]
+    },
+    {
+      "cell": "c18q1",
+      "continuous_sequence_budget": 7378023.730742725,
+      "full_block_sequences": 7359300,
+      "exact_sequence_budget_seed7": 7359356,
+      "exact_sequence_budget_seed8": 7359362,
+      "continuous_full_token_epochs": 0.45053969073892297,
+      "integer_full_token_epochs_seed7": 0.44939974406179595,
+      "block_counts": [
+        88,
+        66,
+        117
+      ]
+    },
+    {
+      "cell": "c18q2",
+      "continuous_sequence_budget": 22782822.855833504,
+      "full_block_sequences": 22773186,
+      "exact_sequence_budget_seed7": 22773313,
+      "exact_sequence_budget_seed8": 22773309,
+      "continuous_full_token_epochs": 0.8244430169989233,
+      "integer_full_token_epochs_seed7": 0.8240988834258269,
+      "block_counts": [
+        153,
+        314,
+        240
+      ]
+    },
+    {
+      "cell": "c18q3",
+      "continuous_sequence_budget": 11883330.14037954,
+      "full_block_sequences": 11868472,
+      "exact_sequence_budget_seed7": 11868514,
+      "exact_sequence_budget_seed8": 11868512,
+      "continuous_full_token_epochs": 0.857073267555132,
+      "integer_full_token_epochs_seed7": 0.8560046682906465,
+      "block_counts": [
+        76,
+        184,
+        77
+      ]
+    },
+    {
+      "cell": "c18q4",
+      "continuous_sequence_budget": 3995345.599441558,
+      "full_block_sequences": 3981542,
+      "exact_sequence_budget_seed7": 3981595,
+      "exact_sequence_budget_seed8": 3981595,
+      "continuous_full_token_epochs": 1.21666016256313,
+      "integer_full_token_epochs_seed7": 1.212472838554352,
+      "block_counts": [
+        44,
+        19,
+        112
+      ]
+    },
+    {
+      "cell": "c19q0",
+      "continuous_sequence_budget": 1140645.101522884,
+      "full_block_sequences": 1139388,
+      "exact_sequence_budget_seed7": 1139413,
+      "exact_sequence_budget_seed8": 1139409,
+      "continuous_full_token_epochs": 0.49569699024279773,
+      "integer_full_token_epochs_seed7": 0.49516154848641636,
+      "block_counts": [
+        0,
+        6,
+        48
+      ]
+    },
+    {
+      "cell": "c19q1",
+      "continuous_sequence_budget": 3693927.3579152375,
+      "full_block_sequences": 3686850,
+      "exact_sequence_budget_seed7": 3686871,
+      "exact_sequence_budget_seed8": 3686873,
+      "continuous_full_token_epochs": 0.2585283683796237,
+      "integer_full_token_epochs_seed7": 0.25803451224176,
+      "block_counts": [
+        3,
+        60,
+        45
+      ]
+    },
+    {
+      "cell": "c19q2",
+      "continuous_sequence_budget": 8085233.785926498,
+      "full_block_sequences": 8067140,
+      "exact_sequence_budget_seed7": 8067181,
+      "exact_sequence_budget_seed8": 8067187,
+      "continuous_full_token_epochs": 0.33241732922375966,
+      "integer_full_token_epochs_seed7": 0.3316751046893027,
+      "block_counts": [
+        76,
+        102,
+        79
+      ]
+    },
+    {
+      "cell": "c19q3",
+      "continuous_sequence_budget": 9649959.820245802,
+      "full_block_sequences": 9630556,
+      "exact_sequence_budget_seed7": 9630664,
+      "exact_sequence_budget_seed8": 9630663,
+      "continuous_full_token_epochs": 0.6206480205104403,
+      "integer_full_token_epochs_seed7": 0.6194069881266,
+      "block_counts": [
+        56,
+        94,
+        215
+      ]
+    },
+    {
+      "cell": "c19q4",
+      "continuous_sequence_budget": 2153717.840239146,
+      "full_block_sequences": 2149130,
+      "exact_sequence_budget_seed7": 2149152,
+      "exact_sequence_budget_seed8": 2149155,
+      "continuous_full_token_epochs": 0.4691285423410145,
+      "integer_full_token_epochs_seed7": 0.46813399888878837,
+      "block_counts": [
+        19,
+        16,
+        52
+      ]
+    },
+    {
+      "cell": "c20q0",
+      "continuous_sequence_budget": 794215.7966073493,
+      "full_block_sequences": 770570,
+      "exact_sequence_budget_seed7": 770575,
+      "exact_sequence_budget_seed8": 770576,
+      "continuous_full_token_epochs": 0.5938794979302131,
+      "integer_full_token_epochs_seed7": 0.5762019542703959,
+      "block_counts": [
+        5,
+        10,
+        10
+      ]
+    },
+    {
+      "cell": "c20q1",
+      "continuous_sequence_budget": 12337224.476002347,
+      "full_block_sequences": 12325290,
+      "exact_sequence_budget_seed7": 12325386,
+      "exact_sequence_budget_seed8": 12325385,
+      "continuous_full_token_epochs": 0.5040767231048531,
+      "integer_full_token_epochs_seed7": 0.5035930243441289,
+      "block_counts": [
+        121,
+        126,
+        192
+      ]
+    },
+    {
+      "cell": "c20q2",
+      "continuous_sequence_budget": 14452514.229487069,
+      "full_block_sequences": 14447818,
+      "exact_sequence_budget_seed7": 14447856,
+      "exact_sequence_budget_seed8": 14447859,
+      "continuous_full_token_epochs": 0.4473750305425546,
+      "integer_full_token_epochs_seed7": 0.44723083586985196,
+      "block_counts": [
+        305,
+        118,
+        77
+      ]
+    },
+    {
+      "cell": "c20q3",
+      "continuous_sequence_budget": 12512437.882796125,
+      "full_block_sequences": 12498974,
+      "exact_sequence_budget_seed7": 12499013,
+      "exact_sequence_budget_seed8": 12499014,
+      "continuous_full_token_epochs": 0.6528550493677663,
+      "integer_full_token_epochs_seed7": 0.6521545861484705,
+      "block_counts": [
+        187,
+        138,
+        79
+      ]
+    },
+    {
+      "cell": "c20q4",
+      "continuous_sequence_budget": 9975174.750316197,
+      "full_block_sequences": 9960208,
+      "exact_sequence_budget_seed7": 9960227,
+      "exact_sequence_budget_seed8": 9960224,
+      "continuous_full_token_epochs": 0.8271006894179177,
+      "integer_full_token_epochs_seed7": 0.8258612831016142,
+      "block_counts": [
+        231,
+        75,
+        41
+      ]
+    },
+    {
+      "cell": "c21q0",
+      "continuous_sequence_budget": 1944093.3250206243,
+      "full_block_sequences": 1920678,
+      "exact_sequence_budget_seed7": 1920681,
+      "exact_sequence_budget_seed8": 1920682,
+      "continuous_full_token_epochs": 0.9668659491434685,
+      "integer_full_token_epochs_seed7": 0.9552221769225637,
+      "block_counts": [
+        26,
+        25,
+        6
+      ]
+    },
+    {
+      "cell": "c21q1",
+      "continuous_sequence_budget": 8085767.204636774,
+      "full_block_sequences": 8069708,
+      "exact_sequence_budget_seed7": 8069729,
+      "exact_sequence_budget_seed8": 8069727,
+      "continuous_full_token_epochs": 0.5551507517054384,
+      "integer_full_token_epochs_seed7": 0.5540496043269924,
+      "block_counts": [
+        208,
+        46,
+        43
+      ]
+    },
+    {
+      "cell": "c21q2",
+      "continuous_sequence_budget": 61458185.20895771,
+      "full_block_sequences": 61448708,
+      "exact_sequence_budget_seed7": 61449023,
+      "exact_sequence_budget_seed8": 61449055,
+      "continuous_full_token_epochs": 1.4949332013685825,
+      "integer_full_token_epochs_seed7": 1.4947103361745944,
+      "block_counts": [
+        609,
+        751,
+        628
+      ]
+    },
+    {
+      "cell": "c21q3",
+      "continuous_sequence_budget": 29661418.104365334,
+      "full_block_sequences": 29649968,
+      "exact_sequence_budget_seed7": 29650067,
+      "exact_sequence_budget_seed8": 29650051,
+      "continuous_full_token_epochs": 0.6154759435944714,
+      "integer_full_token_epochs_seed7": 0.6152404075979957,
+      "block_counts": [
+        716,
+        180,
+        196
+      ]
+    },
+    {
+      "cell": "c21q4",
+      "continuous_sequence_budget": 14189318.891413724,
+      "full_block_sequences": 14179602,
+      "exact_sequence_budget_seed7": 14179663,
+      "exact_sequence_budget_seed8": 14179659,
+      "continuous_full_token_epochs": 0.7153158613401536,
+      "integer_full_token_epochs_seed7": 0.714829085876407,
+      "block_counts": [
+        292,
+        105,
+        114
+      ]
+    },
+    {
+      "cell": "c22q0",
+      "continuous_sequence_budget": 1.1154114061750675,
+      "full_block_sequences": 0,
+      "exact_sequence_budget_seed7": 0,
+      "exact_sequence_budget_seed8": 0,
+      "continuous_full_token_epochs": 0.0013496374221801328,
+      "integer_full_token_epochs_seed7": 0.0,
+      "block_counts": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "cell": "c22q1",
+      "continuous_sequence_budget": 795377.6339907149,
+      "full_block_sequences": 785542,
+      "exact_sequence_budget_seed7": 785545,
+      "exact_sequence_budget_seed8": 785545,
+      "continuous_full_token_epochs": 0.44764546585437787,
+      "integer_full_token_epochs_seed7": 0.44211157373163235,
+      "block_counts": [
+        13,
+        8,
+        5
+      ]
+    },
+    {
+      "cell": "c22q2",
+      "continuous_sequence_budget": 4787916.991217955,
+      "full_block_sequences": 4778770,
+      "exact_sequence_budget_seed7": 4778780,
+      "exact_sequence_budget_seed8": 4778781,
+      "continuous_full_token_epochs": 0.7760692042784654,
+      "integer_full_token_epochs_seed7": 0.7745881975030714,
+      "block_counts": [
+        103,
+        40,
+        20
+      ]
+    },
+    {
+      "cell": "c22q3",
+      "continuous_sequence_budget": 6923046.603353735,
+      "full_block_sequences": 6903308,
+      "exact_sequence_budget_seed7": 6903318,
+      "exact_sequence_budget_seed8": 6903316,
+      "continuous_full_token_epochs": 0.6876540380119495,
+      "integer_full_token_epochs_seed7": 0.6856944305532968,
+      "block_counts": [
+        182,
+        44,
+        19
+      ]
+    },
+    {
+      "cell": "c22q4",
+      "continuous_sequence_budget": 3472800.156049317,
+      "full_block_sequences": 3461212,
+      "exact_sequence_budget_seed7": 3461221,
+      "exact_sequence_budget_seed8": 3461222,
+      "continuous_full_token_epochs": 1.0352783410731274,
+      "integer_full_token_epochs_seed7": 1.0318264725730404,
+      "block_counts": [
+        63,
+        33,
+        20
+      ]
+    },
+    {
+      "cell": "c23q0",
+      "continuous_sequence_budget": 3005924.052134008,
+      "full_block_sequences": 2992622,
+      "exact_sequence_budget_seed7": 2992632,
+      "exact_sequence_budget_seed8": 2992634,
+      "continuous_full_token_epochs": 0.36816579077604356,
+      "integer_full_token_epochs_seed7": 0.3665377792893663,
+      "block_counts": [
+        31,
+        38,
+        25
+      ]
+    },
+    {
+      "cell": "c23q1",
+      "continuous_sequence_budget": 29219072.32174357,
+      "full_block_sequences": 29194532,
+      "exact_sequence_budget_seed7": 29194674,
+      "exact_sequence_budget_seed8": 29194679,
+      "continuous_full_token_epochs": 1.16536715095812,
+      "integer_full_token_epochs_seed7": 1.1643940535789365,
+      "block_counts": [
+        225,
+        399,
+        277
+      ]
+    },
+    {
+      "cell": "c23q2",
+      "continuous_sequence_budget": 40366017.137262814,
+      "full_block_sequences": 40361880,
+      "exact_sequence_budget_seed7": 40362051,
+      "exact_sequence_budget_seed8": 40362047,
+      "continuous_full_token_epochs": 0.9442605781522944,
+      "integer_full_token_epochs_seed7": 0.9441678004315676,
+      "block_counts": [
+        445,
+        493,
+        351
+      ]
+    },
+    {
+      "cell": "c23q3",
+      "continuous_sequence_budget": 25006717.894087274,
+      "full_block_sequences": 24995164,
+      "exact_sequence_budget_seed7": 24995220,
+      "exact_sequence_budget_seed8": 24995223,
+      "continuous_full_token_epochs": 0.49639383444541946,
+      "integer_full_token_epochs_seed7": 0.49616559642721164,
+      "block_counts": [
+        559,
+        193,
+        119
+      ]
+    },
+    {
+      "cell": "c23q4",
+      "continuous_sequence_budget": 16579025.839875815,
+      "full_block_sequences": 16570048,
+      "exact_sequence_budget_seed7": 16570116,
+      "exact_sequence_budget_seed8": 16570111,
+      "continuous_full_token_epochs": 0.7255613444839978,
+      "integer_full_token_epochs_seed7": 0.7251714159404349,
+      "block_counts": [
+        413,
+        81,
+        143
+      ]
+    },
+    {
+      "cell": "c24q0",
+      "continuous_sequence_budget": 9999643.151838137,
+      "full_block_sequences": 9993958,
+      "exact_sequence_budget_seed7": 9993984,
+      "exact_sequence_budget_seed8": 9993986,
+      "continuous_full_token_epochs": 1.2476569410054787,
+      "integer_full_token_epochs_seed7": 1.2469508478015672,
+      "block_counts": [
+        80,
+        151,
+        53
+      ]
+    },
+    {
+      "cell": "c24q1",
+      "continuous_sequence_budget": 14784116.465907741,
+      "full_block_sequences": 14764644,
+      "exact_sequence_budget_seed7": 14764683,
+      "exact_sequence_budget_seed8": 14764691,
+      "continuous_full_token_epochs": 0.5145210687928077,
+      "integer_full_token_epochs_seed7": 0.5138447397289602,
+      "block_counts": [
+        350,
+        96,
+        90
+      ]
+    },
+    {
+      "cell": "c24q2",
+      "continuous_sequence_budget": 38971346.75843188,
+      "full_block_sequences": 38966416,
+      "exact_sequence_budget_seed7": 38966574,
+      "exact_sequence_budget_seed8": 38966552,
+      "continuous_full_token_epochs": 0.7722710949217702,
+      "integer_full_token_epochs_seed7": 0.7721765161174288,
+      "block_counts": [
+        631,
+        395,
+        272
+      ]
+    },
+    {
+      "cell": "c24q3",
+      "continuous_sequence_budget": 22295245.970860433,
+      "full_block_sequences": 22283786,
+      "exact_sequence_budget_seed7": 22283869,
+      "exact_sequence_budget_seed8": 22283880,
+      "continuous_full_token_epochs": 0.6411228115005593,
+      "integer_full_token_epochs_seed7": 0.6407956549599257,
+      "block_counts": [
+        436,
+        181,
+        169
+      ]
+    },
+    {
+      "cell": "c24q4",
+      "continuous_sequence_budget": 17481894.384665757,
+      "full_block_sequences": 17469388,
+      "exact_sequence_budget_seed7": 17469445,
+      "exact_sequence_budget_seed8": 17469434,
+      "continuous_full_token_epochs": 1.0129368000558256,
+      "integer_full_token_epochs_seed7": 1.0122154571859674,
+      "block_counts": [
+        218,
+        224,
+        89
+      ]
+    },
+    {
+      "cell": "c25q0",
+      "continuous_sequence_budget": 23323780.05377044,
+      "full_block_sequences": 23302750,
+      "exact_sequence_budget_seed7": 23302863,
+      "exact_sequence_budget_seed8": 23302882,
+      "continuous_full_token_epochs": 1.135535961816611,
+      "integer_full_token_epochs_seed7": 1.134517599153405,
+      "block_counts": [
+        227,
+        290,
+        230
+      ]
+    },
+    {
+      "cell": "c25q1",
+      "continuous_sequence_budget": 44491132.66153985,
+      "full_block_sequences": 44474594,
+      "exact_sequence_budget_seed7": 44474813,
+      "exact_sequence_budget_seed8": 44474830,
+      "continuous_full_token_epochs": 0.8101076722968706,
+      "integer_full_token_epochs_seed7": 0.8098105190838182,
+      "block_counts": [
+        651,
+        436,
+        445
+      ]
+    },
+    {
+      "cell": "c25q2",
+      "continuous_sequence_budget": 74130683.73402417,
+      "full_block_sequences": 74128362,
+      "exact_sequence_budget_seed7": 74128806,
+      "exact_sequence_budget_seed8": 74128796,
+      "continuous_full_token_epochs": 0.9021265218679695,
+      "integer_full_token_epochs_seed7": 0.9021036709568637,
+      "block_counts": [
+        991,
+        732,
+        858
+      ]
+    },
+    {
+      "cell": "c25q3",
+      "continuous_sequence_budget": 45802125.335434645,
+      "full_block_sequences": 45780518,
+      "exact_sequence_budget_seed7": 45780719,
+      "exact_sequence_budget_seed8": 45780703,
+      "continuous_full_token_epochs": 0.824627560324495,
+      "integer_full_token_epochs_seed7": 0.8242421578123696,
+      "block_counts": [
+        671,
+        482,
+        370
+      ]
+    },
+    {
+      "cell": "c25q4",
+      "continuous_sequence_budget": 24426700.42993246,
+      "full_block_sequences": 24405974,
+      "exact_sequence_budget_seed7": 24406230,
+      "exact_sequence_budget_seed8": 24406213,
+      "continuous_full_token_epochs": 1.784446377051191,
+      "integer_full_token_epochs_seed7": 1.7829509485288475,
+      "block_counts": [
+        275,
+        206,
+        445
+      ]
+    },
+    {
+      "cell": "c26q0",
+      "continuous_sequence_budget": 3380633.1860577,
+      "full_block_sequences": 3369038,
+      "exact_sequence_budget_seed7": 3369057,
+      "exact_sequence_budget_seed8": 3369060,
+      "continuous_full_token_epochs": 0.4046125598485599,
+      "integer_full_token_epochs_seed7": 0.40322705896268857,
+      "block_counts": [
+        0,
+        59,
+        34
+      ]
+    },
+    {
+      "cell": "c26q1",
+      "continuous_sequence_budget": 19660639.67630236,
+      "full_block_sequences": 19636738,
+      "exact_sequence_budget_seed7": 19636951,
+      "exact_sequence_budget_seed8": 19636959,
+      "continuous_full_token_epochs": 0.5587387396536105,
+      "integer_full_token_epochs_seed7": 0.558065527522207,
+      "block_counts": [
+        2,
+        263,
+        407
+      ]
+    },
+    {
+      "cell": "c26q2",
+      "continuous_sequence_budget": 19192811.66675103,
+      "full_block_sequences": 19184724,
+      "exact_sequence_budget_seed7": 19184803,
+      "exact_sequence_budget_seed8": 19184812,
+      "continuous_full_token_epochs": 0.22197877886120718,
+      "integer_full_token_epochs_seed7": 0.22188615282513868,
+      "block_counts": [
+        69,
+        315,
+        153
+      ]
+    },
+    {
+      "cell": "c26q3",
+      "continuous_sequence_budget": 15958783.566280264,
+      "full_block_sequences": 15957374,
+      "exact_sequence_budget_seed7": 15957490,
+      "exact_sequence_budget_seed8": 15957486,
+      "continuous_full_token_epochs": 0.1234238498243102,
+      "integer_full_token_epochs_seed7": 0.12341384549474148,
+      "block_counts": [
+        116,
+        199,
+        211
+      ]
+    },
+    {
+      "cell": "c26q4",
+      "continuous_sequence_budget": 25297103.57767735,
+      "full_block_sequences": 25286952,
+      "exact_sequence_budget_seed7": 25287158,
+      "exact_sequence_budget_seed8": 25287163,
+      "continuous_full_token_epochs": 0.1532590340198471,
+      "integer_full_token_epochs_seed7": 0.15319878010093818,
+      "block_counts": [
+        155,
+        299,
+        417
+      ]
+    },
+    {
+      "cell": "c27q0",
+      "continuous_sequence_budget": 179221.958454295,
+      "full_block_sequences": 176158,
+      "exact_sequence_budget_seed7": 176159,
+      "exact_sequence_budget_seed8": 176158,
+      "continuous_full_token_epochs": 6.740831025867672,
+      "integer_full_token_epochs_seed7": 6.625628148063384,
+      "block_counts": [
+        0,
+        3,
+        2
+      ]
+    },
+    {
+      "cell": "c27q1",
+      "continuous_sequence_budget": 770621.4206833723,
+      "full_block_sequences": 748518,
+      "exact_sequence_budget_seed7": 748523,
+      "exact_sequence_budget_seed8": 748522,
+      "continuous_full_token_epochs": 0.47832945603827454,
+      "integer_full_token_epochs_seed7": 0.46461283038905643,
+      "block_counts": [
+        7,
+        10,
+        6
+      ]
+    },
+    {
+      "cell": "c27q2",
+      "continuous_sequence_budget": 3335840.1622964935,
+      "full_block_sequences": 3314566,
+      "exact_sequence_budget_seed7": 3314575,
+      "exact_sequence_budget_seed8": 3314581,
+      "continuous_full_token_epochs": 0.46039760506081384,
+      "integer_full_token_epochs_seed7": 0.45746268332709533,
+      "block_counts": [
+        36,
+        43,
+        23
+      ]
+    },
+    {
+      "cell": "c27q3",
+      "continuous_sequence_budget": 2975987.168464747,
+      "full_block_sequences": 2968716,
+      "exact_sequence_budget_seed7": 2968723,
+      "exact_sequence_budget_seed8": 2968726,
+      "continuous_full_token_epochs": 0.7466381514470855,
+      "integer_full_token_epochs_seed7": 0.7448156619646739,
+      "block_counts": [
+        54,
+        28,
+        18
+      ]
+    },
+    {
+      "cell": "c27q4",
+      "continuous_sequence_budget": 1921951.3802491764,
+      "full_block_sequences": 1915274,
+      "exact_sequence_budget_seed7": 1915280,
+      "exact_sequence_budget_seed8": 1915278,
+      "continuous_full_token_epochs": 2.8546246644992017,
+      "integer_full_token_epochs_seed7": 2.844715836002675,
+      "block_counts": [
+        21,
+        26,
+        10
+      ]
+    },
+    {
+      "cell": "c28q0",
+      "continuous_sequence_budget": 1052715.136346294,
+      "full_block_sequences": 1043208,
+      "exact_sequence_budget_seed7": 1043210,
+      "exact_sequence_budget_seed8": 1043209,
+      "continuous_full_token_epochs": 0.8099865073683165,
+      "integer_full_token_epochs_seed7": 0.80267300732887,
+      "block_counts": [
+        0,
+        20,
+        6
+      ]
+    },
+    {
+      "cell": "c28q1",
+      "continuous_sequence_budget": 42930661.95294105,
+      "full_block_sequences": 42908012,
+      "exact_sequence_budget_seed7": 42908222,
+      "exact_sequence_budget_seed8": 42908225,
+      "continuous_full_token_epochs": 0.47008265655537546,
+      "integer_full_token_epochs_seed7": 0.4698369433002882,
+      "block_counts": [
+        436,
+        530,
+        409
+      ]
+    },
+    {
+      "cell": "c28q2",
+      "continuous_sequence_budget": 69718521.42559549,
+      "full_block_sequences": 69711602,
+      "exact_sequence_budget_seed7": 69711834,
+      "exact_sequence_budget_seed8": 69711858,
+      "continuous_full_token_epochs": 0.7252909572375627,
+      "integer_full_token_epochs_seed7": 0.7252213870686545,
+      "block_counts": [
+        1182,
+        683,
+        475
+      ]
+    },
+    {
+      "cell": "c28q3",
+      "continuous_sequence_budget": 145505383.842843,
+      "full_block_sequences": 145482014,
+      "exact_sequence_budget_seed7": 145483132,
+      "exact_sequence_budget_seed8": 145483076,
+      "continuous_full_token_epochs": 1.115813479927722,
+      "integer_full_token_epochs_seed7": 1.1156428408383514,
+      "block_counts": [
+        1868,
+        1327,
+        2077
+      ]
+    },
+    {
+      "cell": "c28q4",
+      "continuous_sequence_budget": 194154059.86197037,
+      "full_block_sequences": 194134792,
+      "exact_sequence_budget_seed7": 194136192,
+      "exact_sequence_budget_seed8": 194136173,
+      "continuous_full_token_epochs": 3.081610258778319,
+      "integer_full_token_epochs_seed7": 3.081326660347313,
+      "block_counts": [
+        919,
+        2663,
+        2615
+      ]
+    },
+    {
+      "cell": "c29q0",
+      "continuous_sequence_budget": 13832200.903765868,
+      "full_block_sequences": 13815566,
+      "exact_sequence_budget_seed7": 13815756,
+      "exact_sequence_budget_seed8": 13815777,
+      "continuous_full_token_epochs": 0.9299621191371616,
+      "integer_full_token_epochs_seed7": 0.9288565006125673,
+      "block_counts": [
+        105,
+        104,
+        355
+      ]
+    },
+    {
+      "cell": "c29q1",
+      "continuous_sequence_budget": 11575780.914708342,
+      "full_block_sequences": 11555330,
+      "exact_sequence_budget_seed7": 11555413,
+      "exact_sequence_budget_seed8": 11555422,
+      "continuous_full_token_epochs": 0.5624779244865611,
+      "integer_full_token_epochs_seed7": 0.5614882286314234,
+      "block_counts": [
+        153,
+        106,
+        157
+      ]
+    },
+    {
+      "cell": "c29q2",
+      "continuous_sequence_budget": 55541592.17192664,
+      "full_block_sequences": 55520044,
+      "exact_sequence_budget_seed7": 55520377,
+      "exact_sequence_budget_seed8": 55520390,
+      "continuous_full_token_epochs": 1.051119886747588,
+      "integer_full_token_epochs_seed7": 1.0507183914313603,
+      "block_counts": [
+        410,
+        720,
+        653
+      ]
+    },
+    {
+      "cell": "c29q3",
+      "continuous_sequence_budget": 53044651.968588725,
+      "full_block_sequences": 53041312,
+      "exact_sequence_budget_seed7": 53041698,
+      "exact_sequence_budget_seed8": 53041710,
+      "continuous_full_token_epochs": 0.7842991001353807,
+      "integer_full_token_epochs_seed7": 0.7842554238208045,
+      "block_counts": [
+        516,
+        580,
+        734
+      ]
+    },
+    {
+      "cell": "c29q4",
+      "continuous_sequence_budget": 16915050.066894196,
+      "full_block_sequences": 16913448,
+      "exact_sequence_budget_seed7": 16913468,
+      "exact_sequence_budget_seed8": 16913467,
+      "continuous_full_token_epochs": 0.7637476993444662,
+      "integer_full_token_epochs_seed7": 0.763676265920038,
+      "block_counts": [
+        458,
+        102,
+        45
+      ]
+    },
+    {
+      "cell": "c30q0",
+      "continuous_sequence_budget": 384606.8442182712,
+      "full_block_sequences": 361908,
+      "exact_sequence_budget_seed7": 361915,
+      "exact_sequence_budget_seed8": 361916,
+      "continuous_full_token_epochs": 0.31546415205029366,
+      "integer_full_token_epochs_seed7": 0.29685173393453146,
+      "block_counts": [
+        0,
+        2,
+        15
+      ]
+    },
+    {
+      "cell": "c30q1",
+      "continuous_sequence_budget": 4629202.21688572,
+      "full_block_sequences": 4623020,
+      "exact_sequence_budget_seed7": 4623033,
+      "exact_sequence_budget_seed8": 4623034,
+      "continuous_full_token_epochs": 0.5228935294823293,
+      "integer_full_token_epochs_seed7": 0.522196682932885,
+      "block_counts": [
+        112,
+        30,
+        25
+      ]
+    },
+    {
+      "cell": "c30q2",
+      "continuous_sequence_budget": 27829045.273855608,
+      "full_block_sequences": 27816706,
+      "exact_sequence_budget_seed7": 27816873,
+      "exact_sequence_budget_seed8": 27816886,
+      "continuous_full_token_epochs": 0.8311964753277977,
+      "integer_full_token_epochs_seed7": 0.8308329144860246,
+      "block_counts": [
+        458,
+        223,
+        338
+      ]
+    },
+    {
+      "cell": "c30q3",
+      "continuous_sequence_budget": 79516967.11542276,
+      "full_block_sequences": 79513488,
+      "exact_sequence_budget_seed7": 79513840,
+      "exact_sequence_budget_seed8": 79513850,
+      "continuous_full_token_epochs": 0.8308912133810528,
+      "integer_full_token_epochs_seed7": 0.8308585374274513,
+      "block_counts": [
+        1387,
+        703,
+        687
+      ]
+    },
+    {
+      "cell": "c30q4",
+      "continuous_sequence_budget": 251316054.8445462,
+      "full_block_sequences": 253718374,
+      "exact_sequence_budget_seed7": 253720735,
+      "exact_sequence_budget_seed8": 253720693,
+      "continuous_full_token_epochs": 1.5235331082004597,
+      "integer_full_token_epochs_seed7": 1.5381108073201306,
+      "block_counts": [
+        2458,
+        2409,
+        4481
+      ]
+    },
+    {
+      "cell": "c31q0",
+      "continuous_sequence_budget": 310796.51684306865,
+      "full_block_sequences": 305522,
+      "exact_sequence_budget_seed7": 305525,
+      "exact_sequence_budget_seed8": 305526,
+      "continuous_full_token_epochs": 0.7293690527128946,
+      "integer_full_token_epochs_seed7": 0.7169979962890852,
+      "block_counts": [
+        0,
+        5,
+        4
+      ]
+    },
+    {
+      "cell": "c31q1",
+      "continuous_sequence_budget": 3486936.1251645973,
+      "full_block_sequences": 3463906,
+      "exact_sequence_budget_seed7": 3463930,
+      "exact_sequence_budget_seed8": 3463932,
+      "continuous_full_token_epochs": 0.8355944257017198,
+      "integer_full_token_epochs_seed7": 0.8300813364868648,
+      "block_counts": [
+        2,
+        55,
+        47
+      ]
+    },
+    {
+      "cell": "c31q2",
+      "continuous_sequence_budget": 8174042.750420257,
+      "full_block_sequences": 8158034,
+      "exact_sequence_budget_seed7": 8158097,
+      "exact_sequence_budget_seed8": 8158098,
+      "continuous_full_token_epochs": 0.769874548622717,
+      "integer_full_token_epochs_seed7": 0.7683726935698284,
+      "block_counts": [
+        8,
+        125,
+        118
+      ]
+    },
+    {
+      "cell": "c31q3",
+      "continuous_sequence_budget": 6635758.590847274,
+      "full_block_sequences": 6623384,
+      "exact_sequence_budget_seed7": 6623449,
+      "exact_sequence_budget_seed8": 6623435,
+      "continuous_full_token_epochs": 0.6427633938562719,
+      "integer_full_token_epochs_seed7": 0.6415710427058112,
+      "block_counts": [
+        13,
+        93,
+        109
+      ]
+    },
+    {
+      "cell": "c31q4",
+      "continuous_sequence_budget": 5558538.240479264,
+      "full_block_sequences": 5554430,
+      "exact_sequence_budget_seed7": 5554450,
+      "exact_sequence_budget_seed8": 5554450,
+      "continuous_full_token_epochs": 1.099162033391519,
+      "integer_full_token_epochs_seed7": 1.0983536124499382,
+      "block_counts": [
+        7,
+        102,
+        34
+      ]
+    },
+    {
+      "cell": "c32q0",
+      "continuous_sequence_budget": 8898619.324121501,
+      "full_block_sequences": 8896670,
+      "exact_sequence_budget_seed7": 8896703,
+      "exact_sequence_budget_seed8": 8896708,
+      "continuous_full_token_epochs": 0.5214636456317651,
+      "integer_full_token_epochs_seed7": 0.5213513480577019,
+      "block_counts": [
+        35,
+        146,
+        67
+      ]
+    },
+    {
+      "cell": "c32q1",
+      "continuous_sequence_budget": 46299352.824880384,
+      "full_block_sequences": 46282276,
+      "exact_sequence_budget_seed7": 46282681,
+      "exact_sequence_budget_seed8": 46282665,
+      "continuous_full_token_epochs": 0.512423331993872,
+      "integer_full_token_epochs_seed7": 0.5122388146834911,
+      "block_counts": [
+        221,
+        587,
+        746
+      ]
+    },
+    {
+      "cell": "c32q2",
+      "continuous_sequence_budget": 90334533.98969805,
+      "full_block_sequences": 90311546,
+      "exact_sequence_budget_seed7": 90311911,
+      "exact_sequence_budget_seed8": 90311887,
+      "continuous_full_token_epochs": 0.9224518034085367,
+      "integer_full_token_epochs_seed7": 0.9222207885715327,
+      "block_counts": [
+        1284,
+        989,
+        685
+      ]
+    },
+    {
+      "cell": "c32q3",
+      "continuous_sequence_budget": 147558609.66707075,
+      "full_block_sequences": 147548758,
+      "exact_sequence_budget_seed7": 147549660,
+      "exact_sequence_budget_seed8": 147549674,
+      "continuous_full_token_epochs": 1.0563312648686285,
+      "integer_full_token_epochs_seed7": 1.056267196677973,
+      "block_counts": [
+        2187,
+        1350,
+        1691
+      ]
+    },
+    {
+      "cell": "c32q4",
+      "continuous_sequence_budget": 80831467.8178005,
+      "full_block_sequences": 80819912,
+      "exact_sequence_budget_seed7": 80820310,
+      "exact_sequence_budget_seed8": 80820331,
+      "continuous_full_token_epochs": 1.5587729537472268,
+      "integer_full_token_epochs_seed7": 1.5585577837759295,
+      "block_counts": [
+        829,
+        997,
+        763
+      ]
+    },
+    {
+      "cell": "c33q0",
+      "continuous_sequence_budget": 338579.170672606,
+      "full_block_sequences": 334428,
+      "exact_sequence_budget_seed7": 334430,
+      "exact_sequence_budget_seed8": 334430,
+      "continuous_full_token_epochs": 0.3201921514620753,
+      "integer_full_token_epochs_seed7": 0.31626830735256956,
+      "block_counts": [
+        0,
+        6,
+        3
+      ]
+    },
+    {
+      "cell": "c33q1",
+      "continuous_sequence_budget": 5858631.835078631,
+      "full_block_sequences": 5843052,
+      "exact_sequence_budget_seed7": 5843108,
+      "exact_sequence_budget_seed8": 5843109,
+      "continuous_full_token_epochs": 0.41020463764867887,
+      "integer_full_token_epochs_seed7": 0.40911770313519413,
+      "block_counts": [
+        13,
+        79,
+        102
+      ]
+    },
+    {
+      "cell": "c33q2",
+      "continuous_sequence_budget": 6063254.2433387395,
+      "full_block_sequences": 6055708,
+      "exact_sequence_budget_seed7": 6055781,
+      "exact_sequence_budget_seed8": 6055783,
+      "continuous_full_token_epochs": 0.17327477177328068,
+      "integer_full_token_epochs_seed7": 0.1730612025442897,
+      "block_counts": [
+        36,
+        58,
+        137
+      ]
+    },
+    {
+      "cell": "c33q3",
+      "continuous_sequence_budget": 15525209.68664184,
+      "full_block_sequences": 15521148,
+      "exact_sequence_budget_seed7": 15521246,
+      "exact_sequence_budget_seed8": 15521249,
+      "continuous_full_token_epochs": 0.3664720390841568,
+      "integer_full_token_epochs_seed7": 0.36637847639771043,
+      "block_counts": [
+        57,
+        227,
+        195
+      ]
+    },
+    {
+      "cell": "c33q4",
+      "continuous_sequence_budget": 12130986.199510891,
+      "full_block_sequences": 12119496,
+      "exact_sequence_budget_seed7": 12119573,
+      "exact_sequence_budget_seed8": 12119563,
+      "continuous_full_token_epochs": 0.2818950381113124,
+      "integer_full_token_epochs_seed7": 0.2816298227151211,
+      "block_counts": [
+        99,
+        147,
+        156
+      ]
+    },
+    {
+      "cell": "c34q0",
+      "continuous_sequence_budget": 255995.60675997785,
+      "full_block_sequences": 240840,
+      "exact_sequence_budget_seed7": 240841,
+      "exact_sequence_budget_seed8": 240843,
+      "continuous_full_token_epochs": 0.8118310522950792,
+      "integer_full_token_epochs_seed7": 0.7637717105400224,
+      "block_counts": [
+        0,
+        4,
+        3
+      ]
+    },
+    {
+      "cell": "c34q1",
+      "continuous_sequence_budget": 7775354.506910483,
+      "full_block_sequences": 7768292,
+      "exact_sequence_budget_seed7": 7768301,
+      "exact_sequence_budget_seed8": 7768298,
+      "continuous_full_token_epochs": 2.248425746529062,
+      "integer_full_token_epochs_seed7": 2.246386059910689,
+      "block_counts": [
+        36,
+        142,
+        13
+      ]
+    },
+    {
+      "cell": "c34q2",
+      "continuous_sequence_budget": 4099354.1934359544,
+      "full_block_sequences": 4086420,
+      "exact_sequence_budget_seed7": 4086425,
+      "exact_sequence_budget_seed8": 4086426,
+      "continuous_full_token_epochs": 0.4077246043270641,
+      "integer_full_token_epochs_seed7": 0.40643865780251553,
+      "block_counts": [
+        107,
+        25,
+        15
+      ]
+    },
+    {
+      "cell": "c34q3",
+      "continuous_sequence_budget": 9225988.462852787,
+      "full_block_sequences": 9201622,
+      "exact_sequence_budget_seed7": 9201646,
+      "exact_sequence_budget_seed8": 9201647,
+      "continuous_full_token_epochs": 0.8346987452790969,
+      "integer_full_token_epochs_seed7": 0.8324964204786666,
+      "block_counts": [
+        122,
+        113,
+        50
+      ]
+    },
+    {
+      "cell": "c34q4",
+      "continuous_sequence_budget": 2674404.5128308292,
+      "full_block_sequences": 2654688,
+      "exact_sequence_budget_seed7": 2654700,
+      "exact_sequence_budget_seed8": 2654700,
+      "continuous_full_token_epochs": 0.47854739985589667,
+      "integer_full_token_epochs_seed7": 0.4750215520137393,
+      "block_counts": [
+        64,
+        16,
+        18
+      ]
+    },
+    {
+      "cell": "c35q0",
+      "continuous_sequence_budget": 1776843.1443351684,
+      "full_block_sequences": 1772274,
+      "exact_sequence_budget_seed7": 1772297,
+      "exact_sequence_budget_seed8": 1772306,
+      "continuous_full_token_epochs": 0.2660169201235218,
+      "integer_full_token_epochs_seed7": 0.26533630218696724,
+      "block_counts": [
+        8,
+        13,
+        54
+      ]
+    },
+    {
+      "cell": "c35q1",
+      "continuous_sequence_budget": 23823068.331971806,
+      "full_block_sequences": 23822216,
+      "exact_sequence_budget_seed7": 23822372,
+      "exact_sequence_budget_seed8": 23822413,
+      "continuous_full_token_epochs": 0.8850251413931608,
+      "integer_full_token_epochs_seed7": 0.8849992727143988,
+      "block_counts": [
+        122,
+        310,
+        352
+      ]
+    },
+    {
+      "cell": "c35q2",
+      "continuous_sequence_budget": 17573892.57635477,
+      "full_block_sequences": 17570176,
+      "exact_sequence_budget_seed7": 17570252,
+      "exact_sequence_budget_seed8": 17570269,
+      "continuous_full_token_epochs": 0.4464641736836982,
+      "integer_full_token_epochs_seed7": 0.44637168495890917,
+      "block_counts": [
+        193,
+        213,
+        158
+      ]
+    },
+    {
+      "cell": "c35q3",
+      "continuous_sequence_budget": 8952954.283092666,
+      "full_block_sequences": 8940990,
+      "exact_sequence_budget_seed7": 8941058,
+      "exact_sequence_budget_seed8": 8941050,
+      "continuous_full_token_epochs": 0.3368472458766547,
+      "integer_full_token_epochs_seed7": 0.33639965840226077,
+      "block_counts": [
+        133,
+        76,
+        117
+      ]
+    },
+    {
+      "cell": "c35q4",
+      "continuous_sequence_budget": 8819505.414994169,
+      "full_block_sequences": 8798538,
+      "exact_sequence_budget_seed7": 8798569,
+      "exact_sequence_budget_seed8": 8798570,
+      "continuous_full_token_epochs": 1.257680562192396,
+      "integer_full_token_epochs_seed7": 1.254694984096895,
+      "block_counts": [
+        52,
+        133,
+        72
+      ]
+    },
+    {
+      "cell": "c36q0",
+      "continuous_sequence_budget": 1200966.238818329,
+      "full_block_sequences": 1187552,
+      "exact_sequence_budget_seed7": 1187554,
+      "exact_sequence_budget_seed8": 1187558,
+      "continuous_full_token_epochs": 0.48294636623007525,
+      "integer_full_token_epochs_seed7": 0.47755288239101634,
+      "block_counts": [
+        7,
+        19,
+        7
+      ]
+    },
+    {
+      "cell": "c36q1",
+      "continuous_sequence_budget": 8819515.910651017,
+      "full_block_sequences": 8805284,
+      "exact_sequence_budget_seed7": 8805397,
+      "exact_sequence_budget_seed8": 8805398,
+      "continuous_full_token_epochs": 0.7635914775272566,
+      "integer_full_token_epochs_seed7": 0.7623690657810444,
+      "block_counts": [
+        35,
+        89,
+        211
+      ]
+    },
+    {
+      "cell": "c36q2",
+      "continuous_sequence_budget": 6389981.78367863,
+      "full_block_sequences": 6386938,
+      "exact_sequence_budget_seed7": 6386991,
+      "exact_sequence_budget_seed8": 6386988,
+      "continuous_full_token_epochs": 0.39144730707788783,
+      "integer_full_token_epochs_seed7": 0.3912640930630932,
+      "block_counts": [
+        63,
+        68,
+        92
+      ]
+    },
+    {
+      "cell": "c36q3",
+      "continuous_sequence_budget": 9121828.168004978,
+      "full_block_sequences": 9105638,
+      "exact_sequence_budget_seed7": 9105715,
+      "exact_sequence_budget_seed8": 9105715,
+      "continuous_full_token_epochs": 1.089962641324035,
+      "integer_full_token_epochs_seed7": 1.0880372870161776,
+      "block_counts": [
+        33,
+        124,
+        139
+      ]
+    },
+    {
+      "cell": "c36q4",
+      "continuous_sequence_budget": 1182996.4467808413,
+      "full_block_sequences": 1159902,
+      "exact_sequence_budget_seed7": 1159908,
+      "exact_sequence_budget_seed8": 1159907,
+      "continuous_full_token_epochs": 0.369435214288847,
+      "integer_full_token_epochs_seed7": 0.3622249768386098,
+      "block_counts": [
+        12,
+        15,
+        9
+      ]
+    },
+    {
+      "cell": "c37q0",
+      "continuous_sequence_budget": 2186094.380028627,
+      "full_block_sequences": 2163388,
+      "exact_sequence_budget_seed7": 2163402,
+      "exact_sequence_budget_seed8": 2163402,
+      "continuous_full_token_epochs": 0.5504359088036374,
+      "integer_full_token_epochs_seed7": 0.5447222026900838,
+      "block_counts": [
+        3,
+        37,
+        20
+      ]
+    },
+    {
+      "cell": "c37q1",
+      "continuous_sequence_budget": 3773170.1760054613,
+      "full_block_sequences": 3770094,
+      "exact_sequence_budget_seed7": 3770125,
+      "exact_sequence_budget_seed8": 3770117,
+      "continuous_full_token_epochs": 0.24381548112290324,
+      "integer_full_token_epochs_seed7": 0.2436187073177892,
+      "block_counts": [
+        32,
+        43,
+        54
+      ]
+    },
+    {
+      "cell": "c37q2",
+      "continuous_sequence_budget": 28415885.541859865,
+      "full_block_sequences": 28405274,
+      "exact_sequence_budget_seed7": 28405447,
+      "exact_sequence_budget_seed8": 28405434,
+      "continuous_full_token_epochs": 0.7556966897427677,
+      "integer_full_token_epochs_seed7": 0.7554190854598527,
+      "block_counts": [
+        126,
+        415,
+        328
+      ]
+    },
+    {
+      "cell": "c37q3",
+      "continuous_sequence_budget": 68473612.33425912,
+      "full_block_sequences": 68462008,
+      "exact_sequence_budget_seed7": 68462348,
+      "exact_sequence_budget_seed8": 68462330,
+      "continuous_full_token_epochs": 1.2860375712830687,
+      "integer_full_token_epochs_seed7": 1.2858260101198864,
+      "block_counts": [
+        202,
+        1102,
+        665
+      ]
+    },
+    {
+      "cell": "c37q4",
+      "continuous_sequence_budget": 19182757.657913603,
+      "full_block_sequences": 19165114,
+      "exact_sequence_budget_seed7": 19165305,
+      "exact_sequence_budget_seed8": 19165287,
+      "continuous_full_token_epochs": 0.46320117639788316,
+      "integer_full_token_epochs_seed7": 0.46277975150053446,
+      "block_counts": [
+        170,
+        187,
+        347
+      ]
+    },
+    {
+      "cell": "c38q0",
+      "continuous_sequence_budget": 6319738.4247377245,
+      "full_block_sequences": 6315988,
+      "exact_sequence_budget_seed7": 6316021,
+      "exact_sequence_budget_seed8": 6316019,
+      "continuous_full_token_epochs": 0.3549443726448188,
+      "integer_full_token_epochs_seed7": 0.3547355856820197,
+      "block_counts": [
+        101,
+        59,
+        59
+      ]
+    },
+    {
+      "cell": "c38q1",
+      "continuous_sequence_budget": 24605007.397087235,
+      "full_block_sequences": 24581250,
+      "exact_sequence_budget_seed7": 24581433,
+      "exact_sequence_budget_seed8": 24581407,
+      "continuous_full_token_epochs": 0.5796223092014358,
+      "integer_full_token_epochs_seed7": 0.5790669650693566,
+      "block_counts": [
+        272,
+        253,
+        336
+      ]
+    },
+    {
+      "cell": "c38q2",
+      "continuous_sequence_budget": 79535095.48727645,
+      "full_block_sequences": 79530730,
+      "exact_sequence_budget_seed7": 79531134,
+      "exact_sequence_budget_seed8": 79531154,
+      "continuous_full_token_epochs": 0.9879688993283491,
+      "integer_full_token_epochs_seed7": 0.9879196905331594,
+      "block_counts": [
+        871,
+        948,
+        761
+      ]
+    },
+    {
+      "cell": "c38q3",
+      "continuous_sequence_budget": 38657069.29541933,
+      "full_block_sequences": 38648492,
+      "exact_sequence_budget_seed7": 38648586,
+      "exact_sequence_budget_seed8": 38648574,
+      "continuous_full_token_epochs": 0.41881156974870654,
+      "integer_full_token_epochs_seed7": 0.41871966153279755,
+      "block_counts": [
+        1061,
+        199,
+        172
+      ]
+    },
+    {
+      "cell": "c38q4",
+      "continuous_sequence_budget": 51055317.77445802,
+      "full_block_sequences": 51043374,
+      "exact_sequence_budget_seed7": 51043628,
+      "exact_sequence_budget_seed8": 51043623,
+      "continuous_full_token_epochs": 0.7597625670631587,
+      "integer_full_token_epochs_seed7": 0.7595886096099929,
+      "block_counts": [
+        1071,
+        342,
+        477
+      ]
+    },
+    {
+      "cell": "c39q0",
+      "continuous_sequence_budget": 926041.3491238253,
+      "full_block_sequences": 906594,
+      "exact_sequence_budget_seed7": 906599,
+      "exact_sequence_budget_seed8": 906601,
+      "continuous_full_token_epochs": 1.022609799895795,
+      "integer_full_token_epochs_seed7": 1.0011399845729367,
+      "block_counts": [
+        15,
+        8,
+        9
+      ]
+    },
+    {
+      "cell": "c39q1",
+      "continuous_sequence_budget": 7501490.910840611,
+      "full_block_sequences": 7486548,
+      "exact_sequence_budget_seed7": 7486571,
+      "exact_sequence_budget_seed8": 7486568,
+      "continuous_full_token_epochs": 0.6790472321500526,
+      "integer_full_token_epochs_seed7": 0.6776966574068903,
+      "block_counts": [
+        190,
+        40,
+        51
+      ]
+    },
+    {
+      "cell": "c39q2",
+      "continuous_sequence_budget": 46201276.40334967,
+      "full_block_sequences": 46177386,
+      "exact_sequence_budget_seed7": 46177516,
+      "exact_sequence_budget_seed8": 46177508,
+      "continuous_full_token_epochs": 0.8157271061104883,
+      "integer_full_token_epochs_seed7": 0.8153075937815379,
+      "block_counts": [
+        966,
+        383,
+        243
+      ]
+    },
+    {
+      "cell": "c39q3",
+      "continuous_sequence_budget": 33335876.775147963,
+      "full_block_sequences": 33327244,
+      "exact_sequence_budget_seed7": 33327386,
+      "exact_sequence_budget_seed8": 33327391,
+      "continuous_full_token_epochs": 1.3509766342562266,
+      "integer_full_token_epochs_seed7": 1.3506325353471447,
+      "block_counts": [
+        475,
+        357,
+        272
+      ]
+    },
+    {
+      "cell": "c39q4",
+      "continuous_sequence_budget": 17443388.005834755,
+      "full_block_sequences": 17436242,
+      "exact_sequence_budget_seed7": 17436312,
+      "exact_sequence_budget_seed8": 17436299,
+      "continuous_full_token_epochs": 0.7204912996258395,
+      "integer_full_token_epochs_seed7": 0.7201990283859669,
+      "block_counts": [
+        455,
+        88,
+        115
+      ]
+    }
+  ],
+  "largest_integer_full_token_epoch_cell": "c13q0",
+  "largest_integer_full_token_epochs_seed7": 6.727990300424132,
+  "largest_continuous_epoch_cell": "c27q0",
+  "largest_continuous_epochs": 6.740831025867672,
+  "total_logical_sequences": 4395787264,
+  "explicit_substitutions": [
+    "Original quota/ID/permutation functions, not full MixtureDataset or DataLoader",
+    "Declared 200-key insertion order; actual Hero dataset order unknown",
+    "Two artificial keys, no production data seed attribution",
+    "Python/NumPy int64 external accumulation avoids source int32 overflow; original per-block quota dtype kept",
+    "Full sequence length multiplication is nominal token mass; no documents, masks, cached contents or effective loss targets"
+  ],
+  "actual_Hero_dataset_key_order": null,
+  "actual_Hero_logical_assignment_replay": null,
+  "actual_Hero_token_exposure": null,
+  "actual_Hero_loss_effect": null,
+  "actual_GPU_execution": null
+}

@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1539,
+  "checks_passed": 1543,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -131,7 +131,8 @@
     "V80 fifteen original route/mask/portable combine CPU checks; retained mass and normalization gradients, no production/GPU attribution",
     "V81 seventeen same-head router and actual portable expert CPU checks; nine positive-weight precision controls plus accepted-zero boundary, no optimizer/GPU/production claim",
     "V82 thirteen original host runtime helper/static configuration checks; seven fresh sources and exact prior preservation, production deployment/environment/GPU unknown",
-    "V83 thirteen original host launcher/forwarding/metadata guard checks plus independent downstream augmentation; no child/plugin/GPU execution"
+    "V83 thirteen original host launcher/forwarding/metadata guard checks plus independent downstream augmentation; no child/plugin/GPU execution",
+    "V84 seven native symptom routes bind ten prior result records; curated navigation/control plans, no new training or comprehension results"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

@@ -1,0 +1,20 @@
+{
+  "version": "V84",
+  "observed_utc": "2026-10-06T22:15:50.148560+00:00",
+  "surface": "Codex in-app browser desktop",
+  "url": "http://127.0.0.1:8844/#synthesis-guide",
+  "checks": [
+    "seven native symptom summaries present",
+    "loss route expands and displays control/decision/scope",
+    "loss route collapses",
+    "kernel route expands and displays control/decision/scope",
+    "kernel chapter link navigates to recent-moe-guide",
+    "browser back returns to synthesis with seven routes"
+  ],
+  "screenshot": "assets/diagnostic-routes-browser-v84.jpg",
+  "screenshot_sha256": "1913c60072973b8db8f7fac2679b3cd96e80df66f2b471ed0b6842e5e2d31d2d",
+  "index_sha256": "26b805b2f50cff646bb6ad4fc8345f51491319ed63632098f302b228b7e18157",
+  "actual_mobile_rendering": null,
+  "actual_standalone_browser_rendering": null,
+  "actual_reader_comprehension_measurement": null
+}

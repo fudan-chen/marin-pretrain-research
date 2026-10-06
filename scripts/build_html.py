@@ -104,6 +104,20 @@ for slug,label,file in chapters:
         october['style']='display:block;width:100%;height:auto'
         result += '<figure class="scientific-figure">'+str(october)+'<figcaption>209999→212999的实测端点差。红为上升，蓝为下降；不是配比因果效应。</figcaption></figure>'
     soup=BeautifulSoup(result,'html.parser')
+    routes_placeholder=soup.select_one('#diagnostic-routes-placeholder')
+    if routes_placeholder is not None:
+        route_data=json.loads((ROOT/'analysis/diagnostic_routes.json').read_text())
+        route_parts=['<div class="diagnostic-routes" id="diagnostic-routes">']
+        for route in route_data['routes']:
+            route_parts.append('<details id="diagnostic-route-'+html.escape(route['id'],quote=True)+'"><summary>'+html.escape(route['symptom'])+'</summary><div class="route-body">')
+            for label,key in [('先查什么','first'),('源码说明','mechanism'),('最小对照','control'),('怎样决定下一步','decision')]:
+                route_parts.append('<p><strong>'+label+'：</strong>'+html.escape(route[key])+'</p>')
+            route_parts.append('<p class="route-evidence"><a href="'+html.escape(route['chapter'],quote=True)+'">进入完整解释</a>')
+            for e in route['evidence']:
+                route_parts.append('<a href="'+html.escape(e['file'],quote=True)+'">结果记录（'+str(e['checks_passed'])+'项局部检查）</a>')
+            route_parts.append('</p><p class="route-boundary"><strong>证据范围：</strong>'+html.escape(route['limit'])+'</p></div></details>')
+        route_parts.append('</div>')
+        routes_placeholder.replace_with(BeautifulSoup(''.join(route_parts),'html.parser'))
     live_placeholder=soup.select_one('#live-observation-placeholder')
     if live_placeholder is not None:
         live_svg=BeautifulSoup((ROOT/'assets/live_2026_10_06.svg').read_text(),'html.parser').svg
@@ -259,6 +273,7 @@ mapping={'CSS':(ROOT/'assets/report.css').read_text()+'\n'+(ROOT/'assets/workben
          'WORKBENCH':(ROOT/'assets/workbench.html').read_text(),'WORKBENCHDATA':data(workbench),'RUBRICDATA':data(rubric),'REVIEWCORE':(ROOT/'assets/review-core.js').read_text(),'WORKBENCHJS':(ROOT/'assets/workbench.js').read_text(),
          'PLANNER':(ROOT/'assets/planner.html').read_text(),'PLANEXAMPLE':data(json.loads((ROOT/'analysis/planner_example.json').read_text())),
          'PLANNERCORE':(ROOT/'assets/planner-core.js').read_text(),'PLANNERUI':(ROOT/'assets/planner-ui.js').read_text()}
+mapping['CSS']+='\n'+(ROOT/'assets/diagnostic-routes.css').read_text()
 mapping['CSS']+='\n'+(ROOT/'assets/decision.css').read_text()
 mapping.update({'DECISIONLAB':(ROOT/'assets/decision.html').read_text(),'DECISIONDATA':data(json.loads((ROOT/'analysis/decision_data.json').read_text())),
                 'DECISIONCORE':(ROOT/'assets/decision-core.js').read_text(),'DECISIONUI':(ROOT/'assets/decision-ui.js').read_text()})

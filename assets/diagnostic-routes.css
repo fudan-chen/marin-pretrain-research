@@ -1,0 +1,10 @@
+.diagnostic-routes{display:grid;gap:12px;margin:22px 0}
+.diagnostic-routes details{border:1px solid var(--line);border-left:4px solid #176c76;border-radius:5px;background:#fff;padding:0}
+.diagnostic-routes summary{padding:14px 18px;cursor:pointer;line-height:1.6;font-size:16px}
+.diagnostic-routes summary:focus-visible{outline:3px solid #73b7e9;outline-offset:3px}
+.diagnostic-routes .route-body{padding:0 18px 16px}
+.diagnostic-routes .route-body p{margin:10px 0;font-size:15px}
+.diagnostic-routes .route-evidence{font-size:13px!important;color:var(--muted)}
+.diagnostic-routes .route-evidence a{display:inline-block;margin-right:14px}
+.diagnostic-routes .route-boundary{border-top:1px solid var(--line);padding-top:10px;color:var(--muted)}
+@media(max-width:600px){.diagnostic-routes summary{font-size:15px;padding:12px}.diagnostic-routes .route-body{padding:0 12px 14px}}

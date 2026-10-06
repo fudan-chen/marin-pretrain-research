@@ -1,0 +1,142 @@
+{
+  "version": "V84",
+  "scope": "Curated reading/diagnostic routes from prior source-bound controls; not automatic root-cause classification or new training results",
+  "routes": [
+    {
+      "id": "loss",
+      "symptom": "换配比后，训练 loss 立刻下降",
+      "first": "先确认目标口径与输入，而不是先给配比排优劣。",
+      "mechanism": "原next_token_loss与输出z-loss路径说明：预测不变，输入分布或有效目标质量改变也会改变日志；共同logit平移还可只改变输出z-loss。",
+      "evidence": [
+        {
+          "file": "analysis/loss_composition_cpu.json",
+          "checks_passed": 7,
+          "sha256": "a1e818b7a99c9c19dfef3411fbead08f9982ba303baf0c40c9bbc08ad84af155"
+        },
+        {
+          "file": "analysis/loss_cross_replay_cpu.json",
+          "checks_passed": 18,
+          "sha256": "e50037cdcc3d46908351003cf8f96c33078804a0b3bca4cfa197f650bb90782e"
+        }
+      ],
+      "control": "在两个checkpoint上分别评分同一份旧输入与新输入，保留四格N/T；纯CE和含z-loss目标分开。真实样本与分母不一致时，先修对齐。",
+      "decision": "四格齐全，只能分解评分差异；要判断训练收益，还需冻结评估和独立续训确认。缺格时保留未知。",
+      "limit": "已有四格结果是人工CPU控制，不是Hero配比因果实验。",
+      "chapter": "LOSS_TRIAGE_ZH.md"
+    },
+    {
+      "id": "nan",
+      "symptom": "loss 有限，但梯度或下一状态非有限",
+      "first": "查看有效分母与反向，不只检查forward loss。",
+      "mechanism": "原微批方法平均各chunk均值；空目标chunk可forward为0而反向NaN。给已形成的均值乘回目标质量，不一定能消除内部NaN。",
+      "evidence": [
+        {
+          "file": "analysis/microbatch_loss_cpu.json",
+          "checks_passed": 10,
+          "sha256": "569851ef444ace84fa73617da0aaa887a7d778f89208beaafd4ea0efd3e038e7"
+        }
+      ],
+      "control": "保留每个chunk的N、T及累积前后梯度；对比sum-first与mean-of-means，覆盖T=0和正的小数质量。检查更新后的state及保存交接。",
+      "decision": "先修分母/空chunk处理并重新核对梯度；若改了目标定义，按训练函数变更评审。有限loss不允许直接进入保存验收。",
+      "limit": "CPU控制已显示差异，未证明Hero生产走了此微批路径或发生同类事故。",
+      "chapter": "GRADIENT_ACCUMULATION_ZH.md"
+    },
+    {
+      "id": "drop",
+      "symptom": "总 drop rate 没变，模型表现却变了",
+      "first": "把接受身份与保留权重质量接到每个样本。",
+      "mechanism": "原裁剪有expert/sender前缀优先；chunk局部容量不能跨块借用。被丢的已选logit仍可能通过裁剪前归一化分母影响router梯度。",
+      "evidence": [
+        {
+          "file": "analysis/receiver_layout_cpu.json",
+          "checks_passed": 10,
+          "sha256": "e6bd05b94b454babda3e1f609608c480b3159fd7b2e3274030bb02a3023d16d7"
+        },
+        {
+          "file": "analysis/post_clip_router_cpu.json",
+          "checks_passed": 15,
+          "sha256": "ca70787fd522bb75f09fe321ee815a5b61904c53834f1a813e5b599038f94ccb"
+        }
+      ],
+      "control": "同checkpoint、同样本比selected/accepted身份、每chunk需求与容量、保留权重总和、输出和router梯度；按真实领域ID分组，不能把expert ID当领域。",
+      "decision": "接受语义改变时，属于完整训练行为变更；不能只凭总drop率或吞吐批准等价。领域影响需独立固定评估。",
+      "limit": "已有布局与权重控制均为合成CPU/host重放，没有生产领域drop记录。",
+      "chapter": "ROUTING_DROPS_ZH.md"
+    },
+    {
+      "id": "kernel",
+      "symptom": "换 kernel 后，前向一致且所有梯度有限",
+      "first": "逐段比较权重梯度、router梯度和同状态更新。",
+      "mechanism": "原EXPERT_SIDE从已舍入的weighted cotangent恢复dweight；真实portable MLP控制出现向上舍入、归零及BF16非下溢差异。",
+      "evidence": [
+        {
+          "file": "analysis/portable_router_precision_cpu.json",
+          "checks_passed": 17,
+          "sha256": "73b8039addbc55d0a51085ae4b050cb1f0720cf5dcdbd70804f89bf56e4e8942"
+        }
+      ],
+      "control": "绑定backend、dtype、loss scale、接受mask与输出；分别对照dweight、router/专家梯度，再从同optimizer moment/count比较更新，并做长窗同步与恢复。",
+      "decision": "前向一致只通过前向检查；不得把局部梯度误差的大小直接换成能力或稳定性结论。真实更新/长窗缺失时继续验证。",
+      "limit": "本控制没有真实GPU、语言loss、完整分布式backward或优化器更新。",
+      "chapter": "RECENT_MOE_CHANGES_ZH.md"
+    },
+    {
+      "id": "eval",
+      "symptom": "macro 变坏、micro 变好，或者一个域跳动很大",
+      "first": "对齐模型视图、评估内容、标签布局与逐批分母。",
+      "mechanism": "原评估器根macro可含空域初始零，子级macro过滤空域；BPB的分批聚合和零权重NaN也有单独边界。",
+      "evidence": [
+        {
+          "file": "analysis/tagged_eval_accumulator_cpu.json",
+          "checks_passed": 12,
+          "sha256": "0752313863d57c693c744ae55a0c5c64f3d0def49c23cc851afd0a015a541644"
+        }
+      ],
+      "control": "保留逐批目标、权重、字节、tag layout及N/T/B；先在同checkpoint重复评分，再看逐域贡献。总分变化与特定训练桶之间不作直接因果映射。",
+      "decision": "口径/输入不齐先重评；口径齐再讨论真实模型差异。平均改善不能替代保底域与冻结后的确认。",
+      "limit": "这些原函数控制不能证明某次Hero公开曲线受评估bug影响。",
+      "chapter": "EVAL_METRICS_ZH.md"
+    },
+    {
+      "id": "restore",
+      "symptom": "日志显示 Loaded 成功，但恢复后轨迹不同",
+      "first": "核对实际候选、状态字段和共同的下一输入。",
+      "mechanism": "原恢复政策在缺manifest叶子时可能回退旧候选；manifest列出的实际数组缺失可直接报错。master/compute迁移与pending路由状态影响后续路径。",
+      "evidence": [
+        {
+          "file": "analysis/grug_state_restore_real_io.json",
+          "checks_passed": 9,
+          "sha256": "ef73c255055246888b56ed0a0f577f081a7d710b0c4807d5f9cea91897f26895"
+        }
+      ],
+      "control": "把未中断轨迹与恢复轨迹放在同输入/key上对比多步；逐项查params/master、optimizer、EMA、pending beta、step与loader cursor，保存实际路径和缺失项。",
+      "decision": "只读回数组不够；状态或下一输入不一致，先解决接续身份，暂不解释配比/优化器收益。",
+      "limit": "已有真实本地数组IO控制，不是完整Hero模型、跨rank保存或生产状态清单。",
+      "chapter": "TRAIN_STATE_ZH.md"
+    },
+    {
+      "id": "runtime",
+      "symptom": "改了配置，但速度或内存结果不符合预期",
+      "first": "确认参数传到任务且在backend初始化前生效。",
+      "mechanism": "原defaults保留部分继承值并强制部分安全flags；dispatcher过滤环境，下游再补值；PJRT guard只检查版本前缀。",
+      "evidence": [
+        {
+          "file": "analysis/runtime_defaults.json",
+          "checks_passed": 13,
+          "sha256": "9c86e490b90acf5eef09b9f99dadf8df059178e29a9d916c22cc642a0ccb135a"
+        },
+        {
+          "file": "analysis/launch_binding.json",
+          "checks_passed": 13,
+          "sha256": "cacb7a61c94e3e7d0bdd91e380f3c150fd36a131c809c198dac61cc31d4b1fc5"
+        }
+      ],
+      "control": "保存父helper前、dispatch过滤/resolve后、child初始化前、backend加载后四份记录；检查重复flags、硬件补值、实际wheel/插件路径和SHA。",
+      "decision": "实际生效环境和加载对象未知时，不能把性能差异归因于配置请求。不要把GIT_COMMIT字符串当源码树证明。",
+      "limit": "已有隔离host检查；未创建任务、运行完整resolver、加载plugin或初始化GPU。",
+      "chapter": "ROUTING_DROPS_ZH.md"
+    }
+  ],
+  "actual_user_training_replay": null,
+  "actual_reader_comprehension_measurement": null
+}

@@ -469,3 +469,6 @@ V82（2026-10-07）：公开PR三项与运行issue59评论刷新；新增固定h
 
 
 V83（2026-10-07）：新增固定head dispatcher/training/run_environment三份完整源码；原launcher/forwarding/PJRT guard及独立metadata/watchdog片段13项host检查。未创建任务、加载plugin或运行完整resolver，旧486份非bookkeeping来源保持。
+
+
+V84（2026-10-07）：综合首页增加七个可展开症状入口，将已有源码机制、结果文件、下一实验与判断边界对应；保留所有原表和专题。入口与十份既有结果SHA绑定，无新数值训练实验或理解效果证明。

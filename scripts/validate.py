@@ -1045,6 +1045,13 @@ ok('V83 lexical PJRT guard controls not loaded plugin evidence',len(lb['guard_ca
 ok('V83 three full modules retain prior 486 non-bookkeeping source bytes',len(lba['records'])==3 and lba['prior_bytes_preserved']==486 and all(hashlib.sha256((S/x['file']).read_bytes()).hexdigest()==x['sha256'] for x in lba['records']) and all(hashlib.sha256((S/x['file']).read_bytes()).hexdigest()==x['sha256'] for x in lba['prior_integrity_manifest']['files'] if x['file']!='source_manifest.json'))
 report['highlights']=[x.replace('487 source archive checksums valid','490 source archive checksums valid') for x in report['highlights']]
 report['highlights']+=['V83 thirteen original host launcher/forwarding/metadata guard checks plus independent downstream augmentation; no child/plugin/GPU execution']
+dr=read(A/'diagnostic_routes.json')
+ok('V84 seven curated routes retain actual reader/training unknown',len(dr['routes'])==7 and len({r['id'] for r in dr['routes']})==7 and dr['actual_reader_comprehension_measurement'] is None and dr['actual_user_training_replay'] is None)
+de=[e for r in dr['routes'] for e in r['evidence']]
+ok('V84 ten source-control result records exact and counts matched',len(de)==len({e['file'] for e in de})==10 and all(hashlib.sha256((ROOT/e['file']).read_bytes()).hexdigest()==e['sha256'] and read(ROOT/e['file'])['checks_passed']==e['checks_passed'] for e in de))
+ok('V84 native routes have visible evidence scope and all decision fields',len(soup.select('#synthesis-guide #diagnostic-routes details'))==7 and all(len(d.select('summary'))==1 and len(d.select('.route-boundary'))==1 for d in soup.select('#diagnostic-routes details')))
+ok('V84 synthesis historical decision tables intact and chapters linked',len(soup.select('#synthesis-guide table'))==2 and all((ROOT/r['chapter']).exists() for r in dr['routes']))
+report['highlights']+=['V84 seven native symptom routes bind ten prior result records; curated navigation/control plans, no new training or comprehension results']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

@@ -1,0 +1,17 @@
+{
+  "version": "V84",
+  "checks_passed": 9,
+  "checks": [
+    "index.html unique IDs",
+    "index.html seven complete symptom cards",
+    "index.html both historical synthesis tables preserved",
+    "report_standalone.html unique IDs",
+    "report_standalone.html seven complete symptom cards",
+    "report_standalone.html both historical synthesis tables preserved",
+    "490 prior source byte hashes exact",
+    "Fresh V84 global validation",
+    "Actual desktop browser receipt binds tested page and screenshot"
+  ],
+  "actual_browser_receipt": "analysis/browser_validation_v84.json",
+  "actual_reader_comprehension_measurement": null
+}

@@ -1,0 +1,15 @@
+{
+  "version": "V83",
+  "checks_passed": 8,
+  "checks": [
+    "index.html unique IDs",
+    "index.html launcher evidence boundaries visible",
+    "index.html old tables retained plus one forwarding table",
+    "report_standalone.html unique IDs",
+    "report_standalone.html launcher evidence boundaries visible",
+    "report_standalone.html old tables retained plus one forwarding table",
+    "490 source byte hashes exact",
+    "Fresh global V83 checks"
+  ],
+  "actual_browser_rendering": null
+}

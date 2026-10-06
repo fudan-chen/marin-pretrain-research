@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1535,
+  "checks_passed": 1539,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -18,7 +18,7 @@
     "four new config contrasts / six step393 resume windows",
     "seventeen embedded figures",
     "all relative HTML links valid",
-    "487 source archive checksums valid",
+    "490 source archive checksums valid",
     "18 authored rubrics / seven claim-stage decisions",
     "five interpretation cases / four metrics with switchable baselines",
     "17 figure-reading entries / five preserved collapsed tables",
@@ -130,7 +130,8 @@
     "V79 ten original JAX clip/offset/chunk-plan checks with host identity replay and measured capacity figure; local capacity and numbering policy, no collective/GPU/domain-bias proof",
     "V80 fifteen original route/mask/portable combine CPU checks; retained mass and normalization gradients, no production/GPU attribution",
     "V81 seventeen same-head router and actual portable expert CPU checks; nine positive-weight precision controls plus accepted-zero boundary, no optimizer/GPU/production claim",
-    "V82 thirteen original host runtime helper/static configuration checks; seven fresh sources and exact prior preservation, production deployment/environment/GPU unknown"
+    "V82 thirteen original host runtime helper/static configuration checks; seven fresh sources and exact prior preservation, production deployment/environment/GPU unknown",
+    "V83 thirteen original host launcher/forwarding/metadata guard checks plus independent downstream augmentation; no child/plugin/GPU execution"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

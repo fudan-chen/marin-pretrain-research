@@ -237,3 +237,7 @@ portable-router-precision-cpu:
 .PHONY: runtime-defaults-probe
 runtime-defaults-probe:
 	$(PYTHON) scripts/probe_runtime_defaults.py
+
+.PHONY: launch-binding-probe
+launch-binding-probe:
+	$(PYTHON) scripts/probe_launch_binding.py

@@ -238,3 +238,41 @@ BF16控制的两个乘积都非零，却仍出现一个assignment的dweight舍�
 实验需分别说明通用默认EXACT、Hero构造选择、有效EP路径、实际专家backend，以及真实运行是否使用该head。mode名不能代替portable/QuACK的存储合同，remat_mode名也不能代替最终memory budget与scheduler设置。若遇到继承冲突，应明确决定保留用户override还是改启动环境；本报告没有更改上游行为，也不建议把全部override强制抹掉。
 
 本轮新增7份来源，旧479份非bookkeeping来源字节保持不变，来源归档现为487份；[获取台账](analysis/runtime_defaults_acquisition.json)记录每条URL、检索时刻和SHA。真实生产部署、最终运行环境、XLA重复参数规则、HBM与GPU结果仍未知。复现：`make runtime-defaults-probe`。
+
+
+## V83：父进程环境、提交环境和加载的 PJRT 是三份证据
+
+V82执行了默认helper，却没有证明那些值进入子任务。本轮取得同一固定head的完整[dispatch.py](https://github.com/marin-community/marin/blob/b65be4c9550c5097f0a3add08933531a1c24d534/experiments/grug/dispatch.py)、training.py与run_environment.py，继续沿启动链看筛选和补值。执行原run_grug、原转发过滤、原PJRT版本guard；作业提交在调用处截断，没有创建任务或初始化backend。另独立执行下游metadata/watchdog helper与两条TensorStore default语句，未运行完整硬件环境合并。13项检查通过，[结果](analysis/launch_binding.json)与[探针](scripts/probe_launch_binding.py)分别记录执行及替代范围。
+
+### 环境不是整个复制到任务
+
+原run_grug先调用运行defaults，再调用dispatch_grug_training_run。原dispatcher将_forwarded_env_vars结果交给resolve_training_env；过滤条件只包含XLA_、LIBTPU_INIT_ARGS、NCCL_、JAX_、MALLOC_前缀和LD_PRELOAD，显式排除JAX_PLATFORMS。源码注释说明dispatcher本身CPU-only，这个值不能泄露到加速器任务。
+
+人工父环境含JAX_PLATFORMS=cpu、slop=85、NCCL_DEBUG=INFO及下表四项。原launcher执行到拦截点时，已补fraction=0.78、强制overlap=1，继承slop=85仍保留；转发过滤返回八个键。改变父字典NCCL_DEBUG为WARN后，返回的快照仍为INFO，说明它是字典快照，而非后续修改自动同步的视图。
+
+|人工父进程键|原转发过滤是否保留|本轮追查的下游范围|
+|---|---|---|
+|RAGGED_DOT_IMPL=xla|否|未证明硬件配置或其他入口是否补回；不能由父环境推断portable wrapper最终选择|
+|TENSORSTORE_CURL_LOW_SPEED_TIME_SECONDS=99|否|独立执行原default语句，在无硬件补值控制中得到60；不是实际子任务结果|
+|CUBLAS_WORKSPACE_CONFIG=:4096:8|否|完整resolver/hardware merge未执行，实际子进程值未知|
+|GIT_COMMIT=synthetic-parent-commit|否|原add_run_env_variables重新从父os.environ读取，独立控制中补回相同值|
+
+最后一行很重要：某键被forwarding过滤，不能直接宣称它最终丢失。完整resolver随后合并硬件defaults、运行metadata、GPU watchdog与cache配置。独立调用原metadata helper会补回父GIT_COMMIT；原GPU watchdog在本控制追加NCCL timeout=600并保留已经转发的NCCL_DEBUG=INFO。TensorStore的99→60则是在没有硬件env补值的独立片段执行中出现，仍不能跨越未运行的合并阶段说真实任务一定为60。
+
+此处也有两个来源身份问题。GIT_COMMIT日志字段可以来自父环境已有字符串，不能单独证明子任务加载的源码树。RAGGED_DOT_IMPL是portable wrapper读取的backend override，父进程设置它不自动等于任务使用它；应记录子进程实值和实际被选backend。源码中的输入合同与最终加载路径都要绑定执行证据。
+
+### PJRT guard到底验了什么
+
+原verify_ragged_pjrt调用importlib.metadata.version('jax-cuda13-pjrt')，检查installed.startswith(jax.__version__+'+marin.')。缺包抛RuntimeError，未补丁的版本或JAX版本不匹配也拒绝。在人工jax.__version__='0.7.2'的metadata替代控制中，缺包、0.7.2、0.7.1+marin.1均拒绝；0.7.2+marin.1、人工后缀0.7.2+marin.not-an-artifact-proof以及仅前缀0.7.2+marin.均通过。
+
+这些人工字符串没有安装任何wheel。它们显示这是版本前缀guard，不是wheel hash、架构、已加载插件、驱动或设备能力的检测。它的报错提示patched wheel为aarch64-only、专家MLP为SM100-specialized，但函数本身没有调用架构/设备检查；不要把报错说明当成它完成了那项验证。metadata满足约定是启动前筛选的一层，不足以证明某个实际设备执行的是对应补丁。
+
+### 启动顺序能证明到哪里
+
+完整train.py的_run_grug_local在ragged条件下先verify_ragged_pjrt，再trainer.initialize。该顺序由AST静态核对，未调用trainer。文件顶部已import jax；import语句本身既不能证明backend已初始化，也不能证明此前导入的其他模块都没有设备访问。run_grug在父进程设置defaults并提交entrypoint的顺序已执行核对，但本轮没有Fray创建环境、child boot、backend初始化时刻或加载插件记录。
+
+对真实运行，应保存四次快照：父进程helper之前；dispatcher过滤并resolve之后；子进程初始化backend之前；backend启动后实际设备/插件/包路径及artifact SHA。第二份需保留硬件env merge来源，第三份需保留cluster注入变量，第四份才能把包metadata与加载对象对应起来。配置、环境、GIT_COMMIT日志、版本前缀各解决一段问题，单独任何一份都不能证明完整执行身份。
+
+排障时先问“值在何处被筛掉、补回或覆盖”，再问“何时被backend读取”。若只改launcher shell然后比较loss/速度，缺少child快照就无法确认测试的改动真的生效；若只有metadata guard通过，缺少加载对象就无法把表现归因给某个PJRT补丁。本报告没有修改dispatcher白名单，也没有称这些人工控制是Hero历史事故。
+
+新增3份固定head完整模块，旧486份非bookkeeping来源字节保持，来源归档现490份。真实子环境、作业提交、插件加载、设备架构验证与GPU结果仍未知。复现：`make launch-binding-probe`。

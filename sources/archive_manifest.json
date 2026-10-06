@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-06T21:58:06.215162+00:00",
+  "integrity_manifest_created_utc": "2026-10-06T22:03:57.137463+00:00",
   "files": [
     {
       "file": "accumulation_2026_10_07/grad_accum.py",
@@ -1307,6 +1307,27 @@
       "bytes": 70334,
       "sha256": "3a2720215a9ac2e46eb2f7e149ac8738ee6c85b110692ebc3e0bc94edcd96894",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
+    },
+    {
+      "file": "launch_binding_2026_10_07/dispatch.py",
+      "bytes": 3393,
+      "sha256": "2161862eaeeaed07e449fedf7c14d0657ae9143e7c46601ffb09df4dfe03442f",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/experiments/grug/dispatch.py",
+      "retrieved_utc": "2026-10-06T22:02:20.223890+00:00"
+    },
+    {
+      "file": "launch_binding_2026_10_07/run_environment.py",
+      "bytes": 2102,
+      "sha256": "3e1b0cca3563df838b178254f76ace751521e3fb829de22cd40220ffaea41151",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/lib/marin/src/marin/training/run_environment.py",
+      "retrieved_utc": "2026-10-06T22:02:49.426959+00:00"
+    },
+    {
+      "file": "launch_binding_2026_10_07/training.py",
+      "bytes": 25016,
+      "sha256": "7b13e9f212586b71da7890cded68be5a10743ef59625c77e341b1d83a665e9a3",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/lib/marin/src/marin/training/training.py",
+      "retrieved_utc": "2026-10-06T22:02:48.827871+00:00"
     },
     {
       "file": "launch_datakit_moe_mix.py",
@@ -2850,8 +2871,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 221205,
-      "sha256": "613c41e7717e3977fbb6da1cfba791551d025a094de584dd7ac96c01daa79e6c",
+      "bytes": 222501,
+      "sha256": "11a62c8c437d26d0ed9788bb3f2ce3fecc45261625fc17cafa5ad6c53dcc1abd",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

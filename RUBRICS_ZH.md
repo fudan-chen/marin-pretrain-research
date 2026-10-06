@@ -397,3 +397,6 @@ V81执行补充：接受零权重、被丢零权重和正权重但weighted cotan
 
 
 V82执行补充：性能或质量结论须保存helper前后环境原文及flag列表，单列继承override、强制安全flag和重复项。模式名、repo默认或静态构造选择不能替代实际启动环境；JSON解析字典的末项值不能充当XLA parser规则。
+
+
+V83执行补充：保存父helper前、dispatcher过滤/resolve后、child初始化前与backend加载后四份证据。转发阶段缺键不代表最终缺键；metadata前缀通过不证明wheel哈希、加载插件或设备能力；GIT_COMMIT字符串不单独证明代码树。

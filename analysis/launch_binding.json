@@ -1,0 +1,138 @@
+{
+  "scope": "Original launcher, forwarding filter and PJRT metadata guard with explicit stubs.\nNo job submission, child process, plugin load or backend initialization.\n",
+  "checks_passed": 13,
+  "checks": [
+    "Original run applies defaults before intercepted dispatch snapshot",
+    "Dispatcher CPU-only platforms is intentionally excluded",
+    "Runtime prefixes and LD_PRELOAD forwarded exactly",
+    "Four parent controls absent at forwarding stage",
+    "Returned forwarding dictionary is a snapshot, not a live environment view",
+    "Missing/unpatched/version-mismatched metadata rejected",
+    "Matching prefix including empty/artificial suffix passes lexical guard",
+    "Child entrypoint statically guards ragged before trainer.initialize",
+    "Three acquired full modules preserve 486 prior non-bookkeeping source bytes",
+    "Full downstream resolver visibly augments filtered environment",
+    "Original metadata helper can restore parent GIT_COMMIT after whitelist omission",
+    "Original resolver TensorStore defaults differ from omitted parent override",
+    "Original GPU watchdog appends timeout while preserving forwarded NCCL_DEBUG"
+  ],
+  "parent_environment_after_helper": {
+    "JAX_PLATFORMS": "cpu",
+    "JAX_ENABLE_PGLE": "false",
+    "XLA_FLAGS": "--xla_gpu_memory_limit_slop_factor=85 --xla_gpu_enable_latency_hiding_scheduler=true --xla_gpu_enable_command_buffer= --xla_gpu_enable_host_memory_offloading=true --xla_gpu_experimental_parallel_collective_overlap_limit=1 --xla_gpu_experimental_ragged_all_to_all_use_device_kernel=true --xla_enable_nccl_symmetric_buffers_for_collectives=raggedalltoall",
+    "RAGGED_DOT_IMPL": "xla",
+    "TENSORSTORE_CURL_LOW_SPEED_TIME_SECONDS": "99",
+    "CUBLAS_WORKSPACE_CONFIG": ":4096:8",
+    "GIT_COMMIT": "synthetic-parent-commit",
+    "NCCL_DEBUG": "WARN",
+    "LD_PRELOAD": "synthetic-library",
+    "MALLOC_CONF": "synthetic-config",
+    "XLA_PJRT_GPU_HOST_MEMORY_LIMIT_GB": "192",
+    "XLA_PYTHON_CLIENT_ALLOCATOR": "cuda_async",
+    "XLA_PYTHON_CLIENT_MEM_FRACTION": "0.78"
+  },
+  "dispatch_capture": {
+    "kwargs_keys": [
+      "config",
+      "local_entrypoint",
+      "max_retries_failure",
+      "max_task_failures",
+      "processes_per_task",
+      "resources",
+      "run_id"
+    ],
+    "forwarded": {
+      "JAX_ENABLE_PGLE": "false",
+      "XLA_FLAGS": "--xla_gpu_memory_limit_slop_factor=85 --xla_gpu_enable_latency_hiding_scheduler=true --xla_gpu_enable_command_buffer= --xla_gpu_enable_host_memory_offloading=true --xla_gpu_experimental_parallel_collective_overlap_limit=1 --xla_gpu_experimental_ragged_all_to_all_use_device_kernel=true --xla_enable_nccl_symmetric_buffers_for_collectives=raggedalltoall",
+      "NCCL_DEBUG": "INFO",
+      "LD_PRELOAD": "synthetic-library",
+      "MALLOC_CONF": "synthetic-config",
+      "XLA_PJRT_GPU_HOST_MEMORY_LIMIT_GB": "192",
+      "XLA_PYTHON_CLIENT_ALLOCATOR": "cuda_async",
+      "XLA_PYTHON_CLIENT_MEM_FRACTION": "0.78"
+    }
+  },
+  "independently_augmented_environment": {
+    "JAX_ENABLE_PGLE": "false",
+    "XLA_FLAGS": "--xla_gpu_memory_limit_slop_factor=85 --xla_gpu_enable_latency_hiding_scheduler=true --xla_gpu_enable_command_buffer= --xla_gpu_enable_host_memory_offloading=true --xla_gpu_experimental_parallel_collective_overlap_limit=1 --xla_gpu_experimental_ragged_all_to_all_use_device_kernel=true --xla_enable_nccl_symmetric_buffers_for_collectives=raggedalltoall --xla_gpu_nccl_termination_timeout_seconds=600",
+    "NCCL_DEBUG": "INFO",
+    "LD_PRELOAD": "synthetic-library",
+    "MALLOC_CONF": "synthetic-config",
+    "XLA_PJRT_GPU_HOST_MEMORY_LIMIT_GB": "192",
+    "XLA_PYTHON_CLIENT_ALLOCATOR": "cuda_async",
+    "XLA_PYTHON_CLIENT_MEM_FRACTION": "0.78",
+    "GIT_COMMIT": "synthetic-parent-commit",
+    "HF_DATASETS_TRUST_REMOTE_CODE": "1",
+    "HF_ALLOW_CODE_EVAL": "1",
+    "TOKENIZERS_PARALLELISM": "false",
+    "TPU_MIN_LOG_LEVEL": "2",
+    "TPU_STDERR_LOG_LEVEL": "2",
+    "TENSORSTORE_CURL_LOW_SPEED_TIME_SECONDS": "60",
+    "TENSORSTORE_CURL_LOW_SPEED_LIMIT_BYTES": "125000"
+  },
+  "omitted_at_forwarding_stage": [
+    "RAGGED_DOT_IMPL",
+    "TENSORSTORE_CURL_LOW_SPEED_TIME_SECONDS",
+    "CUBLAS_WORKSPACE_CONFIG",
+    "GIT_COMMIT"
+  ],
+  "guard_cases": [
+    {
+      "installed_version": null,
+      "passed": false,
+      "error": "jax-cuda13-pjrt is not installed, so this process has no GPU PJRT plugin at all.",
+      "actual_plugin_loaded": null
+    },
+    {
+      "installed_version": "0.7.2",
+      "passed": false,
+      "error": "ragged_all_to_all needs Marin's patched jax-cuda13-pjrt (0.7.2+marin.*), found 0.7.2. The patched wheel is aarch64-only and the expert MLP is SM100-specialized; run the ragged transport on GB200.",
+      "actual_plugin_loaded": null
+    },
+    {
+      "installed_version": "0.7.1+marin.1",
+      "passed": false,
+      "error": "ragged_all_to_all needs Marin's patched jax-cuda13-pjrt (0.7.2+marin.*), found 0.7.1+marin.1. The patched wheel is aarch64-only and the expert MLP is SM100-specialized; run the ragged transport on GB200.",
+      "actual_plugin_loaded": null
+    },
+    {
+      "installed_version": "0.7.2+marin.1",
+      "passed": true,
+      "error": null,
+      "actual_plugin_loaded": null
+    },
+    {
+      "installed_version": "0.7.2+marin.not-an-artifact-proof",
+      "passed": true,
+      "error": null,
+      "actual_plugin_loaded": null
+    },
+    {
+      "installed_version": "0.7.2+marin.",
+      "passed": true,
+      "error": null,
+      "actual_plugin_loaded": null
+    }
+  ],
+  "source_sha256": {
+    "sources/runtime_defaults_2026_10_07/train.py": "2c4d648db684d8109ee241e2e69dad3fe42b5e41760f6114706c6134e35a786b",
+    "sources/runtime_defaults_2026_10_07/model.py": "bce3dffcf78b25d83671c89ff084edd593505f5d61d94df1e40ac1bd490112bb",
+    "sources/engineering_v77_2026_10_07/current_ep_ragged_all_to_all.py": "aa8331d5d7f4d18c4aef2f401271411539ad637c4e458b3f6a33585d2d3ae9cf",
+    "sources/launch_binding_2026_10_07/dispatch.py": "2161862eaeeaed07e449fedf7c14d0657ae9143e7c46601ffb09df4dfe03442f",
+    "sources/launch_binding_2026_10_07/training.py": "7b13e9f212586b71da7890cded68be5a10743ef59625c77e341b1d83a665e9a3",
+    "sources/launch_binding_2026_10_07/run_environment.py": "3e1b0cca3563df838b178254f76ace751521e3fb829de22cd40220ffaea41151"
+  },
+  "explicit_substitutions": [
+    "os.environ isolated dictionary; no real environment writes",
+    "dispatch intercepted at call site, not Fray submission or full resolver execution",
+    "jax.__version__ synthetic 0.7.2; package metadata provided by controlled stub",
+    "constructor config represented by structural namespace",
+    "downstream metadata/watchdog helpers and two TensorStore statements independently executed; hardware config/merge not run",
+    "child init order inspected statically only"
+  ],
+  "actual_child_environment": null,
+  "actual_job_submission": null,
+  "actual_plugin_loaded": null,
+  "actual_architecture_check": null,
+  "actual_GPU_execution": null
+}

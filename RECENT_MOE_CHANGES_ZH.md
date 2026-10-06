@@ -252,3 +252,6 @@ V81将同一head原router接到实际portable MLP，再比较EXACT与EXPERT_SIDE
 
 
 V82再次取得#9831/#9832/#9833，仍open且未合并；#9833 head不变。完整Hero model/train把通用EXACT默认与Hero ragged的EXPERT_SIDE静态选择对应起来；原runtime helper13项host字典检查显示memory/slop/latency继承值可保留，overlap等则强制覆盖。详见[运行开关的证据链](ROUTING_DROPS_ZH.md)。实际生产部署与GPU仍未知。
+
+
+V83补上dispatch筛选与PJRT guard：父shell参数并非全量转发，下游又可能补值；原guard仅检查JAX匹配的+marin.版本前缀。13项隔离host检查及静态启动顺序，详见[执行身份链](ROUTING_DROPS_ZH.md)。真实child环境、插件加载与GPU未知。

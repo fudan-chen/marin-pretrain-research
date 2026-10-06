@@ -4395,5 +4395,29 @@
     "retrieved_utc": "2026-10-06T21:56:39.486778+00:00",
     "bytes": 65612,
     "sha256": "2c4d648db684d8109ee241e2e69dad3fe42b5e41760f6114706c6134e35a786b"
+  },
+  {
+    "file": "launch_binding_2026_10_07/dispatch.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/experiments/grug/dispatch.py",
+    "revision": "b65be4c9550c5097f0a3add08933531a1c24d534",
+    "retrieved_utc": "2026-10-06T22:02:20.223890+00:00",
+    "bytes": 3393,
+    "sha256": "2161862eaeeaed07e449fedf7c14d0657ae9143e7c46601ffb09df4dfe03442f"
+  },
+  {
+    "file": "launch_binding_2026_10_07/training.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/lib/marin/src/marin/training/training.py",
+    "revision": "b65be4c9550c5097f0a3add08933531a1c24d534",
+    "retrieved_utc": "2026-10-06T22:02:48.827871+00:00",
+    "bytes": 25016,
+    "sha256": "7b13e9f212586b71da7890cded68be5a10743ef59625c77e341b1d83a665e9a3"
+  },
+  {
+    "file": "launch_binding_2026_10_07/run_environment.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/lib/marin/src/marin/training/run_environment.py",
+    "revision": "b65be4c9550c5097f0a3add08933531a1c24d534",
+    "retrieved_utc": "2026-10-06T22:02:49.426959+00:00",
+    "bytes": 2102,
+    "sha256": "3e1b0cca3563df838b178254f76ace751521e3fb829de22cd40220ffaea41151"
   }
 ]

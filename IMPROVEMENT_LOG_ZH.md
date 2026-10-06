@@ -274,3 +274,8 @@ V25把`paloma/bpb`错误命名为macro；它在固定公共源码中来自父级
 ## V43 下一token坐标与覆盖账目
 
 离线导出器此前只绑定给定scoring IDs，不能证明它们是输入后继。新增可选causal_next_token_v1，空白manifest默认启用；18项合成检查通过。泛化接口保留且未验证状态显式输出。连续窗口默认mask的目标数为floor(M/L)*(L-1)，仅适用于单位权重、无额外ignore/padding的声明；实际Hero缓存数量未知。下一步收集真实loss位置、输入及mask，避免把同样错位的两次记录当成正确评分。
+
+
+## V44 打包字段与权重坐标
+
+通用打包器检查文档数量，但逐token字段须额外保证逐文档长度/ID相同。14项原方法/人工存储检查复现同shape错位，人工固定loss的N/T不同；不认定生产bug。最新归档223个component均声明text/pack=None，Hero此声明走连续流。下一步为明确逐token字段添加缓存前置核查，再采集真实各字段segment与变换前后权重。

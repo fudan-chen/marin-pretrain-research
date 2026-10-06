@@ -1,0 +1,169 @@
+{
+  "checks_passed": 14,
+  "checks": [
+    "Matched token-aligned fields retain their document segments",
+    "Original generic packer accepts same row counts with different per-document lengths",
+    "Packed output shapes can match despite field-boundary mismatch",
+    "Original per-field segment ids expose shifted document ownership",
+    "Archived packed text wrapper uses input_ids segments for both fields",
+    "Original padding uses zeros and negative segment ids",
+    "Left keeps prefix while right keeps suffix in all aligned fields",
+    "Raise rejects over-length document during pack planning",
+    "Drop omits long document and retains original document identity",
+    "Segment cap produces two packs before token capacity is filled",
+    "Original packer rejects different numbers of documents",
+    "Original final-position mask does not repair field-boundary mismatch",
+    "Synthetic identical token losses yield different weighted N T",
+    "Latest archived 223 components declare text format and no explicit packing"
+  ],
+  "synthetic_weighted_numerics": {
+    "matched_T": 1.5,
+    "mismatch_T": 2.5,
+    "matched_N": 2.0,
+    "mismatch_N": 11.0
+  },
+  "synthetic_matched": [
+    {
+      "data": {
+        "input_ids": [
+          10,
+          11,
+          12,
+          20
+        ],
+        "loss_weights": [
+          1.0,
+          0.5,
+          0.0,
+          1.0
+        ]
+      },
+      "segments": {
+        "input_ids": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "loss_weights": [
+          0,
+          0,
+          0,
+          1
+        ]
+      }
+    }
+  ],
+  "synthetic_equal_shape_mismatch": [
+    {
+      "data": {
+        "input_ids": [
+          10,
+          11,
+          12,
+          20
+        ],
+        "loss_weights": [
+          1.0,
+          0.5,
+          1.0,
+          0.0
+        ]
+      },
+      "segments": {
+        "input_ids": [
+          0,
+          0,
+          0,
+          1
+        ],
+        "loss_weights": [
+          0,
+          0,
+          1,
+          1
+        ]
+      }
+    }
+  ],
+  "synthetic_left": [
+    {
+      "data": {
+        "input_ids": [
+          10,
+          11,
+          12,
+          13
+        ],
+        "loss_weights": [
+          0.0,
+          0.0,
+          1.0,
+          1.0
+        ]
+      },
+      "segments": {
+        "input_ids": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "loss_weights": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  ],
+  "synthetic_right": [
+    {
+      "data": {
+        "input_ids": [
+          11,
+          12,
+          13,
+          14
+        ],
+        "loss_weights": [
+          0.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      },
+      "segments": {
+        "input_ids": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "loss_weights": [
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  ],
+  "source_sha256": {
+    "sources/packing_2026_10_07/packing.py": "99ea8aa52d7f06f765447312226502bd0f95a93327b3295d25a8ee9dcb5b9812",
+    "sources/deepening_2026_10_04/datasets_production.py": "47d95f41313356831bcc4b8861ecc765cbc04c6e8c32dc2c5a35abd74c619e4d",
+    "sources/boundaries_2026_10_05/examples.py": "199a86abfd0f85eca39e6e73042c05ba56822dc35c26a5ed048dbb2f1299ec49",
+    "sources/live_2026_10_06/meta.json": "4b709c0b6440366aec7fa4ec65e6ff4b9881c3e2201082ffef036ca40547d80a"
+  },
+  "substitutions": [
+    "flat dictionary-only tree map/flatten/broadcast adapters",
+    "NumPy stores with synchronous offset reads and async data copies",
+    "null TensorStore Batch context",
+    "Python3.9 strict zip adapter"
+  ],
+  "declared_components_checked": 223,
+  "actual_Hero_parallel_field_mismatch": null,
+  "actual_TensorStore_reads": null,
+  "actual_GPU_loss": null
+}

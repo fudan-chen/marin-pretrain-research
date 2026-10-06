@@ -1,0 +1,184 @@
+{
+  "scope": "Original evaluator accumulator/result construction on CPU fixture arrays.\nOriginal Equinox state classes; loader/loss, hax JIT/shard/where and mesh adapters explicit.\nNo model forward, production input, GPU or historical execution binding.\n",
+  "checks_passed": 12,
+  "checks": [
+    "Original finite root CE unchanged by repartition",
+    "Original BPB changes under same targets regrouped",
+    "Root macro includes zero-weight declared leaf",
+    "Parent macro filters zero-weight leaf",
+    "Root and parent macro BPB differ by zero leaf",
+    "Root CE clamp differs from positive leaf mean when mass below one",
+    "Fractional byte clamp remains explicit",
+    "Finite all-zero batch preserves preceding finite scalar",
+    "Zero weight times NaN poisons original global CE",
+    "Original safe per-tag CE masks only empty-tag division",
+    "BPB zero-weight update can poison leaf accumulator",
+    "Root CE fractional clamp breaks repartition invariance"
+  ],
+  "observations": {
+    "separate": {
+      "micro_CE": 2.0,
+      "root_macro_CE": 1.0,
+      "parent_macro_CE": 2.0,
+      "parent_micro_CE": 2.0,
+      "micro_BPB": 1.9235934019088745,
+      "root_macro_BPB": 0.9617967009544373,
+      "parent_macro_BPB": 1.9235934019088745,
+      "leaf_CE": {
+        "paloma": 2.0,
+        "paloma/A": 2.0,
+        "paloma/B": 0.0
+      },
+      "leaf_BPB": {
+        "paloma": 1.9235934019088745,
+        "paloma/A": 1.9235934019088745,
+        "paloma/B": 0.0
+      }
+    },
+    "joined": {
+      "micro_CE": 2.0,
+      "root_macro_CE": 1.0,
+      "parent_macro_CE": 2.0,
+      "parent_micro_CE": 2.0,
+      "micro_BPB": 1.4426950216293335,
+      "root_macro_BPB": 0.7213475108146667,
+      "parent_macro_BPB": 1.4426950216293335,
+      "leaf_CE": {
+        "paloma": 2.0,
+        "paloma/A": 2.0,
+        "paloma/B": 0.0
+      },
+      "leaf_BPB": {
+        "paloma": 1.4426950216293335,
+        "paloma/A": 1.4426950216293335,
+        "paloma/B": 0.0
+      }
+    },
+    "fractional": {
+      "micro_CE": 0.5,
+      "root_macro_CE": 1.0,
+      "parent_macro_CE": 2.0,
+      "parent_micro_CE": 2.0,
+      "micro_BPB": 0.7213475108146667,
+      "root_macro_BPB": 0.3606737554073334,
+      "parent_macro_BPB": 0.7213475108146667,
+      "leaf_CE": {
+        "paloma": 2.0,
+        "paloma/A": 2.0,
+        "paloma/B": 0.0
+      },
+      "leaf_BPB": {
+        "paloma": 0.7213475108146667,
+        "paloma/A": 0.7213475108146667,
+        "paloma/B": 0.0
+      }
+    },
+    "finite_zero_after": {
+      "micro_CE": 2.0,
+      "root_macro_CE": 1.0,
+      "parent_macro_CE": 2.0,
+      "parent_micro_CE": 2.0,
+      "micro_BPB": 2.885390043258667,
+      "root_macro_BPB": 1.4426950216293335,
+      "parent_macro_BPB": 2.885390043258667,
+      "leaf_CE": {
+        "paloma": 2.0,
+        "paloma/A": 2.0,
+        "paloma/B": 0.0
+      },
+      "leaf_BPB": {
+        "paloma": 2.885390043258667,
+        "paloma/A": 2.885390043258667,
+        "paloma/B": 0.0
+      }
+    },
+    "nan_zero_after": {
+      "micro_CE": {
+        "nonfinite": "nan"
+      },
+      "root_macro_CE": 1.0,
+      "parent_macro_CE": 2.0,
+      "parent_micro_CE": 2.0,
+      "micro_BPB": {
+        "nonfinite": "nan"
+      },
+      "root_macro_BPB": {
+        "nonfinite": "nan"
+      },
+      "parent_macro_BPB": {
+        "nonfinite": "nan"
+      },
+      "leaf_CE": {
+        "paloma": 2.0,
+        "paloma/A": 2.0,
+        "paloma/B": 0.0
+      },
+      "leaf_BPB": {
+        "paloma": {
+          "nonfinite": "nan"
+        },
+        "paloma/A": {
+          "nonfinite": "nan"
+        },
+        "paloma/B": {
+          "nonfinite": "nan"
+        }
+      }
+    },
+    "root_fractional_repartition": {
+      "micro_CE": 0.5,
+      "root_macro_CE": 1.0,
+      "parent_macro_CE": 2.0,
+      "parent_micro_CE": 2.0,
+      "micro_BPB": 0.7213475108146667,
+      "root_macro_BPB": 0.3606737554073334,
+      "parent_macro_BPB": 0.7213475108146667,
+      "leaf_CE": {
+        "paloma": 2.0,
+        "paloma/A": 2.0,
+        "paloma/B": 0.0
+      },
+      "leaf_BPB": {
+        "paloma": 0.7213475108146667,
+        "paloma/A": 0.7213475108146667,
+        "paloma/B": 0.0
+      }
+    },
+    "root_fractional_joined": {
+      "micro_CE": 1.0,
+      "root_macro_CE": 1.0,
+      "parent_macro_CE": 2.0,
+      "parent_micro_CE": 2.0,
+      "micro_BPB": 1.4426950216293335,
+      "root_macro_BPB": 0.7213475108146667,
+      "parent_macro_BPB": 1.4426950216293335,
+      "leaf_CE": {
+        "paloma": 2.0,
+        "paloma/A": 2.0,
+        "paloma/B": 0.0
+      },
+      "leaf_BPB": {
+        "paloma": 1.4426950216293335,
+        "paloma/A": 1.4426950216293335,
+        "paloma/B": 0.0
+      }
+    }
+  },
+  "runtime": {
+    "jax": "0.7.2",
+    "equinox": "0.13.2",
+    "numpy": "2.5.3"
+  },
+  "explicit_substitutions": [
+    "loss callback returns synthetic unweighted per-position arrays, no forward",
+    "loader list and loading/progress tracker adapters",
+    "hax.named_jit/shard identity; hax.where jnp.where",
+    "mesh=None; no distributed reduction"
+  ],
+  "actual_Hero_affected": null,
+  "actual_GPU_execution": null,
+  "source_sha256": {
+    "sources/scale_2026_10_05/eval.py": "b67cc96335f667982a0fe43618215734140c28392be215a88177979c712dee2c",
+    "sources/eval_metrics_2026_10_05/stat_utils.py": "5ca79fea0edd5db0c9fb4abbb412902b6d640403f9f42a82f7f6b55f67b862e2"
+  }
+}

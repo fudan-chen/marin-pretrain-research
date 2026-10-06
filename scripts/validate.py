@@ -974,6 +974,13 @@ lt=read(ROOT/'templates/loss_cross_replay_review.json')
 ok('V73 missing cell and unexecuted receipt never filled',lr['missing_cell_control']['allocation'] is None and lt['status']=='planned_not_executed' and all(v is None for cells in lt['cells'].values() for v in cells.values()))
 ok('V73 four-cell figure embedded',soup.select_one('#loss-triage #losscross-figure_1') is not None)
 report['highlights']+=['V73 eighteen original-loss CPU cross-replay checks and descriptive interaction figure; common synthetic targets, missing-cell rejection, no Hero attribution or training effect']
+te=read(A/'tagged_eval_accumulator_cpu.json')
+ok('V74 source-bound evaluator fixture retains production impact unknown',te['checks_passed']==len(te['checks'])==12 and te['actual_Hero_affected'] is None and te['actual_GPU_execution'] is None and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in te['source_sha256'].items()))
+to=te['observations']
+ok('V74 root versus parent empty-domain behavior preserved',to['separate']['root_macro_CE']==1 and to['separate']['parent_macro_CE']==2 and to['separate']['leaf_CE']['paloma/B']==0)
+ok('V74 fractional root denominator is partition-sensitive',to['fractional']['micro_CE']==.5 and to['fractional']['leaf_CE']['paloma/A']==2 and to['root_fractional_repartition']['micro_CE']==.5 and to['root_fractional_joined']['micro_CE']==1)
+ok('V74 masked nonfinite propagation and finite control separated',to['finite_zero_after']['micro_CE']==2 and to['nan_zero_after']['micro_CE']=={'nonfinite':'nan'} and to['nan_zero_after']['leaf_CE']['paloma/A']==2 and to['nan_zero_after']['leaf_BPB']['paloma/A']=={'nonfinite':'nan'} and 'V74' in soup.select_one('#eval-metrics-guide').get_text())
+report['highlights']+=['V74 twelve original evaluator CPU controls, true Equinox state and original result construction; explicit adapters, root/parent empty policy, fractional denominator and NaN propagation; no Hero incident or GPU proof']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

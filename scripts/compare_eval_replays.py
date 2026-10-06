@@ -1,6 +1,7 @@
 """Compare declared global leaf-domain evaluation transcripts. Input hashes are
 claims by the exporter, not independently verified arrays. Float64 reconstruction
-of archived token-weighted BPB; no GPU scoring or automatic root cause.
+of archived token-weighted BPB and nonempty-domain parent metrics; not root macro
+with empty domains or root CE batch-denominator clamps. No GPU scoring or automatic root cause.
 Usage: python scripts/compare_eval_replays.py first.json second.json output.json
 """
 import hashlib,json,math,pathlib,re,sys

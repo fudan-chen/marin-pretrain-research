@@ -67,3 +67,46 @@ state.bpb_per_tag.add(bpb_per_tag, this_weights_per_tag)
 验收管线补上一条具体规则：**任何参与候选排序的日志字段，先记录字段→源码返回项→累计状态单位→聚合公式四个对应关系。** 对同一组预测做重新分批、域顺序交换和最后不满batch检查；若目标是全局比值，结果应只受数值舍入影响。逐域NLL、token、byte及mask身份是验收产物，不能只保存最终BPB。真实mask全零、byte分母小于1或小数权重时，单独报告覆盖与退化处理，不把默认安全分母当作正常文本统计。
 
 [评估口径交接模板](templates/eval_metric_contract.json)将上述对应关系、输入身份、N/T/B产物与重新分批检查放在同一记录中。当前模板为计划，实测字段均未填写；它不是已经验证的线上契约。
+
+
+## V74：执行完整累计与结果构造，区分根级、父级和空域
+
+V26 用 NumPy 替代依赖执行 RunningMean，静态追踪 TaggedEvaluator 的单位。这次提取原 `_make_accum_for_batch`、`evaluate`、层级构造、`EvalResult` 和两种原状态类，使用真实 JAX 数组与 Equinox Module 执行逐批累计到最终结果。12项检查通过，[完整输出](analysis/tagged_eval_accumulator_cpu.json)保留来源 SHA 与替代边界。loss callback 返回人工逐位置数组；没有模型前向。Haliax named_jit/shard 是恒等适配、where 为 jnp.where，loader/计时/progress 为本地列表适配，mesh=None；因此执行了原数值语句与结果构造，没有执行原 JIT、真实 loader 或多设备归约。
+
+### 同样叫 macro，空域处理却不同
+
+原 evaluate 的根级 `macro_avg_loss = jnp.mean(tag_avg_loss)` 对全部声明叶子求均值；从未累计正权重的域初始化为0，也进入分母。父级计算先用 `total_tokens_per_tag_cpu > 0` 过滤，再以 NumPy 的 where 求均值。BPB 根级与父级同样存在这一差别。
+
+人工例声明 paloma/A、paloma/B，只有 A 两个目标，各 loss=2、weight=1。原输出如下：
+
+|字段|原结果|解释|
+|---|---:|---|
+|根级 macro CE|1.0|A=2、未覆盖 B=0，两域等权|
+|paloma 父级 macro CE|2.0|只对有正权重的 A 求均值|
+|paloma/B 叶子 CE|0.0|累计初始化值；不是模型把 B 预测得很好|
+
+这不是此前 micro/macro 命名更正的再次翻转。Paloma 父级 macro 仍按非空域计算，67点历史重建仍然有效；新增的是根级与父级不能自动视为同一汇总。真实评估若每个声明域都有正权重，这个空域差异不会触发。本轮没有发现 Hero 某域缺失的证据。
+
+训练平台不能把“叶子显示0”自动标为改善。记录预期域、实际 T 和覆盖率；零 T 应显示未覆盖，并阻止它进入候选通过判定。否则评估预算截断、过滤或数据故障造成的缺域，可能让根级宏平均看起来降低。这里说明风险条件，没有确认线上发生过截断或故障。
+
+### 分母的1既是保护，也会改变小数权重语义
+
+根级 CE 累计使用 `this_loss / maximum(this_weights,1)`，更新 RunningMean 的权重仍为 this_weights。叶子 CE 对正权重直接算 `this_loss_per_tag / this_weights_per_tag`。一个人工目标 loss=2、weight=0.25，N=0.5、T=0.25：根级 micro CE 为0.5，叶子/父级 CE 为2.0。同一个目标分子，这次差别不是域占比，而是根级分母下限。
+
+两个相同目标各 weight=0.25，分成两批时根级 CE 为0.5，合成一批为1.0；叶子 CE 都为2.0。通常二值 mask 且每个非空 batch 至少一个目标时 T≥1，根级保护不改变正批公式；小数权重或特殊归一化接口需单独检查。不能把人工0.25控制写成 Hero 使用这种权重的事实。
+
+BPB 的 B 也有1的下限。对普通权重，只改分批仍可改变 BPB：同域两个目标 loss 都为2、byte 分别1与3，分两批得到1.9235934，合一批得到1.4426950。根级 CE 都为2。本轮把此前 RunningMean 的数学反例接到了实际 byte gather、einsum、累计器与输出，仍没有真实 tokenizer 或历史重评结果。
+
+### mask 为零不保证 NaN 被隔离
+
+先累计一个有限正权重目标，再加入 loss=NaN、weight=0 的人工批。原 `weighted_loss = losses * weights` 产生 NaN，根级 CE/BPB 被污染。叶子 CE 通过 nonzero_token_mask 将该批无覆盖域的 safe_mean 选为0，所以先前 A=2 和 B=0 得以保留。BPB 叶子没有同样的 safe_mean：NaN 分子除以安全分母仍为 NaN，RunningMean 的 `delta * ratio` 中 NaN×0 继续传播，连此前已有限的 A BPB 也变为 NaN。
+
+作为对照，loss=99、weight=0 的有限批保留先前根级结果。因此这不是“零权重必定出错”，触发条件包含非有限 loss。人工 callback 注入 NaN，未执行产生 NaN 的实际模型或 kernel；不能据此定位线上 NaN 根因。也不能仅在最终总指标处 nan_to_num，再把正常数字当作完整评估。
+
+### 配比与评估的验收要补什么
+
+先核对预期域覆盖与逐域 N/T/B，再查看根级、父级和叶子指标。重分批检查要明确测试目标：普通二值非空批的 CE 应接近不变，源实现 BPB 一般不保证；小数权重 T<1 还需审查根级 CE 下限。对有效位置的非有限 loss 应中止评分并保留输入/运行身份；对无效位置的非有限值要定义处理政策，再用原路径重放确认它不会污染状态。改变政策也属于代码语义变更，不能只称清理日志。
+
+此前[重复评分检查器](EVAL_REPLAY_ZH.md)重建的是叶子与非空域父级口径；其 micro_CE 不是 T<1 情况下的原根级 micro_avg_loss，macro_CE 也不是有空域时的原根级 macro_avg_loss。这里补明接口边界，不改历史人工结果。检查器拒绝非有限 N/T/B，不能用它重建已经被 NaN 污染的源累计状态。
+
+复现：`make tagged-eval-accumulator CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python TENSORSTORE_PATH=/tmp/marin-tensorstore-lib`。这里使用该隔离路径提供 Equinox 依赖，没有执行 TensorStore IO；实际生产评估与候选排序影响仍待真实记录。

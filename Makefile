@@ -198,3 +198,7 @@ loss-composition:
 loss-cross-replay:
 	$(CPU_PYTHON) scripts/probe_loss_cross_replay_cpu.py
 	$(PYTHON) scripts/plot_loss_cross_replay.py
+
+.PHONY: tagged-eval-accumulator
+tagged-eval-accumulator:
+	PYTHONPATH=$(TENSORSTORE_PATH) $(CPU_PYTHON) scripts/probe_tagged_eval_accumulator_cpu.py

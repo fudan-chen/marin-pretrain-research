@@ -1,0 +1,33 @@
+{
+  "version": "V74",
+  "created_utc": "2026-10-06T21:10:49.918565+00:00",
+  "goal_status": "active",
+  "scope": "Original TaggedEvaluator accumulator/evaluate and Equinox state classes on synthetic CPU arrays with explicit loader/loss/hax adapters",
+  "checks_passed": 1503,
+  "evaluator_checks": 12,
+  "source_files": 462,
+  "all_prior_source_bytes_preserved": 462,
+  "new_source_acquisitions": 0,
+  "actual_Hero_affected": null,
+  "actual_GPU_execution": null,
+  "actual_browser_rendering": null,
+  "artifact_sha256": {
+    "README.md": "3c9ed7f9976f7ec8a860604989b81c825b3ce56f3c5268b8f26b2e9ca07b9c91",
+    "DELIVERY_AUDIT_ZH.md": "324e123ad4320b0527391f72933c2f15932fc84fd1ed56d72a52b8cfa86810f3",
+    "EVAL_METRICS_ZH.md": "22f57c30a7544c58f1eca946cf1e64d19e4f467b9f18822c33eb60ebefe1462f",
+    "EVAL_REPLAY_ZH.md": "175f4f0e95160bd645aac9772afd077b559034e7f0b0f040ff7ef79d1214a188",
+    "SYNTHESIS_ZH.md": "c2ec985260b3c4302cd6d16ec3d953f96d24a4b74538077f730a62c31e82dd85",
+    "RUBRICS_ZH.md": "0b4609642a171a5b736b684af794d40197784629fba1c8ca1d2a3ddb11b846e3",
+    "PIPELINE_ZH.md": "98d6c101a9d6df060ad659b359a30f1ed0387696c9b6fc817dda96ed2865ac1f",
+    "IMPROVEMENT_LOG_ZH.md": "0de329dc06375d4b01ee262df92b89cf8e4075cf5aca3edb1f3bb709449b6cd3",
+    "Makefile": "b2eced410a08013a99b1cc6897bd7a0136b37a12b24f8e5ab44e087ba756434c",
+    "scripts/validate.py": "2a94da6a7b87c65453d84e60d0cde804bd4e88ae1add1c675af52dcf8e2d825a",
+    "scripts/compare_eval_replays.py": "500f052d345304e23e48d1df258b9cc7908151037a5b5f2803fa6e194f609a4a",
+    "scripts/probe_tagged_eval_accumulator_cpu.py": "83de79aa52e144de8f5b6c416063ccb47466dd54e27776ffca679be8c6842722",
+    "analysis/tagged_eval_accumulator_cpu.json": "0752313863d57c693c744ae55a0c5c64f3d0def49c23cc851afd0a015a541644",
+    "analysis/validation.json": "b90f42c34126c153fa5d49f995d0c5cf4e57be0949ad908d6dbafe314a7b49ae",
+    "analysis/static_validation_v74.json": "739dc36250b9848d65543657cb77148e319e5ce9415bf615cacd06b16b77aa2c",
+    "index.html": "3620066499a7631a7c6430926bf5f60576c46e0d5fd3382cdec6f84c85ceb01f",
+    "report_standalone.html": "7740791ef09121108fd1845611adff4a9821aed537e2f058fb465084be770352"
+  }
+}

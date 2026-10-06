@@ -1,0 +1,13 @@
+{
+  "version": "V74",
+  "checks_passed": 6,
+  "checks": [
+    "index.html unique ids",
+    "index.html V74 source boundaries and policies",
+    "report_standalone.html unique ids",
+    "report_standalone.html V74 source boundaries and policies",
+    "Frozen source archive unchanged",
+    "Fresh V74 global validation"
+  ],
+  "actual_browser_rendering": null
+}

@@ -1,0 +1,12 @@
+{
+  "status": "synthetic_counterexample_not_hero",
+  "batch_schedule": [{"start": 0, "value": 4}, {"start": 3, "value": 8}],
+  "previous_batch_schedule": [{"start": 0, "value": 8}],
+  "resume_step": 4,
+  "block_size": 8,
+  "fixed_sequence_length": 4096,
+  "mixture_stages": [
+    {"step": 0, "weights": {"A": 0.34, "B": 0.33, "C": 0.33}},
+    {"step": 4, "weights": {"A": 1}}
+  ]
+}

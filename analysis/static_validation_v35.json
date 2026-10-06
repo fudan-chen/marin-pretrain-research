@@ -1,0 +1,18 @@
+{
+  "scope": "Static HTML parsing and local artifact integrity only; no browser rendering, network behavior or reader study",
+  "pages": {
+    "index.html": {
+      "chapter": true,
+      "tables": 3,
+      "tool_link": true,
+      "sha256": "c656a6e37afcbcf69d24cfc3696dc24b501e9a9ea8e707f5ecf86d9dc7f40c45"
+    },
+    "report_standalone.html": {
+      "chapter": true,
+      "tables": 3,
+      "tool_link": true,
+      "sha256": "5f0bfdce44a94680bf04f66a5c54e2b5efce29ac90e7b6d2ca9436b01fff7605"
+    }
+  },
+  "actual_browser_rendering": null
+}

@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本为V34。新增[失败边界与数值验收](FAILURE_BOUNDARIES_ZH.md)：loss有限为何仍可能交接异常状态，事件、水位和恢复分别证明什么。新增[监控与事故重放](OBSERVABILITY_ZH.md)，把日志时刻、计算成本和优化器证据连到可执行的离线检查器。先用[排障总图](ENGINEERING_MAP_ZH.md)按症状选择入口，再核对[交付范围](DELIVERY_AUDIT_ZH.md)。优化器可按[参数分组](OPTIMIZER_GROUPS_ZH.md) → [AdamH状态](ADAMH_STATE_ZH.md) → [MuonH投影](MUON_GEOMETRY_ZH.md) → [NS方向与布局](MUON_DIRECTION_ZH.md)阅读：分别回答谁被更新、历史怎样影响下一步、保持哪组范数、方向怎样被计算。
+当前版本为V35。新增[配比生效时钟](BATCH_CLOCK_ZH.md)：batch变更后的累计索引、恢复前缀和权重日志分别核对；提供可执行的调度审查器。新增[失败边界与数值验收](FAILURE_BOUNDARIES_ZH.md)：loss有限为何仍可能交接异常状态，事件、水位和恢复分别证明什么。新增[监控与事故重放](OBSERVABILITY_ZH.md)，把日志时刻、计算成本和优化器证据连到可执行的离线检查器。先用[排障总图](ENGINEERING_MAP_ZH.md)按症状选择入口，再核对[交付范围](DELIVERY_AUDIT_ZH.md)。优化器可按[参数分组](OPTIMIZER_GROUPS_ZH.md) → [AdamH状态](ADAMH_STATE_ZH.md) → [MuonH投影](MUON_GEOMETRY_ZH.md) → [NS方向与布局](MUON_DIRECTION_ZH.md)阅读：分别回答谁被更新、历史怎样影响下一步、保持哪组范数、方向怎样被计算。
 
 V26对V25的micro/macro命名错误已[明确更正](EVAL_METRICS_ZH.md)。
 
@@ -10,7 +10,7 @@ V26对V25的micro/macro命名错误已[明确更正](EVAL_METRICS_ZH.md)。
 |---|---|
 |这次535B训练到底遇到了什么|[主报告](REPORT_ZH.md) → [主帖解读](ISSUE_8435_ZH.md) → [58条运行索引](OPERATIONS_ZH.md)|
 |数据比例为何这样设，loss说明什么|[数据配比](DATA_GUIDE_ZH.md) → [16域真实轨迹](MIX_TRAJECTORY_ZH.md) → [评估分母](EVAL_METRICS_ZH.md)|
-|如何为自己的训练选配比和顺序|[候选比较](DECISION_GUIDE_ZH.md) → [供体与预算](TRANSFER_GUIDE_ZH.md) → [顺序账本](ORDER_GUIDE_ZH.md)|
+|如何为自己的训练选配比和顺序|[候选比较](DECISION_GUIDE_ZH.md) → [供体与预算](TRANSFER_GUIDE_ZH.md) → [顺序账本](ORDER_GUIDE_ZH.md) → [生效时钟](BATCH_CLOCK_ZH.md)|
 |换数据之后loss突然变化|[诊断流程](LOSS_TRIAGE_ZH.md) → [缓存身份](CACHE_PROVENANCE_ZH.md) → [去重](DEDUP_FILTERS_ZH.md)与[质量桶](QUALITY_BUCKETS_ZH.md)|
 |换kernel或优化器能否安全接续|[变更评审](CHANGE_REVIEW_ZH.md) → [状态时钟](TRAIN_STATE_ZH.md) → [优化器](OPTIMIZER_GROUPS_ZH.md)与[接口契约](IMPLEMENTATION_CONTRACTS_ZH.md)|
 |MoE和文档边界有哪些具体陷阱|[路由丢弃](ROUTING_DROPS_ZH.md)、[分位数均衡](QB_ESTIMATION_ZH.md)、[router精度](ROUTER_PRECISION_ZH.md)、[文档边界](DOCUMENT_BOUNDARIES_ZH.md)、[ShortConv](SHORT_CONV_ZH.md)|

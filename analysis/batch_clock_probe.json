@@ -1,0 +1,124 @@
+{
+  "scope": "Original schedule and callback bodies on declared synthetic inputs, not historical loader replay.",
+  "source_sha256": {
+    "sources/scale_2026_10_05/train_hero_ep.py": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7"
+  },
+  "checks_passed": 27,
+  "checks": [
+    "Piecewise offsets equal independently summed prior batches",
+    "New batch applies at boundary, old batch owns preceding step",
+    "Boundary starts at offset twelve",
+    "Offset twenty is not current batch times step",
+    "Batch intervals are consecutive and their inverse returns owner",
+    "Step-four mixture offset twenty fails eight-sequence alignment",
+    "Configured fractions differ from whole-block allocation",
+    "Changing past batch schedule moves next logical sequence by minus twelve",
+    "Nominal positions are explicitly fixed-length arithmetic",
+    "Equal endpoint offsets do not prove identical consumed batch prefix",
+    "Future-only declaration change preserves consumed prefix",
+    "Original conversion uses cumulative offset",
+    "Original conversion preserves final negative sentinel",
+    "Original constructor rejects unaligned converted stage",
+    "Conversion negative sentinel is not supported by constructor alignment guard",
+    "Stage callback emits only on stage changes",
+    "Removed component key is omitted rather than explicitly logged zero",
+    "Logged configured weights are not measured batch counts",
+    "Reviewer rejects negative_batch",
+    "Reviewer rejects missing_zero",
+    "Reviewer rejects duplicate_start",
+    "Reviewer rejects invalid_block",
+    "Reviewer rejects nan_weight",
+    "Positive tiny component can round to zero with an explicit warning",
+    "Aligned step boundary passes declaration review",
+    "Actual CLI writes hashed input and no actual token claims",
+    "Actual CLI refuses output overwrite and preserves bytes"
+  ],
+  "synthetic_review": {
+    "scope": "Review declared schedules, not actual consumed tokens. Uses archived pure-Python\nBatchSchedule and mixture allocation helper; no JAX, loader, token replay or training.\nUsage: python scripts/audit_batch_clock.py input.json output.json\n",
+    "stage_boundaries": [
+      {
+        "step": 0,
+        "sequence_offset": 0,
+        "nominal_positions": 0,
+        "aligned_to_block": true,
+        "block_remainder": 0,
+        "logged_weights": {
+          "A": 0.34,
+          "B": 0.33,
+          "C": 0.33
+        },
+        "whole_block_counts": {
+          "A": 4,
+          "B": 2,
+          "C": 2
+        },
+        "whole_block_weights": {
+          "A": 0.5,
+          "B": 0.25,
+          "C": 0.25
+        },
+        "warnings": []
+      },
+      {
+        "step": 4,
+        "sequence_offset": 20,
+        "nominal_positions": 81920,
+        "aligned_to_block": false,
+        "block_remainder": 4,
+        "logged_weights": {
+          "A": 1.0
+        },
+        "whole_block_counts": {
+          "A": 8
+        },
+        "whole_block_weights": {
+          "A": 1.0
+        },
+        "warnings": []
+      }
+    ],
+    "resume": {
+      "completed_steps": 4,
+      "old_next_sequence_offset": 32,
+      "new_next_sequence_offset": 20,
+      "sequence_offset_delta": -12,
+      "consumed_batch_prefix_equal": false,
+      "decision": "requires_cursor_and_prefix_review"
+    },
+    "construction_alignment_ok": false,
+    "actual_consumed_tokens": null,
+    "actual_loader_cursor": null,
+    "actual_historical_schedule": null,
+    "source_sha256": {
+      "sources/deepening_2026_10_04/schedule_production.py": "01a2faa0d7a0b5cca4aad4cd702ed9aed5114111293970d8ea379d36f40ff281",
+      "sources/deepening_2026_10_04/mixture_production.py": "67e97941a79753b2e5865f7f41c7762436a428599ecd1a60d643aa891a817685"
+    }
+  },
+  "equal_endpoint_counterexample": {
+    "completed_steps": 4,
+    "old_next_sequence_offset": 20,
+    "new_next_sequence_offset": 20,
+    "sequence_offset_delta": 0,
+    "consumed_batch_prefix_equal": false,
+    "decision": "requires_cursor_and_prefix_review"
+  },
+  "original_callback_logs": [
+    {
+      "step": 0,
+      "data": {
+        "mixture/weight/A": 0.5,
+        "mixture/weight/B": 0.5,
+        "mixture/stage": 0
+      }
+    },
+    {
+      "step": 2,
+      "data": {
+        "mixture/weight/A": 1.0,
+        "mixture/stage": 1
+      }
+    }
+  ],
+  "actual_GPU_behavior": null,
+  "actual_historical_cursor_replay": null
+}

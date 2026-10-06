@@ -222,8 +222,15 @@ V25把`paloma/bpb`错误命名为macro；它在固定公共源码中来自父级
 
 ## V33：将优化器发现连成可执行事故检查
 
-固定watch/tree_stats来源，22项原辅助函数/平坦数组统计与静态时序检查：inline计算/输出interval不同，diagnostic额外反向且不支持更新/state，total norm无条件返回、隐藏逐叶norm在Python构造但JIT可能消除；旧状态、master/compute视图及duration边界需区分。新增[章节](OBSERVABILITY_ZH.md)、规范化全局NPZ离线检查器与23项合成输入验证。缺少方向/分母明确列出，root_cause始终null；没有历史事故包或真实GPU重放。
+固定watch/tree_stats来源，22项原辅助函数/平坦数组统计与静态时序检查：inline计算/输出interval不同，diagnostic额外反向且不支持更新/state，total norm无条件返回、隐藏逐叶norm在Python构造但JIT可能消除；旧状态、master/compute视图及duration边界需区分。新增[章节](OBSERVABILITY_ZH.md)、规范化全局NPZ离线检查器与27项合成输入验证。缺少方向/分母明确列出，root_cause始终null；没有历史事故包或真实GPU重放。
 
 ## V34：区分loss检查、健康状态和保存交接
 
 新增[失败边界](FAILURE_BOUNDARIES_ZH.md)。执行固定训练源码主循环try片段，17项synthetic train/callback/checkpoint recorder检查：finite-loss NaN更新可到保存交接，下一步报错不保证之前状态健康，有限范数塌缩/高loss不触发finite guard；finished事件早于检查，异常跳过强制末尾save。保存交接不是实际坏提交证明；新增拟议数值验收水位空表，保留GPU/真实callback/提交/恢复未知。所有430项源档内容保持不变。
+
+
+## V35：配比边界与batch历史不能各自解释
+
+新增[生效时钟](BATCH_CLOCK_ZH.md)及调度审查器，执行原BatchSchedule、原转换/构造条件和原阶段回调片段。27项检查覆盖累计offset、对齐拒绝、负阶段接口差异、相同累计量但不同batch前缀，以及零权重键省略。第一次合成等累计量fixture误设为32而非20，修正为4/4/6/6后按独立累加核对；不是生产发现。重新抓取的schedule与旧归档字节一致，复用旧档，没有新增源文件数。
+
+新增可执行的阶段索引与前缀评审入口；只输出名义位置，不生成实际消费token或自动恢复结论。HTML静态核对和全仓构建另行记录；本轮未做浏览器视觉验收或真实训练。后续以实际cursor/token材料能否改变配比归因为准，不以章节数量增长作为进步。

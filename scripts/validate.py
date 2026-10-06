@@ -670,6 +670,14 @@ ok('V34 failure-boundary chapter has three tables',len(soup.select('#failure-bou
 report['highlights']+=['V34 finite-loss versus next-state health / original failure-loop control flow / proposed numeric acceptance watermark; no actual contaminated checkpoint claim']
 b34=read(A/'browser_validation_v34.json')
 ok('V34 failure boundaries load after verified preview recovery',b34['desktop']['width']<=b34['desktop']['viewport'] and b34['mobile']['width']<=b34['mobile']['viewport'] and b34['offline']['figures']==b34['offline']['loaded']==17 and b34['offline']['hasChapter'] and b34['offline']['tables']==3 and b34['requests']==b34['errors']==[])
+bc=read(A/'batch_clock_probe.json')
+ok('V35 bounded batch-clock checks have explicit non-replay scope',bc['checks_passed']==len(bc['checks'])==27 and bc['actual_GPU_behavior'] is None and bc['actual_historical_cursor_replay'] is None)
+ok('V35 schedule and allocation source digests match',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in bc['synthetic_review']['source_sha256'].items()) and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in bc['source_sha256'].items()))
+ok('V35 alignment and cursor counterexample remain rejected',not bc['synthetic_review']['construction_alignment_ok'] and bc['synthetic_review']['resume']['sequence_offset_delta']==-12)
+ok('V35 equal totals do not imply equal batch prefixes',bc['equal_endpoint_counterexample']['sequence_offset_delta']==0 and not bc['equal_endpoint_counterexample']['consumed_batch_prefix_equal'])
+ok('V35 original callback does not write removed component zero','mixture/weight/B' not in bc['original_callback_logs'][-1]['data'])
+ok('V35 new clock chapter has three evidence tables',len(soup.select('#batch-clock-guide table'))==3)
+report['highlights']+=['V35 exact cumulative batch clock / stage alignment rejection / consumed prefix review / configured weights versus block counts; static HTML verification only for new chapter']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

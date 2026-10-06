@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1289,
+  "checks_passed": 1296,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -82,7 +82,8 @@
     "V31 original AdamH body and explicit moment substitutes; state reset direction counterexample; count-only cancellation boundary",
     "V32 original Newton-Schulz functions / float32 substitutions; nonmonotonic finite-step spectrum; bank-preserving layout boundaries",
     "V33 watch computation versus logging clocks; exact preupdate views; executable normalized-bundle observations without automatic root cause",
-    "V34 finite-loss versus next-state health / original failure-loop control flow / proposed numeric acceptance watermark; no actual contaminated checkpoint claim"
+    "V34 finite-loss versus next-state health / original failure-loop control flow / proposed numeric acceptance watermark; no actual contaminated checkpoint claim",
+    "V35 exact cumulative batch clock / stage alignment rejection / consumed prefix review / configured weights versus block counts; static HTML verification only for new chapter"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

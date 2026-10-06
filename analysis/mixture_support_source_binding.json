@@ -1,0 +1,11 @@
+{
+  "revision": "b65be4c9550c5097f0a3add08933531a1c24d534",
+  "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/lib/levanter/src/levanter/data/text/datasets.py",
+  "retrieved_utc": "2026-10-06T22:56:18.884164+00:00",
+  "archived_file": "sources/boundaries_2026_10_05/datasets.py",
+  "download_sha256": "4fd44ff53067beb7a2ac05cc4d41f0dda18012691751a85e7c5eb65c4849823b",
+  "archived_sha256": "4fd44ff53067beb7a2ac05cc4d41f0dda18012691751a85e7c5eb65c4849823b",
+  "exact_bytes_equal": true,
+  "new_source_files": 0,
+  "scope": "Full current fixed-head download byte-identical to prior archived file; reuse bytes, no historical provenance rewrite."
+}

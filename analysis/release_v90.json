@@ -1,0 +1,33 @@
+{
+  "version": "V90",
+  "created_utc": "2026-10-06T22:57:18.824309+00:00",
+  "goal_status": "active",
+  "scope": "Original current mixture class and configuration guard; support versus actual child contract, synthetic identity reads",
+  "checks_passed": 1566,
+  "local_cpu_checks": 25,
+  "static_checks": 7,
+  "source_files": 498,
+  "new_source_files": 0,
+  "actual_Hero_children": null,
+  "actual_Hero_missing_bucket_incident": null,
+  "actual_token_stream": null,
+  "actual_training_benefit": null,
+  "actual_browser_rendering": null,
+  "artifact_sha256": {
+    "README.md": "3210cb5056a7d8b3ee76bd88cb8a8fea5ff208b76f8a6a94dc9291171ae79041",
+    "DELIVERY_AUDIT_ZH.md": "c82c268ea46edefd02b6a7a8dd4ef586ce84939f8468f84f7c9bd6f23e9bd414",
+    "IMPROVEMENT_LOG_ZH.md": "ad49e986a7fc2fe488b34a23b813bd7391a838dd75f7e9ec77cef981697d0f75",
+    "MIXTURE_IDENTITY_ZH.md": "c707f91a55d136f5d5348bc1d0361d90ff0a7e1275bf0aa72d3ad8db2a30eb3a",
+    "PIPELINE_ZH.md": "597d8bc1109d3fc6ae3cc8c1cf6be7931506f684849871c50282e016fab80b78",
+    "RUBRICS_ZH.md": "5a348fa6e9052a85e31e38b97ad3a0a744ae932dc69c1193a240a55d968b870f",
+    "SYNTHESIS_ZH.md": "744b480e3b98a620b141d79272286e7039133bd26a5842117a966a46d363d63d",
+    "analysis/validation.json": "89f833f6429d5ac98c3d613cb945c3b359162d4585725ad117affd5f5cbcf8a5",
+    "index.html": "a7c4c9a6bd97d6128246643eb8df904107858ac74c81458238a820769c6fc963",
+    "report_standalone.html": "4944ebae03405b1a36a9d51da8950be78a8fb18ea24190f59d4c56ef29b3555f",
+    "scripts/validate.py": "b171e0790fb77fc1327655639f0c75ac684d9ea22a1e6e0d2e2572b448cd20bf",
+    "scripts/probe_mixture_support_cpu.py": "55bb444594d8935a510dbbfe0cc5f46867b54968c4978e56d1f90431648f9afa",
+    "analysis/mixture_support_cpu.json": "4a948bf64b5b9d636b2bcc652e27b785cde713a8761f78887e123bdc4aa6ce4a",
+    "analysis/mixture_support_source_binding.json": "7311866e10a9feecdeb273bc6f5b94bf7582a11b33d16b148a4e0a99718550cd",
+    "analysis/static_validation_v90.json": "a7b82a1e89987fb055a326a872cfd6f3a68ef5035619199563e6a56cb4ccc49a"
+  }
+}

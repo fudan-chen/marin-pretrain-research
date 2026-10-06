@@ -818,7 +818,7 @@ ok('V53 dictionary order changes tie allocation',mi['tie_counts']['ABC']=={'A':4
 ok('V53 key preserves whole-block multiset but changes partial content',sorted(mi['whole_seed7'])==sorted(mi['whole_seed8']) and sorted(mi['partial_seed7'])!=sorted(mi['partial_seed8']))
 ok('V53 finite restart separates exposure from unique identity',len(mi['finite_length3_stream'])==24 and len(set(mi['finite_length3_stream']))==6)
 report['highlights']+=['V53 fourteen original mixture class and real JAX CPU identity controls; ordered dataset IDs, integer ties, finite modulo and partial windows; no actual Hero token/shuffle/restore']
-ok('V53 mixture identity chapter retains original and V54 V55 control tables',len(soup.select('#mixture-identity-guide table'))==3)
+ok('V53 mixture identity chapter retains original and V54 V55 control tables',len(soup.select('#mixture-identity-guide table'))==4)
 ish=read(A/'inner_shuffle_cpu.json')
 ok('V54 fourteen CPU/source controls with bounded Hero claims',ish['checks_passed']==len(ish['checks'])==14 and ish['runtime']['backend']=='cpu' and ish['actual_Hero_inner_shuffle'] is None and ish['actual_Hero_split_leakage'] is None and ish['declared_num_validation_sequences'] is None)
 ok('V54 PRP and dataset source identities match',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in ish['source_sha256'].items()))
@@ -1088,6 +1088,11 @@ ok('V89 same logged cooldown changes 184 quotas with scope correction',next(x fo
 ok('V89 one official source preserves 496 prior non-bookkeeping bytes',len(nra['records'])==1 and nra['prior_bytes_preserved']==496 and all(hashlib.sha256((S/x['file']).read_bytes()).hexdigest()==x['sha256'] for x in nra['prior_integrity_manifest']['files'] if x['file']!='source_manifest.json'))
 report['highlights']=[x.replace('497 source archive checksums valid','498 source archive checksums valid') for x in report['highlights']]
 report['highlights']+=['V89 original normalization in two actual Python runtimes, isolated sum controls and historical scope correction; production quota and token stream unknown']
+ms=read(A/'mixture_support_cpu.json');msb=read(A/'mixture_support_source_binding.json')
+ok('V90 current original-class support controls source-bound',ms['checks_passed']==len(ms['checks'])==25 and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in ms['source_sha256'].items()) and ms['actual_Hero_children'] is None)
+ok('V90 low-level counterexample and normal entry guard distinguished',ms['cases']['missing_positive']=={'A':6,'B':4} and not ms['cases']['config_guard_dict']['accepted'] and ms['cases']['declared_typo_component_guard']['accepted'] and len(ms['archived_support_comparison'])==9 and all(not x['unknown_positive_inventory_keys'] for x in ms['archived_support_comparison']))
+ok('V90 live fixed-head full module bound to unchanged archived bytes',msb['exact_bytes_equal'] and msb['revision']=='b65be4c9550c5097f0a3add08933531a1c24d534' and msb['download_sha256']==msb['archived_sha256']==hashlib.sha256((ROOT/msb['archived_file']).read_bytes()).hexdigest())
+report['highlights']+=['V90 twenty-five original mixture/entry support controls; guard versus actual children distinguished, no Hero missing-child incident claim']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1563,
+  "checks_passed": 1566,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -137,7 +137,8 @@
     "V86 fifteen real Adam and original nested-path CPU checks; state/horizon/bias correction controls, no disk restore or Hero clock/GPU proof",
     "V87 fifteen original Harrier builder/spec/helper host checks; nine stage/budget controls and nominal exposure diagram, no actual token stream or GPU claim",
     "V88 eighteen original quota/packed ID/CPU permutation checks and 200-cell logical exposure CSV; no production key/token identity claim",
-    "V89 original normalization in two actual Python runtimes, isolated sum controls and historical scope correction; production quota and token stream unknown"
+    "V89 original normalization in two actual Python runtimes, isolated sum controls and historical scope correction; production quota and token stream unknown",
+    "V90 twenty-five original mixture/entry support controls; guard versus actual children distinguished, no Hero missing-child incident claim"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

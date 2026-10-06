@@ -1,0 +1,176 @@
+{
+  "scope": "Current fixed-head original MixtureDataset with identity dependency adapters.\nTests declared weight support versus available children. No production token store.\n",
+  "checks_passed": 25,
+  "checks": [
+    "Known-only weights renormalize equally",
+    "Missing positive child accepted and remainder shifts to A",
+    "Actual identity read follows shifted quota",
+    "Missing support remainder follows tied child order",
+    "Unknown zero weight leaves known quotas unchanged",
+    "All missing positive support fails downstream argmax",
+    "Unknown negative weight rejected by normalizer",
+    "Stage one excludes inactive B without excluding later support",
+    "Later missing support shifts later quota",
+    "Later shifted stage retains actual cumulative A index",
+    "Single and batched read agree on malformed support",
+    "Original config rejects unknown dict key",
+    "Original config rejects unknown stage key",
+    "Original config rejects unknown zero key",
+    "Original config accepts known-only weights",
+    "Declared component guard cannot see later actual missing child",
+    "spec phase 0 positive keys present in spec inventory",
+    "spec phase 1 positive keys present in spec inventory",
+    "spec phase 2 positive keys present in spec inventory",
+    "historical_wandb phase 0 positive keys present in spec inventory",
+    "historical_wandb phase 1 positive keys present in spec inventory",
+    "historical_wandb phase 2 positive keys present in spec inventory",
+    "oct7_wandb phase 0 positive keys present in spec inventory",
+    "oct7_wandb phase 1 positive keys present in spec inventory",
+    "oct7_wandb phase 2 positive keys present in spec inventory"
+  ],
+  "runtime": {
+    "python": "3.12.13",
+    "numpy": "2.5.3",
+    "jax": "0.7.2",
+    "backend": "cpu"
+  },
+  "cases": {
+    "known_only": {
+      "A": 5,
+      "B": 5
+    },
+    "missing_positive": {
+      "A": 6,
+      "B": 4
+    },
+    "reversed_children": {
+      "B": 6,
+      "A": 4
+    },
+    "unknown_zero": {
+      "A": 5,
+      "B": 5
+    },
+    "all_missing": {
+      "quota": null,
+      "error": "ValueError",
+      "message": "attempt to get argmax of an empty sequence"
+    },
+    "unknown_negative": {
+      "quota": null,
+      "error": "ValueError",
+      "message": "Dataset weights cannot be negative, got {'A': 0.4, 'B': 0.4, 'TYPO': -0.1}"
+    },
+    "malformed_block": [
+      "A:1",
+      "A:2",
+      "B:1",
+      "A:4",
+      "B:3",
+      "B:0",
+      "B:2",
+      "A:3",
+      "A:0",
+      "A:5"
+    ],
+    "later_stage_block": [
+      "B:2",
+      "A:24",
+      "A:23",
+      "A:22",
+      "A:21",
+      "A:25",
+      "B:1",
+      "B:0",
+      "B:3",
+      "A:20"
+    ],
+    "staged_quotas": [
+      {
+        "A": 10,
+        "B": 0
+      },
+      {
+        "A": 6,
+        "B": 4
+      }
+    ],
+    "config_guard_dict": {
+      "accepted": false,
+      "error": "ValueError",
+      "message": "Weight keys must be subset of component keys."
+    },
+    "config_guard_stage": {
+      "accepted": false,
+      "error": "ValueError",
+      "message": "Weight keys must be subset of component keys."
+    },
+    "config_guard_zero": {
+      "accepted": false,
+      "error": "ValueError",
+      "message": "Weight keys must be subset of component keys."
+    },
+    "declared_typo_component_guard": {
+      "accepted": true,
+      "error": null
+    }
+  },
+  "archived_support_comparison": [
+    {
+      "source": "spec",
+      "phase": 0,
+      "unknown_positive_inventory_keys": []
+    },
+    {
+      "source": "spec",
+      "phase": 1,
+      "unknown_positive_inventory_keys": []
+    },
+    {
+      "source": "spec",
+      "phase": 2,
+      "unknown_positive_inventory_keys": []
+    },
+    {
+      "source": "historical_wandb",
+      "phase": 0,
+      "unknown_positive_inventory_keys": []
+    },
+    {
+      "source": "historical_wandb",
+      "phase": 1,
+      "unknown_positive_inventory_keys": []
+    },
+    {
+      "source": "historical_wandb",
+      "phase": 2,
+      "unknown_positive_inventory_keys": []
+    },
+    {
+      "source": "oct7_wandb",
+      "phase": 0,
+      "unknown_positive_inventory_keys": []
+    },
+    {
+      "source": "oct7_wandb",
+      "phase": 1,
+      "unknown_positive_inventory_keys": []
+    },
+    {
+      "source": "oct7_wandb",
+      "phase": 2,
+      "unknown_positive_inventory_keys": []
+    }
+  ],
+  "source_sha256": {
+    "sources/integer_exposure_2026_10_07/mixture.py": "67e97941a79753b2e5865f7f41c7762436a428599ecd1a60d643aa891a817685",
+    "sources/boundaries_2026_10_05/datasets.py": "4fd44ff53067beb7a2ac05cc4d41f0dda18012691751a85e7c5eb65c4849823b",
+    "sources/phase_budget_2026_10_07/harrier.json": "8f3fd489a6b2bacdcbf61e47577e4e87864e320aece2a62eae64c8f62721344e",
+    "scripts/probe_mixture_identity_cpu.py": "9537f8a87ed09c702fc696c351f496eba84297ad53bcafd3c398729732f2d9c5",
+    "sources/wandb/hero-fa4sm100-nomask-step146k_meta.json": "ca57924fb6cb56a3927696550a238c004b84fb7b31b9ced3cf65b266f11fe058",
+    "sources/live_2026_10_07/meta.json": "21998ecad691e7e66d3680f173bfe9b94c35b9481f28eff4794a23b0c9831487"
+  },
+  "actual_Hero_children": null,
+  "actual_Hero_token_stream": null,
+  "actual_training_benefit": null
+}

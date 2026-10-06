@@ -1,0 +1,14 @@
+{
+  "version": "V90",
+  "checks_passed": 7,
+  "checks": [
+    "index.html IDs unique",
+    "index.html prior three tables retained plus support table",
+    "index.html entry guard and production limits present",
+    "report_standalone.html IDs unique",
+    "report_standalone.html prior three tables retained plus support table",
+    "report_standalone.html entry guard and production limits present",
+    "1566 global checks"
+  ],
+  "actual_browser_rendering": null
+}

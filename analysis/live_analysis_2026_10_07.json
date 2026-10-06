@@ -1,0 +1,238 @@
+{
+  "checks_passed": 9,
+  "checks": [
+    "Public request preserves thirty-six keys and complete exact-step intersections",
+    "Every retrieved old evaluation value is unchanged",
+    "Snapshot adds a complete evaluation beyond old endpoint",
+    "Endpoints use actual exact-step fields",
+    "Sixteen source subsets retain old names",
+    "Macro values reconstruct from fixed sixteen subset means",
+    "Declared recipe stays byte-value equal to Oct6 configuration",
+    "Summary nominal token clock matches declared batch and length",
+    "Summary and latest complete eval remain separate"
+  ],
+  "scope": "A separately dated exact-step observation, not a mixture intervention or error estimate.",
+  "snapshot": {
+    "run": "hero-fa4sm100-nomask-step146k",
+    "state": "running",
+    "heartbeat_utc": "2026-10-06T16:34:08Z",
+    "summary_step": 214913,
+    "nominal_tokens": 9915561148416.0,
+    "nominal_tokens_since_oct6": 163603021824.0,
+    "share_of_18T": 0.5508645082453333,
+    "max_seq_len": 4096,
+    "config_equal_to_oct6": true,
+    "latest_complete_eval_step": 212999,
+    "eval_lag_updates": 1914
+  },
+  "complete_steps": [
+    194999,
+    197999,
+    200999,
+    203999,
+    206999,
+    209999,
+    212999
+  ],
+  "partial_steps": [],
+  "new_complete_eval_steps": [
+    212999
+  ],
+  "overlap_values_unchanged": 216,
+  "window": {
+    "start": 209999,
+    "end": 212999,
+    "updates": 3000,
+    "nominal_positions": 138412032000
+  },
+  "parent_deltas": {
+    "macro_loss": {
+      "start": 2.134350299835205,
+      "end": 2.137549638748169,
+      "delta": 0.003199338912963867
+    },
+    "micro_loss": {
+      "start": 1.8999786376953125,
+      "end": 1.8975248336791992,
+      "delta": -0.0024538040161132812
+    },
+    "macro_bpb": {
+      "start": 0.7766333818435669,
+      "end": 0.7771823406219482,
+      "delta": 0.0005489587783813477
+    },
+    "bpb": {
+      "start": 0.647942841053009,
+      "end": 0.6470497846603394,
+      "delta": -0.0008930563926696777
+    }
+  },
+  "subset_deltas": [
+    {
+      "subset": "4chan-llama3",
+      "loss_start": 1.9000078439712524,
+      "loss_end": 1.8994956016540527,
+      "loss_delta": -0.000512242317199707,
+      "bpb_start": 0.8160038590431213,
+      "bpb_end": 0.8157839179039001,
+      "bpb_delta": -0.0002199411392211914
+    },
+    {
+      "subset": "c4_100_domains-llama3",
+      "loss_start": 2.0412118434906006,
+      "loss_end": 2.038271188735962,
+      "loss_delta": -0.002940654754638672,
+      "bpb_start": 0.6354228258132935,
+      "bpb_end": 0.6345056891441345,
+      "bpb_delta": -0.0009171366691589355
+    },
+    {
+      "subset": "c4_en-llama3",
+      "loss_start": 2.210462808609009,
+      "loss_end": 2.2100741863250732,
+      "loss_delta": -0.0003886222839355469,
+      "bpb_start": 0.6802417039871216,
+      "bpb_end": 0.6801221370697021,
+      "bpb_delta": -0.0001195669174194336
+    },
+    {
+      "subset": "dolma-v1_5-llama3",
+      "loss_start": 1.815740942955017,
+      "loss_end": 1.8278264999389648,
+      "loss_delta": 0.012085556983947754,
+      "bpb_start": 0.6076837182044983,
+      "bpb_end": 0.6118515133857727,
+      "bpb_delta": 0.004167795181274414
+    },
+    {
+      "subset": "dolma_100_programing_languages-llama3",
+      "loss_start": 0.7652257084846497,
+      "loss_end": 0.7647014856338501,
+      "loss_delta": -0.0005242228507995605,
+      "bpb_start": 0.32843297719955444,
+      "bpb_end": 0.32818907499313354,
+      "bpb_delta": -0.00024390220642089844
+    },
+    {
+      "subset": "dolma_100_subreddits-llama3",
+      "loss_start": 2.6120944023132324,
+      "loss_end": 2.609924077987671,
+      "loss_delta": -0.0021703243255615234,
+      "bpb_start": 0.8571035861968994,
+      "bpb_end": 0.8563908338546753,
+      "bpb_delta": -0.0007127523422241211
+    },
+    {
+      "subset": "falcon-refinedweb-llama3",
+      "loss_start": 2.2395572662353516,
+      "loss_end": 2.238503932952881,
+      "loss_delta": -0.0010533332824707031,
+      "bpb_start": 0.7143452167510986,
+      "bpb_end": 0.7140092253684998,
+      "bpb_delta": -0.00033599138259887695
+    },
+    {
+      "subset": "gab-llama3",
+      "loss_start": 3.2535157203674316,
+      "loss_end": 3.2442731857299805,
+      "loss_delta": -0.009242534637451172,
+      "bpb_start": 1.3406708240509033,
+      "bpb_end": 1.3368620872497559,
+      "bpb_delta": -0.003808736801147461
+    },
+    {
+      "subset": "m2d2_s2orc_unsplit-llama3",
+      "loss_start": 1.7914681434631348,
+      "loss_end": 1.7882976531982422,
+      "loss_delta": -0.003170490264892578,
+      "bpb_start": 0.5925418138504028,
+      "bpb_end": 0.5914876461029053,
+      "bpb_delta": -0.0010541677474975586
+    },
+    {
+      "subset": "m2d2_wikipedia_unsplit-llama3",
+      "loss_start": 1.7534427642822266,
+      "loss_end": 1.7482709884643555,
+      "loss_delta": -0.005171775817871094,
+      "bpb_start": 0.56691974401474,
+      "bpb_end": 0.5652478337287903,
+      "bpb_delta": -0.001671910285949707
+    },
+    {
+      "subset": "manosphere_meta_sep-llama3",
+      "loss_start": 2.600470542907715,
+      "loss_end": 2.596208095550537,
+      "loss_delta": -0.004262447357177734,
+      "bpb_start": 0.8879358172416687,
+      "bpb_end": 0.886480450630188,
+      "bpb_delta": -0.0014553666114807129
+    },
+    {
+      "subset": "mc4-llama3",
+      "loss_start": 1.8056503534317017,
+      "loss_end": 1.8044251203536987,
+      "loss_delta": -0.0012252330780029297,
+      "bpb_start": 0.6223634481430054,
+      "bpb_end": 0.6219444870948792,
+      "bpb_delta": -0.0004189610481262207
+    },
+    {
+      "subset": "ptb-llama3",
+      "loss_start": 1.7121638059616089,
+      "loss_end": 1.8951798677444458,
+      "loss_delta": 0.18301606178283691,
+      "bpb_start": 0.5382734537124634,
+      "bpb_end": 0.5958104133605957,
+      "bpb_delta": 0.057536959648132324
+    },
+    {
+      "subset": "redpajama-llama3",
+      "loss_start": 1.586376667022705,
+      "loss_end": 1.5832010507583618,
+      "loss_delta": -0.0031756162643432617,
+      "bpb_start": 0.5443781614303589,
+      "bpb_end": 0.5432884097099304,
+      "bpb_delta": -0.0010897517204284668
+    },
+    {
+      "subset": "twitterAAE_HELM_fixed-llama3",
+      "loss_start": 4.461775302886963,
+      "loss_end": 4.427591323852539,
+      "loss_delta": -0.03418397903442383,
+      "bpb_start": 2.184868574142456,
+      "bpb_end": 2.1681292057037354,
+      "bpb_delta": -0.016739368438720703
+    },
+    {
+      "subset": "wikitext_103-llama3",
+      "loss_start": 1.6004389524459839,
+      "loss_end": 1.5245482921600342,
+      "loss_delta": -0.07589066028594971,
+      "bpb_start": 0.5089477896690369,
+      "bpb_end": 0.48481422662734985,
+      "bpb_delta": -0.02413356304168701
+    }
+  ],
+  "sensitivity": {
+    "loss": {
+      "equal_subset_delta_without_ptb": -0.00878843863805135,
+      "ptb_delta": 0.18301606178283691
+    },
+    "bpb": {
+      "equal_subset_delta_without_ptb": -0.0032502214113871255,
+      "ptb_delta": 0.057536959648132324
+    }
+  },
+  "improving_CE_endpoints": 14,
+  "worsening_CE_endpoints": 2,
+  "source_sha256": {
+    "sources/live_2026_10_07/meta.json": "21998ecad691e7e66d3680f173bfe9b94c35b9481f28eff4794a23b0c9831487",
+    "sources/live_2026_10_07/eval.json": "b012f1e72e39832a7c7567b9581da290fcde793b2f9f8a37309f1269341c9d9b",
+    "sources/live_2026_10_06/meta.json": "4b709c0b6440366aec7fa4ec65e6ff4b9881c3e2201082ffef036ca40547d80a",
+    "sources/live_2026_10_06/eval.json": "0da6a50945d62ea6ad05416f4f9e5d391931e30a2735f9f9172cc7eac07f5c39"
+  },
+  "actual_eval_input_identity": null,
+  "actual_execution_SHA": null,
+  "actual_mixture_counterfactual": null,
+  "statistical_significance": null
+}

@@ -1,8 +1,8 @@
 # Marin 535B 预训练研究
 
-当前版本V45。先读[结论与操作指南](SYNTHESIS_ZH.md)，再按问题进入工程案例、数据配比和可执行检查工具。最新训练数值来自[10月6日独立快照](LIVE_2026_10_06_ZH.md)，约9.75T/4K；它不等于当前实时进度。
+当前版本V46。先读[结论与操作指南](SYNTHESIS_ZH.md)，再按问题进入工程案例、数据配比和可执行检查工具。最新训练数值来自[10月7日独立快照](LIVE_2026_10_07_ZH.md)，约9.915T/4K；它不等于当前实时进度。
 
-本轮新增[重复曝光账本](REPEAT_EXPOSURE_ZH.md)：区分窗口内覆盖与历史新增覆盖，库存或游标未知时保留空值。近几轮补齐[评分目标对齐](EVAL_TARGET_ALIGNMENT_ZH.md)、[打包字段坐标](PACKING_FIELDS_ZH.md)和[评估格式](EVAL_FORMAT_ZH.md)。原方法/人工数据检查已有结果，真实Hero缓存、逐批数组与GPU重评仍缺，不能据这些工具判定配比收益或事故根因。
+本轮新增一个真实完整评估点：macro CE回升、micro CE下降，PTB反弹而14域端点改善。见[新观察](LIVE_2026_10_07_ZH.md)。既有[重复曝光账本](REPEAT_EXPOSURE_ZH.md)、[目标对齐](EVAL_TARGET_ALIGNMENT_ZH.md)与[打包字段核查](PACKING_FIELDS_ZH.md)用于排查与计划，真实缓存和逐批GPU重评仍缺。
 
 V26对V25的micro/macro命名错误已[明确更正](EVAL_METRICS_ZH.md)。
 

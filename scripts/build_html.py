@@ -46,12 +46,17 @@ chapters.insert(0,('eval-format-guide','Paloma评分格式与连续token流','EV
 chapters.insert(0,('eval-target-alignment-guide','下一token对齐与有效目标覆盖','EVAL_TARGET_ALIGNMENT_ZH.md'))
 chapters.insert(0,('packing-fields-guide','打包字段对齐与权重坐标','PACKING_FIELDS_ZH.md'))
 chapters.insert(0,('repeat-exposure-guide','重复曝光与配比加量','REPEAT_EXPOSURE_ZH.md'))
-priority=['synthesis-guide','repeat-exposure-guide','packing-fields-guide','eval-target-alignment-guide','eval-format-guide','eval-array-export-guide','eval-replay-guide','eval-identity-guide','live-observation-guide','mixture-range-guide','batch-clock-guide','failure-boundaries-guide','observability-guide','muon-direction-guide','adamh-state-guide','muon-geometry-guide','engineering-map-guide','delivery-audit-guide','checkpoint-memory-guide','checkpoint-commit-guide','eval-metrics-guide','mix-trajectory-guide','router-precision-guide','short-conv-guide','loss-triage','optimizer-guide','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
+chapters.insert(0,('live-oct7-guide','10月7日：macro回升与micro下降','LIVE_2026_10_07_ZH.md'))
+priority=['synthesis-guide','live-oct7-guide','repeat-exposure-guide','packing-fields-guide','eval-target-alignment-guide','eval-format-guide','eval-array-export-guide','eval-replay-guide','eval-identity-guide','live-observation-guide','mixture-range-guide','batch-clock-guide','failure-boundaries-guide','observability-guide','muon-direction-guide','adamh-state-guide','muon-geometry-guide','engineering-map-guide','delivery-audit-guide','checkpoint-memory-guide','checkpoint-commit-guide','eval-metrics-guide','mix-trajectory-guide','router-precision-guide','short-conv-guide','loss-triage','optimizer-guide','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
 chapters.sort(key=lambda c:priority.index(c[0]) if c[0] in priority else len(priority))
 readings={x['file']:x for x in json.loads((ROOT/'analysis/figure_readings.json').read_text())}
 sections=[];toc=[]
 for slug,label,file in chapters:
     result=markdown.markdown((ROOT/file).read_text(),extensions=['tables','fenced_code','toc'])
+    if slug=='live-oct7-guide':
+        october=BeautifulSoup((ROOT/'assets/live_2026_10_07.svg').read_text(),'html.parser').svg
+        october['style']='display:block;width:100%;height:auto'
+        result += '<figure class="scientific-figure">'+str(october)+'<figcaption>209999→212999的实测端点差。红为上升，蓝为下降；不是配比因果效应。</figcaption></figure>'
     soup=BeautifulSoup(result,'html.parser')
     live_placeholder=soup.select_one('#live-observation-placeholder')
     if live_placeholder is not None:
@@ -158,7 +163,7 @@ template=template.replace('WORKBENCH DECISIONLAB','ENGINEERINGLAB ASSESSMENTLAB 
 template=template.replace('<script>ORDERUI</script>','<script>ORDERUI</script><script type="application/json" id="assessment-data">ASSESSMENTDATA</script><script>ASSESSMENTCORE</script><script>ASSESSMENTUI</script>')
 template=template.replace('<a href="#order-lab">检查顺序与累计量</a>','<a href="#assessment-lab">保存自己的证据判断</a><a href="#order-lab">检查顺序与累计量</a>')
 template=template.replace('<script>ASSESSMENTUI</script>','<script>ASSESSMENTUI</script><script type="application/json" id="engineering-data">ENGINEERINGDATA</script><script>ENGINEERINGUI</script>')
-template=template.replace('公开快照：2026-10-04','最新观察：2026-10-06 · 旧图快照：10-04')
+template=template.replace('公开快照：2026-10-04','最新观察：2026-10-07 · 旧图快照：10-04')
 template=template.replace('<a href="#assessment-lab">保存自己的证据判断</a>','<a href="#engineering-lab">核对工程解释与反证</a><a href="#assessment-lab">保存自己的证据判断</a>')
 template=template.replace('<a href="#engineering-lab">核对工程解释与反证</a>', '<a href="#engineering-map-guide">从症状选择检查入口</a><a href="#delivery-audit-guide">当前交付与证据边界</a><a href="#checkpoint-memory-guide">保存内存与写入分摊</a><a href="#checkpoint-commit-guide">保存提交与可恢复进度</a><a href="#eval-metrics-guide">评估指标与V25更正</a><a href="#mix-trajectory-guide">配比切换与16域曲线</a><a href="#router-precision-guide">Router精度与评估策略</a><a href="#short-conv-guide">ShortConv边界与halo</a><a href="#loss-triage">loss变化诊断流程</a><a href="#optimizer-guide">优化器分组与衰减</a><a href="#qb-guide">路由均衡与数据分组</a><a href="#routing-guide">MoE丢弃与训练目标</a><a href="#change-guide">训练变更评审</a><a href="#quality-guide">评分窗口与质量桶</a><a href="#dedup-guide">去重与样本对齐</a><a href="#cache-guide">缓存身份与配比归因</a><a href="#boundary-guide">文档边界与有效目标</a><a href="#state-guide">训练状态与切换时刻</a><a href="#contracts-guide">源码接口与恢复验收</a><a href="#scale-guide">配比历史与BPB聚合检查</a><a href="#engineering-lab">核对工程解释与反证</a>')
 workbench=json.loads((ROOT/'analysis/workbench_data.json').read_text());rubric=json.loads((ROOT/'analysis/rubrics.json').read_text());chapter_paths={file:'#'+slug for slug,_,file in chapters}

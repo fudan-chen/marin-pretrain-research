@@ -1,0 +1,22 @@
+{
+  "files": [
+    {
+      "file": "live_2026_10_07/meta.json",
+      "url": "https://api.wandb.ai/graphql",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-fa4sm100-nomask-step146k",
+      "bytes": 405184,
+      "sha256": "21998ecad691e7e66d3680f173bfe9b94c35b9481f28eff4794a23b0c9831487",
+      "retrieved_utc": "2026-10-06T16:34:08.168879+00:00"
+    },
+    {
+      "file": "live_2026_10_07/eval.json",
+      "url": "https://api.wandb.ai/graphql",
+      "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-fa4sm100-nomask-step146k",
+      "bytes": 36478,
+      "sha256": "b012f1e72e39832a7c7567b9581da290fcde793b2f9f8a37309f1269341c9d9b",
+      "retrieved_utc": "2026-10-06T16:34:08.171094+00:00"
+    }
+  ],
+  "old_snapshots_preserved": true,
+  "date_label_timezone": "Asia/Shanghai"
+}

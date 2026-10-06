@@ -1,0 +1,1413 @@
+{
+  "run": "hero-fa4sm100-nomask-step146k",
+  "retrieved_utc": "2026-10-06T16:34:08.150373+00:00",
+  "sampled": true,
+  "specs": [
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/4chan-llama3/bpb"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/4chan-llama3/loss"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/bpb"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/c4_100_domains-llama3/bpb"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/c4_100_domains-llama3/loss"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/c4_en-llama3/bpb"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/c4_en-llama3/loss"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/dolma-v1_5-llama3/bpb"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/dolma-v1_5-llama3/loss"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/dolma_100_programing_languages-llama3/bpb"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/dolma_100_programing_languages-llama3/loss"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/dolma_100_subreddits-llama3/bpb"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/dolma_100_subreddits-llama3/loss"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/falcon-refinedweb-llama3/bpb"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/falcon-refinedweb-llama3/loss"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/gab-llama3/bpb"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/gab-llama3/loss"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/m2d2_s2orc_unsplit-llama3/bpb"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/m2d2_s2orc_unsplit-llama3/loss"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/m2d2_wikipedia_unsplit-llama3/bpb"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/m2d2_wikipedia_unsplit-llama3/loss"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/macro_bpb"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/macro_loss"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/manosphere_meta_sep-llama3/bpb"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/manosphere_meta_sep-llama3/loss"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/mc4-llama3/bpb"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/mc4-llama3/loss"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/micro_loss"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/ptb-llama3/bpb"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/ptb-llama3/loss"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/redpajama-llama3/bpb"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/redpajama-llama3/loss"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/twitterAAE_HELM_fixed-llama3/bpb"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/twitterAAE_HELM_fixed-llama3/loss"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/wikitext_103-llama3/bpb"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    },
+    {
+      "keys": [
+        "_step",
+        "eval_dropless/paloma/wikitext_103-llama3/loss"
+      ],
+      "minStep": 194999,
+      "maxStep": 214914,
+      "samples": 250
+    }
+  ],
+  "series": [
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/4chan-llama3/bpb": 0.8188377022743225
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/4chan-llama3/bpb": 0.8195977210998535
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/4chan-llama3/bpb": 0.8181251883506775
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/4chan-llama3/bpb": 0.8179863691329956
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/4chan-llama3/bpb": 0.8184426426887512
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/4chan-llama3/bpb": 0.8160038590431213
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/4chan-llama3/bpb": 0.8157839179039001
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/4chan-llama3/loss": 1.9066063165664673
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/4chan-llama3/loss": 1.908375859260559
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/4chan-llama3/loss": 1.9049471616744995
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/4chan-llama3/loss": 1.904624104499817
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/4chan-llama3/loss": 1.9056864976882935
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/4chan-llama3/loss": 1.9000078439712524
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/4chan-llama3/loss": 1.8994956016540527
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/bpb": 0.6516211628913879
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/bpb": 0.6515381932258606
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/bpb": 0.650575578212738
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/bpb": 0.6499682068824768
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/bpb": 0.6492246389389038
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/bpb": 0.647942841053009
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/bpb": 0.6470497846603394
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/c4_100_domains-llama3/bpb": 0.6388566493988037
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/c4_100_domains-llama3/bpb": 0.6384979486465454
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/c4_100_domains-llama3/bpb": 0.6371968984603882
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/c4_100_domains-llama3/bpb": 0.6371828317642212
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/c4_100_domains-llama3/bpb": 0.636299729347229
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/c4_100_domains-llama3/bpb": 0.6354228258132935
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/c4_100_domains-llama3/bpb": 0.6345056891441345
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/c4_100_domains-llama3/loss": 2.0522477626800537
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/c4_100_domains-llama3/loss": 2.0510997772216797
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/c4_100_domains-llama3/loss": 2.0469183921813965
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/c4_100_domains-llama3/loss": 2.0468709468841553
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/c4_100_domains-llama3/loss": 2.0440361499786377
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/c4_100_domains-llama3/loss": 2.0412118434906006
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/c4_100_domains-llama3/loss": 2.038271188735962
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/c4_en-llama3/bpb": 0.683750569820404
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/c4_en-llama3/bpb": 0.6837071776390076
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/c4_en-llama3/bpb": 0.682544469833374
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/c4_en-llama3/bpb": 0.6827860474586487
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/c4_en-llama3/bpb": 0.6808956265449524
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/c4_en-llama3/bpb": 0.6802417039871216
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/c4_en-llama3/bpb": 0.6801221370697021
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/c4_en-llama3/loss": 2.221864938735962
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/c4_en-llama3/loss": 2.221724033355713
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/c4_en-llama3/loss": 2.2179458141326904
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/c4_en-llama3/loss": 2.2187306880950928
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/c4_en-llama3/loss": 2.212587594985962
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/c4_en-llama3/loss": 2.210462808609009
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/c4_en-llama3/loss": 2.2100741863250732
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/dolma-v1_5-llama3/bpb": 0.6232656240463257
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/dolma-v1_5-llama3/bpb": 0.6229240894317627
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/dolma-v1_5-llama3/bpb": 0.6210867166519165
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/dolma-v1_5-llama3/bpb": 0.6173650026321411
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/dolma-v1_5-llama3/bpb": 0.6175029277801514
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/dolma-v1_5-llama3/bpb": 0.6076837182044983
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/dolma-v1_5-llama3/bpb": 0.6118515133857727
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/dolma-v1_5-llama3/loss": 1.8615450859069824
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/dolma-v1_5-llama3/loss": 1.8605271577835083
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/dolma-v1_5-llama3/loss": 1.855082392692566
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/dolma-v1_5-llama3/loss": 1.8442507982254028
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/dolma-v1_5-llama3/loss": 1.844560980796814
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/dolma-v1_5-llama3/loss": 1.815740942955017
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/dolma-v1_5-llama3/loss": 1.8278264999389648
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/dolma_100_programing_languages-llama3/bpb": 0.33167025446891785
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/dolma_100_programing_languages-llama3/bpb": 0.33150357007980347
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/dolma_100_programing_languages-llama3/bpb": 0.3300682604312897
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/dolma_100_programing_languages-llama3/bpb": 0.33005499839782715
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/dolma_100_programing_languages-llama3/bpb": 0.32928329706192017
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/dolma_100_programing_languages-llama3/bpb": 0.32843297719955444
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/dolma_100_programing_languages-llama3/bpb": 0.32818907499313354
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/dolma_100_programing_languages-llama3/loss": 0.772901713848114
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/dolma_100_programing_languages-llama3/loss": 0.7724280953407288
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/dolma_100_programing_languages-llama3/loss": 0.7690221071243286
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/dolma_100_programing_languages-llama3/loss": 0.7690514922142029
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/dolma_100_programing_languages-llama3/loss": 0.7671268582344055
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/dolma_100_programing_languages-llama3/loss": 0.7652257084846497
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/dolma_100_programing_languages-llama3/loss": 0.7647014856338501
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/dolma_100_subreddits-llama3/bpb": 0.85911625623703
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/dolma_100_subreddits-llama3/bpb": 0.8591886162757874
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/dolma_100_subreddits-llama3/bpb": 0.8585459589958191
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/dolma_100_subreddits-llama3/bpb": 0.8581694960594177
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/dolma_100_subreddits-llama3/bpb": 0.8581557273864746
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/dolma_100_subreddits-llama3/bpb": 0.8571035861968994
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/dolma_100_subreddits-llama3/bpb": 0.8563908338546753
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/dolma_100_subreddits-llama3/loss": 2.618229866027832
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/dolma_100_subreddits-llama3/loss": 2.6184487342834473
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/dolma_100_subreddits-llama3/loss": 2.616494655609131
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/dolma_100_subreddits-llama3/loss": 2.6153452396392822
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/dolma_100_subreddits-llama3/loss": 2.615302801132202
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/dolma_100_subreddits-llama3/loss": 2.6120944023132324
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/dolma_100_subreddits-llama3/loss": 2.609924077987671
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/falcon-refinedweb-llama3/bpb": 0.7175517082214355
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/falcon-refinedweb-llama3/bpb": 0.717444121837616
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/falcon-refinedweb-llama3/bpb": 0.7139613628387451
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/falcon-refinedweb-llama3/bpb": 0.7155076265335083
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/falcon-refinedweb-llama3/bpb": 0.7154017686843872
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/falcon-refinedweb-llama3/bpb": 0.7143452167510986
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/falcon-refinedweb-llama3/bpb": 0.7140092253684998
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/falcon-refinedweb-llama3/loss": 2.249610185623169
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/falcon-refinedweb-llama3/loss": 2.2492728233337402
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/falcon-refinedweb-llama3/loss": 2.238353967666626
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/falcon-refinedweb-llama3/loss": 2.243201732635498
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/falcon-refinedweb-llama3/loss": 2.2428698539733887
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/falcon-refinedweb-llama3/loss": 2.2395572662353516
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/falcon-refinedweb-llama3/loss": 2.238503932952881
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/gab-llama3/bpb": 1.3432066440582275
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/gab-llama3/bpb": 1.3464175462722778
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/gab-llama3/bpb": 1.343135952949524
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/gab-llama3/bpb": 1.342307448387146
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/gab-llama3/bpb": 1.3422155380249023
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/gab-llama3/bpb": 1.3406708240509033
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/gab-llama3/bpb": 1.3368620872497559
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/gab-llama3/loss": 3.259669780731201
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/gab-llama3/loss": 3.2674617767333984
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/gab-llama3/loss": 3.259498119354248
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/gab-llama3/loss": 3.2574875354766846
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/gab-llama3/loss": 3.2572646141052246
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/gab-llama3/loss": 3.2535157203674316
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/gab-llama3/loss": 3.2442731857299805
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/m2d2_s2orc_unsplit-llama3/bpb": 0.5954180359840393
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/m2d2_s2orc_unsplit-llama3/bpb": 0.5955150127410889
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/m2d2_s2orc_unsplit-llama3/bpb": 0.5942746996879578
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/m2d2_s2orc_unsplit-llama3/bpb": 0.5945098400115967
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/m2d2_s2orc_unsplit-llama3/bpb": 0.5933513045310974
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/m2d2_s2orc_unsplit-llama3/bpb": 0.5925418138504028
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/m2d2_s2orc_unsplit-llama3/bpb": 0.5914876461029053
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/m2d2_s2orc_unsplit-llama3/loss": 1.8001322746276855
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/m2d2_s2orc_unsplit-llama3/loss": 1.8004151582717896
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/m2d2_s2orc_unsplit-llama3/loss": 1.796716332435608
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/m2d2_s2orc_unsplit-llama3/loss": 1.7973864078521729
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/m2d2_s2orc_unsplit-llama3/loss": 1.7939060926437378
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/m2d2_s2orc_unsplit-llama3/loss": 1.7914681434631348
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/m2d2_s2orc_unsplit-llama3/loss": 1.7882976531982422
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/m2d2_wikipedia_unsplit-llama3/bpb": 0.5719753503799438
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/m2d2_wikipedia_unsplit-llama3/bpb": 0.5712189674377441
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/m2d2_wikipedia_unsplit-llama3/bpb": 0.5690092444419861
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/m2d2_wikipedia_unsplit-llama3/bpb": 0.569334089756012
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/m2d2_wikipedia_unsplit-llama3/bpb": 0.5678156018257141
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/m2d2_wikipedia_unsplit-llama3/bpb": 0.56691974401474
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/m2d2_wikipedia_unsplit-llama3/bpb": 0.5652478337287903
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/m2d2_wikipedia_unsplit-llama3/loss": 1.7690691947937012
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/m2d2_wikipedia_unsplit-llama3/loss": 1.7667462825775146
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/m2d2_wikipedia_unsplit-llama3/loss": 1.7599031925201416
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/m2d2_wikipedia_unsplit-llama3/loss": 1.7609467506408691
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/m2d2_wikipedia_unsplit-llama3/loss": 1.7562403678894043
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/m2d2_wikipedia_unsplit-llama3/loss": 1.7534427642822266
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/m2d2_wikipedia_unsplit-llama3/loss": 1.7482709884643555
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/macro_bpb": 0.7860899567604065
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/macro_bpb": 0.7851399183273315
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/macro_bpb": 0.7868003845214844
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/macro_bpb": 0.7836735248565674
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/macro_bpb": 0.7809569239616394
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/macro_bpb": 0.7766333818435669
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/macro_bpb": 0.7771823406219482
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/macro_loss": 2.1642274856567383
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/macro_loss": 2.160857677459717
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/macro_loss": 2.164926767349243
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/macro_loss": 2.1569294929504395
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/macro_loss": 2.1482558250427246
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/macro_loss": 2.134350299835205
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/macro_loss": 2.137549638748169
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/manosphere_meta_sep-llama3/bpb": 0.8900679349899292
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/manosphere_meta_sep-llama3/bpb": 0.8902735114097595
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/manosphere_meta_sep-llama3/bpb": 0.8891058564186096
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/manosphere_meta_sep-llama3/bpb": 0.8882172703742981
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/manosphere_meta_sep-llama3/bpb": 0.8880575895309448
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/manosphere_meta_sep-llama3/bpb": 0.8879358172416687
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/manosphere_meta_sep-llama3/bpb": 0.886480450630188
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/manosphere_meta_sep-llama3/loss": 2.6067144870758057
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/manosphere_meta_sep-llama3/loss": 2.607316732406616
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/manosphere_meta_sep-llama3/loss": 2.6038970947265625
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/manosphere_meta_sep-llama3/loss": 2.601294755935669
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/manosphere_meta_sep-llama3/loss": 2.600827217102051
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/manosphere_meta_sep-llama3/loss": 2.600470542907715
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/manosphere_meta_sep-llama3/loss": 2.596208095550537
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/mc4-llama3/bpb": 0.6272891163825989
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/mc4-llama3/bpb": 0.6261802911758423
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/mc4-llama3/bpb": 0.6248724460601807
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/mc4-llama3/bpb": 0.6251419186592102
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/mc4-llama3/bpb": 0.6241022348403931
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/mc4-llama3/bpb": 0.6223634481430054
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/mc4-llama3/bpb": 0.6219444870948792
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/mc4-llama3/loss": 1.8199199438095093
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/mc4-llama3/loss": 1.816723108291626
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/mc4-llama3/loss": 1.8129172325134277
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/mc4-llama3/loss": 1.8137097358703613
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/mc4-llama3/loss": 1.8106708526611328
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/mc4-llama3/loss": 1.8056503534317017
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/mc4-llama3/loss": 1.8044251203536987
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/micro_loss": 1.910977840423584
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/micro_loss": 1.9106332063674927
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/micro_loss": 1.907555103302002
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/micro_loss": 1.9060841798782349
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/micro_loss": 1.9038418531417847
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/micro_loss": 1.8999786376953125
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/micro_loss": 1.8975248336791992
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/ptb-llama3/bpb": 0.6396011710166931
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/ptb-llama3/bpb": 0.625905454158783
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/ptb-llama3/bpb": 0.6457013487815857
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/ptb-llama3/bpb": 0.6536287665367126
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/ptb-llama3/bpb": 0.5984017848968506
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/ptb-llama3/bpb": 0.5382734537124634
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/ptb-llama3/bpb": 0.5958104133605957
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/ptb-llama3/loss": 2.0344715118408203
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/ptb-llama3/loss": 1.9909075498580933
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/ptb-llama3/loss": 2.053875207901001
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/ptb-llama3/loss": 2.0790913105010986
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/ptb-llama3/loss": 1.9034225940704346
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/ptb-llama3/loss": 1.7121638059616089
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/ptb-llama3/loss": 1.8951798677444458
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/redpajama-llama3/bpb": 0.548010528087616
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/redpajama-llama3/bpb": 0.546907365322113
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/redpajama-llama3/bpb": 0.545819103717804
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/redpajama-llama3/bpb": 0.5460847020149231
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/redpajama-llama3/bpb": 0.5457654595375061
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/redpajama-llama3/bpb": 0.5443781614303589
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/redpajama-llama3/bpb": 0.5432884097099304
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/redpajama-llama3/loss": 1.5969617366790771
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/redpajama-llama3/loss": 1.5937471389770508
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/redpajama-llama3/loss": 1.5905756950378418
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/redpajama-llama3/loss": 1.5913498401641846
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/redpajama-llama3/loss": 1.5904195308685303
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/redpajama-llama3/loss": 1.586376667022705
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/redpajama-llama3/loss": 1.5832010507583618
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/twitterAAE_HELM_fixed-llama3/bpb": 2.17471981048584
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/twitterAAE_HELM_fixed-llama3/bpb": 2.177720069885254
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/twitterAAE_HELM_fixed-llama3/bpb": 2.2005388736724854
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/twitterAAE_HELM_fixed-llama3/bpb": 2.1757216453552246
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/twitterAAE_HELM_fixed-llama3/bpb": 2.1761646270751953
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/twitterAAE_HELM_fixed-llama3/bpb": 2.184868574142456
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/twitterAAE_HELM_fixed-llama3/bpb": 2.1681292057037354
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/twitterAAE_HELM_fixed-llama3/loss": 4.441050052642822
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/twitterAAE_HELM_fixed-llama3/loss": 4.447176933288574
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/twitterAAE_HELM_fixed-llama3/loss": 4.493775844573975
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/twitterAAE_HELM_fixed-llama3/loss": 4.443096160888672
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/twitterAAE_HELM_fixed-llama3/loss": 4.444001197814941
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/twitterAAE_HELM_fixed-llama3/loss": 4.461775302886963
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/twitterAAE_HELM_fixed-llama3/loss": 4.427591323852539
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/wikitext_103-llama3/bpb": 0.5141016840934753
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/wikitext_103-llama3/bpb": 0.5092375874519348
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/wikitext_103-llama3/bpb": 0.5148196220397949
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/wikitext_103-llama3/bpb": 0.4847782254219055
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/wikitext_103-llama3/bpb": 0.5034553408622742
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/wikitext_103-llama3/bpb": 0.5089477896690369
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/wikitext_103-llama3/bpb": 0.48481422662734985
+      }
+    ],
+    [
+      {
+        "_step": 194999,
+        "eval_dropless/paloma/wikitext_103-llama3/loss": 1.6166458129882812
+      },
+      {
+        "_step": 197999,
+        "eval_dropless/paloma/wikitext_103-llama3/loss": 1.6013500690460205
+      },
+      {
+        "_step": 200999,
+        "eval_dropless/paloma/wikitext_103-llama3/loss": 1.6189035177230835
+      },
+      {
+        "_step": 203999,
+        "eval_dropless/paloma/wikitext_103-llama3/loss": 1.524435043334961
+      },
+      {
+        "_step": 206999,
+        "eval_dropless/paloma/wikitext_103-llama3/loss": 1.583167314529419
+      },
+      {
+        "_step": 209999,
+        "eval_dropless/paloma/wikitext_103-llama3/loss": 1.6004389524459839
+      },
+      {
+        "_step": 212999,
+        "eval_dropless/paloma/wikitext_103-llama3/loss": 1.5245482921600342
+      }
+    ]
+  ]
+}

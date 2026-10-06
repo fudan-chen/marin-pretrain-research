@@ -1,0 +1,42 @@
+{
+  "checked_utc": "2026-10-06T16:31:57.548148+00:00",
+  "results": [
+    {
+      "issue": 8435,
+      "comment_count": 27,
+      "body_changed": false,
+      "added_ids": [],
+      "removed_ids": [],
+      "changed_ids": [],
+      "updated_at": "2026-10-01T00:40:47Z",
+      "url": "https://github.com/marin-community/marin/issues/8435"
+    },
+    {
+      "issue": 8506,
+      "comment_count": 58,
+      "body_changed": false,
+      "added_ids": [],
+      "removed_ids": [],
+      "changed_ids": [],
+      "updated_at": "2026-10-03T11:27:20Z",
+      "url": "https://github.com/marin-community/marin/issues/8506"
+    },
+    {
+      "issue": 8870,
+      "comment_count": 30,
+      "body_changed": false,
+      "added_ids": [],
+      "removed_ids": [],
+      "changed_ids": [],
+      "updated_at": "2026-09-24T00:09:31Z",
+      "url": "https://github.com/marin-community/marin/issues/8870"
+    },
+    {
+      "run": "hero-fa4sm100-nomask-step146k",
+      "state": "running",
+      "heartbeat": "2026-10-06T16:31:53Z",
+      "summary_step": 214904,
+      "nominal_tokens": 9915145912320.0
+    }
+  ]
+}

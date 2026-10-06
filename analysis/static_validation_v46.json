@@ -1,0 +1,20 @@
+{
+  "scope": "V46 static HTML chapter/tables/inline SVG only; PNG viewed separately",
+  "actual_browser_rendering": null,
+  "pages": {
+    "index.html": {
+      "chapter": true,
+      "tables": 3,
+      "inline_figure": true,
+      "synthesis_first": true,
+      "sha256": "81ea7d698041d35a12b4bdfb5e0a62479235a1c51a877c3f668bd50e301cf614"
+    },
+    "report_standalone.html": {
+      "chapter": true,
+      "tables": 3,
+      "inline_figure": true,
+      "synthesis_first": true,
+      "sha256": "f7a2d9fe1610f1ef6fa540addede23e180d8072c0aeca77620c4205cb55fc276"
+    }
+  }
+}

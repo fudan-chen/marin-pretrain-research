@@ -1,0 +1,33 @@
+{
+  "version": "V81",
+  "created_utc": "2026-10-06T21:55:21.725672+00:00",
+  "goal_status": "active",
+  "scope": "Same-head original router, actual portable expert and exact/expert-side weight cotangents through normalized router VJP on CPU; synthetic local rows and dout",
+  "checks_passed": 1531,
+  "cpu_checks": 17,
+  "new_source_acquisitions": 0,
+  "source_files": 480,
+  "actual_GPU_execution": null,
+  "actual_Hero_precision_incident": null,
+  "actual_optimizer_update": null,
+  "actual_browser_rendering": null,
+  "artifact_sha256": {
+    "README.md": "af0c54f37e43df4b281a6cc60b7a8fd3a995a64a7fff920895f4f12f38db29ee",
+    "DELIVERY_AUDIT_ZH.md": "787eb01cc7f5146db690cb487727cfe532cdb560e9280abbb9cd7614299e09a8",
+    "IMPROVEMENT_LOG_ZH.md": "9f3c44c32ce44868c74bf16558121e2dd7ea2783cef0ecab97076b5baf116edc",
+    "PIPELINE_ZH.md": "21959dc97f0739c5e141d1d5dc5298422168f474e642e9ef4e04155d5a2fb029",
+    "RECENT_MOE_CHANGES_ZH.md": "6ffc9fd0f239d7e23395acf9fa66fec083876c2e31bbc5247b229811c1d2630b",
+    "ROUTING_DROPS_ZH.md": "0ff9394e8253000d9175490acc10b33d19f27b450772a6a1c4b2cdb5277403ce",
+    "RUBRICS_ZH.md": "f9d231986c5722c2015ccbc896fefcc38620cb5f3254ff23b03e94a73d39389a",
+    "Makefile": "f54ba4b9db568d7063793587979e3630c3dfe0c784817c06b2db03e6bf3c2090",
+    "scripts/probe_portable_router_precision_cpu.py": "cf1322883d03fd973970c6190ad070ee95f33c607489c83eb1813a819727f085",
+    "scripts/probe_portable_expert_mlp_cpu.py": "dc1f1f6a8bf0cbc3446d5fd8bb3ebf8781346db2b0fb5f785d68798c455dd0e4",
+    "scripts/probe_post_clip_router_cpu.py": "30464a915388a3c5d28323edea45548a9294087971dd49ee3f516aa1cf2ce88a",
+    "scripts/validate.py": "92dfa61171b58497cc28d2c540ccfdaaf5d831dc7a2ca221aae54424593f7d84",
+    "analysis/portable_router_precision_cpu.json": "73b8039addbc55d0a51085ae4b050cb1f0720cf5dcdbd70804f89bf56e4e8942",
+    "analysis/static_validation_v81.json": "2a95a98f5fea280d2d84cf5c6a09433b30e39d46aa8242991f7e6f1689956194",
+    "analysis/validation.json": "0027096a09bd3a145ccea9f8f1aa8023792f01e00e30eaf98655b9706837c144",
+    "index.html": "5beed568f4f969ee70df5f053c8411f8f9d467e48799d0fd4ea47decd9bb3fba",
+    "report_standalone.html": "c9f0eb49c4becc9c693979fe8e83e226fa4c008a2bfb4b6aad670b61a0d2a726"
+  }
+}

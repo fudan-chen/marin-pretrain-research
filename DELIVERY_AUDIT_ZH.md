@@ -93,3 +93,6 @@ V52新增原异步loader host控制11项，人工store/layout/结果适配边界
 
 
 V80交付增补：原route/mask/portable combine15项CPU检查，合成输出、固定接受mask；数值图已目视核查，真实浏览器呈现未验证。来源复用固定head归档，未新增来源。范围与结果见[路由权重章节](ROUTING_DROPS_ZH.md)，真实域偏置、GPU和优化器更新仍未知。
+
+
+V81增补：原router和实际portable专家在同head接通，17项CPU检查及九组精度数值表。原乘法/cast语句直接AST执行；真实collective、GPU、模型loss、更新和Hero事件仍未知。来源复用，未新增来源归档。

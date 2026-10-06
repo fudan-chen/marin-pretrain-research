@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1527,
+  "checks_passed": 1531,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -128,7 +128,8 @@
     "V77 sixteen new public acquisitions and twelve checks; new NoExecute retry report, unmerged closure, doc-only computational AST comparison and portable residual scope correction; no production logs, GPU or deployment proof",
     "V78 fourteen original portable expert/CPU ragged wrapper checks and measured finite-element figure; dense gradient reference, allowed inactive row-dot and saved-output control, no GPU/transport/production proof",
     "V79 ten original JAX clip/offset/chunk-plan checks with host identity replay and measured capacity figure; local capacity and numbering policy, no collective/GPU/domain-bias proof",
-    "V80 fifteen original route/mask/portable combine CPU checks; retained mass and normalization gradients, no production/GPU attribution"
+    "V80 fifteen original route/mask/portable combine CPU checks; retained mass and normalization gradients, no production/GPU attribution",
+    "V81 seventeen same-head router and actual portable expert CPU checks; nine positive-weight precision controls plus accepted-zero boundary, no optimizer/GPU/production claim"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

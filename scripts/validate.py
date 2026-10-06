@@ -1024,6 +1024,13 @@ ok('V80 dropped selected logit retains normalization gradient',pcc['keep_first']
 ok('V80 same count drops differ in weight mass and output',pcc['keep_first']['retained_weight_mass']>pcc['keep_second']['retained_weight_mass'] and pcc['keep_first']['output']>pcc['keep_second']['output'])
 ok('V80 altered renormalization explicitly separate and figure present',pc['post_clip_renormalized_control']['output']==7.5 and pc['post_clip_renormalized_control']['upstream_fix'] is False and soup.select_one('#routing-guide #postclip-figure_1') is not None)
 report['highlights']+=['V80 fifteen original route/mask/portable combine CPU checks; retained mass and normalization gradients, no production/GPU attribution']
+pp=read(A/'portable_router_precision_cpu.json')
+ok('V81 same-head real portable router controls source bound',pp['checks_passed']==len(pp['checks'])==17 and len(pp['cases'])==9 and pp['actual_GPU_execution'] is None and pp['actual_Hero_precision_incident'] is None and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in pp['source_sha256'].items()))
+ph=[c for c in pp['cases'] if c['dtype']=='float16']
+ok('V81 float16 positive weight weighted cotangent vanishes and reaches router',ph[-1]['weights'][0][1]>0 and ph[-1]['weighted_cotangent_sorted'][0][0]==0 and ph[-1]['dweight_expert_side'][0][1]==0 and ph[-1]['router_gradient_delta_norm']>0)
+ok('V81 rounded-up subnormal amplifies local recovered gradient',ph[1]['dweight_expert_side'][0][1]>1.9*ph[1]['dweight_exact'][0][1] and len(pp['original_combine_transpose_statements'])==3)
+ok('V81 finite ordinary expert gradients retained across all controls',all(c['ordinary_gradients_finite'] for c in pp['cases']) and 'V81' in soup.select_one('#routing-guide').get_text())
+report['highlights']+=['V81 seventeen same-head router and actual portable expert CPU checks; nine positive-weight precision controls plus accepted-zero boundary, no optimizer/GPU/production claim']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

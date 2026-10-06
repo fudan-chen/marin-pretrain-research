@@ -1,0 +1,53 @@
+"""Same-head original router + actual portable expert forward/backward + caller gradient.
+CPU synthetic local two-row fixture; no collective, GPU, optimizer or model loss.
+"""
+import ast,hashlib,json,pathlib,types
+import jax,jax.numpy as jnp,numpy as np
+import probe_portable_expert_mlp_cpu as expert
+import probe_post_clip_router_cpu as route
+R=pathlib.Path(__file__).resolve().parents[1]
+tree=ast.parse(expert.P.read_text())
+assignment=next(n for n in ast.walk(tree) if isinstance(n,ast.Assign) and any(isinstance(t,ast.Name) and t.id=='sorted_weights' for t in n.targets))
+parent_body=next(v for n in ast.walk(tree) for field,v in ast.iter_fields(n) if isinstance(v,list) and assignment in v)
+at=parent_body.index(assignment);multiply_nodes=parent_body[at:at+3]
+multiply_code=compile(ast.fix_missing_locations(ast.Module(body=multiply_nodes,type_ignores=[])),str(expert.P),'exec')
+def weighted_cotangent(dout,wf,sort,dtype):
+ env={'jnp':jnp,'weights_f32':wf,'routing':types.SimpleNamespace(sorted_indices=sort),'layout':types.SimpleNamespace(topk=2),'out_cotangent':dout}
+ exec(multiply_code,env);return env['returned_cotangent']
+def main():
+ checks=[];cases=[]
+ def check(n,c):assert c,n;checks.append(n)
+ for dtype in [jnp.float32,jnp.bfloat16,jnp.float16]:
+  x=jnp.ones((1,1),dtype);p=jnp.array([[-12.,0.,-20.]],jnp.float32)
+  def weights(rr):return route.ns['route'](route.recipe,x,rr,route.bias)[1]
+  w,pb=jax.vjp(weights,p);ids=route.ns['route'](route.recipe,x,p,route.bias)[0];sort=jnp.argsort(ids.reshape(-1));positions=jnp.argsort(sort)
+  xx=jnp.ones((2,1),dtype);w13=jnp.ones((2,1,2),dtype);w2=jnp.ones((2,1,1),dtype);sizes=jnp.ones(2,jnp.int32)
+  out,res=expert.model.forward(xx,w13,w2,sizes,sizes)
+  check(str(dtype)+' original experts produce equal finite outputs',bool(jnp.all(jnp.isfinite(out))) and float(out[0,0])==float(out[1,0]))
+  for scale in [1.,.001,.00001]:
+   dout=jnp.full((1,1),scale,dtype);wf=w.astype(jnp.float32)
+   # Original non-Sonic combine-transpose multiply and cotangent cast.
+   dy=weighted_cotangent(dout,wf,sort,dtype)
+   ordinary=expert.model.backward(res,dy)
+   rowdot=ordinary[3][positions].reshape(w.shape)
+   candidate=expert.restore_weight_gradient(rowdot,wf,jnp.ones_like(w,dtype=bool)).astype(w.dtype)
+   def combine(w32):return route.ns['_unpermute_from_global_expert'](out,sort,w32,jnp.ones_like(w,dtype=bool),tokens_per_shard=1,topk=2)
+   combined,cpb=jax.vjp(combine,wf)
+   exact=cpb(dout.astype(combined.dtype))[0].astype(w.dtype)
+   ge=pb(exact)[0];gc=pb(candidate)[0]
+   cases.append({'dtype':str(jnp.dtype(dtype)),'dout':float(dout[0,0]),'selected_experts':ids.tolist(),'weights':w.astype(jnp.float32).tolist(),'expert_outputs_sorted':out.astype(jnp.float32).tolist(),'weighted_cotangent_sorted':dy.astype(jnp.float32).tolist(),'dweight_exact':exact.astype(jnp.float32).tolist(),'dweight_expert_side':candidate.astype(jnp.float32).tolist(),'router_gradient_exact':ge.tolist(),'router_gradient_expert_side':gc.tolist(),'router_gradient_delta_norm':float(jnp.linalg.norm(gc-ge)),'ordinary_gradients_finite':all(np.isfinite(np.asarray(g)).all() for g in ordinary[:3])})
+   check(str(dtype)+'/'+str(scale)+' ordinary expert gradients finite',cases[-1]['ordinary_gradients_finite'])
+  # Independent zero-weight boundary: no assertion about reaching this via actual router.
+  zero_w=jnp.array([[1.,0.]],dtype);dout=jnp.ones((1,1),dtype)
+  dy=weighted_cotangent(dout,zero_w.astype(jnp.float32),sort,dtype)
+  rowdot=expert.model.backward(res,dy)[3][positions].reshape(zero_w.shape)
+  candidate=expert.restore_weight_gradient(rowdot,zero_w.astype(jnp.float32),jnp.ones_like(zero_w,dtype=bool))
+  exact=jax.grad(lambda w:jnp.sum(route.ns['_unpermute_from_global_expert'](out,sort,w,jnp.ones_like(w,dtype=bool),tokens_per_shard=1,topk=2)))(zero_w.astype(jnp.float32))
+  check(str(dtype)+' accepted zero weight differs between original EXACT and EXPERT_SIDE',float(exact[0,1])>0 and float(candidate[0,1])==0)
+ under=next(c for c in cases if c['dtype']=='float16' and c['dout']<2e-5)
+ check('Positive selected float16 weight has zero weighted cotangent in actual portable backward',min(under['weights'][0])>0 and 0 in [x[0] for x in under['weighted_cotangent_sorted']])
+ check('Local error propagates through original normalized router VJP',under['router_gradient_delta_norm']>0)
+ o={'scope':__doc__,'checks_passed':len(checks),'checks':checks,'runtime':{'jax':jax.__version__,'backend':jax.default_backend()},'cases':cases,'original_combine_transpose_statements':[ast.unparse(n) for n in multiply_nodes],'source_sha256':{str(p.relative_to(R)):hashlib.sha256(p.read_bytes()).hexdigest() for p in [expert.P,expert.W,route.M]},'explicit_substitutions':['synthetic scalar equal-output experts using actual portable SiLU/ragged_dot MLP','two active local rows, identity receiver-to-assignment transfer with explicit selected-order permutation','no Sonic or QuACK; original CPU XLA wrapper','manual accepted-zero-weight controls are not generated by router','dout is supplied, not language loss autodiff'],'actual_GPU_execution':None,'actual_Hero_precision_incident':None,'actual_optimizer_update':None}
+ (R/'analysis/portable_router_precision_cpu.json').write_text(json.dumps(o,indent=2)+'\n')
+ print(json.dumps({'checks_passed':len(checks),'cases':cases},indent=2))
+if __name__=='__main__':main()

@@ -246,3 +246,6 @@ V77澄清portable保存输出。现在执行固定PR head的原 `_RaggedDotExper
 先固定backend、activation、dtype及物理/active布局，说明padding仅在静态尾部；核对原前向与独立分组参考；再用尾部NaN检验所有有效输出和普通参数梯度；单独核对row-dot的输出scale导数；最后检查caller的accepted/索引/非零权重合同，再扩大到真实collective、recompute与GPU。实际batch或配比改变active分布后，要在新负载下重新审查这些边界，而不是把局部通过当作所有配比下的性能和质量保证。
 
 本轮新增一份固定head包装源码，旧477份非bookkeeping来源保持原字节，来源总数479；实际生产输入、通信poison、GPU与节省内存量仍未知。复现：`make portable-expert-cpu CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。
+
+
+V81将同一head原router接到实际portable MLP，再比较EXACT与EXPERT_SIDE的权重和router梯度。FP16控制出现乘积向上舍入与归零两类差异，BF16控制有非下溢舍入差；详见[同版本精度链](ROUTING_DROPS_ZH.md)。17项CPU检查不证明GPU或优化器更新等价。

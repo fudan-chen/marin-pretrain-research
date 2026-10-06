@@ -1,0 +1,589 @@
+{
+  "scope": "Same-head original router + actual portable expert forward/backward + caller gradient.\nCPU synthetic local two-row fixture; no collective, GPU, optimizer or model loss.\n",
+  "checks_passed": 17,
+  "checks": [
+    "<class 'jax.numpy.float32'> original experts produce equal finite outputs",
+    "<class 'jax.numpy.float32'>/1.0 ordinary expert gradients finite",
+    "<class 'jax.numpy.float32'>/0.001 ordinary expert gradients finite",
+    "<class 'jax.numpy.float32'>/1e-05 ordinary expert gradients finite",
+    "<class 'jax.numpy.float32'> accepted zero weight differs between original EXACT and EXPERT_SIDE",
+    "<class 'jax.numpy.bfloat16'> original experts produce equal finite outputs",
+    "<class 'jax.numpy.bfloat16'>/1.0 ordinary expert gradients finite",
+    "<class 'jax.numpy.bfloat16'>/0.001 ordinary expert gradients finite",
+    "<class 'jax.numpy.bfloat16'>/1e-05 ordinary expert gradients finite",
+    "<class 'jax.numpy.bfloat16'> accepted zero weight differs between original EXACT and EXPERT_SIDE",
+    "<class 'jax.numpy.float16'> original experts produce equal finite outputs",
+    "<class 'jax.numpy.float16'>/1.0 ordinary expert gradients finite",
+    "<class 'jax.numpy.float16'>/0.001 ordinary expert gradients finite",
+    "<class 'jax.numpy.float16'>/1e-05 ordinary expert gradients finite",
+    "<class 'jax.numpy.float16'> accepted zero weight differs between original EXACT and EXPERT_SIDE",
+    "Positive selected float16 weight has zero weighted cotangent in actual portable backward",
+    "Local error propagates through original normalized router VJP"
+  ],
+  "runtime": {
+    "jax": "0.7.2",
+    "backend": "cpu"
+  },
+  "cases": [
+    {
+      "dtype": "float32",
+      "dout": 1.0,
+      "selected_experts": [
+        [
+          1,
+          0
+        ]
+      ],
+      "weights": [
+        [
+          2.499969244003296,
+          3.0720493668923154e-05
+        ]
+      ],
+      "expert_outputs_sorted": [
+        [
+          0.7310585975646973
+        ],
+        [
+          0.7310585975646973
+        ]
+      ],
+      "weighted_cotangent_sorted": [
+        [
+          3.0720493668923154e-05
+        ],
+        [
+          2.499969244003296
+        ]
+      ],
+      "dweight_exact": [
+        [
+          0.7310585975646973,
+          0.7310585975646973
+        ]
+      ],
+      "dweight_expert_side": [
+        [
+          0.7310585975646973,
+          0.7310585975646973
+        ]
+      ],
+      "router_gradient_exact": [
+        [
+          -1.4648762888466726e-12,
+          -5.960464477539063e-08,
+          0.0
+        ]
+      ],
+      "router_gradient_expert_side": [
+        [
+          -1.4648762888466726e-12,
+          -5.960464477539063e-08,
+          0.0
+        ]
+      ],
+      "router_gradient_delta_norm": 0.0,
+      "ordinary_gradients_finite": true
+    },
+    {
+      "dtype": "float32",
+      "dout": 0.0010000000474974513,
+      "selected_experts": [
+        [
+          1,
+          0
+        ]
+      ],
+      "weights": [
+        [
+          2.499969244003296,
+          3.0720493668923154e-05
+        ]
+      ],
+      "expert_outputs_sorted": [
+        [
+          0.7310585975646973
+        ],
+        [
+          0.7310585975646973
+        ]
+      ],
+      "weighted_cotangent_sorted": [
+        [
+          3.072049636898555e-08
+        ],
+        [
+          0.002499969443306327
+        ]
+      ],
+      "dweight_exact": [
+        [
+          0.0007310586515814066,
+          0.0007310586515814066
+        ]
+      ],
+      "dweight_expert_side": [
+        [
+          0.0007310586515814066,
+          0.0007310586515814066
+        ]
+      ],
+      "router_gradient_exact": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "router_gradient_expert_side": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "router_gradient_delta_norm": 0.0,
+      "ordinary_gradients_finite": true
+    },
+    {
+      "dtype": "float32",
+      "dout": 9.999999747378752e-06,
+      "selected_experts": [
+        [
+          1,
+          0
+        ]
+      ],
+      "weights": [
+        [
+          2.499969244003296,
+          3.0720493668923154e-05
+        ]
+      ],
+      "expert_outputs_sorted": [
+        [
+          0.7310585975646973
+        ],
+        [
+          0.7310585975646973
+        ]
+      ],
+      "weighted_cotangent_sorted": [
+        [
+          3.072049281627187e-10
+        ],
+        [
+          2.499969195923768e-05
+        ]
+      ],
+      "dweight_exact": [
+        [
+          7.310585715458728e-06,
+          7.310585715458728e-06
+        ]
+      ],
+      "dweight_expert_side": [
+        [
+          7.310585715458728e-06,
+          7.310585715458728e-06
+        ]
+      ],
+      "router_gradient_exact": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "router_gradient_expert_side": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "router_gradient_delta_norm": 0.0,
+      "ordinary_gradients_finite": true
+    },
+    {
+      "dtype": "bfloat16",
+      "dout": 1.0,
+      "selected_experts": [
+        [
+          1,
+          0
+        ]
+      ],
+      "weights": [
+        [
+          2.5,
+          3.075599670410156e-05
+        ]
+      ],
+      "expert_outputs_sorted": [
+        [
+          0.73046875
+        ],
+        [
+          0.73046875
+        ]
+      ],
+      "weighted_cotangent_sorted": [
+        [
+          3.075599670410156e-05
+        ],
+        [
+          2.5
+        ]
+      ],
+      "dweight_exact": [
+        [
+          0.73046875,
+          0.73046875
+        ]
+      ],
+      "dweight_expert_side": [
+        [
+          0.73046875,
+          0.73046875
+        ]
+      ],
+      "router_gradient_exact": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "router_gradient_expert_side": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "router_gradient_delta_norm": 0.0,
+      "ordinary_gradients_finite": true
+    },
+    {
+      "dtype": "bfloat16",
+      "dout": 0.00099945068359375,
+      "selected_experts": [
+        [
+          1,
+          0
+        ]
+      ],
+      "weights": [
+        [
+          2.5,
+          3.075599670410156e-05
+        ]
+      ],
+      "expert_outputs_sorted": [
+        [
+          0.73046875
+        ],
+        [
+          0.73046875
+        ]
+      ],
+      "weighted_cotangent_sorted": [
+        [
+          3.073364496231079e-08
+        ],
+        [
+          0.00250244140625
+        ]
+      ],
+      "dweight_exact": [
+        [
+          0.000728607177734375,
+          0.000728607177734375
+        ]
+      ],
+      "dweight_expert_side": [
+        [
+          0.000732421875,
+          0.000728607177734375
+        ]
+      ],
+      "router_gradient_exact": [
+        [
+          -1.4305432508268288e-15,
+          -5.820766091346741e-11,
+          0.0
+        ]
+      ],
+      "router_gradient_expert_side": [
+        [
+          -1.1718724601816888e-10,
+          0.0,
+          0.0
+        ]
+      ],
+      "router_gradient_delta_norm": 1.3084588967871014e-10,
+      "ordinary_gradients_finite": true
+    },
+    {
+      "dtype": "bfloat16",
+      "dout": 1.0013580322265625e-05,
+      "selected_experts": [
+        [
+          1,
+          0
+        ]
+      ],
+      "weights": [
+        [
+          2.5,
+          3.075599670410156e-05
+        ]
+      ],
+      "expert_outputs_sorted": [
+        [
+          0.73046875
+        ],
+        [
+          0.73046875
+        ]
+      ],
+      "weighted_cotangent_sorted": [
+        [
+          3.0740920919924974e-10
+        ],
+        [
+          2.5033950805664062e-05
+        ]
+      ],
+      "dweight_exact": [
+        [
+          7.3015689849853516e-06,
+          7.3015689849853516e-06
+        ]
+      ],
+      "dweight_expert_side": [
+        [
+          7.3015689849853516e-06,
+          7.3015689849853516e-06
+        ]
+      ],
+      "router_gradient_exact": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "router_gradient_expert_side": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "router_gradient_delta_norm": 0.0,
+      "ordinary_gradients_finite": true
+    },
+    {
+      "dtype": "float16",
+      "dout": 1.0,
+      "selected_experts": [
+        [
+          1,
+          0
+        ]
+      ],
+      "weights": [
+        [
+          2.5,
+          3.069639205932617e-05
+        ]
+      ],
+      "expert_outputs_sorted": [
+        [
+          0.73095703125
+        ],
+        [
+          0.73095703125
+        ]
+      ],
+      "weighted_cotangent_sorted": [
+        [
+          3.069639205932617e-05
+        ],
+        [
+          2.5
+        ]
+      ],
+      "dweight_exact": [
+        [
+          0.73095703125,
+          0.73095703125
+        ]
+      ],
+      "dweight_expert_side": [
+        [
+          0.73095703125,
+          0.73095703125
+        ]
+      ],
+      "router_gradient_exact": [
+        [
+          -1.4648762888466726e-12,
+          -5.960464477539063e-08,
+          0.0
+        ]
+      ],
+      "router_gradient_expert_side": [
+        [
+          -1.4648762888466726e-12,
+          -5.960464477539063e-08,
+          0.0
+        ]
+      ],
+      "router_gradient_delta_norm": 0.0,
+      "ordinary_gradients_finite": true
+    },
+    {
+      "dtype": "float16",
+      "dout": 0.0010004043579101562,
+      "selected_experts": [
+        [
+          1,
+          0
+        ]
+      ],
+      "weights": [
+        [
+          2.5,
+          3.069639205932617e-05
+        ]
+      ],
+      "expert_outputs_sorted": [
+        [
+          0.73095703125
+        ],
+        [
+          0.73095703125
+        ]
+      ],
+      "weighted_cotangent_sorted": [
+        [
+          5.960464477539063e-08
+        ],
+        [
+          0.0025005340576171875
+        ]
+      ],
+      "dweight_exact": [
+        [
+          0.0007314682006835938,
+          0.0007314682006835938
+        ]
+      ],
+      "dweight_expert_side": [
+        [
+          0.0007309913635253906,
+          0.0014190673828125
+        ]
+      ],
+      "router_gradient_exact": [
+        [
+          1.4305432508268288e-15,
+          5.820766091346741e-11,
+          0.0
+        ]
+      ],
+      "router_gradient_expert_side": [
+        [
+          2.113764452360556e-08,
+          -1.0652001947164536e-08,
+          0.0
+        ]
+      ],
+      "router_gradient_delta_norm": 2.3696170359244206e-08,
+      "ordinary_gradients_finite": true
+    },
+    {
+      "dtype": "float16",
+      "dout": 1.0013580322265625e-05,
+      "selected_experts": [
+        [
+          1,
+          0
+        ]
+      ],
+      "weights": [
+        [
+          2.5,
+          3.069639205932617e-05
+        ]
+      ],
+      "expert_outputs_sorted": [
+        [
+          0.73095703125
+        ],
+        [
+          0.73095703125
+        ]
+      ],
+      "weighted_cotangent_sorted": [
+        [
+          0.0
+        ],
+        [
+          2.5033950805664062e-05
+        ]
+      ],
+      "dweight_exact": [
+        [
+          7.331371307373047e-06,
+          7.331371307373047e-06
+        ]
+      ],
+      "dweight_expert_side": [
+        [
+          7.331371307373047e-06,
+          0.0
+        ]
+      ],
+      "router_gradient_exact": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "router_gradient_expert_side": [
+        [
+          -2.252191905194323e-10,
+          1.127773430198431e-10,
+          0.0
+        ]
+      ],
+      "router_gradient_delta_norm": 2.518777686422169e-10,
+      "ordinary_gradients_finite": true
+    }
+  ],
+  "original_combine_transpose_statements": [
+    "sorted_weights = weights_f32.reshape(-1)[routing.sorted_indices]",
+    "token_cotangent = out_cotangent[routing.sorted_indices // layout.topk].astype(jnp.float32)",
+    "returned_cotangent = (token_cotangent * sorted_weights[:, None]).astype(out_cotangent.dtype)"
+  ],
+  "source_sha256": {
+    "sources/engineering_v77_2026_10_07/current_ep_ragged_all_to_all.py": "aa8331d5d7f4d18c4aef2f401271411539ad637c4e458b3f6a33585d2d3ae9cf",
+    "sources/portable_ep_2026_10_07/ragged_dot.py": "c12a1370bf77f3b775358b20e8900b255af80cfd7bbfe0777a8ee046ddf8ec28",
+    "sources/engineering_v77_2026_10_07/current_grug_moe.py": "d2c5f391186488a806116874c971f7e704b0cdc474b70515e3354391f3bbba2d"
+  },
+  "explicit_substitutions": [
+    "synthetic scalar equal-output experts using actual portable SiLU/ragged_dot MLP",
+    "two active local rows, identity receiver-to-assignment transfer with explicit selected-order permutation",
+    "no Sonic or QuACK; original CPU XLA wrapper",
+    "manual accepted-zero-weight controls are not generated by router",
+    "dout is supplied, not language loss autodiff"
+  ],
+  "actual_GPU_execution": null,
+  "actual_Hero_precision_incident": null,
+  "actual_optimizer_update": null
+}

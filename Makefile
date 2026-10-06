@@ -229,3 +229,7 @@ receiver-layout-cpu:
 post-clip-router-cpu:
 	$(CPU_PYTHON) scripts/probe_post_clip_router_cpu.py
 	$(PYTHON) scripts/plot_post_clip_router.py
+
+.PHONY: portable-router-precision-cpu
+portable-router-precision-cpu:
+	$(CPU_PYTHON) scripts/probe_portable_router_precision_cpu.py

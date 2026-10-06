@@ -167,3 +167,39 @@ V79验证了哪些assignment能进入专家计算。本节再沿权重路径追�
 这些量是定位线索，不能直接作为配比奖励或把被丢assignment从目标token分母扣掉。正确的下一步是绑定样本/领域身份，比较相同checkpoint和相同样本下接受mask、保留质量、输出差异、router及专家梯度；再验证GPU实现和独立固定评估。真实Hero的这些记录仍缺失，本控制没有测得实际域偏置或配比收益。
 
 验收规则：区分“assignment权重梯度”“已选logit梯度”“专家参数梯度”和“总模型梯度”；容量/分块/重编号改变后，同时比较接受身份和权重质量。若提出裁剪后归一化，应作为训练函数变更单独评审，不以drop减少或有限梯度替代模型收益。复现：`make post-clip-router-cpu CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。
+
+
+## V81：把精度误差接到实际 portable 专家，再传回 router
+
+V58使用标量控制，V60使用常量专家输出，V78执行实际portable专家但有效权重均为正且采用FP32。本轮把同一固定head的原route、原portable专家forward/backward、原combine transpose三条语句，以及原EXPERT_SIDE除法/选择接在一起；EXACT权重梯度由原portable combine的JAX VJP得到，再分别通过原route的VJP传回FP32 router参数。[探针](scripts/probe_portable_router_precision_cpu.py)与[完整数值](analysis/portable_router_precision_cpu.json)保留来源SHA和替代依赖。共17项检查，没有实际collective、Sonic、QuACK、语言loss或优化器。
+
+### 相同专家输出，本来不应靠权重比例区分两者
+
+人工router参数为[-12,0,-20]，top-2顺序是[1,0]。两专家均为hidden=1、intermediate=1、输入与权重全1，实际原portable SiLU/ragged_dot计算得到相同输出；按global expert排序执行两行，再显式反排回assignment顺序。两行均有效，物理与active sizes均为[1,1]，没有padding或容量丢弃。
+
+精确算术下，相同专家输出使输出仅依赖权重之和；两条权重cotangent相等时，归一化router的相对分配信号应消去。但浮点计算仍有epsilon、cast及舍入，不能把参考router梯度预设成精确零。本轮记录两种路径的实际梯度差值，而不是仅检查绝对梯度大小。
+
+下面列出真实CPU执行结果，dweight按selected顺序[1,0]排列。供给的dout经过各自dtype舍入；它是人工cotangent，不是从某次训练loss取得。
+
+|dtype与供给dout|小权重|小权重乘dout并cast后的值|EXACT dweight|EXPERT_SIDE dweight|router梯度差L2|
+|---|---:|---:|---|---|---:|
+|FP32，约0.001|3.072049e−5|3.072050e−8|[0.000731059,0.000731059]|[0.000731059,0.000731059]|0|
+|BF16，约0.001|3.075600e−5|3.073364e−8|[0.000728607,0.000728607]|[0.000732422,0.000728607]|1.308459e−10|
+|FP16，约0.001|3.069639e−5|5.960464e−8|[0.000731468,0.000731468]|[0.000730991,0.001419067]|2.369617e−8|
+|FP16，约0.00001|3.069639e−5|0|[7.331371e−6,7.331371e−6]|[7.331371e−6,0]|2.518778e−10|
+
+FP16的约0.001控制中，小分支的真实乘积接近最小subnormal的一半，cast后向上舍入为5.960464e−8。EXPERT_SIDE随后把实际MLP的row-dot除以原正权重，小分支dweight约为EXACT的1.94倍。更小cotangent控制中，同一正权重的乘积归零，原MLP得到零row-dot，除回正权重也不能恢复已经丢失的量。不能只检查weight!=0来保证精确；问题发生在weighted cotangent的dtype中。
+
+BF16控制的两个乘积都非零，却仍出现一个assignment的dweight舍入差异。三种dtype、三个cotangent尺度共九个正权重控制，另外六个控制的router梯度差在本CPU结果中恰为零；这些例子不能推出BF16普遍有误或FP32普遍等价，也没有覆盖GPU的subnormal、融合及归约顺序。
+
+### 接受的零权重与被丢弃的零权重要分开
+
+另给每种dtype一组手动权重[1,0]，两个assignment仍accepted。原EXACT combine在第二个零权重上给出正的dweight，因为增加它会增加输出；EXPERT_SIDE的divisible=accepted且weight!=0把该项梯度置零。这是实现明确声明的边界，不是新发现的生产事故。该零权重由探针手动给定，未证明真实router在此处生成零权重，更不能假定它的sigmoid上游导数非零。
+
+反之，V80的dropped assignment由接受mask切断权重路径，两种路径都应屏蔽该assignment的直接权重梯度。把两种零值混在一个日志桶，会把预期drop屏蔽与EXPERT_SIDE的零权重近似混淆。应分别记录accepted/nonzero、accepted/zero、dropped与padding，以及accepted且weight非零但weighted cotangent为零的比例。
+
+### 给kernel接续评审增加什么
+
+九个正权重控制的原专家dx/dW13/dW2均有限。有限性不证明router梯度等价；前向相同也不证明backward相同。这个控制只比较权重支线，并没有在EXACT与EXPERT_SIDE两套完整分布式反向之间做专家参数梯度对照。应在同checkpoint、同样本、同接受mask下分别记录dweight、router梯度、专家梯度，再在同一真实优化器状态和loss scale下比较更新。小梯度差的影响取决于状态与缩放，不能由本表绝对L2数值直接认定可忽略或不稳定。
+
+本轮使用原CPU/XLA wrapper执行真实portable专家，跳过完整包导入；以两个本地行和显式排列代替通信，以人工dout代替模型loss。真实Hero精度事件、GPU行为、优化器更新与质量收益仍未知。复现：`make portable-router-precision-cpu CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。

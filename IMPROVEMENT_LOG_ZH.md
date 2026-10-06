@@ -460,3 +460,6 @@ V57复算#9708冻结表18条、12条步时，6项检查；新增性能图和未�
 
 
 V80（2026-10-07）：执行固定head原route、mask语句和portable combine，15项CPU控制；验证丢弃的已选logit通过分母仍影响梯度，相同drop数可有不同保留质量；裁剪后重归一化控制明确属于不同函数。新增数值图、源码链与审查规则，没有执行真实GPU、优化器或Hero领域实验。
+
+
+V81（2026-10-07）：同head原router、真实portable MLP、combine transpose与EXPERT_SIDE恢复相接，17项CPU检查。九个正权重控制显式回传router，三个人工接受零权重边界；新增数值表与分桶验收，无真实GPU/优化器/生产事件证明。

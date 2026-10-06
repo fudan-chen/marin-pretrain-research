@@ -391,3 +391,6 @@ V79 布局/容量规则：sender未裁剪起点与接受前缀长度分别保存
 
 
 V80执行补充：审查drop相关改动时，分别写明assignment权重、已选logit、专家参数与总模型的梯度范围；记录裁剪前后权重质量、接受身份、全丢token及dtype。单一drop率不能判定语义等价；补归一化属于训练函数变更。本补充不增加总分，也没有外部评分效度验证。
+
+
+V81执行补充：接受零权重、被丢零权重和正权重但weighted cotangent为零需分桶。验收先对齐dtype/scale与mask，再比较dweight→router梯度→同状态更新；有限梯度和相同前向均不足以判断EXPERT_SIDE等价。

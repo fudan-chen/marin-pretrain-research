@@ -145,3 +145,8 @@ router-coupling-update:
 mix-event-identifiability:
 	$(PYTHON) scripts/analyze_mix_event_identifiability.py
 	$(PYTHON) scripts/plot_mix_event_identifiability.py
+
+.PHONY: swarm-seed-pairs
+swarm-seed-pairs:
+	$(PYTHON) scripts/analyze_swarm_seed_pairs.py
+	$(PYTHON) scripts/plot_swarm_seed_pairs.py

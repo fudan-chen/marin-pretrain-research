@@ -149,3 +149,6 @@ V60入口：make router-coupling-update CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/py
 
 
 V61入口：make mix-event-identifiability。9项归档/代数检查确认108000配比与108778执行切换在67个时刻的事件列相同。按templates/mixture_execution_comparison.json补同代码配比对照；四臂仅在代码/恢复合同兼容时执行，当前未执行。
+
+
+V62入口：make swarm-seed-pairs，复算6份公开观察、25终点与75差值。下一步冻结候选/保底项，使用未参与选择的续训重复和同身份评估；不得把三次同方向或compute-equivalent倍数写成已确认535B收益。

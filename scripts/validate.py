@@ -887,6 +887,12 @@ mt=read(ROOT/'templates/mixture_execution_comparison.json')
 ok('V61 experiment template unexecuted',mt['status']=='not_executed' and all(x['fixed_eval_results'] is None and x['feasible'] is None for x in mt['arms'].values()))
 ok('V61 event figure embedded',soup.select_one('#mix-trajectory-guide svg') is not None)
 report['highlights']+=['V61 nine archived design/algebra checks; aliased mix/execution events, no causal estimates; synthetic timestamp rank controls and unexecuted comparison template']
+sp=read(A/'swarm_seed_pairs.json')
+ok('V62 paired archive audit and unknown confirmation',sp['checks_passed']==len(sp['checks'])==9 and sp['actual_independent_confirmation'] is None and sp['post_selection_p_value'] is None and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in sp['source_sha256'].items()))
+ok('V62 all endpoints and mixed direction retained',len(sp['endpoints'])==25 and sp['summary']=={'metrics':25,'all_three_improve':20,'all_three_regress':2,'mixed_direction':3})
+ok('V62 three-pair resolution remains synthetic',sp['synthetic_sign_flip_resolution']['patterns']==8 and sp['synthetic_sign_flip_resolution']['two_sided_min_probability']==.25 and sp['synthetic_sign_flip_resolution']['not_a_selected_mixture_p_value'])
+ok('V62 paired figure embedded beside event audit',soup.select_one('#mix-trajectory-guide #swarmpair-figure_1') is not None and soup.select_one('#mix-trajectory-guide #mixevent-figure_1') is not None)
+report['highlights']+=['V62 six swarm observations, 25 endpoints and 75 descriptive seed-label pairs; nine checks, consistent gains and regressions; no independent confirmation or post-selection p-value']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

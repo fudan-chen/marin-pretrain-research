@@ -1,0 +1,13 @@
+{
+  "checks_passed": 6,
+  "checks": [
+    "index.html V62 text and source figure",
+    "index.html unique ids",
+    "report_standalone.html V62 text and source figure",
+    "report_standalone.html unique ids",
+    "455 frozen source hashes valid",
+    "75 paired CSV rows"
+  ],
+  "PNG_viewed": true,
+  "actual_browser_rendering": null
+}

@@ -136,3 +136,6 @@ V60观察：一个assignment的一档bf16舍入误差，在人工集成中改变
 
 
 V61收紧配比结论：67个保留评估点无法区分108000配比与108778执行改动；level矩阵秩2/3，分段矩阵秩4/6。真实轨迹可筛候选与退步域，不能据此估计桶边际收益或最优权重，见[事件可区分性](MIX_TRAJECTORY_ZH.md)。
+
+
+V62补充正面证据与取舍：d512选中配方在三pair的Paloma/代码/Uncheatable macro都改善，但manosphere和BBC news均退步。swarm参与过选择，不是独立确认；V61仅限制535B长期轨迹的事件拆分。见[逐seed结果](MIX_TRAJECTORY_ZH.md)。

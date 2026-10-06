@@ -75,6 +75,10 @@ for slug,label,file in chapters:
         event_svg=BeautifulSoup((ROOT/'assets/mix_event_identifiability.svg').read_text(),'html.parser').svg
         event_svg['style']='display:block;width:100%;height:auto'
         result += '<figure class="scientific-figure">'+str(event_svg)+'<figcaption>真实归档时刻的事件设计审计；没有估计配比或执行因果效应。补点的秩控制是人工设计，不是新loss记录。</figcaption></figure>'
+    if slug=='mix-trajectory-guide':
+        pairs_svg=BeautifulSoup((ROOT/'assets/swarm_seed_pairs.svg').read_text(),'html.parser').svg
+        pairs_svg['style']='display:block;width:100%;height:auto'
+        result += '<figure class="scientific-figure">'+str(pairs_svg)+'<figcaption>d512来源观察逐seed标签差值；没有置信区间。该swarm参与选优，不是独立确认，也不是535B生产收益。</figcaption></figure>'
     if slug=='optimizer-guide':
         clip_svg=BeautifulSoup((ROOT/'assets/group_clipping_cpu.svg').read_text(),'html.parser').svg
         clip_svg['style']='display:block;width:100%;height:auto'

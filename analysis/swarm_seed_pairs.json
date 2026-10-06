@@ -1,0 +1,893 @@
+{
+  "scope": "Descriptive seed-label paired endpoint audit; not independent post-selection inference.",
+  "checks_passed": 9,
+  "checks": [
+    "Six unique observations have matching parsed seed labels",
+    "Within-group phase weights identical across seed-labelled runs",
+    "25 dropless leaf/macro endpoints present on all six records",
+    "All means reconstruct author comparison CSV",
+    "Paloma/code/Uncheatable macro improve in all three parsed pairs",
+    "Two endpoints consistently regress across parsed pairs",
+    "Leave-one-pair-out macro differences remain negative",
+    "Three-pair synthetic two-sided sign-flip resolution is one quarter",
+    "Author explicitly records checkpoint and nonindependent selection"
+  ],
+  "pairing": "Parsed seed labels in run names; actual common random stream and complete execution identity not verified.",
+  "summary": {
+    "metrics": 25,
+    "all_three_improve": 20,
+    "all_three_regress": 2,
+    "mixed_direction": 3
+  },
+  "endpoints": [
+    {
+      "metric": "eval_dropless/paloma/4chan-llama3/bpb",
+      "old_mean": 1.1861881415049236,
+      "new_mean": 1.1862690448760986,
+      "relative_mean_change_pct": 0.006820450175171189,
+      "paired_deltas": [
+        0.0009531974792480469,
+        -0.0005748271942138672,
+        -0.00013566017150878906
+      ],
+      "paired_change_pct": [
+        0.08043839933620234,
+        -0.04846166864922452,
+        -0.011424849388763647
+      ],
+      "paired_delta_std_ddof1": 0.0007866954154512116,
+      "improved_seed_labels": 2,
+      "regressed_seed_labels": 1,
+      "leave_one_pair_out_mean_delta": [
+        -0.0003552436828613281,
+        0.0004087686538696289,
+        0.00018918514251708984
+      ],
+      "old_run_names": [
+        "h100-d512-mix-baseline-seed0-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed1-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed2-from10pct-20260826-rno2a"
+      ],
+      "new_run_names": [
+        "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829"
+      ]
+    },
+    {
+      "metric": "eval_dropless/paloma/c4_100_domains-llama3/bpb",
+      "old_mean": 1.0250694751739502,
+      "new_mean": 1.017254153887431,
+      "relative_mean_change_pct": -0.7624186921762588,
+      "paired_deltas": [
+        -0.007557392120361328,
+        -0.007657885551452637,
+        -0.00823068618774414
+      ],
+      "paired_change_pct": [
+        -0.7374695265693676,
+        -0.7471162770141815,
+        -0.8026472805562901
+      ],
+      "paired_delta_std_ddof1": 0.00036320893890462615,
+      "improved_seed_labels": 3,
+      "regressed_seed_labels": 0,
+      "leave_one_pair_out_mean_delta": [
+        -0.007944285869598389,
+        -0.007894039154052734,
+        -0.007607638835906982
+      ],
+      "old_run_names": [
+        "h100-d512-mix-baseline-seed0-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed1-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed2-from10pct-20260826-rno2a"
+      ],
+      "new_run_names": [
+        "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829"
+      ]
+    },
+    {
+      "metric": "eval_dropless/paloma/c4_en-llama3/bpb",
+      "old_mean": 1.0459163188934326,
+      "new_mean": 1.041788101196289,
+      "relative_mean_change_pct": -0.39469866016730304,
+      "paired_deltas": [
+        -0.004387974739074707,
+        -0.0038133859634399414,
+        -0.004183292388916016
+      ],
+      "paired_change_pct": [
+        -0.4195304300035896,
+        -0.3646802882831368,
+        -0.39987711515986346
+      ],
+      "paired_delta_std_ddof1": 0.00029122668409117054,
+      "improved_seed_labels": 3,
+      "regressed_seed_labels": 0,
+      "leave_one_pair_out_mean_delta": [
+        -0.0039983391761779785,
+        -0.004285633563995361,
+        -0.004100680351257324
+      ],
+      "old_run_names": [
+        "h100-d512-mix-baseline-seed0-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed1-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed2-from10pct-20260826-rno2a"
+      ],
+      "new_run_names": [
+        "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829"
+      ]
+    },
+    {
+      "metric": "eval_dropless/paloma/dolma-v1_5-llama3/bpb",
+      "old_mean": 1.0026322603225708,
+      "new_mean": 0.9957749048868815,
+      "relative_mean_change_pct": -0.6839352479525385,
+      "paired_deltas": [
+        -0.006659507751464844,
+        -0.0068395137786865234,
+        -0.007073044776916504
+      ],
+      "paired_change_pct": [
+        -0.6638893692017089,
+        -0.6824314752516547,
+        -0.705495200366324
+      ],
+      "paired_delta_std_ddof1": 0.00020734502983747898,
+      "improved_seed_labels": 3,
+      "regressed_seed_labels": 0,
+      "leave_one_pair_out_mean_delta": [
+        -0.006956279277801514,
+        -0.006866276264190674,
+        -0.006749510765075684
+      ],
+      "old_run_names": [
+        "h100-d512-mix-baseline-seed0-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed1-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed2-from10pct-20260826-rno2a"
+      ],
+      "new_run_names": [
+        "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829"
+      ]
+    },
+    {
+      "metric": "eval_dropless/paloma/dolma_100_programing_languages-llama3/bpb",
+      "old_mean": 0.7044887542724609,
+      "new_mean": 0.6789210438728333,
+      "relative_mean_change_pct": -3.6292574217216544,
+      "paired_deltas": [
+        -0.026839494705200195,
+        -0.026086151599884033,
+        -0.023777484893798828
+      ],
+      "paired_change_pct": [
+        -3.800201550135074,
+        -3.699141380780735,
+        -3.3870749451039517
+      ],
+      "paired_delta_std_ddof1": 0.0015954817391220719,
+      "improved_seed_labels": 3,
+      "regressed_seed_labels": 0,
+      "leave_one_pair_out_mean_delta": [
+        -0.02493181824684143,
+        -0.02530848979949951,
+        -0.026462823152542114
+      ],
+      "old_run_names": [
+        "h100-d512-mix-baseline-seed0-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed1-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed2-from10pct-20260826-rno2a"
+      ],
+      "new_run_names": [
+        "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829"
+      ]
+    },
+    {
+      "metric": "eval_dropless/paloma/dolma_100_subreddits-llama3/bpb",
+      "old_mean": 1.2132806380589802,
+      "new_mean": 1.212643027305603,
+      "relative_mean_change_pct": -0.052552619186052585,
+      "paired_deltas": [
+        -0.0008323192596435547,
+        0.00013494491577148438,
+        -0.0012154579162597656
+      ],
+      "paired_change_pct": [
+        -0.068603535823486,
+        0.011127730619264753,
+        -0.10012663131726551
+      ],
+      "paired_delta_std_ddof1": 0.0006959385777486677,
+      "improved_seed_labels": 2,
+      "regressed_seed_labels": 1,
+      "leave_one_pair_out_mean_delta": [
+        -0.0005402565002441406,
+        -0.0010238885879516602,
+        -0.00034868717193603516
+      ],
+      "old_run_names": [
+        "h100-d512-mix-baseline-seed0-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed1-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed2-from10pct-20260826-rno2a"
+      ],
+      "new_run_names": [
+        "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829"
+      ]
+    },
+    {
+      "metric": "eval_dropless/paloma/falcon-refinedweb-llama3/bpb",
+      "old_mean": 1.1102158625920613,
+      "new_mean": 1.1059210697809856,
+      "relative_mean_change_pct": -0.38684304159088967,
+      "paired_deltas": [
+        -0.004279971122741699,
+        -0.0038791894912719727,
+        -0.004725217819213867
+      ],
+      "paired_change_pct": [
+        -0.3854747637661249,
+        -0.3495146632147339,
+        -0.4255200833821027
+      ],
+      "paired_delta_std_ddof1": 0.000423208866582265,
+      "improved_seed_labels": 3,
+      "regressed_seed_labels": 0,
+      "leave_one_pair_out_mean_delta": [
+        -0.00430220365524292,
+        -0.004502594470977783,
+        -0.004079580307006836
+      ],
+      "old_run_names": [
+        "h100-d512-mix-baseline-seed0-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed1-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed2-from10pct-20260826-rno2a"
+      ],
+      "new_run_names": [
+        "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829"
+      ]
+    },
+    {
+      "metric": "eval_dropless/paloma/gab-llama3/bpb",
+      "old_mean": 1.8263933261235554,
+      "new_mean": 1.8217963774998982,
+      "relative_mean_change_pct": -0.25169543481710077,
+      "paired_deltas": [
+        -0.005812525749206543,
+        -0.005071520805358887,
+        -0.00290679931640625
+      ],
+      "paired_change_pct": [
+        -0.3177344625084899,
+        -0.27756950296510263,
+        -0.15947795039440438
+      ],
+      "paired_delta_std_ddof1": 0.001509876018851344,
+      "improved_seed_labels": 3,
+      "regressed_seed_labels": 0,
+      "leave_one_pair_out_mean_delta": [
+        -0.003989160060882568,
+        -0.0043596625328063965,
+        -0.005442023277282715
+      ],
+      "old_run_names": [
+        "h100-d512-mix-baseline-seed0-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed1-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed2-from10pct-20260826-rno2a"
+      ],
+      "new_run_names": [
+        "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829"
+      ]
+    },
+    {
+      "metric": "eval_dropless/paloma/m2d2_s2orc_unsplit-llama3/bpb",
+      "old_mean": 0.9533849755922953,
+      "new_mean": 0.9478922287623087,
+      "relative_mean_change_pct": -0.5761310457587321,
+      "paired_deltas": [
+        -0.0047110915184021,
+        -0.00534135103225708,
+        -0.006425797939300537
+      ],
+      "paired_change_pct": [
+        -0.49422025732168695,
+        -0.560568804717898,
+        -0.6735123060451098
+      ],
+      "paired_delta_std_ddof1": 0.0008673206115071833,
+      "improved_seed_labels": 3,
+      "regressed_seed_labels": 0,
+      "leave_one_pair_out_mean_delta": [
+        -0.005883574485778809,
+        -0.005568444728851318,
+        -0.00502622127532959
+      ],
+      "old_run_names": [
+        "h100-d512-mix-baseline-seed0-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed1-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed2-from10pct-20260826-rno2a"
+      ],
+      "new_run_names": [
+        "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829"
+      ]
+    },
+    {
+      "metric": "eval_dropless/paloma/m2d2_wikipedia_unsplit-llama3/bpb",
+      "old_mean": 0.9955573876698812,
+      "new_mean": 0.9944111307462057,
+      "relative_mean_change_pct": -0.11513720232224633,
+      "paired_deltas": [
+        -0.0008206367492675781,
+        -0.0008413195610046387,
+        -0.0017768144607543945
+      ],
+      "paired_change_pct": [
+        -0.08244391352778546,
+        -0.08450116861853374,
+        -0.17845709741117766
+      ],
+      "paired_delta_std_ddof1": 0.0005461767574243284,
+      "improved_seed_labels": 3,
+      "regressed_seed_labels": 0,
+      "leave_one_pair_out_mean_delta": [
+        -0.0013090670108795166,
+        -0.0012987256050109863,
+        -0.0008309781551361084
+      ],
+      "old_run_names": [
+        "h100-d512-mix-baseline-seed0-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed1-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed2-from10pct-20260826-rno2a"
+      ],
+      "new_run_names": [
+        "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829"
+      ]
+    },
+    {
+      "metric": "eval_dropless/paloma/macro_bpb",
+      "old_mean": 1.1933826208114624,
+      "new_mean": 1.1860119501749675,
+      "relative_mean_change_pct": -0.6176284544417987,
+      "paired_deltas": [
+        -0.006792902946472168,
+        -0.007554054260253906,
+        -0.007765054702758789
+      ],
+      "paired_change_pct": [
+        -0.5692851371951857,
+        -0.6327237013977083,
+        -0.6508741406179075
+      ],
+      "paired_delta_std_ddof1": 0.0005113628109376102,
+      "improved_seed_labels": 3,
+      "regressed_seed_labels": 0,
+      "leave_one_pair_out_mean_delta": [
+        -0.007659554481506348,
+        -0.0072789788246154785,
+        -0.007173478603363037
+      ],
+      "old_run_names": [
+        "h100-d512-mix-baseline-seed0-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed1-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed2-from10pct-20260826-rno2a"
+      ],
+      "new_run_names": [
+        "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829"
+      ]
+    },
+    {
+      "metric": "eval_dropless/paloma/manosphere_meta_sep-llama3/bpb",
+      "old_mean": 1.246166507403056,
+      "new_mean": 1.2561041116714478,
+      "relative_mean_change_pct": 0.7974539685793092,
+      "paired_deltas": [
+        0.010668396949768066,
+        0.007581949234008789,
+        0.011562466621398926
+      ],
+      "paired_change_pct": [
+        0.8568137820899491,
+        0.6078259913893991,
+        0.9279764625222953
+      ],
+      "paired_delta_std_ddof1": 0.002088461904175773,
+      "improved_seed_labels": 0,
+      "regressed_seed_labels": 3,
+      "leave_one_pair_out_mean_delta": [
+        0.009572207927703857,
+        0.011115431785583496,
+        0.009125173091888428
+      ],
+      "old_run_names": [
+        "h100-d512-mix-baseline-seed0-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed1-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed2-from10pct-20260826-rno2a"
+      ],
+      "new_run_names": [
+        "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829"
+      ]
+    },
+    {
+      "metric": "eval_dropless/paloma/mc4-llama3/bpb",
+      "old_mean": 1.0265614986419678,
+      "new_mean": 1.0161795616149902,
+      "relative_mean_change_pct": -1.0113312296157306,
+      "paired_deltas": [
+        -0.011028766632080078,
+        -0.008988142013549805,
+        -0.011128902435302734
+      ],
+      "paired_change_pct": [
+        -1.0739269059689471,
+        -0.8762070246241649,
+        -1.0837098407414536
+      ],
+      "paired_delta_std_ddof1": 0.001208099830048732,
+      "improved_seed_labels": 3,
+      "regressed_seed_labels": 0,
+      "leave_one_pair_out_mean_delta": [
+        -0.01005852222442627,
+        -0.011078834533691406,
+        -0.010008454322814941
+      ],
+      "old_run_names": [
+        "h100-d512-mix-baseline-seed0-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed1-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed2-from10pct-20260826-rno2a"
+      ],
+      "new_run_names": [
+        "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829"
+      ]
+    },
+    {
+      "metric": "eval_dropless/paloma/ptb-llama3/bpb",
+      "old_mean": 1.2004531621932983,
+      "new_mean": 1.187307635943095,
+      "relative_mean_change_pct": -1.0950469926028328,
+      "paired_deltas": [
+        -0.007715463638305664,
+        -0.0152055025100708,
+        -0.016515612602233887
+      ],
+      "paired_change_pct": [
+        -0.645301196891046,
+        -1.263584827194597,
+        -1.3736000072971488
+      ],
+      "paired_delta_std_ddof1": 0.004747976631181387,
+      "improved_seed_labels": 3,
+      "regressed_seed_labels": 0,
+      "leave_one_pair_out_mean_delta": [
+        -0.015860557556152344,
+        -0.012115538120269775,
+        -0.011460483074188232
+      ],
+      "old_run_names": [
+        "h100-d512-mix-baseline-seed0-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed1-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed2-from10pct-20260826-rno2a"
+      ],
+      "new_run_names": [
+        "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829"
+      ]
+    },
+    {
+      "metric": "eval_dropless/paloma/redpajama-llama3/bpb",
+      "old_mean": 0.9355508287747701,
+      "new_mean": 0.9310707449913025,
+      "relative_mean_change_pct": -0.47887123239844787,
+      "paired_deltas": [
+        -0.0041689276695251465,
+        -0.0048857927322387695,
+        -0.004385530948638916
+      ],
+      "paired_change_pct": [
+        -0.4459216906095409,
+        -0.5220224104723892,
+        -0.4686318798719724
+      ],
+      "paired_delta_std_ddof1": 0.0003676670483813562,
+      "improved_seed_labels": 3,
+      "regressed_seed_labels": 0,
+      "leave_one_pair_out_mean_delta": [
+        -0.004635661840438843,
+        -0.004277229309082031,
+        -0.004527360200881958
+      ],
+      "old_run_names": [
+        "h100-d512-mix-baseline-seed0-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed1-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed2-from10pct-20260826-rno2a"
+      ],
+      "new_run_names": [
+        "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829"
+      ]
+    },
+    {
+      "metric": "eval_dropless/paloma/twitterAAE_HELM_fixed-llama3/bpb",
+      "old_mean": 2.616604963938395,
+      "new_mean": 2.5797173976898193,
+      "relative_mean_change_pct": -1.4097491504049708,
+      "paired_deltas": [
+        -0.03414416313171387,
+        -0.03707623481750488,
+        -0.03944230079650879
+      ],
+      "paired_change_pct": [
+        -1.3053863560231638,
+        -1.4156542820927043,
+        -1.5082170950841522
+      ],
+      "paired_delta_std_ddof1": 0.0026541029653078542,
+      "improved_seed_labels": 3,
+      "regressed_seed_labels": 0,
+      "leave_one_pair_out_mean_delta": [
+        -0.038259267807006836,
+        -0.03679323196411133,
+        -0.035610198974609375
+      ],
+      "old_run_names": [
+        "h100-d512-mix-baseline-seed0-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed1-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed2-from10pct-20260826-rno2a"
+      ],
+      "new_run_names": [
+        "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829"
+      ]
+    },
+    {
+      "metric": "eval_dropless/paloma/wikitext_103-llama3/bpb",
+      "old_mean": 1.0056571165720622,
+      "new_mean": 1.0031405488650005,
+      "relative_mean_change_pct": -0.2502411274769134,
+      "paired_deltas": [
+        -0.0013515949249267578,
+        -0.0023196935653686523,
+        -0.0038784146308898926
+      ],
+      "paired_change_pct": [
+        -0.134235974957142,
+        -0.23003618350123656,
+        -0.3871879807196832
+      ],
+      "paired_delta_std_ddof1": 0.0012748623562414323,
+      "improved_seed_labels": 3,
+      "regressed_seed_labels": 0,
+      "leave_one_pair_out_mean_delta": [
+        -0.0030990540981292725,
+        -0.002615004777908325,
+        -0.001835644245147705
+      ],
+      "old_run_names": [
+        "h100-d512-mix-baseline-seed0-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed1-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed2-from10pct-20260826-rno2a"
+      ],
+      "new_run_names": [
+        "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829"
+      ]
+    },
+    {
+      "metric": "eval_dropless/uncheatable_eval/ao3_english-llama3/bpb",
+      "old_mean": 1.1867121855417888,
+      "new_mean": 1.1811034282048543,
+      "relative_mean_change_pct": -0.47262996076625763,
+      "paired_deltas": [
+        -0.005700588226318359,
+        -0.0058563947677612305,
+        -0.005269289016723633
+      ],
+      "paired_change_pct": [
+        -0.4803593111755933,
+        -0.4933472880912393,
+        -0.4441676393698857
+      ],
+      "paired_delta_std_ddof1": 0.0003041347972678252,
+      "improved_seed_labels": 3,
+      "regressed_seed_labels": 0,
+      "leave_one_pair_out_mean_delta": [
+        -0.005562841892242432,
+        -0.005484938621520996,
+        -0.005778491497039795
+      ],
+      "old_run_names": [
+        "h100-d512-mix-baseline-seed0-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed1-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed2-from10pct-20260826-rno2a"
+      ],
+      "new_run_names": [
+        "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829"
+      ]
+    },
+    {
+      "metric": "eval_dropless/uncheatable_eval/arxiv_computer_science-llama3/bpb",
+      "old_mean": 0.8776146570841471,
+      "new_mean": 0.861141304175059,
+      "relative_mean_change_pct": -1.8770599119003362,
+      "paired_deltas": [
+        -0.016866981983184814,
+        -0.01607966423034668,
+        -0.01647341251373291
+      ],
+      "paired_change_pct": [
+        -1.9214115704988766,
+        -1.8345962282689476,
+        -1.8751069842507628
+      ],
+      "paired_delta_std_ddof1": 0.00039365887980338744,
+      "improved_seed_labels": 3,
+      "regressed_seed_labels": 0,
+      "leave_one_pair_out_mean_delta": [
+        -0.016276538372039795,
+        -0.016670197248458862,
+        -0.016473323106765747
+      ],
+      "old_run_names": [
+        "h100-d512-mix-baseline-seed0-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed1-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed2-from10pct-20260826-rno2a"
+      ],
+      "new_run_names": [
+        "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829"
+      ]
+    },
+    {
+      "metric": "eval_dropless/uncheatable_eval/arxiv_physics-llama3/bpb",
+      "old_mean": 0.9506309032440186,
+      "new_mean": 0.9225052992502848,
+      "relative_mean_change_pct": -2.9586250455098217,
+      "paired_deltas": [
+        -0.028144001960754395,
+        -0.02731233835220337,
+        -0.028920471668243408
+      ],
+      "paired_change_pct": [
+        -2.9609004968173536,
+        -2.8745790229285695,
+        -3.0402997860094594
+      ],
+      "paired_delta_std_ddof1": 0.0008042245049936946,
+      "improved_seed_labels": 3,
+      "regressed_seed_labels": 0,
+      "leave_one_pair_out_mean_delta": [
+        -0.02811640501022339,
+        -0.0285322368144989,
+        -0.027728170156478882
+      ],
+      "old_run_names": [
+        "h100-d512-mix-baseline-seed0-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed1-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed2-from10pct-20260826-rno2a"
+      ],
+      "new_run_names": [
+        "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829"
+      ]
+    },
+    {
+      "metric": "eval_dropless/uncheatable_eval/bbc_news-llama3/bpb",
+      "old_mean": 0.9852310419082642,
+      "new_mean": 0.9902576406796774,
+      "relative_mean_change_pct": 0.5101949246013815,
+      "paired_deltas": [
+        0.004426419734954834,
+        0.005847752094268799,
+        0.004805624485015869
+      ],
+      "paired_change_pct": [
+        0.4492273523037271,
+        0.593678000075637,
+        0.4877081220687529
+      ],
+      "paired_delta_std_ddof1": 0.0007359814164398764,
+      "improved_seed_labels": 0,
+      "regressed_seed_labels": 3,
+      "leave_one_pair_out_mean_delta": [
+        0.005326688289642334,
+        0.0046160221099853516,
+        0.005137085914611816
+      ],
+      "old_run_names": [
+        "h100-d512-mix-baseline-seed0-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed1-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed2-from10pct-20260826-rno2a"
+      ],
+      "new_run_names": [
+        "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829"
+      ]
+    },
+    {
+      "metric": "eval_dropless/uncheatable_eval/github_cpp-llama3/bpb",
+      "old_mean": 0.6033484935760498,
+      "new_mean": 0.5725213686625162,
+      "relative_mean_change_pct": -5.1093398329083435,
+      "paired_deltas": [
+        -0.029535412788391113,
+        -0.03100639581680298,
+        -0.031939566135406494
+      ],
+      "paired_change_pct": [
+        -4.887996845779052,
+        -5.146633255497502,
+        -5.293774726722389
+      ],
+      "paired_delta_std_ddof1": 0.0012120610015839129,
+      "improved_seed_labels": 3,
+      "regressed_seed_labels": 0,
+      "leave_one_pair_out_mean_delta": [
+        -0.031472980976104736,
+        -0.030737489461898804,
+        -0.030270904302597046
+      ],
+      "old_run_names": [
+        "h100-d512-mix-baseline-seed0-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed1-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed2-from10pct-20260826-rno2a"
+      ],
+      "new_run_names": [
+        "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829"
+      ]
+    },
+    {
+      "metric": "eval_dropless/uncheatable_eval/github_python-llama3/bpb",
+      "old_mean": 0.5486194888750712,
+      "new_mean": 0.5371622840563456,
+      "relative_mean_change_pct": -2.0883699998004546,
+      "paired_deltas": [
+        -0.011524856090545654,
+        -0.01194751262664795,
+        -0.010899245738983154
+      ],
+      "paired_change_pct": [
+        -2.097225215555232,
+        -2.1854550132907047,
+        -1.982955124632113
+      ],
+      "paired_delta_std_ddof1": 0.0005273977511117805,
+      "improved_seed_labels": 3,
+      "regressed_seed_labels": 0,
+      "leave_one_pair_out_mean_delta": [
+        -0.011423379182815552,
+        -0.011212050914764404,
+        -0.011736184358596802
+      ],
+      "old_run_names": [
+        "h100-d512-mix-baseline-seed0-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed1-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed2-from10pct-20260826-rno2a"
+      ],
+      "new_run_names": [
+        "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829"
+      ]
+    },
+    {
+      "metric": "eval_dropless/uncheatable_eval/macro_bpb",
+      "old_mean": 0.8774344523747762,
+      "new_mean": 0.8648976484934489,
+      "relative_mean_change_pct": -1.4288023278999917,
+      "paired_deltas": [
+        -0.012474536895751953,
+        -0.012269437313079834,
+        -0.012866437435150146
+      ],
+      "paired_change_pct": [
+        -1.421015974004436,
+        -1.3994121091803424,
+        -1.4659493081692787
+      ],
+      "paired_delta_std_ddof1": 0.00030333178131787216,
+      "improved_seed_labels": 3,
+      "regressed_seed_labels": 0,
+      "leave_one_pair_out_mean_delta": [
+        -0.01256793737411499,
+        -0.01267048716545105,
+        -0.012371987104415894
+      ],
+      "old_run_names": [
+        "h100-d512-mix-baseline-seed0-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed1-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed2-from10pct-20260826-rno2a"
+      ],
+      "new_run_names": [
+        "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829"
+      ]
+    },
+    {
+      "metric": "eval_dropless/uncheatable_eval/wikipedia_english-llama3/bpb",
+      "old_mean": 0.9898842573165894,
+      "new_mean": 0.9895920157432556,
+      "relative_mean_change_pct": -0.029522802405801407,
+      "paired_deltas": [
+        2.378225326538086e-05,
+        0.00046831369400024414,
+        -0.0013688206672668457
+      ],
+      "paired_change_pct": [
+        0.0024002824031477132,
+        0.047329603187939995,
+        -0.13835289150615493
+      ],
+      "paired_delta_std_ddof1": 0.0009584722007292768,
+      "improved_seed_labels": 1,
+      "regressed_seed_labels": 2,
+      "leave_one_pair_out_mean_delta": [
+        -0.0004502534866333008,
+        -0.0006725192070007324,
+        0.0002460479736328125
+      ],
+      "old_run_names": [
+        "h100-d512-mix-baseline-seed0-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed1-from10pct-20260826-rno2a",
+        "h100-d512-mix-baseline-seed2-from10pct-20260826-rno2a"
+      ],
+      "new_run_names": [
+        "h100-d512-mixprior-996f489106c7b922-seed0-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed1-from10pct-20260829",
+        "h100-d512-mixprior-996f489106c7b922-seed2-from10pct-20260829"
+      ]
+    }
+  ],
+  "synthetic_sign_flip_resolution": {
+    "magnitudes": [
+      1,
+      2,
+      3
+    ],
+    "patterns": 8,
+    "two_sided_min_probability": 0.25,
+    "not_a_selected_mixture_p_value": true
+  },
+  "post_selection_p_value": null,
+  "actual_independent_confirmation": null,
+  "actual_Hero_causal_effect": null,
+  "actual_matched_runtime_savings": null,
+  "source_sha256": {
+    "sources/mix_study_swarm-2026.09.14.1_selected_runs.json": "cb2a8b6ac3df1adf2b7861844c8a688736729ebad0a7329bed5a7f5c334a6851",
+    "sources/mix_study_swarm-2026.09.14.1_comparison.csv": "9f5ddf657d56897aa811b33b0b9af87a40522fe803951cead2f2263e08d3454e",
+    "sources/issue_9126.json": "ff42bfae305d778697b7471eaa9bf5e96727abf8260b84d7222f5c7d00647930"
+  }
+}

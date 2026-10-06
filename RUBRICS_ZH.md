@@ -297,3 +297,8 @@ Loss、BPB、正确率与drop口径是否分清？ 度量对象变了，曲线�
 ## V52：加载器恢复控制
 
 恢复验收新增约束：单独保存已完成更新、已交付batch、store预取范围。绑定历史batch前缀与实际next token/hash，不把fetch末尾当作训练cursor；对有限数据尾批明确padding/drop政策。[原host控制](BATCH_CLOCK_ZH.md)。
+
+
+## V53：混合数据身份
+
+映射验收要求有序dataset_index、过滤后支持范围、整数计数/打包ID摘要、key、有限库存长度与版本、实际窗口身份与重复分布。禁止在恢复时无证据地排序字典；新规则必须显式版本化。[原类控制](MIXTURE_IDENTITY_ZH.md)。

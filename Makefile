@@ -104,3 +104,7 @@ clipping-cpu:
 .PHONY: loader-resume
 loader-resume:
 	$(CPU_PYTHON) scripts/probe_loader_resume.py
+
+.PHONY: mixture-identity
+mixture-identity:
+	$(CPU_PYTHON) scripts/probe_mixture_identity_cpu.py

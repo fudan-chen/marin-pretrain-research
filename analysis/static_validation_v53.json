@@ -1,0 +1,16 @@
+{
+  "pages": {
+    "index.html": {
+      "mixture_identity_tables": 1,
+      "sha256": "9dcd76cf956cac015c658f63365b1cc46662c7766023a12f44cfeb421d7af770"
+    },
+    "report_standalone.html": {
+      "mixture_identity_tables": 1,
+      "sha256": "f548b2161c2cf604232e2381b3060288e509cd0c1dc67b485dae7802c6e9813f"
+    }
+  },
+  "prior_source_bytes_preserved": 443,
+  "assessment_bound_order_chapter_preserved": true,
+  "actual_browser_rendering": null,
+  "mixture_identity_make_target_verified": true
+}

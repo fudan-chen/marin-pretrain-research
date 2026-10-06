@@ -320,3 +320,8 @@ V25把`paloma/bpb`错误命名为macro；它在固定公共源码中来自父级
 ## V52：加载器恢复控制
 
 V52执行三个原异步loader方法与原BatchSchedule，11项人工host控制；补预取与完成水位、真实identity请求的历史改写差异及有限数据尾批边界。未执行完整DataLoader、background线程、JAX数组或实际Hero恢复。README同时更正旧观察段落与最新快照不一致的问题。
+
+
+## V53：混合数据身份
+
+V53执行原MixtureDataset类体和原block assignment，真实JAX 0.7.2 CPU，14项检查。新增同key字典重排、整数并列余数、完整/部分块、有限库存取模与阶段累计索引的对照；未运行真实token或inner shuffle。

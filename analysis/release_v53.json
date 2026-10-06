@@ -1,0 +1,42 @@
+{
+  "edition": "V53",
+  "created_utc": "2026-10-06T18:54:35.472143+00:00",
+  "goal_status": "active",
+  "scope": "Original MixtureDataset class body and block permutation on real JAX CPU with replaced base/support dependencies and artificial finite identity stores",
+  "checks_passed": 1410,
+  "CPU_and_source_checks": 14,
+  "mixture_identity_make_target_verified": true,
+  "runtime": {
+    "python": "3.12.13",
+    "jax": "0.7.2",
+    "numpy": "2.5.3",
+    "backend": "cpu"
+  },
+  "source_files": 443,
+  "all_prior_source_bytes_preserved": 443,
+  "new_source_acquisitions": 0,
+  "assessment_bound_order_chapter_preserved": true,
+  "actual_Hero_mapping": null,
+  "actual_inner_shuffle": null,
+  "actual_token_store": null,
+  "actual_checkpoint_restore": null,
+  "actual_browser_rendering": null,
+  "artifact_sha256": {
+    "DELIVERY_AUDIT_ZH.md": "d5347e0ae32e5489a57a2b45b11e7eaa14d14b2114c3c02e3f779d895b12763b",
+    "IMPROVEMENT_LOG_ZH.md": "31e4c7d369e59600cc0449fb824ca965dc78fc949407e2985187878ff2f9fa26",
+    "MIXTURE_IDENTITY_ZH.md": "d0976af4c23a36c6e9faad6c8184b497378a5bcebd09eb10b1928deb20a33f38",
+    "Makefile": "3cdd9ac99d351b8e38e7feaf36b596c415f2ce88ede4117506b0279ac3be7466",
+    "PIPELINE_ZH.md": "4691ac0e3969c13ea70f8b769e9a3cc8c5bc172ccf062f9a2c66456928fc0fff",
+    "README.md": "366aac2756c6a86e4861d188e8bd325076f5aae237f17a5ba04592a0629795e1",
+    "RUBRICS_ZH.md": "d408a9c39ab48061f84efd59a4f22c6749494ee1387bb592e16d9ee3ecca6ecd",
+    "SYNTHESIS_ZH.md": "97b9e1a827b7896b922f3a8814a48b1490045313fbe93850c60225f15d20e042",
+    "analysis/mixture_identity_cpu.json": "57d5642a287eeb137cfd1a9fc83c575454c90cabece7375be4de9c3cfecf4aaf",
+    "analysis/static_validation_v53.json": "cc61f4482c0525519fdaffa51986ea7896c65791f5d51c8952c777ee9a6c1d33",
+    "analysis/validation.json": "95d97a7e227d5871acccf2b57bb05ae6cbd160aa86382be0acc83cbe831ff216",
+    "index.html": "9dcd76cf956cac015c658f63365b1cc46662c7766023a12f44cfeb421d7af770",
+    "report_standalone.html": "f548b2161c2cf604232e2381b3060288e509cd0c1dc67b485dae7802c6e9813f",
+    "scripts/build_html.py": "a65088e853012ffb525058618c8d485bf372e18105b9a699e441ec174eae09ba",
+    "scripts/probe_mixture_identity_cpu.py": "9537f8a87ed09c702fc696c351f496eba84297ad53bcafd3c398729732f2d9c5",
+    "scripts/validate.py": "54a5dffd6bdc02c93f38b8d262c439c5507d36f7b2695a88ce25616f2c293fad"
+  }
+}

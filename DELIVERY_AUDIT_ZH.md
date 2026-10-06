@@ -1,6 +1,6 @@
 # 当前交付审计：文件覆盖与真实验证分别核对
 
-当前版本V52，完善[batch与恢复时钟](BATCH_CLOCK_ZH.md)：11项原异步host函数控制，区分预取、交付与已完成更新，并验证人工有限数据末端。HTML仅静态核对；真实token、background线程、JAX batchification与完整checkpoint恢复仍未验证。
+当前版本V53，完善[顺序与样本身份](MIXTURE_IDENTITY_ZH.md)：真实JAX CPU执行原MixtureDataset类体与排列函数，14项人工控制；支持依赖明确替代。HTML仅静态核对；实际Hero映射、inner shuffle、token store与checkpoint恢复仍未验证。
 
 |用户要求|当前权威产物|覆盖与实际限制|
 |---|---|---|

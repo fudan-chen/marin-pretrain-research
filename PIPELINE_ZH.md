@@ -112,3 +112,8 @@ V22的[诊断流程](LOSS_TRIAGE_ZH.md)把指标/模型视图、样本内容与�
 ## V52：加载器恢复控制
 
 恢复检查顺序：先冻结已完成step和历史batch前缀，再记录next offset与连续输入身份；把prefetch水位单列。有限库存分别验收完整末批、部分末批、合法终点和超范围step，随后才比较完整状态与下一步更新。[原函数检查结果](analysis/loader_resume_probe.json)。
+
+
+## V53：混合数据身份
+
+在next offset核对后，再验收域ID→子索引→库存取模→实际token身份。先比较完整块多重集，再核对部分边缘槽位，记录重复曝光与独特库存；浮点权重与seed标签不代替映射身份。[14项CPU控制](analysis/mixture_identity_cpu.json)。

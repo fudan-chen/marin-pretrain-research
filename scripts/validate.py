@@ -811,6 +811,14 @@ ok('V52 prefetch and completed-step resume are distinct',max(lr['prefetch']['fir
 ok('V52 historical rewrite affects original host retrieval',lr['history_change']['old']['offset']==20 and lr['history_change']['rewritten']['offset']==32 and lr['history_change']['future_only']['offset']==20)
 ok('V52 existing batch clock chapter retains four tables',len(soup.select('#batch-clock-guide table'))==4)
 report['highlights']+=['V52 eleven original async loader host controls, identity-store retrieval and finite endpoints; no actual Hero token stream, background queue or complete checkpoint restore']
+mi=read(A/'mixture_identity_cpu.json')
+ok('V53 fourteen original mixture class CPU controls retain scope',mi['checks_passed']==len(mi['checks'])==14 and mi['runtime']['backend']=='cpu' and mi['actual_Hero_mapping'] is None and mi['actual_inner_shuffle'] is None and mi['actual_token_store'] is None)
+ok('V53 mixture source identity matches',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in mi['source_sha256'].items()))
+ok('V53 dictionary order changes tie allocation',mi['tie_counts']['ABC']=={'A':4,'B':2,'C':2} and mi['tie_counts']['CBA']=={'C':4,'B':2,'A':2})
+ok('V53 key preserves whole-block multiset but changes partial content',sorted(mi['whole_seed7'])==sorted(mi['whole_seed8']) and sorted(mi['partial_seed7'])!=sorted(mi['partial_seed8']))
+ok('V53 finite restart separates exposure from unique identity',len(mi['finite_length3_stream'])==24 and len(set(mi['finite_length3_stream']))==6)
+report['highlights']+=['V53 fourteen original mixture class and real JAX CPU identity controls; ordered dataset IDs, integer ties, finite modulo and partial windows; no actual Hero token/shuffle/restore']
+ok('V53 mixture identity chapter has bounded controls table',len(soup.select('#mixture-identity-guide table'))==1)
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

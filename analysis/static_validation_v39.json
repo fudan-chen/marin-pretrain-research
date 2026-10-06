@@ -1,0 +1,18 @@
+{
+  "scope": "Static HTML parsing, tool links and artifact integrity only; no V39 browser rendering or reader study",
+  "actual_browser_rendering": null,
+  "pages": {
+    "index.html": {
+      "chapter": true,
+      "tables": 3,
+      "tool_link": true,
+      "sha256": "042ae215d87882514e5a02e48475d517b2beede37fa614467416b29fd559ce05"
+    },
+    "report_standalone.html": {
+      "chapter": true,
+      "tables": 3,
+      "tool_link": true,
+      "sha256": "dd8f85bdc92c6ee6fe7ea643f31ac8ec84452cf28d9c06289d111ddfdcec20aa"
+    }
+  }
+}

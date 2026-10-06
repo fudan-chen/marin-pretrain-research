@@ -18,6 +18,7 @@ report:
 	$(PYTHON) scripts/probe_routing.py
 	$(PYTHON) scripts/probe_qb_partition.py
 	$(PYTHON) scripts/probe_optimizer.py
+	$(PYTHON) scripts/test_eval_replays.py
 	$(PYTHON) scripts/probe_eval_identity.py
 	$(PYTHON) scripts/analyze_live_2026_10_06.py
 	$(PYTHON) scripts/probe_mixture_range.py

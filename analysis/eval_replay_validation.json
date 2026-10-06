@@ -1,0 +1,129 @@
+{
+  "scope": "Synthetic transcript tests only; no historical evaluation transcript acquired.",
+  "checks_passed": 27,
+  "checks": [
+    "Identical declarations and sums compare within tolerance",
+    "Identical result never asserts root cause or GPU replay",
+    "Archived-style token-weighted BPB differs from byte ratio",
+    "Same declarations and changed loss are numeric difference",
+    "Declared tolerances admit small difference",
+    "Changed checkpoint_sha256 identity gates numeric conclusion",
+    "Changed execution_sha identity gates numeric conclusion",
+    "Changed parameter_view identity gates numeric conclusion",
+    "Changed pending_beta_policy identity gates numeric conclusion",
+    "Changed compute_dtype identity gates numeric conclusion",
+    "Changed backend identity gates numeric conclusion",
+    "Changed tokenizer_sha256 identity gates numeric conclusion",
+    "Changed byte_table_sha256 identity gates numeric conclusion",
+    "Changed digest requires input review",
+    "Changed denominator requires input review",
+    "Changed bytes requires input review",
+    "Record ordering difference is not silently aligned away",
+    "Zero-weight domain is recorded and excluded from active macro",
+    "Batch regrouping is gated despite same total CE and bytes",
+    "Reject local",
+    "Reject NaN",
+    "Reject duplicate",
+    "Reject negative",
+    "Reject zero weight nonzero loss",
+    "Reject overflowing aggregate despite individually finite fields",
+    "Real CLI writes file hashes and comparison",
+    "Real CLI refuses overwrite and preserves bytes"
+  ],
+  "synthetic_clean": {
+    "scope": "Compare declared global leaf-domain evaluation transcripts. Input hashes are\nclaims by the exporter, not independently verified arrays. Float64 reconstruction\nof archived token-weighted BPB; no GPU scoring or automatic root cause.\nUsage: python scripts/compare_eval_replays.py first.json second.json output.json\n",
+    "status": "within_tolerance_under_matching_declarations",
+    "identity_fields_differ": [],
+    "input_partition_and_denominator_declarations_match": true,
+    "first_input_record_difference": null,
+    "numeric_difference_records": [],
+    "atol": 1e-06,
+    "rtol": 1e-05,
+    "first": {
+      "leaves": {
+        "A": {
+          "weighted_loss_sum": 4.0,
+          "loss_weight_sum": 2.0,
+          "weighted_byte_sum": 4.0,
+          "CE": 2.0,
+          "logged_token_weighted_BPB": 1.923593387851951,
+          "byte_weighted_ratio_for_comparison": 1.4426950408889634
+        }
+      },
+      "macro_CE": 2.0,
+      "macro_logged_BPB": 1.923593387851951,
+      "micro_CE": 2.0,
+      "micro_logged_BPB": 1.923593387851951,
+      "empty_weight_domains": []
+    },
+    "second": {
+      "leaves": {
+        "A": {
+          "weighted_loss_sum": 4.0,
+          "loss_weight_sum": 2.0,
+          "weighted_byte_sum": 4.0,
+          "CE": 2.0,
+          "logged_token_weighted_BPB": 1.923593387851951,
+          "byte_weighted_ratio_for_comparison": 1.4426950408889634
+        }
+      },
+      "macro_CE": 2.0,
+      "macro_logged_BPB": 1.923593387851951,
+      "micro_CE": 2.0,
+      "micro_logged_BPB": 1.923593387851951,
+      "empty_weight_domains": []
+    },
+    "input_hash_verification": "exporter declaration only; raw arrays not supplied",
+    "root_cause": null,
+    "actual_GPU_replay": null
+  },
+  "synthetic_regrouped": {
+    "scope": "Compare declared global leaf-domain evaluation transcripts. Input hashes are\nclaims by the exporter, not independently verified arrays. Float64 reconstruction\nof archived token-weighted BPB; no GPU scoring or automatic root cause.\nUsage: python scripts/compare_eval_replays.py first.json second.json output.json\n",
+    "status": "identity_or_input_review_required",
+    "identity_fields_differ": [],
+    "input_partition_and_denominator_declarations_match": false,
+    "first_input_record_difference": 0,
+    "numeric_difference_records": [],
+    "atol": 1e-06,
+    "rtol": 1e-05,
+    "first": {
+      "leaves": {
+        "A": {
+          "weighted_loss_sum": 4.0,
+          "loss_weight_sum": 2.0,
+          "weighted_byte_sum": 4.0,
+          "CE": 2.0,
+          "logged_token_weighted_BPB": 1.923593387851951,
+          "byte_weighted_ratio_for_comparison": 1.4426950408889634
+        }
+      },
+      "macro_CE": 2.0,
+      "macro_logged_BPB": 1.923593387851951,
+      "micro_CE": 2.0,
+      "micro_logged_BPB": 1.923593387851951,
+      "empty_weight_domains": []
+    },
+    "second": {
+      "leaves": {
+        "A": {
+          "weighted_loss_sum": 4.0,
+          "loss_weight_sum": 2.0,
+          "weighted_byte_sum": 4.0,
+          "CE": 2.0,
+          "logged_token_weighted_BPB": 1.4426950408889634,
+          "byte_weighted_ratio_for_comparison": 1.4426950408889634
+        }
+      },
+      "macro_CE": 2.0,
+      "macro_logged_BPB": 1.4426950408889634,
+      "micro_CE": 2.0,
+      "micro_logged_BPB": 1.4426950408889634,
+      "empty_weight_domains": []
+    },
+    "input_hash_verification": "exporter declaration only; raw arrays not supplied",
+    "root_cause": null,
+    "actual_GPU_replay": null
+  },
+  "actual_historical_transcripts": null,
+  "actual_GPU_replay": null
+}

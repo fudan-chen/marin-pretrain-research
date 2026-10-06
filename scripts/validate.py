@@ -704,6 +704,12 @@ ok('V38 declared current evaluation has batch 704 and no cap',ei['declared_eval'
 ok('V38 new identity chapter has three evidence tables',len(soup.select('#eval-identity-guide table'))==3)
 report['highlights']=[x.replace('433 source archive checksums valid','435 source archive checksums valid') for x in report['highlights']]
 report['highlights']+=['V38 domain mapping / fresh default logical eval iteration / finite partial batch / progress-length overestimate; no actual cache or repeated model-score verification']
+er=read(A/'eval_replay_validation.json')
+ok('V39 replay comparison retains twenty-seven synthetic checks',er['checks_passed']==len(er['checks'])==27 and er['actual_historical_transcripts'] is None and er['actual_GPU_replay'] is None)
+ok('V39 matching synthetic declarations do not imply actual GPU replay',er['synthetic_clean']['status']=='within_tolerance_under_matching_declarations' and er['synthetic_clean']['root_cause'] is None and er['synthetic_clean']['actual_GPU_replay'] is None)
+ok('V39 regrouped synthetic transcript preserves totals but changes logged BPB',er['synthetic_regrouped']['status']=='identity_or_input_review_required' and er['synthetic_regrouped']['first']['micro_CE']==er['synthetic_regrouped']['second']['micro_CE'] and er['synthetic_regrouped']['first']['micro_logged_BPB']!=er['synthetic_regrouped']['second']['micro_logged_BPB'])
+ok('V39 new replay chapter has three evidence tables',len(soup.select('#eval-replay-guide table'))==3)
+report['highlights']+=['V39 executable declared global leaf-domain transcript comparison; token-weighted BPB regrouping counterexample; no raw-array identity verification or actual Hero replay']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

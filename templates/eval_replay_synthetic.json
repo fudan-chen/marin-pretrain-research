@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "array_scope": "global",
+  "leaf_domains_disjoint": true,
+  "checkpoint_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "execution_sha": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+  "parameter_view": "stored_params",
+  "pending_beta_policy": "stored_not_applied",
+  "compute_dtype": "bf16",
+  "backend": "synthetic",
+  "tokenizer_sha256": "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc",
+  "byte_table_sha256": "dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd",
+  "input_digest_scheme": "ordered_tokens_weights_masks_tags_v1",
+  "records": [
+    {
+      "batch": 0,
+      "domain": "A",
+      "input_sha256": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "weighted_loss_sum": 2.0,
+      "loss_weight_sum": 1.0,
+      "weighted_byte_sum": 1.0
+    },
+    {
+      "batch": 1,
+      "domain": "A",
+      "input_sha256": "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      "weighted_loss_sum": 2.0,
+      "loss_weight_sum": 1.0,
+      "weighted_byte_sum": 3.0
+    }
+  ]
+}

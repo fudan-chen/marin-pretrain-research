@@ -39,7 +39,8 @@ chapters.insert(0,('batch-clock-guide','配比阶段、batch前缀与日志时�
 chapters.insert(0,('mixture-range-guide','大曝光量、混合计数与索引范围','MIXTURE_RANGE_ZH.md'))
 chapters.insert(0,('live-observation-guide','10月6日：新进度与16域端点观察','LIVE_2026_10_06_ZH.md'))
 chapters.insert(0,('eval-identity-guide','评估输入身份、重复遍历与末批','EVAL_IDENTITY_ZH.md'))
-priority=['eval-identity-guide','live-observation-guide','mixture-range-guide','batch-clock-guide','failure-boundaries-guide','observability-guide','muon-direction-guide','adamh-state-guide','muon-geometry-guide','engineering-map-guide','delivery-audit-guide','checkpoint-memory-guide','checkpoint-commit-guide','eval-metrics-guide','mix-trajectory-guide','router-precision-guide','short-conv-guide','loss-triage','optimizer-guide','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
+chapters.insert(0,('eval-replay-guide','重复评分记录、分母与可执行对照','EVAL_REPLAY_ZH.md'))
+priority=['eval-replay-guide','eval-identity-guide','live-observation-guide','mixture-range-guide','batch-clock-guide','failure-boundaries-guide','observability-guide','muon-direction-guide','adamh-state-guide','muon-geometry-guide','engineering-map-guide','delivery-audit-guide','checkpoint-memory-guide','checkpoint-commit-guide','eval-metrics-guide','mix-trajectory-guide','router-precision-guide','short-conv-guide','loss-triage','optimizer-guide','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
 chapters.sort(key=lambda c:priority.index(c[0]) if c[0] in priority else len(priority))
 readings={x['file']:x for x in json.loads((ROOT/'analysis/figure_readings.json').read_text())}
 sections=[];toc=[]

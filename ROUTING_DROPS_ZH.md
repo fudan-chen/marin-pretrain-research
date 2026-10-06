@@ -203,3 +203,38 @@ BF16控制的两个乘积都非零，却仍出现一个assignment的dweight舍�
 九个正权重控制的原专家dx/dW13/dW2均有限。有限性不证明router梯度等价；前向相同也不证明backward相同。这个控制只比较权重支线，并没有在EXACT与EXPERT_SIDE两套完整分布式反向之间做专家参数梯度对照。应在同checkpoint、同样本、同接受mask下分别记录dweight、router梯度、专家梯度，再在同一真实优化器状态和loss scale下比较更新。小梯度差的影响取决于状态与缩放，不能由本表绝对L2数值直接认定可忽略或不稳定。
 
 本轮使用原CPU/XLA wrapper执行真实portable专家，跳过完整包导入；以两个本地行和显式排列代替通信，以人工dout代替模型loss。真实Hero精度事件、GPU行为、优化器更新与质量收益仍未知。复现：`make portable-router-precision-cpu CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。
+
+
+## V82：PR 选择、运行开关和最终环境，不能混成一个结论
+
+本轮重新取得[#9831](https://github.com/marin-community/marin/pull/9831)、[#9832](https://github.com/marin-community/marin/pull/9832)、[#9833](https://github.com/marin-community/marin/pull/9833)的公开元数据，三个仍open、merged=false。#9833 head仍为b65be4c9550c5097f0a3add08933531a1c24d534，V78—V81的代码绑定没有被本轮更新推翻。[#8506](https://github.com/marin-community/marin/issues/8506)仍59条评论，逐ID比较正文与V77完全一致。未合并不能证明某个实验或私有部署没有使用分支，也不能把PR内Hero配置写成生产已生效。
+
+同head取得完整experiments/grug/moe_hero_ep/model.py与train.py，不只读PR patch。通用MoEExpertMlp字段默认EXACT；Hero模型初始化在resolved implementation为ragged_all_to_all时显式选择EXPERT_SIDE，否则选EXACT。这是静态构造代码证据，不是实例化结果。实际moe_mlp还依赖mesh/expert axis，文档明确EXPERT_SIDE支线用于expert轴大小至少2的ragged路径；本地fallback不能充当分布式路径验证。
+
+### 默认值如何变成实际字符串
+
+[原运行helper](https://github.com/marin-community/marin/blob/b65be4c9550c5097f0a3add08933531a1c24d534/experiments/grug/moe_hero_ep/train.py)采用两类处理。显存fraction通过os.environ.setdefault填缺；slop、latency-hiding、host-offloading和command-buffer等默认XLA flag，只有同名flag未出现时才追加。ragged/carry的overlap则删除所有同名项后强制设1；ragged required flags也删除同名项后追加固定值；ragged无carry时，async-collectives强制为ALLCOLLECTIVES。
+
+以独立字典代替os.environ，直接AST执行原helper和原常量；没有修改本机环境或初始化JAX/GPU。六组环境控制、13项检查通过，[完整环境字符串](analysis/runtime_defaults.json)和[执行脚本](scripts/probe_runtime_defaults.py)保留。
+
+|输入与请求|最终fraction|最终slop|最终latency-hiding|overlap|
+|---|---|---|---|---|
+|空环境，ragged + carry|0.78|105|true|1|
+|继承fraction=.75、slop=85、latency=false、overlap=8，仍请求carry|.75|85|false|1|
+|空环境，ragged无carry|0.75|85|false|1|
+|上一行helper结果，在同一字典再请求carry|0.75|85|false|1|
+|继承两个slop项85与105，请求carry|0.78|两个项均保留|true|1|
+
+第二行并非helper没有进入carry分支：它仍追加host-memory-offloading=true，但保留调用方的fraction/slop/latency。第四行说明，同一进程遗留的默认值会在下一次调用被当成已有显式值；无carry阶段强制加入的ALLCOLLECTIVES也继续保留。这个字典控制不说明训练入口支持在初始化后动态切换模式，更没有验证已初始化backend重新读取环境；它说明launcher复用、notebook或环境预填时，不能只记录最后请求的remat_mode。
+
+重复slop的控制保留两个字符串。分析JSON为方便查看另有parsed_flag_values字典，会显示后出现的项，**这不是XLA parser优先级证据**；验收必须保留原xla_flags列表并拒绝把字典视为唯一有效值。本轮没有运行XLA parser来裁定重复项如何处理。
+
+### 哪些东西才可以写进实验结论
+
+作者注释说明carry的0.78/105预算意在容纳保存的routed输出，旧0.75/85可能触发重新计算；本轮仅验证继承值确实可能留下，没有编译内存计划、HBM测量或重计算次数，不能断言上述控制必然OOM或有特定速度下降。强制overlap=1是代码中明确的安全策略；它也不证明当前集群hang原因已解决。
+
+对自己的性能/质量实验，记录顺序应是：配置请求与代码SHA→初始化前环境原文→helper后的环境原文与重复flag检查→实际进程启动参数→backend版本与初始化时刻→编译/运行证据。最后才解释step time、HBM、梯度一致性和评估。一个repo默认、PR注释或配置文件，不能跨越这条链替代实际进程环境。
+
+实验需分别说明通用默认EXACT、Hero构造选择、有效EP路径、实际专家backend，以及真实运行是否使用该head。mode名不能代替portable/QuACK的存储合同，remat_mode名也不能代替最终memory budget与scheduler设置。若遇到继承冲突，应明确决定保留用户override还是改启动环境；本报告没有更改上游行为，也不建议把全部override强制抹掉。
+
+本轮新增7份来源，旧479份非bookkeeping来源字节保持不变，来源归档现为487份；[获取台账](analysis/runtime_defaults_acquisition.json)记录每条URL、检索时刻和SHA。真实生产部署、最终运行环境、XLA重复参数规则、HBM与GPU结果仍未知。复现：`make runtime-defaults-probe`。

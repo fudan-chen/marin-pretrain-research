@@ -249,3 +249,6 @@ V77澄清portable保存输出。现在执行固定PR head的原 `_RaggedDotExper
 
 
 V81将同一head原router接到实际portable MLP，再比较EXACT与EXPERT_SIDE的权重和router梯度。FP16控制出现乘积向上舍入与归零两类差异，BF16控制有非下溢舍入差；详见[同版本精度链](ROUTING_DROPS_ZH.md)。17项CPU检查不证明GPU或优化器更新等价。
+
+
+V82再次取得#9831/#9832/#9833，仍open且未合并；#9833 head不变。完整Hero model/train把通用EXACT默认与Hero ragged的EXPERT_SIDE静态选择对应起来；原runtime helper13项host字典检查显示memory/slop/latency继承值可保留，overlap等则强制覆盖。详见[运行开关的证据链](ROUTING_DROPS_ZH.md)。实际生产部署与GPU仍未知。

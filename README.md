@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本V81：同一head原router接到实际portable专家，17项CPU检查。小权重反向乘积的舍入与归零可经归一化传回router；新增精度表和kernel接续验收规则，详见 [路由权重与精度](ROUTING_DROPS_ZH.md)。
+当前版本V82：刷新三项公开PR与运行issue，取得完整Hero model/train；原运行默认helper13项host检查。模式名不保证继承环境中的memory/slop/latency真正改变，详见 [运行开关与部署证据](ROUTING_DROPS_ZH.md)。
 
 [MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并提供未执行的性能交互记录模板。
 

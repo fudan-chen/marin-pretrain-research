@@ -463,3 +463,6 @@ V80（2026-10-07）：执行固定head原route、mask语句和portable combine�
 
 
 V81（2026-10-07）：同head原router、真实portable MLP、combine transpose与EXPERT_SIDE恢复相接，17项CPU检查。九个正权重控制显式回传router，三个人工接受零权重边界；新增数值表与分桶验收，无真实GPU/优化器/生产事件证明。
+
+
+V82（2026-10-07）：公开PR三项与运行issue59评论刷新；新增固定head完整Hero model/train。原helper在六组隔离环境字典执行，13项检查；验证继承值、重复flag和模式残留，未修改本机环境/上游、未启动backend。来源新增7份、旧479份非bookkeeping字节保持。

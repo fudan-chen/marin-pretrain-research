@@ -394,3 +394,6 @@ V80执行补充：审查drop相关改动时，分别写明assignment权重、已
 
 
 V81执行补充：接受零权重、被丢零权重和正权重但weighted cotangent为零需分桶。验收先对齐dtype/scale与mask，再比较dweight→router梯度→同状态更新；有限梯度和相同前向均不足以判断EXPERT_SIDE等价。
+
+
+V82执行补充：性能或质量结论须保存helper前后环境原文及flag列表，单列继承override、强制安全flag和重复项。模式名、repo默认或静态构造选择不能替代实际启动环境；JSON解析字典的末项值不能充当XLA parser规则。

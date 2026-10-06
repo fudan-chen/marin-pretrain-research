@@ -4339,5 +4339,61 @@
     "retrieved_utc": "2026-10-06T21:38:27.835978+00:00",
     "bytes": 7629,
     "sha256": "c9d6511f1cd5d69be168a701dc92742ccc26f09d69bbb144fc53d1c9ea934bbd"
+  },
+  {
+    "file": "runtime_defaults_2026_10_07/pull_9831.json",
+    "url": "https://api.github.com/repos/marin-community/marin/pulls/9831",
+    "revision": null,
+    "retrieved_utc": "2026-10-06T21:56:34.377874+00:00",
+    "bytes": 20121,
+    "sha256": "113eaa1981c42df37402804654a74aa782d32821ea94458ff635d0d68403180c"
+  },
+  {
+    "file": "runtime_defaults_2026_10_07/pull_9832.json",
+    "url": "https://api.github.com/repos/marin-community/marin/pulls/9832",
+    "revision": null,
+    "retrieved_utc": "2026-10-06T21:56:35.221063+00:00",
+    "bytes": 20145,
+    "sha256": "e6cefcfa8648e7899d7c88f9acae104331dab72c4d9d84ec74f43a54ca1c038e"
+  },
+  {
+    "file": "runtime_defaults_2026_10_07/pull_9833.json",
+    "url": "https://api.github.com/repos/marin-community/marin/pulls/9833",
+    "revision": null,
+    "retrieved_utc": "2026-10-06T21:56:36.178365+00:00",
+    "bytes": 20476,
+    "sha256": "3f414b0876140b66f3b571e72f11a95b2531501f1ba5e0c58d719d7537ec5753"
+  },
+  {
+    "file": "runtime_defaults_2026_10_07/issue_8506.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8506",
+    "revision": null,
+    "retrieved_utc": "2026-10-06T21:56:36.879943+00:00",
+    "bytes": 3937,
+    "sha256": "2a01e45e4d3fa84f52a4383a942c14fd64e909914a6af1b02cab38df8b854365"
+  },
+  {
+    "file": "runtime_defaults_2026_10_07/comments_8506.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8506/comments?per_page=100",
+    "revision": null,
+    "retrieved_utc": "2026-10-06T21:56:37.915564+00:00",
+    "bytes": 155452,
+    "sha256": "d8225e676fb83d84c3c15e8f4a9ac7a8a2339fca50aadcd9ddd6bfd62c2f4950"
+  },
+  {
+    "file": "runtime_defaults_2026_10_07/model.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/experiments/grug/moe_hero_ep/model.py",
+    "revision": "b65be4c9550c5097f0a3add08933531a1c24d534",
+    "retrieved_utc": "2026-10-06T21:56:38.738051+00:00",
+    "bytes": 78831,
+    "sha256": "bce3dffcf78b25d83671c89ff084edd593505f5d61d94df1e40ac1bd490112bb"
+  },
+  {
+    "file": "runtime_defaults_2026_10_07/train.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/experiments/grug/moe_hero_ep/train.py",
+    "revision": "b65be4c9550c5097f0a3add08933531a1c24d534",
+    "retrieved_utc": "2026-10-06T21:56:39.486778+00:00",
+    "bytes": 65612,
+    "sha256": "2c4d648db684d8109ee241e2e69dad3fe42b5e41760f6114706c6134e35a786b"
   }
 ]

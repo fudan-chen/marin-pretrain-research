@@ -1,0 +1,192 @@
+{
+  "scope": "Original runtime default helper on isolated host environment dictionaries.\nNo JAX/GPU initialization, launch, model constructor or production environment.\n",
+  "checks_passed": 13,
+  "checks": [
+    "Clean carry defaults widen memory fraction and slop",
+    "Explicit inherited fraction/slop/latency preserved",
+    "Every ragged control forces single overlap despite inheritance",
+    "All ragged required flags are exact and unique",
+    "Ragged no-offload forces synchronous collectives",
+    "Mode transition retains earlier defaults and sync setting",
+    "Duplicate ordinary slop flags preserved without selecting backend precedence",
+    "Repeated same mode is idempotent in this dictionary control",
+    "Latest public issue comments complete and bodies unchanged",
+    "All three current proposals remain open/unmerged",
+    "Retrieved model runtime head matches audited portable head",
+    "Seven exact acquisitions and prior 479 non-bookkeeping bytes preserved",
+    "Generic EXACT and hero ragged conditional EXPERT_SIDE are explicit static source selections"
+  ],
+  "cases": {
+    "clean_offload": {
+      "memory_fraction": "0.78",
+      "xla_flags": [
+        "--xla_gpu_enable_latency_hiding_scheduler=true",
+        "--xla_gpu_memory_limit_slop_factor=105",
+        "--xla_gpu_enable_command_buffer=",
+        "--xla_gpu_enable_host_memory_offloading=true",
+        "--xla_gpu_experimental_parallel_collective_overlap_limit=1",
+        "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel=true",
+        "--xla_enable_nccl_symmetric_buffers_for_collectives=raggedalltoall"
+      ],
+      "parsed_flag_values": {
+        "--xla_gpu_enable_latency_hiding_scheduler": "true",
+        "--xla_gpu_memory_limit_slop_factor": "105",
+        "--xla_gpu_enable_command_buffer": "",
+        "--xla_gpu_enable_host_memory_offloading": "true",
+        "--xla_gpu_experimental_parallel_collective_overlap_limit": "1",
+        "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel": "true",
+        "--xla_enable_nccl_symmetric_buffers_for_collectives": "raggedalltoall"
+      }
+    },
+    "inherited_offload": {
+      "memory_fraction": ".75",
+      "xla_flags": [
+        "--xla_gpu_memory_limit_slop_factor=85",
+        "--xla_gpu_enable_latency_hiding_scheduler=false",
+        "--xla_gpu_enable_command_buffer=",
+        "--xla_gpu_enable_host_memory_offloading=true",
+        "--xla_gpu_experimental_parallel_collective_overlap_limit=1",
+        "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel=true",
+        "--xla_enable_nccl_symmetric_buffers_for_collectives=raggedalltoall"
+      ],
+      "parsed_flag_values": {
+        "--xla_gpu_memory_limit_slop_factor": "85",
+        "--xla_gpu_enable_latency_hiding_scheduler": "false",
+        "--xla_gpu_enable_command_buffer": "",
+        "--xla_gpu_enable_host_memory_offloading": "true",
+        "--xla_gpu_experimental_parallel_collective_overlap_limit": "1",
+        "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel": "true",
+        "--xla_enable_nccl_symmetric_buffers_for_collectives": "raggedalltoall"
+      }
+    },
+    "clean_ragged_no_offload": {
+      "memory_fraction": "0.75",
+      "xla_flags": [
+        "--xla_gpu_enable_latency_hiding_scheduler=false",
+        "--xla_gpu_memory_limit_slop_factor=85",
+        "--xla_gpu_enable_command_buffer=",
+        "--xla_gpu_experimental_parallel_collective_overlap_limit=1",
+        "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel=true",
+        "--xla_enable_nccl_symmetric_buffers_for_collectives=raggedalltoall",
+        "--xla_gpu_disable_async_collectives=ALLCOLLECTIVES"
+      ],
+      "parsed_flag_values": {
+        "--xla_gpu_enable_latency_hiding_scheduler": "false",
+        "--xla_gpu_memory_limit_slop_factor": "85",
+        "--xla_gpu_enable_command_buffer": "",
+        "--xla_gpu_experimental_parallel_collective_overlap_limit": "1",
+        "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel": "true",
+        "--xla_enable_nccl_symmetric_buffers_for_collectives": "raggedalltoall",
+        "--xla_gpu_disable_async_collectives": "ALLCOLLECTIVES"
+      }
+    },
+    "same_process_transition": {
+      "memory_fraction": "0.75",
+      "xla_flags": [
+        "--xla_gpu_enable_latency_hiding_scheduler=false",
+        "--xla_gpu_memory_limit_slop_factor=85",
+        "--xla_gpu_enable_command_buffer=",
+        "--xla_gpu_disable_async_collectives=ALLCOLLECTIVES",
+        "--xla_gpu_enable_host_memory_offloading=true",
+        "--xla_gpu_experimental_parallel_collective_overlap_limit=1",
+        "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel=true",
+        "--xla_enable_nccl_symmetric_buffers_for_collectives=raggedalltoall"
+      ],
+      "parsed_flag_values": {
+        "--xla_gpu_enable_latency_hiding_scheduler": "false",
+        "--xla_gpu_memory_limit_slop_factor": "85",
+        "--xla_gpu_enable_command_buffer": "",
+        "--xla_gpu_disable_async_collectives": "ALLCOLLECTIVES",
+        "--xla_gpu_enable_host_memory_offloading": "true",
+        "--xla_gpu_experimental_parallel_collective_overlap_limit": "1",
+        "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel": "true",
+        "--xla_enable_nccl_symmetric_buffers_for_collectives": "raggedalltoall"
+      }
+    },
+    "duplicate_slop": {
+      "memory_fraction": "0.78",
+      "xla_flags": [
+        "--xla_gpu_memory_limit_slop_factor=85",
+        "--xla_gpu_memory_limit_slop_factor=105",
+        "--xla_gpu_enable_latency_hiding_scheduler=true",
+        "--xla_gpu_enable_command_buffer=",
+        "--xla_gpu_enable_host_memory_offloading=true",
+        "--xla_gpu_experimental_parallel_collective_overlap_limit=1",
+        "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel=true",
+        "--xla_enable_nccl_symmetric_buffers_for_collectives=raggedalltoall"
+      ],
+      "parsed_flag_values": {
+        "--xla_gpu_memory_limit_slop_factor": "105",
+        "--xla_gpu_enable_latency_hiding_scheduler": "true",
+        "--xla_gpu_enable_command_buffer": "",
+        "--xla_gpu_enable_host_memory_offloading": "true",
+        "--xla_gpu_experimental_parallel_collective_overlap_limit": "1",
+        "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel": "true",
+        "--xla_enable_nccl_symmetric_buffers_for_collectives": "raggedalltoall"
+      }
+    },
+    "repeat_same_mode": {
+      "memory_fraction": "0.78",
+      "xla_flags": [
+        "--xla_gpu_enable_latency_hiding_scheduler=true",
+        "--xla_gpu_memory_limit_slop_factor=105",
+        "--xla_gpu_enable_command_buffer=",
+        "--xla_gpu_enable_host_memory_offloading=true",
+        "--xla_gpu_experimental_parallel_collective_overlap_limit=1",
+        "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel=true",
+        "--xla_enable_nccl_symmetric_buffers_for_collectives=raggedalltoall"
+      ],
+      "parsed_flag_values": {
+        "--xla_gpu_enable_latency_hiding_scheduler": "true",
+        "--xla_gpu_memory_limit_slop_factor": "105",
+        "--xla_gpu_enable_command_buffer": "",
+        "--xla_gpu_enable_host_memory_offloading": "true",
+        "--xla_gpu_experimental_parallel_collective_overlap_limit": "1",
+        "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel": "true",
+        "--xla_enable_nccl_symmetric_buffers_for_collectives": "raggedalltoall"
+      }
+    }
+  },
+  "hero_constructor_selection_ast": "RoutingWeightGradient.EXPERT_SIDE if resolve_moe_implementation(cfg.moe_implementation) == 'ragged_all_to_all' else RoutingWeightGradient.EXACT",
+  "generic_default_ast": "routing_weight_gradient: RoutingWeightGradient = eqx.field(static=True, default=RoutingWeightGradient.EXACT)",
+  "current_pulls": [
+    {
+      "number": 9831,
+      "state": "open",
+      "merged": false,
+      "head": "fb85462562ab2e59b58f87e6157d9adf71df89ea",
+      "updated_at": "2026-10-06T20:08:18Z"
+    },
+    {
+      "number": 9832,
+      "state": "open",
+      "merged": false,
+      "head": "4e533e768d5342e705976bd704cfe63af6b99eed",
+      "updated_at": "2026-10-06T20:08:20Z"
+    },
+    {
+      "number": 9833,
+      "state": "open",
+      "merged": false,
+      "head": "b65be4c9550c5097f0a3add08933531a1c24d534",
+      "updated_at": "2026-10-06T20:08:22Z"
+    }
+  ],
+  "issue_8506_comments": 59,
+  "source_sha256": {
+    "sources/runtime_defaults_2026_10_07/train.py": "2c4d648db684d8109ee241e2e69dad3fe42b5e41760f6114706c6134e35a786b",
+    "sources/runtime_defaults_2026_10_07/model.py": "bce3dffcf78b25d83671c89ff084edd593505f5d61d94df1e40ac1bd490112bb",
+    "sources/engineering_v77_2026_10_07/current_ep_ragged_all_to_all.py": "aa8331d5d7f4d18c4aef2f401271411539ad637c4e458b3f6a33585d2d3ae9cf",
+    "sources/engineering_v77_2026_10_07/current_grug_moe.py": "d2c5f391186488a806116874c971f7e704b0cdc474b70515e3354391f3bbba2d"
+  },
+  "explicit_substitutions": [
+    "os.environ replaced by independent dictionaries; no host environment mutation",
+    "AST extraction skips launcher imports and backend setup",
+    "hero constructor selection inspected statically, not instantiated"
+  ],
+  "actual_production_deployment": null,
+  "actual_effective_environment": null,
+  "actual_XLA_parser_duplicate_precedence": null,
+  "actual_HBM_measurement": null,
+  "actual_GPU_execution": null
+}

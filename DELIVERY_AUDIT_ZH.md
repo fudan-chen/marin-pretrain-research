@@ -96,3 +96,6 @@ V80交付增补：原route/mask/portable combine15项CPU检查，合成输出、
 
 
 V81增补：原router和实际portable专家在同head接通，17项CPU检查及九组精度数值表。原乘法/cast语句直接AST执行；真实collective、GPU、模型loss、更新和Hero事件仍未知。来源复用，未新增来源归档。
+
+
+V82增补：公开状态刷新与原运行默认helper13项隔离host检查；来源487份。三个PR仍未合并，Hero分支的构造选择和最终生产执行分开。静态HTML与ZIP验证不能替代真实浏览器、运行环境、XLA解析、HBM或部署证明。

@@ -233,3 +233,7 @@ post-clip-router-cpu:
 .PHONY: portable-router-precision-cpu
 portable-router-precision-cpu:
 	$(CPU_PYTHON) scripts/probe_portable_router_precision_cpu.py
+
+.PHONY: runtime-defaults-probe
+runtime-defaults-probe:
+	$(PYTHON) scripts/probe_runtime_defaults.py

@@ -1,0 +1,15 @@
+{
+  "version": "V82",
+  "checks_passed": 8,
+  "checks": [
+    "index.html unique IDs",
+    "index.html helper execution and production scope visible",
+    "index.html prior tables preserved plus one runtime table",
+    "report_standalone.html unique IDs",
+    "report_standalone.html helper execution and production scope visible",
+    "report_standalone.html prior tables preserved plus one runtime table",
+    "487 exact archived source files",
+    "Fresh V82 validation"
+  ],
+  "actual_browser_rendering": null
+}

@@ -330,3 +330,10 @@ V53执行原MixtureDataset类体和原block assignment，真实JAX 0.7.2 CPU，1
 ## V54：桶内shuffle与切分
 
 V54新取固定_prp.py；执行原PRP、Permutation/Sliced/BlockShuffling类体与split helper。14组控制含130个长度1–65双射检查；同快照train/val互斥，22→23跨快照出现人工交集。最新num_validation_sequences=None，实际Hero污染未测。
+
+
+## V55：小实验库存缩放
+
+V55执行原train_sets及既有原CPU shuffle/slice/mix；16项控制。r=1/4人工例中A重复率偏高75%、B偏高15%，更小库存变0触发原restart拒绝。最新模拟预算字段None；不认定Hero事故，也不代填pilot loss。
+
+V55范围修正：初次探针绕过了__post_init__，两个组合不属于合法配置。已补执行原初始化并明确记录拒绝，文档与最终结果按16项控制交付。

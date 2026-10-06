@@ -1,6 +1,6 @@
 # 当前交付审计：文件覆盖与真实验证分别核对
 
-当前版本V54，完善[桶内shuffle与切分](MIXTURE_IDENTITY_ZH.md)：14组CPU/源码控制含130个小域PRP检查；新增一份固定PRP源码，原443份payload保留。实际Hero token store与跨快照验证污染未测，最新声明num_validation_sequences=None。
+当前版本V55，完善[小实验库存缩放](MIXTURE_IDENTITY_ZH.md)：16项原CPU/源码控制，量化逐桶取整导致的重复率偏差与活跃域截零；明确key_iterator与同步长度桥适配。源码444份保持，真实pilot模型loss、生产重复率和token store未测。
 
 |用户要求|当前权威产物|覆盖与实际限制|
 |---|---|---|

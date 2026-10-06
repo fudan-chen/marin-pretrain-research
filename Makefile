@@ -112,3 +112,7 @@ mixture-identity:
 .PHONY: inner-shuffle
 inner-shuffle:
 	$(CPU_PYTHON) scripts/probe_inner_shuffle_cpu.py
+
+.PHONY: budget-inventory
+budget-inventory:
+	$(CPU_PYTHON) scripts/probe_budget_inventory_cpu.py

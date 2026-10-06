@@ -109,3 +109,8 @@
 ## V54：桶内shuffle与切分
 
 固定seed的train/val切分仍依赖库存快照。原CPU控制在同快照下互斥，跨长度快照则出现旧train/new-val身份交集；最新Hero未声明启用该拆分，不据此认定泄漏。[桶内shuffle与切分](MIXTURE_IDENTITY_ZH.md)。
+
+
+## V55：小实验库存缩放
+
+同比缩训练预算与库存，只在连续条件下保持曝光轮数。原train_sets逐桶floor后，小库存误差可能很大或变0；模型配比收益还需区分权重、库存多样性与重复曝光。[原小实验控制](MIXTURE_IDENTITY_ZH.md)。

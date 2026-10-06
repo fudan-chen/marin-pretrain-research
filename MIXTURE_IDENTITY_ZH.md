@@ -49,8 +49,42 @@
 
 层次block shuffle先打乱完整IO块，再在若干块组成的窗口内排列样本；最后不完整块保持在末尾。这是IO局部性与排列方式的选择。如果训练预算只覆盖一段前缀，就应检查这个前缀实际覆盖了哪些文档、质量桶与尾部；不能只比较完整库存计数。这次仅验证索引身份，没有测磁盘吞吐、缓存质量分布或模型loss。
 
-配置顺序也需要保留：归档train_sets先拆train/val，再做训练shuffle，然后按experiment_budget/target_budget截断，最后按max_train_batches截断。预算截断作用在shuffle后的逻辑前缀；改预算、窗口或缓存长度可能同时改曝光身份。最新声明experiment_budget和target_budget均为None，因此这里只给出配置迁移的核查位置，没有把预算截断归因于Hero曲线。
+配置顺序也需要保留：归档train_sets先拆train/val，再做训练shuffle，然后按experiment_budget/target_budget截断，最后按max_train_batches截断。这些是方法体内的分支顺序，不代表各字段能同时配置：原__post_init__禁止模拟预算与num_validation_sequences/max_train_batches并用。预算截断作用在shuffle后的逻辑前缀；改预算、窗口或缓存长度可能同时改曝光身份。最新声明experiment_budget和target_budget均为None，因此这里只给出配置迁移的核查位置，没有把预算截断归因于Hero曲线。
 
 对自己的实验，可以把“数据身份”记录成一条可重放链：缓存内容与长度 → 切分身份 → 训练shuffle算法/key/窗口 → 截断范围 → 混合域ID/配额 → 恢复next offset → 实际token/hash。验证集固定后，数据增长应明确采用冻结留出清单或重新定义评估版本；重新切分的曲线不能自动与旧曲线作同样本比较。若样本内容可重复，仍需文档/token层去重检查，序列索引不相交只是一层条件。
 
 [14组CPU与源码控制](analysis/inner_shuffle_cpu.json)包含130个PRP小域检查，以及完整人工排列、两份切分身份、交集、配置声明和四份源码SHA。[脚本](scripts/probe_inner_shuffle_cpu.py)使用已有[CPU依赖](requirements-cpu-numerics.txt)；执行`make inner-shuffle CPU_PYTHON=/你的环境/bin/python`。实际Hero inner shuffle、split leakage、token store和GPU/TPU结果仍为空。
+
+
+## V55：小规模实验的库存缩放，是否真的保持重复曝光率
+
+配比实验常希望用较小训练预算，模拟生产训练的每域曝光轮数。归档`LmDataConfig.train_sets`有对应接口：当experiment_budget和target_budget都非None时，令r为二者比值，在train/val切分和训练shuffle之后，对每域保留`int(length×r)`条逻辑序列，再应用可选max_train_batches截断。[原方法](https://github.com/marin-community/marin/blob/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/data/text/datasets.py)
+
+此次执行原train_sets函数体，复用前两节的原PRP、slice与mixture类体。同时执行原__post_init__约束。缓存构造返回人工identity store，AsyncDataset提供人工同步长度桥；生产key_iterator替换为明确记录的fold_in key序列。没有执行完整LmDataConfig初始化、真实tokenization或模型训练，不能据此确认生产key分配或收益。库存单位均为人工序列，不是loss有效目标或独立文档。
+
+人工参考预算96个混合槽位，A/B各占一半；小实验预算24，r=1/4。原mixture返回两域参考各48次、小实验各12次，名义曝光比例确实缩小了四倍。但库存截断改变了重复率：
+
+|原函数控制|结果|含义|
+|---|---|---|
+|A库存7，B库存23，r=1/4|保留A:1条、B:5条|逐桶取整，不是整套库存统一抽足25%|
+|参考A曝光48/库存7，小实验A曝光12/库存1|6.857轮变12轮，相对高75%|名义预算比正确，A重复率仍不匹配|
+|参考B曝光48/库存23，小实验B曝光12/库存5|2.087轮变2.4轮，相对高15%|同一个r对不同域产生不同取整误差|
+|A库存3，B库存23，r=1/10，A/B仍正权重|A保留0条，原restart混合拒绝空有限dataset|预算比大于0不保证每个活跃域可训练|
+|先shuffle23条，再r=1/4|保留真实原排列的前5条，不是原库存0–4|预算截断选择的是当前shuffle后的逻辑前缀|
+|绕过初始化：23条先拆4条validation，再r=1/4|方法体内训练库存19条再截成4条|正常__post_init__拒绝这组字段；只验证函数分支，不是可用配方|
+|绕过初始化：23条r=1/2，再max_train_batches=2、initial_batch=4|方法体内先截11条，再截8条|正常__post_init__拒绝此组合；未声称生产可以两种cap并用|
+|experiment_budget大于target_budget|原方法ValueError|已有顺序约束|
+|experiment_budget=0且target_budget=0|原__post_init__未拒绝；随后方法出现ZeroDivisionError|原初始化与方法边界控制；未核对外层配置解析/launch检查|
+|max_train_batches存在，但无initial_batch或要求超过库存|原方法assert拒绝|上限按initial_batch换算序列数；不等于动态batch历史累计|
+
+**先验收完整入口，后解释函数内部。** 原__post_init__明确要求：如果max_train_batches或num_validation_sequences非None，则experiment_budget和target_budget必须都为None。检查器正常调用先执行该原约束；上表两个组合另行显式绕过初始化，用来核对方法分支，并保存初始化拒绝结果。不能把这些分支控制推广成合法配置。
+
+连续理想条件是：曝光E变为rE，库存A变为rA，因此E/A不变。代码库存为n=floor(rA)，当n大于0且名义曝光恰好按r缩放时，重复率的相对倍数成为`rA/n`。差异为`(rA−n)/n`，小库存更敏感；实际混合整数配额和部分边缘块还可能造成曝光端的额外偏差。若n=0，不能再用这条除法估计“轮数”，需要先解决可行性。
+
+不要把所有0库存自动抬到1当作修复：这会另改小实验的库存占比、重复率和内容选择。评审应先拒绝或显式重新设计此条件，保留实际保留数与误差；可选择增加pilot预算、调整缩放方案或单独分析稀有域，但每种方法都改变实验合同。即使取整误差很小，缩小库存也减少内容多样性，配比排名仍可能随模型规模、训练阶段、重复次数和跨域迁移变化，不能把“曝光轮数接近”当作生产收益已证明。
+
+据此做配比研究，至少拆开两类干预：在共同库存上改权重，测新增曝光和供体退步；在共同权重上改库存/去重，测内容多样性与重复曝光。然后固定同一评估身份，在额外预算上确认候选，并用独立随机性观察排序是否稳定。若同时改权重、库存截断、shuffle窗口或恢复状态，loss差异只能归于这个完整组合，不能单独归于新配比。[供体与预算](TRANSFER_GUIDE_ZH.md) · [选择确认](CHANGE_REVIEW_ZH.md)
+
+最新10月7日归档的experiment_budget与target_budget均为None。这节提供小实验设计和配置迁移的检查，**不是Hero实际发生预算截断或重复率事故的记录**。也未测模型loss、真实每桶库存或生产重复率。
+
+[16项原CPU与源码控制](analysis/budget_inventory_cpu.json)保留人工参考/小实验输入身份、两域曝光、截断顺序、错误类型与依赖SHA。[脚本](scripts/probe_budget_inventory_cpu.py)要求已有[CPU依赖](requirements-cpu-numerics.txt)，执行`make budget-inventory CPU_PYTHON=/你的环境/bin/python`。它使用原方法与显式依赖适配；实际pilot模型结果、生产重复率和token store仍为空。

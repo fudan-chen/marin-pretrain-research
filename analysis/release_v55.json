@@ -1,0 +1,40 @@
+{
+  "edition": "V55",
+  "created_utc": "2026-10-06T19:08:18.224611+00:00",
+  "goal_status": "active",
+  "scope": "Original train_sets and post_init with real CPU PRP/slice/mix bodies and artificial cache/key/sync adapters; forbidden combinations retained only as explicitly bypassed method controls",
+  "checks_passed": 1421,
+  "CPU_and_source_checks": 16,
+  "budget_inventory_make_target_verified": true,
+  "original_post_init_constraints_executed": true,
+  "runtime": {
+    "python": "3.12.13",
+    "jax": "0.7.2",
+    "backend": "cpu"
+  },
+  "source_files": 444,
+  "all_prior_source_bytes_preserved": 444,
+  "new_source_acquisitions": 0,
+  "actual_Hero_simulation_budget_event": null,
+  "actual_pilot_model_loss": null,
+  "actual_production_repeat_factors": null,
+  "actual_token_store": null,
+  "actual_browser_rendering": null,
+  "artifact_sha256": {
+    "DELIVERY_AUDIT_ZH.md": "217dbcfbd5e63615013a1fc3b5d9b72dc341ccd38952e7c7f49ff810e88bb2a4",
+    "IMPROVEMENT_LOG_ZH.md": "a375a7fac3ce9d217066f8e91554c4e69a5ba701ab1c4a47fbeb12dc5c48e678",
+    "MIXTURE_IDENTITY_ZH.md": "4ce632ce31a6bda102ca5cbc500bc5ab9234c1574b39179de7f70577fbcf8341",
+    "Makefile": "17d8165c99930bb096d1e20afbf809bca3382795cc6b1f853868a0330d306513",
+    "PIPELINE_ZH.md": "f2e1db63eaad10f9c37d97a882182e08f221be1ca02605a270420c6a2491e506",
+    "README.md": "939ce2c01a79350fd949df6506076f165a4a05fc0dc88e7703f350f579cdb322",
+    "RUBRICS_ZH.md": "3a31daa43876f19431ed6f2ce159d64a54717d069b747c4d5b836a1ed77e0193",
+    "SYNTHESIS_ZH.md": "cd8eca73ffda8dec7de877b7b7454a14897d8b9ee956a94ba81ead1413a54d0c",
+    "analysis/budget_inventory_cpu.json": "f457b2c35e69f2a14675b5d803740b7c1b8150c41891e7f9039a9bbb960c3133",
+    "analysis/static_validation_v55.json": "16da26fba06944569b95b942c2bed68b2a7549189a9a2611a42f8c7715d6a397",
+    "analysis/validation.json": "d51e4fe47f3fa0adb943afe2a1688c1e2c8ad689de814aa5aee05df7081ac383",
+    "index.html": "abffd29d9b03446fd7c867c51da04c39b32ab20555181be874f2cde3e54d28dc",
+    "report_standalone.html": "3629d44dec4d24aa0d0d4c9432ddd066c3f029c75dab420f477366a71eb7aff2",
+    "scripts/probe_budget_inventory_cpu.py": "807d08c0e00a389bb807ca04af9ce03ac0515974241a6a7aef4fccd4eb30c99a",
+    "scripts/validate.py": "72cc4c6c02bd04c3df7af660ab4ccc1990eb317fea75c5aafe49e2890f7ed9b9"
+  }
+}

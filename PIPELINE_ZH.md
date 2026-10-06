@@ -122,3 +122,8 @@ V22的[诊断流程](LOSS_TRIAGE_ZH.md)把指标/模型视图、样本内容与�
 ## V54：桶内shuffle与切分
 
 数据接续链补齐：库存内容/长度→切分清单→训练shuffle类型/key/窗口→预算截断→混合映射→恢复offset→实际token/hash。跨快照重新切分时更换评估版本，或明确冻结留出身份；按当前配置确认该分支是否启用。[检查结果](analysis/inner_shuffle_cpu.json)。
+
+
+## V55：小实验库存缩放
+
+配比pilot增加库存缩放审计：先算实际切分后库存，先执行初始化互斥约束，再分别复算合法方案的shuffle前缀、floor或max_train_batches上限；核对每个活跃域可行性及重复率偏差。分别做共同库存改权重与共同权重改库存的对照，在固定评估和额外预算中确认候选。[数据缩放分析](MIXTURE_IDENTITY_ZH.md)。

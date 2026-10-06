@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1415,
+  "checks_passed": 1421,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -102,7 +102,8 @@
     "V51 real Optax grouped clipping controls and original AdamH fixed-next-input state comparison; ten checks, latest declared clipping disabled, no real Hero group/build/clipping event",
     "V52 eleven original async loader host controls, identity-store retrieval and finite endpoints; no actual Hero token stream, background queue or complete checkpoint restore",
     "V53 fourteen original mixture class and real JAX CPU identity controls; ordered dataset IDs, integer ties, finite modulo and partial windows; no actual Hero token/shuffle/restore",
-    "V54 fourteen original inner-shuffle/split CPU controls including 130 small PRP domains; same-snapshot disjointness versus cross-snapshot overlap, Hero declared split disabled, no actual token contamination"
+    "V54 fourteen original inner-shuffle/split CPU controls including 130 small PRP domains; same-snapshot disjointness versus cross-snapshot overlap, Hero declared split disabled, no actual token contamination",
+    "V55 sixteen original train_sets and post_init CPU controls with explicit cache/key/sync adapters; floor distorts repeat factors and can empty active inventory, no actual Hero simulation or pilot model loss"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

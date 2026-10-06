@@ -818,7 +818,7 @@ ok('V53 dictionary order changes tie allocation',mi['tie_counts']['ABC']=={'A':4
 ok('V53 key preserves whole-block multiset but changes partial content',sorted(mi['whole_seed7'])==sorted(mi['whole_seed8']) and sorted(mi['partial_seed7'])!=sorted(mi['partial_seed8']))
 ok('V53 finite restart separates exposure from unique identity',len(mi['finite_length3_stream'])==24 and len(set(mi['finite_length3_stream']))==6)
 report['highlights']+=['V53 fourteen original mixture class and real JAX CPU identity controls; ordered dataset IDs, integer ties, finite modulo and partial windows; no actual Hero token/shuffle/restore']
-ok('V53 mixture identity chapter retains its table plus V54 controls',len(soup.select('#mixture-identity-guide table'))==2)
+ok('V53 mixture identity chapter retains original and V54 V55 control tables',len(soup.select('#mixture-identity-guide table'))==3)
 ish=read(A/'inner_shuffle_cpu.json')
 ok('V54 fourteen CPU/source controls with bounded Hero claims',ish['checks_passed']==len(ish['checks'])==14 and ish['runtime']['backend']=='cpu' and ish['actual_Hero_inner_shuffle'] is None and ish['actual_Hero_split_leakage'] is None and ish['declared_num_validation_sequences'] is None)
 ok('V54 PRP and dataset source identities match',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in ish['source_sha256'].items()))
@@ -827,6 +827,14 @@ ok('V54 fixed snapshot splits are disjoint but cross-snapshot overlap exists',se
 ok('V54 block tail retains exact partial inventory',set(ish['block22'][-2:])=={20,21} and sorted(ish['block22'])==list(range(22)))
 report['highlights']=[x.replace('443 source archive checksums valid','444 source archive checksums valid') for x in report['highlights']]
 report['highlights']+=['V54 fourteen original inner-shuffle/split CPU controls including 130 small PRP domains; same-snapshot disjointness versus cross-snapshot overlap, Hero declared split disabled, no actual token contamination']
+bi=read(A/'budget_inventory_cpu.json')
+ok('V55 sixteen original CPU budget and init controls retain scope',bi['checks_passed']==len(bi['checks'])==16 and bi['runtime']['backend']=='cpu' and bi['actual_Hero_simulation_budget_event'] is None and bi['actual_pilot_model_loss'] is None and bi['declared_experiment_budget'] is None and bi['declared_target_budget'] is None)
+ok('V55 original sources and reused harness identities match',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in bi['source_sha256'].items()))
+ok('V55 floor distorts artificial repeat factors',abs(bi['ratio_example']['repeat_factor_comparison']['A']['epoch_ratio']-1.75)<1e-12 and abs(bi['ratio_example']['repeat_factor_comparison']['B']['epoch_ratio']-1.15)<1e-12)
+ok('V55 empty active inventory is rejected by original restart path',bi['small_zero_example']['inventories']['A']==[] and 'empty finite dataset' in bi['small_zero_example']['original_mix_error'])
+ok('V55 cap applies after shuffled prefix and split',bi['shuffled_cap']['cap']==bi['shuffled_cap']['full'][:5] and len(bi['split_then_cap'])==4 and bi['errors']['zero_target']=='ZeroDivisionError')
+report['highlights']+=['V55 sixteen original train_sets and post_init CPU controls with explicit cache/key/sync adapters; floor distorts repeat factors and can empty active inventory, no actual Hero simulation or pilot model loss']
+ok('V55 original init rejects combinations used only as bypassed function controls',bi['bypassed_initialization_controls'] is True and set(bi['post_init_rejections'])=={'split_and_budget','cap_and_budget'})
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

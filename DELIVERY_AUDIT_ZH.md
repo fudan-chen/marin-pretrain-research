@@ -90,3 +90,6 @@ V52新增原异步loader host控制11项，人工store/layout/结果适配边界
 ## V79：接收前缀、返回身份与局部容量
 
 10检查，原JAX元数据helper/chunk-plan和host拷贝重放，三个人工容量/编号控制；新增需求/容量图。1新来源、旧478非bookkeeping保持、480来源。未执行真实通信、GPU、生产mask或域偏置测量。
+
+
+V80交付增补：原route/mask/portable combine15项CPU检查，合成输出、固定接受mask；数值图已目视核查，真实浏览器呈现未验证。来源复用固定head归档，未新增来源。范围与结果见[路由权重章节](ROUTING_DROPS_ZH.md)，真实域偏置、GPU和优化器更新仍未知。

@@ -224,3 +224,8 @@ portable-expert-cpu:
 receiver-layout-cpu:
 	$(CPU_PYTHON) scripts/probe_receiver_layout_cpu.py
 	$(PYTHON) scripts/plot_receiver_layout.py
+
+.PHONY: post-clip-router-cpu
+post-clip-router-cpu:
+	$(CPU_PYTHON) scripts/probe_post_clip_router_cpu.py
+	$(PYTHON) scripts/plot_post_clip_router.py

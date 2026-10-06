@@ -1018,6 +1018,12 @@ ok('V79 numbering changes identity not global acceptance count',ro['low_capacity
 ok('V79 one new helper and all old non-bookkeeping bytes preserved',len(ra['records'])==1 and ra['prior_bytes_preserved']==478 and all(hashlib.sha256((S/x['file']).read_bytes()).hexdigest()==x['sha256'] for x in ra['prior_integrity_manifest']['files'] if x['file']!='source_manifest.json'))
 report['highlights']=[x.replace('479 source archive checksums valid','480 source archive checksums valid') for x in report['highlights']]
 report['highlights']+=['V79 ten original JAX clip/offset/chunk-plan checks with host identity replay and measured capacity figure; local capacity and numbering policy, no collective/GPU/domain-bias proof']
+pc=read(A/'post_clip_router_cpu.json');pcc=pc['cases']
+ok('V80 original route mask combine source bound with production unknown',pc['checks_passed']==len(pc['checks'])==15 and pc['actual_Hero_domain_effect'] is None and pc['actual_GPU_execution'] is None and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in pc['source_sha256'].items()))
+ok('V80 dropped selected logit retains normalization gradient',pcc['keep_first']['pre_clip_weight_gradient'][0][1]==0 and pcc['keep_first']['router_logit_gradient'][0][1]<-.49)
+ok('V80 same count drops differ in weight mass and output',pcc['keep_first']['retained_weight_mass']>pcc['keep_second']['retained_weight_mass'] and pcc['keep_first']['output']>pcc['keep_second']['output'])
+ok('V80 altered renormalization explicitly separate and figure present',pc['post_clip_renormalized_control']['output']==7.5 and pc['post_clip_renormalized_control']['upstream_fix'] is False and soup.select_one('#routing-guide #postclip-figure_1') is not None)
+report['highlights']+=['V80 fifteen original route/mask/portable combine CPU checks; retained mass and normalization gradients, no production/GPU attribution']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

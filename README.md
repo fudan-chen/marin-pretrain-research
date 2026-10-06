@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本V79：原裁剪、offset与chunk计划接入host身份重放，10项检查。总容量够仍可局部丢弃；总drop相同不保证接受身份相同。新增容量图与布局验收，详见 [路由容量](ROUTING_DROPS_ZH.md)。
+当前版本V80：原route、接受mask与portable combine接成权重路径，15项CPU检查。被丢弃的已选logit仍能通过归一化分母影响梯度；相同drop数可保留不同权重质量。新增数值图及变更验收规则，详见 [路由容量与权重](ROUTING_DROPS_ZH.md)。
 
 [MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并提供未执行的性能交互记录模板。
 

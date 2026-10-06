@@ -134,3 +134,36 @@ return参数反向读取接收端压实区域，把有效前缀写回各sender�
 对自己的改动，先绑定原group起点与接受长度，再验receiver压实、active/physical的最后padding关系、return镜像和有效身份；随后按来源及位置统计实际接受率，再做固定评估。提高容量、换chunk或换sender分布会同时影响HBM、通信和接受政策，只有整个路径的性能/稳定性与模型评估都完成，才能讨论配比收益。不要直接将assignment丢弃数从语言目标token分母扣除。
 
 新增一份固定head helper源码，旧478份非bookkeeping来源保持原字节，当前来源480份。实际通信、生产接受mask、域偏置及GPU仍待验证。复现：`make receiver-layout-cpu CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。
+
+
+## V80：被裁掉的专家，为什么仍能收到 router 梯度
+
+V79验证了哪些assignment能进入专家计算。本节再沿权重路径追一步：QBRoutedMoE先对被选中的logit做sigmoid，再将它们归一化到routing_renorm_sum；容量接受mask稍后才把未接受权重置零。portable combine没有在裁剪后重新归一化。固定版本为b65be4c9550c5097f0a3add08933531a1c24d534，[原route](https://github.com/marin-community/marin/blob/b65be4c9550c5097f0a3add08933531a1c24d534/lib/levanter/src/levanter/grug/grug_moe.py)与[原mask及combine](https://github.com/marin-community/marin/blob/b65be4c9550c5097f0a3add08933531a1c24d534/lib/levanter/src/levanter/grug/_moe/ep_ragged_all_to_all.py)分别对应归档中的current_grug_moe.py与current_ep_ragged_all_to_all.py。这是该PR head的代码行为，不代表它已部署到Hero。
+
+### 先把两个梯度分开
+
+令已选专家的sigmoid分数为s_i，归一化常数为c，接受mask为a_i，专家输出为y_i。忽略dtype舍入的实数写法是：w_i=c·s_i/(Σ_selected s_j+ε)，out=Σ_selected a_i·w_i·y_i。分母仍包括被选中但未被接受的专家。
+
+因此，“a_i=0，所以这个assignment的权重梯度为零”是对的；“所以这个logit的梯度也为零”却不成立。改变该logit会改变分母，从而改变其他已接受专家的权重。若损失对输出的cotangent为d，某个被丢弃但仍已选中的logit z_j，在本路径中的导数为−c·s_j(1−s_j)·Σ_i a_i s_i〈d,y_i〉/(Σ_selected s_i+ε)²。符号取决于cotangent与接受专家输出的内积，不是天然在惩罚拥挤专家。这里对固定选择、固定接受mask求导；没有对top-k或容量离散选择求导，也没有执行quantile-bias更新。
+
+### 原源码 CPU 控制给出的数值
+
+执行原moe_route block、原weights=jnp.where(accepted,combine_weights_local,0)语句和原portable combine，排序适配为JAX索引、reshard为identity，禁用Sonic分支。logit为[2,1,0]、top-2选中[0,1]，c=2.5，合成专家输出为3与1；只对输出之和求梯度，未执行语言损失、专家MLP、容量planner、通信或优化器。15项检查通过，[完整数值与替代依赖](analysis/post_clip_router_cpu.json)可复查。
+
+两个专家全接受时，权重为[1.366123,1.133877]，输出5.232245。只接受第一个时，保留质量1.366123，输出4.098368；原权重梯度为[3,0]，router logit梯度却为[0.221577,−0.499913,0]。第二个assignment没有贡献专家输出，其已选logit仍通过归一化影响第一个。只接受第二个时，保留质量1.133877、输出1.133877，router梯度为[−0.073859,0.166638,0]。两种情况都丢掉一半assignment，却不是同样的输出扰动。
+
+<div id="post-clip-router-placeholder"></div>
+
+[图原文件](assets/post_clip_router.svg)：左图是保留权重之和，右图是合成输出对logit的梯度，不是训练loss或参数更新。全部丢弃时，这个routed输出和本探针router梯度都为零；完整模型仍可能有其他路径及辅助项，不能据此说整个token没有学习。将被丢弃专家输出改成NaN，四个控制的输出与router梯度均与有限值版本完全一致，这是portable mask路径的CPU结果，不覆盖真实未写设备buffer或Sonic kernel。
+
+### “丢弃后补归一化”会改变什么
+
+另设一个明确不同的比较函数：在原mask后，将剩余权重重新缩放到2.5。只接受第一个时，输出变成7.5，两个已选logit的本路径梯度均为零。原因是单个剩余专家的权重固定为2.5，与两者的分数无关。这个比较说明，补归一化同时改变前向幅度与router训练信号；它不是数值等价优化，本报告没有将其称为上游修复，也没有证明哪一种更有利于训练。
+
+### 对配比、日志和变更验收的影响
+
+按领域统计接受率之外，还应记录裁剪前权重总和、裁剪后保留权重总和、每token被接受专家数以及全丢弃比例。assignment drop rate相同，保留的权重质量仍可能不同；权重质量相同也不能保证输出或梯度相同，因为专家输出及cotangent不同。低精度下还需记录权重dtype、零值率、极小分数和epsilon主导样本；不应把2.5视为每个token都能精确达到的恒等式。
+
+这些量是定位线索，不能直接作为配比奖励或把被丢assignment从目标token分母扣掉。正确的下一步是绑定样本/领域身份，比较相同checkpoint和相同样本下接受mask、保留质量、输出差异、router及专家梯度；再验证GPU实现和独立固定评估。真实Hero的这些记录仍缺失，本控制没有测得实际域偏置或配比收益。
+
+验收规则：区分“assignment权重梯度”“已选logit梯度”“专家参数梯度”和“总模型梯度”；容量/分块/重编号改变后，同时比较接受身份和权重质量。若提出裁剪后归一化，应作为训练函数变更单独评审，不以drop减少或有限梯度替代模型收益。复现：`make post-clip-router-cpu CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。

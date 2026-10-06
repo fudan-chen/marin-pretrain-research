@@ -190,3 +190,6 @@ V78把portable残差分析接到原CPU/XLA执行：尾部NaN未污染普通梯�
 
 
 V79 原裁剪/offset/chunk计划与host身份重放：总逻辑容量32仍丢5；编号重排保持总接受数却改变接受身份。数据配比要从真实样本追到assignment接受mask，不能仅看全局drop，详见[路由容量](ROUTING_DROPS_ZH.md)。
+
+
+V80补上接受mask后的权重路径：丢弃assignment的权重梯度为零，不保证已选router logit梯度为零，因为它仍在归一化分母中。原函数15项CPU控制验证这一点；assignment接受率之外还需看保留权重质量。裁剪后重归一化改变前向及router梯度，不能当成等价修复。详见[权重路径](ROUTING_DROPS_ZH.md)。

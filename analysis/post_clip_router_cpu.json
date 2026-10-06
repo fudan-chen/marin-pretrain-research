@@ -1,0 +1,160 @@
+{
+  "scope": "Original routing block and portable combine with synthetic expert outputs/masks.\nNo capacity planner, collective, expert MLP, optimizer or Hero data execution.\n",
+  "checks_passed": 15,
+  "checks": [
+    "CPU backend",
+    "Fixed selected experts",
+    "both portable masking excludes dropped NaN rows from output and router gradient",
+    "both gradient agrees with independent selected sigmoid quotient",
+    "keep_first portable masking excludes dropped NaN rows from output and router gradient",
+    "keep_first gradient agrees with independent selected sigmoid quotient",
+    "keep_second portable masking excludes dropped NaN rows from output and router gradient",
+    "keep_second gradient agrees with independent selected sigmoid quotient",
+    "neither portable masking excludes dropped NaN rows from output and router gradient",
+    "neither gradient agrees with independent selected sigmoid quotient",
+    "Dropped assignment weight gradient zero but dropped selected logit gradient nonzero",
+    "Identical assignment drop counts retain different weight mass and outputs",
+    "All dropped produces finite zero output and zero router gradient",
+    "Post-clip renormalization is a different forward and gradient function",
+    "JIT agrees in keep-first control"
+  ],
+  "runtime": {
+    "jax": "0.7.2",
+    "backend": "cpu"
+  },
+  "cases": {
+    "both": {
+      "accepted": [
+        true,
+        true
+      ],
+      "pre_clip_weights": [
+        [
+          1.3661227226257324,
+          1.1338772773742676
+        ]
+      ],
+      "retained_weight_mass": 2.5,
+      "output": 5.232245445251465,
+      "router_logit_gradient": [
+        [
+          0.14771777391433716,
+          -0.33327558636665344,
+          0.0
+        ]
+      ],
+      "pre_clip_weight_gradient": [
+        [
+          3.0,
+          1.0
+        ]
+      ]
+    },
+    "keep_first": {
+      "accepted": [
+        true,
+        false
+      ],
+      "pre_clip_weights": [
+        [
+          1.3661227226257324,
+          1.1338772773742676
+        ]
+      ],
+      "retained_weight_mass": 1.3661227226257324,
+      "output": 4.098368167877197,
+      "router_logit_gradient": [
+        [
+          0.22157669067382812,
+          -0.4999133348464966,
+          0.0
+        ]
+      ],
+      "pre_clip_weight_gradient": [
+        [
+          3.0,
+          0.0
+        ]
+      ]
+    },
+    "keep_second": {
+      "accepted": [
+        false,
+        true
+      ],
+      "pre_clip_weights": [
+        [
+          1.3661227226257324,
+          1.1338772773742676
+        ]
+      ],
+      "retained_weight_mass": 1.1338772773742676,
+      "output": 1.1338772773742676,
+      "router_logit_gradient": [
+        [
+          -0.07385890930891037,
+          0.16663774847984314,
+          0.0
+        ]
+      ],
+      "pre_clip_weight_gradient": [
+        [
+          0.0,
+          1.0
+        ]
+      ]
+    },
+    "neither": {
+      "accepted": [
+        false,
+        false
+      ],
+      "pre_clip_weights": [
+        [
+          1.3661227226257324,
+          1.1338772773742676
+        ]
+      ],
+      "retained_weight_mass": 0.0,
+      "output": 0.0,
+      "router_logit_gradient": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "pre_clip_weight_gradient": [
+        [
+          0.0,
+          0.0
+        ]
+      ]
+    }
+  },
+  "post_clip_renormalized_control": {
+    "output": 7.5,
+    "router_logit_gradient": [
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "upstream_fix": false
+  },
+  "extracted_mask_statement": "weights = jnp.where(accepted, combine_weights_local, 0)",
+  "source_sha256": {
+    "sources/engineering_v77_2026_10_07/current_grug_moe.py": "d2c5f391186488a806116874c971f7e704b0cdc474b70515e3354391f3bbba2d",
+    "sources/engineering_v77_2026_10_07/current_ep_ragged_all_to_all.py": "aa8331d5d7f4d18c4aef2f401271411539ad637c4e458b3f6a33585d2d3ae9cf"
+  },
+  "explicit_substitutions": [
+    "identity reshard and partition-spec placeholder",
+    "manual acceptance masks, fixed expert outputs 3 and 1",
+    "portable combine only; sonic branch forced unavailable",
+    "sort adapter is ordinary JAX indexing"
+  ],
+  "actual_Hero_domain_effect": null,
+  "actual_GPU_execution": null,
+  "actual_optimizer_update": null
+}

@@ -1,0 +1,16 @@
+{
+  "version": "V80",
+  "checks_passed": 8,
+  "checks": [
+    "index.html unique IDs",
+    "index.html new scope and inline figure",
+    "index.html all historical routing tables preserved",
+    "report_standalone.html unique IDs",
+    "report_standalone.html new scope and inline figure",
+    "report_standalone.html all historical routing tables preserved",
+    "All 480 archived source bytes exact",
+    "Fresh global validation"
+  ],
+  "png_visually_inspected": true,
+  "actual_browser_rendering": null
+}

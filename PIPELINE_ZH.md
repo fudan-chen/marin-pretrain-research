@@ -203,3 +203,6 @@ V78 portable专家验收：固定backend/activation/dtype与尾部布局 → den
 
 
 V79 接受路径管线：实际需求/容量 → 原prefix裁剪 → dispatch起点/size与receiver压实 → active/physical尾部合同 → return镜像/身份 → 来源分组接受率 → 固定评估。host元数据重放是前置检查，不替代真实collective或GPU验证。
+
+
+V80执行补充：在同checkpoint/样本的路由重放中，联结领域身份→selected分数→裁剪前权重→接受mask→保留权重质量→专家输出→梯度。先固定离散选择测试连续权重导数，再核查真实容量策略和GPU路径；随后固定评估，才能讨论数据配比。原函数CPU探针不代替后四项。

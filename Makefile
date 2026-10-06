@@ -206,3 +206,7 @@ tagged-eval-accumulator:
 .PHONY: eval-callback-shapes
 eval-callback-shapes:
 	PYTHONPATH=$(TENSORSTORE_PATH) $(CPU_PYTHON) scripts/probe_eval_callback_shapes_cpu.py
+
+.PHONY: microbatch-loss-cpu
+microbatch-loss-cpu:
+	PYTHONPATH=$(TENSORSTORE_PATH) $(CPU_PYTHON) scripts/probe_microbatch_loss_cpu.py

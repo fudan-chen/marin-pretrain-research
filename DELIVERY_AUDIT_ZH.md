@@ -70,3 +70,8 @@ V52新增原异步loader host控制11项，人工store/layout/结果适配边界
 ## V75：callback形状、标签契约与byte索引
 
 12人工输入、16检查，原累计/结果路径与原多标签构造；新增报告侧离线结构门禁，区分互斥与重叠。没有Hero错形callback证据、GPU或上游修复。462份来源保持。
+
+
+## V76：原累积与原CE自动微分联动
+
+10项真实JAX/Equinox CPU控制，原微批函数/重排/零状态与原loss语句；显式plain-array、fold/轴/sharding/provider/backend适配。局部空分母可污染非空整步梯度，报告侧分子优先控制通过；无上游修复、Hero路径绑定或GPU验收。462来源保持。

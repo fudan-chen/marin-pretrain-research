@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1507,
+  "checks_passed": 1511,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -123,7 +123,8 @@
     "V72 seven original-loss CPU controls, fixed-prediction composition and output-penalty metric checks; synthetic forward/reference delegate, no Hero loss attribution or GPU execution",
     "V73 eighteen original-loss CPU cross-replay checks and descriptive interaction figure; common synthetic targets, missing-cell rejection, no Hero attribution or training effect",
     "V74 twelve original evaluator CPU controls, true Equinox state and original result construction; explicit adapters, root/parent empty policy, fractional denominator and NaN propagation; no Hero incident or GPU proof",
-    "V75 sixteen original evaluator callback controls and report-side structural gate; explicit overlap policy and semantic-identity limits, no Hero malformed callback, GPU or production fix"
+    "V75 sixteen original evaluator callback controls and report-side structural gate; explicit overlap policy and semantic-identity limits, no Hero malformed callback, GPU or production fix",
+    "V76 ten original microbatch/CE CPU autodiff controls with explicit scan/physical/sharding adapters; local-zero gradient contamination and numerator-first control, no Hero path or GPU fix proof"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

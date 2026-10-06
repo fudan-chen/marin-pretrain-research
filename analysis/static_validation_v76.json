@@ -1,0 +1,14 @@
+{
+  "version": "V76",
+  "checks_passed": 7,
+  "checks": [
+    "index.html unique ids",
+    "index.html V76 local zero and numerator boundaries",
+    "report_standalone.html unique ids",
+    "report_standalone.html V76 local zero and numerator boundaries",
+    "Historical three table values retained",
+    "Frozen source archive unchanged",
+    "Fresh V76 global validation"
+  ],
+  "actual_browser_rendering": null
+}

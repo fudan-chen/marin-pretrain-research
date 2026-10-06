@@ -1,0 +1,156 @@
+{
+  "scope": "Original microbatched body with true JAX/Equinox autodiff and CPU reference loss.\nPlain arrays only; hax fold uses lax.scan, shape/physical/sharding adapters explicit.\nNo Hero accumulation-path binding, model forward, custom gradient state or GPU.\n",
+  "checks_passed": 10,
+  "checks": [
+    "True autodiff original mean-of-means reverses head gradient",
+    "Denominator-weighted ordinary gradient matches full positive blocks",
+    "Original numerator reduction normalized once matches full",
+    "Repartition leaves full gradient unchanged but changes accumulated gradient",
+    "Equal effective denominators recover full objective",
+    "Whole batch positive denominator remains finite",
+    "One empty microbatch yields finite loss but nonfinite ordinary gradients",
+    "Multiplying bad local mean by zero does not repair NaN gradient",
+    "Numerator-first avoids local zero-mean derivative and recovers full",
+    "Measured one-step SGD head moves in opposite directions"
+  ],
+  "observations": {
+    "positive_blocks": {
+      "mass": [
+        1,
+        3
+      ],
+      "full": {
+        "loss": 0.6130152940750122,
+        "gradient": [
+          [
+            0.15131232142448425,
+            -0.15131235122680664
+          ]
+        ]
+      },
+      "ordinary": {
+        "loss": 0.7130152583122253,
+        "gradient": [
+          [
+            -0.09868764877319336,
+            0.09868764877319336
+          ]
+        ]
+      },
+      "weighted_mean": {
+        "loss": 0.6130152940750122,
+        "gradient": [
+          [
+            0.15131232142448425,
+            -0.15131235122680664
+          ]
+        ]
+      },
+      "numerator_global": {
+        "loss": 0.6130152940750122,
+        "gradient": [
+          [
+            0.15131232142448425,
+            -0.15131235122680664
+          ]
+        ]
+      },
+      "repartitioned": {
+        "loss": 0.579681932926178,
+        "gradient": [
+          [
+            0.23464566469192505,
+            -0.23464566469192505
+          ]
+        ]
+      },
+      "sgd_head_full": [
+        [
+          -0.41513124108314514,
+          0.015131235122680664
+        ]
+      ],
+      "sgd_head_ordinary": [
+        [
+          -0.39013123512268066,
+          -0.009868765249848366
+        ]
+      ]
+    },
+    "one_empty_block": {
+      "mass": [
+        0,
+        3
+      ],
+      "full": {
+        "loss": 0.5130152702331543,
+        "gradient": [
+          [
+            0.40131235122680664,
+            -0.40131235122680664
+          ]
+        ]
+      },
+      "ordinary": {
+        "loss": 0.25650763511657715,
+        "gradient": [
+          [
+            {
+              "nonfinite": "nan"
+            },
+            {
+              "nonfinite": "nan"
+            }
+          ]
+        ]
+      },
+      "weighted_mean": {
+        "loss": 0.5130152702331543,
+        "gradient": [
+          [
+            {
+              "nonfinite": "nan"
+            },
+            {
+              "nonfinite": "nan"
+            }
+          ]
+        ]
+      },
+      "numerator_global": {
+        "loss": 0.5130152702331543,
+        "gradient": [
+          [
+            0.40131235122680664,
+            -0.40131235122680664
+          ]
+        ]
+      }
+    }
+  },
+  "runtime": {
+    "jax": "0.7.2",
+    "equinox": "0.13.2",
+    "numpy": "2.5.3"
+  },
+  "explicit_substitutions": [
+    "synthetic fixed hidden/router provider; no Transformer forward",
+    "V72 original CPU reference delegate replacing GPU dispatch",
+    "Axis metadata/physical size=1; sharding identity",
+    "hax.fold replaced by real lax.scan; plain-array reshape adapter",
+    "ordinary gradient add adapter; no custom gradient or metrics; RNG absent"
+  ],
+  "actual_Hero_accumulation_bug": null,
+  "actual_GPU_execution": null,
+  "actual_upstream_fix": null,
+  "source_sha256": {
+    "sources/accumulation_2026_10_07/grad_accum.py": "047a8bad9a9a9bdd837680c4fdb440fb19c12dc3001a56ab5c1b78521cba949b",
+    "sources/tree_restore_2026_10_07/jax_utils.py": "647a16ab5d7adac4166e63a429b112afdda0f11dd4fcb4866dde77cb3a4263d1",
+    "sources/tree_restore_2026_10_07/haliax_jax_utils.py": "8b928182089ce70ebd24a4b996c0ca2a74b3052771ede15770046976416f9c2d",
+    "sources/contracts_2026_10_05/api.py": "5efeea2badba92dbc2dce9d0fc2306f12a2bf754dd2d8bee16b1dcd3ed0e355d",
+    "sources/contracts_2026_10_05/reference.py": "f113b3b6872af2d6aa4658cf4326b6c52c2675bf537690d5653604e9d559c0d5",
+    "sources/scale_2026_10_05/grug_loss.py": "97e86e8a7540cafeb4be9695da9a5c8342f3780b7fee6cbb45de79ffc50c15ba",
+    "sources/contracts_2026_10_05/model.py": "8fdfd89cf6814da05683f134f154525916728370368a2493843195d9a489859c",
+    "scripts/probe_loss_composition_cpu.py": "365f86f94b9faddd4681e8bd75d44ce1f18a464e9a3528043df5ec4e149f4ce6"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "version": "V76",
+  "created_utc": "2026-10-06T21:20:16.428055+00:00",
+  "goal_status": "active",
+  "scope": "Original microbatched ordinary-gradient body joined to source model CE with true JAX/Equinox CPU autodiff; explicit plain-array/fold/physical/sharding/provider/backend adapters",
+  "checks_passed": 1511,
+  "microbatch_checks": 10,
+  "source_files": 462,
+  "all_prior_source_bytes_preserved": 462,
+  "new_source_acquisitions": 0,
+  "actual_Hero_accumulation_bug": null,
+  "actual_GPU_execution": null,
+  "actual_upstream_fix": null,
+  "actual_browser_rendering": null,
+  "artifact_sha256": {
+    "README.md": "bca06706ff72e22203231a295811a3380c81452b907f68bb26ff60c423d45e91",
+    "DELIVERY_AUDIT_ZH.md": "41d26fdd1424195744e752477c3e0af234e7e2b4c777dd20b8fd2fc0b7bf543a",
+    "GRADIENT_ACCUMULATION_ZH.md": "0e8abcce4831ff581628ea7da696f56663ab17c963191d0a4ba5408c1a1ffef7",
+    "SYNTHESIS_ZH.md": "7c4462aa938077e627fe7f645fdf97d684e72bb9b314d2b7fa2d629a0d48c068",
+    "RUBRICS_ZH.md": "d25185af361a801b08b0025497a1253362f0e02b0ee2075af41a7d2616bd78ab",
+    "PIPELINE_ZH.md": "0ac0d3d7c4227877844cf058fb588de8fa07f880100c7bbca735fcb0023e249c",
+    "IMPROVEMENT_LOG_ZH.md": "17a797954ab9283bb773c054ce737be0a5c80c60a7311e567be56c99223ffb81",
+    "Makefile": "2c8b2ee8cc069ebfce3af93b50712230db6092e294147f925becddaec0c24093",
+    "scripts/validate.py": "9664b89c691705c18f6ad35c498bb6f565b29ca5472b937913c295bde86e926a",
+    "scripts/probe_microbatch_loss_cpu.py": "3f88d6f7f964c3f24deae8c7037f412239fb779c4b37971db3ea67b7b2dec56f",
+    "analysis/microbatch_loss_cpu.json": "569851ef444ace84fa73617da0aaa887a7d778f89208beaafd4ea0efd3e038e7",
+    "analysis/validation.json": "eee4c2293b5f5a771f88aa1f9c6b308148c3914d4264a121a675de999b9cae74",
+    "analysis/static_validation_v76.json": "94957be5fc303537003c5680a4dbdb66deb8e0883ad9ab9ff6d52672f64ee14f",
+    "index.html": "af5d7db35743b5870dda8a19ed4fc324c048fa5676a9e4e349b49b8c6e6e68fd",
+    "report_standalone.html": "31a4f59cbbc92ef1e20a467193d9ba752bb322770e8c07be6941a2b2060fd14a"
+  }
+}

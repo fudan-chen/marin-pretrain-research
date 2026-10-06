@@ -50,7 +50,7 @@ Grug fused kernel已经接收weight，外层对返回loss求和；不能假定�
 
 额外检查输入的拆分规则：通用microbatched会识别带Batch轴的NamedArray，也会把首维等于Batch.size的普通数组当作batch。固定版Trainer先闭包绑定model，避免因参数首维恰巧等于batch大小而误拆。其他调用方传入不应拆的数组时，需要明确其语义；本轮未发现实际metadata误拆事件。
 
-## 本轮检查覆盖什么
+## V48历史检查覆盖什么
 
 [检查脚本](scripts/probe_gradient_accumulation.py)从原文件提取microbatched与_reshape_for_microbatch函数体执行，只移除类型注解以便载入。NumPy与串行适配器替代JAX、Equinox、Haliax的设备运行；shape inference由纯函数数值调用代替，分片约束为恒等，reshape为串行数组重排，未提供RNG key。测试只覆盖普通标量梯度与空metrics，没有运行自定义量化梯度状态。
 
@@ -59,3 +59,46 @@ Grug fused kernel已经接收weight，外层对返回loss求和；不能假定�
 两份新增源码通过完整raw下载取得。后续重取出现超时和不完整响应，归档使用此前完成的两份文件，并以固定字节hash约束；不完整下载未入库。获取时间用本地下载完成mtime近似，未保存精确服务器时间，见[来源记录](analysis/accumulation_acquisition.json)。
 
 下一步能改变实际结论的材料，是某一真实训练入口的loss函数、有效分母与逐参数梯度对照，以及真实路由和状态更新范围。取得这些材料前，本章用于评审和迁移验收，不归因Hero历史loss、不推荐改其训练采样比例。
+
+
+## V76：原 loss 自动微分接入原累积器，空块不只是稀释梯度
+
+V48用解析平方误差与NumPy适配解释了分母风险；V49检查全零分母的原CPU loss导数。现在把原通用 microbatched 函数、原普通数组重排函数、原 zeros_like_tree 与原模型 loss 方法接起来：真实 Equinox shape inference/partition/combine，真实 JAX value_and_grad，fold由真实 lax.scan执行。10项检查通过，[loss、head梯度与原值](analysis/microbatch_loss_cpu.json)可复查。原 Transformer 前向仍由固定hidden/router provider替代，backend仍使用V72原CPU reference delegate；轴元数据、物理轴大小1、sharding恒等与普通数组reshape有显式适配，未运行完整Haliax fold或多设备。只测试普通head梯度，未测试custom gradient state、metrics、RNG或辅助损失。
+
+### 有效目标1/3，原CE梯度方向也会反转
+
+人工head初值[-0.4,0]，四条序列、每条四个位置；前两条域A标签0，后两条域B标签1，末尾padding权重为0。两个microbatch的有效目标质量分别1与3。按整批调用原模型loss方法，CE=0.6130153，head第一分量梯度+0.1513123；逐块有效均值再由原累积器除2，CE=0.7130153，梯度−0.0986876。V48的解析反例在原CE自动微分接口中也出现了，仍不是训练收益实验。
+
+将同一批行重排为[0,2,1,3]，整批梯度不变，但原累积梯度变为+0.2346457。两个microbatch质量变为3与1，且各块标签组成不同；均值的均值重新分配了每个目标的影响。若保持两块有效质量相等，本控制的整批与累积结果在1e−6容差内一致。用θ−0.1g做一次无状态SGD算术对照，head第一分量分别走到−0.4151312和−0.3901312，方向相反；这里未调用实际Hero optimizer，也没有优化器轨迹。
+
+### 整步非空，局部零分母仍可污染全部梯度
+
+将第一块权重全部清零，第二块保留三个有效目标。整步总T=3，原整批梯度仍有限；但逐块mean在空块的导数上产生NaN，经累加污染整个head。前向loss仍有限，甚至减半，看曲线不能发现这个问题。
+
+|相同输入上的计算路径|整步loss|head第一分量梯度|
+|---|---:|---:|
+|两块T=1/3：整批mean|0.6130153|+0.1513123|
+|两块T=1/3：原均值累积|0.7130153|−0.0986876|
+|两块T=1/3：各块mean按T补偿|0.6130153|+0.1513123|
+|两块T=0/3：整批mean|0.5130153|+0.4013124|
+|两块T=0/3：原均值累积|0.2565076|NaN|
+|两块T=0/3：各块mean按T补偿|0.5130153|NaN|
+|两块T=0/3：先对分子反向，再按总T归一化|0.5130153|+0.4013124|
+
+本章原先的“空块稀释”例子假设空块返回有限的零梯度；这里原CPU mean路径不满足该假设。把已经求过局部均值的loss乘0，虽然让前向数值看似正确，却没有去掉局部零分母的反向污染。这与“整个optimizer step没有有效目标”不同：总步明明有有效数据，也可能因为拆分方式触发非有限梯度。
+
+### 分母补偿要在什么位置做
+
+正分母各块的控制中，普通梯度补偿采用局部mean×T_j×K/总T；K抵消原累积器最后除K。两块都正时，它恢复整批loss与梯度。但有空块时，该方法依赖的局部mean导数已非有限，补偿不能修好。
+
+另一个控制直接调用原Grug loss的sum归约，在每块计算N_j×K/总T，再交给原累积器。局部路径没有mean的零分母，最后得到ΣN_j/总T；T=0/3与T=1/3都恢复有限的整批结果。本轮这只是报告侧的调用适配，**没有修改上游训练函数**，也没有验收真实模型修复。总T必须来自相同整步输入、与参数独立且为正；全步T=0仍需另定策略。非有限hidden/logits、输出z-loss、router/QB、自定义梯度状态以及分布式分母覆盖不在这项修复控制范围。
+
+不要先把各块结果求均值，再事后尝试修补梯度；也不要把一个CE归约改法自动推广到辅助项。真实改动需要确认实际loss接口能返回哪个分子、是否已经加权、框架还会除几次，以及每项辅助目标的分母和状态范围。已有collective还要审查replica/token轴，不能重复计入同一个目标。
+
+### 对数据配比和packing意味着什么
+
+按样本条数或名义长度相同来对齐microbatch，并不能保证有效目标质量相同。文档边界mask、短序列padding、过滤、选择性loss权重，都可能改变局部分母；在错误的均值累积口径下，数据顺序会同时改变梯度权重。因而“换一种packing之后某域改善”至少要排查目标组成、实际有效T、局部空块、原归约和路由改变，不能直接归因数据质量。
+
+固定版Hero专用入口仍未调用本轮通用microbatched函数；这轮验证两项接口可以产生什么，不证明生产正在这样组合。若迁移训练框架或启用累积，应保存各块T、整步T、有限loss和逐参数梯度，在无随机基础目标上先做整批/重分批对照，再扩大到真实模型和状态。loss有限不能代替gradient有限；总T>0也不能代替局部mean安全。
+
+复现：`make microbatch-loss-cpu CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python TENSORSTORE_PATH=/tmp/marin-tensorstore-lib`。隔离依赖用于Equinox，没有执行TensorStore IO或GPU。

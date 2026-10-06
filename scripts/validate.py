@@ -774,7 +774,7 @@ ok('V48 accumulation checks retain fourteen bounded observations',ga['checks_pas
 ok('V48 pinned accumulation source identities match',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in ga['source_sha256'].items()))
 ok('V48 artificial effective denominators reverse analytic gradient',ga['synthetic_variable_denominator']['full_loss_gradient']==[2.625,.75] and ga['synthetic_variable_denominator']['ordinary_accumulated_loss_gradient']==[3.25,-.5] and ga['synthetic_variable_denominator']['denominator_weighted_loss_gradient']==[2.625,.75])
 ok('V48 fixed position objective is preserved by equal-size splitting',ga['synthetic_fixed_positions']['full_loss_gradient']==ga['synthetic_fixed_positions']['accumulated_loss_gradient'])
-ok('V48 new chapter preserves three tables and inline synthetic figure',len(soup.select('#gradient-accumulation-guide table'))==3 and soup.select_one('#gradient-accumulation-guide svg') is not None)
+ok('V48/V76 chapter retains original tables, new control table and historical figure',len(soup.select('#gradient-accumulation-guide table'))==4 and soup.select_one('#gradient-accumulation-guide svg') is not None)
 report['highlights']=[x.replace('441 source archive checksums valid','443 source archive checksums valid') for x in report['highlights']]
 report['highlights']+=['V48 generic accumulation versus specialized Hero path; fourteen original-body/serial/artificial objective checks; unequal denominator gradient reversal, no actual Hero bug or JAX/model/distributed parity']
 import numpy as np
@@ -988,6 +988,13 @@ ok('V75 silent numerator and byte broadcasting preserved',ec['weight_column_broa
 ok('V75 original multitag support differs from exclusive gate',es['original_multitag_arrays']==[[1,1],[0,1]] and es['overlap_gate_receipt']['tag_mass']==[2,4] and ec['multi_membership']['offline_gate_error'] is not None and abs(ec['multi_membership']['source_result']['parent_micro_CE']-5/3)<1e-6)
 ok('V75 finite wrong index and semantic identity limits retained',ec['negative_token_ids']['source_error'] is None and ec['oversized_token_ids']['source_error'] is None and ec['swapped_tag_columns']['offline_gate_error'] is None and ec['swapped_tag_columns']['source_result']['leaf_CE']['paloma/A']==3 and 'V75' in soup.select_one('#eval-metrics-guide').get_text())
 report['highlights']+=['V75 sixteen original evaluator callback controls and report-side structural gate; explicit overlap policy and semantic-identity limits, no Hero malformed callback, GPU or production fix']
+mc=read(A/'microbatch_loss_cpu.json')
+ok('V76 source-bound true CPU microbatch controls retain Hero path unknown',mc['checks_passed']==len(mc['checks'])==10 and mc['actual_Hero_accumulation_bug'] is None and mc['actual_upstream_fix'] is None and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in mc['source_sha256'].items()))
+mo=mc['observations']
+ok('V76 ordinary gradient reversal versus weighted recovery',mo['positive_blocks']['full']['gradient'][0][0]>0>mo['positive_blocks']['ordinary']['gradient'][0][0] and mo['positive_blocks']['weighted_mean']==mo['positive_blocks']['full'])
+ok('V76 empty local mean stays nonfinite after zero scaling',mo['one_empty_block']['mass']==[0,3] and mo['one_empty_block']['ordinary']['gradient']==[[{'nonfinite':'nan'},{'nonfinite':'nan'}]] and mo['one_empty_block']['weighted_mean']['gradient']==mo['one_empty_block']['ordinary']['gradient'])
+ok('V76 original numerator control recovers finite whole-step gradient',mo['one_empty_block']['numerator_global']==mo['one_empty_block']['full'] and 'V76' in soup.select_one('#gradient-accumulation-guide').get_text())
+report['highlights']+=['V76 ten original microbatch/CE CPU autodiff controls with explicit scan/physical/sharding adapters; local-zero gradient contamination and numerator-first control, no Hero path or GPU fix proof']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

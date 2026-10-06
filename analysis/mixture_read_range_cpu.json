@@ -1,0 +1,147 @@
+{
+  "scope": "Current original MixtureDataset constructor and read paths on real JAX CPU.\nFinite identity children only; no real token data, loader or production cursor.\n",
+  "checks_passed": 13,
+  "checks": [
+    "Same original source position yields different single/batch identities",
+    "Batch path matches independent wide arithmetic in one-stage control",
+    "Single path finite restart hides current-stage overflow",
+    "Original constructor prefix has wrapped before read",
+    "Both read APIs agree but disagree with independent wide reference",
+    "Too-large Python block multiplier rejected in this NumPy runtime",
+    "Archived constant batch horizon and block match control",
+    "Original constructor retains 200 positive support cells",
+    "Hero declaration phase 0 prefix agrees with original int32 array",
+    "Hero declaration phase 1 prefix agrees with original int32 array",
+    "Six Hero-declaration artificial reads agree across APIs",
+    "Six Hero-declaration reads match independent wide arithmetic",
+    "Total global positions exceed int32 while all declared child full-block bounds fit"
+  ],
+  "runtime": {
+    "python": "3.12.13",
+    "numpy": "2.5.3",
+    "jax": "0.7.2",
+    "backend": "cpu"
+  },
+  "cases": {
+    "one_stage": {
+      "index": 2147483648,
+      "single": "A:319",
+      "batch": "A:702",
+      "reference": {
+        "dataset": "A",
+        "logical_index": 2147483654,
+        "expected_identity": "A:702"
+      },
+      "warnings": [
+        "overflow encountered in scalar multiply"
+      ]
+    },
+    "staged": {
+      "index": 2147483648,
+      "prefix": -2147483648,
+      "single": "A:319",
+      "batch": "A:319",
+      "reference": {
+        "dataset": "A",
+        "logical_index": 2147483654,
+        "expected_identity": "A:702"
+      }
+    },
+    "too_large_multiplier": {
+      "type": "OverflowError",
+      "message": "Python integer 2147483648 out of bounds for int32"
+    },
+    "hero_declaration": {
+      "artificial_key": 7,
+      "artificial_inventory_length": 1009,
+      "constant_declared_batch": 11264,
+      "stage_sequence_starts": [
+        0,
+        1216512000,
+        3516530688
+      ],
+      "prefix_controls": [
+        {
+          "phase": 0,
+          "max_wide_prefix": 60835500,
+          "original_dtype": "int32"
+        },
+        {
+          "phase": 1,
+          "max_wide_prefix": 173562246,
+          "original_dtype": "int32"
+        }
+      ],
+      "global_total": 4395787264,
+      "all_child_max_full_block_count_bound": 253722855,
+      "constructor_warning_count": 17,
+      "positions": [
+        0,
+        1216511999,
+        1216512000,
+        3516530687,
+        3516530688,
+        4395787263
+      ],
+      "single": [
+        "c25q1:143",
+        "c39q2:243",
+        "c25q3:276",
+        "c32q4:988",
+        "c32q1:528",
+        "c30q4:801"
+      ],
+      "batch": [
+        "c25q1:143",
+        "c39q2:243",
+        "c25q3:276",
+        "c32q4:988",
+        "c32q1:528",
+        "c30q4:801"
+      ],
+      "references": [
+        {
+          "dataset": "c25q1",
+          "logical_index": 143,
+          "expected_identity": "c25q1:143"
+        },
+        {
+          "dataset": "c39q2",
+          "logical_index": 23908498,
+          "expected_identity": "c39q2:243"
+        },
+        {
+          "dataset": "c25q3",
+          "logical_index": 16607407,
+          "expected_identity": "c25q3:276"
+        },
+        {
+          "dataset": "c32q4",
+          "logical_index": 67171127,
+          "expected_identity": "c32q4:988"
+        },
+        {
+          "dataset": "c32q1",
+          "logical_index": 32938324,
+          "expected_identity": "c32q1:528"
+        },
+        {
+          "dataset": "c30q4",
+          "logical_index": 253721923,
+          "expected_identity": "c30q4:801"
+        }
+      ]
+    }
+  },
+  "reference_scope": "Independent Python integer prefix/offset arithmetic reuses original packed-ID assignment. Does not independently verify permutation or actual token identity.",
+  "source_sha256": {
+    "sources/integer_exposure_2026_10_07/mixture.py": "67e97941a79753b2e5865f7f41c7762436a428599ecd1a60d643aa891a817685",
+    "sources/live_2026_10_07/meta.json": "21998ecad691e7e66d3680f173bfe9b94c35b9481f28eff4794a23b0c9831487",
+    "scripts/probe_mixture_support_cpu.py": "55bb444594d8935a510dbbfe0cc5f46867b54968c4978e56d1f90431648f9afa",
+    "scripts/probe_mixture_identity_cpu.py": "9537f8a87ed09c702fc696c351f496eba84297ad53bcafd3c398729732f2d9c5"
+  },
+  "actual_Hero_overflow": null,
+  "actual_Hero_cursor": null,
+  "actual_token_stream": null,
+  "actual_training_benefit": null
+}

@@ -684,7 +684,7 @@ ok('V36 original source and archived configuration digests match',all(hashlib.sh
 ok('V36 corrupt modulo returns a valid but different synthetic item',mr['synthetic']['corrupt_remapped_index']==553 and mr['synthetic']['expected_remapped_index']==936)
 ok('V36 scalar and batch-style types have distinct range behavior',mr['synthetic']['original_within_stage_index']<0 and mr['synthetic']['batched_int64_block_index']==mr['synthetic']['expected_index'])
 ok('V36 archived Hero bucket count bounds stay below int32',mr['hero_declared_bounds']['max_component_upper_bound']==256996542<mr['hero_declared_bounds']['int32_limit']<mr['hero_declared_bounds']['total_sequences'])
-ok('V36 new range chapter has three evidence tables',len(soup.select('#mixture-range-guide table'))==5)
+ok('Range chapter retains historical tables plus runtime and read controls',len(soup.select('#mixture-range-guide table'))==6)
 report['highlights']+=['V36 int32 intermediate/cumulative overflow and finite restart remap; actual declared Hero per-component upper bounds below limit; no historical overflow claim; static HTML only']
 lv=read(A/'live_analysis_2026_10_06.json')
 ok('V37 new observations have twelve bounded data checks',lv['checks_passed']==len(lv['checks'])==12 and lv['actual_eval_sample_identity'] is None and lv['actual_execution_SHA'] is None and lv['actual_mixture_counterfactual'] is None and lv['statistical_significance'] is None)
@@ -1113,6 +1113,11 @@ ok('V94 strict tool source-bound regression records',sd['checks_passed']==len(sd
 ok('V94 old consistency failure and strict correction explicit',sd['cases']['Unsupported kind no longer self-consistent']['old_status']=='record_consistent_only' and sd['cases']['Unsupported kind no longer self-consistent']['new']['status']=='conflict' and sd['cases']['Oversized JSON integer reports conflict without crash']['old_status']=='OverflowError')
 ok('V94 missing host evidence not promoted to execution',sd['cases']['Missing expected host is missing evidence']['new']['status']=='needs_evidence' and sd['cases']['Archive remains missing execution evidence']['new']['status']=='needs_evidence' and all(x['new']['production_execution_verified'] is False for x in sd['cases'].values()))
 report['highlights']+=['V94 strict proposed checker layer and twelve old/new regressions; field shape and explicit host coverage, no production validation']
+mr=read(A/'mixture_read_range_cpu.json')
+ok('V95 current original constructor/read controls source-bound',mr['checks_passed']==len(mr['checks'])==13 and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in mr['source_sha256'].items()) and mr['actual_Hero_overflow'] is None)
+ok('V95 distinct APIs and shared corrupt prefix retain wide reference',mr['cases']['one_stage']['single']=='A:319' and mr['cases']['one_stage']['batch']=='A:702' and mr['cases']['staged']['single']==mr['cases']['staged']['batch']=='A:319' and mr['cases']['staged']['reference']['expected_identity']=='A:702')
+ok('V95 declared Hero bound distinguished from synthetic overflow',mr['cases']['hero_declaration']['all_child_max_full_block_count_bound']==253722855 and mr['cases']['hero_declaration']['single']==mr['cases']['hero_declaration']['batch'] and mr['cases']['too_large_multiplier']['type']=='OverflowError')
+report['highlights']+=['V95 thirteen current original mixture constructor/read CPU controls; API type divergence and shared prefix corruption, Hero declaration bound below int32, no actual token replay']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

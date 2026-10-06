@@ -1,0 +1,31 @@
+{
+  "version": "V95",
+  "created_utc": "2026-10-06T23:24:38.177700+00:00",
+  "goal_status": "active",
+  "scope": "Current original mixture constructor and actual artificial identity reads; wide integer reference and declared Hero bounds",
+  "checks_passed": 1581,
+  "local_original_cpu_checks": 13,
+  "static_checks": 7,
+  "source_files": 498,
+  "new_source_files": 0,
+  "actual_Hero_overflow": null,
+  "actual_token_stream": null,
+  "actual_training_benefit": null,
+  "actual_browser_rendering": null,
+  "artifact_sha256": {
+    "README.md": "7ac671172508359483f6077b0dbf5b42933d07d29553d0b90f23c9e130c57c7c",
+    "DELIVERY_AUDIT_ZH.md": "fcbe80ea8c1c13b46859867705f7a3ed312a5dc65fa313856ff2d8fb03ee733b",
+    "IMPROVEMENT_LOG_ZH.md": "88e9b22626d6560e69b601819cbee9ff656eea1caa088c98c7dc7e89651c8e09",
+    "MIXTURE_RANGE_ZH.md": "0adf6e956276047bcc20f12cf5868f16d260f8c4c14a1571aeefce2a648c63cf",
+    "PIPELINE_ZH.md": "e55357aafe5703bb55c3665bda509e6508098a4cb3516dca6d2becfa105582fc",
+    "RUBRICS_ZH.md": "3b1555de3dbee95faf5a75d4e8db3dd42518a23637907c744023cabd8cb1e998",
+    "SYNTHESIS_ZH.md": "8a63c3be8ac75802258fb1975df6870cedfc3d69e52cd9d0072e97aa39998668",
+    "analysis/validation.json": "5f63ed7ed4a30f7b1a358ad4477019c41c2caaee47d037949ec38d48e6d6ddef",
+    "index.html": "9659d7b6827b84504fd386f9a55825ca11b3c9a33193af57f64b663eabcafccc",
+    "report_standalone.html": "fd71d96201faadf85d4c6761386b88ee5289869b0f9fc9a8f8aa0005eab7c8a8",
+    "scripts/validate.py": "25f073e2b4d8b8b9c851285ec900d8e0b530bfb38e246908f1799ec4510d4596",
+    "scripts/probe_mixture_read_range_cpu.py": "934a30c3fdd645b37af024ed6fafdccd1f541d1f02fa88ef288297f4943ed5b3",
+    "analysis/mixture_read_range_cpu.json": "c7e543f704b3502ac1de6415cdca4fddf10dfa6224d029bee7f5e3732cdb1d78",
+    "analysis/static_validation_v95.json": "7b72586a78af9ec3c9bc65d6764e1a5473632f84be0f017b499cd03b17bbefaa"
+  }
+}

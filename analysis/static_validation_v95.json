@@ -1,0 +1,14 @@
+{
+  "version": "V95",
+  "checks_passed": 7,
+  "checks": [
+    "index.html unique IDs",
+    "index.html prior five tables preserved plus API comparison",
+    "index.html read scope and Hero bound preserved",
+    "report_standalone.html unique IDs",
+    "report_standalone.html prior five tables preserved plus API comparison",
+    "report_standalone.html read scope and Hero bound preserved",
+    "1581 fresh checks"
+  ],
+  "actual_browser_rendering": null
+}

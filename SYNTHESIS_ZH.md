@@ -231,3 +231,6 @@ V93可执行入口：[数据记录检查器](scripts/check_data_execution_record
 
 
 V94：数据记录建议使用[严格版本](scripts/check_data_execution_record_v94.py)。V93存在未知类型/错误子域形状可被判自洽、缺host覆盖无法发现等漏项，现保留并补回归；新工具要求expected_hosts，当前归档仍缺执行证据。[修正范围](PIPELINE_ZH.md)
+
+
+V95补证：单条/批量原读取在集中人工配额下可以不同；阶段prefix坏掉时则一致地读错。restart可返回合法身份而隐藏负索引。Hero声明下本地原前缀与宽参考相同、逐桶上界安全，未认定生产事故。[端到端读取对照](MIXTURE_RANGE_ZH.md)

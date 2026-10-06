@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本V96：核对原有限停止长度与实际读取，32格中复现部分块越界，并区分读取次数和unique覆盖；Hero声明restart，未认定生产事故。[有限停止合同](MIXTURE_IDENTITY_ZH.md)。
+当前版本V97：原restart前缀读取与重复账本对照，明确连续覆盖公式的使用条件；16项CPU控制通过。[重复曝光与部分块](REPEAT_EXPOSURE_ZH.md)。
 
 [MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并提供未执行的性能交互记录模板。
 

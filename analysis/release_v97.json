@@ -1,0 +1,31 @@
+{
+  "version": "V97",
+  "created_utc": "2026-10-06T23:39:10.191575+00:00",
+  "goal_status": "active",
+  "scope": "Original restart read identity and conditional contiguous coverage formulas, historical ledger unchanged",
+  "checks_passed": 1587,
+  "local_original_cpu_checks": 16,
+  "static_checks": 7,
+  "source_files": 498,
+  "new_source_files": 0,
+  "actual_Hero_coverage": null,
+  "actual_Hero_inventory": null,
+  "actual_training_benefit": null,
+  "actual_browser_rendering": null,
+  "artifact_sha256": {
+    "README.md": "391287c5228d3c5a62e0ad4ed7019ffd8846fa037b5b7052501a6b8bb5ae2518",
+    "DELIVERY_AUDIT_ZH.md": "72648d4c03f48fff473dd2e449c320c3c861cd18cffef35079fb692ee888616e",
+    "IMPROVEMENT_LOG_ZH.md": "65fd0fd693af2c29f703bce700d53a9571dd6e8120bffb339f576f0243eb8788",
+    "REPEAT_EXPOSURE_ZH.md": "eb7f1fb4cdcfb0f5ae925f21158f94912585781f98455f6cd96928a5a2412f40",
+    "PIPELINE_ZH.md": "3c206c6520adab354f83e7d603944e1213c0e6505d1bc96575daea943ba8c87c",
+    "RUBRICS_ZH.md": "773b7d77aba6e3810e497ca4f03826d64cc70da64f5de102f58cfac82c78e080",
+    "SYNTHESIS_ZH.md": "f5fb84d1891439fd4a2a95ba946ad3435ea8b47460bcc1625dca57a0dcaa4b43",
+    "analysis/validation.json": "1339a307be1597b71a367091c9f910cea824713919f102a0b15d87107175a3a5",
+    "index.html": "f6ea1e6e3c2de09df6aea2677e708f2af8afeb16e8c3cb5ba1b8655ee7e86759",
+    "report_standalone.html": "c575c215ba7ed8c3ede28b43fd24b30ffd1442e6036b74b66b0acf86bada701f",
+    "scripts/validate.py": "80e853d5c5e229cde753298149828bc13f9b5c1c7012f039fa5aaad94fc08197",
+    "scripts/probe_restart_prefix_coverage_cpu.py": "39233c3d68a083d4727d99ea963b55fbca58ac8d42c465a67f6b358aa13838f8",
+    "analysis/restart_prefix_coverage_cpu.json": "f0751deb07e4d28f0468163be29b13cd06d2ee48af29a9e917080fafa201a331",
+    "analysis/static_validation_v97.json": "10d2ccd6fe0f3faca90980be8872910d3b769ae3bbc730c96fa52e3c7933cb96"
+  }
+}

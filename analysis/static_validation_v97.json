@@ -1,0 +1,14 @@
+{
+  "version": "V97",
+  "checks_passed": 7,
+  "checks": [
+    "index.html unique IDs",
+    "index.html old two tables preserved plus actual window comparison",
+    "index.html scope correction and production limits",
+    "report_standalone.html unique IDs",
+    "report_standalone.html old two tables preserved plus actual window comparison",
+    "report_standalone.html scope correction and production limits",
+    "1587 fresh checks"
+  ],
+  "actual_browser_rendering": null
+}

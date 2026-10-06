@@ -1,0 +1,263 @@
+{
+  "scope": "Original restart reads versus conditional contiguous-index exposure formulas.\nArtificial finite identities, no actual Hero inventory or model loss.\n",
+  "checks_passed": 16,
+  "checks": [
+    "Actual partial prefix reads repeat before first full inventory coverage",
+    "Contiguous formula correctly states its own projection but mismatches actual partial prefix",
+    "Actual later edge has new identities despite five prior draws",
+    "Actual edge also has internal repeat despite three draws below inventory size",
+    "Complete first block covers all inventory identities",
+    "Complete subsequent block agrees with contiguous multiset counts",
+    "Unrandomized partial window satisfies the contiguous projection",
+    "Complete staged block 0 A matches contiguous multiset",
+    "Complete staged block 0 B matches contiguous multiset",
+    "Complete staged block 1 A matches contiguous multiset",
+    "Complete staged block 1 B matches contiguous multiset",
+    "Complete staged block 2 A matches contiguous multiset",
+    "Complete staged block 2 B matches contiguous multiset",
+    "Complete staged block 3 A matches contiguous multiset",
+    "Complete staged block 3 B matches contiguous multiset",
+    "Staged complete-prefix coverage agrees with independent inventory sets"
+  ],
+  "cases": {
+    "one_A": {
+      "stream": [
+        "A:1",
+        "A:2",
+        "A:2",
+        "A:4",
+        "A:1",
+        "A:3",
+        "A:0",
+        "A:0",
+        "A:4",
+        "A:3",
+        "A:2",
+        "A:4",
+        "A:0",
+        "A:3",
+        "A:0",
+        "A:1"
+      ],
+      "partial_prefix": [
+        "A:1",
+        "A:2",
+        "A:2",
+        "A:4",
+        "A:1"
+      ],
+      "edge_window": [
+        "A:3",
+        "A:0",
+        "A:0"
+      ],
+      "actual_prefix_unique": 3,
+      "actual_window_unique": 2,
+      "actual_new_against_history": [
+        "A:0",
+        "A:3"
+      ],
+      "actual_window_internal_repeats": 1,
+      "conditional_prefix_projection": {
+        "name": "A",
+        "inventory_sequences": 5,
+        "draws": 5,
+        "start_sequence_index": 0,
+        "status": "declared_projection_only",
+        "window_distinct_sequence_indices": 5,
+        "window_repeat_draws": 0,
+        "new_sequence_indices_since_lifetime_start": 5,
+        "repeat_draws_against_lifetime_history": 0,
+        "extra_draw_index_intervals": [],
+        "full_cycles_in_window": 1,
+        "extra_draws": 0,
+        "min_draws_per_inventory_index": 1,
+        "max_draws_per_inventory_index": 1,
+        "next_sequence_index": 5,
+        "next_modulo_index": 0
+      },
+      "conditional_window_projection": {
+        "name": "A",
+        "inventory_sequences": 5,
+        "draws": 3,
+        "start_sequence_index": 5,
+        "status": "declared_projection_only",
+        "window_distinct_sequence_indices": 3,
+        "window_repeat_draws": 0,
+        "new_sequence_indices_since_lifetime_start": 0,
+        "repeat_draws_against_lifetime_history": 3,
+        "extra_draw_index_intervals": [
+          {
+            "start": 0,
+            "stop": 3
+          }
+        ],
+        "full_cycles_in_window": 0,
+        "extra_draws": 3,
+        "min_draws_per_inventory_index": 0,
+        "max_draws_per_inventory_index": 1,
+        "next_sequence_index": 8,
+        "next_modulo_index": 3
+      },
+      "unrandomized": [
+        "A:0",
+        "A:1",
+        "A:2",
+        "A:3",
+        "A:4",
+        "A:0",
+        "A:1",
+        "A:2"
+      ]
+    }
+  },
+  "staged_full_blocks": [
+    {
+      "block": 0,
+      "name": "A",
+      "count": 4,
+      "actual_multiset": {
+        "A:1": 1,
+        "A:2": 1,
+        "A:3": 1,
+        "A:0": 1
+      },
+      "reference_multiset": {
+        "A:0": 1,
+        "A:1": 1,
+        "A:2": 1,
+        "A:3": 1
+      }
+    },
+    {
+      "block": 0,
+      "name": "B",
+      "count": 4,
+      "actual_multiset": {
+        "B:3": 1,
+        "B:0": 1,
+        "B:2": 1,
+        "B:1": 1
+      },
+      "reference_multiset": {
+        "B:0": 1,
+        "B:1": 1,
+        "B:2": 1,
+        "B:3": 1
+      }
+    },
+    {
+      "block": 1,
+      "name": "A",
+      "count": 4,
+      "actual_multiset": {
+        "A:4": 1,
+        "A:0": 1,
+        "A:1": 1,
+        "A:2": 1
+      },
+      "reference_multiset": {
+        "A:4": 1,
+        "A:0": 1,
+        "A:1": 1,
+        "A:2": 1
+      }
+    },
+    {
+      "block": 1,
+      "name": "B",
+      "count": 4,
+      "actual_multiset": {
+        "B:6": 1,
+        "B:4": 1,
+        "B:5": 1,
+        "B:0": 1
+      },
+      "reference_multiset": {
+        "B:4": 1,
+        "B:5": 1,
+        "B:6": 1,
+        "B:0": 1
+      }
+    },
+    {
+      "block": 2,
+      "name": "A",
+      "count": 6,
+      "actual_multiset": {
+        "A:2": 1,
+        "A:1": 1,
+        "A:0": 1,
+        "A:4": 1,
+        "A:3": 2
+      },
+      "reference_multiset": {
+        "A:3": 2,
+        "A:4": 1,
+        "A:0": 1,
+        "A:1": 1,
+        "A:2": 1
+      }
+    },
+    {
+      "block": 2,
+      "name": "B",
+      "count": 2,
+      "actual_multiset": {
+        "B:2": 1,
+        "B:1": 1
+      },
+      "reference_multiset": {
+        "B:1": 1,
+        "B:2": 1
+      }
+    },
+    {
+      "block": 3,
+      "name": "A",
+      "count": 6,
+      "actual_multiset": {
+        "A:1": 1,
+        "A:4": 2,
+        "A:0": 1,
+        "A:3": 1,
+        "A:2": 1
+      },
+      "reference_multiset": {
+        "A:4": 2,
+        "A:0": 1,
+        "A:1": 1,
+        "A:2": 1,
+        "A:3": 1
+      }
+    },
+    {
+      "block": 3,
+      "name": "B",
+      "count": 2,
+      "actual_multiset": {
+        "B:4": 1,
+        "B:3": 1
+      },
+      "reference_multiset": {
+        "B:3": 1,
+        "B:4": 1
+      }
+    }
+  ],
+  "runtime": {
+    "python": "3.12.13",
+    "numpy": "2.5.3",
+    "jax": "0.7.2"
+  },
+  "source_sha256": {
+    "sources/integer_exposure_2026_10_07/mixture.py": "67e97941a79753b2e5865f7f41c7762436a428599ecd1a60d643aa891a817685",
+    "scripts/audit_repeat_exposure.py": "fd5e0c329eb2b22225b2fba486d61942efa816082079c7db2cd4b0a12ae652ed",
+    "scripts/probe_mixture_support_cpu.py": "55bb444594d8935a510dbbfe0cc5f46867b54968c4978e56d1f90431648f9afa",
+    "scripts/probe_mixture_identity_cpu.py": "9537f8a87ed09c702fc696c351f496eba84297ad53bcafd3c398729732f2d9c5"
+  },
+  "actual_Hero_coverage": null,
+  "actual_Hero_inventory": null,
+  "actual_training_benefit": null,
+  "actual_unique_texts": null
+}

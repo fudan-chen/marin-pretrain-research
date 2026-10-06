@@ -751,7 +751,7 @@ ok('V45 repeat exposure checks retain twenty-two bounded tests',rexp['checks_pas
 ok('V45 repeat helper source identities match',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in rexp['source_sha256'].items()))
 ok('V45 new within-window indices may all be historically repeated',rexp['synthetic_after_one_cycle']['window_repeat_draws']==0 and rexp['synthetic_after_one_cycle']['new_sequence_indices_since_lifetime_start']==0 and rexp['synthetic_after_one_cycle']['repeat_draws_against_lifetime_history']==2)
 ok('V45 artificial full permutation does not stand for actual block shuffle',rexp['synthetic_order']==[2,0,1,2,0,1,2,0] and rexp['actual_JAX_permutation'] is None)
-ok('V45 repeat chapter retains two decision tables',len(soup.select('#repeat-exposure-guide table'))==2)
+ok('V45 repeat chapter retains two decision tables',len(soup.select('#repeat-exposure-guide table'))==3)
 report['highlights']+=['V45 finite fixed-order repeat exposure projection; window versus lifetime index coverage; original helper and synthetic permutation, no actual Hero inventory/cursor/block shuffle or training benefit']
 l7=read(A/'live_analysis_2026_10_07.json')
 ok('V46 live observation retains nine bounded checks',l7['checks_passed']==len(l7['checks'])==9 and l7['actual_eval_input_identity'] is None and l7['actual_execution_SHA'] is None and l7['actual_mixture_counterfactual'] is None and l7['statistical_significance'] is None)
@@ -1123,6 +1123,11 @@ ok('V96 finite original-class controls source-bound',me['checks_passed']==len(me
 ok('V96 randomized finite prefix errors distinguished from ordered controls',me['failing_grid_cells']==8 and all(r['read_error'] is None for r in me['rows'] if not r['randomize']) and any(r['reported_length']==1 and r['safe_prefix_length']==0 and r['read_error'] is not None for r in me['rows']))
 ok('V96 all-stop count versus identity coverage retained',me['all_stop']['reported_length']==5 and me['all_stop']['unique_count']==3 and me['all_stop']['unrandomized']==['A:0','A:1','A:2','A:3','A:4'] and me['example_single_error']['type']=='IndexError')
 report['highlights']+=['V96 thirty-two original finite-length/read controls, eight checks; partial-block bounds and count versus coverage, Hero declares restart, no actual loader incident']
+rc=read(A/'restart_prefix_coverage_cpu.json')
+ok('V97 original restart and conditional formula controls source-bound',rc['checks_passed']==len(rc['checks'])==16 and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in rc['source_sha256'].items()) and rc['actual_Hero_coverage'] is None)
+ok('V97 partial prefix counters cannot substitute contiguous index coverage',rc['cases']['one_A']['actual_prefix_unique']==3 and rc['cases']['one_A']['conditional_prefix_projection']['window_distinct_sequence_indices']==5 and rc['cases']['one_A']['actual_new_against_history']==['A:0','A:3'])
+ok('V97 complete staged blocks preserve reference multisets',len(rc['staged_full_blocks'])==8 and all(x['actual_multiset']==x['reference_multiset'] for x in rc['staged_full_blocks']) and rc['cases']['one_A']['actual_window_internal_repeats']==1)
+report['highlights']+=['V97 sixteen original restart/coverage controls; contiguous formula narrowed to actual index intervals and complete blocks, edge coverage unknown for Hero']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

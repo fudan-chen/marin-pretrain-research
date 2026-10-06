@@ -176,3 +176,6 @@ V69 管线补充：记录 candidate→原布局→legacy→较早候选的实际
 
 
 V70 续训→数据管线补充：标明 full resume 或 weights-only，绑定 marker/state 时钟；冻结已消费 batch 历史与 mixture/子集映射，核对首批 IDs 和配比阶段后再解释 loss。源配置切换 step 相同不足以保证累计曝光相同；真实 token 与 loss 尚待生产重放。
+
+
+V71 切换验收：比较批次区间与阶段边界，核对 callback step/next_step、实际 domain IDs 与各域 valid targets/NLL；保留正常无跨界的证据。若重新转换新 schedule 修好批次边界，还须单独审查历史消费重现。配比边界模板待真实执行。

@@ -131,3 +131,44 @@ Hero入口以 `train_loader.iter_from_step(int(state.step))`恢复批次，并�
 对自己 run 的完整续训，验收应比较同 attempt 的 marker step、恢复 state.step、optimizer 时钟及声明的累积样本 offset；不一致时先阻断配比归因和未经审核的训练继续。对于有意的 weights-only 初始化，源 checkpoint 的 step 可以是 100，而新 run 的 state.step 是 0；这是另一种恢复意图，不能用完整续训的等号直接拒绝。要明确源权重 step、新时钟起点、optimizer/pending 哪些继承或重置，再制定数据消费账本。
 
 下一步验收字段已补进保存模板：resume mode、marker/state 对照、历史 schedule digest、恢复首批身份与实际配比阶段；真实结果仍为空。完整生产验证还缺真实下一批 token IDs、同一存储/内部 shuffle 的映射以及 next-step 指标。复现：`make restore-data-clock CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。
+
+
+## V71：配比日志标签是否代表刚训练完的整批样本
+
+本轮执行原 StepInfo、LambdaCallback、StateCallbackRunner、原 stage hook，以及原 loader 方法和实际 CPU 混合类。用 A/B 身份数据检查五种输入，6 项检查通过，[每批样本、域计数和回调日志](analysis/mixture_boundary_logging.json)均可复查。传给 callback 的 loss=0 是占位输入，没有模型 loss 测量。
+
+### 正常构建路径有批次边界保护
+
+归档 build_train_dataset 把配置中的切换 step 用同一 BatchSchedule 转成累计序列 offset。人工旧 schedule 为前三批4、之后8；step21 的边界为156，batch20 消费 [148,156)，batch21 消费 [156,164)。两批分别全 A 和全 B，没有半批跨阶段。
+
+MixtureDataset 的构造检查是边界对 block_size 对齐。这个检查本身不要求边界对任意 loader 的批次对齐，但正常构建通过 q(step) 转换提供了后一项条件。因此不能把任意“block 对齐但 batch 不对齐”的输入当成正常训练路径的 bug。
+
+### 原 callback 没有在本例错一拍
+
+StateCallbackRunner 接收训练完成后的 state.step；原 StepInfo.step = int(state.step)-1，next_step = int(state.step)。stage hook 用 StepInfo.step 的 batch 起点 offset 判断阶段。五个控制中，回调 step 都等于刚返回批次的编号。本例旧 schedule 的 batch21 训练后 state.step22，stage 日志记在21并显示阶段1，与 CE 日志采用的 completed-batch 编号一致。
+
+这里证明的是原接口在受控调用中的对齐。hook 的周期条件用 next_step；运行环境是否采用同一执行包，以及实际日志是否继承/覆盖，仍要另外绑定。本轮没有运行训练主循环。
+
+### 故意拼错两个 schedule 后，日志只反映批次起点
+
+冻结旧转换后的序列边界156，却把 loader/callback 改为全程 batch8，则 batch19 为 [152,160)：4条来自A、4条来自B。原 hook 按152所在阶段记录 stage0、A配置权重1，并省略B键。它记录的是批次起点的配置阶段，未测量整批实际域占比。下表与图都使用原混合方法的实际返回值。
+
+|人工控制|批次编号|域样本计数|日志 stage|
+|---|---:|---|---:|
+|正常旧 schedule，切换前|20|A8|0|
+|正常旧 schedule，切换后|21|B8|1|
+|冻结旧边界，使用新 loader|19|A4、B4|0|
+|用新 schedule 重新转换，切换前|20|A8|0|
+|用新 schedule 重新转换，切换后|21|B8|1|
+
+<div id="mixture-boundary-log-placeholder"></div>
+
+新 schedule 将 step21 边界重新换算为168，正常两批再次全 A/全 B。不过 V70 已证明历史 schedule 改写会改变此前消费身份；修好边界对齐不代表重现原续训轨迹。这个跨批控制只是检查不匹配工件的后果，没有证据表明 Hero 实际把旧边界和新 loader 拼在一起。
+
+### 从标签继续走到 loss 的有效证据
+
+先核对三种量：配置权重、实际域样本数、实际有效 loss target 数。即使本例 A4/B4，若真实序列有效长度或 loss mask 不同，也不能推成两个域各贡献一半目标。模型预测误差、MoE drop 和权重系数会再改变损失贡献；本轮身份数据没有这些信息，不计算损失比例。
+
+阶段附近的验收应保存 `[q(step), q(step+1))` 与边界相交结果，抽查或记录实际 domain IDs，再记录各域 valid targets、NLL sum 及权重。对配置日志中的阶段变更，用此记录确认哪批真正包含新域、哪批全部进入新阶段；不能把 stage 标签本身当作已测域组成。若实际没有跨界，则保留正常对齐证据，而不是制造额外的切换延迟解释。
+
+[配比边界验收模板](templates/mixture_boundary_review.json)把 schedule、边界、日志时钟、样本域与有效目标放在同一记录中，生产结果为空。执行范围：原 callback 类通过 AST 提取，Generic 的 TrainerState bound 未用于运行；synthetic state 只提供完成 step；记录 tracker、身份子集及 host loader 适配器替代真实训练与 batchify/watchdog。来源沿用462份归档，没有新增生产观测。复现：`make mixture-boundary-logging CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。

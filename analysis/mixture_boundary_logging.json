@@ -1,0 +1,194 @@
+{
+  "scope": "Original callback runner, stage hook, loader methods and real CPU mixture.\nIdentity child data and host loader adapters; no full training, tokens or measured loss.\n",
+  "checks_passed": 6,
+  "checks": [
+    "Same-schedule conversion puts switch on batch boundary",
+    "Original StepInfo callback indexes completed batch not next batch",
+    "Frozen old stage plus changed loader creates mixed crossing batch",
+    "Original stage hook reports start domain for mixed crossing batch",
+    "Reconversion aligns changed schedule without crossing",
+    "Normal boundary callback stage label matches all-domain batches"
+  ],
+  "runtime": {
+    "jax": "0.7.2",
+    "numpy": "2.5.3"
+  },
+  "configured_switch_step": 21,
+  "converted_sequence_boundaries": {
+    "old": 156,
+    "new": 168
+  },
+  "observations": {
+    "normal_before": {
+      "batch": {
+        "step": 20,
+        "offset": 148,
+        "identities": [
+          "A:149",
+          "A:148",
+          "A:150",
+          "A:151",
+          "A:154",
+          "A:153",
+          "A:152",
+          "A:155"
+        ]
+      },
+      "domain_counts": {
+        "A": 8
+      },
+      "callback_step_info": {
+        "step": 20,
+        "next_step": 21
+      },
+      "stage_log": {
+        "step": 20,
+        "values": {
+          "mixture/weight/A": 1.0,
+          "mixture/stage": 0
+        }
+      }
+    },
+    "normal_after": {
+      "batch": {
+        "step": 21,
+        "offset": 156,
+        "identities": [
+          "B:3",
+          "B:1",
+          "B:0",
+          "B:2",
+          "B:6",
+          "B:5",
+          "B:4",
+          "B:7"
+        ]
+      },
+      "domain_counts": {
+        "B": 8
+      },
+      "callback_step_info": {
+        "step": 21,
+        "next_step": 22
+      },
+      "stage_log": {
+        "step": 21,
+        "values": {
+          "mixture/weight/B": 1.0,
+          "mixture/stage": 1
+        }
+      }
+    },
+    "frozen_stages_new_loader_crossing": {
+      "batch": {
+        "step": 19,
+        "offset": 152,
+        "identities": [
+          "A:154",
+          "A:153",
+          "A:152",
+          "A:155",
+          "B:3",
+          "B:1",
+          "B:0",
+          "B:2"
+        ]
+      },
+      "domain_counts": {
+        "A": 4,
+        "B": 4
+      },
+      "callback_step_info": {
+        "step": 19,
+        "next_step": 20
+      },
+      "stage_log": {
+        "step": 19,
+        "values": {
+          "mixture/weight/A": 1.0,
+          "mixture/stage": 0
+        }
+      }
+    },
+    "reconverted_new_schedule_before": {
+      "batch": {
+        "step": 20,
+        "offset": 160,
+        "identities": [
+          "A:162",
+          "A:161",
+          "A:160",
+          "A:163",
+          "A:167",
+          "A:165",
+          "A:164",
+          "A:166"
+        ]
+      },
+      "domain_counts": {
+        "A": 8
+      },
+      "callback_step_info": {
+        "step": 20,
+        "next_step": 21
+      },
+      "stage_log": {
+        "step": 20,
+        "values": {
+          "mixture/weight/A": 1.0,
+          "mixture/stage": 0
+        }
+      }
+    },
+    "reconverted_new_schedule_after": {
+      "batch": {
+        "step": 21,
+        "offset": 168,
+        "identities": [
+          "B:3",
+          "B:2",
+          "B:0",
+          "B:1",
+          "B:5",
+          "B:6",
+          "B:7",
+          "B:4"
+        ]
+      },
+      "domain_counts": {
+        "B": 8
+      },
+      "callback_step_info": {
+        "step": 21,
+        "next_step": 22
+      },
+      "stage_log": {
+        "step": 21,
+        "values": {
+          "mixture/weight/B": 1.0,
+          "mixture/stage": 1
+        }
+      }
+    }
+  },
+  "crossing_fixture": "deliberately frozen old sequence stages combined with changed loader schedule; not normal builder behavior",
+  "synthetic_callback_loss": 0.0,
+  "actual_Hero_boundary_crossing": null,
+  "actual_Hero_loss_change": null,
+  "actual_full_training_loop": null,
+  "explicit_substitutions": [
+    "identity child datasets",
+    "host loader layout/batchify/watchdog adapters",
+    "recording tracker",
+    "synthetic state exposing completed step",
+    "Generic type variable omits unused TrainerState bound"
+  ],
+  "source_sha256": {
+    "sources/scale_2026_10_05/train_hero_ep.py": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7",
+    "sources/state_2026_10_05/callback_core.py": "093eb427fd538123007ef3e14658be3462fddfbe8f43783977bb11bb0a3b24ce",
+    "sources/state_2026_10_05/state_adapter.py": "fdde652f95b9fb82d322d5e4cfed3b0750fdb15cd7507869e39a4e47bd82b70b",
+    "sources/eval_identity_2026_10_06/loader.py": "d8c14060286d9998c8784ce945694958b7c61a5404bcede6e77ba34c467e077d",
+    "sources/deepening_2026_10_04/schedule_production.py": "01a2faa0d7a0b5cca4aad4cd702ed9aed5114111293970d8ea379d36f40ff281",
+    "sources/deepening_2026_10_04/mixture_production.py": "67e97941a79753b2e5865f7f41c7762436a428599ecd1a60d643aa891a817685"
+  }
+}

@@ -412,3 +412,8 @@ V57复算#9708冻结表18条、12条步时，6项检查；新增性能图和未�
 ## V70：恢复、原 loader 与原混合身份联合检查
 
 7 检查，真实小 checkpoint 与原恢复策略，原 schedule/三个 loader 方法/混合类连接身份子集；核对 marker100/state20、首批偏移148、marker反事实788、历史改写160和阶段边界156。新增实测顺序图与 full-resume/weights-only 验收区分。462 来源保持；无真实 token、完整训练或 loss 结果。
+
+
+## V71：原回调时钟、正常边界与错配工件对照
+
+五输入6检查：原 StepInfo/StateCallbackRunner/LambdaCallback/stage hook、原 loader 与真实 CPU 混合。正常同 schedule 边界对齐；旧边界+新 loader 控制 A4/B4，起点日志仍 stage0。新增域计数图与未执行模板；synthetic loss0不是测量。462来源保持。

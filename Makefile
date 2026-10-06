@@ -184,3 +184,8 @@ grug-state-restore:
 restore-data-clock:
 	PYTHONPATH=$(TENSORSTORE_PATH) $(CPU_PYTHON) scripts/probe_restore_data_clock.py
 	$(PYTHON) scripts/plot_restore_data_clock.py
+
+.PHONY: mixture-boundary-logging
+mixture-boundary-logging:
+	$(CPU_PYTHON) scripts/probe_mixture_boundary_logging.py
+	$(PYTHON) scripts/plot_mixture_boundary_logging.py

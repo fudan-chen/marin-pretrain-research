@@ -1,6 +1,6 @@
 # 当前交付审计：文件覆盖与真实验证分别核对
 
-当前版本V70：恢复状态接到原 loader/mixture，7 项联合检查与样本顺序图。metadata 排序时钟、state 数据时钟及历史 batch 影响分开核对；真实 Hero token/loss 仍未知。详见 [配比与 batch 时钟](BATCH_CLOCK_ZH.md)。
+当前版本V71：原 callback 时钟与实际混合域计数对照，6 项检查。正常边界对齐；错配工件下阶段日志不能代表整批域组成。新增图与验收模板，真实 loss/Hero 跨界事件未知。详见 [batch 时钟](BATCH_CLOCK_ZH.md)。
 
 |用户要求|当前权威产物|覆盖与实际限制|
 |---|---|---|

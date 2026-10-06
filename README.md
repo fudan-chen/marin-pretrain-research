@@ -1,8 +1,8 @@
 # Marin 535B 预训练研究
 
-当前版本V70：恢复状态接到原 loader/mixture，7 项联合检查与样本顺序图。metadata 排序时钟、state 数据时钟及历史 batch 影响分开核对；真实 Hero token/loss 仍未知。详见 [配比与 batch 时钟](BATCH_CLOCK_ZH.md)。
+当前版本V71：原 callback 时钟与实际混合域计数对照，6 项检查。正常边界对齐；错配工件下阶段日志不能代表整批域组成。新增图与验收模板，真实 loss/Hero 跨界事件未知。详见 [batch 时钟](BATCH_CLOCK_ZH.md)。
 
-本轮完善[MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)：复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并补未执行的性能交互记录模板。
+[MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并提供未执行的性能交互记录模板。
 
 V26对V25的micro/macro命名错误已[明确更正](EVAL_METRICS_ZH.md)。
 

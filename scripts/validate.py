@@ -676,7 +676,7 @@ ok('V35 schedule and allocation source digests match',all(hashlib.sha256((ROOT/p
 ok('V35 alignment and cursor counterexample remain rejected',not bc['synthetic_review']['construction_alignment_ok'] and bc['synthetic_review']['resume']['sequence_offset_delta']==-12)
 ok('V35 equal totals do not imply equal batch prefixes',bc['equal_endpoint_counterexample']['sequence_offset_delta']==0 and not bc['equal_endpoint_counterexample']['consumed_batch_prefix_equal'])
 ok('V35 original callback does not write removed component zero','mixture/weight/B' not in bc['original_callback_logs'][-1]['data'])
-ok('V70 clock chapter retains four historical tables plus joined-clock table',len(soup.select('#batch-clock-guide table'))==5)
+ok('V71 clock chapter retains five historical tables plus boundary-log table',len(soup.select('#batch-clock-guide table'))==6)
 report['highlights']+=['V35 exact cumulative batch clock / stage alignment rejection / consumed prefix review / configured weights versus block counts; static HTML verification only for new chapter']
 mr=read(A/'mixture_range_probe.json')
 ok('V36 integer range probes retain twenty-two bounded checks',mr['checks_passed']==len(mr['checks'])==22 and mr['actual_historical_overflow'] is None and mr['actual_loader_replay'] is None and mr['actual_Hero_runtime_numpy_version'] is None)
@@ -809,7 +809,7 @@ ok('V52 eleven original async loader host controls retain scope',lr['checks_pass
 ok('V52 loader source identities match',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in lr['source_sha256'].items()))
 ok('V52 prefetch and completed-step resume are distinct',max(lr['prefetch']['first_store_request'])==19 and lr['prefetch']['resume_completed_step_one']['identities']==[4,5,6,7])
 ok('V52 historical rewrite affects original host retrieval',lr['history_change']['old']['offset']==20 and lr['history_change']['rewritten']['offset']==32 and lr['history_change']['future_only']['offset']==20)
-ok('V70 batch clock chapter retains four historical tables and one new table',len(soup.select('#batch-clock-guide table'))==5)
+ok('V71 batch clock chapter retains five historical tables and one new table',len(soup.select('#batch-clock-guide table'))==6)
 report['highlights']+=['V52 eleven original async loader host controls, identity-store retrieval and finite endpoints; no actual Hero token stream, background queue or complete checkpoint restore']
 mi=read(A/'mixture_identity_cpu.json')
 ok('V53 fourteen original mixture class CPU controls retain scope',mi['checks_passed']==len(mi['checks'])==14 and mi['runtime']['backend']=='cpu' and mi['actual_Hero_mapping'] is None and mi['actual_inner_shuffle'] is None and mi['actual_token_store'] is None)
@@ -950,6 +950,16 @@ ok('V70 marker selection versus state data clock retained',do['checkpoint']['mar
 ok('V70 history rewrite and original stage boundary retained',do['rewritten_history_batch']['offset']==160 and do['mixture_boundary_batch']['offset']==156 and do['restored_step_batch']['identities']!=do['rewritten_history_batch']['identities'])
 ok('V70 measured identity order figure embedded',soup.select_one('#batch-clock-guide #restoreclock-figure_1') is not None)
 report['highlights']+=['V70 seven joined original-policy/loader/mixture controls and measured sample-order figure; synthetic marker and identity data, no Hero token stream, training step or loss attribution']
+bl=read(A/'mixture_boundary_logging.json')
+ok('V71 original callback mixture sources and true loss unknown',bl['checks_passed']==len(bl['checks'])==6 and bl['actual_Hero_loss_change'] is None and bl['actual_Hero_boundary_crossing'] is None and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in bl['source_sha256'].items()))
+bo=bl['observations']
+ok('V71 normal builder-conversion alignment retained',bo['normal_before']['domain_counts']=={'A':8} and bo['normal_after']['domain_counts']=={'B':8} and bl['converted_sequence_boundaries']=={'old':156,'new':168})
+ok('V71 completed callback clock matches returned batch',all(x['callback_step_info']['step']==x['batch']['step'] and x['callback_step_info']['next_step']==x['batch']['step']+1 for x in bo.values()))
+ok('V71 artificial mixed batch differs from start-stage configured log',bo['frozen_stages_new_loader_crossing']['domain_counts']=={'A':4,'B':4} and bo['frozen_stages_new_loader_crossing']['stage_log']['values']['mixture/weight/A']==1)
+bt=read(ROOT/'templates/mixture_boundary_review.json')
+ok('V71 boundary review has no unexecuted loss results',bt['status']=='planned_not_executed' and all(v is None for v in bt['loss_evidence'].values()) and bt['decision']['loss_attribution_supported'] is None)
+ok('V71 boundary-count figure embedded',soup.select_one('#batch-clock-guide #mixboundary-figure_1') is not None)
+report['highlights']+=['V71 five original callback/loader/mixture controls, six checks and measured domain-count figure; normal alignment and deliberately mismatched schedule separated, no measured loss or Hero crossing event']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

@@ -128,6 +128,11 @@ for slug,label,file in chapters:
         muon_svg['style']='display:block;width:100%;min-width:700px;height:auto;'
         muon_wrap=soup.new_tag('div',attrs={'class':'table-wrap','style':'overflow-x:auto;'})
         muon_wrap.append(muon_svg);muon_placeholder.replace_with(muon_wrap)
+    boundary_placeholder=soup.select_one('#mixture-boundary-log-placeholder')
+    if boundary_placeholder is not None:
+        boundary_svg=BeautifulSoup((ROOT/'assets/mixture_boundary_logging.svg').read_text(),'html.parser').svg
+        boundary_svg['style']='display:block;width:100%;height:auto;'
+        boundary_placeholder.replace_with(boundary_svg)
     clock_placeholder=soup.select_one('#restore-data-clock-placeholder')
     if clock_placeholder is not None:
         clock_svg=BeautifulSoup((ROOT/'assets/restore_data_clock.svg').read_text(),'html.parser').svg

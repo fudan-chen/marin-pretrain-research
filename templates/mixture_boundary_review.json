@@ -1,0 +1,36 @@
+{
+  "status": "planned_not_executed",
+  "identity": {
+    "run": null,
+    "executed_code_sha": null,
+    "resume_mode": null,
+    "batch_schedule_digest": null,
+    "mixture_stage_digest": null,
+    "dataset_mapping_digest": null
+  },
+  "batch": {
+    "completed_step": null,
+    "state_next_step": null,
+    "start_sequence_offset": null,
+    "end_sequence_offset": null,
+    "stage_boundaries_overlapping_interval": null,
+    "actual_domain_counts": null,
+    "actual_domain_identity_evidence": null
+  },
+  "logs": {
+    "logged_step": null,
+    "logged_start_stage": null,
+    "logged_config_weights": null
+  },
+  "loss_evidence": {
+    "per_domain_valid_targets": null,
+    "per_domain_nll_sum": null,
+    "loss_weights_and_drop_policy": null,
+    "fixed_eval_result": null
+  },
+  "decision": {
+    "alignment_result": null,
+    "history_replay_result": null,
+    "loss_attribution_supported": null
+  }
+}

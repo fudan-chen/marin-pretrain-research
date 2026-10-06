@@ -361,3 +361,6 @@ V69 恢复规则：相同口语“缺数据”可能产生不同异常类与回�
 
 
 V70 配比归因规则：完整续训时先核对 marker step、恢复 state.step、optimizer 计数与历史 schedule，再确认真实首批身份/阶段；候选发现 step 不能直接当成数据消费时钟。weights-only 的新 step0 与源 step 分开记录。样本序号被原块置换打乱不单独判错，内容和顺序需按相同 key 重放。
+
+
+V71 配比规则：先核对正常 builder 的 step→offset 转换，不能把不匹配工件的跨批控制误称生产路径必然跨界。原 callback 的 completed-step 时钟本例对齐；stage 日志表示批次起点配置，不等于整批域占比或有效目标占比。域 IDs、valid targets 与 NLL 分别取证。

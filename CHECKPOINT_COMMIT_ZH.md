@@ -204,3 +204,39 @@ V67 把形状不一致的保护留为未知。这次继续执行原 `load_checkp
 本轮归档六份固定 SHA 原材料：Marin/Haliax 辅助源码与 uv.lock，新增来源有独立 URL、时间和摘要。该 lock 声明 workspace 的 marin-haliax 来自 lib/haliax，含 JAX 0.11.x 的条件依赖；本轮运行的 JAX 是 0.7.2。lock 声明不证明 Hero 当时实际 wheel 版本，也不能把本地环境说成生产环境重建。
 
 执行范围：NamedArray 类通过 AST 原样提取，并未导入完整 Haliax 包；未用替身改写它的构造/轴检查。axis→sharding 映射用单 CPU 设备适配器，忽略 mesh/axis mapping；cross-region 计费 no-op；本地 StoragePath 适配、手工根定位 metadata 与原真实 IO 范围继承 V67。没有完整模型/训练状态、GPU donation、ONE_REPLICA collective 或生产 dtype 事故复现。复现：`make tree-restore-contracts CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。
+
+
+## V69：多字段 Grug 状态、回退异常与 master 布局转换
+
+这次从一叶 exemplar 推进到原 GrugTrainState 类及原 Grug 恢复策略。源码类包含 step、params、master_params、opt_state、ema_params、pending_qb_betas；测试沿用该类，但 params 是三值字典，opt_state 是实际 Optax scale_by_adam 的人工状态，不是 Transformer 与 Hero 优化器分组。原 flatten、原 host writer、原 load/tree/leaf reader 参与真实本地读写，9 项检查通过。[逐调用错误与恢复值](analysis/grug_state_restore_real_io.json)保留路径与来源摘要。
+
+### 六个实际存储叶与声明范围
+
+本例未启用 master/EMA 时，实际路径为 step、params/w、opt_state/count、opt_state/mu/w、opt_state/nu/w、pending_qb_betas。完整写入后，六叶全部一致，step 恢复为 10，Adam count 为 1，pending 为 2×3 数组。
+
+归档 Transformer 的 token_embed/output_proj 声明为 jax.Array，Grug 的 step/pending 也声明为 jax.Array；这说明不能只研究 NamedArray 的检查来覆盖这些源码入口。声明表已提取到结果中，但没有实例化真实模型、清点真实 opt_state 或读取 Hero checkpoint，故它是静态类型材料，不是生产叶 inventory。
+
+### 同样称为“缺数据”，回退路径为何不同
+
+|人工候选情况|真实调用顺序与结果|源码原因|
+|---|---|---|
+|step20 的 manifest 不列 opt_state/nu/w，step10 完整|step20 原布局失败 → step20 legacy 包装失败 → step10 成功，恢复 step10|缺清单叶抛 FileNotFoundError；内层用该异常尝试 legacy，外层用它尝试较早候选|
+|step20 的 manifest 列该叶，但实际数组元数据缺失，step10 完整|只调用 step20 一次，NOT_FOUND/ValueError 直接中止|真实 TensorStore 打开错误属于 ValueError，本例没有经过 FileNotFoundError 的两层回退|
+
+这不是“所有缺失都应该自动回退”的论据。这里的异常类决定现有策略；损坏、不支持格式和布局不一致可能需要中止，不能简单把所有 ValueError 捕获后跳过。若要改策略，应先明确哪些失败允许退到哪个已验证版本，记录被跳过的 attempt 与恢复进度损失，再测试真实存储错误到业务错误分类的转换。本次没有修改上游恢复行为，也没有证明 Hero 发生过这个错误。
+
+诊断还有一层容易误读：第一条原布局错误只缺 **1 叶**，legacy 包装后的错误却缺 **6 叶**，外层候选日志报告的是后一次错误。看到最后的“缺 6 叶”，不能马上判断原保存丢失了所有状态；先检查是否把无 legacy 前缀的 checkpoint 当作 legacy 重试了。我们的记录适配器保存两次真实异常，原策略本身没有在本轮被改动。
+
+### master 迁移钩子做了什么
+
+人工 master-bearing checkpoint 中，compute params/w 设为 [1001.25,997.5,1003.75]，master/w 为 [1.375,-2.375,3.875]，故两种来源可直接区分；这里只检查来源选择，不模拟 bf16 量化。
+
+不提供布局 hook 时，master-less exemplar 请求 params，恢复 compute 值且 master_params 仍为 None。执行原 template_for_candidate_layout 后，exemplar 的 params 暂设 None，params 模板搬到 master_params 路径；原 take_master_as_params 再将恢复的 master 搬回 params。结果为 master 值，step/optimizer count 同时保持。归档训练入口确实调用这两个函数，但实际运行 SHA、配置模式与历史 checkpoint 内容仍未绑定。
+
+所以恢复验收应记录“读了哪份权重”而不只检查 dtype。同 dtype 的两个数值副本也可不同；本例甚至不需要低精度误差就能说明路径选择的重要性。真实场景要确认 master 是权威副本、compute 是何时派生的，以及后续保存是否写成目标布局。
+
+### 可执行检查与边界
+
+恢复管线增加三项记录：每个 candidate 的原布局与 legacy 尝试分别保存首错；错误分类明确允许回退还是中止；最终参数来源标明 master/compute 与转换前后路径。不要仅保留最后一条异常，也不要用“成功读回”替代权威副本选择。
+
+本轮状态类和策略为原源码 AST 提取，真实 Optax 与 Equinox 参与；params 字典是人工替代。写入前转换为 NumPy，原 host writer 执行；metadata 手工写入，没执行原 production publisher。barrier 只记录调用，未做 collective；单设备 sharding、本地 StoragePath 适配继承 V68。没有完整 Transformer、真实优化器分组、训练 next-step 或多 rank restore。新增一份固定版本 tree_utils 来源，其他旧材料字节保留，来源清单扩展。复现：`make grug-state-restore CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。

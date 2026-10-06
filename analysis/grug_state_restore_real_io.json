@@ -1,0 +1,122 @@
+{
+  "scope": "Original Grug state schema and restore policy with small synthetic payloads.\nReal local IO and Optax state; not a Transformer, GPU state, or production restore.\n",
+  "checks_passed": 9,
+  "checks": [
+    "Original Grug schema roundtrips all serialized leaves",
+    "Original Grug schema includes raw step pending and optimizer count",
+    "Leaf absent from manifest triggers original older-candidate fallback",
+    "Original missing-leaf policy attempts legacy wrapper at same candidate",
+    "Legacy retry error differs from first missing-leaf evidence",
+    "Real listed-array NOT_FOUND remains ValueError and aborts fallback",
+    "Without layout hook raw device template reads compute params",
+    "Original layout hook plus migration selects stored master",
+    "Barrier adapter only reached successful policy restores"
+  ],
+  "observations": {
+    "complete": {
+      "step": 10,
+      "adam_count": 1,
+      "paths": [
+        "step",
+        "params/w",
+        "opt_state/count",
+        "opt_state/mu/w",
+        "opt_state/nu/w",
+        "pending_qb_betas"
+      ],
+      "calls": [
+        {
+          "candidate": "step10",
+          "wrapped": false
+        }
+      ]
+    },
+    "missing_manifest_leaf": {
+      "step": 10,
+      "calls": [
+        {
+          "candidate": "step20",
+          "wrapped": false,
+          "error": "FileNotFoundError: Missing 1 arrays in OCDBT checkpoint /var/folders/fr/z9sql57n2gx7wp37d74d4bg40000gn/T/marin-grug-state-vi_i4668/fallback/step20: ['opt_state/nu/w']. The checkpoint holds ['opt_state/count', 'opt_state/mu/w', 'params/w', 'pending_qb_betas', 'step']"
+        },
+        {
+          "candidate": "step20",
+          "wrapped": true,
+          "error": "FileNotFoundError: Missing 6 arrays in OCDBT checkpoint /var/folders/fr/z9sql57n2gx7wp37d74d4bg40000gn/T/marin-grug-state-vi_i4668/fallback/step20: ['train_state/step', 'train_state/params/w', 'train_state/opt_state/count', 'train_state/opt_state/mu/w', 'train_state/opt_state/nu/w', 'train_state/pending_qb_betas']. The checkpoint holds ['opt_state/count', 'opt_state/mu/w', 'params/w', 'pending_qb_betas', 'step']"
+        },
+        {
+          "candidate": "step10",
+          "wrapped": false
+        }
+      ]
+    },
+    "manifest_listed_array_absent": {
+      "error": "ValueError: NOT_FOUND: Error opening \"zarr3\" driver: Metadata at \"opt_state/nu/w/zarr.json\" in OCDBT database at local file \"/var/folders/fr/z9sql57n2gx7wp37d74d4bg40000gn/T/marin-grug-state-vi_i4668/failure/step20/\" does not exist [tensorstore_spec='{\\\"context\\\":{\\\"cache_pool\\\":{\\\"total_bytes_limit\\\":10000000000},\\\"data_copy_concurrency\\\":{\\\"limit\\\":128},\\\"file_io_concurrency\\\":{\\\"limit\\\":128},\\\"file_io_locking\\\":{},\\\"file_io_memmap\\\":false,\\\"file_io_sync\\\":true,\\\"ocdbt_coordinator\\\":{}},\\\"driver\\\":\\\"zarr3\\\",\\\"kvstore\\\":{\\\"base\\\":{\\\"driver\\\":\\\"file\\\",\\\"path\\\":\\\"/var/folders/fr/z9sql57n2gx7wp37d74d4bg40000gn/T/marin-grug-state-vi_i4668/failure/step20/\\\"},\\\"driver\\\":\\\"ocdbt\\\",\\\"path\\\":\\\"opt_state/nu/w/\\\"}}'] [source locations='tensorstore/driver/kvs_backed_chunk_driver.cc:1290\\ntensorstore/driver/driver.cc:112']",
+      "calls": [
+        {
+          "candidate": "step20",
+          "wrapped": false,
+          "error": "ValueError: NOT_FOUND: Error opening \"zarr3\" driver: Metadata at \"opt_state/nu/w/zarr.json\" in OCDBT database at local file \"/var/folders/fr/z9sql57n2gx7wp37d74d4bg40000gn/T/marin-grug-state-vi_i4668/failure/step20/\" does not exist [tensorstore_spec='{\\\"context\\\":{\\\"cache_pool\\\":{\\\"total_bytes_limit\\\":10000000000},\\\"data_copy_concurrency\\\":{\\\"limit\\\":128},\\\"file_io_concurrency\\\":{\\\"limit\\\":128},\\\"file_io_locking\\\":{},\\\"file_io_memmap\\\":false,\\\"file_io_sync\\\":true,\\\"ocdbt_coordinator\\\":{}},\\\"driver\\\":\\\"zarr3\\\",\\\"kvstore\\\":{\\\"base\\\":{\\\"driver\\\":\\\"file\\\",\\\"path\\\":\\\"/var/folders/fr/z9sql57n2gx7wp37d74d4bg40000gn/T/marin-grug-state-vi_i4668/failure/step20/\\\"},\\\"driver\\\":\\\"ocdbt\\\",\\\"path\\\":\\\"opt_state/nu/w/\\\"}}'] [source locations='tensorstore/driver/kvs_backed_chunk_driver.cc:1290\\ntensorstore/driver/driver.cc:112']"
+        }
+      ]
+    },
+    "migration": {
+      "compute_values": [
+        1001.25,
+        997.5,
+        1003.75
+      ],
+      "migrated_values": [
+        1.375,
+        -2.375,
+        3.875
+      ],
+      "adam_count": 1
+    }
+  },
+  "declared_fields_not_runtime_inventory": {
+    "GrugTrainState": {
+      "step": "jax.Array",
+      "params": "Transformer",
+      "master_params": "Transformer | None",
+      "opt_state": "optax.OptState",
+      "ema_params": "Transformer | None",
+      "pending_qb_betas": "jax.Array"
+    },
+    "Transformer": {
+      "token_embed": "jax.Array",
+      "embed_norm": "RMSNorm",
+      "embed_gated_norm": "GatedNorm",
+      "output_proj": "jax.Array",
+      "stacked_blocks": "ArrayStacked[Block]",
+      "final_norm": "RMSNorm",
+      "final_gated_norm": "GatedNorm",
+      "config": "GrugModelConfig"
+    }
+  },
+  "runtime": {
+    "jax": "0.7.2",
+    "optax": "0.2.5"
+  },
+  "original_GrugTrainState_class": true,
+  "original_restore_policy": true,
+  "explicit_substitutions": {
+    "params": "one-array dictionary instead of Transformer",
+    "opt_state": "real scale_by_adam fixture, not Hero optimizer groups",
+    "barrier": "recording adapter, not collective",
+    "save_fixture": "original flatten and host writer; arrays converted to NumPy, markers manually written",
+    "sharding_and_StoragePath": "inherited single-device/local adapters"
+  },
+  "actual_Hero_state_inventory": null,
+  "actual_production_missing_array_event": null,
+  "actual_multirank_restore": null,
+  "source_sha256": {
+    "sources/scale_2026_10_05/train_hero_ep.py": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7",
+    "sources/contracts_2026_10_05/checkpointing.py": "1f7395e4caeb60f31db7d84e32e972b75791e43e454dafd146449b9148e5016d",
+    "sources/state_restore_2026_10_07/tree_utils.py": "c9acb36c912b0bfb6ff7c8b794b38445c52ff48d3f5870db49ce4791761cde6d",
+    "sources/checkpoint_commit_2026_10_05/tensorstore_serialization.py": "5dddf8c6cc87cb062593482abe6775eee59eea443c28c7fd8d8b7ddf261f89ea",
+    "sources/checkpoint_commit_2026_10_05/checkpoint_manifest.py": "ae7a3535d2721bcd4ac598bd3f75c9bb8878fbbb1656f87f22b0c988dd0d9b3b",
+    "sources/contracts_2026_10_05/model.py": "8fdfd89cf6814da05683f134f154525916728370368a2493843195d9a489859c",
+    "sources/tree_restore_2026_10_07/jax_utils.py": "647a16ab5d7adac4166e63a429b112afdda0f11dd4fcb4866dde77cb3a4263d1"
+  }
+}

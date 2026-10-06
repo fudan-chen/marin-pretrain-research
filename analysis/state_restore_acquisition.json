@@ -1,0 +1,15 @@
+{
+  "records": [
+    {
+      "file": "state_restore_2026_10_07/tree_utils.py",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/utils/tree_utils.py",
+      "retrieved_utc": "2026-10-06T20:43:02.230954+00:00",
+      "sha256": "c9acb36c912b0bfb6ff7c8b794b38445c52ff48d3f5870db49ce4791761cde6d"
+    }
+  ],
+  "prior_file_count": 461,
+  "prior_bytes_preserved": 460,
+  "changed_bookkeeping": [
+    "source_manifest.json"
+  ]
+}

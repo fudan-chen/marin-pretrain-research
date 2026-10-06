@@ -355,3 +355,6 @@ V67 接口规则：把“候选发现”“叶存在”“shape/dtype 一致”�
 
 
 V68 规则修正：说明上层保护时列出实际叶类型与具体检查。NamedArray 尺寸校验不等于 dtype 校验；本例普通 ShapeDtypeStruct 的形状也不受 exemplar 约束。每类叶分别核对 shape/dtype/content，实际 Hero 类型分布未知，不能据 toy tree 判整个训练系统的保护覆盖。
+
+
+V69 恢复规则：相同口语“缺数据”可能产生不同异常类与回退策略。分别保留原布局/legacy 的首错，不从后一次包装错误的缺叶数量推原存储损失。明确回退许可，并记录最终读取 master 或 compute 的权威来源；不把同 dtype 当作同内容。

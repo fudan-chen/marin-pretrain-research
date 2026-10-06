@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1478,
+  "checks_passed": 1482,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -18,7 +18,7 @@
     "four new config contrasts / six step393 resume windows",
     "seventeen embedded figures",
     "all relative HTML links valid",
-    "461 source archive checksums valid",
+    "462 source archive checksums valid",
     "18 authored rubrics / seven claim-stage decisions",
     "five interpretation cases / four metrics with switchable baselines",
     "17 figure-reading entries / five preserved collapsed tables",
@@ -116,7 +116,8 @@
     "V65 eight actual local TensorStore Zarr3/OCDBT IO checks with original spec helpers and independent read processes; synthetic arrays, no full Marin serializer or production restore",
     "V66 nine real local IO controls in original host serializer with original budget and installed single-process JAX manager; explicit omissions, no full tree or distributed/production restore",
     "V67 nine actual original leaf restore/discovery controls, real manifest schema and fsspec with local StoragePath adapter; synthetic markers, no full state, production publisher or multirank restore",
-    "V68 six actual local wrapper controls and seven checks, original NamedArray class with explicit single-device sharding adapter; no full model, Hero dtype event or execution-package reconstruction"
+    "V68 six actual local wrapper controls and seven checks, original NamedArray class with explicit single-device sharding adapter; no full model, Hero dtype event or execution-package reconstruction",
+    "V69 nine original Grug-schema policy controls with six-leaf real IO, actual Optax fixture and explicit payload/barrier/publisher adapters; no full Hero state or production incident"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

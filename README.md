@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本V68：原 load wrapper、原 NamedArray 类与真实存储联合检查，7 项验证。上层尺寸保护依赖叶类型，dtype 校验另需核对；真实模型与生产事故未知。详见 [checkpoint 提交与恢复](CHECKPOINT_COMMIT_ZH.md)。
+当前版本V69：原 Grug 多字段状态、原恢复策略与真实 IO，9 项检查。解释缺叶/缺数组的回退差异、legacy 后继错误与 master 迁移来源选择；完整 Hero 状态及事故未知。详见 [checkpoint 提交与恢复](CHECKPOINT_COMMIT_ZH.md)。
 
 本轮完善[MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)：复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并补未执行的性能交互记录模板。
 

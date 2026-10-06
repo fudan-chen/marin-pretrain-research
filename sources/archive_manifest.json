@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-06T20:40:41.986592+00:00",
+  "integrity_manifest_created_utc": "2026-10-06T20:45:57.123418+00:00",
   "files": [
     {
       "file": "accumulation_2026_10_07/grad_accum.py",
@@ -2675,8 +2675,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 211230,
-      "sha256": "cadce241d7b7d4b930cf1b8fee0cfaaea3d404bd38061a320a2ef02e81840b73",
+      "bytes": 211588,
+      "sha256": "d3fd06bae0807857e6e2ec9024dbe550a1c555c612844b7e52a3a0459c8cd8d9",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {
@@ -2727,6 +2727,13 @@
       "sha256": "495de05281ce1cd01d2ad187aafd43e7d89833d42109c63fe63db3d80d21f231",
       "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/grug/moe_hero_ep/weights.py",
       "retrieved_utc": "2026-10-05T09:01:32.946146+00:00"
+    },
+    {
+      "file": "state_restore_2026_10_07/tree_utils.py",
+      "bytes": 4485,
+      "sha256": "c9acb36c912b0bfb6ff7c8b794b38445c52ff48d3f5870db49ce4791761cde6d",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/utils/tree_utils.py",
+      "retrieved_utc": "2026-10-06T20:43:02.230954+00:00"
     },
     {
       "file": "thread_5203.md",

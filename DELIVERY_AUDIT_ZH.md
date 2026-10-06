@@ -1,6 +1,6 @@
 # 当前交付审计：文件覆盖与真实验证分别核对
 
-当前版本V68：原 load wrapper、原 NamedArray 类与真实存储联合检查，7 项验证。上层尺寸保护依赖叶类型，dtype 校验另需核对；真实模型与生产事故未知。详见 [checkpoint 提交与恢复](CHECKPOINT_COMMIT_ZH.md)。
+当前版本V69：原 Grug 多字段状态、原恢复策略与真实 IO，9 项检查。解释缺叶/缺数组的回退差异、legacy 后继错误与 master 迁移来源选择；完整 Hero 状态及事故未知。详见 [checkpoint 提交与恢复](CHECKPOINT_COMMIT_ZH.md)。
 
 |用户要求|当前权威产物|覆盖与实际限制|
 |---|---|---|

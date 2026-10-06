@@ -170,3 +170,6 @@ V67 恢复管线补充：目录候选先绑定成功发布 attempt；随后独�
 
 
 V68 管线补充：先导出真实训练状态叶类型/schema inventory，再区分 NamedArray、普通数组、optimizer buffer 与计数器，逐类核对恢复约束。记录 NamedArray shape-check 状态；显式 dtype 对照和内容校验另执行。原 load wrapper 的本地六输入已测试，真实状态树尚未验收。
+
+
+V69 管线补充：记录 candidate→原布局→legacy→较早候选的实际调用轨迹、首错及错误类别。只在既定政策允许时退回已验证版本，不笼统吞 ValueError。master-bearing 到 device 模式的恢复核对原布局 hook、权威副本值与转换后保存路径，真实结果仍待执行。

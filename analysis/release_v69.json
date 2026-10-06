@@ -1,0 +1,41 @@
+{
+  "version": "V69",
+  "created_utc": "2026-10-06T20:46:38.376324+00:00",
+  "goal_status": "active",
+  "scope": "Original GrugTrainState schema and restore policy with six-leaf real local IO; missing-leaf fallback, real absent-array errors and master migration using explicit synthetic payloads",
+  "checks_passed": 1482,
+  "grug_state_checks": 9,
+  "source_files": 462,
+  "all_prior_source_bytes_preserved": 460,
+  "changed_archive_bookkeeping": [
+    "source_manifest.json"
+  ],
+  "new_source_acquisitions": 1,
+  "actual_full_model_restore": null,
+  "actual_multirank_commit": null,
+  "actual_production_metadata_publication": null,
+  "actual_browser_rendering": null,
+  "artifact_sha256": {
+    "README.md": "d653784a2f7795519368b95dbab8ff58c088ee84046fe56aad6cb73a622540e2",
+    "DELIVERY_AUDIT_ZH.md": "4b8b7ec3202232a957b9f4e7037094a863dd124384f898015a1b54c70ec27246",
+    "CHECKPOINT_COMMIT_ZH.md": "94a94d501edba6647df1210289fcdeee19f4145cca6b54cd3e53a5dc487e3122",
+    "SYNTHESIS_ZH.md": "a46839b1d06a668f176c3d26c64c47eeeb7e22cf31256ae9cd1a22e58f144119",
+    "RUBRICS_ZH.md": "662ee286076ccc0383e8a0b1fc95d6e5ca9974cac5312ff51565bfa96a26848f",
+    "PIPELINE_ZH.md": "3f8ea4765fe81f6fe81858008f3041875b3be7d722ef1ab30a889d6b0f66b1b9",
+    "IMPROVEMENT_LOG_ZH.md": "b0a550e8f9aa0a8193fd559c30f8ff0066b674b2403c78451d522d4482cbc634",
+    "Makefile": "5c0d248cd7b0930bac72bec6066dd21d2fa7a7d95b8bbff1216a8e281b4ccc7d",
+    "requirements-tensorstore-io.txt": "80493b3f52dbe71278ad31a69bdcd7e4d4b5986c62026c3e03f248bdd6bcb8d6",
+    "templates/checkpoint_commit_review.json": "3703729daa3414c1e153f969805c0aa29e244d73a6bdfcac66343ddb96249d2c",
+    "scripts/validate.py": "6d796c0e9132b538923fb805027f150e238b3936135b8a3e27bec08d6404d550",
+    "scripts/probe_grug_state_restore_real_io.py": "df728a527b1cf24289723ce1b7ae0f2d5515ab3ad3089aa3dc34c0bd99984dc3",
+    "analysis/grug_state_restore_real_io.json": "ef73c255055246888b56ed0a0f577f081a7d710b0c4807d5f9cea91897f26895",
+    "analysis/validation.json": "04c2b7c36b6642fbe8286a4d337ca95c7371e7831ede481bfcd5e6548fd9b52c",
+    "analysis/static_validation_v69.json": "c4c57050f8f20bcdddf0c0d6c08871adf21c7270ada51c876721cd122c89e648",
+    "index.html": "14730356f3f8f1361690cbdb691004a6f1270f0f2e4add36ca59d73392b1fc2f",
+    "report_standalone.html": "88d6740634d5cc339b592bf994500993fbeafd484d5ce2b0c2b73f6267197334",
+    "analysis/state_restore_acquisition.json": "49d9087aedb9e71f6849fb8c75f3aae964523c873aa81ba1eee6f14cd431445f",
+    "sources/source_manifest.json": "d3fd06bae0807857e6e2ec9024dbe550a1c555c612844b7e52a3a0459c8cd8d9",
+    "sources/archive_manifest.json": "921cd1a1e7bad43204ea14514c729b354a138ef723b889704cc0af3491da4dec",
+    "sources/state_restore_2026_10_07/tree_utils.py": "c9acb36c912b0bfb6ff7c8b794b38445c52ff48d3f5870db49ce4791761cde6d"
+  }
+}

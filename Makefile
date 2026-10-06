@@ -175,3 +175,7 @@ restore-real-io:
 .PHONY: tree-restore-contracts
 tree-restore-contracts:
 	PYTHONPATH=$(TENSORSTORE_PATH) $(CPU_PYTHON) scripts/probe_tree_restore_contracts.py
+
+.PHONY: grug-state-restore
+grug-state-restore:
+	PYTHONPATH=$(TENSORSTORE_PATH) $(CPU_PYTHON) scripts/probe_grug_state_restore_real_io.py

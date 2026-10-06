@@ -402,3 +402,8 @@ V57复算#9708冻结表18条、12条步时，6项检查；新增性能图和未�
 ## V68：上层 load wrapper 与原 NamedArray 检查
 
 六个真实 IO 输入、7 检查；原 load_checkpoint、Equinox partition/combine、原 tree/leaf reader 及原 NamedArray 类。命名轴尺寸会拒绝不一致，普通 shape exemplar 与 dtype 保护分开。新增六份固定来源，454 份旧材料字节保持，仅 source_manifest 扩展。单 CPU sharding 适配、未运行完整模型或生产事故。
+
+
+## V69：原 Grug 状态与恢复策略的真实 IO
+
+9 检查、六叶完整恢复、两类缺失错误、legacy 错误证据及 master 迁移来源选择。原 GrugTrainState，params 字典代替 Transformer，实际 Optax 小状态不等于 Hero optimizer；barrier 记录适配、人工 metadata。新增固定 tree_utils，460 旧文件字节保持，仅 source_manifest 扩展。无实际生产事故/完整状态树验收。

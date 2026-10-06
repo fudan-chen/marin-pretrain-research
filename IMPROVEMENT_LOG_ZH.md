@@ -298,6 +298,12 @@ V25把`paloma/bpb`错误命名为macro；它在固定公共源码中来自父级
 
 沿用既有规则与管线。改变microbatch前，先写清目标分母，确认实际调用入口，并记录每块有效T；不能仅凭loss有限与梯度已相加验收。对有效均值，核对整个optimizer step的归约，避免重复除micro步数。再核对RNG、路由、梯度裁剪与状态更新；分母正确不自动证明真实模型拆批等价。[源码与14项检查](GRADIENT_ACCUMULATION_ZH.md)只证明原函数体的串行适配行为和人工反例，没有证明Hero事故或配比收益。下一步需要真实入口的loss函数、逐块N/T与逐参数梯度记录。
 
-## 后续CPU验证：准备完成，结果仍待取得
+## V48之后的历史准备记录（CPU验证已在V49完成）
+
+以下保留当时的等待状态；当前结果见后面的V49条目。
 
 已核对API与Grug的mean入口不同：Grug内部请求reduction=None，外层才聚合分母，不能认定连续求了两次均值。下一项工作是执行[原归约与backward的CPU自动微分脚本](scripts/probe_masked_numerics_cpu.py)，检查全零分母、inactive非有限值和正常padding正例。独立JAX 0.7.2/jaxlib 0.7.2依赖安装仍在运行；截至[本次观察](analysis/cpu_setup_wait.json)未执行CPU探针、未生成结果章节。保存的状态不是当前活性的证明，下一轮应重新核对同一进程/会话。当前完整报告与ZIP仍为V48，不将计划写成复现或Hero事故。
+
+## V49：真实CPU验证与触发条件同时检查
+
+依赖安装已终止成功，见[完成记录](analysis/cpu_setup_completed.json)。[21项JAX CPU检查](analysis/masked_numerics_cpu.json)复现原mean的前向0/反向NaN、inactive非有限传播与局部安全分母对照；[9项默认权重审计](analysis/default_target_weights.json)说明公开text配方正常执行时应有正T。图像已查看，HTML仅静态核对。这两类证据分别回答危险分支是否成立、是否能用于当前Hero归因；真实T、输入、历史运行环境、GPU/TPU和完整状态更新仍未知。

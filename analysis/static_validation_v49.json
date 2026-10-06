@@ -1,0 +1,17 @@
+{
+  "pages": {
+    "index.html": {
+      "tables": 3,
+      "inline_svg": true,
+      "sha256": "d0b04d45a29ac438be796cbfeb23d5db0272a1eaeac16c6c37ba9e009e3f659c"
+    },
+    "report_standalone.html": {
+      "tables": 3,
+      "inline_svg": true,
+      "sha256": "5ebc86f58d779197016ea282bdb7be3b4827caf2def6b96227329ebf932ca801"
+    }
+  },
+  "actual_browser_rendering": null,
+  "all_prior_source_files_preserved": 443,
+  "CPU_make_target_completed": true
+}

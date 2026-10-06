@@ -1,0 +1,411 @@
+{
+  "scope": "JAX 0.7.2 / jaxlib 0.7.2 CPU checks of pinned numerical function bodies.\nNot an executed Hero checkpoint, GPU kernel, distributed collective or complete training step.\n",
+  "checks_passed": 21,
+  "checks": [
+    "Pinned CPU-only probe runtime",
+    "Original zero-weight mean returns zero eager",
+    "Original zero-weight mean produces NaN loss cotangents eager",
+    "Original zero-weight mean returns zero jit",
+    "Original zero-weight mean produces NaN loss cotangents jit",
+    "Proposed safe denominator has zero finite cotangents eager",
+    "Proposed safe denominator has zero finite cotangents jit",
+    "Safe denominator preserves positive-weight mean",
+    "Original multiplication does not exclude inactive NaN",
+    "Original multiplication does not exclude inactive Inf",
+    "Post-loss selection can hide forward undefinedness but not its derivative",
+    "Making log operand safe yields inactive zero derivative",
+    "Original CPU reference CE zero mean yields zero forward and nonfinite gradients eager",
+    "Original CPU reference CE zero mean yields zero forward and nonfinite gradients jit",
+    "Original zero-weight sum has finite zero parameter derivatives",
+    "Finite inactive CE row has zero hidden gradient with positive denominator",
+    "Original fast backward scan propagates NaN cotangents on CPU",
+    "Original fast backward scan returns finite zeros for safe zero cotangents",
+    "Zero row cotangent does not sanitize nonfinite operands in original scan",
+    "Original scan tail-row and vocab padding match finite float32 reference gradients",
+    "Original Grug reducer plus CPU reference delegate reproduces zero forward and nonfinite derivatives"
+  ],
+  "runtime": {
+    "python": "3.12.13",
+    "jax": "0.7.2",
+    "jaxlib": "0.7.2",
+    "numpy": "2.5.3",
+    "backend": "cpu",
+    "devices": [
+      "TFRT_CPU_0"
+    ],
+    "jax_enable_x64": false
+  },
+  "observations": {
+    "zero_mean_eager": {
+      "value": 0.0,
+      "gradient": [
+        "NaN",
+        "NaN"
+      ]
+    },
+    "zero_mean_jit": {
+      "value": 0.0,
+      "gradient": [
+        "NaN",
+        "NaN"
+      ]
+    },
+    "safe_zero_eager": {
+      "value": 0.0,
+      "gradient": [
+        0.0,
+        0.0
+      ]
+    },
+    "safe_zero_jit": {
+      "value": 0.0,
+      "gradient": [
+        0.0,
+        0.0
+      ]
+    },
+    "masked_NaN": {
+      "value": "NaN"
+    },
+    "masked_Inf": {
+      "value": "NaN"
+    },
+    "post_select_log": {
+      "value": 0.0,
+      "gradient": [
+        1.0,
+        "NaN"
+      ]
+    },
+    "safe_log_operand": {
+      "value": 0.0,
+      "gradient": [
+        1.0,
+        0.0
+      ]
+    },
+    "reference_zero_eager": {
+      "value": 0.0,
+      "hidden_gradient": [
+        [
+          "NaN",
+          "NaN"
+        ],
+        [
+          "NaN",
+          "NaN"
+        ]
+      ],
+      "head_gradient": [
+        [
+          "NaN",
+          "NaN",
+          "NaN"
+        ],
+        [
+          "NaN",
+          "NaN",
+          "NaN"
+        ]
+      ]
+    },
+    "reference_zero_jit": {
+      "value": 0.0,
+      "hidden_gradient": [
+        [
+          "NaN",
+          "NaN"
+        ],
+        [
+          "NaN",
+          "NaN"
+        ]
+      ],
+      "head_gradient": [
+        [
+          "NaN",
+          "NaN",
+          "NaN"
+        ],
+        [
+          "NaN",
+          "NaN",
+          "NaN"
+        ]
+      ]
+    },
+    "reference_zero_sum": {
+      "value": 0.0,
+      "hidden_gradient": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "head_gradient": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ]
+    },
+    "reference_positive": {
+      "value": 1.0559555292129517,
+      "hidden_gradient": [
+        [
+          0.03831203281879425,
+          -0.16548006236553192
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "head_gradient": [
+        [
+          -0.1304280310869217,
+          0.06358399987220764,
+          0.06684402376413345
+        ],
+        [
+          -0.19564205408096313,
+          0.09537600725889206,
+          0.10026603937149048
+        ]
+      ]
+    },
+    "original_scan_unsafe_zero": {
+      "dout_loss": [
+        "NaN",
+        "NaN"
+      ],
+      "hidden_gradient": [
+        [
+          "NaN",
+          "NaN"
+        ],
+        [
+          "NaN",
+          "NaN"
+        ]
+      ],
+      "head_gradient": [
+        [
+          "NaN",
+          "NaN",
+          "NaN"
+        ],
+        [
+          "NaN",
+          "NaN",
+          "NaN"
+        ]
+      ]
+    },
+    "original_scan_safe_zero": {
+      "dout_loss": [
+        0.0,
+        0.0
+      ],
+      "hidden_gradient": [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "head_gradient": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ]
+    },
+    "scan_inactive_nonfinite": {
+      "hidden_gradient": [
+        [
+          0.038312047719955444,
+          -0.16548006236553192
+        ],
+        [
+          "NaN",
+          "NaN"
+        ]
+      ],
+      "head_gradient": [
+        [
+          "NaN",
+          "NaN",
+          "NaN"
+        ],
+        [
+          "NaN",
+          "NaN",
+          "NaN"
+        ]
+      ]
+    },
+    "scan_positive_tail_padding": {
+      "hidden_gradient": [
+        [
+          0.025541365146636963,
+          -0.11032003909349442
+        ],
+        [
+          -0.11419374495744705,
+          0.07251795381307602
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "head_gradient": [
+        [
+          -0.07663674652576447,
+          0.05280827730894089,
+          0.023828456178307533
+        ],
+        [
+          -0.17168913781642914,
+          0.02190820872783661,
+          0.14978092908859253
+        ]
+      ],
+      "reference_hidden_gradient": [
+        [
+          0.025541365146636963,
+          -0.11032003909349442
+        ],
+        [
+          -0.11419375240802765,
+          0.07251795381307602
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "reference_head_gradient": [
+        [
+          -0.07663674652576447,
+          0.052808284759521484,
+          0.02382845990359783
+        ],
+        [
+          -0.17168913781642914,
+          0.021908218041062355,
+          0.14978094398975372
+        ]
+      ]
+    },
+    "grug_reference_delegate_zero": {
+      "value": 0.0,
+      "hidden_gradient": [
+        [
+          "NaN",
+          "NaN"
+        ],
+        [
+          "NaN",
+          "NaN"
+        ]
+      ],
+      "head_gradient": [
+        [
+          "NaN",
+          "NaN",
+          "NaN"
+        ],
+        [
+          "NaN",
+          "NaN",
+          "NaN"
+        ]
+      ]
+    }
+  },
+  "original_functions": [
+    {
+      "file": "sources/contracts_2026_10_05/api.py",
+      "function": "_apply_reduction",
+      "first_line": 702,
+      "last_line": 716
+    },
+    {
+      "file": "sources/contracts_2026_10_05/reference.py",
+      "function": "_default_logsumexp",
+      "first_line": 27,
+      "last_line": 28
+    },
+    {
+      "file": "sources/contracts_2026_10_05/reference.py",
+      "function": "_apply_logit_soft_cap",
+      "first_line": 60,
+      "last_line": 63
+    },
+    {
+      "file": "sources/contracts_2026_10_05/reference.py",
+      "function": "linear_softmax_cross_entropy_loss_reference",
+      "first_line": 66,
+      "last_line": 110
+    },
+    {
+      "file": "sources/contracts_2026_10_05/xla.py",
+      "function": "_linear_softmax_cross_entropy_loss_streaming_bwd_scan",
+      "first_line": 398,
+      "last_line": 568
+    },
+    {
+      "file": "sources/scale_2026_10_05/grug_loss.py",
+      "function": "_psum_over_axes",
+      "first_line": 34,
+      "last_line": 39
+    },
+    {
+      "file": "sources/scale_2026_10_05/grug_loss.py",
+      "function": "fused_linear_softmax_cross_entropy_loss",
+      "first_line": 43,
+      "last_line": 147
+    }
+  ],
+  "adaptations": [
+    "AST-selected original bodies and future annotations",
+    "CPU logsumexp branch explicitly selects original _default_logsumexp",
+    "CPU exponential explicitly jnp.exp, no TPU AccuracyMode branch",
+    "Grug wrapper mesh=None and reference delegate replaces backend dispatcher",
+    "Direct original backward scan invocation with supplied cotangents, not complete custom_vjp entry"
+  ],
+  "proposed_safe_denominator_is_upstream_patch": false,
+  "actual_Hero_zero_denominator_batch": null,
+  "actual_Hero_inactive_nonfinite_operands": null,
+  "actual_historical_runtime_binding": null,
+  "actual_GPU_or_TPU_kernel_execution": null,
+  "actual_distributed_collectives": null,
+  "actual_optimizer_step": null,
+  "source_sha256": {
+    "sources/contracts_2026_10_05/api.py": "5efeea2badba92dbc2dce9d0fc2306f12a2bf754dd2d8bee16b1dcd3ed0e355d",
+    "sources/contracts_2026_10_05/reference.py": "f113b3b6872af2d6aa4658cf4326b6c52c2675bf537690d5653604e9d559c0d5",
+    "sources/contracts_2026_10_05/xla.py": "4a4f086b968934114ba450ec90d1e875842a04a3b79c7ae82879eda882a4d7d4",
+    "sources/scale_2026_10_05/grug_loss.py": "97e86e8a7540cafeb4be9695da9a5c8342f3780b7fee6cbb45de79ffc50c15ba"
+  }
+}

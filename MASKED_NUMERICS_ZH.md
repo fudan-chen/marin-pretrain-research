@@ -1,7 +1,4 @@
-"""Write the CPU numerical audit only from completed genuine JAX results."""
-import json,pathlib
-R=pathlib.Path(__file__).resolve().parents[1];d=json.loads((R/'analysis/masked_numerics_cpu.json').read_text());assert d['runtime']['backend']=='cpu' and d['runtime']['jax']==d['runtime']['jaxlib']=='0.7.2'
-text='''# 零权重、非有限值与反向梯度
+# 零权重、非有限值与反向梯度
 
 零权重表示某个位置不应贡献目标，但浮点运算不会自动把这个位置从计算图删除。本轮在独立JAX CPU环境运行固定源码中的归约、参考CE与fast backward scan函数体，确认了两个不同风险：全零权重可以让前向loss返回0而反向出现NaN；inactive位置的NaN/Inf也不能靠最后乘0隔离。
 
@@ -62,12 +59,10 @@ JAX的[where说明](https://docs.jax.dev/en/latest/_autosummary/jax.numpy.where.
 
 [CPU脚本](scripts/probe_masked_numerics_cpu.py)使用AST选取原函数体，并通过future annotations载入。参考CE显式选择原_default_logsumexp CPU分支，CPU exp为jnp.exp；不运行TPU accuracy分支。没有用NumPy模拟自动微分。所有数组转回host后记录，非有限值以字符串NaN/Inf写入合法JSON。
 
-实际环境：Python {python}，JAX {jax}，jaxlib {jaxlib}，NumPy {numpy}，backend={backend}，x64={x64}。这是独立研究环境，未证明与Hero执行环境一致。固定依赖见[CPU requirements](requirements-cpu-numerics.txt)，重跑入口为`make cpu-numerics CPU_PYTHON=/你的环境/bin/python`；常规report构建读取冻结结果，不隐式安装JAX。
+实际环境：Python 3.12.13，JAX 0.7.2，jaxlib 0.7.2，NumPy 2.5.3，backend=cpu，x64=False。这是独立研究环境，未证明与Hero执行环境一致。固定依赖见[CPU requirements](requirements-cpu-numerics.txt)，重跑入口为`make cpu-numerics CPU_PYTHON=/你的环境/bin/python`；常规report构建读取冻结结果，不隐式安装JAX。
 
-本轮{checks}项检查的原值、函数行号、适配说明与源码SHA见[结果记录](analysis/masked_numerics_cpu.json)。当前缺口仍是真实Hero全零分母或inactive非有限operand的事件证据、历史运行版本绑定、真实内核及完整训练步重放。下一步优先获取这些材料，决定是否达到修复条件。
-'''.format(**d['runtime'],x64=d['runtime']['jax_enable_x64'],checks=d['checks_passed'])
-a=json.loads((R/'analysis/default_target_weights.json').read_text());assert a['checks_passed']==9 and a['actual_global_T'] is None
-text+='''
+本轮21项检查的原值、函数行号、适配说明与源码SHA见[结果记录](analysis/masked_numerics_cpu.json)。当前缺口仍是真实Hero全零分母或inactive非有限operand的事件证据、历史运行版本绑定、真实内核及完整训练步重放。下一步优先获取这些材料，决定是否达到修复条件。
+
 ## 这个触发条件是否符合公开Hero配方
 
 [默认权重审计](analysis/default_target_weights.json)读取10月7日归档配置：223个组件均声明普通text格式、pack=None、长度4096、batch 11264。固定版_effective_pack对text返回False；dataset_for_component选择TokenSeqDataset，不指定loss_weights_key，再由CausalLmDataset构造默认causal mask，未传ignore_id或外部segment_ids。原causal_loss_mask只有最后位置为0，每条有4095个有效位置。因此正常整批条件下，T应为11264×4095=46,126,080，严格为正。
@@ -77,23 +72,3 @@ text+='''
 正分母排除的是全零归约条件，不保证每条序列被屏蔽末位的hidden、logits或上游导数有限。inactive非有限风险仍需另查；不能因为T为正就宣布数值验收通过。
 
 故当前结论是：数值危险分支已在CPU复现，但公开正常配方的条件推导不支持用它解释Hero历史loss。调查应先记录实际T与inactive非有限值，确认触发，再进入修复。
-'''
-(R/'MASKED_NUMERICS_ZH.md').write_text(text)
-import matplotlib,re,numpy as np
-matplotlib.use('Agg');matplotlib.rcParams['svg.hashsalt']='marin-masked-numerics-20261007'
-import matplotlib.pyplot as plt
-from matplotlib.colors import ListedColormap
-cases=[('zero_mean_eager','Original mean: all-zero weights'),('reference_zero_eager','Original reference CE + mean'),('reference_zero_sum','Original reference CE + sum'),('safe_zero_eager','Proposed safe denominator'),('post_select_log','Select after undefined log'),('safe_log_operand','Make log operand safe first')]
-def leaves(v):
- if isinstance(v,list):return [a for x in v for a in leaves(x)]
- return [v]
-flags=[];annotations=[]
-for key,label in cases:
- row=d['observations'][key];values=leaves(row['value']);grads=[a for k,v in row.items() if k!='value' for a in leaves(v)];bad=sum(isinstance(a,str) for a in grads);flags.append([int(not any(isinstance(a,str) for a in values)),int(bad==0)]);annotations.append(['finite',f'{bad} nonfinite' if bad else 'finite'])
-fig,ax=plt.subplots(figsize=(9,4.3));ax.imshow(flags,cmap=ListedColormap(['#b85137','#2f7760']),vmin=0,vmax=1,aspect='auto');ax.set_xticks([0,1],['Forward value','Reverse gradients']);ax.set_yticks(range(len(cases)),[label for key,label in cases],fontsize=9)
-for i,row in enumerate(annotations):
- for j,value in enumerate(row):ax.text(j,i,value,ha='center',va='center',color='white',fontsize=10)
-ax.set_title('Actual JAX 0.7.2 CPU checks, float32\nFinite forward does not establish finite reverse derivatives',fontsize=11);fig.tight_layout();fig.savefig(R/'assets/masked_numerics_cpu.png',dpi=150);fig.savefig(R/'assets/masked_numerics_cpu.svg',metadata={'Date':None});plt.close(fig)
-p=R/'assets/masked_numerics_cpu.svg';s=p.read_text();ids=re.findall(r'id="([^"]+)"',s)
-for old in sorted(set(ids),key=len,reverse=True):s=s.replace('id="'+old+'"','id="masknum-'+old+'"').replace('#'+old+'"','#masknum-'+old+'"').replace('#'+old+')','#masknum-'+old+')')
-p.write_text('\n'.join(line.rstrip() for line in s.splitlines())+'\n')

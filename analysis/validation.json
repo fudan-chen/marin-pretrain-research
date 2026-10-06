@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1377,
+  "checks_passed": 1386,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -96,7 +96,8 @@
     "V45 finite fixed-order repeat exposure projection; window versus lifetime index coverage; original helper and synthetic permutation, no actual Hero inventory/cursor/block shuffle or training benefit",
     "V46 independent 9.915T / 4K snapshot; new 212999 evaluation and 216 unchanged old values; micro decline versus macro rebound, descriptive PTB decomposition; no causal or GPU claim",
     "V47 conditional eval weight inference, 18 fit and five post-hoc points; eight bounded checks, perturbation sensitivity and nonidentifiability; no actual denominator or training mixture benefit",
-    "V48 generic accumulation versus specialized Hero path; fourteen original-body/serial/artificial objective checks; unequal denominator gradient reversal, no actual Hero bug or JAX/model/distributed parity"
+    "V48 generic accumulation versus specialized Hero path; fourteen original-body/serial/artificial objective checks; unequal denominator gradient reversal, no actual Hero bug or JAX/model/distributed parity",
+    "V49 twenty-one genuine single-device JAX CPU numerical checks and nine conditional default-text-mask checks; forward zero versus reverse NaN, finite padding control, no actual Hero trigger or historical/GPU/TPU/full optimizer binding"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",
@@ -113,6 +114,8 @@
     "external reviewer identity, scoring agreement and transfer-task comprehension",
     "September ladder executed evaluation-code binding and common-checkpoint BPB re-evaluation",
     "causal isolated scale or 25-percent mixture-switch effects",
-    "48 proposed GPU continuations, shared-checkpoint and generation-evaluation costs"
+    "48 proposed GPU continuations, shared-checkpoint and generation-evaluation costs",
+    "Actual Hero global zero-denominator or inactive nonfinite operand event and historical runtime binding",
+    "V49 complete custom_vjp dispatcher, GPU/TPU/distributed or full optimizer-step execution"
   ]
 }

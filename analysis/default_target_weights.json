@@ -1,0 +1,54 @@
+{
+  "scope": "Conditional reachability audit of declared text defaults; not an actual batch census.",
+  "checks_passed": 9,
+  "checks": [
+    "Archived declaration has 223 plain text components",
+    "Original default pack for text is false",
+    "Original text builder requests continuous tokens without loss-weight field",
+    "Text causal wrapper supplies no ignore-id or external segment-id",
+    "Original default 4K mask has 4095 effective positions",
+    "Declared positive batch yields a conditional positive denominator",
+    "Length-one constructor mask can be empty in a different recipe",
+    "Empty completion mask can be empty in a different recipe",
+    "Pinned Hero loader rejects nondivisible batch size"
+  ],
+  "declared_components": 223,
+  "declared_batch_size": 11264,
+  "declared_length": 4096,
+  "conditional_default_effective_positions_per_sequence": 4095,
+  "conditional_default_global_T": 46126080,
+  "selected_builder_path": {
+    "kind": "causal",
+    "dataset": {
+      "kind": "continuous_tokens",
+      "seq_len": 4096,
+      "loss_weights_key": null
+    },
+    "options": {
+      "eos_id": 0,
+      "block_cross_document_attention": true
+    }
+  },
+  "adapters": [
+    "Three format-type placeholders",
+    "Two dataset constructors replaced by route descriptors",
+    "Original causal_loss_mask with NumPy array operations",
+    "AST call-site argument inspection, no actual loader/cache/model execution"
+  ],
+  "conditions": [
+    "Pinned code is the actual execution code",
+    "Declared plain text non-packing recipe is actually used",
+    "Full batch of sequences is delivered without external loss-weight mutation",
+    "Length and batch declarations are unchanged"
+  ],
+  "actual_global_T": null,
+  "actual_execution_binding": null,
+  "actual_cached_inputs": null,
+  "actual_Hero_zero_T_event": null,
+  "source_sha256": {
+    "sources/live_2026_10_07/meta.json": "21998ecad691e7e66d3680f173bfe9b94c35b9481f28eff4794a23b0c9831487",
+    "sources/boundaries_2026_10_05/datasets.py": "4fd44ff53067beb7a2ac05cc4d41f0dda18012691751a85e7c5eb65c4849823b",
+    "sources/boundaries_2026_10_05/examples.py": "199a86abfd0f85eca39e6e73042c05ba56822dc35c26a5ed048dbb2f1299ec49",
+    "sources/scale_2026_10_05/train_hero_ep.py": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7"
+  }
+}

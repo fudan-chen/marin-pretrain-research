@@ -777,6 +777,18 @@ ok('V48 fixed position objective is preserved by equal-size splitting',ga['synth
 ok('V48 new chapter preserves three tables and inline synthetic figure',len(soup.select('#gradient-accumulation-guide table'))==3 and soup.select_one('#gradient-accumulation-guide svg') is not None)
 report['highlights']=[x.replace('441 source archive checksums valid','443 source archive checksums valid') for x in report['highlights']]
 report['highlights']+=['V48 generic accumulation versus specialized Hero path; fourteen original-body/serial/artificial objective checks; unequal denominator gradient reversal, no actual Hero bug or JAX/model/distributed parity']
+import numpy as np
+mn=read(A/'masked_numerics_cpu.json');dw=read(A/'default_target_weights.json')
+ok('V49 genuine CPU probe records twenty-one bounded checks',mn['checks_passed']==len(mn['checks'])==21 and mn['runtime']['jax']==mn['runtime']['jaxlib']=='0.7.2' and mn['runtime']['backend']=='cpu' and mn['actual_GPU_or_TPU_kernel_execution'] is None and mn['actual_optimizer_step'] is None)
+ok('V49 CPU function source identities match',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in mn['source_sha256'].items()))
+ok('V49 zero mean has finite forward and nonfinite loss cotangents',all(mn['observations']['zero_mean_'+mode]['value']==0 and mn['observations']['zero_mean_'+mode]['gradient']==['NaN','NaN'] for mode in ['eager','jit']))
+ok('V49 safe denominator contrast is explicit and locally finite',mn['proposed_safe_denominator_is_upstream_patch'] is False and mn['observations']['safe_zero_eager']['gradient']==[0.,0.] and mn['observations']['safe_zero_jit']['gradient']==[0.,0.])
+ok('V49 original finite tail padding matches recorded CPU reference',np.allclose(mn['observations']['scan_positive_tail_padding']['hidden_gradient'],mn['observations']['scan_positive_tail_padding']['reference_hidden_gradient'],atol=1e-6,rtol=1e-6) and np.allclose(mn['observations']['scan_positive_tail_padding']['head_gradient'],mn['observations']['scan_positive_tail_padding']['reference_head_gradient'],atol=1e-6,rtol=1e-6))
+ok('V49 default recipe audit records nine conditional checks',dw['checks_passed']==len(dw['checks'])==9 and dw['conditional_default_global_T']==46126080 and dw['actual_global_T'] is None and dw['actual_Hero_zero_T_event'] is None)
+ok('V49 default-mask source identities match',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in dw['source_sha256'].items()))
+ok('V49 chapter retains three evidence tables and CPU figure',len(soup.select('#masked-numerics-guide table'))==3 and soup.select_one('#masked-numerics-guide svg') is not None)
+report['highlights']+=['V49 twenty-one genuine single-device JAX CPU numerical checks and nine conditional default-text-mask checks; forward zero versus reverse NaN, finite padding control, no actual Hero trigger or historical/GPU/TPU/full optimizer binding']
+report['not_verified']+=['Actual Hero global zero-denominator or inactive nonfinite operand event and historical runtime binding', 'V49 complete custom_vjp dispatcher, GPU/TPU/distributed or full optimizer-step execution']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

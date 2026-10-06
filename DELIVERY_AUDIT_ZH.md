@@ -1,6 +1,6 @@
 # 当前交付审计：文件覆盖与真实验证分别核对
 
-当前版本V48，新增[梯度累积审计](GRADIENT_ACCUMULATION_ZH.md)：两份固定源码、14项原函数体/人工目标检查、三张证据表与解析梯度图。区分通用累积器和Hero专用调用路径；未发现实际Hero累积bug。PNG已查看，HTML仅静态核对；没有JAX自动微分、多卡、模型梯度或训练轨迹验证。
+当前版本V49，新增[零权重与反向数值审计](MASKED_NUMERICS_ZH.md)：21项真实JAX 0.7.2 CPU检查，9项默认mask条件审计，源码SHA与固定依赖可复查。PNG已查看，HTML仅静态核对。未执行Hero checkpoint、GPU/TPU、collective或完整optimizer step，也未证明实际触发条件。
 
 |用户要求|当前权威产物|覆盖与实际限制|
 |---|---|---|

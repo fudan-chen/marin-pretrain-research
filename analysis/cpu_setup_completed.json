@@ -1,0 +1,24 @@
+{
+  "observed_utc": "2026-10-06T18:03:14.594057+00:00",
+  "status": "completed",
+  "prior_wait_receipt": "analysis/cpu_setup_wait.json",
+  "dependency_setup_session_id": 56607,
+  "dependency_setup_terminal_exit_code": 0,
+  "CPU_probe_session_id": 60364,
+  "CPU_probe_terminal_exit_code": 0,
+  "CPU_probe_checks": 21,
+  "runtime": {
+    "python": "3.12.13",
+    "jax": "0.7.2",
+    "jaxlib": "0.7.2",
+    "numpy": "2.5.3",
+    "backend": "cpu",
+    "devices": [
+      "TFRT_CPU_0"
+    ],
+    "jax_enable_x64": false
+  },
+  "frozen_requirements": "requirements-cpu-numerics.txt",
+  "runtime_path": "/tmp/marin-jax-cpu-072",
+  "scope": "Independent single-device research CPU runtime, not historical Hero runtime reconstruction"
+}

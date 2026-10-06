@@ -49,12 +49,17 @@ chapters.insert(0,('repeat-exposure-guide','重复曝光与配比加量','REPEAT
 chapters.insert(0,('live-oct7-guide','10月7日：macro回升与micro下降','LIVE_2026_10_07_ZH.md'))
 chapters.insert(0,('eval-weight-guide','micro权重反推与PTB均值贡献','EVAL_WEIGHT_INFERENCE_ZH.md'))
 chapters.insert(0,('gradient-accumulation-guide','梯度累积、有效分母与更新方向','GRADIENT_ACCUMULATION_ZH.md'))
-priority=['synthesis-guide','gradient-accumulation-guide','eval-weight-guide','live-oct7-guide','repeat-exposure-guide','packing-fields-guide','eval-target-alignment-guide','eval-format-guide','eval-array-export-guide','eval-replay-guide','eval-identity-guide','live-observation-guide','mixture-range-guide','batch-clock-guide','failure-boundaries-guide','observability-guide','muon-direction-guide','adamh-state-guide','muon-geometry-guide','engineering-map-guide','delivery-audit-guide','checkpoint-memory-guide','checkpoint-commit-guide','eval-metrics-guide','mix-trajectory-guide','router-precision-guide','short-conv-guide','loss-triage','optimizer-guide','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
+chapters.insert(0,('masked-numerics-guide','零权重、非有限值与反向梯度','MASKED_NUMERICS_ZH.md'))
+priority=['synthesis-guide','masked-numerics-guide','gradient-accumulation-guide','eval-weight-guide','live-oct7-guide','repeat-exposure-guide','packing-fields-guide','eval-target-alignment-guide','eval-format-guide','eval-array-export-guide','eval-replay-guide','eval-identity-guide','live-observation-guide','mixture-range-guide','batch-clock-guide','failure-boundaries-guide','observability-guide','muon-direction-guide','adamh-state-guide','muon-geometry-guide','engineering-map-guide','delivery-audit-guide','checkpoint-memory-guide','checkpoint-commit-guide','eval-metrics-guide','mix-trajectory-guide','router-precision-guide','short-conv-guide','loss-triage','optimizer-guide','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
 chapters.sort(key=lambda c:priority.index(c[0]) if c[0] in priority else len(priority))
 readings={x['file']:x for x in json.loads((ROOT/'analysis/figure_readings.json').read_text())}
 sections=[];toc=[]
 for slug,label,file in chapters:
     result=markdown.markdown((ROOT/file).read_text(),extensions=['tables','fenced_code','toc'])
+    if slug=='masked-numerics-guide':
+        mask_svg=BeautifulSoup((ROOT/'assets/masked_numerics_cpu.svg').read_text(),'html.parser').svg
+        mask_svg['style']='display:block;width:100%;height:auto'
+        result += '<figure class="scientific-figure">'+str(mask_svg)+'<figcaption>真实JAX CPU检查：绿色为有限，红色显示非有限梯度元素数；不是Hero批次或GPU/TPU重放。</figcaption></figure>'
     if slug=='gradient-accumulation-guide':
         gradient_svg=BeautifulSoup((ROOT/'assets/gradient_accumulation.svg').read_text(),'html.parser').svg
         gradient_svg['style']='display:block;width:100%;height:auto'

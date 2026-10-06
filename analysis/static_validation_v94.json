@@ -1,0 +1,14 @@
+{
+  "version": "V94",
+  "checks_passed": 7,
+  "checks": [
+    "index.html unique IDs",
+    "index.html prior pipeline tables preserved plus strict comparison",
+    "index.html retained historical checker and limited correction",
+    "report_standalone.html unique IDs",
+    "report_standalone.html prior pipeline tables preserved plus strict comparison",
+    "report_standalone.html retained historical checker and limited correction",
+    "1578 fresh checks"
+  ],
+  "actual_browser_rendering": null
+}

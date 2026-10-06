@@ -1,0 +1,32 @@
+{
+  "version": "V94",
+  "created_utc": "2026-10-06T23:17:18.973405+00:00",
+  "goal_status": "active",
+  "scope": "Strict supplied-record checker layer, retained V93 and twelve comparison regressions",
+  "checks_passed": 1578,
+  "local_checker_controls": 12,
+  "static_checks": 7,
+  "source_files": 498,
+  "new_source_files": 0,
+  "actual_production_execution": null,
+  "actual_training_benefit": null,
+  "actual_browser_rendering": null,
+  "artifact_sha256": {
+    "README.md": "0f45f331f650a15efb7e9206fca2b183b5df89e1778eb0948b96dca855e79665",
+    "DELIVERY_AUDIT_ZH.md": "5749b0b2b36a0bcb8574440957000933b9842143528a84399e94375eadc1f449",
+    "IMPROVEMENT_LOG_ZH.md": "a5ccb7b58705bf21f6f57d1d27e454bd46f169852b917ae167ede84e68fd52f8",
+    "PIPELINE_ZH.md": "217a5bd2d6d5af87376794eeb9866153f553eb6990faa6947c4ac23a3ec3c167",
+    "RUBRICS_ZH.md": "e18b67cae7146691e49749b30a103b883622f7df6306d6b2fffb7d325edf6eb2",
+    "SYNTHESIS_ZH.md": "e0a1aca6457054f8257e6e6338f9347ffeb5c69683e113184adfe511747ff738",
+    "analysis/validation.json": "db3f9caff5835f6c34c0f5c50b444d9bc2acd26c41646e4eb6d3c89aa14ee888",
+    "index.html": "1a816edf4c4f6046886770044728462c6c218d7b7dbce5b2a6e3e8df30a85515",
+    "report_standalone.html": "6a2eaed67f2a9c18b20a8896bf9116c48f9d02fc9af73f42f2204511f82468bc",
+    "scripts/validate.py": "3e637ae3bf09cb95e70019770c3660bb93ebd5d8a43b7fcee71128281e7636c4",
+    "scripts/check_data_execution_record_v94.py": "47ac8faf00a9c57e770e131e9ea59d64389c23ff1869d71295abc0f264e5ba83",
+    "scripts/probe_strict_data_record.py": "ff59d1d165f11467fb2d89c0c9004dcdb47909067ad4e556ddf67c5dfad80680",
+    "analysis/strict_data_record_probe.json": "4a9d4f7dd327d979c95dddc2a0a829c41f398d01cbe9bc8dde9efd339c8a5692",
+    "templates/data_execution_record_v94.json": "e98c9c8d0c126ea8ce75a431672ea17d97b2684b2fe275ead57c8356291e1477",
+    "templates/data_execution_record_synthetic_v94.json": "8f3102e101878c5e3f83ffd5c02e9f79b466a4cd88f12c4605ef0e7524ac7203",
+    "analysis/static_validation_v94.json": "87955fc7c9094e2966be4e93d90e0273ca898fa32264b707cd512c6827a04e82"
+  }
+}

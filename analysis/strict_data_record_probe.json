@@ -1,0 +1,535 @@
+{
+  "scope": "New-tool regressions comparing retained V93 against strict V94, no Marin execution.",
+  "checks_passed": 12,
+  "checks": [
+    "Complete synthetic fixture remains record consistency only",
+    "Unsupported kind no longer self-consistent",
+    "Matching malformed eval children rejected",
+    "Runtime list rejected",
+    "No expected host coverage is missing evidence",
+    "Missing expected host is missing evidence",
+    "Unexpected host conflicts",
+    "Duplicate dispatch names conflict",
+    "Oversized JSON integer reports conflict without crash",
+    "Duplicate concat child names rejected",
+    "Archive remains missing execution evidence",
+    "Empty input remains missing evidence"
+  ],
+  "cases": {
+    "Complete synthetic fixture remains record consistency only": {
+      "old_status": "record_consistent_only",
+      "new": {
+        "scope": "Supplied record consistency only, finite cached datasets. No training approval.",
+        "status": "record_consistent_only",
+        "gates": [
+          {
+            "gate": "declared_support",
+            "status": "consistent",
+            "conflicts": [],
+            "missing": [],
+            "notes": []
+          },
+          {
+            "gate": "actual_support_and_inventory",
+            "status": "consistent",
+            "conflicts": [],
+            "missing": [],
+            "notes": [
+              "This checker scope is finite cached sequence datasets; supplied hashes are not independently read back."
+            ]
+          },
+          {
+            "gate": "quota_and_runtime_identity",
+            "status": "consistent",
+            "conflicts": [],
+            "missing": [],
+            "notes": []
+          },
+          {
+            "gate": "ordered_build_plan",
+            "status": "consistent",
+            "conflicts": [],
+            "missing": [],
+            "notes": [
+              "Equality covers supplied hosts only; real collective protocol remains outside this checker."
+            ]
+          },
+          {
+            "gate": "evaluation_panel_identity",
+            "status": "consistent",
+            "conflicts": [],
+            "missing": [],
+            "notes": [
+              "This checks identities/denominator records, not score quality or independent content verification."
+            ]
+          },
+          {
+            "gate": "record_shape_and_host_coverage",
+            "status": "consistent",
+            "conflicts": [],
+            "missing": [],
+            "notes": [
+              "Host enumeration is supplied evidence, not independent cluster discovery."
+            ]
+          }
+        ],
+        "production_execution_verified": false,
+        "training_benefit_verified": false,
+        "checker_version": "V94"
+      }
+    },
+    "Unsupported kind no longer self-consistent": {
+      "old_status": "record_consistent_only",
+      "new": {
+        "scope": "Supplied record consistency only; strict shape layer. No training approval.",
+        "gates": [
+          {
+            "gate": "record_shape_and_host_coverage",
+            "status": "conflict",
+            "conflicts": [
+              "Unsupported actual child kind"
+            ],
+            "missing": [],
+            "notes": [
+              "Host enumeration is supplied evidence, not independent cluster discovery."
+            ]
+          }
+        ],
+        "production_execution_verified": false,
+        "training_benefit_verified": false,
+        "status": "conflict",
+        "checker_version": "V94"
+      }
+    },
+    "Matching malformed eval children rejected": {
+      "old_status": "record_consistent_only",
+      "new": {
+        "scope": "Supplied record consistency only; strict shape layer. No training approval.",
+        "gates": [
+          {
+            "gate": "record_shape_and_host_coverage",
+            "status": "conflict",
+            "conflicts": [
+              "Evaluation children must be unique name list: eval",
+              "Evaluation children must be unique name list: eval"
+            ],
+            "missing": [],
+            "notes": [
+              "Host enumeration is supplied evidence, not independent cluster discovery."
+            ]
+          }
+        ],
+        "production_execution_verified": false,
+        "training_benefit_verified": false,
+        "status": "conflict",
+        "checker_version": "V94"
+      }
+    },
+    "Runtime list rejected": {
+      "old_status": "record_consistent_only",
+      "new": {
+        "scope": "Supplied record consistency only; strict shape layer. No training approval.",
+        "gates": [
+          {
+            "gate": "record_shape_and_host_coverage",
+            "status": "conflict",
+            "conflicts": [
+              "Runtime identity must be nonempty string: python"
+            ],
+            "missing": [],
+            "notes": [
+              "Host enumeration is supplied evidence, not independent cluster discovery."
+            ]
+          }
+        ],
+        "production_execution_verified": false,
+        "training_benefit_verified": false,
+        "status": "conflict",
+        "checker_version": "V94"
+      }
+    },
+    "No expected host coverage is missing evidence": {
+      "old_status": "record_consistent_only",
+      "new": {
+        "scope": "Supplied record consistency only, finite cached datasets. No training approval.",
+        "status": "needs_evidence",
+        "gates": [
+          {
+            "gate": "declared_support",
+            "status": "consistent",
+            "conflicts": [],
+            "missing": [],
+            "notes": []
+          },
+          {
+            "gate": "actual_support_and_inventory",
+            "status": "consistent",
+            "conflicts": [],
+            "missing": [],
+            "notes": [
+              "This checker scope is finite cached sequence datasets; supplied hashes are not independently read back."
+            ]
+          },
+          {
+            "gate": "quota_and_runtime_identity",
+            "status": "consistent",
+            "conflicts": [],
+            "missing": [],
+            "notes": []
+          },
+          {
+            "gate": "ordered_build_plan",
+            "status": "consistent",
+            "conflicts": [],
+            "missing": [],
+            "notes": [
+              "Equality covers supplied hosts only; real collective protocol remains outside this checker."
+            ]
+          },
+          {
+            "gate": "evaluation_panel_identity",
+            "status": "consistent",
+            "conflicts": [],
+            "missing": [],
+            "notes": [
+              "This checks identities/denominator records, not score quality or independent content verification."
+            ]
+          },
+          {
+            "gate": "record_shape_and_host_coverage",
+            "status": "missing",
+            "conflicts": [],
+            "missing": [
+              "expected_hosts explicitly enumerating participating hosts"
+            ],
+            "notes": [
+              "Host enumeration is supplied evidence, not independent cluster discovery."
+            ]
+          }
+        ],
+        "production_execution_verified": false,
+        "training_benefit_verified": false,
+        "checker_version": "V94"
+      }
+    },
+    "Missing expected host is missing evidence": {
+      "old_status": "record_consistent_only",
+      "new": {
+        "scope": "Supplied record consistency only, finite cached datasets. No training approval.",
+        "status": "needs_evidence",
+        "gates": [
+          {
+            "gate": "declared_support",
+            "status": "consistent",
+            "conflicts": [],
+            "missing": [],
+            "notes": []
+          },
+          {
+            "gate": "actual_support_and_inventory",
+            "status": "consistent",
+            "conflicts": [],
+            "missing": [],
+            "notes": [
+              "This checker scope is finite cached sequence datasets; supplied hashes are not independently read back."
+            ]
+          },
+          {
+            "gate": "quota_and_runtime_identity",
+            "status": "consistent",
+            "conflicts": [],
+            "missing": [],
+            "notes": []
+          },
+          {
+            "gate": "ordered_build_plan",
+            "status": "consistent",
+            "conflicts": [],
+            "missing": [],
+            "notes": [
+              "Equality covers supplied hosts only; real collective protocol remains outside this checker."
+            ]
+          },
+          {
+            "gate": "evaluation_panel_identity",
+            "status": "consistent",
+            "conflicts": [],
+            "missing": [],
+            "notes": [
+              "This checks identities/denominator records, not score quality or independent content verification."
+            ]
+          },
+          {
+            "gate": "record_shape_and_host_coverage",
+            "status": "missing",
+            "conflicts": [],
+            "missing": [
+              "Missing expected host plans: h1"
+            ],
+            "notes": [
+              "Host enumeration is supplied evidence, not independent cluster discovery."
+            ]
+          }
+        ],
+        "production_execution_verified": false,
+        "training_benefit_verified": false,
+        "checker_version": "V94"
+      }
+    },
+    "Unexpected host conflicts": {
+      "old_status": "record_consistent_only",
+      "new": {
+        "scope": "Supplied record consistency only; strict shape layer. No training approval.",
+        "gates": [
+          {
+            "gate": "record_shape_and_host_coverage",
+            "status": "conflict",
+            "conflicts": [
+              "Unexpected host plans: h2"
+            ],
+            "missing": [],
+            "notes": [
+              "Host enumeration is supplied evidence, not independent cluster discovery."
+            ]
+          }
+        ],
+        "production_execution_verified": false,
+        "training_benefit_verified": false,
+        "status": "conflict",
+        "checker_version": "V94"
+      }
+    },
+    "Duplicate dispatch names conflict": {
+      "old_status": "conflict",
+      "new": {
+        "scope": "Supplied record consistency only; strict shape layer. No training approval.",
+        "gates": [
+          {
+            "gate": "record_shape_and_host_coverage",
+            "status": "conflict",
+            "conflicts": [
+              "Host plan requires unique nonempty names: h1"
+            ],
+            "missing": [],
+            "notes": [
+              "Host enumeration is supplied evidence, not independent cluster discovery."
+            ]
+          }
+        ],
+        "production_execution_verified": false,
+        "training_benefit_verified": false,
+        "status": "conflict",
+        "checker_version": "V94"
+      }
+    },
+    "Oversized JSON integer reports conflict without crash": {
+      "old_status": "OverflowError",
+      "new": {
+        "scope": "Supplied record consistency only; strict shape layer. No training approval.",
+        "gates": [
+          {
+            "gate": "record_shape_and_host_coverage",
+            "status": "conflict",
+            "conflicts": [
+              "Weight integer cannot be represented in finite binary64"
+            ],
+            "missing": [],
+            "notes": [
+              "Host enumeration is supplied evidence, not independent cluster discovery."
+            ]
+          }
+        ],
+        "production_execution_verified": false,
+        "training_benefit_verified": false,
+        "status": "conflict",
+        "checker_version": "V94"
+      }
+    },
+    "Duplicate concat child names rejected": {
+      "old_status": "record_consistent_only",
+      "new": {
+        "scope": "Supplied record consistency only; strict shape layer. No training approval.",
+        "gates": [
+          {
+            "gate": "record_shape_and_host_coverage",
+            "status": "conflict",
+            "conflicts": [
+              "Concat requires unique nonempty child names"
+            ],
+            "missing": [],
+            "notes": [
+              "Host enumeration is supplied evidence, not independent cluster discovery."
+            ]
+          }
+        ],
+        "production_execution_verified": false,
+        "training_benefit_verified": false,
+        "status": "conflict",
+        "checker_version": "V94"
+      }
+    },
+    "Archive remains missing execution evidence": {
+      "old_status": "needs_evidence",
+      "new": {
+        "scope": "Supplied record consistency only, finite cached datasets. No training approval.",
+        "status": "needs_evidence",
+        "gates": [
+          {
+            "gate": "declared_support",
+            "status": "consistent",
+            "conflicts": [],
+            "missing": [],
+            "notes": []
+          },
+          {
+            "gate": "actual_support_and_inventory",
+            "status": "missing",
+            "conflicts": [],
+            "missing": [
+              "actual_children from constructed objects, all-stage positive support"
+            ],
+            "notes": [
+              "This checker scope is finite cached sequence datasets; supplied hashes are not independently read back."
+            ]
+          },
+          {
+            "gate": "quota_and_runtime_identity",
+            "status": "missing",
+            "conflicts": [],
+            "missing": [
+              "dataset_index in actual order",
+              "runtime.jax"
+            ],
+            "notes": []
+          },
+          {
+            "gate": "ordered_build_plan",
+            "status": "missing",
+            "conflicts": [],
+            "missing": [
+              "host_build_plans or explicit no-build plan per participating host"
+            ],
+            "notes": [
+              "Equality covers supplied hosts only; real collective protocol remains outside this checker."
+            ]
+          },
+          {
+            "gate": "evaluation_panel_identity",
+            "status": "missing",
+            "conflicts": [],
+            "missing": [
+              "evaluation_panel expected and actual identities"
+            ],
+            "notes": [
+              "This checks identities/denominator records, not score quality or independent content verification."
+            ]
+          },
+          {
+            "gate": "record_shape_and_host_coverage",
+            "status": "missing",
+            "conflicts": [],
+            "missing": [
+              "expected_hosts explicitly enumerating participating hosts"
+            ],
+            "notes": [
+              "Host enumeration is supplied evidence, not independent cluster discovery."
+            ]
+          }
+        ],
+        "production_execution_verified": false,
+        "training_benefit_verified": false,
+        "checker_version": "V94"
+      }
+    },
+    "Empty input remains missing evidence": {
+      "old_status": "needs_evidence",
+      "new": {
+        "scope": "Supplied record consistency only, finite cached datasets. No training approval.",
+        "status": "needs_evidence",
+        "gates": [
+          {
+            "gate": "declared_support",
+            "status": "missing",
+            "conflicts": [],
+            "missing": [
+              "declared_components",
+              "weight_stages"
+            ],
+            "notes": []
+          },
+          {
+            "gate": "actual_support_and_inventory",
+            "status": "missing",
+            "conflicts": [],
+            "missing": [
+              "actual_children from constructed objects, all-stage positive support"
+            ],
+            "notes": [
+              "This checker scope is finite cached sequence datasets; supplied hashes are not independently read back."
+            ]
+          },
+          {
+            "gate": "quota_and_runtime_identity",
+            "status": "missing",
+            "conflicts": [],
+            "missing": [
+              "dataset_index in actual order",
+              "block_size",
+              "integer_quotas",
+              "runtime.python",
+              "runtime.numpy",
+              "runtime.jax",
+              "runtime.normalization_policy",
+              "runtime.source_revision"
+            ],
+            "notes": []
+          },
+          {
+            "gate": "ordered_build_plan",
+            "status": "missing",
+            "conflicts": [],
+            "missing": [
+              "host_build_plans or explicit no-build plan per participating host"
+            ],
+            "notes": [
+              "Equality covers supplied hosts only; real collective protocol remains outside this checker."
+            ]
+          },
+          {
+            "gate": "evaluation_panel_identity",
+            "status": "missing",
+            "conflicts": [],
+            "missing": [
+              "evaluation_panel expected and actual identities"
+            ],
+            "notes": [
+              "This checks identities/denominator records, not score quality or independent content verification."
+            ]
+          },
+          {
+            "gate": "record_shape_and_host_coverage",
+            "status": "missing",
+            "conflicts": [],
+            "missing": [
+              "expected_hosts explicitly enumerating participating hosts"
+            ],
+            "notes": [
+              "Host enumeration is supplied evidence, not independent cluster discovery."
+            ]
+          }
+        ],
+        "production_execution_verified": false,
+        "training_benefit_verified": false,
+        "checker_version": "V94"
+      }
+    }
+  },
+  "source_sha256": {
+    "scripts/check_data_execution_record_v94.py": "47ac8faf00a9c57e770e131e9ea59d64389c23ff1869d71295abc0f264e5ba83",
+    "scripts/check_data_execution_record.py": "7c7d0b946b17370c190187a9e610fd693cf9f20ef354eb235db3efc82851cff3",
+    "templates/data_execution_record_synthetic.json": "8eae8958a6c7b8ec56995d55628e85792ca294aa7e3c91556cefe899097d3790",
+    "analysis/data_execution_record_archived.json": "172497c54ca47d0520300bd7fd672bc8ab109bfd3771a5a94962f01ebfe998e6"
+  },
+  "actual_production_execution": null,
+  "actual_training_benefit": null
+}

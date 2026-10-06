@@ -228,3 +228,6 @@ V92工程结论：不要把源码中的串行缓存构建直接改成线程池�
 
 
 V93可执行入口：[数据记录检查器](scripts/check_data_execution_record.py)区分conflict、needs_evidence和record_consistent_only。当前归档示例返回needs_evidence，缺实际子域、域顺序、host计划与评估身份；这表示公开材料不足以证明执行，不表示Hero故障。工具只查记录，不核对真实token或批准训练。[模板与用法](PIPELINE_ZH.md)
+
+
+V94：数据记录建议使用[严格版本](scripts/check_data_execution_record_v94.py)。V93存在未知类型/错误子域形状可被判自洽、缺host覆盖无法发现等漏项，现保留并补回归；新工具要求expected_hosts，当前归档仍缺执行证据。[修正范围](PIPELINE_ZH.md)

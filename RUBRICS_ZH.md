@@ -430,3 +430,6 @@ V92规则：发现错误、停止派发、线程清理结束是三个状态。as
 
 
 V93规则：记录有矛盾、缺执行证据、记录自洽分别输出。自洽不等于生产已验证；缺公开执行证据也不等于训练故障。新增[数据记录检查器](scripts/check_data_execution_record.py)只核对所提供的字段与关系，全部结果禁止升级为生产证明。[范围与运行方法](PIPELINE_ZH.md)
+
+
+V94修正：相等关系之前先验字段类型；多机清单必须有明确expected_hosts。部分机器相互一致仍缺覆盖证据。V93漏检作为本报告工具问题保留，不归因Marin；[严格工具](scripts/check_data_execution_record_v94.py)与[回归记录](analysis/strict_data_record_probe.json)可重放。

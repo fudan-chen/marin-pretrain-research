@@ -1108,6 +1108,11 @@ ok('V93 proposed checker controls explicitly not source execution',dc['checks_pa
 ok('V93 archived missing evidence not silently promoted',dca['status']=='needs_evidence' and dca['production_execution_verified'] is False and dca['gates'][0]['status']=='consistent' and all(x['status']=='missing' for x in dca['gates'][1:]))
 ok('V93 synthetic consistency never approves production',all(x['production_execution_verified'] is False and x['training_benefit_verified'] is False for x in dc['cases'].values()) and dc['cases']['Empty template cannot pass']['status']=='needs_evidence')
 report['highlights']+=['V93 proposed record checker with eighteen tamper controls; archived declarations plus local quota retain missing execution evidence, no production approval']
+sd=read(A/'strict_data_record_probe.json')
+ok('V94 strict tool source-bound regression records',sd['checks_passed']==len(sd['checks'])==12 and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in sd['source_sha256'].items()) and sd['actual_production_execution'] is None)
+ok('V94 old consistency failure and strict correction explicit',sd['cases']['Unsupported kind no longer self-consistent']['old_status']=='record_consistent_only' and sd['cases']['Unsupported kind no longer self-consistent']['new']['status']=='conflict' and sd['cases']['Oversized JSON integer reports conflict without crash']['old_status']=='OverflowError')
+ok('V94 missing host evidence not promoted to execution',sd['cases']['Missing expected host is missing evidence']['new']['status']=='needs_evidence' and sd['cases']['Archive remains missing execution evidence']['new']['status']=='needs_evidence' and all(x['new']['production_execution_verified'] is False for x in sd['cases'].values()))
+report['highlights']+=['V94 strict proposed checker layer and twelve old/new regressions; field shape and explicit host coverage, no production validation']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

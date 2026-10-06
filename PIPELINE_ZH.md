@@ -275,3 +275,33 @@ python scripts/check_data_execution_record.py templates/data_execution_record.js
 [18组篡改与缺证据控制](analysis/data_record_checker_probe.json)覆盖未知桶、缺失正权重子域、空concat、配额不守恒、域顺序变化、缺运行时、跨机build顺序/身份不一致、同顶层评估域下少子域、内容变化、有效分母为0和非有限权重。另核对正权重零配额保留诊断、空模板不能通过、人工自洽记录不会升级为生产证明，以及当前归档示例保持needs_evidence。这18组是新检查器的测试，不能计作18个新增Marin源码执行实验。[控制脚本](scripts/probe_data_record_checker.py)
 
 这个工具还没有覆盖阶段起点、动态batch前缀、int32中间乘法、边缘块真实排列、inner shuffle、读取token/hash复核、下一state有限性、完整checkpoint恢复和loss因果确认。它仅把数据记录中的第一层矛盾前置。后续应将记录从真实构造与读取路径导出，再用原方法和独立实际数组复核；只有执行身份清楚，配比和顺序的训练实验才更容易解释。
+
+
+## V94：检查器自己也有边界，先修正错误的“记录自洽”
+
+V93把源码结论做成工具，但工具的覆盖范围也必须审查。本轮发现它检查了关键关系，却漏了部分字段形状：未知组件kind、双方相同的字符串children、非字符串运行时字段均可能返回record_consistent_only；只提供部分host清单时，又没有预期参与机集合可供对照。这些是**本报告工具的问题，不是Marin训练源码故障**。
+
+保留原V93脚本、输入和结果，在[严格版本](scripts/check_data_execution_record_v94.py)增加形状与host覆盖检查，再调用旧关系检查。这使历史结果可重放，也避免悄悄改写原探针的来源SHA。新工具依赖原脚本，两者需一起保留。
+
+|记录控制|保留V93的实际结果|V94实际结果|修正理由|
+|---|---|---|---|
+|actual child kind为unsupported|record_consistent_only|conflict|无法按受支持类型解释记录|
+|期望/实际eval children均是字符串xy|record_consistent_only|conflict|相等不代表字段形状正确|
+|runtime.python为非空列表|record_consistent_only|conflict|运行时身份必须明确为字符串|
+|没有expected_hosts，已提交host计划相互一致|record_consistent_only|needs_evidence|局部一致不能证明参与机覆盖|
+|expected_hosts含h0/h1，但只提交h0|record_consistent_only|needs_evidence|需要缺失机器的实际清单|
+|weight整数为10的400次方|本地OverflowError|conflict|binary64范围转换前先拒绝，不能让检查本身崩溃|
+
+新版本还拒绝非空白名字之外的组件/host标签、重复concat子域、重复派发名、未声明host计划和错误eval子域类型。缓存构建动作之间的次序与身份仍由旧层核对。不存在构建时，可给每个预期host显式空build清单；不能以“没提交机器”代替“该机器没有构建任务”。expected_hosts本身也是提供的记录，不是工具独立发现的集群状态。
+
+**当前归档仍返回needs_evidence。** 新要求没有补造生产rank、对象清单或token内容。当前报告已能指出需要补什么，但没有实际训练环境导出记录，所以不能把形状修复升格成生产验收。
+
+```sh
+python scripts/check_data_execution_record_v94.py templates/data_execution_record_v94.json /tmp/data-record-check.json
+```
+
+使用[新空模板](templates/data_execution_record_v94.json)，新增expected_hosts；[新人工模板](templates/data_execution_record_synthetic_v94.json)演示完整字段。旧模板/脚本保留作为V93历史记录。形状冲突先报告并停止进入旧层，因此某些输出只含新形状入口；修正输入后再运行，才能看到其余关系问题。
+
+[12组回归对照](analysis/strict_data_record_probe.json)同时保留旧状态与新完整输出，覆盖上述漏检、缺host、额外host、重复任务、重复子域、超大整数、人工自洽示例、归档输入和空输入。它们测试的是新工具，不是新增Marin源码实验。本轮没有重新运行模型、缓存读取或分布式同步。
+
+这次修正带来的工程规则是：验证器也应接受反例审查。关系相等、字段合法、记录覆盖、实际执行分别是不同条件。前两项能在离线记录上检查，后两项需要真实导出和独立复核。检查器只负责它明确实现的范围，不能因为输出简洁就把其他条件隐去。

@@ -1,0 +1,20 @@
+{
+  "scope": "V42 static HTML chapter, tables and local links only",
+  "actual_browser_rendering": null,
+  "pages": {
+    "index.html": {
+      "chapter": true,
+      "tables": 3,
+      "synthesis_first": true,
+      "probe_link": true,
+      "sha256": "491e04ad345899fb0a6c3e456c15eac9890c1d75c5933edb949cc38400bf3d64"
+    },
+    "report_standalone.html": {
+      "chapter": true,
+      "tables": 3,
+      "synthesis_first": true,
+      "probe_link": true,
+      "sha256": "923fe62e0ef368098f6db6d60da50b738c556ce14005d9e209137640e3ad9bc0"
+    }
+  }
+}

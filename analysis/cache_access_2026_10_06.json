@@ -1,0 +1,23 @@
+{
+  "checked_utc": "2026-10-06T02:07:10.648493+00:00",
+  "authentication": "anonymous HTTPS; no account credentials",
+  "requests": [
+    {
+      "domain": "ptb-llama3",
+      "url": "https://marin-us-east-02a.s3.amazonaws.com/marin/paloma/ptb-llama3/2026.06.28/validation/shard_ledger.json",
+      "status": 403,
+      "region": null,
+      "response_error_code": "AccessDenied"
+    },
+    {
+      "domain": "twitterAAE_HELM_fixed-llama3",
+      "url": "https://marin-us-east-02a.s3.amazonaws.com/marin/paloma/twitterAAE_HELM_fixed-llama3/2026.06.28/validation/shard_ledger.json",
+      "status": 403,
+      "region": null,
+      "response_error_code": "AccessDenied"
+    }
+  ],
+  "object_existence_verified": false,
+  "actual_cache_ledger": null,
+  "endpoint_region_verified": false
+}

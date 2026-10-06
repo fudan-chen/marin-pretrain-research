@@ -1,0 +1,28 @@
+{
+  "hf_revision": "65cd6fc59dba021b21db414fa5e8d7765ffbe5e6",
+  "authentication": "anonymous HTTPS",
+  "data_payload_requested": false,
+  "files": [
+    {
+      "file": "paloma_protocol_2026_10_06/hf_metadata.json",
+      "url": "https://huggingface.co/api/datasets/allenai/paloma",
+      "bytes": 86863,
+      "sha256": "3ccb96a30a3091076795fafc5381d463614c0c87982f4d3b1531ea7e5b0410bb",
+      "retrieved_utc": "2026-10-06T15:44:20.107097+00:00"
+    },
+    {
+      "file": "paloma_protocol_2026_10_06/dataset_card.html",
+      "url": "https://huggingface.co/datasets/allenai/paloma/blob/65cd6fc59dba021b21db414fa5e8d7765ffbe5e6/README.md",
+      "bytes": 213531,
+      "sha256": "40c29dddefbdfea9512c5a8cb84034268993ed930329bc1969380e4dbef50412",
+      "retrieved_utc": "2026-10-06T15:44:20.108758+00:00"
+    },
+    {
+      "file": "paloma_protocol_2026_10_06/paloma_neurips_2024.pdf",
+      "url": "https://papers.neurips.cc/paper_files/paper/2024/file/760b2d94398aa61468aa3bc11506d9ea-Paper-Datasets_and_Benchmarks_Track.pdf",
+      "bytes": 4768680,
+      "sha256": "bc2e63bf72e7cc3cd83aceab9f2a19bae43574c7637bea2eb6bf62f092ac2794",
+      "retrieved_utc": "2026-10-06T15:44:20.119415+00:00"
+    }
+  ]
+}

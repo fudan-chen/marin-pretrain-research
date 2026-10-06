@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1331,
+  "checks_passed": 1339,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -18,7 +18,7 @@
     "four new config contrasts / six step393 resume windows",
     "seventeen embedded figures",
     "all relative HTML links valid",
-    "435 source archive checksums valid",
+    "438 source archive checksums valid",
     "18 authored rubrics / seven claim-stage decisions",
     "five interpretation cases / four metrics with switchable baselines",
     "17 figure-reading entries / five preserved collapsed tables",
@@ -89,7 +89,8 @@
     "V38 domain mapping / fresh default logical eval iteration / finite partial batch / progress-length overestimate; no actual cache or repeated model-score verification",
     "V39 executable declared global leaf-domain transcript comparison; token-weighted BPB regrouping counterexample; no raw-array identity verification or actual Hero replay",
     "V40 evidence-bounded synthesis and practical reading / mixture-experiment routes; no new experiments or reader comprehension claim",
-    "V41 offline supplied-global-array export / canonical typed v2 input digest / computed byte table / CPU synthetic tests; no actual forward, rank gathering or Hero data"
+    "V41 offline supplied-global-array export / canonical typed v2 input digest / computed byte table / CPU synthetic tests; no actual forward, rank gathering or Hero data",
+    "V42 original continuous stream / format / tail checks on synthetic CPU cache; public pinned Paloma card and final paper; anonymous ledger 403; no actual Hero tail or PTB cause claim"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

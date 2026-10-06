@@ -1,0 +1,78 @@
+{
+  "checks_passed": 13,
+  "checks": [
+    "Original length floors nine flat tokens into two length-four examples",
+    "Original slices cross document boundaries",
+    "Short document prefix in next window loses its preceding token context",
+    "Original tail remainder is omitted from logical examples",
+    "Reversing same documents changes windows and the document whose tail is omitted",
+    "Original offsets request int64 continuous windows",
+    "Fewer than one full window produces no logical examples",
+    "Exact multiple retains all cached tokens",
+    "Empty request produces no cache fetch",
+    "Request beyond floored length is rejected",
+    "Declared target sources have text format and null pack",
+    "Archived text default resolves false",
+    "Declared attention blocking is true but does not change stream slicing"
+  ],
+  "source_sha256": {
+    "sources/deepening_2026_10_04/datasets_production.py": "47d95f41313356831bcc4b8861ecc765cbc04c6e8c32dc2c5a35abd74c619e4d",
+    "sources/live_2026_10_06/meta.json": "4b709c0b6440366aec7fa4ec65e6ff4b9881c3e2201082ffef036ca40547d80a"
+  },
+  "synthetic": {
+    "documents": [
+      [
+        10,
+        11,
+        0
+      ],
+      [
+        20,
+        21,
+        22,
+        23,
+        24,
+        0
+      ]
+    ],
+    "sequence_length": 4,
+    "forward_windows": [
+      [
+        10,
+        11,
+        0,
+        20
+      ],
+      [
+        21,
+        22,
+        23,
+        24
+      ]
+    ],
+    "reverse_windows": [
+      [
+        20,
+        21,
+        22,
+        23
+      ],
+      [
+        24,
+        0,
+        10,
+        11
+      ]
+    ],
+    "forward_omitted_tail": [
+      0
+    ],
+    "reverse_omitted_tail": [
+      0
+    ]
+  },
+  "actual_Hero_cache_contents": null,
+  "actual_Hero_tail_count": null,
+  "actual_GPU_loss_difference": null,
+  "actual_PTB_root_cause": null
+}

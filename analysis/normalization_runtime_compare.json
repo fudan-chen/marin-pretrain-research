@@ -1,0 +1,126 @@
+{
+  "checks_passed": 7,
+  "checks": [
+    "Both actual runtime records include 27 source/mode/phase cells",
+    "Same original source and inputs bound in both runtimes",
+    "Sequential summation control neutralizes runtime/NumPy difference",
+    "Fsum control also agrees across both actual runtimes",
+    "3.9.6 native explained by isolated summation control",
+    "3.12.13 native explained by isolated summation control",
+    "Same logged cooldown declaration changes 184 quotas"
+  ],
+  "rows": [
+    {
+      "source": "spec",
+      "phase": 0,
+      "python39_sum": 1.0,
+      "python312_sum": 0.9999999999999999,
+      "changed_cell_count": 0,
+      "c30q4_39": 2458,
+      "c30q4_312": 2458,
+      "positive_zero_count_39": 17,
+      "positive_zero_count_312": 17
+    },
+    {
+      "source": "spec",
+      "phase": 1,
+      "python39_sum": 1.0,
+      "python312_sum": 1.0,
+      "changed_cell_count": 0,
+      "c30q4_39": 2409,
+      "c30q4_312": 2409,
+      "positive_zero_count_39": 0,
+      "positive_zero_count_312": 0
+    },
+    {
+      "source": "spec",
+      "phase": 2,
+      "python39_sum": 1.0000000000000002,
+      "python312_sum": 1.0,
+      "changed_cell_count": 190,
+      "c30q4_39": 4670,
+      "c30q4_312": 4481,
+      "positive_zero_count_39": 1,
+      "positive_zero_count_312": 0
+    },
+    {
+      "source": "historical_wandb",
+      "phase": 0,
+      "python39_sum": 1.0,
+      "python312_sum": 0.9999999999999999,
+      "changed_cell_count": 0,
+      "c30q4_39": 2458,
+      "c30q4_312": 2458,
+      "positive_zero_count_39": 17,
+      "positive_zero_count_312": 17
+    },
+    {
+      "source": "historical_wandb",
+      "phase": 1,
+      "python39_sum": 1.0,
+      "python312_sum": 1.0,
+      "changed_cell_count": 0,
+      "c30q4_39": 2409,
+      "c30q4_312": 2409,
+      "positive_zero_count_39": 0,
+      "positive_zero_count_312": 0
+    },
+    {
+      "source": "historical_wandb",
+      "phase": 2,
+      "python39_sum": 1.0000000000000002,
+      "python312_sum": 1.0,
+      "changed_cell_count": 184,
+      "c30q4_39": 4664,
+      "c30q4_312": 4481,
+      "positive_zero_count_39": 1,
+      "positive_zero_count_312": 0
+    },
+    {
+      "source": "oct7_wandb",
+      "phase": 0,
+      "python39_sum": 1.0,
+      "python312_sum": 0.9999999999999999,
+      "changed_cell_count": 0,
+      "c30q4_39": 2458,
+      "c30q4_312": 2458,
+      "positive_zero_count_39": 17,
+      "positive_zero_count_312": 17
+    },
+    {
+      "source": "oct7_wandb",
+      "phase": 1,
+      "python39_sum": 1.0,
+      "python312_sum": 1.0,
+      "changed_cell_count": 0,
+      "c30q4_39": 2409,
+      "c30q4_312": 2409,
+      "positive_zero_count_39": 0,
+      "positive_zero_count_312": 0
+    },
+    {
+      "source": "oct7_wandb",
+      "phase": 2,
+      "python39_sum": 1.0000000000000002,
+      "python312_sum": 1.0,
+      "changed_cell_count": 184,
+      "c30q4_39": 4664,
+      "c30q4_312": 4481,
+      "positive_zero_count_39": 1,
+      "positive_zero_count_312": 0
+    }
+  ],
+  "runtime_records": [
+    "analysis/normalization_python39.json",
+    "analysis/normalization_python312.json"
+  ],
+  "runtime_record_sha256": {
+    "analysis/normalization_python39.json": "3ea2c7b549bd4533e9833ac4e366a47015d8eb26c7c81af3c92f1d8f5d3831de",
+    "analysis/normalization_python312.json": "d5fb80d319fb6720eebedd7d4f2c909c9aa588c44b7adea61e9b5aa75be7d29d"
+  },
+  "declared_oct7_wandb_python": "3.12.14",
+  "actual_Hero_binary": null,
+  "actual_Hero_quota_replay": null,
+  "actual_token_exposure": null,
+  "upstream_fix": false
+}

@@ -1,0 +1,15 @@
+{
+  "version": "V89",
+  "checks_passed": 8,
+  "checks": [
+    "index.html unique IDs",
+    "index.html runtime correction and limits",
+    "index.html four old tables preserved with one comparison",
+    "report_standalone.html unique IDs",
+    "report_standalone.html runtime correction and limits",
+    "report_standalone.html four old tables preserved with one comparison",
+    "498 source hashes exact",
+    "Fresh V89 validation"
+  ],
+  "actual_browser_rendering": null
+}

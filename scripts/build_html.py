@@ -34,7 +34,8 @@ chapters.insert(0,('muon-geometry-guide','MuonH范数、分片与更新几何','
 chapters.insert(0,('adamh-state-guide','AdamH动量、计数与恢复方向','ADAMH_STATE_ZH.md'))
 chapters.insert(0,('muon-direction-guide','Muon方向、NS迭代与矩阵布局','MUON_DIRECTION_ZH.md'))
 chapters.insert(0,('observability-guide','监控成本、记录时刻与事故重放','OBSERVABILITY_ZH.md'))
-priority=['observability-guide','muon-direction-guide','adamh-state-guide','muon-geometry-guide','engineering-map-guide','delivery-audit-guide','checkpoint-memory-guide','checkpoint-commit-guide','eval-metrics-guide','mix-trajectory-guide','router-precision-guide','short-conv-guide','loss-triage','optimizer-guide','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
+chapters.insert(0,('failure-boundaries-guide','有限loss、失败路径与数值验收水位','FAILURE_BOUNDARIES_ZH.md'))
+priority=['failure-boundaries-guide','observability-guide','muon-direction-guide','adamh-state-guide','muon-geometry-guide','engineering-map-guide','delivery-audit-guide','checkpoint-memory-guide','checkpoint-commit-guide','eval-metrics-guide','mix-trajectory-guide','router-precision-guide','short-conv-guide','loss-triage','optimizer-guide','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
 chapters.sort(key=lambda c:priority.index(c[0]) if c[0] in priority else len(priority))
 readings={x['file']:x for x in json.loads((ROOT/'analysis/figure_readings.json').read_text())}
 sections=[];toc=[]

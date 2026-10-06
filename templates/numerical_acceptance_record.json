@@ -1,0 +1,15 @@
+{
+ "status":"planned_not_executed",
+ "execution_sha":null,
+ "trained_step":null,
+ "numerically_checked_step":null,
+ "checks_and_tolerances":null,
+ "parameter_view":null,
+ "state_content_digest":null,
+ "save_handed_off_step":null,
+ "metadata_visible_step":null,
+ "restored_step":null,
+ "restored_one_step_evidence":null,
+ "failure_policy":null,
+ "actual_execution_result":null
+}

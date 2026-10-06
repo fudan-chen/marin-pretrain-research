@@ -1,0 +1,24 @@
+{
+  "desktop": {
+    "hasBoundary": true,
+    "width": 1425,
+    "viewport": 1440,
+    "tables": 3
+  },
+  "mobile": {
+    "hasBoundary": true,
+    "width": 375,
+    "viewport": 390,
+    "tables": 3
+  },
+  "offline": {
+    "figures": 17,
+    "hasChapter": true,
+    "tables": 3,
+    "loaded": 17
+  },
+  "requests": [],
+  "errors": [],
+  "recovery": "Initial connection refused; confirmed no listener; restarted localhost preview and rechecked",
+  "scope": "DOM checks only; no screenshot, GPU failure reproduction or reader evaluation"
+}

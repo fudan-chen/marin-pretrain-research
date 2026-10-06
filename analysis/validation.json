@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1281,
+  "checks_passed": 1289,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -81,7 +81,8 @@
     "V30 twenty original geometry and analytic checks; four-comment incident diagnosis corrections; no GPU / SPMD reproduction",
     "V31 original AdamH body and explicit moment substitutes; state reset direction counterexample; count-only cancellation boundary",
     "V32 original Newton-Schulz functions / float32 substitutions; nonmonotonic finite-step spectrum; bank-preserving layout boundaries",
-    "V33 watch computation versus logging clocks; exact preupdate views; executable normalized-bundle observations without automatic root cause"
+    "V33 watch computation versus logging clocks; exact preupdate views; executable normalized-bundle observations without automatic root cause",
+    "V34 finite-loss versus next-state health / original failure-loop control flow / proposed numeric acceptance watermark; no actual contaminated checkpoint claim"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

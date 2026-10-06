@@ -1,0 +1,271 @@
+{
+  "checks_passed": 17,
+  "checks": [
+    "Clean one-step path performs periodic and forced final callbacks",
+    "Clean one-step path hands off periodic and forced final saves",
+    "Clean final path waits for recorded save completion",
+    "Loss rejection occurs after next-state step is assigned",
+    "Nonfinite loss avoids callback and checkpoint handoffs",
+    "Train finished event precedes loss rejection",
+    "Fatal loss path skips forced save but emits training finished",
+    "Finite loss does not reject synthetic NaN parameter update",
+    "Unchecked finite-loss next state reaches recorded checkpoint handoff",
+    "Delayed loss failure first appears on synthetic second step",
+    "First bad state already reached save recorder before later rejection",
+    "Finite high loss and finite shrinking parameter do not trip finite guard",
+    "Finite collapse still reaches periodic and final handoffs",
+    "Callback failure skips checkpoint and forced-final callbacks",
+    "Checkpoint handoff failure is not followed by forced retry",
+    "Diagnostic failure occurs before synthetic optimizer call",
+    "Reviewed loop explicitly checks only train/loss for finiteness"
+  ],
+  "scope": "Execute the archived main-loop try/except/else/finally AST with synthetic train steps,\ncallbacks and checkpoint handoff recorder. No GPU, autodiff, real callbacks or checkpoint I/O.\n",
+  "source_sha256": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7",
+  "source_loop_lines": [
+    1199,
+    1303
+  ],
+  "cases": {
+    "clean": {
+      "error": null,
+      "train_call_steps": [
+        0
+      ],
+      "state_step_after": 1,
+      "state_parameter_finite_after": true,
+      "events": [
+        "started",
+        "finished",
+        "wait_save",
+        "training_finished"
+      ],
+      "callback_calls": [
+        {
+          "step": 1,
+          "force": false,
+          "parameter_finite": true
+        },
+        {
+          "step": 1,
+          "force": true,
+          "parameter_finite": true
+        }
+      ],
+      "checkpoint_handoffs": [
+        {
+          "step": 1,
+          "force": false,
+          "parameter_finite": true
+        },
+        {
+          "step": 1,
+          "force": true,
+          "parameter_finite": true
+        }
+      ]
+    },
+    "bad_loss": {
+      "error": "Non-finite loss (nan) at step 1.",
+      "train_call_steps": [
+        0
+      ],
+      "state_step_after": 1,
+      "state_parameter_finite_after": true,
+      "events": [
+        "started",
+        "finished",
+        "fatal_logged",
+        "training_finished"
+      ],
+      "callback_calls": [],
+      "checkpoint_handoffs": []
+    },
+    "finite_loss_bad_update": {
+      "error": null,
+      "train_call_steps": [
+        0
+      ],
+      "state_step_after": 1,
+      "state_parameter_finite_after": false,
+      "events": [
+        "started",
+        "finished",
+        "wait_save",
+        "training_finished"
+      ],
+      "callback_calls": [
+        {
+          "step": 1,
+          "force": false,
+          "parameter_finite": false
+        },
+        {
+          "step": 1,
+          "force": true,
+          "parameter_finite": false
+        }
+      ],
+      "checkpoint_handoffs": [
+        {
+          "step": 1,
+          "force": false,
+          "parameter_finite": false
+        },
+        {
+          "step": 1,
+          "force": true,
+          "parameter_finite": false
+        }
+      ]
+    },
+    "next_step_detects_bad_state": {
+      "error": "Non-finite loss (nan) at step 2.",
+      "train_call_steps": [
+        0,
+        1
+      ],
+      "state_step_after": 2,
+      "state_parameter_finite_after": false,
+      "events": [
+        "started",
+        "finished",
+        "started",
+        "finished",
+        "fatal_logged",
+        "training_finished"
+      ],
+      "callback_calls": [
+        {
+          "step": 1,
+          "force": false,
+          "parameter_finite": false
+        }
+      ],
+      "checkpoint_handoffs": [
+        {
+          "step": 1,
+          "force": false,
+          "parameter_finite": false
+        }
+      ]
+    },
+    "finite_collapse_with_finite_high_loss": {
+      "error": null,
+      "train_call_steps": [
+        0,
+        1
+      ],
+      "state_step_after": 2,
+      "state_parameter_finite_after": true,
+      "events": [
+        "started",
+        "finished",
+        "started",
+        "finished",
+        "wait_save",
+        "training_finished"
+      ],
+      "callback_calls": [
+        {
+          "step": 1,
+          "force": false,
+          "parameter_finite": true
+        },
+        {
+          "step": 2,
+          "force": false,
+          "parameter_finite": true
+        },
+        {
+          "step": 2,
+          "force": true,
+          "parameter_finite": true
+        }
+      ],
+      "checkpoint_handoffs": [
+        {
+          "step": 1,
+          "force": false,
+          "parameter_finite": true
+        },
+        {
+          "step": 2,
+          "force": false,
+          "parameter_finite": true
+        },
+        {
+          "step": 2,
+          "force": true,
+          "parameter_finite": true
+        }
+      ]
+    },
+    "callback_raises": {
+      "error": "synthetic callback failure",
+      "train_call_steps": [
+        0
+      ],
+      "state_step_after": 1,
+      "state_parameter_finite_after": true,
+      "events": [
+        "started",
+        "finished",
+        "fatal_logged",
+        "training_finished"
+      ],
+      "callback_calls": [
+        {
+          "step": 1,
+          "force": false,
+          "parameter_finite": true
+        }
+      ],
+      "checkpoint_handoffs": []
+    },
+    "save_handoff_raises": {
+      "error": "synthetic checkpoint handoff failure",
+      "train_call_steps": [
+        0
+      ],
+      "state_step_after": 1,
+      "state_parameter_finite_after": true,
+      "events": [
+        "started",
+        "finished",
+        "fatal_logged",
+        "training_finished"
+      ],
+      "callback_calls": [
+        {
+          "step": 1,
+          "force": false,
+          "parameter_finite": true
+        }
+      ],
+      "checkpoint_handoffs": [
+        {
+          "step": 1,
+          "force": false,
+          "parameter_finite": true
+        }
+      ]
+    },
+    "diagnostic_raises": {
+      "error": "synthetic diagnostic failure",
+      "train_call_steps": [],
+      "state_step_after": 0,
+      "state_parameter_finite_after": true,
+      "events": [
+        "fatal_logged",
+        "training_finished"
+      ],
+      "callback_calls": [],
+      "checkpoint_handoffs": []
+    }
+  },
+  "actual_GPU_behavior": null,
+  "actual_callback_guard_coverage": null,
+  "actual_checkpoint_commit": null,
+  "actual_checkpoint_restore": null,
+  "actual_historical_failure": null
+}

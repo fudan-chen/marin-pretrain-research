@@ -223,3 +223,7 @@ V25把`paloma/bpb`错误命名为macro；它在固定公共源码中来自父级
 ## V33：将优化器发现连成可执行事故检查
 
 固定watch/tree_stats来源，22项原辅助函数/平坦数组统计与静态时序检查：inline计算/输出interval不同，diagnostic额外反向且不支持更新/state，total norm无条件返回、隐藏逐叶norm在Python构造但JIT可能消除；旧状态、master/compute视图及duration边界需区分。新增[章节](OBSERVABILITY_ZH.md)、规范化全局NPZ离线检查器与23项合成输入验证。缺少方向/分母明确列出，root_cause始终null；没有历史事故包或真实GPU重放。
+
+## V34：区分loss检查、健康状态和保存交接
+
+新增[失败边界](FAILURE_BOUNDARIES_ZH.md)。执行固定训练源码主循环try片段，17项synthetic train/callback/checkpoint recorder检查：finite-loss NaN更新可到保存交接，下一步报错不保证之前状态健康，有限范数塌缩/高loss不触发finite guard；finished事件早于检查，异常跳过强制末尾save。保存交接不是实际坏提交证明；新增拟议数值验收水位空表，保留GPU/真实callback/提交/恢复未知。所有430项源档内容保持不变。

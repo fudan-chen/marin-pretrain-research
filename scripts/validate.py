@@ -660,6 +660,16 @@ report['highlights']=[x.replace('428 source archive checksums valid','430 source
 report['highlights']+=['V33 watch computation versus logging clocks; exact preupdate views; executable normalized-bundle observations without automatic root cause']
 b33=read(A/'browser_validation_v33.json')
 ok('V33 observability chapter and tool links load desktop mobile offline',b33['desktop']['width']<=b33['desktop']['viewport'] and b33['mobile']['width']<=b33['mobile']['viewport'] and b33['desktop']['hasToolLink'] and b33['offline']['figures']==b33['offline']['loaded']==17 and b33['offline']['hasChapter'] and b33['offline']['tables']==3 and b33['requests']==b33['errors']==[])
+fl=read(A/'failure_loop_probe.json')
+ok('V34 original loop fragment retains seventeen scoped checks',fl['checks_passed']==len(fl['checks'])==17 and fl['actual_GPU_behavior'] is None and fl['actual_callback_guard_coverage'] is None and fl['actual_checkpoint_commit'] is None and fl['actual_checkpoint_restore'] is None and fl['actual_historical_failure'] is None)
+ok('V34 fixed loop source digest matches',fl['source_sha256']==hashlib.sha256((S/'scale_2026_10_05/train_hero_ep.py').read_bytes()).hexdigest())
+ok('V34 finite-loss synthetic corruption reaches save handoff without claiming commit',fl['cases']['finite_loss_bad_update']['error'] is None and all(not x['parameter_finite'] for x in fl['cases']['finite_loss_bad_update']['checkpoint_handoffs']))
+ok('V34 failed loss skips final callbacks and handoffs',fl['cases']['bad_loss']['callback_calls']==fl['cases']['bad_loss']['checkpoint_handoffs']==[] and fl['cases']['bad_loss']['events'][-1]=='training_finished')
+ok('V34 numerical acceptance record remains planned and null',all(v is None for k,v in read(ROOT/'templates/numerical_acceptance_record.json').items() if k!='status'))
+ok('V34 failure-boundary chapter has three tables',len(soup.select('#failure-boundaries-guide table'))==3)
+report['highlights']+=['V34 finite-loss versus next-state health / original failure-loop control flow / proposed numeric acceptance watermark; no actual contaminated checkpoint claim']
+b34=read(A/'browser_validation_v34.json')
+ok('V34 failure boundaries load after verified preview recovery',b34['desktop']['width']<=b34['desktop']['viewport'] and b34['mobile']['width']<=b34['mobile']['viewport'] and b34['offline']['figures']==b34['offline']['loaded']==17 and b34['offline']['hasChapter'] and b34['offline']['tables']==3 and b34['requests']==b34['errors']==[])
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

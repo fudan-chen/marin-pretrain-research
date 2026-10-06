@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1364,
+  "checks_passed": 1371,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -94,7 +94,8 @@
     "V43 optional supplied-active-next-token coordinate contract and original default-window coverage checks; generic mode explicitly unverified; no actual model loss alignment, GPU forward or Hero data",
     "V44 synthetic parallel packing boundaries, clipping/drop/cap and weight-mask checks; declared Hero 223 text non-packing components; no TensorStore/GPU/Hero mismatch claim",
     "V45 finite fixed-order repeat exposure projection; window versus lifetime index coverage; original helper and synthetic permutation, no actual Hero inventory/cursor/block shuffle or training benefit",
-    "V46 independent 9.915T / 4K snapshot; new 212999 evaluation and 216 unchanged old values; micro decline versus macro rebound, descriptive PTB decomposition; no causal or GPU claim"
+    "V46 independent 9.915T / 4K snapshot; new 212999 evaluation and 216 unchanged old values; micro decline versus macro rebound, descriptive PTB decomposition; no causal or GPU claim",
+    "V47 conditional eval weight inference, 18 fit and five post-hoc points; eight bounded checks, perturbation sensitivity and nonidentifiability; no actual denominator or training mixture benefit"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

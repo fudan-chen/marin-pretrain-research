@@ -21,6 +21,8 @@ report:
 	$(PYTHON) scripts/probe_eval_format.py
 	$(PYTHON) scripts/analyze_live_2026_10_07.py > analysis/live_2026_10_07_computation_log.txt
 	$(PYTHON) scripts/write_live_2026_10_07.py
+	$(PYTHON) scripts/infer_eval_weights.py
+	$(PYTHON) scripts/write_eval_weight_inference.py
 	$(PYTHON) scripts/test_repeat_exposure.py
 	$(PYTHON) scripts/probe_parallel_packing.py
 	$(PYTHON) scripts/test_eval_target_alignment.py

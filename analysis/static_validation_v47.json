@@ -1,0 +1,15 @@
+{
+  "pages": {
+    "index.html": {
+      "tables": 3,
+      "inline_svg": true,
+      "sha256": "bef11ee5cd5d3c60b3f0f1b9b3ed0c43e4979f9cc4618f6ff9359191a13f4f41"
+    },
+    "report_standalone.html": {
+      "tables": 3,
+      "inline_svg": true,
+      "sha256": "34b78ca1c9d57e3da570dfdf3ac22ca74099a67ce2cc8a294d1f4e4e1c1dec6c"
+    }
+  },
+  "actual_browser_rendering": null
+}

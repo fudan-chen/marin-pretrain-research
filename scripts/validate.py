@@ -761,6 +761,14 @@ ok('V46 micro and macro CE directions differ',l7['parent_deltas']['micro_loss'][
 ok('V46 new chapter retains three tables and independent inline figure',len(soup.select('#live-oct7-guide table'))==3 and soup.select_one('#live-oct7-guide svg') is not None)
 report['highlights']=[x.replace('439 source archive checksums valid','441 source archive checksums valid') for x in report['highlights']]
 report['highlights']+=['V46 independent 9.915T / 4K snapshot; new 212999 evaluation and 216 unchanged old values; micro decline versus macro rebound, descriptive PTB decomposition; no causal or GPU claim']
+ew=read(A/'eval_weight_inference.json')
+ok('V47 conditional inference retains eight scoped checks',ew['checks_passed']==len(ew['checks'])==8 and ew['actual_domain_denominators'] is None and ew['actual_fixed_weight_identity'] is None and ew['actual_mixture_causal_effect'] is None)
+ok('V47 source identities are unchanged',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in ew['source_sha256'].items()))
+ok('V47 chronological partition is explicit and post hoc',len(ew['fit_steps'])==18 and ew['posthoc_holdout_steps']==[200999,203999,206999,209999,212999] and max(ew['fit_steps'])<min(ew['posthoc_holdout_steps']))
+ok('V47 numerical perturbation is not statistical confidence',ew['numerical_perturbation']['is_confidence_interval'] is False and ew['affine_condition_number']>10000)
+ok('V47 latest aggregates do not uniquely identify weights',ew['latest_nonidentifiability']['max_weight_difference']>.02 and ew['latest_nonidentifiability']['max_predicted_parent_difference']<1e-13)
+ok('V47 inference chapter has three tables and inline scientific figure',len(soup.select('#eval-weight-guide table'))==3 and soup.select_one('#eval-weight-guide svg') is not None)
+report['highlights']+=['V47 conditional eval weight inference, 18 fit and five post-hoc points; eight bounded checks, perturbation sensitivity and nonidentifiability; no actual denominator or training mixture benefit']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

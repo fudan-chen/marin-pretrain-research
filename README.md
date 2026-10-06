@@ -1,8 +1,8 @@
 # Marin 535B 预训练研究
 
-当前版本V46。先读[结论与操作指南](SYNTHESIS_ZH.md)，再按问题进入工程案例、数据配比和可执行检查工具。最新训练数值来自[10月7日独立快照](LIVE_2026_10_07_ZH.md)，约9.915T/4K；它不等于当前实时进度。
+当前版本V47。先读[结论与操作指南](SYNTHESIS_ZH.md)，再按问题进入工程案例、数据配比和可执行检查工具。最新训练数值来自[10月7日独立快照](LIVE_2026_10_07_ZH.md)，约9.915T/4K；它不等于当前实时进度。
 
-本轮新增一个真实完整评估点：macro CE回升、micro CE下降，PTB反弹而14域端点改善。见[新观察](LIVE_2026_10_07_ZH.md)。既有[重复曝光账本](REPEAT_EXPOSURE_ZH.md)、[目标对齐](EVAL_TARGET_ALIGNMENT_ZH.md)与[打包字段核查](PACKING_FIELDS_ZH.md)用于排查与计划，真实缓存和逐批GPU重评仍缺。
+本轮解释macro与micro为何方向相反：[条件权重反推](EVAL_WEIGHT_INFERENCE_ZH.md)使用23个同分支评估点，明确区分事后留出、数值敏感性与真实分母。PTB在拟合micro中的份额约0.1446%，在macro中为6.25%；这份评估份额不能当作训练配比。
 
 V26对V25的micro/macro命名错误已[明确更正](EVAL_METRICS_ZH.md)。
 

@@ -1,6 +1,6 @@
 # 当前交付审计：文件覆盖与真实验证分别核对
 
-当前版本V46，新增[10月7日观察](LIVE_2026_10_07_ZH.md)：独立W&B源档、新完整step 212999、216个旧值不变，9项数据核对；macro与micro方向不同。新图PNG已查看，章节只做静态HTML核对，没有浏览器、真实输入身份、执行SHA、配比反事实或GPU重评。历史快照保留。
+当前版本V47，新增[评估权重反推](EVAL_WEIGHT_INFERENCE_ZH.md)：23个同分支点、18点拟合与5点事后留出、8项分析检查。PNG已查看；HTML仅静态核对。拟合与实际分母分开，保留不同权重给出相同最新聚合值的反例；没有真实输入身份、GPU重评或配比收益证据。
 
 |用户要求|当前权威产物|覆盖与实际限制|
 |---|---|---|
@@ -8,7 +8,7 @@
 |结合源码深入分析|接口、状态、边界、缓存、去重、质量、路由、优化器、ShortConv、router精度、评估、保存提交/内存等章节；[原源码归档](sources/archive_manifest.json)|固定代码解释与原辅助函数检查可复查；替代依赖逐项注明；没有自动证明历史执行SHA或真实GPU行为|
 |数据配比与loss对应|[200桶数据](DATA_GUIDE_ZH.md)、[候选比较](DECISION_GUIDE_ZH.md)、[真实轨迹](MIX_TRAJECTORY_ZH.md)、[评估口径](EVAL_METRICS_ZH.md)|库存、权重、曝光分母分别计算；67个完整日志step；V25的micro/macro误称已在V26修正；生产曲线没有独立配比反事实|
 |调整配比与顺序的方法|[供体预算](TRANSFER_GUIDE_ZH.md)、[顺序账本](ORDER_GUIDE_ZH.md)、[七阶段管线](PIPELINE_ZH.md)|简单基线、供体、整数/边缘块、独立确认和保底项均有执行入口；草案没有被写成已训练结果|
-|可读、可离线的可视化与理解文档|[独立HTML](report_standalone.html)、[理解路线](LEARNING_GUIDE_ZH.md)、[问题阅读入口](README.md)|19张科学图及机制图、数据查询与交互工具；当前验证结果见[validation](analysis/validation.json)，各版本浏览器范围独立保留；页面操作不证明理解效果|
+|可读、可离线的可视化与理解文档|[独立HTML](report_standalone.html)、[理解路线](LEARNING_GUIDE_ZH.md)、[问题阅读入口](README.md)|真实轨迹图、条件拟合图及机制图、数据查询与交互工具；当前验证结果见[validation](analysis/validation.json)，各版本浏览器范围独立保留；页面操作不证明理解效果|
 |提炼rubrics并持续改进|[18条规则](RUBRICS_ZH.md)、[15案/六入口规则映射](analysis/engineering_case_map.json)、[改进记录](IMPROVEMENT_LOG_ZH.md)|仍使用1.1规则；不增加总分或自动根因判定；外部评分效度与迁移理解未测|
 |可重建、可分享与版本可追溯|[Makefile](Makefile)、scripts、sources、analysis、HTML与ZIP|本轮构建从已归档材料出发，来源哈希与发布产物验证；本地交付不冒充远端发布|
 

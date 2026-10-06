@@ -47,12 +47,17 @@ chapters.insert(0,('eval-target-alignment-guide','下一token对齐与有效目�
 chapters.insert(0,('packing-fields-guide','打包字段对齐与权重坐标','PACKING_FIELDS_ZH.md'))
 chapters.insert(0,('repeat-exposure-guide','重复曝光与配比加量','REPEAT_EXPOSURE_ZH.md'))
 chapters.insert(0,('live-oct7-guide','10月7日：macro回升与micro下降','LIVE_2026_10_07_ZH.md'))
-priority=['synthesis-guide','live-oct7-guide','repeat-exposure-guide','packing-fields-guide','eval-target-alignment-guide','eval-format-guide','eval-array-export-guide','eval-replay-guide','eval-identity-guide','live-observation-guide','mixture-range-guide','batch-clock-guide','failure-boundaries-guide','observability-guide','muon-direction-guide','adamh-state-guide','muon-geometry-guide','engineering-map-guide','delivery-audit-guide','checkpoint-memory-guide','checkpoint-commit-guide','eval-metrics-guide','mix-trajectory-guide','router-precision-guide','short-conv-guide','loss-triage','optimizer-guide','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
+chapters.insert(0,('eval-weight-guide','micro权重反推与PTB均值贡献','EVAL_WEIGHT_INFERENCE_ZH.md'))
+priority=['synthesis-guide','eval-weight-guide','live-oct7-guide','repeat-exposure-guide','packing-fields-guide','eval-target-alignment-guide','eval-format-guide','eval-array-export-guide','eval-replay-guide','eval-identity-guide','live-observation-guide','mixture-range-guide','batch-clock-guide','failure-boundaries-guide','observability-guide','muon-direction-guide','adamh-state-guide','muon-geometry-guide','engineering-map-guide','delivery-audit-guide','checkpoint-memory-guide','checkpoint-commit-guide','eval-metrics-guide','mix-trajectory-guide','router-precision-guide','short-conv-guide','loss-triage','optimizer-guide','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
 chapters.sort(key=lambda c:priority.index(c[0]) if c[0] in priority else len(priority))
 readings={x['file']:x for x in json.loads((ROOT/'analysis/figure_readings.json').read_text())}
 sections=[];toc=[]
 for slug,label,file in chapters:
     result=markdown.markdown((ROOT/file).read_text(),extensions=['tables','fenced_code','toc'])
+    if slug=='eval-weight-guide':
+        weights_svg=BeautifulSoup((ROOT/'assets/eval_weight_inference.svg').read_text(),'html.parser').svg
+        weights_svg['style']='display:block;width:100%;height:auto'
+        result += '<figure class="scientific-figure">'+str(weights_svg)+'<figcaption>固定权重假设下的条件反推；不是实际分母，也不是训练配比。</figcaption></figure>'
     if slug=='live-oct7-guide':
         october=BeautifulSoup((ROOT/'assets/live_2026_10_07.svg').read_text(),'html.parser').svg
         october['style']='display:block;width:100%;height:auto'

@@ -325,3 +325,8 @@ V52执行三个原异步loader方法与原BatchSchedule，11项人工host控制�
 ## V53：混合数据身份
 
 V53执行原MixtureDataset类体和原block assignment，真实JAX 0.7.2 CPU，14项检查。新增同key字典重排、整数并列余数、完整/部分块、有限库存取模与阶段累计索引的对照；未运行真实token或inner shuffle。
+
+
+## V54：桶内shuffle与切分
+
+V54新取固定_prp.py；执行原PRP、Permutation/Sliced/BlockShuffling类体与split helper。14组控制含130个长度1–65双射检查；同快照train/val互斥，22→23跨快照出现人工交集。最新num_validation_sequences=None，实际Hero污染未测。

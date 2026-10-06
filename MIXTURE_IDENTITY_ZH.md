@@ -25,3 +25,32 @@
 配比/顺序评审因此新增五项：实际有序域列表；过滤后支持范围与每块整数计数；未排列打包ID和key摘要；子域有限性、库存长度与内容版本；窗口内实际身份/token hash及重复分布。完整块可比较多重集，边缘块还要比较实际读取槽位。报告14项检查只证明人工共同映射下的这些关系；真实Hero映射仍为空。
 
 [14项真实CPU与源码控制](analysis/mixture_identity_cpu.json)保留两组完整排列、部分窗口、并列计数与取模流。[脚本](scripts/probe_mixture_identity_cpu.py)使用已有[CPU依赖](requirements-cpu-numerics.txt)，执行`make mixture-identity CPU_PYTHON=/你的环境/bin/python`。它承接[加载器恢复](BATCH_CLOCK_ZH.md)，把“从哪里恢复”继续追到“同一个位置究竟读到什么”。
+
+
+## V54：桶内排列和训练/验证切分还依赖什么
+
+上节的identity store固定了子域内部映射；这次继续执行原`PermutationDataset`、`SlicedAsyncDataset`、`BlockShufflingDataset`类体与原`_split_into_trainval_sets`函数，并补取同一固定代码版本的[_prp.py](https://github.com/marin-community/marin/blob/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/data/_prp.py)。PRP函数与类体原样执行，真实JAX CPU负责生成key和种子，原NumPy实现负责Feistel/linear索引映射。替换AsyncDataset基类及slice构造接口、CPU mesh上下文和有限identity store；不是完整模块导入或实际缓存读取。[新增源码来源](analysis/prp_acquisition.json)
+
+|控制|原代码执行结果|对实验的含义|
+|---|---|---|
+|Feistel与linear，长度1至65|130个小域控制全部是双射|核对这些域内无重复/漏映射；不是对任意库存长度的证明|
+|长度22，IO block=4，window_blocks=3|映射完整覆盖0–21；最后2槽只含20、21|尾块保留在最后，只在尾部内部排列；不能把这种层次shuffle当作全库存任意排列|
+|同长度、key、窗口设置，独立构造|映射逐项相同；重复/乱序请求按映射返回|在此固定人工快照下可重建，不代替真实缓存身份|
+|window_blocks从3改为2|同key和库存下，整体序列改变|窗口配置属于数据流身份，不只是IO性能参数|
+|库存长度22变23|尾部映射改变|数据增长会改变排列范围；相同key不能固定所有已有槽位|
+|同一22条快照，从训练库存拆4条validation|独立构造得到相同切分；train/val互斥并覆盖0–21|固定key在相同快照上确实支持这条接口合同|
+|用23条快照重新切validation|新validation与旧train交集为人工身份1|同seed跨快照不保证留出身份不变；这是可复现控制，不是实际Hero泄漏|
+|关闭split前shuffle|最后4条18–21进入validation|顺序结构会决定留出内容；随机与位置切分需要分别记录|
+|负索引和长度端点22|原block shuffle分别抛ValueError/IndexError|索引边界有明确拒绝，不能静默当作restart取模|
+
+**最新10月7日归档声明`num_validation_sequences=None`。** 归档LM数据构建代码只有设置该字段，才从train库存拆出validation；这次人工跨快照交集不能用来认定Hero训练污染了验证集。Paloma的外部语料重复与去重问题是另一条证据链，也不能由索引互斥证明不存在。[评估身份](EVAL_IDENTITY_ZH.md) · [去重范围](DEDUP_FILTERS_ZH.md)
+
+切分函数使用固定key=0，先对当前库存长度建立Feistel映射，再按当前length−num_validation_sequences切片。它保证独立构造train和val时采用相同排列，前提是两次看到同一库存长度、顺序和映射实现。数据快照改变后，排列域与切分边界都可能改变；“仍使用seed 0”不足以保持验证身份。人工交集只说明旧train/new-val的身份重叠，不是同一次切分内部重叠。
+
+层次block shuffle先打乱完整IO块，再在若干块组成的窗口内排列样本；最后不完整块保持在末尾。这是IO局部性与排列方式的选择。如果训练预算只覆盖一段前缀，就应检查这个前缀实际覆盖了哪些文档、质量桶与尾部；不能只比较完整库存计数。这次仅验证索引身份，没有测磁盘吞吐、缓存质量分布或模型loss。
+
+配置顺序也需要保留：归档train_sets先拆train/val，再做训练shuffle，然后按experiment_budget/target_budget截断，最后按max_train_batches截断。预算截断作用在shuffle后的逻辑前缀；改预算、窗口或缓存长度可能同时改曝光身份。最新声明experiment_budget和target_budget均为None，因此这里只给出配置迁移的核查位置，没有把预算截断归因于Hero曲线。
+
+对自己的实验，可以把“数据身份”记录成一条可重放链：缓存内容与长度 → 切分身份 → 训练shuffle算法/key/窗口 → 截断范围 → 混合域ID/配额 → 恢复next offset → 实际token/hash。验证集固定后，数据增长应明确采用冻结留出清单或重新定义评估版本；重新切分的曲线不能自动与旧曲线作同样本比较。若样本内容可重复，仍需文档/token层去重检查，序列索引不相交只是一层条件。
+
+[14组CPU与源码控制](analysis/inner_shuffle_cpu.json)包含130个PRP小域检查，以及完整人工排列、两份切分身份、交集、配置声明和四份源码SHA。[脚本](scripts/probe_inner_shuffle_cpu.py)使用已有[CPU依赖](requirements-cpu-numerics.txt)；执行`make inner-shuffle CPU_PYTHON=/你的环境/bin/python`。实际Hero inner shuffle、split leakage、token store和GPU/TPU结果仍为空。

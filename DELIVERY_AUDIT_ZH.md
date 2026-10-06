@@ -1,6 +1,6 @@
 # 当前交付审计：文件覆盖与真实验证分别核对
 
-当前版本V53，完善[顺序与样本身份](MIXTURE_IDENTITY_ZH.md)：真实JAX CPU执行原MixtureDataset类体与排列函数，14项人工控制；支持依赖明确替代。HTML仅静态核对；实际Hero映射、inner shuffle、token store与checkpoint恢复仍未验证。
+当前版本V54，完善[桶内shuffle与切分](MIXTURE_IDENTITY_ZH.md)：14组CPU/源码控制含130个小域PRP检查；新增一份固定PRP源码，原443份payload保留。实际Hero token store与跨快照验证污染未测，最新声明num_validation_sequences=None。
 
 |用户要求|当前权威产物|覆盖与实际限制|
 |---|---|---|

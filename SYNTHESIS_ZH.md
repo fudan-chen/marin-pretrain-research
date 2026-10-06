@@ -104,3 +104,8 @@
 ## V53：混合数据身份
 
 同key与按名称计的配额仍不能重建序列：原混合类把有序dataset_index编码进ID，整数余数并列也受此顺序影响；有限库存长度与内容版本继续决定子索引身份。[真实CPU映射控制](MIXTURE_IDENTITY_ZH.md)。
+
+
+## V54：桶内shuffle与切分
+
+固定seed的train/val切分仍依赖库存快照。原CPU控制在同快照下互斥，跨长度快照则出现旧train/new-val身份交集；最新Hero未声明启用该拆分，不据此认定泄漏。[桶内shuffle与切分](MIXTURE_IDENTITY_ZH.md)。

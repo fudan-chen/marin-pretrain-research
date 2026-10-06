@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1410,
+  "checks_passed": 1415,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -18,7 +18,7 @@
     "four new config contrasts / six step393 resume windows",
     "seventeen embedded figures",
     "all relative HTML links valid",
-    "443 source archive checksums valid",
+    "444 source archive checksums valid",
     "18 authored rubrics / seven claim-stage decisions",
     "five interpretation cases / four metrics with switchable baselines",
     "17 figure-reading entries / five preserved collapsed tables",
@@ -101,7 +101,8 @@
     "V50 full unmodified AdamH module on artificial CPU matrices, fourteen CPU/source checks, nonzero warm-zero update and discard-versus-freeze distinction; bare empty-mesh JIT failure retained, named one-device JIT verified, no Hero full-step binding",
     "V51 real Optax grouped clipping controls and original AdamH fixed-next-input state comparison; ten checks, latest declared clipping disabled, no real Hero group/build/clipping event",
     "V52 eleven original async loader host controls, identity-store retrieval and finite endpoints; no actual Hero token stream, background queue or complete checkpoint restore",
-    "V53 fourteen original mixture class and real JAX CPU identity controls; ordered dataset IDs, integer ties, finite modulo and partial windows; no actual Hero token/shuffle/restore"
+    "V53 fourteen original mixture class and real JAX CPU identity controls; ordered dataset IDs, integer ties, finite modulo and partial windows; no actual Hero token/shuffle/restore",
+    "V54 fourteen original inner-shuffle/split CPU controls including 130 small PRP domains; same-snapshot disjointness versus cross-snapshot overlap, Hero declared split disabled, no actual token contamination"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

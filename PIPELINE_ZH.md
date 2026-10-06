@@ -117,3 +117,8 @@ V22的[诊断流程](LOSS_TRIAGE_ZH.md)把指标/模型视图、样本内容与�
 ## V53：混合数据身份
 
 在next offset核对后，再验收域ID→子索引→库存取模→实际token身份。先比较完整块多重集，再核对部分边缘槽位，记录重复曝光与独特库存；浮点权重与seed标签不代替映射身份。[14项CPU控制](analysis/mixture_identity_cpu.json)。
+
+
+## V54：桶内shuffle与切分
+
+数据接续链补齐：库存内容/长度→切分清单→训练shuffle类型/key/窗口→预算截断→混合映射→恢复offset→实际token/hash。跨快照重新切分时更换评估版本，或明确冻结留出身份；按当前配置确认该分支是否启用。[检查结果](analysis/inner_shuffle_cpu.json)。

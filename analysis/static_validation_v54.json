@@ -1,0 +1,17 @@
+{
+  "pages": {
+    "index.html": {
+      "mixture_identity_tables": 2,
+      "sha256": "a382e23204ea1bb7ec5f22f8d35688907b97f3b207cc54580fcef3a4b58b2dc2"
+    },
+    "report_standalone.html": {
+      "mixture_identity_tables": 2,
+      "sha256": "f60d311a661e988f9659eedc6d213a2d48684eca05e82d627b55f8f51c46df69"
+    }
+  },
+  "prior_source_bytes_preserved": 443,
+  "current_source_files": 444,
+  "new_source_acquisitions": 1,
+  "actual_browser_rendering": null,
+  "inner_shuffle_make_target_verified": true
+}

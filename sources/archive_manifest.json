@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-06T17:27:58.057372+00:00",
+  "integrity_manifest_created_utc": "2026-10-06T18:57:44.633586+00:00",
   "files": [
     {
       "file": "accumulation_2026_10_07/grad_accum.py",
@@ -2315,6 +2315,13 @@
       "sha256": "2fe1fea79a3d07b8969380817650f320cad207d1da7cfe0fe7ccaac9890c2d8d",
       "url": "https://api.github.com/repos/fudan-chen/pretrain/git/trees/main?recursive=1",
       "retrieved_utc": "2026-10-03T21:32:59.375260+00:00"
+    },
+    {
+      "file": "prp_2026_10_07/_prp.py",
+      "bytes": 9007,
+      "sha256": "ff43ef12f9a19bb4fd7dd41b2280d0b6d1ce3f9879befad4f8630724abe68f66",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/data/_prp.py",
+      "retrieved_utc": "2026-10-06T18:56:09.882511+00:00"
     },
     {
       "file": "quality_2026_10_05/README.md",

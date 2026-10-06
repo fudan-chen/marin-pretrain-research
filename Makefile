@@ -108,3 +108,7 @@ loader-resume:
 .PHONY: mixture-identity
 mixture-identity:
 	$(CPU_PYTHON) scripts/probe_mixture_identity_cpu.py
+
+.PHONY: inner-shuffle
+inner-shuffle:
+	$(CPU_PYTHON) scripts/probe_inner_shuffle_cpu.py

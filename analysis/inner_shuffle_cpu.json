@@ -1,0 +1,836 @@
+{
+  "declared_num_validation_sequences": null,
+  "declared_shuffle": {
+    "io_block_size": 256,
+    "perm_type": "feistel",
+    "window_blocks": 512
+  },
+  "scope": "Original PRP bodies, dataset shuffle/slice classes and train/val helper on CPU.\nReplaces AsyncDataset base and CPU mesh context; finite identity store, no real tokens.\n",
+  "checks_passed": 14,
+  "checks": [
+    "Genuine CPU runtime",
+    "Both original PRPs bijective on all 130 small domain controls",
+    "Original block shuffle preserves artificial inventory",
+    "Tiny final block stays at end",
+    "Same snapshot and key reproduces exact mapping",
+    "Duplicate out of order retrieval follows mapping",
+    "Changed inventory length changes partial tail mapping",
+    "Window setting changes permutation under same key",
+    "Block shuffle rejects negative and endpoint index",
+    "Same snapshot fixed-key split is disjoint and exhaustive",
+    "Independent constructions agree under same snapshot",
+    "Changing snapshot can mix old train with new validation identities",
+    "Positional split uses exact last four identities",
+    "Latest declared recipe does not split validation from training inventory"
+  ],
+  "runtime": {
+    "python": "3.12.13",
+    "jax": "0.7.2",
+    "numpy": "2.5.3",
+    "backend": "cpu"
+  },
+  "permutation_grid": [
+    {
+      "kind": "feistel",
+      "length": 1,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 2,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 3,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 4,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 5,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 6,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 7,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 8,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 9,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 10,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 11,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 12,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 13,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 14,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 15,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 16,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 17,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 18,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 19,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 20,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 21,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 22,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 23,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 24,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 25,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 26,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 27,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 28,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 29,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 30,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 31,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 32,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 33,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 34,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 35,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 36,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 37,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 38,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 39,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 40,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 41,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 42,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 43,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 44,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 45,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 46,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 47,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 48,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 49,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 50,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 51,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 52,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 53,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 54,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 55,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 56,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 57,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 58,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 59,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 60,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 61,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 62,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 63,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 64,
+      "bijective": true
+    },
+    {
+      "kind": "feistel",
+      "length": 65,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 1,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 2,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 3,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 4,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 5,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 6,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 7,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 8,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 9,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 10,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 11,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 12,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 13,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 14,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 15,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 16,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 17,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 18,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 19,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 20,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 21,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 22,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 23,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 24,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 25,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 26,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 27,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 28,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 29,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 30,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 31,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 32,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 33,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 34,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 35,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 36,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 37,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 38,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 39,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 40,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 41,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 42,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 43,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 44,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 45,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 46,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 47,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 48,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 49,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 50,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 51,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 52,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 53,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 54,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 55,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 56,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 57,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 58,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 59,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 60,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 61,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 62,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 63,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 64,
+      "bijective": true
+    },
+    {
+      "kind": "linear",
+      "length": 65,
+      "bijective": true
+    }
+  ],
+  "block22": [
+    15,
+    5,
+    11,
+    8,
+    4,
+    14,
+    6,
+    10,
+    9,
+    12,
+    13,
+    7,
+    0,
+    16,
+    2,
+    3,
+    17,
+    1,
+    18,
+    19,
+    20,
+    21
+  ],
+  "block23": [
+    15,
+    5,
+    11,
+    8,
+    4,
+    14,
+    6,
+    10,
+    9,
+    12,
+    13,
+    7,
+    0,
+    16,
+    2,
+    3,
+    17,
+    1,
+    18,
+    19,
+    20,
+    22,
+    21
+  ],
+  "window2": [
+    15,
+    5,
+    7,
+    12,
+    4,
+    14,
+    6,
+    13,
+    8,
+    0,
+    10,
+    11,
+    1,
+    9,
+    2,
+    3,
+    16,
+    18,
+    19,
+    17,
+    20,
+    21
+  ],
+  "split22": {
+    "train": [
+      9,
+      1,
+      19,
+      4,
+      7,
+      5,
+      6,
+      13,
+      12,
+      0,
+      14,
+      16,
+      8,
+      3,
+      10,
+      17,
+      21,
+      15
+    ],
+    "validation": [
+      18,
+      2,
+      11,
+      20
+    ]
+  },
+  "split23": {
+    "train": [
+      9,
+      22,
+      19,
+      4,
+      7,
+      5,
+      6,
+      13,
+      12,
+      0,
+      14,
+      16,
+      8,
+      3,
+      10,
+      17,
+      21,
+      15,
+      18
+    ],
+    "validation": [
+      2,
+      11,
+      20,
+      1
+    ]
+  },
+  "old_train_new_validation_overlap": [
+    1
+  ],
+  "invalid_indices": {
+    "-1": "ValueError",
+    "22": "IndexError"
+  },
+  "substitutions": [
+    "AsyncDataset base",
+    "null local_cpu_mesh",
+    "finite identity store"
+  ],
+  "source_sha256": {
+    "sources/prp_2026_10_07/_prp.py": "ff43ef12f9a19bb4fd7dd41b2280d0b6d1ce3f9879befad4f8630724abe68f66",
+    "sources/deepening_2026_10_04/dataset_production.py": "563ffddbf46ea665d00c71f92614dadd6d13478c91b9753b00dbbf21f88288a5",
+    "sources/deepening_2026_10_04/datasets_production.py": "47d95f41313356831bcc4b8861ecc765cbc04c6e8c32dc2c5a35abd74c619e4d",
+    "sources/live_2026_10_07/meta.json": "21998ecad691e7e66d3680f173bfe9b94c35b9481f28eff4794a23b0c9831487"
+  },
+  "actual_Hero_inner_shuffle": null,
+  "actual_Hero_split_leakage": null,
+  "actual_token_store": null,
+  "actual_GPU_TPU": null
+}

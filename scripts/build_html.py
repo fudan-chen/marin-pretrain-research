@@ -71,6 +71,10 @@ for slug,label,file in chapters:
         coupling_svg=BeautifulSoup((ROOT/'assets/router_coupling_update.svg').read_text(),'html.parser').svg
         coupling_svg['style']='display:block;width:100%;height:auto'
         result += '<figure class="scientific-figure">'+str(coupling_svg)+'<figcaption>人工CPU集成：原router/portable梯度/衰减包装与真实Optax；expert常数、路径与reshard替身。fresh/warm差异非生产风险估计。</figcaption></figure>'
+    if slug=='mix-trajectory-guide':
+        event_svg=BeautifulSoup((ROOT/'assets/mix_event_identifiability.svg').read_text(),'html.parser').svg
+        event_svg['style']='display:block;width:100%;height:auto'
+        result += '<figure class="scientific-figure">'+str(event_svg)+'<figcaption>真实归档时刻的事件设计审计；没有估计配比或执行因果效应。补点的秩控制是人工设计，不是新loss记录。</figcaption></figure>'
     if slug=='optimizer-guide':
         clip_svg=BeautifulSoup((ROOT/'assets/group_clipping_cpu.svg').read_text(),'html.parser').svg
         clip_svg['style']='display:block;width:100%;height:auto'

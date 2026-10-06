@@ -133,3 +133,6 @@ V59核对原router：bias决定选择，权重取unbiased logits；epsilon可主
 
 
 V60观察：一个assignment的一档bf16舍入误差，在人工集成中改变两个选中专家的router梯度；同差异在fresh与共同warm状态产生的更新尺度相差很大。评审必须检查归一化耦合与moments，见[反向链与更新](RECENT_MOE_CHANGES_ZH.md)。
+
+
+V61收紧配比结论：67个保留评估点无法区分108000配比与108778执行改动；level矩阵秩2/3，分段矩阵秩4/6。真实轨迹可筛候选与退步域，不能据此估计桶边际收益或最优权重，见[事件可区分性](MIX_TRAJECTORY_ZH.md)。

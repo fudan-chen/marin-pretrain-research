@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本V60。深入[归一化耦合与参数更新](RECENT_MOE_CHANGES_ZH.md)：原router与portable梯度语句、衰减包装和真实Optax人工CPU集成，新增fresh/warm对照图。
+当前版本V61。回到[配比与真实loss轨迹](MIX_TRAJECTORY_ZH.md)：67个归档时刻的事件设计审计，解释为什么配比/执行贡献无法分别估计，并补未执行训练对照模板。
 
 本轮完善[MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)：复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并补未执行的性能交互记录模板。
 

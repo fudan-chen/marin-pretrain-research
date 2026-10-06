@@ -83,3 +83,6 @@ HIST的共享margin范围会影响网格精度；TOPK的局部阈值平均具有
 复制[诊断记录](templates/loss_change_diagnosis.json)，先保存原问题和观察，按本章三站填证据。缺失字段保持null，未检查项保持not_checked。输出决定保持pending_evidence，直到记录中的证据真的支持改变它；填满表格不证明训练收益。
 
 这份记录补充[训练变更记录](templates/training_change_review.json)，不会自动批准部署。它保留可能解释和推翻条件，避免把一个暂时说得通的机制写成已确定根因。
+
+
+V61在归因之前增加一项检查：事件记录映射到实际评估时刻后，各改动列是否可区分？当前配比/执行两个标记完全相同。矩阵审计不替代反事实，但能提前阻止无依据的分项回归结论，见[MIX_TRAJECTORY](MIX_TRAJECTORY_ZH.md)。

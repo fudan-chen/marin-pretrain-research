@@ -146,3 +146,6 @@ V59入口：make router-weight-path CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python
 
 
 V60入口：make router-coupling-update CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python。10项人工集成检查执行原router/portable row-dot/衰减包装及真实Optax；真实专家、生产checkpoint、GPU和loss仍为下一阶段证据。
+
+
+V61入口：make mix-event-identifiability。9项归档/代数检查确认108000配比与108778执行切换在67个时刻的事件列相同。按templates/mixture_execution_comparison.json补同代码配比对照；四臂仅在代码/恢复合同兼容时执行，当前未执行。

@@ -140,3 +140,8 @@ router-weight-path:
 router-coupling-update:
 	$(CPU_PYTHON) scripts/probe_router_coupling_update_cpu.py
 	$(PYTHON) scripts/plot_router_coupling_update.py
+
+.PHONY: mix-event-identifiability
+mix-event-identifiability:
+	$(PYTHON) scripts/analyze_mix_event_identifiability.py
+	$(PYTHON) scripts/plot_mix_event_identifiability.py

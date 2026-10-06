@@ -879,6 +879,14 @@ ok('V60 selected gradient coupling retained',all(x==0 for x in cf['router_gradie
 ok('V60 state-sensitive updates and diagnostic schedule retained',co['fresh_update_difference_norm']>1e-4 and co['warm_update_difference_norm']<1e-6 and co['actual_live_lr_schedule'] is None and co['leaf_key_paths_stub'])
 ok('V60 coupling figure embedded',len(soup.select('#recent-moe-guide svg'))==3)
 report['highlights']+=['V60 ten synthetic integration CPU controls, coupling and fresh/warm update figure; constant experts, path/reshard stubs, no full Hero execution or loss attribution']
+mi=read(A/'mix_event_identifiability.json')
+ok('V61 design audit source binding and causal unknowns',mi['checks_passed']==len(mi['checks'])==9 and mi['actual_independent_mix_effect'] is None and mi['actual_independent_execution_effect'] is None and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in mi['source_sha256'].items()))
+ok('V61 both event designs remain deficient',len(mi['retained_steps'])==67 and mi['intermediate_retained_steps']==[] and mi['level_design']['rank']==2 and mi['segmented_design']['rank']==4)
+ok('V61 synthetic timestamps are separate',mi['synthetic_design_controls']['one_intermediate']['segmented_rank']==5 and mi['synthetic_design_controls']['two_intermediate']['segmented_rank']==6)
+mt=read(ROOT/'templates/mixture_execution_comparison.json')
+ok('V61 experiment template unexecuted',mt['status']=='not_executed' and all(x['fixed_eval_results'] is None and x['feasible'] is None for x in mt['arms'].values()))
+ok('V61 event figure embedded',soup.select_one('#mix-trajectory-guide svg') is not None)
+report['highlights']+=['V61 nine archived design/algebra checks; aliased mix/execution events, no causal estimates; synthetic timestamp rank controls and unexecuted comparison template']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

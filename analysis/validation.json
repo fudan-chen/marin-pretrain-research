@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1448,
+  "checks_passed": 1453,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -108,7 +108,8 @@
     "V57 six source/arithmetic checks, 12 author one-rack timings, conditional performance reversal figure and unexecuted interaction template; no local GPU or full causal attribution",
     "V58 48 selected scalar CPU controls and two artificial router VJPs, ten checks; no production incidence or GPU/update/loss attribution",
     "V59 original moe_route CPU block with reshard/spec stubs; nine checks, four inputs and surrogate gradients; no complete expert or training attribution",
-    "V60 ten synthetic integration CPU controls, coupling and fresh/warm update figure; constant experts, path/reshard stubs, no full Hero execution or loss attribution"
+    "V60 ten synthetic integration CPU controls, coupling and fresh/warm update figure; constant experts, path/reshard stubs, no full Hero execution or loss attribution",
+    "V61 nine archived design/algebra checks; aliased mix/execution events, no causal estimates; synthetic timestamp rank controls and unexecuted comparison template"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

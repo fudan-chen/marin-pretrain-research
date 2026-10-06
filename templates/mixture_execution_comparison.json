@@ -1,0 +1,47 @@
+{
+  "status": "not_executed",
+  "checkpoint": null,
+  "actual_execution_binding": null,
+  "required_common_state": [
+    "params",
+    "optimizer_count_mu_nu",
+    "pending_router_state",
+    "LR_schedule",
+    "tokenizer_store_identity",
+    "eval_identity"
+  ],
+  "arms": {
+    "old_mix_old_code": {
+      "feasible": null,
+      "input_exposure_ledger": null,
+      "fixed_eval_results": null,
+      "actual_GPU_time": null
+    },
+    "new_mix_old_code": {
+      "feasible": null,
+      "input_exposure_ledger": null,
+      "fixed_eval_results": null,
+      "actual_GPU_time": null
+    },
+    "old_mix_new_code": {
+      "feasible": null,
+      "input_exposure_ledger": null,
+      "fixed_eval_results": null,
+      "actual_GPU_time": null
+    },
+    "new_mix_new_code": {
+      "feasible": null,
+      "input_exposure_ledger": null,
+      "fixed_eval_results": null,
+      "actual_GPU_time": null
+    }
+  },
+  "primary_budget_kind": null,
+  "primary_budget_value": null,
+  "effective_target_count": null,
+  "weighted_target_denominator": null,
+  "nominal_token_positions": null,
+  "predeclared_regression_limits": null,
+  "actual_independent_mix_effect": null,
+  "actual_independent_execution_effect": null
+}

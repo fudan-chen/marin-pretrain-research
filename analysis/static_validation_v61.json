@@ -1,0 +1,12 @@
+{
+  "checks_passed": 5,
+  "checks": [
+    "index.html V61 text and figure",
+    "index.html unique ids",
+    "report_standalone.html V61 text and figure",
+    "report_standalone.html unique ids",
+    "455 frozen source hashes valid"
+  ],
+  "PNG_viewed": true,
+  "actual_browser_rendering": null
+}

@@ -110,3 +110,47 @@ BPB 的 B 也有1的下限。对普通权重，只改分批仍可改变 BPB：�
 此前[重复评分检查器](EVAL_REPLAY_ZH.md)重建的是叶子与非空域父级口径；其 micro_CE 不是 T<1 情况下的原根级 micro_avg_loss，macro_CE 也不是有空域时的原根级 macro_avg_loss。这里补明接口边界，不改历史人工结果。检查器拒绝非有限 N/T/B，不能用它重建已经被 NaN 污染的源累计状态。
 
 复现：`make tagged-eval-accumulator CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python TENSORSTORE_PATH=/tmp/marin-tensorstore-lib`。这里使用该隔离路径提供 Equinox 依赖，没有执行 TensorStore IO；实际生产评估与候选排序影响仍待真实记录。
+
+
+## V75：rank正确，仍可能静默算错分子、分母或域归属
+
+沿V74原累计器与结果构造继续执行12种 callback 输入、16项检查。原路径先做 `losses * weights`，随后只检查四个数组均为二维，再通过 einsum、byte gather 与累计器归约。rank=2不等于形状一致。[逐例原输出、异常与离线检查结果](analysis/eval_callback_shapes_cpu.json)保留人工输入形状，JAX 0.7.2 CPU运行；仍使用V74明确列出的前向、loader、JIT/sharding适配。没有发现Hero曾返回这些错形输入，也未修改上游代码。
+
+### 广播可以保留有限数，却改变测量对象
+
+标准人工批次有两条序列、每条两个目标。A两个位置的loss都为1，B都为3；权重全1，byte ID每行[0,1]，表为[1,3]，tags分别[1,0]和[0,1]。标准根级CE=2，BPB=1.4426950。以下只替换一个数组：
+
+|输入变化|原路径结果|为什么会这样|
+|---|---|---|
+|loss从[2,2]缩为[2,1]|通过，CE仍为2|单列loss沿目标轴重复；本例域内常数让错误形状未体现为数值变化|
+|weight从[2,2]缩为[2,1]|通过，CE变成4|loss×weight广播出四个分子项，但sum(weight)只计两个原权重；分子与分母覆盖不一致|
+|token ID从[2,2]缩为[2,1]，每行只留0|通过，CE=2，BPB=2.8853900|查出的单列byte长度广播到两个目标；原来每行byte和4，变成2|
+|tags从[2,2]缩为[1,2]，只留A标签|通过，根级仍正常，全部目标计入A|einsum的单行标签广播到两条序列，丢失逐行域身份|
+|loss变为一维|ValueError|触发原rank检查|
+|loss的目标轴变成3，weight仍为2|backend TypeError|维度不能广播，由乘法失败；不代表所有形状错配都能被拒绝|
+
+权重单列控制中BPB仍为标准值，因为这条路径的byte分母也使用广播后的权重。于是CE错了、BPB却没变。只抽查一个平均指标，或者只看所有输出是否有限，都不足以验收接口。这里故意打破callback的逐位置约定；默认生产callback是否满足约定，需要实际返回数组或源码绑定来确认。
+
+### 多标签是原功能，互斥叶子是另一种契约
+
+原 `DomainTaggedDataset._compute_tag_arrays` 遍历每个dataset的tags，把对应多个列同时置1。本轮执行该原方法，得到[[1,1],[0,1]]：第一条属于A和B，第二条只属于B。再送入原累计器，根级CE=2；A累计质量2、B累计质量4，父级micro CE=1.6666666。第一条目标在父级标签池中出现两次，根级目标池只出现一次。这个差异不是广播事故，而是标签重叠下的汇总语义。
+
+当前[离线数组导出器](EVAL_ARRAY_EXPORT_ZH.md)明确只接受互斥叶子域，所以拒绝多标签是它的支持边界；不能把该限制倒推成原TaggedEvaluator禁止重叠。Paloma当前分析按互斥域解释；如果要导出通用重叠标签，需要扩展记录与父级重叠口径，不能直接把多个标签当作额外独立语料份额。
+
+另一控制把第二条正权重序列的tags设为[0,0]。根级仍包含它，CE=2；父级只看到A，CE=1。未标记样本并不会自动从全局评估移除。若评估契约要求每个有效样本有一个叶子域，必须同时检查覆盖，不能只要求“没有标签重叠”。
+
+### 越界byte ID也可能给出有限BPB
+
+把全部评分ID改为−1，或全部改为9，而byte表仅有两项；这两种人工输入在本地原gather路径都未报错，得到BPB=0.9617967，CE仍为2。JAX本例实际取到了末项byte值3；这是当前CPU路径的观察，不是所有设备、所有JAX版本的越界行为保证。callback没有在原累计器处做ID范围检查，故仅验证数组rank和最终有限值不足以证明byte分母正确。
+
+实际tokenizer产生合法ID，与自定义callback、评分移位或导出错位是不同证据对象。本轮没有真实非法token，也没有据此判断Hero BPB偏低。可验证规则是：整数dtype、0≤ID<vocab_size、评分位置与loss/weight逐位置对齐；末尾padding的合法占位ID也应明确，而不是依赖越界处理。
+
+### 把接口检查写成可执行的前置步骤
+
+新增[离线callback检查函数](scripts/check_eval_callback_arrays.py)，核对完全相同的非空[B,T]评分形状、tags的[B,K]布局、整数ID范围、非负有限NLL/权重/byte、二值标签及正权重行覆盖。调用者必须声明exclusive_leaf或overlapping_tags；前者拒绝重叠，后者保留合法多标签。本轮每个原控制同时经过这项离线检查，报告侧检查拒绝可广播错形与非法ID，接受正确输入和显式重叠契约。
+
+它检查提供的CPU数组，不是生产JIT内hook，不证明模型前向、tokenizer或checkpoint身份。标签列交换后形状、范围、有限值全部合法，检查仍通过；但A/B叶子CE从1/3变为3/1。要发现这类语义错位，还须绑定有序域名与tag_to_index、实际样本域身份、评分移位、tokenizer和前向输出来源。正确shape只是第一层证据。
+
+因此评估管线需逐层验收：结构一致 → 数值/索引范围 → 覆盖与重叠政策 → 内容身份与目标对齐 → 原归约口径 → 固定评估下的模型收益。前几层失败时，先修复测量；不能让配比搜索去追逐一个已经错位的评分。下一步真实复核仍需要生产数组或实际callback返回证据，当前没有代填。
+
+复现：`make eval-callback-shapes CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python TENSORSTORE_PATH=/tmp/marin-tensorstore-lib`。该隔离路径只提供Equinox依赖，本轮没有存储IO、GPU或生产修复验收。

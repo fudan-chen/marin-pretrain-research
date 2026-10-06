@@ -1,0 +1,571 @@
+{
+  "scope": "Original evaluator on malformed synthetic callback arrays plus offline gate.\nUses V74 original accumulation/result construction with explicit hax/loader adapters.\nNo evidence of malformed Hero callbacks, GPU behavior or production fix.\n",
+  "checks_passed": 16,
+  "checks": [
+    "Exact valid arrays preserve source mean",
+    "loss_column_broadcast silently accepted by source but rejected offline",
+    "weight_column_broadcast silently accepted by source but rejected offline",
+    "token_column_broadcast silently accepted by source but rejected offline",
+    "tag_row_broadcast silently accepted by source but rejected offline",
+    "Weight broadcast repeats numerator without expanding original denominator",
+    "Token-column broadcast changes BPB with unchanged CE",
+    "Rank-only source check rejects rank-one callback",
+    "Nonbroadcastable dimensions fail in backend",
+    "Original tag builder deliberately emits multihot membership",
+    "Multitag parent pool differs from root pooled targets",
+    "Exclusive exporter gate must reject multi membership",
+    "Positive untagged row hides from parent but remains in root",
+    "negative_token_ids gather yields finite wrong-byte denominator without source error",
+    "oversized_token_ids gather yields finite wrong-byte denominator without source error",
+    "Shape gate cannot prove ordered tag identity"
+  ],
+  "cases": [
+    {
+      "case": "valid",
+      "shapes": {
+        "losses": [
+          2,
+          2
+        ],
+        "weights": [
+          2,
+          2
+        ],
+        "ids": [
+          2,
+          2
+        ],
+        "tags": [
+          2,
+          2
+        ]
+      },
+      "source_result": {
+        "micro_CE": 2.0,
+        "root_macro_CE": 2.0,
+        "parent_macro_CE": 2.0,
+        "parent_micro_CE": 2.0,
+        "micro_BPB": 1.4426950216293335,
+        "root_macro_BPB": 1.4426950216293335,
+        "parent_macro_BPB": 1.4426950216293335,
+        "leaf_CE": {
+          "paloma": 2.0,
+          "paloma/A": 1.0,
+          "paloma/B": 3.0
+        },
+        "leaf_BPB": {
+          "paloma": 1.4426950216293335,
+          "paloma/A": 0.7213475108146667,
+          "paloma/B": 2.1640424728393555
+        }
+      },
+      "source_error": null,
+      "offline_gate": {
+        "scored_shape": [
+          2,
+          2
+        ],
+        "tag_policy": "exclusive_leaf",
+        "target_mass": 4.0,
+        "tag_mass": [
+          2.0,
+          2.0
+        ],
+        "identity_verified": false,
+        "target_alignment_verified": false
+      },
+      "offline_gate_error": null
+    },
+    {
+      "case": "loss_column_broadcast",
+      "shapes": {
+        "losses": [
+          2,
+          1
+        ],
+        "weights": [
+          2,
+          2
+        ],
+        "ids": [
+          2,
+          2
+        ],
+        "tags": [
+          2,
+          2
+        ]
+      },
+      "source_result": {
+        "micro_CE": 2.0,
+        "root_macro_CE": 2.0,
+        "parent_macro_CE": 2.0,
+        "parent_micro_CE": 2.0,
+        "micro_BPB": 1.4426950216293335,
+        "root_macro_BPB": 1.4426950216293335,
+        "parent_macro_BPB": 1.4426950216293335,
+        "leaf_CE": {
+          "paloma": 2.0,
+          "paloma/A": 1.0,
+          "paloma/B": 3.0
+        },
+        "leaf_BPB": {
+          "paloma": 1.4426950216293335,
+          "paloma/A": 0.7213475108146667,
+          "paloma/B": 2.1640424728393555
+        }
+      },
+      "source_error": null,
+      "offline_gate": null,
+      "offline_gate_error": "identical nonempty scored shapes required; no broadcasting"
+    },
+    {
+      "case": "weight_column_broadcast",
+      "shapes": {
+        "losses": [
+          2,
+          2
+        ],
+        "weights": [
+          2,
+          1
+        ],
+        "ids": [
+          2,
+          2
+        ],
+        "tags": [
+          2,
+          2
+        ]
+      },
+      "source_result": {
+        "micro_CE": 4.0,
+        "root_macro_CE": 4.0,
+        "parent_macro_CE": 4.0,
+        "parent_micro_CE": 4.0,
+        "micro_BPB": 1.4426950216293335,
+        "root_macro_BPB": 1.4426950216293335,
+        "parent_macro_BPB": 1.4426950216293335,
+        "leaf_CE": {
+          "paloma": 4.0,
+          "paloma/A": 2.0,
+          "paloma/B": 6.0
+        },
+        "leaf_BPB": {
+          "paloma": 1.4426950216293335,
+          "paloma/A": 0.7213475108146667,
+          "paloma/B": 2.1640424728393555
+        }
+      },
+      "source_error": null,
+      "offline_gate": null,
+      "offline_gate_error": "identical nonempty scored shapes required; no broadcasting"
+    },
+    {
+      "case": "token_column_broadcast",
+      "shapes": {
+        "losses": [
+          2,
+          2
+        ],
+        "weights": [
+          2,
+          2
+        ],
+        "ids": [
+          2,
+          1
+        ],
+        "tags": [
+          2,
+          2
+        ]
+      },
+      "source_result": {
+        "micro_CE": 2.0,
+        "root_macro_CE": 2.0,
+        "parent_macro_CE": 2.0,
+        "parent_micro_CE": 2.0,
+        "micro_BPB": 2.885390043258667,
+        "root_macro_BPB": 2.885390043258667,
+        "parent_macro_BPB": 2.885390043258667,
+        "leaf_CE": {
+          "paloma": 2.0,
+          "paloma/A": 1.0,
+          "paloma/B": 3.0
+        },
+        "leaf_BPB": {
+          "paloma": 2.885390043258667,
+          "paloma/A": 1.4426950216293335,
+          "paloma/B": 4.328084945678711
+        }
+      },
+      "source_error": null,
+      "offline_gate": null,
+      "offline_gate_error": "identical nonempty scored shapes required; no broadcasting"
+    },
+    {
+      "case": "tag_row_broadcast",
+      "shapes": {
+        "losses": [
+          2,
+          2
+        ],
+        "weights": [
+          2,
+          2
+        ],
+        "ids": [
+          2,
+          2
+        ],
+        "tags": [
+          1,
+          2
+        ]
+      },
+      "source_result": {
+        "micro_CE": 2.0,
+        "root_macro_CE": 1.0,
+        "parent_macro_CE": 2.0,
+        "parent_micro_CE": 2.0,
+        "micro_BPB": 1.4426950216293335,
+        "root_macro_BPB": 0.7213475108146667,
+        "parent_macro_BPB": 1.4426950216293335,
+        "leaf_CE": {
+          "paloma": 2.0,
+          "paloma/A": 2.0,
+          "paloma/B": 0.0
+        },
+        "leaf_BPB": {
+          "paloma": 1.4426950216293335,
+          "paloma/A": 1.4426950216293335,
+          "paloma/B": 0.0
+        }
+      },
+      "source_error": null,
+      "offline_gate": null,
+      "offline_gate_error": "tag rows and ordered column count must match batch"
+    },
+    {
+      "case": "rank_one_loss",
+      "shapes": {
+        "losses": [
+          2
+        ],
+        "weights": [
+          2,
+          2
+        ],
+        "ids": [
+          2,
+          2
+        ],
+        "tags": [
+          2,
+          2
+        ]
+      },
+      "source_result": null,
+      "source_error": "ValueError: Expected batched eval tensors with rank 2, got losses=1, weights=2, token_ids=2, tags=2",
+      "offline_gate": null,
+      "offline_gate_error": "loss/weight/token_ids/tags must have rank two"
+    },
+    {
+      "case": "incompatible_time_shape",
+      "shapes": {
+        "losses": [
+          2,
+          3
+        ],
+        "weights": [
+          2,
+          2
+        ],
+        "ids": [
+          2,
+          2
+        ],
+        "tags": [
+          2,
+          2
+        ]
+      },
+      "source_result": null,
+      "source_error": "TypeError: mul got incompatible shapes for broadcasting: (2, 3), (2, 2).",
+      "offline_gate": null,
+      "offline_gate_error": "identical nonempty scored shapes required; no broadcasting"
+    },
+    {
+      "case": "multi_membership",
+      "shapes": {
+        "losses": [
+          2,
+          2
+        ],
+        "weights": [
+          2,
+          2
+        ],
+        "ids": [
+          2,
+          2
+        ],
+        "tags": [
+          2,
+          2
+        ]
+      },
+      "source_result": {
+        "micro_CE": 2.0,
+        "root_macro_CE": 1.5,
+        "parent_macro_CE": 1.5,
+        "parent_micro_CE": 1.6666666269302368,
+        "micro_BPB": 1.4426950216293335,
+        "root_macro_BPB": 1.0820212364196777,
+        "parent_macro_BPB": 1.0820212364196777,
+        "leaf_CE": {
+          "paloma": 1.6666666269302368,
+          "paloma/A": 1.0,
+          "paloma/B": 2.0
+        },
+        "leaf_BPB": {
+          "paloma": 1.202245831489563,
+          "paloma/A": 0.7213475108146667,
+          "paloma/B": 1.4426950216293335
+        }
+      },
+      "source_error": null,
+      "offline_gate": null,
+      "offline_gate_error": "exclusive leaves cannot overlap"
+    },
+    {
+      "case": "positive_untagged_row",
+      "shapes": {
+        "losses": [
+          2,
+          2
+        ],
+        "weights": [
+          2,
+          2
+        ],
+        "ids": [
+          2,
+          2
+        ],
+        "tags": [
+          2,
+          2
+        ]
+      },
+      "source_result": {
+        "micro_CE": 2.0,
+        "root_macro_CE": 0.5,
+        "parent_macro_CE": 1.0,
+        "parent_micro_CE": 1.0,
+        "micro_BPB": 1.4426950216293335,
+        "root_macro_BPB": 0.3606737554073334,
+        "parent_macro_BPB": 0.7213475108146667,
+        "leaf_CE": {
+          "paloma": 1.0,
+          "paloma/A": 1.0,
+          "paloma/B": 0.0
+        },
+        "leaf_BPB": {
+          "paloma": 0.7213475108146667,
+          "paloma/A": 0.7213475108146667,
+          "paloma/B": 0.0
+        }
+      },
+      "source_error": null,
+      "offline_gate": null,
+      "offline_gate_error": "positive-weight rows need declared tag coverage"
+    },
+    {
+      "case": "negative_token_ids",
+      "shapes": {
+        "losses": [
+          2,
+          2
+        ],
+        "weights": [
+          2,
+          2
+        ],
+        "ids": [
+          2,
+          2
+        ],
+        "tags": [
+          2,
+          2
+        ]
+      },
+      "source_result": {
+        "micro_CE": 2.0,
+        "root_macro_CE": 2.0,
+        "parent_macro_CE": 2.0,
+        "parent_micro_CE": 2.0,
+        "micro_BPB": 0.9617967009544373,
+        "root_macro_BPB": 0.9617967009544373,
+        "parent_macro_BPB": 0.9617967009544373,
+        "leaf_CE": {
+          "paloma": 2.0,
+          "paloma/A": 1.0,
+          "paloma/B": 3.0
+        },
+        "leaf_BPB": {
+          "paloma": 0.9617967009544373,
+          "paloma/A": 0.48089835047721863,
+          "paloma/B": 1.4426950216293335
+        }
+      },
+      "source_error": null,
+      "offline_gate": null,
+      "offline_gate_error": "token ids must be within byte-table bounds"
+    },
+    {
+      "case": "oversized_token_ids",
+      "shapes": {
+        "losses": [
+          2,
+          2
+        ],
+        "weights": [
+          2,
+          2
+        ],
+        "ids": [
+          2,
+          2
+        ],
+        "tags": [
+          2,
+          2
+        ]
+      },
+      "source_result": {
+        "micro_CE": 2.0,
+        "root_macro_CE": 2.0,
+        "parent_macro_CE": 2.0,
+        "parent_micro_CE": 2.0,
+        "micro_BPB": 0.9617967009544373,
+        "root_macro_BPB": 0.9617967009544373,
+        "parent_macro_BPB": 0.9617967009544373,
+        "leaf_CE": {
+          "paloma": 2.0,
+          "paloma/A": 1.0,
+          "paloma/B": 3.0
+        },
+        "leaf_BPB": {
+          "paloma": 0.9617967009544373,
+          "paloma/A": 0.48089835047721863,
+          "paloma/B": 1.4426950216293335
+        }
+      },
+      "source_error": null,
+      "offline_gate": null,
+      "offline_gate_error": "token ids must be within byte-table bounds"
+    },
+    {
+      "case": "swapped_tag_columns",
+      "shapes": {
+        "losses": [
+          2,
+          2
+        ],
+        "weights": [
+          2,
+          2
+        ],
+        "ids": [
+          2,
+          2
+        ],
+        "tags": [
+          2,
+          2
+        ]
+      },
+      "source_result": {
+        "micro_CE": 2.0,
+        "root_macro_CE": 2.0,
+        "parent_macro_CE": 2.0,
+        "parent_micro_CE": 2.0,
+        "micro_BPB": 1.4426950216293335,
+        "root_macro_BPB": 1.4426950216293335,
+        "parent_macro_BPB": 1.4426950216293335,
+        "leaf_CE": {
+          "paloma": 2.0,
+          "paloma/A": 3.0,
+          "paloma/B": 1.0
+        },
+        "leaf_BPB": {
+          "paloma": 1.4426950216293335,
+          "paloma/A": 2.1640424728393555,
+          "paloma/B": 0.7213475108146667
+        }
+      },
+      "source_error": null,
+      "offline_gate": {
+        "scored_shape": [
+          2,
+          2
+        ],
+        "tag_policy": "exclusive_leaf",
+        "target_mass": 4.0,
+        "tag_mass": [
+          2.0,
+          2.0
+        ],
+        "identity_verified": false,
+        "target_alignment_verified": false
+      },
+      "offline_gate_error": null
+    }
+  ],
+  "original_multitag_arrays": [
+    [
+      1,
+      1
+    ],
+    [
+      0,
+      1
+    ]
+  ],
+  "overlap_gate_receipt": {
+    "scored_shape": [
+      2,
+      2
+    ],
+    "tag_policy": "overlapping_tags",
+    "target_mass": 4.0,
+    "tag_mass": [
+      2.0,
+      4.0
+    ],
+    "identity_verified": false,
+    "target_alignment_verified": false
+  },
+  "explicit_substitutions": [
+    "V74 original-method extraction and same CPU loader/loss/hax adapters",
+    "synthetic malformed callback arrays; no model forward",
+    "offline structural gate is report-side code, not upstream patch"
+  ],
+  "runtime": {
+    "jax": "0.7.2",
+    "numpy": "2.5.3"
+  },
+  "actual_Hero_malformed_callback": null,
+  "actual_GPU_execution": null,
+  "actual_upstream_fix": null,
+  "source_sha256": {
+    "sources/scale_2026_10_05/eval.py": "b67cc96335f667982a0fe43618215734140c28392be215a88177979c712dee2c",
+    "sources/eval_metrics_2026_10_05/stat_utils.py": "5ca79fea0edd5db0c9fb4abbb412902b6d640403f9f42a82f7f6b55f67b862e2",
+    "scripts/probe_tagged_eval_accumulator_cpu.py": "83de79aa52e144de8f5b6c416063ccb47466dd54e27776ffca679be8c6842722",
+    "scripts/check_eval_callback_arrays.py": "ad2cffcee5f11025f85baf09014d05e6025c1378fef77593c8a68224e23343cc"
+  }
+}

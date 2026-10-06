@@ -202,3 +202,7 @@ loss-cross-replay:
 .PHONY: tagged-eval-accumulator
 tagged-eval-accumulator:
 	PYTHONPATH=$(TENSORSTORE_PATH) $(CPU_PYTHON) scripts/probe_tagged_eval_accumulator_cpu.py
+
+.PHONY: eval-callback-shapes
+eval-callback-shapes:
+	PYTHONPATH=$(TENSORSTORE_PATH) $(CPU_PYTHON) scripts/probe_eval_callback_shapes_cpu.py

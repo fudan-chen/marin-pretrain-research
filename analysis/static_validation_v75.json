@@ -1,0 +1,13 @@
+{
+  "version": "V75",
+  "checks_passed": 6,
+  "checks": [
+    "index.html unique ids",
+    "index.html V75 callback boundaries and overlap policy",
+    "report_standalone.html unique ids",
+    "report_standalone.html V75 callback boundaries and overlap policy",
+    "Frozen source archive unchanged",
+    "Fresh V75 global validation"
+  ],
+  "actual_browser_rendering": null
+}

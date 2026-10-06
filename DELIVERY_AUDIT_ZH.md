@@ -65,3 +65,8 @@ V52新增原异步loader host控制11项，人工store/layout/结果适配边界
 ## V74：原评估累计到最终结果
 
 12项CPU检查，执行原TaggedEvaluator累计器/evaluate与真实Equinox状态类。固定预测重分批、空域、小数权重和非有限零权重控制；显式JIT/sharding/loader/loss适配。未验证Hero受影响、GPU或历史版本绑定。462份来源保持。
+
+
+## V75：callback形状、标签契约与byte索引
+
+12人工输入、16检查，原累计/结果路径与原多标签构造；新增报告侧离线结构门禁，区分互斥与重叠。没有Hero错形callback证据、GPU或上游修复。462份来源保持。

@@ -77,3 +77,6 @@ mask可能是文档ID、布尔条件或其他显式叶子，导出器绑定它�
 ## 下一token坐标验收
 
 新增可选`target_contract="causal_next_token_v1"`，空白manifest默认启用。它要求输入与评分ID同形、末位权重为零、所有正权重位置的评分ID等于右侧输入token；零权重ID仍受范围与摘要约束。缺省通用接口会明确标记未验证此性质。该检查仅验证提供的数组坐标，不验证loss来源、真实前向或缓存。详见[目标对齐与覆盖](EVAL_TARGET_ALIGNMENT_ZH.md)。
+
+
+V75在原累计路径验证了单列广播和越界byte ID可以静默产生有限结果，见[源码控制](EVAL_METRICS_ZH.md)。本导出器原本要求评分shape完全一致、ID合法、标签互斥；这是离线导出契约，不代表原TaggedEvaluator禁止多标签，也不证明同shape数组的域名/评分位置已正确绑定。

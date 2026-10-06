@@ -150,7 +150,7 @@ for p in F.glob('window_*.json'):
     raw=read(p)['data']['project']['run']['sampledHistory'];h=[[json.loads(x) if isinstance(x,str) else x for x in series] for series in raw]
     ok('New source resume window '+p.stem,[x['_step'] for x in h[0]]==list(range(393,431)) and h[1][0]['throughput/total_tokens']==394*4194304)
 effects=f['scale_effects'];ok('Proxy code gain does not keep its sign in every larger ladder',next(r['change_pct'] for r in effects if r['size']=='d512_proxy' and r['metric']==PC)<0 and next(r['change_pct'] for r in effects if r['size']=='d768')>0 and next(r['change_pct'] for r in effects if r['size']=='d1024')>0 and next(r['change_pct'] for r in effects if r['size']=='d1536')<0)
-ok('Engineering entry retains five earlier workbenches, conclusions and all 54 task rows',[s['id'] for s in soup.select('main > section.chapter')[:6]]==['engineering-lab','assessment-lab','workbench','decision-lab','transfer-lab','order-lab'] and soup.select_one('#conclusions') is not None and len(soup.select('#conclusions table')[-1].select('tbody tr'))==54)
+ok('After synthesis, engineering entry retains five earlier workbenches, conclusions and all 54 task rows',[s['id'] for s in soup.select('main > section.chapter')[1:7]]==['engineering-lab','assessment-lab','workbench','decision-lab','transfer-lab','order-lab'] and soup.select_one('#conclusions') is not None and len(soup.select('#conclusions table')[-1].select('tbody tr'))==54)
 framework=read(A/'rubrics.json');workbench=read(A/'workbench_data.json');figure_notes=read(A/'figure_readings.json')
 rule_ids={r['id'] for r in framework['rules']}
 ok('All eighteen rubrics have explicit evidence anchors and provenance',rule_ids=={'R%02d'%i for i in range(1,19)} and len(framework['rules'])==18 and all(set(r['anchors'])=={'pass','partial','fail'} and r['question'] and r['why'] and r['evidence_links'] for r in framework['rules']))
@@ -710,6 +710,10 @@ ok('V39 matching synthetic declarations do not imply actual GPU replay',er['synt
 ok('V39 regrouped synthetic transcript preserves totals but changes logged BPB',er['synthetic_regrouped']['status']=='identity_or_input_review_required' and er['synthetic_regrouped']['first']['micro_CE']==er['synthetic_regrouped']['second']['micro_CE'] and er['synthetic_regrouped']['first']['micro_logged_BPB']!=er['synthetic_regrouped']['second']['micro_logged_BPB'])
 ok('V39 new replay chapter has three evidence tables',len(soup.select('#eval-replay-guide table'))==3)
 report['highlights']+=['V39 executable declared global leaf-domain transcript comparison; token-weighted BPB regrouping counterexample; no raw-array identity verification or actual Hero replay']
+ok('V40 synthesis is the first reading chapter before interactive labs',soup.select_one('.chapter').get('id')=='synthesis-guide')
+ok('V40 synthesis chapter retains two decision tables',len(soup.select('#synthesis-guide table'))==2)
+ok('V40 synthesis keeps historical evidence and proposed work distinct','本章没有新增训练结果' in (ROOT/'SYNTHESIS_ZH.md').read_text() and '不改动18条规则的版本' in (ROOT/'SYNTHESIS_ZH.md').read_text())
+report['highlights']+=['V40 evidence-bounded synthesis and practical reading / mixture-experiment routes; no new experiments or reader comprehension claim']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

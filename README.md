@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本为V39。[重复评分检查器](EVAL_REPLAY_ZH.md)将模型视图、逐批输入、分母和数值对照分开；已有可运行工具，真实Hero记录仍缺。[评估身份核查](EVAL_IDENTITY_ZH.md)追查PTB变化：默认入口重复遍历而非每轮重抽；进度长度估计问题与真实评分范围分开。[10月6日新观察](LIVE_2026_10_06_ZH.md)：训练记录约9.75T名义token，仍为4K；16域中15个端点改善，但PTB贡献约66%的宏平均CE改善，twitterAAE端点上升。新源档与旧曲线分别保留。工程问题先读[排障总图](ENGINEERING_MAP_ZH.md)，配比与恢复另见[生效时钟](BATCH_CLOCK_ZH.md)和[计数范围](MIXTURE_RANGE_ZH.md)。
+当前版本为V40。先读[结论与操作指南](SYNTHESIS_ZH.md)：把工程故障、有效曝光、评估变化和配比实验接成一条工作路线，再按问题进入专题。最新数值见[10月6日观察](LIVE_2026_10_06_ZH.md)，约9.75T/4K；[重复评分工具](EVAL_REPLAY_ZH.md)已可运行，真实Hero逐批记录仍缺。
 
 V26对V25的micro/macro命名错误已[明确更正](EVAL_METRICS_ZH.md)。
 

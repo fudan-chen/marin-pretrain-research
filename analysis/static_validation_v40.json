@@ -1,0 +1,21 @@
+{
+  "scope": "Static chapter, table, local-link and navigation ordering checks; no browser rendering, external reader response or comprehension effect",
+  "actual_browser_rendering": null,
+  "actual_reader_comprehension": null,
+  "pages": {
+    "index.html": {
+      "chapter_first": true,
+      "tables": 2,
+      "chapter_links": 29,
+      "six_interactive_labs_retained": true,
+      "sha256": "fa791d066dec9a1ec6fb1a3f97b71aab791b2865a12c2a93177216a14e3ccc54"
+    },
+    "report_standalone.html": {
+      "chapter_first": true,
+      "tables": 2,
+      "chapter_links": 29,
+      "six_interactive_labs_retained": true,
+      "sha256": "cd303ab570b276e183513a22e52704c8ee319a9d2664452f875c5c217efc3cfb"
+    }
+  }
+}

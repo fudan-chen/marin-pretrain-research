@@ -40,7 +40,8 @@ chapters.insert(0,('mixture-range-guide','大曝光量、混合计数与索引�
 chapters.insert(0,('live-observation-guide','10月6日：新进度与16域端点观察','LIVE_2026_10_06_ZH.md'))
 chapters.insert(0,('eval-identity-guide','评估输入身份、重复遍历与末批','EVAL_IDENTITY_ZH.md'))
 chapters.insert(0,('eval-replay-guide','重复评分记录、分母与可执行对照','EVAL_REPLAY_ZH.md'))
-priority=['eval-replay-guide','eval-identity-guide','live-observation-guide','mixture-range-guide','batch-clock-guide','failure-boundaries-guide','observability-guide','muon-direction-guide','adamh-state-guide','muon-geometry-guide','engineering-map-guide','delivery-audit-guide','checkpoint-memory-guide','checkpoint-commit-guide','eval-metrics-guide','mix-trajectory-guide','router-precision-guide','short-conv-guide','loss-triage','optimizer-guide','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
+chapters.insert(0,('synthesis-guide','结论与操作顺序：怎样用这份研究','SYNTHESIS_ZH.md'))
+priority=['synthesis-guide','eval-replay-guide','eval-identity-guide','live-observation-guide','mixture-range-guide','batch-clock-guide','failure-boundaries-guide','observability-guide','muon-direction-guide','adamh-state-guide','muon-geometry-guide','engineering-map-guide','delivery-audit-guide','checkpoint-memory-guide','checkpoint-commit-guide','eval-metrics-guide','mix-trajectory-guide','router-precision-guide','short-conv-guide','loss-triage','optimizer-guide','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
 chapters.sort(key=lambda c:priority.index(c[0]) if c[0] in priority else len(priority))
 readings={x['file']:x for x in json.loads((ROOT/'analysis/figure_readings.json').read_text())}
 sections=[];toc=[]
@@ -177,6 +178,16 @@ mapping.update({'ASSESSMENTLAB':(ROOT/'assets/assessment.html').read_text(),'ASS
                 'ASSESSMENTCORE':(ROOT/'assets/assessment-core.js').read_text(),'ASSESSMENTUI':(ROOT/'assets/assessment-ui.js').read_text()})
 mapping['CSS']+='\n'+(ROOT/'assets/engineering.css').read_text()
 mapping.update({'ENGINEERINGLAB':(ROOT/'assets/engineering.html').read_text(),'ENGINEERINGDATA':data(json.loads((ROOT/'analysis/engineering_data.json').read_text())),'ENGINEERINGUI':(ROOT/'assets/engineering-ui.js').read_text()})
+# Show the synthesis before interactive labs; retain their ids and behavior.
+intro=sections.pop(0)
+assert 'id="synthesis-guide"' in intro
+mapping['SYNTHESISINTRO']=intro
+mapping['SECTIONS']='\n'.join(sections)
+intro_nav='<a class="major" href="#synthesis-guide">结论与操作顺序：怎样用这份研究</a>'
+mapping['NAV']=intro_nav+mapping['NAV'].replace(intro_nav,'')
+template=template.replace('ENGINEERINGLAB ASSESSMENTLAB WORKBENCH','SYNTHESISINTRO ENGINEERINGLAB ASSESSMENTLAB WORKBENCH')
+template=template.replace('<a href="#engineering-lab">核对工程解释与反证</a>','<a href="#synthesis-guide">先读结论与操作顺序</a><a href="#engineering-lab">核对工程解释与反证</a>')
+template=template.replace('<a href="#conclusions">最新研究结论</a>','<a href="#conclusions">历史候选结论</a>')
 page=re.sub('|'.join(sorted(mapping,key=len,reverse=True)),lambda m:mapping[m[0]],template)
 # Link existing markdown artifacts to their corresponding chapters in this combined report.
 for slug,_,file in chapters:page=page.replace('href="'+file+'"','href="#'+slug+'"')

@@ -1,0 +1,28 @@
+{
+  "edition": "V40",
+  "created_utc": "2026-10-06T01:57:30.372179+00:00",
+  "goal_status": "active",
+  "verification_status": "HTML_rebuild_and_static_checks_passed",
+  "checks_passed": 1326,
+  "source_files": 435,
+  "prior_source_files_preserved": 435,
+  "new_source_acquisitions": 0,
+  "scope": "Synthesis of existing evidence into seven conclusions, mixture checks, joint engineering workflow and reading routes; synthesis displayed before six preserved interactive labs; no new experiments or rule-version change",
+  "actual_new_training_result": null,
+  "actual_browser_rendering": null,
+  "actual_external_reader_result": null,
+  "actual_reader_comprehension_effect": null,
+  "artifact_sha256": {
+    "SYNTHESIS_ZH.md": "f469c3d460f1d635b0b0fa0668a44cf37cfc7b0c160668bd41273cf548c87be6",
+    "README.md": "30da43253ca345868997b2d765c7daa5bc3ccbd45d80f6cee1be250354ff11cc",
+    "DELIVERY_AUDIT_ZH.md": "7875192b2834f0429492a41978e306d792df206e31b752441e6aa48fe7177232",
+    "IMPROVEMENT_LOG_ZH.md": "119f0ab761f7c7db049b8fd0820df1801868348e49fe3c26dc2c9882c5849185",
+    "scripts/build_html.py": "f1f877771c557bc7497ca76adb953f85c62a1e0295efb6a8a11297a11e462bd6",
+    "scripts/validate.py": "392d3063808f68d1d0fc1d53b3529b148ec0a391f6eb5722dd5585855d0c7303",
+    "analysis/static_validation_v40.json": "229433113c60379150f9d48922cc775152aadabe52d4305c79952fb1e63e5612",
+    "analysis/validation.json": "82e46467ef148a07a5dbb3681f374b8753c0d24be6f267a2eba086f382df2a5c",
+    "sources/archive_manifest.json": "d0fe3ffa2894961952bdcd084f6e4581ad72020ea0bc2e271603e99ebd6e4b3e",
+    "index.html": "fa791d066dec9a1ec6fb1a3f97b71aab791b2865a12c2a93177216a14e3ccc54",
+    "report_standalone.html": "cd303ab570b276e183513a22e52704c8ee319a9d2664452f875c5c217efc3cfb"
+  }
+}

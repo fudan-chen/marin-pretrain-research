@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1322,
+  "checks_passed": 1326,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -87,7 +87,8 @@
     "V36 int32 intermediate/cumulative overflow and finite restart remap; actual declared Hero per-component upper bounds below limit; no historical overflow claim; static HTML only",
     "V37 new independent 9.75T / 4K snapshot; four new exact eval steps, 72 unchanged overlapping values; endpoint and PTB sensitivity decomposition; static HTML only for new chapter",
     "V38 domain mapping / fresh default logical eval iteration / finite partial batch / progress-length overestimate; no actual cache or repeated model-score verification",
-    "V39 executable declared global leaf-domain transcript comparison; token-weighted BPB regrouping counterexample; no raw-array identity verification or actual Hero replay"
+    "V39 executable declared global leaf-domain transcript comparison; token-weighted BPB regrouping counterexample; no raw-array identity verification or actual Hero replay",
+    "V40 evidence-bounded synthesis and practical reading / mixture-experiment routes; no new experiments or reader comprehension claim"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

@@ -1103,6 +1103,11 @@ ok('V92 real-thread original cache dispatch checks source-bound',cd['checks_pass
 ok('V92 completion order does not become build order',cd['cases']['completion_cba']['observed_completion']==['C','B','A'] and cd['cases']['completion_bac']['observed_completion']==['B','A','C'] and cd['cases']['completion_cba']['build_dispatch']==cd['cases']['completion_bac']['build_dispatch']==['A','B','C'])
 ok('V92 error cleanup and visibility boundaries explicit',cd['cases']['metadata_failure']['error_observed_before_caller_exit'] and cd['cases']['metadata_failure']['cleanup_exception_type']=='RuntimeError' and cd['cases']['metadata_failure']['build_dispatch']==[] and cd['cases']['hit_A']['build_dispatch']!=cd['cases']['hit_B']['build_dispatch'])
 report['highlights']+=['V92 ten original build_caches real-thread controls; preserved dispatch order and waiting exception cleanup, no distributed IO or Hero hang claim']
+dc=read(A/'data_record_checker_probe.json');dca=read(A/'data_execution_record_archived_check.json')
+ok('V93 proposed checker controls explicitly not source execution',dc['checks_passed']==len(dc['checks'])==18 and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in dc['source_sha256'].items()) and dc['actual_production_execution'] is None)
+ok('V93 archived missing evidence not silently promoted',dca['status']=='needs_evidence' and dca['production_execution_verified'] is False and dca['gates'][0]['status']=='consistent' and all(x['status']=='missing' for x in dca['gates'][1:]))
+ok('V93 synthetic consistency never approves production',all(x['production_execution_verified'] is False and x['training_benefit_verified'] is False for x in dc['cases'].values()) and dc['cases']['Empty template cannot pass']['status']=='needs_evidence')
+report['highlights']+=['V93 proposed record checker with eighteen tamper controls; archived declarations plus local quota retain missing execution evidence, no production approval']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

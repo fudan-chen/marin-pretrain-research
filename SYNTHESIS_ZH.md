@@ -225,3 +225,6 @@ V91结论：普通活跃训练缓存缺失会在构造层拒绝；验证缺失�
 
 
 V92工程结论：不要把源码中的串行缓存构建直接改成线程池。读取完成顺序被显式恢复为组件顺序；跨机还需相同构建计划。as_completed快速发现失败也不等于整个调用快速退出，需要核对运行中IO和executor清理时序。[并发与派发控制](CACHE_PROVENANCE_ZH.md)
+
+
+V93可执行入口：[数据记录检查器](scripts/check_data_execution_record.py)区分conflict、needs_evidence和record_consistent_only。当前归档示例返回needs_evidence，缺实际子域、域顺序、host计划与评估身份；这表示公开材料不足以证明执行，不表示Hero故障。工具只查记录，不核对真实token或批准训练。[模板与用法](PIPELINE_ZH.md)

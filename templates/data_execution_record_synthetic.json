@@ -1,0 +1,92 @@
+{
+  "scope": "SYNTHETIC checker fixture, no real execution",
+  "declared_components": [
+    "A",
+    "B"
+  ],
+  "weight_stages": [
+    {
+      "A": 0.5,
+      "B": 0.5
+    }
+  ],
+  "actual_children": [
+    {
+      "name": "A",
+      "kind": "cached",
+      "sequence_count": 3,
+      "content_sha256": "b4698dbd327f6ffb328d6d6cf82c471e0b7051cb739d518d90cc70c640d8fa79"
+    },
+    {
+      "name": "B",
+      "kind": "cached",
+      "sequence_count": 3,
+      "content_sha256": "1daf0ef83212cb8f0754254b559b51a228ba3b7206545c8bd6c967cb53266d34"
+    }
+  ],
+  "dataset_index": [
+    "A",
+    "B"
+  ],
+  "block_size": 10,
+  "integer_quotas": [
+    [
+      5,
+      5
+    ]
+  ],
+  "runtime": {
+    "python": "fixture",
+    "numpy": "fixture",
+    "jax": "fixture",
+    "normalization_policy": "fixture",
+    "source_revision": "fixture"
+  },
+  "host_build_plans": {
+    "h0": [
+      {
+        "name": "A",
+        "action": "build",
+        "cache_identity": "fixture-A"
+      },
+      {
+        "name": "B",
+        "action": "build",
+        "cache_identity": "fixture-B"
+      }
+    ],
+    "h1": [
+      {
+        "name": "A",
+        "action": "build",
+        "cache_identity": "fixture-A"
+      },
+      {
+        "name": "B",
+        "action": "build",
+        "cache_identity": "fixture-B"
+      }
+    ]
+  },
+  "evaluation_panel": {
+    "expected": {
+      "eval": {
+        "children": [
+          "x",
+          "y"
+        ],
+        "content_sha256": "1e760e93d7456ba95d5f8b8ddecb71fc716bbd11e340d97514898cb6bf124667"
+      }
+    },
+    "actual": {
+      "eval": {
+        "children": [
+          "x",
+          "y"
+        ],
+        "content_sha256": "1e760e93d7456ba95d5f8b8ddecb71fc716bbd11e340d97514898cb6bf124667",
+        "valid_targets": 6
+      }
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "scope": "Supplied record consistency only, finite cached datasets. No training approval.",
+  "status": "needs_evidence",
+  "gates": [
+    {
+      "gate": "declared_support",
+      "status": "consistent",
+      "conflicts": [],
+      "missing": [],
+      "notes": []
+    },
+    {
+      "gate": "actual_support_and_inventory",
+      "status": "missing",
+      "conflicts": [],
+      "missing": [
+        "actual_children from constructed objects, all-stage positive support"
+      ],
+      "notes": [
+        "This checker scope is finite cached sequence datasets; supplied hashes are not independently read back."
+      ]
+    },
+    {
+      "gate": "quota_and_runtime_identity",
+      "status": "missing",
+      "conflicts": [],
+      "missing": [
+        "dataset_index in actual order",
+        "runtime.jax"
+      ],
+      "notes": []
+    },
+    {
+      "gate": "ordered_build_plan",
+      "status": "missing",
+      "conflicts": [],
+      "missing": [
+        "host_build_plans or explicit no-build plan per participating host"
+      ],
+      "notes": [
+        "Equality covers supplied hosts only; real collective protocol remains outside this checker."
+      ]
+    },
+    {
+      "gate": "evaluation_panel_identity",
+      "status": "missing",
+      "conflicts": [],
+      "missing": [
+        "evaluation_panel expected and actual identities"
+      ],
+      "notes": [
+        "This checks identities/denominator records, not score quality or independent content verification."
+      ]
+    }
+  ],
+  "production_execution_verified": false,
+  "training_benefit_verified": false
+}

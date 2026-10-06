@@ -242,3 +242,36 @@ V91补充：构造后支持验收取全部阶段正权重并集。普通活跃�
 
 
 V92补充：缓存元数据分类可以并行，缺失构建保持源码的原组件顺序。多机进入构建前核对有序任务与缓存动作清单；故障分别记录发现、future读取、线程池清理和向外返回时刻。不能用本地派发有序替代实际collective验证。[真实线程控制](CACHE_PROVENANCE_ZH.md)
+
+
+## V93：把数据执行记录先查成“矛盾、缺证据、自洽”
+
+前几轮的源码结论已能形成一组启动前记录检查。本轮新增[数据记录检查器](scripts/check_data_execution_record.py)，用途是检查提供给它的记录是否内部矛盾。它是本报告提出并实现的工具，**不是Marin原训练代码，不是完整训练启动检查，也不是生产运行证明。** 适用范围为有限缓存序列数据集；无限stream、动态库存与在线数据需要另定义合同。
+
+五个检查入口对应源码链中的不同位置：
+
+|入口|读什么记录|发现矛盾时先做什么|目前公开示例的状态|
+|---|---|---|---|
+|声明支持|components、各阶段完整权重字典|定位未知桶、非有限或负权重；不自动重配比例|归档声明自洽|
+|实际子域与库存|构造后有序子域、组件类型、序列数、内容摘要、concat子清单|查空concat、活跃域遗漏、空库存；保留构造日志|缺实际对象记录|
+|整数配额与运行时|dataset_index、每阶段整数配额、block_size、Python/NumPy/JAX、归一化政策、代码版本|查配额守恒、非活跃域分配、域顺序；保存环境与最终配额|局部配额存在，但实际域顺序和对应运行证据缺失|
+|构建派发|各参与机ordered(name, action, cache_identity)|先比实际有序build清单，结合同步协议核对差异|没有生产host清单|
+|评估面板|期望/实际域与子域、内容摘要、有效目标分母|先核对覆盖变化，再比较loss|没有实际面板身份记录|
+
+声明检查根据[配置与实际子域边界](MIXTURE_IDENTITY_ZH.md)整理；整数检查来自[运行时与配额](MIXTURE_RANGE_ZH.md)；构建检查来自[真实线程派发](CACHE_PROVENANCE_ZH.md)；评估身份来自[实际构造省略路径](MIXTURE_IDENTITY_ZH.md)。检查器要求字段，并检查基本范围、守恒和相等关系，未重新执行全部原方法。正权重被取整为0会留下一条diagnostic，不自动判定它错误：原代码也允许并发出警告，应由实验目标判断是否可接受。
+
+输出有三种状态。`conflict`表示提供的记录相互矛盾，返回逐项冲突；`needs_evidence`表示尚缺必需记录；`record_consistent_only`表示当前检查范围内记录自洽。后者不提供训练启动授权或收益结论；所有输出固定 `production_execution_verified=false`、`training_benefit_verified=false`。填一个合法形状的内容SHA只通过格式与记录一致性检查，检查器不去读取缓存验证这些字节。
+
+先复制[空模板](templates/data_execution_record.json)。全部空值会返回needs_evidence，不使用默认值补成通过。另提供[明确标注人工的例子](templates/data_execution_record_synthetic.json)，只用于理解字段；它的摘要来自人工标签，不是实际token。运行：
+
+```sh
+python scripts/check_data_execution_record.py templates/data_execution_record.json /tmp/data-record-check.json
+```
+
+脚本只读输入、写结果、打印状态，不调用训练或修改缓存；返回码不是自动训练门禁，调用方应显式读取JSON状态。它目前也没有集成进Marin启动脚本。
+
+本轮对公开材料做了一个诚实的应用：把10月7日223个component声明和三阶段权重放进[归档输入](analysis/data_execution_record_archived.json)，同时引用V89本地Python3.12配额。实际子域、有序dataset_index、host构建计划与评估身份仍为null，没有把spec顺序当成生产对象顺序。本地归一化探针未采集JAX版本，该项也保留null。得到的[实际检查结果](analysis/data_execution_record_archived_check.json)为needs_evidence：声明支持自洽，其余关键执行证据未齐。它没有说Hero数据读取失败，更没有因为缺公开证据而判定训练不健康。
+
+[18组篡改与缺证据控制](analysis/data_record_checker_probe.json)覆盖未知桶、缺失正权重子域、空concat、配额不守恒、域顺序变化、缺运行时、跨机build顺序/身份不一致、同顶层评估域下少子域、内容变化、有效分母为0和非有限权重。另核对正权重零配额保留诊断、空模板不能通过、人工自洽记录不会升级为生产证明，以及当前归档示例保持needs_evidence。这18组是新检查器的测试，不能计作18个新增Marin源码执行实验。[控制脚本](scripts/probe_data_record_checker.py)
+
+这个工具还没有覆盖阶段起点、动态batch前缀、int32中间乘法、边缘块真实排列、inner shuffle、读取token/hash复核、下一state有限性、完整checkpoint恢复和loss因果确认。它仅把数据记录中的第一层矛盾前置。后续应将记录从真实构造与读取路径导出，再用原方法和独立实际数组复核；只有执行身份清楚，配比和顺序的训练实验才更容易解释。

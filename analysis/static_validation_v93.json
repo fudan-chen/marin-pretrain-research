@@ -1,0 +1,14 @@
+{
+  "version": "V93",
+  "checks_passed": 7,
+  "checks": [
+    "index.html unique IDs",
+    "index.html prior pipeline tables preserved plus record gates",
+    "index.html tool and production boundaries explicit",
+    "report_standalone.html unique IDs",
+    "report_standalone.html prior pipeline tables preserved plus record gates",
+    "report_standalone.html tool and production boundaries explicit",
+    "1575 fresh checks"
+  ],
+  "actual_browser_rendering": null
+}

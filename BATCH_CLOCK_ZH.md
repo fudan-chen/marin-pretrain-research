@@ -2,7 +2,7 @@
 
 调整顺序前，先把切换点换算成累计序列数。生产代码中的配比阶段从训练step转换为序列索引；batch发生变化时，不能用“当前batch × step”代替历史累加。恢复时若把过去的batch声明一起改了，相同checkpoint step可能对应不同的下一个逻辑样本。下列例子为人工构造，用来解释接口；没有发现Hero实际发生了这种恢复事故。
 
-[可执行检查器](scripts/audit_batch_clock.py)、[27项核对与反例原值](analysis/batch_clock_probe.json)可复查本章。源码均来自既有归档；本轮重新联网核对的schedule字节与归档一致，没有新增独立实验。这里只检查调度、构造前条件和原回调函数，未执行真实DataLoader、JAX、多卡或token流恢复。
+[可执行检查器](scripts/audit_batch_clock.py)、[27项核对与反例原值](analysis/batch_clock_probe.json)可复查本章。源码均来自既有归档；本轮重新联网核对的schedule字节与归档一致，没有新增独立实验。早期27项只检查调度、构造前条件和原回调函数；下方V52另执行三个原loader异步host方法。两者均未执行完整DataLoader、JAX、多卡或真实token流恢复。
 
 ## 1. 切换step必须穿过历史batch账本
 
@@ -25,7 +25,7 @@
 
 ## 2. 恢复时不能只冻结checkpoint step
 
-Hero入口以 `train_loader.iter_from_step(int(state.step))`恢复批次，并把声明的batch schedule传给DataLoader。本章没有重放loader内部，因此以下结论限定为调度接口：改变已消耗前缀的声明，会改变其计算的逻辑索引；实际会不会读到同一token，还取决于缓存、key、混合阶段、loader实现和真实cursor。
+Hero入口以 `train_loader.iter_from_step(int(state.step))`恢复批次，并把声明的batch schedule传给DataLoader。早期表格仅验证调度接口；下方V52进一步执行原异步索引与取数函数，但未重放完整loader：改变已消耗前缀的声明，会改变其计算的逻辑索引；实际会不会读到同一token，还取决于缓存、key、混合阶段、loader实现和真实cursor。
 
 |人工恢复对照：均在完成4次更新后|前四次batch|计算的下一个序列索引|可以得出的结论|
 |---|---|---:|---|
@@ -70,3 +70,30 @@ Hero入口以 `train_loader.iter_from_step(int(state.step))`恢复批次，并�
 示例故意设置不对齐阶段和被改写的前缀，输出应为 `construction_alignment_ok=false` 和 `requires_cursor_and_prefix_review`。这是练习材料，不是Hero生产配置。检查器验证输入并执行原BatchSchedule与原整数分配方法；它没有修改训练配置、证明历史恢复或替代真实token重放。
 
 对自己的配比实验，最值得先做的不是寻找一个漂亮的阶段比例，而是确认“阶段边界、完整块计数、真实loss分母”能互相对上。同step、相同声明权重和有限loss都不足以完成这项确认。确认后再用供体四臂、共同边缘块与固定评估检验收益，才能把顺序影响与实现造成的曝光差异分开。
+
+
+## V52：预取位置与恢复位置，走进原异步加载器
+
+前三节的公式能指出声明差异，但没有证明加载器究竟请求哪些索引。此次执行归档`DataLoaderIterator`的三个原函数：`_produce_batches`、`_dataset_get_available_batch_number`、`_do_retrieve_batch_of_batches`。函数体由AST原样提取，BatchSchedule也执行归档源码。异步store返回索引本身作为身份；CPU mesh替换为空上下文，设备布局替换成人工本地范围，JAX batchification替换为host结果摘要，慢请求watchdog替换为直接await。因此，这是原host索引控制流的执行，不是完整DataLoader或实际样本恢复。[原加载器](https://github.com/marin-community/marin/blob/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/data/loader.py)
+
+沿用人工schedule：前3步batch=4，此后batch=8。`fetch_batch_size=4`代表一次检索四个训练批次，不是每批四条样本。
+
+|控制条件|原函数请求或返回|含义与边界|
+|---|---|---|
+|从step 0启动，一次预取4批|首个store请求覆盖索引0–19，首次返回只含0–3|host取数已经超前；这些提前读取不等于模型已经训练|
+|模拟完成1步，再从step 1重建|下一批身份为4–7|原函数按state对应的batch号重建；不从此前取数末尾20接续|
+|step 4，保留历史batch|返回20–27|历史累计量20决定真实identity store请求|
+|step 4，把过去都改成batch=8|返回32–39|同step已经不是同输入；这里从公式推断提升为原取数函数控制|
+|只在step 4以后改成batch=6|返回20–25|起点保持，后续更新分组已变；不是同一训练轨迹|
+|把fetch深度由4改成1|首个返回批仍为20–27|此人工store/layout中返回内容不变；取数时序与资源成本没有验收|
+|两个人工设备范围完全重叠|每个batch的store请求仍只有8个独立索引|原函数先去重设备范围；不是跨进程通信或真实mesh测试|
+|有限库存22条，允许尾批padding|最后返回step 4，只有身份20、21，global_size=2|原规划保留两条真实数据；没有执行JAX padding或证明其loss权重|
+|同库存，不允许尾批padding|仅返回4个完整批次，最后为12–19|20、21未交付；这是有限数据控制，不代表Hero无限混合数据丢样本|
+|有限库存20条，恰好完整结束|返回4批，没有额外空批|正向边界控制|
+|库存22条，从step 5/6启动|step 5为空迭代；step 6触发原assert|超出可达终点需要区分合法结束与非法恢复；不认定实际Hero遇到此情况|
+
+预取控制在第一次yield后主动关闭async generator。它确实执行了原取数函数并记录请求，未构建生产background queue或测量进程崩溃。这足以说明**取数位置、交付位置、完成更新位置必须分开记录**；不足以证明生产prefetch永远可重放。缓存版本、随机key、混合映射或底层store改变，即使相同索引也可能返回不同token。
+
+原host重建路径并没有独立持久化本探针store的cursor：batch号经当前schedule重新计算offset，再取得样本。因此恢复评审至少绑定完成step、历史batch前缀、当前next offset、数据身份与连续若干批次的token/hash；若数据源有在线增长、非确定性读取或外部游标，还需额外恢复合同。确认下一批后，继续核对optimizer、router、EMA/RNG等完整状态；数据一致不能替代更新一致。[状态审计](TRAIN_STATE_ZH.md) · [保存提交与独立恢复](CHECKPOINT_COMMIT_ZH.md)
+
+[11项原函数控制结果](analysis/loader_resume_probe.json)保留每批身份、原函数行号和源码SHA。[可执行脚本](scripts/probe_loader_resume.py)要求Python 3.10以上，因为原函数使用`zip(strict=False)`；本次运行是Python 3.12.13，没有修改原函数来兼容3.9。入口为`make loader-resume CPU_PYTHON=/你的Python3.10以上/bin/python`。实际Hero next tokens、完整checkpoint恢复、JAX batchification和background线程仍为空。

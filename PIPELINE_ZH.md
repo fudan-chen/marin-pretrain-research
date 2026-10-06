@@ -107,3 +107,8 @@ V22的[诊断流程](LOSS_TRIAGE_ZH.md)把指标/模型视图、样本内容与�
 ## V51：裁剪验收要看归约范围和后续状态
 
 [分组章节的CPU对照](OPTIMIZER_GROUPS_ZH.md)确认三组各裁剪到1时合并范数为√3，且原AdamH首步近乎相同的参数更新可留下不同moment；固定后续参数与梯度，差异仍进入下一次update。验收需记录clip范围、系数/触发率、moment/count和后续有效步，不能只看首次更新相似。最新归档max_grad_norm=None；这不是Hero已启用裁剪的事件证据，规则锚点不变。
+
+
+## V52：加载器恢复控制
+
+恢复检查顺序：先冻结已完成step和历史batch前缀，再记录next offset与连续输入身份；把prefetch水位单列。有限库存分别验收完整末批、部分末批、合法终点和超范围step，随后才比较完整状态与下一步更新。[原函数检查结果](analysis/loader_resume_probe.json)。

@@ -1,0 +1,15 @@
+{
+  "pages": {
+    "index.html": {
+      "batch_clock_tables": 4,
+      "sha256": "62c2e7bec05cd9b84b8a83a748f38df04128a34335220eed7b1a86d5902c568a"
+    },
+    "report_standalone.html": {
+      "batch_clock_tables": 4,
+      "sha256": "61ee07f3eadfd49ef7bf5fc4ddd564df0a52ee67c041e35a743a0e5e992ee554"
+    }
+  },
+  "actual_browser_rendering": null,
+  "loader_make_target_verified": true,
+  "prior_source_bytes_preserved": 443
+}

@@ -676,7 +676,7 @@ ok('V35 schedule and allocation source digests match',all(hashlib.sha256((ROOT/p
 ok('V35 alignment and cursor counterexample remain rejected',not bc['synthetic_review']['construction_alignment_ok'] and bc['synthetic_review']['resume']['sequence_offset_delta']==-12)
 ok('V35 equal totals do not imply equal batch prefixes',bc['equal_endpoint_counterexample']['sequence_offset_delta']==0 and not bc['equal_endpoint_counterexample']['consumed_batch_prefix_equal'])
 ok('V35 original callback does not write removed component zero','mixture/weight/B' not in bc['original_callback_logs'][-1]['data'])
-ok('V35 new clock chapter has three evidence tables',len(soup.select('#batch-clock-guide table'))==3)
+ok('V35 clock chapter retains three original tables plus V52 loader table',len(soup.select('#batch-clock-guide table'))==4)
 report['highlights']+=['V35 exact cumulative batch clock / stage alignment rejection / consumed prefix review / configured weights versus block counts; static HTML verification only for new chapter']
 mr=read(A/'mixture_range_probe.json')
 ok('V36 integer range probes retain twenty-two bounded checks',mr['checks_passed']==len(mr['checks'])==22 and mr['actual_historical_overflow'] is None and mr['actual_loader_replay'] is None and mr['actual_Hero_runtime_numpy_version'] is None)
@@ -804,6 +804,13 @@ ok('V51 real group clipping differs from whole model control',abs(gc['group_cont
 ok('V51 shared next inputs expose distinct clipping moment history',gc['original_AdamH_control']['first_update_difference_norm']<1e-6 and gc['original_AdamH_control']['common_next_update_difference_norm']>.1 and gc['original_AdamH_control']['next_parameter_input_shared'] is True)
 ok('V51 existing optimizer chapter has five tables and new CPU figure',len(soup.select('#optimizer-guide table'))==5 and soup.select_one('#optimizer-guide svg') is not None)
 report['highlights']+=['V51 real Optax grouped clipping controls and original AdamH fixed-next-input state comparison; ten checks, latest declared clipping disabled, no real Hero group/build/clipping event']
+lr=read(A/'loader_resume_probe.json')
+ok('V52 eleven original async loader host controls retain scope',lr['checks_passed']==len(lr['checks'])==11 and lr['actual_Hero_next_tokens'] is None and lr['actual_checkpoint_restore'] is None and lr['actual_JAX_batchification'] is None and lr['actual_background_prefetch'] is None)
+ok('V52 loader source identities match',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in lr['source_sha256'].items()))
+ok('V52 prefetch and completed-step resume are distinct',max(lr['prefetch']['first_store_request'])==19 and lr['prefetch']['resume_completed_step_one']['identities']==[4,5,6,7])
+ok('V52 historical rewrite affects original host retrieval',lr['history_change']['old']['offset']==20 and lr['history_change']['rewritten']['offset']==32 and lr['history_change']['future_only']['offset']==20)
+ok('V52 existing batch clock chapter retains four tables',len(soup.select('#batch-clock-guide table'))==4)
+report['highlights']+=['V52 eleven original async loader host controls, identity-store retrieval and finite endpoints; no actual Hero token stream, background queue or complete checkpoint restore']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

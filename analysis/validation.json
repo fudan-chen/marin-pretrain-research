@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1398,
+  "checks_passed": 1403,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -99,7 +99,8 @@
     "V48 generic accumulation versus specialized Hero path; fourteen original-body/serial/artificial objective checks; unequal denominator gradient reversal, no actual Hero bug or JAX/model/distributed parity",
     "V49 twenty-one genuine single-device JAX CPU numerical checks and nine conditional default-text-mask checks; forward zero versus reverse NaN, finite padding control, no actual Hero trigger or historical/GPU/TPU/full optimizer binding",
     "V50 full unmodified AdamH module on artificial CPU matrices, fourteen CPU/source checks, nonzero warm-zero update and discard-versus-freeze distinction; bare empty-mesh JIT failure retained, named one-device JIT verified, no Hero full-step binding",
-    "V51 real Optax grouped clipping controls and original AdamH fixed-next-input state comparison; ten checks, latest declared clipping disabled, no real Hero group/build/clipping event"
+    "V51 real Optax grouped clipping controls and original AdamH fixed-next-input state comparison; ten checks, latest declared clipping disabled, no real Hero group/build/clipping event",
+    "V52 eleven original async loader host controls, identity-store retrieval and finite endpoints; no actual Hero token stream, background queue or complete checkpoint restore"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

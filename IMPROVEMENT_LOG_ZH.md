@@ -315,3 +315,8 @@ V25把`paloma/bpb`错误命名为macro；它在固定公共源码中来自父级
 ## V51：裁剪验收要看归约范围和后续状态
 
 [分组章节的CPU对照](OPTIMIZER_GROUPS_ZH.md)确认三组各裁剪到1时合并范数为√3，且原AdamH首步近乎相同的参数更新可留下不同moment；固定后续参数与梯度，差异仍进入下一次update。验收需记录clip范围、系数/触发率、moment/count和后续有效步，不能只看首次更新相似。最新归档max_grad_norm=None；这不是Hero已启用裁剪的事件证据，规则锚点不变。
+
+
+## V52：加载器恢复控制
+
+V52执行三个原异步loader方法与原BatchSchedule，11项人工host控制；补预取与完成水位、真实identity请求的历史改写差异及有限数据尾批边界。未执行完整DataLoader、background线程、JAX数组或实际Hero恢复。README同时更正旧观察段落与最新快照不一致的问题。

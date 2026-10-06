@@ -100,3 +100,7 @@ optimizer-cpu:
 clipping-cpu:
 	$(CPU_PYTHON) scripts/probe_group_clipping_cpu.py
 	$(PYTHON) scripts/write_group_clipping.py
+
+.PHONY: loader-resume
+loader-resume:
+	$(CPU_PYTHON) scripts/probe_loader_resume.py

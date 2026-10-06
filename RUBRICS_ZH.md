@@ -292,3 +292,8 @@ Loss、BPB、正确率与drop口径是否分清？ 度量对象变了，曲线�
 ## V51：裁剪验收要看归约范围和后续状态
 
 [分组章节的CPU对照](OPTIMIZER_GROUPS_ZH.md)确认三组各裁剪到1时合并范数为√3，且原AdamH首步近乎相同的参数更新可留下不同moment；固定后续参数与梯度，差异仍进入下一次update。验收需记录clip范围、系数/触发率、moment/count和后续有效步，不能只看首次更新相似。最新归档max_grad_norm=None；这不是Hero已启用裁剪的事件证据，规则锚点不变。
+
+
+## V52：加载器恢复控制
+
+恢复验收新增约束：单独保存已完成更新、已交付batch、store预取范围。绑定历史batch前缀与实际next token/hash，不把fetch末尾当作训练cursor；对有限数据尾批明确padding/drop政策。[原host控制](BATCH_CLOCK_ZH.md)。

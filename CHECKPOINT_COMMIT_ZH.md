@@ -173,3 +173,34 @@ V65 只跑了原 spec 构造函数。这次把执行范围推进到原 `_seriali
 [保存验收模板](templates/checkpoint_commit_review.json)已增加这四项的证据栏，并保留失败 attempt 是否已报告的状态；所有真实验收结果仍为空。这不是已经通过的生产检查清单。
 
 范围：LocalStoragePath 为 pathlib 适配器，替代 rigging 存储接口，仅用于本地 manifest 读写；候选扫描使用真实 fsspec。原 schema 使用实际 Pydantic 2.11.7，AST 环境显式 rebuild forward annotations；reader 使用真实 JAX 0.7.2/TensorStore 0.1.69。heap trim 和 host write-plan 范围继承 V66。没有远端一致性、ONE_REPLICA collective、完整 tree restore、生产 metadata 发布或真实旧标志事故。复现：安装 requirements-cpu-numerics.txt 与 requirements-tensorstore-io.txt 后，`make restore-real-io CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。
+
+
+## V68：上层是否兜底，取决于叶类型与检查对象
+
+V67 把形状不一致的保护留为未知。这次继续执行原 `load_checkpoint` → 原 tree deserialize → 原真实 leaf reader，并提取固定 Marin revision 中的完整 Haliax NamedArray 类、Axis 与相关辅助函数参与重建。六个真实 IO 输入比较普通 ShapeDtypeStruct 叶和 NamedArray 叶，另检查显式关闭 shape checks 的构造行为；7 项检查通过。[逐输入结果与源码摘要](analysis/tree_restore_contracts.json)可复查。
+
+|exemplar 与实际存储|普通 ShapeDtypeStruct 叶|NamedArray 叶，shape checks 开启|
+|---|---|---|
+|预期 6×4 float32，存储相同|返回 6×4 float32|返回 6×4 float32|
+|预期 6×4，存储 2×4 float32|返回 2×4，没有形状错误|重建时报 rows 轴大小 6 != 2|
+|预期 float32，存储 6×4 int32|返回 int32|返回 int32，没有 dtype 错误|
+
+原 `load_checkpoint` 的实际 Equinox partition/combine 参与运行，non-array 字段 diagnostic 保持。结果因此比只调用 leaf reader 更接近上层接口，但输入仍是一叶字典，不是 Hero 模型或完整训练状态。
+
+### 形状保护在哪一步发生
+
+原 tree deserialize 对每个读回叶先替换数据，再调用 `_rebuild_named_array`。普通叶直接返回 array；NamedArray 则调用 `hax.NamedArray(array, like.axes)`。原构造函数在 shape checks 开启时，将 exemplar 的 axes 大小与读回 shape 对照，发现不同便拒绝。因此 V67 的底层缺少 manifest shape 比较，并不意味着 NamedArray 的上层重建也缺少尺寸检查。
+
+这个检查针对轴名与尺寸，没有将 exemplar 的 dtype 作为构造约束。它会接受本例相同形状的 int32 数据。普通 ShapeDtypeStruct 的 shape/dtype 也没有在本例的整个 load_checkpoint wrapper 中成为约束。这里确认的是固定源码与受控输入的行为，不是“某个真实训练叶已加载错误 dtype”的事故判断。Hero 实际叶类型与调用路径仍未清点。
+
+原 Haliax 的 shape-check 开关默认 True，`tree_unflatten` 为了 JAX 中间状态会临时关闭检查；原 tree deserialize 的显式重建会再次调用构造函数。人工控制里，在 `enable_shape_checks(False)` 上下文内直接构造错误尺寸对象会成功，退出上下文开关恢复。这没有证明 Hero 恢复时关闭开关，也没有测试并发调用、全局开关线程安全或实际导出模型。
+
+### 对恢复验收规则的修正
+
+把“上层模型会校验”改为有具体对象的规则：每个状态叶标明实际类型、预期与恢复的 shape/dtype、检查发生在哪个函数、失败是否阻断整次恢复。NamedArray 的轴尺寸检查可以作为尺寸证据；不能顺带当作 dtype 或内容摘要证据。普通参数、optimizer buffer、计数器和 pending state 应各自核对，不从某个 NamedArray 参数的表现推广到整棵训练树。
+
+[保存验收模板](templates/checkpoint_commit_review.json)增加叶类型清单、NamedArray check 状态和叶级 dtype 对照证据，真实值仍为空。生产验收下一步应取得真实状态树的类型/schema inventory，再按类设计少量有针对性的错误输入，确认每项保护是否覆盖实际叶。
+
+本轮归档六份固定 SHA 原材料：Marin/Haliax 辅助源码与 uv.lock，新增来源有独立 URL、时间和摘要。该 lock 声明 workspace 的 marin-haliax 来自 lib/haliax，含 JAX 0.11.x 的条件依赖；本轮运行的 JAX 是 0.7.2。lock 声明不证明 Hero 当时实际 wheel 版本，也不能把本地环境说成生产环境重建。
+
+执行范围：NamedArray 类通过 AST 原样提取，并未导入完整 Haliax 包；未用替身改写它的构造/轴检查。axis→sharding 映射用单 CPU 设备适配器，忽略 mesh/axis mapping；cross-region 计费 no-op；本地 StoragePath 适配、手工根定位 metadata 与原真实 IO 范围继承 V67。没有完整模型/训练状态、GPU donation、ONE_REPLICA collective 或生产 dtype 事故复现。复现：`make tree-restore-contracts CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。

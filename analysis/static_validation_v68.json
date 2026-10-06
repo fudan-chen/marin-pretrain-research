@@ -1,0 +1,11 @@
+{
+  "checks_passed": 5,
+  "checks": [
+    "index.html unique ids",
+    "index.html V68 original serializer text",
+    "report_standalone.html unique ids",
+    "report_standalone.html V68 original serializer text",
+    "461 frozen source hashes valid"
+  ],
+  "actual_browser_rendering": null
+}

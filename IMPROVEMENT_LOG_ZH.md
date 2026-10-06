@@ -397,3 +397,8 @@ V57复算#9708冻结表18条、12条步时，6项检查；新增性能图和未�
 ## V67：原发现、真实 manifest schema 与原 leaf 恢复贯通
 
 9 项真实 IO 控制；原 writer 的两叶读回为真实 JAX 数组，核对人工 marker、缺叶/缺 metadata、部分块填充及 manifest/store shape 不一致。Pydantic 与 fsspec 真实，StoragePath 本地适配；无完整 tree/state、生产发布、多 rank 或旧 marker 事故证据。更新四合同验收模板。455 来源保持。
+
+
+## V68：上层 load wrapper 与原 NamedArray 检查
+
+六个真实 IO 输入、7 检查；原 load_checkpoint、Equinox partition/combine、原 tree/leaf reader 及原 NamedArray 类。命名轴尺寸会拒绝不一致，普通 shape exemplar 与 dtype 保护分开。新增六份固定来源，454 份旧材料字节保持，仅 source_manifest 扩展。单 CPU sharding 适配、未运行完整模型或生产事故。

@@ -1,0 +1,132 @@
+{
+  "scope": "Original tree restoration and extracted original Haliax NamedArray class.\nReal local arrays, single-device sharding adapter; no complete Marin model or production restore.\n",
+  "checks_passed": 7,
+  "checks": [
+    "Original raw and named matching tree restore succeed",
+    "Raw exemplar shape does not constrain original tree restore",
+    "Original NamedArray rebuild rejects changed axis size",
+    "Raw and named restored dtype follow store rather than exemplar",
+    "Explicitly disabled shape checks permit mismatched constructor control",
+    "Shape-check context restores enabled state",
+    "Original load wrapper preserves non-array exemplar field"
+  ],
+  "cases": [
+    {
+      "fixture": "matching",
+      "exemplar": "ShapeDtypeStruct",
+      "expected_shape": [
+        6,
+        4
+      ],
+      "expected_dtype": "float32",
+      "error": null,
+      "restored_shape": [
+        6,
+        4
+      ],
+      "restored_dtype": "float32",
+      "non_array_label": "diagnostic"
+    },
+    {
+      "fixture": "matching",
+      "exemplar": "NamedArray",
+      "expected_shape": [
+        6,
+        4
+      ],
+      "expected_dtype": "float32",
+      "error": null,
+      "restored_shape": [
+        6,
+        4
+      ],
+      "restored_dtype": "float32",
+      "non_array_label": "diagnostic"
+    },
+    {
+      "fixture": "wrong_shape",
+      "exemplar": "ShapeDtypeStruct",
+      "expected_shape": [
+        6,
+        4
+      ],
+      "expected_dtype": "float32",
+      "error": null,
+      "restored_shape": [
+        2,
+        4
+      ],
+      "restored_dtype": "float32",
+      "non_array_label": "diagnostic"
+    },
+    {
+      "fixture": "wrong_shape",
+      "exemplar": "NamedArray",
+      "expected_shape": [
+        6,
+        4
+      ],
+      "expected_dtype": "float32",
+      "error": "ValueError: Axis rows has different sizes in ('rows', 'cols') and (2, 4): 6 != 2"
+    },
+    {
+      "fixture": "wrong_dtype",
+      "exemplar": "ShapeDtypeStruct",
+      "expected_shape": [
+        6,
+        4
+      ],
+      "expected_dtype": "float32",
+      "error": null,
+      "restored_shape": [
+        6,
+        4
+      ],
+      "restored_dtype": "int32",
+      "non_array_label": "diagnostic"
+    },
+    {
+      "fixture": "wrong_dtype",
+      "exemplar": "NamedArray",
+      "expected_shape": [
+        6,
+        4
+      ],
+      "expected_dtype": "float32",
+      "error": null,
+      "restored_shape": [
+        6,
+        4
+      ],
+      "restored_dtype": "int32",
+      "non_array_label": "diagnostic"
+    }
+  ],
+  "runtime": {
+    "jax": "0.7.2",
+    "equinox": "0.13.2"
+  },
+  "original_tree_deserializer": true,
+  "original_load_checkpoint": true,
+  "original_NamedArray_class_extracted": true,
+  "explicit_substitutions": {
+    "sharding_for_axis": "single CPU device adapter; ignores mesh/axis mapping",
+    "record_transfer": "no-op cross-region accounting",
+    "StoragePath": "inherited local pathlib adapter",
+    "metadata": "manual empty object, only root traversal tested"
+  },
+  "actual_full_model_restore": null,
+  "actual_Hero_leaf_types": null,
+  "actual_Hero_shape_checks_disabled": null,
+  "actual_production_dtype_incident": null,
+  "source_sha256": {
+    "sources/checkpoint_commit_2026_10_05/tensorstore_serialization.py": "5dddf8c6cc87cb062593482abe6775eee59eea443c28c7fd8d8b7ddf261f89ea",
+    "sources/checkpoint_commit_2026_10_05/checkpoint_manifest.py": "ae7a3535d2721bcd4ac598bd3f75c9bb8878fbbb1656f87f22b0c988dd0d9b3b",
+    "sources/checkpoint_commit_2026_10_05/checkpoint.py": "3997faa8082442fcdf16df2fd0c13bf30a26a9c5db62eb81cce0758bff4a2274",
+    "sources/tree_restore_2026_10_07/jax_utils.py": "647a16ab5d7adac4166e63a429b112afdda0f11dd4fcb4866dde77cb3a4263d1",
+    "sources/tree_restore_2026_10_07/haliax_core.py": "bb6eb762678ed5d9871f8921e292909c6afc500026380c6057a0af654ce63cf8",
+    "sources/tree_restore_2026_10_07/haliax_axis.py": "4e6d6bdd4c414f6177b1f8cf7352eb31be2c2d91bd5c97a0308f4d10b6ef0830",
+    "sources/tree_restore_2026_10_07/haliax_jax_utils.py": "8b928182089ce70ebd24a4b996c0ca2a74b3052771ede15770046976416f9c2d",
+    "sources/tree_restore_2026_10_07/haliax_util.py": "ae8737a35f9b0c8902c63c48cc853dfd3bc7e52fae05385fb10986611cb4f37a"
+  }
+}

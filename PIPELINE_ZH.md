@@ -167,3 +167,6 @@ V66 保存管线补充：为 stage、每个 future 的成功/失败、local 状�
 
 
 V67 恢复管线补充：目录候选先绑定成功发布 attempt；随后独立比较预期 schema、manifest schema、TensorStore 元数据与实际 JAX 数组。内容对照及 full-state/next-step 另列。发现函数返回的最高 step 不能自动视为已验证回退点。保存验收模板增加对应证据栏，仍待真实执行。
+
+
+V68 管线补充：先导出真实训练状态叶类型/schema inventory，再区分 NamedArray、普通数组、optimizer buffer 与计数器，逐类核对恢复约束。记录 NamedArray shape-check 状态；显式 dtype 对照和内容校验另执行。原 load wrapper 的本地六输入已测试，真实状态树尚未验收。

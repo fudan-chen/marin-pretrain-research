@@ -171,3 +171,7 @@ serialize-real-io:
 .PHONY: restore-real-io
 restore-real-io:
 	PYTHONPATH=$(TENSORSTORE_PATH) $(CPU_PYTHON) scripts/probe_restore_candidate_real_io.py
+
+.PHONY: tree-restore-contracts
+tree-restore-contracts:
+	PYTHONPATH=$(TENSORSTORE_PATH) $(CPU_PYTHON) scripts/probe_tree_restore_contracts.py

@@ -352,3 +352,6 @@ V66 恢复规则补充：区分“future 已结束并释放预算”和“保存
 
 
 V67 接口规则：把“候选发现”“叶存在”“shape/dtype 一致”“内容完整”和“下一步行为”分别判定。字段在 manifest 中存在，不证明消费者使用其约束；本地原 leaf reader 的 shape 控制验证了这个边界，上层 schema 检查仍未知。人工完成标志仅测试消费条件，不是生产事故证据。
+
+
+V68 规则修正：说明上层保护时列出实际叶类型与具体检查。NamedArray 尺寸校验不等于 dtype 校验；本例普通 ShapeDtypeStruct 的形状也不受 exemplar 约束。每类叶分别核对 shape/dtype/content，实际 Hero 类型分布未知，不能据 toy tree 判整个训练系统的保护覆盖。

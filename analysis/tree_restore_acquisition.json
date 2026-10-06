@@ -1,0 +1,45 @@
+{
+  "records": [
+    {
+      "file": "tree_restore_2026_10_07/jax_utils.py",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/utils/jax_utils.py",
+      "retrieved_utc": "2026-10-06T20:36:23.742915+00:00",
+      "sha256": "647a16ab5d7adac4166e63a429b112afdda0f11dd4fcb4866dde77cb3a4263d1"
+    },
+    {
+      "file": "tree_restore_2026_10_07/uv.lock",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/uv.lock",
+      "retrieved_utc": "2026-10-06T20:36:25.859456+00:00",
+      "sha256": "5defbb7a81a817ebc5fdd76f698f11fd019b104930477bbe8dce7d5336f37a46"
+    },
+    {
+      "file": "tree_restore_2026_10_07/haliax_core.py",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/haliax/src/haliax/core.py",
+      "retrieved_utc": "2026-10-06T20:37:01.212541+00:00",
+      "sha256": "bb6eb762678ed5d9871f8921e292909c6afc500026380c6057a0af654ce63cf8"
+    },
+    {
+      "file": "tree_restore_2026_10_07/haliax_axis.py",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/haliax/src/haliax/axis.py",
+      "retrieved_utc": "2026-10-06T20:37:01.980545+00:00",
+      "sha256": "4e6d6bdd4c414f6177b1f8cf7352eb31be2c2d91bd5c97a0308f4d10b6ef0830"
+    },
+    {
+      "file": "tree_restore_2026_10_07/haliax_jax_utils.py",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/haliax/src/haliax/jax_utils.py",
+      "retrieved_utc": "2026-10-06T20:37:39.027748+00:00",
+      "sha256": "8b928182089ce70ebd24a4b996c0ca2a74b3052771ede15770046976416f9c2d"
+    },
+    {
+      "file": "tree_restore_2026_10_07/haliax_util.py",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/haliax/src/haliax/util.py",
+      "retrieved_utc": "2026-10-06T20:37:39.693090+00:00",
+      "sha256": "ae8737a35f9b0c8902c63c48cc853dfd3bc7e52fae05385fb10986611cb4f37a"
+    }
+  ],
+  "prior_file_count": 455,
+  "prior_bytes_preserved": 454,
+  "changed_bookkeeping": [
+    "source_manifest.json"
+  ]
+}

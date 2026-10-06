@@ -63,7 +63,10 @@
       "store_metadata_schema_digest": null,
       "restored_array_schema_digest": null,
       "shape_dtype_comparison_result": null,
-      "missing_leaf_result": null
+      "missing_leaf_result": null,
+      "leaf_type_inventory": null,
+      "named_array_shape_check_state": null,
+      "per_leaf_dtype_comparison_evidence": null
     },
     "content_integrity": {
       "save_attempt_digest": null,

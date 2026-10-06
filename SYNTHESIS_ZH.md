@@ -154,3 +154,6 @@ V66 推进到原 host-array 保存函数与真实单进程 manager。受控元�
 
 
 V67 将原发现与原 leaf restore 接到真实 IO。人工标志会让部分写入目录成为候选，strict 缺叶检查不会拒绝合法填充值块；manifest 声明形状与实际 store 形状的比较也未在该 leaf reader 中执行。完整状态层是否另有保护未知，故结论是应检查各层合同，而非将受控输入归成 Hero 的真实事故。
+
+
+V68 补齐 V67 的一部分上层边界：原 NamedArray 重建在检查开启时确实拒绝错误轴尺寸，普通 ShapeDtypeStruct 叶则按存储形状返回；两类在本例都接受 int32 替代 float32。避免将底层缺约束写成上层全无保护，也避免将轴尺寸保护写成完整 schema 保证。

@@ -1,6 +1,6 @@
 # 当前交付审计：文件覆盖与真实验证分别核对
 
-当前版本V67：原候选发现、manifest schema 与原 leaf 恢复链贯通真实 IO，9 项检查。明确 strict 的缺叶范围及 manifest/store shape 校验边界；完整状态、生产发布与多机验证未知。详见 [checkpoint 提交与恢复](CHECKPOINT_COMMIT_ZH.md)。
+当前版本V68：原 load wrapper、原 NamedArray 类与真实存储联合检查，7 项验证。上层尺寸保护依赖叶类型，dtype 校验另需核对；真实模型与生产事故未知。详见 [checkpoint 提交与恢复](CHECKPOINT_COMMIT_ZH.md)。
 
 |用户要求|当前权威产物|覆盖与实际限制|
 |---|---|---|

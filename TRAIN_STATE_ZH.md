@@ -115,3 +115,8 @@ Hero 的训练状态包含六个字段：`step`、`params`、`master_params`、`
 恢复验收应在原始pending上记录逐层shape、dtype、finite状态，再记录应用后bias；若异常，保留原值与来源并拒绝该诊断输入，不能默默将其置零当作等价恢复。生产错误处理还须遵循已有分布式终止协议，本轮未实现它。只在损失曲线异常后检查params是否finite，会漏掉先进入路由状态的故障线索。
 
 运行make pending-router-view CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python可复算。要落实到真实checkpoint，下一步仍需相同权威参数、pending、EMA/非EMA、dtype、backend和容量策略的固定输入对照；当前实际视图误差、非有限事件和GPU结果均保留未知。
+
+
+## V111：恢复后的下一次更新
+
+V111执行原训练闭包、真实Equinox setter和原路由块，接真实Adam与本地OCDBT恢复，19项检查。完整恢复下一次更新逐叶等价；清零pending不等价；预写入bias后清零仍会被原setter覆盖为零。原初始化EMA共享叶在本JAX CPU路径触发重复donation，独立缓冲区和EMA关闭控制成功；归档Hero EMA关闭。详见[原训练步与状态视图](PENDING_RESUME_ZH.md)。

@@ -1,0 +1,449 @@
+Unknown leaf type <class 'NoneType'>
+Original-step pending/restore controls 19
+{
+  "uninterrupted": {
+    "step": 3,
+    "adam_count": 3,
+    "params_w": [
+      2.97013521194458,
+      0.9750804901123047,
+      -2.013193368911743
+    ],
+    "stored_bias": [
+      [
+        1.0,
+        1.0,
+        -2.0
+      ]
+    ],
+    "pending": [
+      [
+        0.0,
+        3.0,
+        0.0
+      ]
+    ],
+    "next_forward_bias": [
+      [
+        1.0,
+        -2.0,
+        1.0
+      ]
+    ],
+    "stored_ids": [
+      [
+        1,
+        0
+      ]
+    ],
+    "next_forward_ids": [
+      [
+        0,
+        2
+      ]
+    ],
+    "stored_prediction": 4.8738508224487305,
+    "next_forward_prediction": 1.3479845523834229,
+    "train_loss": 0.719078004360199,
+    "next_state": {
+      "step": 4,
+      "adam_count": 4,
+      "params_w": [
+        2.9611687660217285,
+        0.96834796667099,
+        -2.019578695297241
+      ],
+      "stored_bias": [
+        [
+          1.0,
+          -2.0,
+          1.0
+        ]
+      ],
+      "pending": [
+        [
+          3.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "next_forward_bias": [
+        [
+          -2.0,
+          1.0,
+          1.0
+        ]
+      ],
+      "stored_ids": [
+        [
+          0,
+          2
+        ]
+      ],
+      "next_forward_ids": [
+        [
+          1,
+          2
+        ]
+      ],
+      "stored_prediction": 1.3287162780761719,
+      "next_forward_prediction": -1.1367480754852295
+    }
+  },
+  "full_restore": {
+    "step": 3,
+    "adam_count": 3,
+    "params_w": [
+      2.97013521194458,
+      0.9750804901123047,
+      -2.013193368911743
+    ],
+    "stored_bias": [
+      [
+        1.0,
+        1.0,
+        -2.0
+      ]
+    ],
+    "pending": [
+      [
+        0.0,
+        3.0,
+        0.0
+      ]
+    ],
+    "next_forward_bias": [
+      [
+        1.0,
+        -2.0,
+        1.0
+      ]
+    ],
+    "stored_ids": [
+      [
+        1,
+        0
+      ]
+    ],
+    "next_forward_ids": [
+      [
+        0,
+        2
+      ]
+    ],
+    "stored_prediction": 4.8738508224487305,
+    "next_forward_prediction": 1.3479845523834229,
+    "train_loss": 0.719078004360199,
+    "next_state": {
+      "step": 4,
+      "adam_count": 4,
+      "params_w": [
+        2.9611687660217285,
+        0.96834796667099,
+        -2.019578695297241
+      ],
+      "stored_bias": [
+        [
+          1.0,
+          -2.0,
+          1.0
+        ]
+      ],
+      "pending": [
+        [
+          3.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "next_forward_bias": [
+        [
+          -2.0,
+          1.0,
+          1.0
+        ]
+      ],
+      "stored_ids": [
+        [
+          0,
+          2
+        ]
+      ],
+      "next_forward_ids": [
+        [
+          1,
+          2
+        ]
+      ],
+      "stored_prediction": 1.3287162780761719,
+      "next_forward_prediction": -1.1367480754852295
+    }
+  },
+  "clear_pending": {
+    "step": 3,
+    "adam_count": 3,
+    "params_w": [
+      2.97013521194458,
+      0.9750804901123047,
+      -2.013193368911743
+    ],
+    "stored_bias": [
+      [
+        1.0,
+        1.0,
+        -2.0
+      ]
+    ],
+    "pending": [
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "next_forward_bias": [
+      [
+        -0.0,
+        -0.0,
+        -0.0
+      ]
+    ],
+    "stored_ids": [
+      [
+        1,
+        0
+      ]
+    ],
+    "next_forward_ids": [
+      [
+        1,
+        0
+      ]
+    ],
+    "stored_prediction": 4.8738508224487305,
+    "next_forward_prediction": 4.8738508224487305,
+    "train_loss": 19.13056755065918,
+    "next_state": {
+      "step": 4,
+      "adam_count": 4,
+      "params_w": [
+        2.9601471424102783,
+        0.9661884307861328,
+        -2.0179052352905273
+      ],
+      "stored_bias": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "pending": [
+        [
+          3.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "next_forward_bias": [
+        [
+          -2.0,
+          1.0,
+          1.0
+        ]
+      ],
+      "stored_ids": [
+        [
+          1,
+          0
+        ]
+      ],
+      "next_forward_ids": [
+        [
+          1,
+          2
+        ]
+      ],
+      "stored_prediction": 4.850282192230225,
+      "next_forward_prediction": -1.1375831365585327
+    }
+  },
+  "materialize_keep_pending": {
+    "step": 3,
+    "adam_count": 3,
+    "params_w": [
+      2.97013521194458,
+      0.9750804901123047,
+      -2.013193368911743
+    ],
+    "stored_bias": [
+      [
+        1.0,
+        -2.0,
+        1.0
+      ]
+    ],
+    "pending": [
+      [
+        0.0,
+        3.0,
+        0.0
+      ]
+    ],
+    "next_forward_bias": [
+      [
+        1.0,
+        -2.0,
+        1.0
+      ]
+    ],
+    "stored_ids": [
+      [
+        0,
+        2
+      ]
+    ],
+    "next_forward_ids": [
+      [
+        0,
+        2
+      ]
+    ],
+    "stored_prediction": 1.3479845523834229,
+    "next_forward_prediction": 1.3479845523834229,
+    "train_loss": 0.719078004360199,
+    "next_state": {
+      "step": 4,
+      "adam_count": 4,
+      "params_w": [
+        2.9611687660217285,
+        0.96834796667099,
+        -2.019578695297241
+      ],
+      "stored_bias": [
+        [
+          1.0,
+          -2.0,
+          1.0
+        ]
+      ],
+      "pending": [
+        [
+          3.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "next_forward_bias": [
+        [
+          -2.0,
+          1.0,
+          1.0
+        ]
+      ],
+      "stored_ids": [
+        [
+          0,
+          2
+        ]
+      ],
+      "next_forward_ids": [
+        [
+          1,
+          2
+        ]
+      ],
+      "stored_prediction": 1.3287162780761719,
+      "next_forward_prediction": -1.1367480754852295
+    }
+  },
+  "materialize_clear_pending": {
+    "step": 3,
+    "adam_count": 3,
+    "params_w": [
+      2.97013521194458,
+      0.9750804901123047,
+      -2.013193368911743
+    ],
+    "stored_bias": [
+      [
+        1.0,
+        -2.0,
+        1.0
+      ]
+    ],
+    "pending": [
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "next_forward_bias": [
+      [
+        -0.0,
+        -0.0,
+        -0.0
+      ]
+    ],
+    "stored_ids": [
+      [
+        0,
+        2
+      ]
+    ],
+    "next_forward_ids": [
+      [
+        1,
+        0
+      ]
+    ],
+    "stored_prediction": 1.3479845523834229,
+    "next_forward_prediction": 4.8738508224487305,
+    "train_loss": 19.13056755065918,
+    "next_state": {
+      "step": 4,
+      "adam_count": 4,
+      "params_w": [
+        2.9601471424102783,
+        0.9661884307861328,
+        -2.0179052352905273
+      ],
+      "stored_bias": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "pending": [
+        [
+          3.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "next_forward_bias": [
+        [
+          -2.0,
+          1.0,
+          1.0
+        ]
+      ],
+      "stored_ids": [
+        [
+          1,
+          0
+        ]
+      ],
+      "next_forward_ids": [
+        [
+          1,
+          2
+        ]
+      ],
+      "stored_prediction": 4.850282192230225,
+      "next_forward_prediction": -1.1375831365585327
+    }
+  }
+}

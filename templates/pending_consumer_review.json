@@ -1,0 +1,19 @@
+{
+  "status": "proposed_not_executed",
+  "consumer": null,
+  "source_revision": null,
+  "runtime_versions": {},
+  "parameter_authority": null,
+  "view": null,
+  "pending_semantics": "centered replacement in frozen Grug QB setter; zero is not no-op",
+  "checkpoint_digest": null,
+  "next_batch_identity_digest": null,
+  "ema_enabled": null,
+  "master_mode": null,
+  "donation_enabled": null,
+  "buffer_alias_observations": [],
+  "comparisons": [],
+  "actual_original_next_step_equivalence": null,
+  "actual_Hero_effect": null,
+  "actual_GPU_validation": null
+}

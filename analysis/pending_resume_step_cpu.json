@@ -1,0 +1,635 @@
+{
+  "scope": "Original Grug train-step closure + original QB setter/route + real Adam/local OCDBT restore.\nSynthetic one-layer three-expert scalar model, fixed logits, injected beta estimator and squared loss.\nNo Transformer, real QB estimation, capacity/dispatch, hardware mesh or Hero causal result.\n",
+  "checks_passed": 19,
+  "checks": [
+    {
+      "name": "Original initializer aliases EMA leaves and this CPU donation path rejects repeated buffer",
+      "passed": true
+    },
+    {
+      "name": "Independent EMA buffers allow same original donated train closure to advance",
+      "passed": true
+    },
+    {
+      "name": "Original initializer with EMA disabled advances with original donated train closure",
+      "passed": true
+    },
+    {
+      "name": "Archived Hero EMA disabled; aliased-EMA CPU failure not claimed as production incident",
+      "passed": true
+    },
+    {
+      "name": "Real CPU original train closure produces nonempty optimizer EMA and pending",
+      "passed": true
+    },
+    {
+      "name": "Actual Equinox QB replacement preserves input and is idempotent",
+      "passed": true
+    },
+    {
+      "name": "Original local full-state restore preserves all leaves including pending and EMA",
+      "passed": true
+    },
+    {
+      "name": "Manifest includes pending and EMA optimizer leaves",
+      "passed": true
+    },
+    {
+      "name": "Full restored state matches next original update and reported loss exactly",
+      "passed": true
+    },
+    {
+      "name": "Clearing pending preserves current params and count but changes next route and update",
+      "passed": true
+    },
+    {
+      "name": "Materializing params while keeping pending is idempotent at next original step",
+      "passed": true
+    },
+    {
+      "name": "Materializing then zeroing pending is not equivalent because zero replaces bias",
+      "passed": true
+    },
+    {
+      "name": "Output pending is current injected estimator result not input pending",
+      "passed": true
+    },
+    {
+      "name": "Stored output bias follows old pending while next forward follows new pending",
+      "passed": true
+    },
+    {
+      "name": "Original callback accessors read stored current and stored EMA without pending application",
+      "passed": true
+    },
+    {
+      "name": "Original tagged callback evaluates stored current EMA once and suppresses forced duplicate",
+      "passed": true
+    },
+    {
+      "name": "Stored current callback and next train forward can select different experts",
+      "passed": true
+    },
+    {
+      "name": "All variants retain finite loss; finite guard cannot establish resume equivalence",
+      "passed": true
+    },
+    {
+      "name": "Inherited original Grug state class AST equals current frozen training state schema",
+      "passed": true
+    }
+  ],
+  "runtime": {
+    "jax": "0.7.2",
+    "jaxlib": "0.7.2",
+    "numpy": "2.5.3",
+    "optax": "0.2.5",
+    "equinox": "0.13.2",
+    "tensorstore": "0.1.69",
+    "jmp": "0.0.4"
+  },
+  "backend": "cpu",
+  "cases": {
+    "uninterrupted": {
+      "step": 3,
+      "adam_count": 3,
+      "params_w": [
+        2.97013521194458,
+        0.9750804901123047,
+        -2.013193368911743
+      ],
+      "stored_bias": [
+        [
+          1.0,
+          1.0,
+          -2.0
+        ]
+      ],
+      "pending": [
+        [
+          0.0,
+          3.0,
+          0.0
+        ]
+      ],
+      "next_forward_bias": [
+        [
+          1.0,
+          -2.0,
+          1.0
+        ]
+      ],
+      "stored_ids": [
+        [
+          1,
+          0
+        ]
+      ],
+      "next_forward_ids": [
+        [
+          0,
+          2
+        ]
+      ],
+      "stored_prediction": 4.8738508224487305,
+      "next_forward_prediction": 1.3479845523834229,
+      "train_loss": 0.719078004360199,
+      "next_state": {
+        "step": 4,
+        "adam_count": 4,
+        "params_w": [
+          2.9611687660217285,
+          0.96834796667099,
+          -2.019578695297241
+        ],
+        "stored_bias": [
+          [
+            1.0,
+            -2.0,
+            1.0
+          ]
+        ],
+        "pending": [
+          [
+            3.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "next_forward_bias": [
+          [
+            -2.0,
+            1.0,
+            1.0
+          ]
+        ],
+        "stored_ids": [
+          [
+            0,
+            2
+          ]
+        ],
+        "next_forward_ids": [
+          [
+            1,
+            2
+          ]
+        ],
+        "stored_prediction": 1.3287162780761719,
+        "next_forward_prediction": -1.1367480754852295
+      }
+    },
+    "full_restore": {
+      "step": 3,
+      "adam_count": 3,
+      "params_w": [
+        2.97013521194458,
+        0.9750804901123047,
+        -2.013193368911743
+      ],
+      "stored_bias": [
+        [
+          1.0,
+          1.0,
+          -2.0
+        ]
+      ],
+      "pending": [
+        [
+          0.0,
+          3.0,
+          0.0
+        ]
+      ],
+      "next_forward_bias": [
+        [
+          1.0,
+          -2.0,
+          1.0
+        ]
+      ],
+      "stored_ids": [
+        [
+          1,
+          0
+        ]
+      ],
+      "next_forward_ids": [
+        [
+          0,
+          2
+        ]
+      ],
+      "stored_prediction": 4.8738508224487305,
+      "next_forward_prediction": 1.3479845523834229,
+      "train_loss": 0.719078004360199,
+      "next_state": {
+        "step": 4,
+        "adam_count": 4,
+        "params_w": [
+          2.9611687660217285,
+          0.96834796667099,
+          -2.019578695297241
+        ],
+        "stored_bias": [
+          [
+            1.0,
+            -2.0,
+            1.0
+          ]
+        ],
+        "pending": [
+          [
+            3.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "next_forward_bias": [
+          [
+            -2.0,
+            1.0,
+            1.0
+          ]
+        ],
+        "stored_ids": [
+          [
+            0,
+            2
+          ]
+        ],
+        "next_forward_ids": [
+          [
+            1,
+            2
+          ]
+        ],
+        "stored_prediction": 1.3287162780761719,
+        "next_forward_prediction": -1.1367480754852295
+      }
+    },
+    "clear_pending": {
+      "step": 3,
+      "adam_count": 3,
+      "params_w": [
+        2.97013521194458,
+        0.9750804901123047,
+        -2.013193368911743
+      ],
+      "stored_bias": [
+        [
+          1.0,
+          1.0,
+          -2.0
+        ]
+      ],
+      "pending": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "next_forward_bias": [
+        [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      ],
+      "stored_ids": [
+        [
+          1,
+          0
+        ]
+      ],
+      "next_forward_ids": [
+        [
+          1,
+          0
+        ]
+      ],
+      "stored_prediction": 4.8738508224487305,
+      "next_forward_prediction": 4.8738508224487305,
+      "train_loss": 19.13056755065918,
+      "next_state": {
+        "step": 4,
+        "adam_count": 4,
+        "params_w": [
+          2.9601471424102783,
+          0.9661884307861328,
+          -2.0179052352905273
+        ],
+        "stored_bias": [
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "pending": [
+          [
+            3.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "next_forward_bias": [
+          [
+            -2.0,
+            1.0,
+            1.0
+          ]
+        ],
+        "stored_ids": [
+          [
+            1,
+            0
+          ]
+        ],
+        "next_forward_ids": [
+          [
+            1,
+            2
+          ]
+        ],
+        "stored_prediction": 4.850282192230225,
+        "next_forward_prediction": -1.1375831365585327
+      }
+    },
+    "materialize_keep_pending": {
+      "step": 3,
+      "adam_count": 3,
+      "params_w": [
+        2.97013521194458,
+        0.9750804901123047,
+        -2.013193368911743
+      ],
+      "stored_bias": [
+        [
+          1.0,
+          -2.0,
+          1.0
+        ]
+      ],
+      "pending": [
+        [
+          0.0,
+          3.0,
+          0.0
+        ]
+      ],
+      "next_forward_bias": [
+        [
+          1.0,
+          -2.0,
+          1.0
+        ]
+      ],
+      "stored_ids": [
+        [
+          0,
+          2
+        ]
+      ],
+      "next_forward_ids": [
+        [
+          0,
+          2
+        ]
+      ],
+      "stored_prediction": 1.3479845523834229,
+      "next_forward_prediction": 1.3479845523834229,
+      "train_loss": 0.719078004360199,
+      "next_state": {
+        "step": 4,
+        "adam_count": 4,
+        "params_w": [
+          2.9611687660217285,
+          0.96834796667099,
+          -2.019578695297241
+        ],
+        "stored_bias": [
+          [
+            1.0,
+            -2.0,
+            1.0
+          ]
+        ],
+        "pending": [
+          [
+            3.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "next_forward_bias": [
+          [
+            -2.0,
+            1.0,
+            1.0
+          ]
+        ],
+        "stored_ids": [
+          [
+            0,
+            2
+          ]
+        ],
+        "next_forward_ids": [
+          [
+            1,
+            2
+          ]
+        ],
+        "stored_prediction": 1.3287162780761719,
+        "next_forward_prediction": -1.1367480754852295
+      }
+    },
+    "materialize_clear_pending": {
+      "step": 3,
+      "adam_count": 3,
+      "params_w": [
+        2.97013521194458,
+        0.9750804901123047,
+        -2.013193368911743
+      ],
+      "stored_bias": [
+        [
+          1.0,
+          -2.0,
+          1.0
+        ]
+      ],
+      "pending": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "next_forward_bias": [
+        [
+          -0.0,
+          -0.0,
+          -0.0
+        ]
+      ],
+      "stored_ids": [
+        [
+          0,
+          2
+        ]
+      ],
+      "next_forward_ids": [
+        [
+          1,
+          0
+        ]
+      ],
+      "stored_prediction": 1.3479845523834229,
+      "next_forward_prediction": 4.8738508224487305,
+      "train_loss": 19.13056755065918,
+      "next_state": {
+        "step": 4,
+        "adam_count": 4,
+        "params_w": [
+          2.9601471424102783,
+          0.9661884307861328,
+          -2.0179052352905273
+        ],
+        "stored_bias": [
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "pending": [
+          [
+            3.0,
+            0.0,
+            0.0
+          ]
+        ],
+        "next_forward_bias": [
+          [
+            -2.0,
+            1.0,
+            1.0
+          ]
+        ],
+        "stored_ids": [
+          [
+            1,
+            0
+          ]
+        ],
+        "next_forward_ids": [
+          [
+            1,
+            2
+          ]
+        ],
+        "stored_prediction": 4.850282192230225,
+        "next_forward_prediction": -1.1375831365585327
+      }
+    }
+  },
+  "serialized_paths": [
+    "step",
+    "params/stacked_blocks/stacked/mlp/router_bias",
+    "params/w",
+    "opt_state/0/count",
+    "opt_state/0/mu/stacked_blocks/stacked/mlp/router_bias",
+    "opt_state/0/mu/w",
+    "opt_state/0/nu/stacked_blocks/stacked/mlp/router_bias",
+    "opt_state/0/nu/w",
+    "ema_params/stacked_blocks/stacked/mlp/router_bias",
+    "ema_params/w",
+    "pending_qb_betas"
+  ],
+  "ema_alias_control": {
+    "original_initializer_executed": true,
+    "independent_EMA_buffers_succeed": true,
+    "EMA_disabled_original_step_succeeds": true,
+    "parameter_and_ema_leaf_identity_shared": true,
+    "error": "XlaRuntimeError: INVALID_ARGUMENT: Attempt to donate the same buffer twice in Execute() (flattened argument 7, replica 0, partition 0, first use: 1). Toy example for this bug: `f(donate(a), donate(a))`.",
+    "archived_Hero_ema_beta": null,
+    "actual_Hero_incident": null,
+    "independent_buffer_continuation": "fixture allocates EMA leaves separately; not a merged upstream fix"
+  },
+  "callback_views": [
+    {
+      "prefix": "eval",
+      "ids": [
+        [
+          1,
+          0
+        ]
+      ],
+      "prediction": 4.8738508224487305
+    },
+    {
+      "prefix": "eval/ema",
+      "ids": [
+        [
+          1,
+          0
+        ]
+      ],
+      "prediction": 4.9292168617248535
+    }
+  ],
+  "callback_logs": [
+    {
+      "step": 2,
+      "metrics": {
+        "eval/loss": 19.130571365356445
+      }
+    },
+    {
+      "step": 2,
+      "metrics": {
+        "eval/ema/loss": 19.617961883544922
+      }
+    }
+  ],
+  "source_sha256": {
+    "scripts/probe_pending_resume_step.py": "bb57a22c57d4ae8f67f6873a51706b997b9ed2488ac9891fdaa25e0a2497ed82",
+    "sources/scale_2026_10_05/train_hero_ep.py": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7",
+    "scripts/probe_router_weight_path_cpu.py": "4d5359eedba146495bdcfdec6e2f1e6f89fa3448ee03e320cc4c267869257274",
+    "sources/operational_2026_10_07/wandb_meta.json": "42d0a84503781d0034a6274b38ebed6bde1fed81f431c2f658c0d3cb3eb9ad67",
+    "sources/main_incident_2026_10_07/train.py": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7",
+    "sources/main_incident_2026_10_07/model.py": "8fdfd89cf6814da05683f134f154525916728370368a2493843195d9a489859c",
+    "sources/scale_2026_10_05/eval.py": "b67cc96335f667982a0fe43618215734140c28392be215a88177979c712dee2c",
+    "sources/routing_2026_10_05/grug_moe.py": "5b67e36774981b8e42c753f62b638a5700fbf204c8b16c71df6d72c0b0ea398c",
+    "scripts/probe_grug_state_restore_real_io.py": "df728a527b1cf24289723ce1b7ae0f2d5515ab3ad3089aa3dc34c0bd99984dc3",
+    "scripts/probe_tree_restore_contracts.py": "9b5c12ecd6b14ba0f57d3f851e68a646e5947fed3a3172d91197281695f01dea",
+    "scripts/probe_restore_candidate_real_io.py": "b995b584aea9defbecf0ce61b8b799fa4c9554b27fea89c6b4bc3205ffa30943",
+    "scripts/probe_serialize_arrays_real_io.py": "d8651706d87d978832c65eaa7e662469970adaf651fad65f3c1b2b5f811f1e0b",
+    "sources/contracts_2026_10_05/checkpointing.py": "1f7395e4caeb60f31db7d84e32e972b75791e43e454dafd146449b9148e5016d",
+    "sources/state_restore_2026_10_07/tree_utils.py": "c9acb36c912b0bfb6ff7c8b794b38445c52ff48d3f5870db49ce4791761cde6d",
+    "sources/checkpoint_commit_2026_10_05/tensorstore_serialization.py": "5dddf8c6cc87cb062593482abe6775eee59eea443c28c7fd8d8b7ddf261f89ea",
+    "sources/checkpoint_commit_2026_10_05/checkpoint_manifest.py": "ae7a3535d2721bcd4ac598bd3f75c9bb8878fbbb1656f87f22b0c988dd0d9b3b",
+    "sources/checkpoint_commit_2026_10_05/checkpoint.py": "3997faa8082442fcdf16df2fd0c13bf30a26a9c5db62eb81cce0758bff4a2274",
+    "sources/checkpoint_memory_2026_10_05/byte_budget.py": "5e1dbcd8bcae899f295952236269b0b439e308b54c6a120da43eda3441ec4f34",
+    "sources/tree_restore_2026_10_07/haliax_axis.py": "4e6d6bdd4c414f6177b1f8cf7352eb31be2c2d91bd5c97a0308f4d10b6ef0830",
+    "sources/tree_restore_2026_10_07/haliax_core.py": "bb6eb762678ed5d9871f8921e292909c6afc500026380c6057a0af654ce63cf8",
+    "sources/tree_restore_2026_10_07/haliax_jax_utils.py": "8b928182089ce70ebd24a4b996c0ca2a74b3052771ede15770046976416f9c2d",
+    "sources/tree_restore_2026_10_07/haliax_util.py": "ae8737a35f9b0c8902c63c48cc853dfd3bc7e52fae05385fb10986611cb4f37a",
+    "sources/tree_restore_2026_10_07/jax_utils.py": "647a16ab5d7adac4166e63a429b112afdda0f11dd4fcb4866dde77cb3a4263d1"
+  },
+  "substitutions": [
+    "Tiny Eqx hierarchy and Transformer.init adapter replace full Transformer; three trainable scalar expert outputs and fixed logits; main continuation fixture allocates independent EMA leaves after recording original initializer alias failure",
+    "Squared loss uses original route block; injected batch beta replaces full model loss and QB estimator",
+    "Identity reshard and partition-spec placeholder; no capacity drops or transport",
+    "Manual local metadata; recording restore barrier, single-CPU sharding/local StoragePath and no transfer accounting inherited from prior probes",
+    "Callback evaluator/tracker and event/PGLE contexts are recording adapters, not real evaluator execution"
+  ],
+  "actual_Hero_view_error_magnitude": null,
+  "actual_Hero_pending_loss_event": null,
+  "actual_GPU_execution": null,
+  "actual_distributed_restore": null,
+  "actual_causal_mixture_effect": null
+}

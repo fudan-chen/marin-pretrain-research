@@ -1,0 +1,26 @@
+{
+  "checks_passed": 5,
+  "checks": [
+    {
+      "name": "Historical tables preserved",
+      "passed": true
+    },
+    {
+      "name": "Original-step controls and adapters bind exact bytes",
+      "passed": true
+    },
+    {
+      "name": "All five figure rows match measured bias route and loss",
+      "passed": true
+    },
+    {
+      "name": "Both HTML variants expose accessible figure and bounded EMA observation",
+      "passed": true
+    },
+    {
+      "name": "All 566 source files unchanged including bookkeeping",
+      "passed": true
+    }
+  ],
+  "actual_browser_rendering": null
+}

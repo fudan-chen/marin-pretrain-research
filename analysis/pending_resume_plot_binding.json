@@ -1,0 +1,12 @@
+{
+  "analysis_sha256": "55df79625456335fef9f19a57cb2936dfc2c46723dd8712f909b2820cea2c3f4",
+  "figure_sha256": "cfdfac8e9472645bd0e6f0703f0010115bfe112207dbeabf67340a3aacf0e26c",
+  "rows": [
+    "uninterrupted",
+    "full_restore",
+    "clear_pending",
+    "materialize_keep_pending",
+    "materialize_clear_pending"
+  ],
+  "actual_Hero_error_magnitude": null
+}

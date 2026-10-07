@@ -365,3 +365,8 @@ V101版本和退出检查：比较main、候选PR与实际部署三种身份。�
 ## V110：进度的测量边界
 
 V110在预算与执行记录之间增加计时检查：先声明实验预算单位，再记录attempt、游标、取批、训练、评估、保存提交和恢复边界，最后分别汇总日历前沿速度与有效目标份额。没有生命周期日志时，慢区间进入排查队列，不能直接归因到数据域或用来淘汰配比。[未执行事件账](templates/operational_timeline_review.json)与[公开观察](OPERATIONAL_PROGRESS_ZH.md)分开保存。
+
+
+## V111：恢复后的下一次更新
+
+V111在恢复验收阶段加入下一次原训练更新：共同完整state与共同下一批输入，联合比较专家ID/权重、loss、参数、优化器、EMA和新pending。另测EMA/master/offload开关下的缓冲区共享与donation兼容；普通stored评估不能代替下一次训练视图。未执行的[消费者记录模板](templates/pending_consumer_review.json)保留实际checkpoint、GPU与等价结果为空。

@@ -1207,6 +1207,15 @@ dsection=soup.select_one('#checkpoint-memory-guide')
 ok('V106 ownership diagram embedded with accessible title',dsection is not None and dsection.select_one('svg title') is not None and not dsection.select('img[src="assets/donation_snapshot_flow.svg"]'))
 report['highlights']=[x.replace('553 source archive checksums valid','556 source archive checksums valid') for x in report['highlights']]
 report['highlights']+=['V106 ten CPU donation and delayed-consumer controls; observation-view non-donation control; ownership diagram; GPU and full training restore unverified']
+ru=read(A/'resume_update_identity.json'); rb=read(A/'resume_source_binding.json')
+ok('V107 eight assembled CPU controls source and script bound',ru['checks_passed']==len(ru['checks'])==8 and all(x['passed'] for x in ru['checks']) and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in ru['source_sha256'].items()))
+ok('V107 core archived sources bound to frozen main bytes',len(rb['bindings'])==5 and all(x['same_bytes'] and hashlib.sha256((ROOT/x['archive_file']).read_bytes()).hexdigest()==x['sha256'] for x in rb['bindings']) and rb['actual_latest_head_execution'] is None)
+ro=ru['observations']
+ok('V107 same preloss but first update and next loss differ',ro['restored_step']==ro['restored_adam_count']==3 and ro['pre_update_loss']==ro['weights_only_pre_update_loss'] and ro['full_update']!=ro['weights_only_update'] and ro['next_weights_only_loss']<ro['next_full_loss'] and ro['pending_applied_in_quadratic'] is False)
+ok('V107 actual Hero and causal mixture effects remain unknown',ru['actual_Hero_next_update_identity'] is None and ru['actual_GPU_roundtrip'] is None and ru['actual_causal_mixture_effect'] is None)
+rs=soup.select_one('#checkpoint-commit-guide')
+ok('V107 update comparison diagram embedded accessibly',rs is not None and rs.select_one('#resume-update-title') is not None and not rs.select('img[src="assets/resume_update_identity.svg"]'))
+report['highlights']+=['V107 eight assembled CPU state staging/donation/real IO/next-update controls; weights-only same-loss counterexample; original Hero train_step and loader unverified']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

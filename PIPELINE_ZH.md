@@ -348,3 +348,7 @@ V101版本和退出检查：比较main、候选PR与实际部署三种身份。�
 ### V106：保存内存优化的验收顺序
 
 固定源码/runtime与同一 state → 取私有快照 → 释放观察用外部视图 → 断言真实 donation → 放行延迟消费者 → 比较保存值与更新前完整数组 → 单独验证实际存储 commit/restore → 对齐所有状态叶与 loader 时钟。前五个箭头本轮单 CPU 控制已执行；存储和完整恢复不能借用这一结果。进入配比实验前，先确认恢复链没有改换待比较的训练状态。
+
+### V107：配比切换前的恢复对照
+
+取得已验证 checkpoint → 固定同一批输入 → 记录不中断路径的 loss/梯度/参数增量/下一 state → 完整恢复并比较 → 单独标注 weights-only、optimizer reset、schedule reset → 接 loader 核对首批与曝光 → 才比较新配比。若 optimizer reset 是实验设计，需与配比组成独立对照；本轮只执行人工 quadratic 的完整恢复与原 weights-only 工具对照，真实 Hero 与 loader 未执行。

@@ -184,3 +184,7 @@ V101：源513份，18项原函数/源码刷新控制；main与开放PR分叉，�
 ## V106：快照所有权的执行边界
 
 10 项单 CPU donation 控制通过；2 组实际 donation、1 组保留视图对照、1 个显式 host 适配器分支。源码/脚本 SHA 与运行版本归档，新增 3 个完整文件，总 556；保留 552 个旧非 bookkeeping 文件。原函数 AST 执行不等于完整模块/训练入口执行；未做 GPU、TensorStore IO、多 rank、完整恢复或浏览器渲染验收。发布哈希见 analysis/release_v106.json。
+
+## V107：恢复后更新身份
+
+8 项单 CPU 小状态控制通过；原 Grug 状态/恢复/权重初始化函数与原 stage/host writer/reader，真实 Optax Adam 和本地 OCDBT。五个核心源码与冻结 eee467 完整 blob 字节一致，归档总 556，无新增源码。三参数 quadratic、单设备适配、记录 barrier、手工 metadata 均显式标注；不宣称原 Hero train_step、真实 loader、生产 publisher 或 GPU 验证。版本与发布哈希见 analysis/release_v107.json，浏览器渲染未验收。

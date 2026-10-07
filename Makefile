@@ -261,3 +261,7 @@ phase-budget-probe:
 .PHONY: integer-exposure-cpu
 integer-exposure-cpu:
 	$(CPU_PYTHON) scripts/probe_integer_exposure_cpu.py
+
+.PHONY: resume-update-identity
+resume-update-identity:
+	$(CPU_PYTHON) scripts/probe_resume_update_identity.py

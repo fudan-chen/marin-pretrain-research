@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本V106：回到 Hero 保存与 donation 边界，补原 staging helper 的真实单 CPU donation 与延迟消费者控制；区分快照所有权、共同状态时刻与异步 commit。[保存内存解释](CHECKPOINT_MEMORY_ZH.md)。
+当前版本V107：把原 staging、CPU donation、真实本地存储和原恢复函数接到第一次更新；给出“更新前 loss 相同、仅权重初始化下一 loss 更低，却已改变 optimizer 历史”的人工反例。[恢复后的更新身份](CHECKPOINT_COMMIT_ZH.md)。
 
 [MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并提供未执行的性能交互记录模板。
 

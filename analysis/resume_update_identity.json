@@ -1,0 +1,108 @@
+{
+  "checks_passed": 8,
+  "checks": [
+    {
+      "name": "Original helper snapshots every concrete state leaf",
+      "passed": true
+    },
+    {
+      "name": "Actual state parameter and optimizer moment inputs donated",
+      "passed": true
+    },
+    {
+      "name": "Real local restore exactly matches every staged state leaf",
+      "passed": true
+    },
+    {
+      "name": "Original weights-only initializer reads same parameters",
+      "passed": true
+    },
+    {
+      "name": "Original weights-only initializer retains fresh optimizer and clock",
+      "passed": true
+    },
+    {
+      "name": "Same pre-update quadratic loss cannot identify optimizer restoration",
+      "passed": true
+    },
+    {
+      "name": "Full-state restore gives exact same next-update state",
+      "passed": true
+    },
+    {
+      "name": "Weights-only restore diverges on first parameter update",
+      "passed": true
+    }
+  ],
+  "observations": {
+    "serialized_paths": [
+      "step",
+      "params/w",
+      "opt_state/0/count",
+      "opt_state/0/mu/w",
+      "opt_state/0/nu/w",
+      "pending_qb_betas"
+    ],
+    "restored_step": 3,
+    "restored_adam_count": 3,
+    "pre_update_loss": 3.262185573577881,
+    "weights_only_pre_update_loss": 3.262185573577881,
+    "full_update": [
+      -0.001810908317565918,
+      0.007524251937866211,
+      -0.007697582244873047
+    ],
+    "weights_only_update": [
+      -0.009999990463256836,
+      0.009999990463256836,
+      -0.009999990463256836
+    ],
+    "max_update_difference": 0.008189082145690918,
+    "next_full_loss": 3.239840030670166,
+    "next_weights_only_loss": 3.2290825843811035,
+    "pending_applied_in_quadratic": false
+  },
+  "scope": "Assembled single-CPU state snapshot, real local IO restore, next-update identity.\nOriginal Grug state and restore functions; synthetic 3-parameter quadratic and real Optax Adam.\nNot original Hero train_step, full Transformer/optimizer, checkpoint publisher or collective.\n",
+  "runtime": {
+    "jax": "0.7.2",
+    "jaxlib": "0.7.2",
+    "optax": "0.2.5",
+    "numpy": "2.5.3",
+    "tensorstore": "0.1.69"
+  },
+  "source_sha256": {
+    "scripts/probe_resume_update_identity.py": "b5d3fa2235cc431b88bcbfead2c6afbfe7fa79e2c0c2d831428fda5034c4f825",
+    "sources/donation_snapshot_2026_10_07/lib/levanter/src/levanter/tensorstore_serialization.py": "5dddf8c6cc87cb062593482abe6775eee59eea443c28c7fd8d8b7ddf261f89ea",
+    "sources/scale_2026_10_05/train_hero_ep.py": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7",
+    "sources/contracts_2026_10_05/checkpointing.py": "1f7395e4caeb60f31db7d84e32e972b75791e43e454dafd146449b9148e5016d",
+    "sources/state_restore_2026_10_07/tree_utils.py": "c9acb36c912b0bfb6ff7c8b794b38445c52ff48d3f5870db49ce4791761cde6d",
+    "sources/checkpoint_commit_2026_10_05/tensorstore_serialization.py": "5dddf8c6cc87cb062593482abe6775eee59eea443c28c7fd8d8b7ddf261f89ea",
+    "sources/checkpoint_commit_2026_10_05/checkpoint_manifest.py": "ae7a3535d2721bcd4ac598bd3f75c9bb8878fbbb1656f87f22b0c988dd0d9b3b",
+    "sources/checkpoint_commit_2026_10_05/checkpoint.py": "3997faa8082442fcdf16df2fd0c13bf30a26a9c5db62eb81cce0758bff4a2274",
+    "sources/tree_restore_2026_10_07/jax_utils.py": "647a16ab5d7adac4166e63a429b112afdda0f11dd4fcb4866dde77cb3a4263d1",
+    "scripts/probe_grug_state_restore_real_io.py": "df728a527b1cf24289723ce1b7ae0f2d5515ab3ad3089aa3dc34c0bd99984dc3",
+    "scripts/probe_tree_restore_contracts.py": "9b5c12ecd6b14ba0f57d3f851e68a646e5947fed3a3172d91197281695f01dea",
+    "scripts/probe_restore_candidate_real_io.py": "b995b584aea9defbecf0ce61b8b799fa4c9554b27fea89c6b4bc3205ffa30943",
+    "scripts/probe_serialize_arrays_real_io.py": "d8651706d87d978832c65eaa7e662469970adaf651fad65f3c1b2b5f811f1e0b",
+    "analysis/resume_source_binding.json": "756db442bb01f5bce797932b056beb8cb60edfaeefea94d08d2adc0df04da97f",
+    "sources/tree_restore_2026_10_07/haliax_axis.py": "4e6d6bdd4c414f6177b1f8cf7352eb31be2c2d91bd5c97a0308f4d10b6ef0830",
+    "sources/tree_restore_2026_10_07/haliax_core.py": "bb6eb762678ed5d9871f8921e292909c6afc500026380c6057a0af654ce63cf8",
+    "sources/tree_restore_2026_10_07/haliax_jax_utils.py": "8b928182089ce70ebd24a4b996c0ca2a74b3052771ede15770046976416f9c2d",
+    "sources/tree_restore_2026_10_07/haliax_util.py": "ae8737a35f9b0c8902c63c48cc853dfd3bc7e52fae05385fb10986611cb4f37a",
+    "sources/checkpoint_memory_2026_10_05/byte_budget.py": "5e1dbcd8bcae899f295952236269b0b439e308b54c6a120da43eda3441ec4f34"
+  },
+  "explicit_adapters": [
+    "AST extraction, archived core bytes verified identical to frozen eee467 revision",
+    "three-vector quadratic instead of Transformer and original Hero train_step",
+    "real Optax Adam instead of Hero optimizer groups",
+    "pending stored/restored but deliberately not applied to quadratic",
+    "local StoragePath and single-device sharding adapters inherited from V69",
+    "original host writer with manual metadata publication after wait",
+    "barrier recording adapter, no collective",
+    "event-gated writer thread is constructed interleaving, not production scheduling",
+    "EVERY_REPLICA CPU reader; Levanter discovery namespace isolated from Grug filesystem helper"
+  ],
+  "actual_Hero_next_update_identity": null,
+  "actual_GPU_roundtrip": null,
+  "actual_causal_mixture_effect": null
+}

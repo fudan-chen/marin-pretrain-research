@@ -1,0 +1,47 @@
+{
+  "verified_utc": "2026-10-07T07:27:34.526699+00:00",
+  "bindings": [
+    {
+      "archive_file": "sources/scale_2026_10_05/train_hero_ep.py",
+      "upstream_path": "experiments/grug/moe_hero_ep/train.py",
+      "current_frozen_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+      "same_bytes": true,
+      "sha256": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7",
+      "original_url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/grug/moe_hero_ep/train.py"
+    },
+    {
+      "archive_file": "sources/contracts_2026_10_05/checkpointing.py",
+      "upstream_path": "experiments/grug/checkpointing.py",
+      "current_frozen_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+      "same_bytes": true,
+      "sha256": "1f7395e4caeb60f31db7d84e32e972b75791e43e454dafd146449b9148e5016d",
+      "original_url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/grug/checkpointing.py"
+    },
+    {
+      "archive_file": "sources/checkpoint_commit_2026_10_05/tensorstore_serialization.py",
+      "upstream_path": "lib/levanter/src/levanter/tensorstore_serialization.py",
+      "current_frozen_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+      "same_bytes": true,
+      "sha256": "5dddf8c6cc87cb062593482abe6775eee59eea443c28c7fd8d8b7ddf261f89ea",
+      "original_url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/tensorstore_serialization.py"
+    },
+    {
+      "archive_file": "sources/checkpoint_commit_2026_10_05/checkpoint.py",
+      "upstream_path": "lib/levanter/src/levanter/checkpoint.py",
+      "current_frozen_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+      "same_bytes": true,
+      "sha256": "3997faa8082442fcdf16df2fd0c13bf30a26a9c5db62eb81cce0758bff4a2274",
+      "original_url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/checkpoint.py"
+    },
+    {
+      "archive_file": "sources/checkpoint_commit_2026_10_05/checkpoint_manifest.py",
+      "upstream_path": "lib/levanter/src/levanter/checkpoint_manifest.py",
+      "current_frozen_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+      "same_bytes": true,
+      "sha256": "ae7a3535d2721bcd4ac598bd3f75c9bb8878fbbb1656f87f22b0c988dd0d9b3b",
+      "original_url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/checkpoint_manifest.py"
+    }
+  ],
+  "runtime_reconstruction": false,
+  "actual_latest_head_execution": null
+}

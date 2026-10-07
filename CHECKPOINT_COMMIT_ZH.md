@@ -245,3 +245,40 @@ V67 把形状不一致的保护留为未知。这次继续执行原 `load_checkp
 ## V70：恢复水位必须接到数据消费时钟
 
 原恢复策略与真实小数组已接到原 loader/mixture 方法，7 项检查。人工 marker100/state20 的候选按 marker 被选择，下一批却按 state20 消费 A 域；batch 历史变化会再改变 offset 与身份。完整续训要求水位对照，weights-only 初始化另记源 step 与新 step。详细表、样本顺序图与配比归因含义见 [batch 时钟](BATCH_CLOCK_ZH.md)。未测真实 loss/token 流或 Hero 的水位事故。
+
+## V107：恢复后第一条 loss 相同，下一次更新却不同
+
+V69 已经验证小状态的真实 IO 与缺叶回退，V106 验证私有快照跨过实际 donation。本轮把这两段接起来，再加第一次更新对照。问题不是再证明文件读得出来，而是：读回的状态是否保留原本的下一步行为。
+
+### 实验怎样接线
+
+使用原 GrugTrainState 类，params 为三个 float32 数值的字典；优化器为真实 Optax Adam，learning rate=0.01。先对三个预设目标完成三次更新，取得 step=3、Adam count=3 的非空状态，并放入一个非零 pending 数组。目标函数是三维平方误差的均值，明确不使用 pending、EMA 或 master。它不是原 Hero train_step，也不是 Hero 的优化器分组。
+
+原 staging helper 对每个具体 JAX 状态叶生成 NumPy 快照。写入线程等待事件；主线程执行下一次带 donation 的 JIT 更新，并确认原参数与 Adam 一阶矩输入都已 deleted。然后放行线程，用原 host writer 写入真实本地 TensorStore/OCDBT，等待 commit，再手工发布 metadata。最后调用原 Grug 恢复策略、原 tree/leaf reader，从同一存储恢复。六个叶包括 step、params/w、Adam count/mu/nu 和 pending；所有叶与 staging 时刻完全一致。
+
+这里手工 metadata 是测试接线，不是生产 publisher 已被测试；barrier 是记录适配器，读取配置为 EVERY_REPLICA，单 CPU；StoragePath 与 sharding 沿用 V69 的本地适配。线程门控构造确定的先后关系，不测生产并发发生率。AST 提取时把 Levanter discovery 与 Grug 的同名 filesystem helper 放在不同 namespace，避免测试拼装自身的名字覆盖。
+
+五份核心归档源码已经与冻结 eee467… 的完整 git blob 逐字节核对一致；本次运行 JAX/jaxlib 0.7.2、Optax 0.2.5、TensorStore 0.1.69、NumPy 2.5.3。V106 使用 JAX 0.11.1，两轮不能合并成同一 runtime 的性能测量。[源码绑定](analysis/resume_source_binding.json) · [全部调用与版本](analysis/resume_update_identity.json) · [脚本](scripts/probe_resume_update_identity.py)。
+
+### 同权重、同输入，为什么更新仍不同
+
+对照使用原共享工具 `init_weights_only_from_checkpoint`。它从 checkpoint 读取 params，保留 fresh state 的 optimizer、step 与 pending；这是外部权重初始化的设计，不应称为函数 bug。固定 Hero 入口调用的是完整 `restore_grug_state_from_checkpoint`，本轮没有发现它误用 weights-only，也没有执行实际 Hero 恢复。
+
+|人工 CPU 分支|更新前 loss|更新后的 loss|全局 step / Adam count（更新前）|
+|---|---:|---:|---|
+|完整状态恢复|3.262185574|3.239840031|3 / 3|
+|原工具仅初始化权重|3.262185574|3.229082584|0 / 0|
+
+两条分支的参数与输入相同，所以更新前 loss 完全相同。完整恢复保留一阶矩、二阶矩与 count；Adam 的方向与归一化继承已有历史。仅权重初始化则从 fresh optimizer 开始，首次更新接近每坐标 ±0.01；其三维更新为 [-0.009999990, 0.009999990, -0.009999990]，完整恢复为 [-0.001810908, 0.007524252, -0.007697582]。最大坐标差为 0.008189082。
+
+本例目标没有学习率 schedule，也不使用 step 或 pending 计算梯度，因此这个更新差异来自 optimizer 状态，而不是数据变化、时钟调度或 pending 应用。完整恢复后的整个下一步状态，与不中断路径逐叶精确相等。两条路径在本次同一 CPU/runtime 下比较，不将浮点逐位相等扩展成跨设备的一般验收要求。
+
+![完整状态与仅权重恢复的首次更新对照](assets/resume_update_identity.svg)
+
+### loss 更低也可能走错了比较对象
+
+反例中，仅权重初始化的下一条 loss 反而更低。这只说明一个确定目标下的一次局部更新；不能推出重置优化器有长期收益，更不能当作 Hero 配比优化结果。若续训实验要求与基线共享同一训练历史，重置状态已经改变了实验对象，短期 loss 改善不能修复这个比较缺口。
+
+因此，配比或顺序切换实验至少分三层验收：更新前固定输入的模型输出/损失；同状态、同输入下的梯度与参数增量；重新连接真实 loader 后的第一批身份和后续轨迹。第一层相同不能证明第二、三层成立。若有意重置优化器，要把它作为独立干预，分别设置继续原状态与重置状态的对照，记录额外预算，不能把全部收益记给配比。
+
+8 项控制通过。pending 在本轮只检查保存恢复与下一步携带，不检查 QB 语义；没有真实 Transformer、原 Hero train_step、GPU、collective、生产完成标记或真实 loader。下一步的缺口是原训练入口的真实状态 inventory 与固定批次续训，而不是继续给这三个数值增加更多检查。[运行输出](analysis/resume_update_identity_output.txt)。

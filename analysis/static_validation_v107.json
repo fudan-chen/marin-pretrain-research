@@ -1,0 +1,26 @@
+{
+  "checks_passed": 5,
+  "checks": [
+    {
+      "name": "All historical tables retained in order before appended comparison",
+      "passed": true
+    },
+    {
+      "name": "Eight assembled CPU controls and five core source bindings valid",
+      "passed": true
+    },
+    {
+      "name": "Six figure bars encode actual updates with shared scale",
+      "passed": true
+    },
+    {
+      "name": "Both HTML variants embed new accessible figure and comparison values",
+      "passed": true
+    },
+    {
+      "name": "Original Hero update and causal mixture effects not inferred",
+      "passed": true
+    }
+  ],
+  "actual_browser_rendering": null
+}

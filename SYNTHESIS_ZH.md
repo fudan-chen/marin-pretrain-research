@@ -272,3 +272,7 @@ Iris 的 task 可以已经回到 PENDING，旧 attempt 却仍占着资源等待�
 ### V106：异步保存为何需要一份独立数据
 
 固定原 helper 在 staging 阶段复制数据，随后训练才可复用旧 buffer。10 项单 CPU 控制中，真实 donation 后延迟消费者仍得到旧值；保留观察视图的对照却未发生 donation。结论是保留快照所有权保护，并在测试里核实 donation 是否真正发生。减少 copy 或提前返回属于合同变更，需另验；本轮没有得到 GPU 内存收益、完整恢复或配比因果效应。[详解与时序图](CHECKPOINT_MEMORY_ZH.md)。
+
+### V107：短期 loss 改善不一定证明恢复正确
+
+原 staging、真实 CPU donation、本地 OCDBT 与原恢复函数已经在小 Grug state 上接通。完整恢复的下一 state 与不中断路径逐叶一致；原 weights-only 工具恢复同参数，但保留 fresh Adam/count/clock。更新前 loss 同为 3.262185574，更新后分别 3.239840031 与 3.229082584，后者更低却已换了 optimizer 历史。这是人工三参数反例，不是 Hero 事故或优化建议。配比研究需要先确认恢复比较对象，再看 loss。[流程、原工具用途与数值](CHECKPOINT_COMMIT_ZH.md)。

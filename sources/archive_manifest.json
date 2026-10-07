@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-06T23:53:08.619587+00:00",
+  "integrity_manifest_created_utc": "2026-10-07T00:10:29.591922+00:00",
   "files": [
     {
       "file": "accumulation_2026_10_07/grad_accum.py",
@@ -1412,6 +1412,97 @@
       "sha256": "90864a417f40468d364891e1204e6468094abfe941943129655fac9440f0941d",
       "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/lib/levanter/src/levanter/utils/thread_utils.py",
       "retrieved_utc": "2026-10-06T23:53:08.194047+00:00"
+    },
+    {
+      "file": "main_incident_2026_10_07/comments_8435.json",
+      "bytes": 106995,
+      "sha256": "961fa251b7b9c11aed54a123c0570414b4c05ba9e9f3106bdcdf59191cef6a58",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8435/comments?per_page=100",
+      "retrieved_utc": "2026-10-07T00:04:46.076264+00:00"
+    },
+    {
+      "file": "main_incident_2026_10_07/comments_8506.json",
+      "bytes": 155452,
+      "sha256": "d8225e676fb83d84c3c15e8f4a9ac7a8a2339fca50aadcd9ddd6bfd62c2f4950",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8506/comments?per_page=100",
+      "retrieved_utc": "2026-10-07T00:04:46.283427+00:00"
+    },
+    {
+      "file": "main_incident_2026_10_07/compare.json",
+      "bytes": 774388,
+      "sha256": "8535dcfa0a1bbc49aed78b6518b5f9c08620dcddb3a534703c765ec4ea30a4d7",
+      "url": "https://api.github.com/repos/marin-community/marin/compare/b65be4c9550c5097f0a3add08933531a1c24d534...eee467718515b2383fc3a433014afce4ab075b05?per_page=100",
+      "retrieved_utc": "2026-10-07T00:05:42.364326+00:00"
+    },
+    {
+      "file": "main_incident_2026_10_07/compare_reverse.json",
+      "bytes": 224654,
+      "sha256": "8303fa6d525cc4efa086cab62a41d6b5b398a595e33df03a78a76ee95d175b55",
+      "url": "https://api.github.com/repos/marin-community/marin/compare/eee467718515b2383fc3a433014afce4ab075b05...b65be4c9550c5097f0a3add08933531a1c24d534?per_page=100",
+      "retrieved_utc": "2026-10-07T00:07:40.581566+00:00"
+    },
+    {
+      "file": "main_incident_2026_10_07/ep_ragged_all_to_all.py",
+      "bytes": 19698,
+      "sha256": "bf379169c86ac4d03ef4f0d0345d6af012b80cd3d16c3805b3e7d4f84ed1358c",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/src/levanter/grug/_moe/ep_ragged_all_to_all.py",
+      "retrieved_utc": "2026-10-07T00:10:28.905373+00:00"
+    },
+    {
+      "file": "main_incident_2026_10_07/head.json",
+      "bytes": 19426,
+      "sha256": "2afd44e8af727881906062ffc1a1dae04976cddf27b904adb91cff411ffb82ba",
+      "url": "https://api.github.com/repos/marin-community/marin/commits/main",
+      "retrieved_utc": "2026-10-07T00:04:46.827309+00:00"
+    },
+    {
+      "file": "main_incident_2026_10_07/iris_k8s_tasks.py",
+      "bytes": 143038,
+      "sha256": "8ef997f9de3f2212de3649c2616031865f88b9494b6f21920de0c42b40b6f379",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/backends/k8s/tasks.py",
+      "retrieved_utc": "2026-10-07T00:06:24.041744+00:00"
+    },
+    {
+      "file": "main_incident_2026_10_07/issue_8435.json",
+      "bytes": 8902,
+      "sha256": "a54694915dc162c10a2754ad58dfae46cad0ea9573c01b0db151e42a0743ddc2",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8435",
+      "retrieved_utc": "2026-10-07T00:04:46.796991+00:00"
+    },
+    {
+      "file": "main_incident_2026_10_07/issue_8506.json",
+      "bytes": 3937,
+      "sha256": "2a01e45e4d3fa84f52a4383a942c14fd64e909914a6af1b02cab38df8b854365",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8506",
+      "retrieved_utc": "2026-10-07T00:04:45.910546+00:00"
+    },
+    {
+      "file": "main_incident_2026_10_07/k8s_taint.html",
+      "bytes": 537526,
+      "sha256": "2c2db185568fd83cf32aa1608c6954fe7dcb8945b18e85b9ec8f4b98f9deb353",
+      "url": "https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/",
+      "retrieved_utc": "2026-10-07T00:08:37.809646+00:00"
+    },
+    {
+      "file": "main_incident_2026_10_07/model.py",
+      "bytes": 77140,
+      "sha256": "8fdfd89cf6814da05683f134f154525916728370368a2493843195d9a489859c",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/experiments/grug/moe_hero_ep/model.py",
+      "retrieved_utc": "2026-10-07T00:09:31.103482+00:00"
+    },
+    {
+      "file": "main_incident_2026_10_07/pull_9833.json",
+      "bytes": 20476,
+      "sha256": "e0f3d400c7160803c987aace5d62ddc8ca1f70f3dda67e9c1ac66fbb671fdba5",
+      "url": "https://api.github.com/repos/marin-community/marin/pulls/9833",
+      "retrieved_utc": "2026-10-07T00:08:31.603616+00:00"
+    },
+    {
+      "file": "main_incident_2026_10_07/train.py",
+      "bytes": 63250,
+      "sha256": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/experiments/grug/moe_hero_ep/train.py",
+      "retrieved_utc": "2026-10-07T00:06:22.714226+00:00"
     },
     {
       "file": "marin_repo.json",
@@ -2941,8 +3032,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 227306,
-      "sha256": "412dc3d49fcaf7a791c4d3ecd9633619d0b30c84326d78c39605f120ba79efc1",
+      "bytes": 234189,
+      "sha256": "1fc9921303a9316af01b53ed5a1c9c7b499a1334837e788302aa39c9bf4cbd56",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

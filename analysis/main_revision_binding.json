@@ -1,0 +1,63 @@
+{
+  "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+  "verified_utc": "2026-10-07T00:07:06.149505+00:00",
+  "records": [
+    {
+      "name": "mixture",
+      "path": "lib/levanter/src/levanter/data/mixture.py",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/src/levanter/data/mixture.py",
+      "sha256": "67e97941a79753b2e5865f7f41c7762436a428599ecd1a60d643aa891a817685",
+      "bytes": 22896,
+      "same_bytes": true,
+      "archived_file": "sources/integer_exposure_2026_10_07/mixture.py"
+    },
+    {
+      "name": "loader",
+      "path": "lib/levanter/src/levanter/data/loader.py",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/src/levanter/data/loader.py",
+      "sha256": "d8c14060286d9998c8784ce945694958b7c61a5404bcede6e77ba34c467e077d",
+      "bytes": 27846,
+      "same_bytes": true,
+      "archived_file": "sources/eval_identity_2026_10_06/loader.py"
+    },
+    {
+      "name": "datasets",
+      "path": "lib/levanter/src/levanter/data/text/datasets.py",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/src/levanter/data/text/datasets.py",
+      "sha256": "4fd44ff53067beb7a2ac05cc4d41f0dda18012691751a85e7c5eb65c4849823b",
+      "bytes": 47569,
+      "same_bytes": true,
+      "archived_file": "sources/boundaries_2026_10_05/datasets.py"
+    },
+    {
+      "name": "background_iterable",
+      "path": "lib/levanter/src/levanter/utils/background_iterable.py",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/src/levanter/utils/background_iterable.py",
+      "sha256": "978aab5827736b8d30a89d1965efe9f0f2ad7fc1be8cb83909dff465feec962f",
+      "bytes": 5129,
+      "same_bytes": true,
+      "archived_file": "sources/loader_background_2026_10_07/background_iterable.py"
+    },
+    {
+      "name": "thread_utils",
+      "path": "lib/levanter/src/levanter/utils/thread_utils.py",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/src/levanter/utils/thread_utils.py",
+      "sha256": "90864a417f40468d364891e1204e6468094abfe941943129655fac9440f0941d",
+      "bytes": 2269,
+      "same_bytes": true,
+      "archived_file": "sources/loader_background_2026_10_07/thread_utils.py"
+    },
+    {
+      "name": "train",
+      "path": "experiments/grug/moe_hero_ep/train.py",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/experiments/grug/moe_hero_ep/train.py",
+      "sha256": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7",
+      "bytes": 63250,
+      "same_bytes": false,
+      "archived_file": "sources/runtime_defaults_2026_10_07/train.py",
+      "archived_main_file": "sources/main_incident_2026_10_07/train.py"
+    }
+  ],
+  "actual_deployed_revision": null,
+  "failed_discovery_url": "lib/levanter/src/levanter/data/datasets.py returned404; corrected to data/text/datasets.py"
+}

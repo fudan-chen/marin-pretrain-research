@@ -255,3 +255,58 @@ V82再次取得#9831/#9832/#9833，仍open且未合并；#9833 head不变。完�
 
 
 V83补上dispatch筛选与PJRT guard：父shell参数并非全量转发，下游又可能补值；原guard仅检查JAX匹配的+marin.版本前缀。13项隔离host检查及静态启动顺序，详见[执行身份链](ROUTING_DROPS_ZH.md)。真实child环境、插件加载与GPU未知。
+
+
+## V101：main、未合并提案和实际训练，不能共用一个“当前版本”
+
+这轮回到公开生产记录与源码身份。重新获取#8435的27条和#8506的59条，与已有最新快照逐条比较id/body，均无新增或正文变化。10月6日task16所在节点NoExecute驱逐、整gang重排并推进到215756，V77已经收录；本轮不是新事故，也没有取得内部incident641正文。不能把一次重新抓取计成新的生产实验。[本轮快照核对](analysis/main_incident_revision.json)
+
+真正补充的是main与候选的同输入执行区别。本轮main解析为eee467718515b2383fc3a433014afce4ab075b05；既有b65be4c9550c5097f0a3add08933531a1c24d534仍是开放、未合并的#9833提案头。compare结果为diverged，main侧14个commit、提案侧10个commit，共同祖先c7f47616b2f3679d88deb8e3870df39a0b757c13。不能把这两份代码排成“main先加保护、又回退保护”的时间线。[PR快照](sources/main_incident_2026_10_07/pull_9833.json) · [双向compare](sources/main_incident_2026_10_07/compare.json)
+
+GitHub compare在分叉图上返回的提交/文件列表也不能替代两端逐文件对比。本轮直接下载两端目标文件：mixture、loader、text/datasets、background_iterable、thread_utils五个文件逐字节一致；train.py不同。旧读取/队列控制可以绑定这五份相同源码，仍不代表实际部署或运行依赖相同。[逐文件绑定](analysis/main_revision_binding.json)
+
+### 环境默认值必须执行，而不能从一份注释推到另一分支
+
+使用两个固定版本的原_apply_hero_ep_runtime_defaults函数、各自原model/EP常量，环境用隔离字典。没有导入launcher或初始化JAX/GPU，未执行XLA参数解析。以下main与提案均使用ragged实现、相同输入环境和processes_per_task=1。
+
+|相同输入|main eee467…的原函数输出|提案b65be4…的原函数输出|判断|
+|---|---|---|---|
+|干净环境，carry offload|memory fraction0.75，slop85|fraction0.78，slop105|提案的内存默认不能直接描述main|
+|干净环境，ragged无carry|overlap默认1，无强制同步collective旗标|overlap强制1，disable_async_collectives=ALLCOLLECTIVES|同一个overlap值，不保证同一调度合同|
+|显式overlap=8，ragged无carry|保留8|强制改成1|默认与不可覆盖约束是两种行为|
+|显式overlap=8，carry|强制改成1|强制改成1|两份代码在这个分支一致|
+|显式fraction=.75/slop85，carry|保留显式值|仍保留显式值|提案的干净默认也不是部署最终值|
+|干净carry的host-memory-accounting旗标|没有自动加入|加入enable_host_memory_offloading=true|必须结合实际最终环境，不只检查remat mode名字|
+
+这是原host辅助函数的结果，不是两种配置的HBM或吞吐对照。旧分支的同步collective/内存预算解释来自该候选的代码与作者材料；本轮没有证明main在这些受控参数下发生过hang，也没有证明实际Hero用了候选或上述显式overlap=8。相同mode名不够，要保存函数源码SHA、相关常量及初始化前的最终环境。[main原入口](https://github.com/marin-community/marin/blob/eee467718515b2383fc3a433014afce4ab075b05/experiments/grug/moe_hero_ep/train.py) · [提案原入口](https://github.com/marin-community/marin/blob/b65be4c9550c5097f0a3add08933531a1c24d534/experiments/grug/moe_hero_ep/train.py)
+
+评审时把default和forced分别写清楚：default允许调用方或继承环境保留旧值，forced会清掉同名flag再写入要求值。启动命令、代码配置看起来正确，仍可能被已有环境改变。反过来，函数强制了某个值，也不能证明launcher调用过它或调用早于backend初始化；V83/V84的入口绑定边界仍保留。
+
+### NoExecute事故怎样沿源码归类，而不猜GPU根因
+
+10月6日公开评论确认到“控制面因taint删除task、Iris重排、训练恢复”；造成taint的条件未确认。Kubernetes的NoExecute影响已运行Pod是否被驱逐，具体还要结合toleration；它不是GPU硬件故障的同义词。[官方语义](https://kubernetes.io/docs/concepts/scheduling-eviction/taint-and-toleration/) · [既有事故评论](https://github.com/marin-community/marin/issues/8506#issuecomment-6025364160)
+
+本轮进一步执行main的原_disruption_condition、_pod_failure_state及两个相关纯helper。输入是人工Pod字典，enum身份以可读标签适配，task容器名适配为task；没有真实Pod状态、API轮询或controller重试。本地控制说明如下：
+
+|人工Pod证据|原分类结果|能推出什么|
+|---|---|---|
+|Error/exit137，DisruptionTarget=True，DeletionByTaintManager|PREEMPTED|控制面disruption优先于相同退出码|
+|Error/exit137，无disruption condition|FAILED|137本身不足以证明taint或基础设施驱逐|
+|OOMKilled/exit137，无disruption condition|FAILED|本调度器把此情况列入应用失败预算；不是所有OOM物理根因的完整诊断|
+|DisruptionTarget=False|FAILED|存在condition键不等于权威True状态|
+|TerminationTarget=True，WorkloadEvicted前缀|PREEMPTED|符合Kueue特定eviction合同|
+|TerminationTarget=True，但无该前缀|FAILED|不能把任何关闭condition都归入抢占|
+|没有task container status，Pod reason=Evicted|WORKER_FAILED|Pod级基础设施reason仍可用于分类|
+|第一个sidecar为Evicted，命名task为Error|FAILED|先按task容器名选择，不能取第一个sidecar状态替代主任务|
+
+另核对disruption描述截断在500字符。截断与分类是调度记录政策，不足以恢复完整节点根因。原源码将PREEMPTED/WORKER_FAILED与FAILED送入不同重试预算，因此错误归类可能让不可重试的应用失败反复烧预算，也可能使可恢复驱逐提前结束；本轮只执行纯分类层，没有测实际gang重试状态机。[原Iris实现](https://github.com/marin-community/marin/blob/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/backends/k8s/tasks.py)
+
+自己的事故记录应按attempt保存Pod UID/node、condition True/False及reason/message、命名task的terminated reason/exitCode，再绑定调度分类、retry budget、选中checkpoint和恢复step。Pod已经删除且原condition未保存时，留下unknown；不要用后来看到的一个节点状态倒填成当时根因。实际node健康、taint key、toleration与控制器事件仍需原始证据。
+
+### 对预训练与配比研究的直接影响
+
+模型loss变化之前，先核对是不是同一实际代码与环境、同一完成更新时钟。main和提案分支即使都叫ragged，也不能拼成单一配置去解释吞吐、HBM或loss；部署一次整包后看到改善，也不自动归给其中一个flag。先固定可回退状态，在同输入下做数值与性能窗口，再检查保存恢复和生产稳定。
+
+重排恢复成功只能证明作业继续推进，不证明根因已修复，也不给出停机和重放成本。配比收益按共同完成预算与相同评估合同比较，同时报告有效训练速度；不能把gang再Running当作模型已恢复学习，更不能把基础设施退出归成某个数据桶造成的loss问题。
+
+[18项原host函数、Pod分类与刷新控制](analysis/main_incident_revision.json) · [脚本](scripts/probe_main_incident_revision.py)。本轮新增13份公开归档payload，保留499份旧非bookkeeping文件；这些不是13次新事件或训练实验。源归档共513份，实际生产部署SHA、NoExecute节点根因、GPU效果均未知。

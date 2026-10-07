@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1598,
+  "checks_passed": 1604,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -18,7 +18,7 @@
     "four new config contrasts / six step393 resume windows",
     "seventeen embedded figures",
     "all relative HTML links valid",
-    "500 source archive checksums valid",
+    "513 source archive checksums valid",
     "18 authored rubrics / seven claim-stage decisions",
     "five interpretation cases / four metrics with switchable baselines",
     "17 figure-reading entries / five preserved collapsed tables",
@@ -148,7 +148,8 @@
     "V97 sixteen original restart/coverage controls; contiguous formula narrowed to actual index intervals and complete blocks, edge coverage unknown for Hero",
     "V98 sixteen original-class historical-stage replay controls; unchanged current quota with shifted base and modulo-masked history, no actual loader restore",
     "V99 thirteen original loader host watchdog/next controls; no automatic timeout, selected waits unwrapped and prefetch fault boundaries, no actual Hero stall",
-    "V100 nineteen original background queue/thread controls and five local consumer-candidate controls; repeated exhaustion and stop wakeup gaps, no production integration or remote IO cancellation"
+    "V100 nineteen original background queue/thread controls and five local consumer-candidate controls; repeated exhaustion and stop wakeup gaps, no production integration or remote IO cancellation",
+    "V101 eighteen host main/proposal runtime and pod classification/refresh controls; branch divergence, defaults versus forced environment, no new issue body or actual deployment attribution"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

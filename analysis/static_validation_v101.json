@@ -1,0 +1,16 @@
+{
+  "version": "V101",
+  "checks_passed": 9,
+  "checks": [
+    "index.html unique IDs",
+    "index.html historical five tables preserved plus revision/pod controls",
+    "index.html source identity and unchanged event bounds",
+    "report_standalone.html unique IDs",
+    "report_standalone.html historical five tables preserved plus revision/pod controls",
+    "report_standalone.html source identity and unchanged event bounds",
+    "1604 fresh checks",
+    "513 source entries",
+    "18 controls retain unchanged incident and unknown deployment"
+  ],
+  "actual_browser_rendering": null
+}

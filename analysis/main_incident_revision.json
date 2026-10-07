@@ -1,0 +1,390 @@
+{
+  "scope": "Host execution of main/proposal runtime helpers and Iris pod classification.\nNo actual launcher, XLA parsing, Kubernetes control plane, training or production deployment.\n",
+  "checks_passed": 18,
+  "checks": [
+    "Main clean carry retains .75/85 while proposal defaults .78/105",
+    "No-carry explicit overlap remains eight on main but proposal forces one",
+    "Carry mode forces overlap one in both snapshots",
+    "Synchronous no-carry flag present only in proposal",
+    "Host memory accounting flag present only in proposal carry",
+    "Explicit inherited fraction/slop still override both defaults",
+    "Both use exact required ragged flags in selected controls",
+    "Exit 137 plus true taint disruption is preempted",
+    "Exit 137 alone is failed rather than evidence of taint",
+    "Own-limit OOM follows application failure policy",
+    "False condition does not classify as disruption",
+    "Only specific Kueue termination reason marks preemption",
+    "Pod-level eviction without task container is worker failure",
+    "Named task status takes priority over first sidecar",
+    "Disruption description is bounded at five hundred chars",
+    "Observed main and proposal are diverged with fourteen and ten commits",
+    "Live issue 8435 matches latest archived identities and bodies",
+    "Live issue 8506 matches latest archived identities and bodies"
+  ],
+  "main_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+  "proposal_revision": "b65be4c9550c5097f0a3add08933531a1c24d534",
+  "runtime_cases": {
+    "clean_carry": {
+      "main": {
+        "memory_fraction": "0.75",
+        "flags": [
+          "--xla_gpu_enable_latency_hiding_scheduler=true",
+          "--xla_gpu_memory_limit_slop_factor=85",
+          "--xla_gpu_enable_command_buffer=",
+          "--xla_gpu_experimental_parallel_collective_overlap_limit=1",
+          "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel=true",
+          "--xla_enable_nccl_symmetric_buffers_for_collectives=raggedalltoall"
+        ],
+        "flag_values": {
+          "--xla_gpu_enable_latency_hiding_scheduler": "true",
+          "--xla_gpu_memory_limit_slop_factor": "85",
+          "--xla_gpu_enable_command_buffer": "",
+          "--xla_gpu_experimental_parallel_collective_overlap_limit": "1",
+          "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel": "true",
+          "--xla_enable_nccl_symmetric_buffers_for_collectives": "raggedalltoall"
+        }
+      },
+      "proposal": {
+        "memory_fraction": "0.78",
+        "flags": [
+          "--xla_gpu_enable_latency_hiding_scheduler=true",
+          "--xla_gpu_memory_limit_slop_factor=105",
+          "--xla_gpu_enable_command_buffer=",
+          "--xla_gpu_enable_host_memory_offloading=true",
+          "--xla_gpu_experimental_parallel_collective_overlap_limit=1",
+          "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel=true",
+          "--xla_enable_nccl_symmetric_buffers_for_collectives=raggedalltoall"
+        ],
+        "flag_values": {
+          "--xla_gpu_enable_latency_hiding_scheduler": "true",
+          "--xla_gpu_memory_limit_slop_factor": "105",
+          "--xla_gpu_enable_command_buffer": "",
+          "--xla_gpu_enable_host_memory_offloading": "true",
+          "--xla_gpu_experimental_parallel_collective_overlap_limit": "1",
+          "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel": "true",
+          "--xla_enable_nccl_symmetric_buffers_for_collectives": "raggedalltoall"
+        }
+      }
+    },
+    "clean_no_carry": {
+      "main": {
+        "memory_fraction": "0.75",
+        "flags": [
+          "--xla_gpu_experimental_parallel_collective_overlap_limit=1",
+          "--xla_gpu_enable_latency_hiding_scheduler=false",
+          "--xla_gpu_memory_limit_slop_factor=85",
+          "--xla_gpu_enable_command_buffer=",
+          "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel=true",
+          "--xla_enable_nccl_symmetric_buffers_for_collectives=raggedalltoall"
+        ],
+        "flag_values": {
+          "--xla_gpu_experimental_parallel_collective_overlap_limit": "1",
+          "--xla_gpu_enable_latency_hiding_scheduler": "false",
+          "--xla_gpu_memory_limit_slop_factor": "85",
+          "--xla_gpu_enable_command_buffer": "",
+          "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel": "true",
+          "--xla_enable_nccl_symmetric_buffers_for_collectives": "raggedalltoall"
+        }
+      },
+      "proposal": {
+        "memory_fraction": "0.75",
+        "flags": [
+          "--xla_gpu_enable_latency_hiding_scheduler=false",
+          "--xla_gpu_memory_limit_slop_factor=85",
+          "--xla_gpu_enable_command_buffer=",
+          "--xla_gpu_experimental_parallel_collective_overlap_limit=1",
+          "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel=true",
+          "--xla_enable_nccl_symmetric_buffers_for_collectives=raggedalltoall",
+          "--xla_gpu_disable_async_collectives=ALLCOLLECTIVES"
+        ],
+        "flag_values": {
+          "--xla_gpu_enable_latency_hiding_scheduler": "false",
+          "--xla_gpu_memory_limit_slop_factor": "85",
+          "--xla_gpu_enable_command_buffer": "",
+          "--xla_gpu_experimental_parallel_collective_overlap_limit": "1",
+          "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel": "true",
+          "--xla_enable_nccl_symmetric_buffers_for_collectives": "raggedalltoall",
+          "--xla_gpu_disable_async_collectives": "ALLCOLLECTIVES"
+        }
+      }
+    },
+    "inherited_no_carry": {
+      "main": {
+        "memory_fraction": "0.75",
+        "flags": [
+          "--xla_gpu_experimental_parallel_collective_overlap_limit=8",
+          "--xla_gpu_enable_latency_hiding_scheduler=false",
+          "--xla_gpu_memory_limit_slop_factor=85",
+          "--xla_gpu_enable_command_buffer=",
+          "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel=true",
+          "--xla_enable_nccl_symmetric_buffers_for_collectives=raggedalltoall"
+        ],
+        "flag_values": {
+          "--xla_gpu_experimental_parallel_collective_overlap_limit": "8",
+          "--xla_gpu_enable_latency_hiding_scheduler": "false",
+          "--xla_gpu_memory_limit_slop_factor": "85",
+          "--xla_gpu_enable_command_buffer": "",
+          "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel": "true",
+          "--xla_enable_nccl_symmetric_buffers_for_collectives": "raggedalltoall"
+        }
+      },
+      "proposal": {
+        "memory_fraction": "0.75",
+        "flags": [
+          "--xla_gpu_enable_latency_hiding_scheduler=false",
+          "--xla_gpu_memory_limit_slop_factor=85",
+          "--xla_gpu_enable_command_buffer=",
+          "--xla_gpu_experimental_parallel_collective_overlap_limit=1",
+          "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel=true",
+          "--xla_enable_nccl_symmetric_buffers_for_collectives=raggedalltoall",
+          "--xla_gpu_disable_async_collectives=ALLCOLLECTIVES"
+        ],
+        "flag_values": {
+          "--xla_gpu_enable_latency_hiding_scheduler": "false",
+          "--xla_gpu_memory_limit_slop_factor": "85",
+          "--xla_gpu_enable_command_buffer": "",
+          "--xla_gpu_experimental_parallel_collective_overlap_limit": "1",
+          "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel": "true",
+          "--xla_enable_nccl_symmetric_buffers_for_collectives": "raggedalltoall",
+          "--xla_gpu_disable_async_collectives": "ALLCOLLECTIVES"
+        }
+      }
+    },
+    "inherited_carry": {
+      "main": {
+        "memory_fraction": ".75",
+        "flags": [
+          "--xla_gpu_memory_limit_slop_factor=85",
+          "--xla_gpu_enable_latency_hiding_scheduler=true",
+          "--xla_gpu_enable_command_buffer=",
+          "--xla_gpu_experimental_parallel_collective_overlap_limit=1",
+          "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel=true",
+          "--xla_enable_nccl_symmetric_buffers_for_collectives=raggedalltoall"
+        ],
+        "flag_values": {
+          "--xla_gpu_memory_limit_slop_factor": "85",
+          "--xla_gpu_enable_latency_hiding_scheduler": "true",
+          "--xla_gpu_enable_command_buffer": "",
+          "--xla_gpu_experimental_parallel_collective_overlap_limit": "1",
+          "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel": "true",
+          "--xla_enable_nccl_symmetric_buffers_for_collectives": "raggedalltoall"
+        }
+      },
+      "proposal": {
+        "memory_fraction": ".75",
+        "flags": [
+          "--xla_gpu_memory_limit_slop_factor=85",
+          "--xla_gpu_enable_latency_hiding_scheduler=true",
+          "--xla_gpu_enable_command_buffer=",
+          "--xla_gpu_enable_host_memory_offloading=true",
+          "--xla_gpu_experimental_parallel_collective_overlap_limit=1",
+          "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel=true",
+          "--xla_enable_nccl_symmetric_buffers_for_collectives=raggedalltoall"
+        ],
+        "flag_values": {
+          "--xla_gpu_memory_limit_slop_factor": "85",
+          "--xla_gpu_enable_latency_hiding_scheduler": "true",
+          "--xla_gpu_enable_command_buffer": "",
+          "--xla_gpu_enable_host_memory_offloading": "true",
+          "--xla_gpu_experimental_parallel_collective_overlap_limit": "1",
+          "--xla_gpu_experimental_ragged_all_to_all_use_device_kernel": "true",
+          "--xla_enable_nccl_symmetric_buffers_for_collectives": "raggedalltoall"
+        }
+      }
+    }
+  },
+  "pod_inputs": {
+    "taint_137": {
+      "status": {
+        "phase": "Failed",
+        "containerStatuses": [
+          {
+            "name": "task",
+            "state": {
+              "terminated": {
+                "reason": "Error",
+                "exitCode": 137
+              }
+            }
+          }
+        ],
+        "conditions": [
+          {
+            "type": "DisruptionTarget",
+            "status": "True",
+            "reason": "DeletionByTaintManager",
+            "message": "artificial condition"
+          }
+        ]
+      }
+    },
+    "plain_137": {
+      "status": {
+        "phase": "Failed",
+        "containerStatuses": [
+          {
+            "name": "task",
+            "state": {
+              "terminated": {
+                "reason": "Error",
+                "exitCode": 137
+              }
+            }
+          }
+        ]
+      }
+    },
+    "oom_137": {
+      "status": {
+        "phase": "Failed",
+        "containerStatuses": [
+          {
+            "name": "task",
+            "state": {
+              "terminated": {
+                "reason": "OOMKilled",
+                "exitCode": 137
+              }
+            }
+          }
+        ]
+      }
+    },
+    "false_condition": {
+      "status": {
+        "phase": "Failed",
+        "containerStatuses": [
+          {
+            "name": "task",
+            "state": {
+              "terminated": {
+                "reason": "Error",
+                "exitCode": 137
+              }
+            }
+          }
+        ],
+        "conditions": [
+          {
+            "type": "DisruptionTarget",
+            "status": "False",
+            "reason": "DeletionByTaintManager",
+            "message": "artificial condition"
+          }
+        ]
+      }
+    },
+    "kueue_evict": {
+      "status": {
+        "phase": "Failed",
+        "containerStatuses": [
+          {
+            "name": "task",
+            "state": {
+              "terminated": {
+                "reason": "Error",
+                "exitCode": 137
+              }
+            }
+          }
+        ],
+        "conditions": [
+          {
+            "type": "TerminationTarget",
+            "status": "True",
+            "reason": "WorkloadEvictedByPreemption",
+            "message": "artificial condition"
+          }
+        ]
+      }
+    },
+    "unrelated_termination": {
+      "status": {
+        "phase": "Failed",
+        "containerStatuses": [
+          {
+            "name": "task",
+            "state": {
+              "terminated": {
+                "reason": "Error",
+                "exitCode": 137
+              }
+            }
+          }
+        ],
+        "conditions": [
+          {
+            "type": "TerminationTarget",
+            "status": "True",
+            "reason": "UnrelatedShutdown",
+            "message": "artificial condition"
+          }
+        ]
+      }
+    },
+    "pod_evicted_no_container": {
+      "status": {
+        "phase": "Failed",
+        "reason": "Evicted"
+      }
+    }
+  },
+  "pod_classification": {
+    "taint_137": "PREEMPTED",
+    "plain_137": "FAILED",
+    "oom_137": "FAILED",
+    "false_condition": "FAILED",
+    "kueue_evict": "PREEMPTED",
+    "unrelated_termination": "FAILED",
+    "pod_evicted_no_container": "WORKER_FAILED"
+  },
+  "source_relationship": {
+    "status": "diverged",
+    "ahead_by": 14,
+    "behind_by": 10,
+    "merge_base": "c7f47616b2f3679d88deb8e3870df39a0b757c13",
+    "pull_state": "open",
+    "pull_merged": false
+  },
+  "issue_refresh": {
+    "8435": {
+      "count": 27,
+      "prior_count": 27,
+      "ids_and_bodies_unchanged": true,
+      "updated_at": "2026-10-01T00:40:47Z",
+      "last_id": 5922369256
+    },
+    "8506": {
+      "count": 59,
+      "prior_count": 59,
+      "ids_and_bodies_unchanged": true,
+      "updated_at": "2026-10-06T21:00:54Z",
+      "last_id": 6025364160
+    }
+  },
+  "source_sha256": {
+    "sources/main_incident_2026_10_07/train.py": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7",
+    "sources/main_incident_2026_10_07/model.py": "8fdfd89cf6814da05683f134f154525916728370368a2493843195d9a489859c",
+    "sources/main_incident_2026_10_07/ep_ragged_all_to_all.py": "bf379169c86ac4d03ef4f0d0345d6af012b80cd3d16c3805b3e7d4f84ed1358c",
+    "sources/main_incident_2026_10_07/iris_k8s_tasks.py": "8ef997f9de3f2212de3649c2616031865f88b9494b6f21920de0c42b40b6f379",
+    "sources/main_incident_2026_10_07/head.json": "2afd44e8af727881906062ffc1a1dae04976cddf27b904adb91cff411ffb82ba",
+    "sources/main_incident_2026_10_07/compare.json": "8535dcfa0a1bbc49aed78b6518b5f9c08620dcddb3a534703c765ec4ea30a4d7",
+    "sources/main_incident_2026_10_07/pull_9833.json": "e0f3d400c7160803c987aace5d62ddc8ca1f70f3dda67e9c1ac66fbb671fdba5",
+    "sources/main_incident_2026_10_07/comments_8435.json": "961fa251b7b9c11aed54a123c0570414b4c05ba9e9f3106bdcdf59191cef6a58",
+    "sources/main_incident_2026_10_07/comments_8506.json": "d8225e676fb83d84c3c15e8f4a9ac7a8a2339fca50aadcd9ddd6bfd62c2f4950",
+    "scripts/probe_runtime_defaults.py": "5c31e61f2eb55d9678795606366028106120a63df5cea97ac3b428b9988474be",
+    "sources/runtime_defaults_2026_10_07/train.py": "2c4d648db684d8109ee241e2e69dad3fe42b5e41760f6114706c6134e35a786b",
+    "sources/runtime_defaults_2026_10_07/model.py": "bce3dffcf78b25d83671c89ff084edd593505f5d61d94df1e40ac1bd490112bb",
+    "sources/engineering_v77_2026_10_07/current_ep_ragged_all_to_all.py": "aa8331d5d7f4d18c4aef2f401271411539ad637c4e458b3f6a33585d2d3ae9cf",
+    "scripts/probe_main_incident_revision.py": "070333552567c492df28b899b0ab8f4be4874aa6a3c3c1f64959dd20ef529915"
+  },
+  "actual_deployed_revision": null,
+  "actual_noexecute_root_cause": null,
+  "actual_kubernetes_pod_status": null,
+  "actual_GPU_effect": null,
+  "substitutions": [
+    "os.environ isolated dictionaries",
+    "enum labels and task-container name adapter for pure pod helpers",
+    "no launcher imports, XLA parser or Kubernetes control loop"
+  ]
+}

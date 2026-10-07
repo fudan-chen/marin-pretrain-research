@@ -325,3 +325,6 @@ V99：将长度查询、批量读取、队列消费、设备准备和完成更�
 V100补充退出验收：原后台队列设置stop并不唤醒已经等待空队列的消费者，join不等于取消底层请求；buffered耗尽应验证重复next仍结束。记录消费者终态、生产任务、线程回收和各host退出四层证据。局部候选仅改消费端，尚未接入Marin。[原模块与候选对照](BATCH_CLOCK_ZH.md)。
 
 V100另核未缓冲错误：RuntimeError可被原wrapper转成StopIteration，不能把迭代终止独立当作库存耗尽或训练预算完成。局部消费候选尚未修正该wrapper；保留异常来源与实际完成量。
+
+
+V101版本和退出检查：比较main、候选PR与实际部署三种身份。分叉图不解释成回退；逐文件绑定并执行最终环境default/forced行为。事故按命名task的reason/exitCode、True disruption condition与retry budget分类，不用137或NoExecute猜GPU根因。[18项控制](RECENT_MOE_CHANGES_ZH.md)。

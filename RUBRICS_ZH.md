@@ -453,3 +453,6 @@ V99：没有stalled日志不能判定loader健康，有10秒读取warning不能�
 V100规则：成功路径不能替代关闭路径。必测空队列消费者、满队列生产者、pending读取、有效项后错误及重复耗尽。只有consumer退出，不可判为生产IO已取消；只有producer退出，不可判为consumer已唤醒。原协议缺口已用CPU复现，Hero事故未知；局部消费候选仍需集成和分布式评审。[依据](BATCH_CLOCK_ZH.md)。
 
 V100另核未缓冲错误：RuntimeError可被原wrapper转成StopIteration，不能把迭代终止独立当作库存耗尽或训练预算完成。局部消费候选尚未修正该wrapper；保留异常来源与实际完成量。
+
+
+V101规则：未合并提案头不等于main，main不等于部署；default不等于forced，mode名不等于最终环境。exit137单独不足以归因taint/基础设施失败；错误预算要看原condition和命名task状态。当前实况正文与V77/V83相同，不计新增事故。[对照依据](RECENT_MOE_CHANGES_ZH.md)。

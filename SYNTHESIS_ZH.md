@@ -249,3 +249,6 @@ V99：loader的慢请求日志不构成超时恢复合同。有限长度等待�
 
 
 V100：原后台队列错误按FIFO传递，正常耗尽后重复next却可等待空队列，stop也不唤醒已经阻塞的消费者。局部候选修正消费终态与stop观察，未解决生产IO取消或join deadline。训练退出、恢复和配比比较必须分别核对已请求、已交付与完成更新水位。[源码、19项原模块及5项候选控制](BATCH_CLOCK_ZH.md)。
+
+
+V101：实时复查没有新事故正文；新增main/提案版本对照。五份数据/队列源码同字节，train环境辅助函数不同：main carry默认0.75/85，提案0.78/105；显式overlap在ragged无carry分支的保留/强制行为不同。Iris分类依赖disruption而非单独exit137。未绑定实际部署或节点根因。[完整对照](RECENT_MOE_CHANGES_ZH.md)。

@@ -520,3 +520,6 @@ V99：同固定head loader字节重新核对，原host/watchdog/next共13项真�
 
 
 V100：新增两份同head完整后台/线程模块，保留497份旧非bookkeeping源文件字节；19项原模块真实queue/thread控制＋5项本地消费者候选控制。复现buffered重复耗尽和stop唤醒缺口，候选未接入Marin，未验证远程IO或多host退出。
+
+
+V101：13份公开payload归档、499份旧非bookkeeping源字节保留；18项main/提案host与Pod分类控制。纠正刷新时将已收录NoExecute记录称为新增的判断，正文没有变化；逐文件绑定五同一异，实际部署与GPU/节点根因仍未知。

@@ -61,6 +61,13 @@ readings={x['file']:x for x in json.loads((ROOT/'analysis/figure_readings.json')
 sections=[];toc=[]
 for slug,label,file in chapters:
     result=markdown.markdown((ROOT/file).read_text(),extensions=['tables','fenced_code','toc'])
+    if slug=='data':
+        diagram=BeautifulSoup((ROOT/'assets/loss_mass_accounting.svg').read_text(),'html.parser').svg
+        diagram['style']='display:block;width:100%;height:auto'
+        fragment=BeautifulSoup(result,'html.parser')
+        for placeholder in fragment.select('img[src="assets/loss_mass_accounting.svg"]'):
+            placeholder.replace_with(diagram)
+        result=str(fragment)
     if slug=='mixture-identity-guide':
         diagram=BeautifulSoup((ROOT/'assets/seed_pipeline_keys.svg').read_text(),'html.parser').svg
         diagram['style']='display:block;width:100%;height:auto'

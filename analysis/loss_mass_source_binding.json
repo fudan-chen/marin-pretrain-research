@@ -1,0 +1,72 @@
+{
+  "bindings": [
+    {
+      "archive_file": "sources/contracts_2026_10_05/model.py",
+      "upstream_path": "experiments/grug/moe_hero_ep/model.py",
+      "verified_source_url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/experiments/grug/moe_hero_ep/model.py",
+      "frozen_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+      "http_status": 200,
+      "bytes": 77140,
+      "same_bytes": true,
+      "sha256": "8fdfd89cf6814da05683f134f154525916728370368a2493843195d9a489859c",
+      "retrieved_utc": "2026-10-07T12:51:33.114124+00:00"
+    },
+    {
+      "archive_file": "sources/contracts_2026_10_05/api.py",
+      "upstream_path": "lib/levanter/src/levanter/kernels/pallas/fused_cross_entropy_loss/api.py",
+      "verified_source_url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/src/levanter/kernels/pallas/fused_cross_entropy_loss/api.py",
+      "frozen_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+      "http_status": 200,
+      "bytes": 36741,
+      "same_bytes": true,
+      "sha256": "5efeea2badba92dbc2dce9d0fc2306f12a2bf754dd2d8bee16b1dcd3ed0e355d",
+      "retrieved_utc": "2026-10-07T12:51:25.198333+00:00"
+    },
+    {
+      "archive_file": "sources/contracts_2026_10_05/reference.py",
+      "upstream_path": "lib/levanter/src/levanter/kernels/pallas/fused_cross_entropy_loss/reference.py",
+      "verified_source_url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/src/levanter/kernels/pallas/fused_cross_entropy_loss/reference.py",
+      "frozen_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+      "http_status": 200,
+      "bytes": 7429,
+      "same_bytes": true,
+      "sha256": "f113b3b6872af2d6aa4658cf4326b6c52c2675bf537690d5653604e9d559c0d5",
+      "retrieved_utc": "2026-10-07T12:51:25.417426+00:00"
+    },
+    {
+      "archive_file": "sources/boundaries_2026_10_05/examples.py",
+      "upstream_path": "lib/levanter/src/levanter/data/text/examples.py",
+      "verified_source_url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/src/levanter/data/text/examples.py",
+      "frozen_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+      "http_status": 200,
+      "bytes": 15041,
+      "same_bytes": true,
+      "sha256": "199a86abfd0f85eca39e6e73042c05ba56822dc35c26a5ed048dbb2f1299ec49",
+      "retrieved_utc": "2026-10-07T12:51:25.740705+00:00"
+    },
+    {
+      "archive_file": "sources/scale_2026_10_05/grug_loss.py",
+      "upstream_path": "lib/levanter/src/levanter/grug/loss.py",
+      "verified_source_url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/src/levanter/grug/loss.py",
+      "frozen_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+      "http_status": 200,
+      "bytes": 5525,
+      "same_bytes": true,
+      "sha256": "97e86e8a7540cafeb4be9695da9a5c8342f3780b7fee6cbb45de79ffc50c15ba",
+      "retrieved_utc": "2026-10-07T12:51:22.603786+00:00"
+    },
+    {
+      "archive_file": "sources/deepening_2026_10_04/mixture_production.py",
+      "upstream_path": "lib/levanter/src/levanter/data/mixture.py",
+      "verified_source_url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/src/levanter/data/mixture.py",
+      "frozen_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+      "http_status": 200,
+      "bytes": 22896,
+      "same_bytes": true,
+      "sha256": "67e97941a79753b2e5865f7f41c7762436a428599ecd1a60d643aa891a817685",
+      "retrieved_utc": "2026-10-07T12:51:28.602190+00:00"
+    }
+  ],
+  "retrieval": "Complete HTTP response payload compared to existing complete archived source; no duplicate source files",
+  "actual_latest_head_execution": null
+}

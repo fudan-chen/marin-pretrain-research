@@ -269,3 +269,7 @@ resume-update-identity:
 .PHONY: seed-pipeline-cpu
 seed-pipeline-cpu:
 	$(CPU_PYTHON) scripts/probe_seed_pipeline_cpu.py
+
+.PHONY: loss-mass-cpu
+loss-mass-cpu:
+	$(CPU_PYTHON) scripts/probe_loss_mass_cpu.py

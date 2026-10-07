@@ -1,0 +1,27 @@
+{
+  "status": "proposed_not_executed",
+  "actual_run_id": null,
+  "actual_checkpoint_digest": null,
+  "tokenizer_and_cache_digests": null,
+  "runtime_and_loss_backend": null,
+  "domain_rows": [],
+  "row_fields": [
+    "domain",
+    "window_start_step",
+    "window_end_step",
+    "declared_sequence_weight",
+    "actual_sequence_count",
+    "input_slots",
+    "valid_query_positions",
+    "positive_loss_weight_positions",
+    "sum_loss_weight",
+    "weighted_loss_numerator",
+    "gradient_measurement_scope",
+    "cost_measurement"
+  ],
+  "same_eval_identity_digest": null,
+  "donor_domain_regressions": null,
+  "actual_Hero_objective_shares": null,
+  "causal_mixture_effect": null,
+  "note": "Do not infer sum_loss_weight from configured weights or treat it as unique information, gradient norm share, or measured FLOPs."
+}

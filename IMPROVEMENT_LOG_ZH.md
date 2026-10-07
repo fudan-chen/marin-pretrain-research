@@ -559,3 +559,7 @@ V101：13份公开payload归档、499份旧非bookkeeping源字节保留；18项
 ## V108 · seed 派生与未来支持域
 
 12 项原入口/数据构造/原 shuffle 和 mix 的单 CPU 控制，7 个核心源文件同冻结 eee467 字节一致，无新增源文件，归档维持556。区分 None/显式0；未来正权重前置域提前改变 child key，但始终零域被过滤。当前域名槽序列/全库存相同仍能改变内容前缀。新增 key 分配图、完整支持域规则、真实交接空模板。优先取得实际 key manifest 与固定索引 token hash；当前未执行真实 loader/模型/恢复。
+
+## V109 · 序列曝光与计分份额
+
+13项原mask/model loss方法/Grug reducer CPU控制，显式CPU reference替代fused dispatcher，无完整Transformer。修正数据指南的一处单位混淆；分开序列、输入位置、计分位置与权重和。验证相同loss下域系数不同，以及统一缩放权重不变性；原整数quota实现条件反密度候选。6份固定revision完整HTTP源响应与旧档同字节，归档仍556。新增份额图、实际账本空模板和换算管线；真实Hero每域密度/梯度/成本/收益为空。

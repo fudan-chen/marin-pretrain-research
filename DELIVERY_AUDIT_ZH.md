@@ -192,3 +192,7 @@ V101：源513份，18项原函数/源码刷新控制；main与开放PR分叉，�
 ## V108：数据派生与构造证据
 
 12 项 CPU identity 控制，7 份核心源文件与冻结 eee467 blob 相同；源归档仍556。归档 W&B 的 seed/data_seed 声明与实际执行 key 分开。图展示构造 key 绑定，表中变化数来自96槽人工控制，不是 Hero 数据事故或 loss 指标。DirectDatasetComponent/Axis 类型与空 cache 为适配，无真实 token、DataLoader、checkpoint 或模型执行。发布哈希见 analysis/release_v108.json；浏览器渲染未验收。
+
+## V109：计分口径与后端范围
+
+13项CPU控制，有终态退出码；因前临时环境/进程句柄已不存在，重建固定CPU依赖后重新执行。原方法请求xla_fast_bwd，但探针明确执行原CPU reference，不能计作该kernel复现。真实Hero mask与token未取得；223个文本format仅为归档声明。6份完整固定revision HTTP payload核对旧档，源归档556。计分权重和、梯度贡献、独立信息与硬件成本分别限定，发布见analysis/release_v109.json。浏览器渲染未验收。

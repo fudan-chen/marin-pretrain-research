@@ -1,0 +1,26 @@
+{
+  "checks_passed": 5,
+  "checks": [
+    {
+      "name": "All historical table content retained before appended accounting tables",
+      "passed": true
+    },
+    {
+      "name": "Thirteen controls and six complete public source bindings valid",
+      "passed": true
+    },
+    {
+      "name": "Eight figure widths encode measured target shares and original quota",
+      "passed": true
+    },
+    {
+      "name": "Both HTML variants preserve unit correction and accessible plot",
+      "passed": true
+    },
+    {
+      "name": "Actual Hero density kernel and learning benefit not promoted from fixture",
+      "passed": true
+    }
+  ],
+  "actual_browser_rendering": null
+}

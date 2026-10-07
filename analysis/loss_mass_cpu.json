@@ -1,0 +1,404 @@
+{
+  "checks_passed": 13,
+  "checks": [
+    {
+      "name": "Original causal mask yields three dense targets and one answer target",
+      "passed": true
+    },
+    {
+      "name": "Equal sequence counts yield equal objective mass for equal density",
+      "passed": true
+    },
+    {
+      "name": "Equal sequence counts with sparse B produce 3 to 1 loss mass",
+      "passed": true
+    },
+    {
+      "name": "Same logits preserve mean loss despite changed objective shares",
+      "passed": true
+    },
+    {
+      "name": "Original method and reducer gradients expose changed per-domain coefficients",
+      "passed": true
+    },
+    {
+      "name": "Positive target count and weighted mass are distinct with fractional weights",
+      "passed": true
+    },
+    {
+      "name": "Unequal losses use target-mass weighted mean not sequence-domain mean",
+      "passed": true
+    },
+    {
+      "name": "Uniform loss-weight scaling changes mass but not normalized objective or gradient",
+      "passed": true
+    },
+    {
+      "name": "Original sampler integer quota matches equal and inverse-density sequence mixtures",
+      "passed": true
+    },
+    {
+      "name": "Inverse-density sequence mix balances objective mass in stationary fixture",
+      "passed": true
+    },
+    {
+      "name": "Same nominal input budget can contain less total target mass",
+      "passed": true
+    },
+    {
+      "name": "Archived formats do not establish an actual answer-only Hero mixture",
+      "passed": true
+    },
+    {
+      "name": "Backend substitution recorded rather than claimed as xla_fast_bwd execution",
+      "passed": true
+    }
+  ],
+  "cases": {
+    "uniform_half_weight": {
+      "sequence_counts": [
+        1,
+        1
+      ],
+      "input_slots": 8,
+      "nonzero_target_positions": [
+        3,
+        1
+      ],
+      "weighted_target_mass": [
+        1.5,
+        0.5
+      ],
+      "weighted_target_share": [
+        0.75,
+        0.25
+      ],
+      "loss": 0.6931471824645996,
+      "first_logit_gradient": [
+        0.375,
+        0.125
+      ],
+      "mask_a": [
+        0.5,
+        0.5,
+        0.5,
+        0.0
+      ],
+      "mask_b": [
+        0.0,
+        0.0,
+        0.5,
+        0.0
+      ],
+      "z_loss_weight": null
+    },
+    "dense_both": {
+      "sequence_counts": [
+        1,
+        1
+      ],
+      "input_slots": 8,
+      "nonzero_target_positions": [
+        3,
+        3
+      ],
+      "weighted_target_mass": [
+        3.0,
+        3.0
+      ],
+      "weighted_target_share": [
+        0.5,
+        0.5
+      ],
+      "loss": 0.6931471824645996,
+      "first_logit_gradient": [
+        0.25,
+        0.25
+      ],
+      "mask_a": [
+        1.0,
+        1.0,
+        1.0,
+        0.0
+      ],
+      "mask_b": [
+        1.0,
+        1.0,
+        1.0,
+        0.0
+      ],
+      "z_loss_weight": null
+    },
+    "equal_sequences_sparse_b": {
+      "sequence_counts": [
+        1,
+        1
+      ],
+      "input_slots": 8,
+      "nonzero_target_positions": [
+        3,
+        1
+      ],
+      "weighted_target_mass": [
+        3.0,
+        1.0
+      ],
+      "weighted_target_share": [
+        0.75,
+        0.25
+      ],
+      "loss": 0.6931471824645996,
+      "first_logit_gradient": [
+        0.375,
+        0.125
+      ],
+      "mask_a": [
+        1.0,
+        1.0,
+        1.0,
+        0.0
+      ],
+      "mask_b": [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "z_loss_weight": null
+    },
+    "equal_sequences_half_weight_b": {
+      "sequence_counts": [
+        1,
+        1
+      ],
+      "input_slots": 8,
+      "nonzero_target_positions": [
+        3,
+        1
+      ],
+      "weighted_target_mass": [
+        3.0,
+        0.5
+      ],
+      "weighted_target_share": [
+        0.8571428571428571,
+        0.14285714285714285
+      ],
+      "loss": 0.6931471824645996,
+      "first_logit_gradient": [
+        0.4285714626312256,
+        0.0714285746216774
+      ],
+      "mask_a": [
+        1.0,
+        1.0,
+        1.0,
+        0.0
+      ],
+      "mask_b": [
+        0.0,
+        0.0,
+        0.5,
+        0.0
+      ],
+      "z_loss_weight": null
+    },
+    "different_domain_losses": {
+      "sequence_counts": [
+        1,
+        1
+      ],
+      "input_slots": 8,
+      "nonzero_target_positions": [
+        3,
+        1
+      ],
+      "weighted_target_mass": [
+        3.0,
+        1.0
+      ],
+      "weighted_target_share": [
+        0.75,
+        0.25
+      ],
+      "loss": 0.8664339780807495,
+      "first_logit_gradient": [
+        0.375,
+        0.1875000149011612
+      ],
+      "mask_a": [
+        1.0,
+        1.0,
+        1.0,
+        0.0
+      ],
+      "mask_b": [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "z_loss_weight": null
+    },
+    "block8_equal_sequences": {
+      "sequence_counts": [
+        4,
+        4
+      ],
+      "input_slots": 32,
+      "nonzero_target_positions": [
+        12,
+        4
+      ],
+      "weighted_target_mass": [
+        12.0,
+        4.0
+      ],
+      "weighted_target_share": [
+        0.75,
+        0.25
+      ],
+      "loss": 0.6931471824645996,
+      "first_logit_gradient": [
+        0.375,
+        0.125
+      ],
+      "mask_a": [
+        1.0,
+        1.0,
+        1.0,
+        0.0
+      ],
+      "mask_b": [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "z_loss_weight": null
+    },
+    "block8_inverse_density": {
+      "sequence_counts": [
+        2,
+        6
+      ],
+      "input_slots": 32,
+      "nonzero_target_positions": [
+        6,
+        6
+      ],
+      "weighted_target_mass": [
+        6.0,
+        6.0
+      ],
+      "weighted_target_share": [
+        0.5,
+        0.5
+      ],
+      "loss": 0.6931471824645996,
+      "first_logit_gradient": [
+        0.25,
+        0.25
+      ],
+      "mask_a": [
+        1.0,
+        1.0,
+        1.0,
+        0.0
+      ],
+      "mask_b": [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      "z_loss_weight": null
+    }
+  },
+  "integer_quotas": {
+    "equal": {
+      "A": 4,
+      "B": 4
+    },
+    "inverse_density": {
+      "A": 2,
+      "B": 6
+    }
+  },
+  "declared_formats": {
+    "snapshot": "sources/live_2026_10_07/meta.json",
+    "declared_components_count": 223,
+    "text_key_text_count": 223,
+    "actual_domain_target_density": null,
+    "includes_training_and_evaluation_declarations": true
+  },
+  "backend_calls": [
+    {
+      "requested_implementation": "xla_fast_bwd",
+      "executed": "original CPU reference",
+      "z_loss": null
+    },
+    {
+      "requested_implementation": "xla_fast_bwd",
+      "executed": "original CPU reference",
+      "z_loss": null
+    },
+    {
+      "requested_implementation": "xla_fast_bwd",
+      "executed": "original CPU reference",
+      "z_loss": null
+    },
+    {
+      "requested_implementation": "xla_fast_bwd",
+      "executed": "original CPU reference",
+      "z_loss": null
+    },
+    {
+      "requested_implementation": "xla_fast_bwd",
+      "executed": "original CPU reference",
+      "z_loss": null
+    },
+    {
+      "requested_implementation": "xla_fast_bwd",
+      "executed": "original CPU reference",
+      "z_loss": null
+    },
+    {
+      "requested_implementation": "xla_fast_bwd",
+      "executed": "original CPU reference",
+      "z_loss": null
+    }
+  ],
+  "scope": "Original causal mask, model next-token loss method and Grug reducer on CPU.\nSynthetic domain-one-hot hidden states; original CE reference explicitly replaces xla_fast_bwd dispatcher.\nNo Transformer forward, Hero cache, distributed reduction or production gradient attribution.\n",
+  "runtime": {
+    "jax": "0.7.2",
+    "jaxlib": "0.7.2",
+    "numpy": "2.5.3",
+    "backend": "cpu"
+  },
+  "source_sha256": {
+    "scripts/probe_loss_mass_cpu.py": "829255b29b8d984ea32c5399bc8f4aa4ad7d2a0521ff8bd0d5d32dfe6ad26e78",
+    "sources/boundaries_2026_10_05/examples.py": "199a86abfd0f85eca39e6e73042c05ba56822dc35c26a5ed048dbb2f1299ec49",
+    "sources/scale_2026_10_05/grug_loss.py": "97e86e8a7540cafeb4be9695da9a5c8342f3780b7fee6cbb45de79ffc50c15ba",
+    "sources/contracts_2026_10_05/model.py": "8fdfd89cf6814da05683f134f154525916728370368a2493843195d9a489859c",
+    "sources/contracts_2026_10_05/api.py": "5efeea2badba92dbc2dce9d0fc2306f12a2bf754dd2d8bee16b1dcd3ed0e355d",
+    "sources/contracts_2026_10_05/reference.py": "f113b3b6872af2d6aa4658cf4326b6c52c2675bf537690d5653604e9d559c0d5",
+    "sources/deepening_2026_10_04/mixture_production.py": "67e97941a79753b2e5865f7f41c7762436a428599ecd1a60d643aa891a817685",
+    "scripts/probe_mixture_identity_cpu.py": "9537f8a87ed09c702fc696c351f496eba84297ad53bcafd3c398729732f2d9c5",
+    "sources/live_2026_10_07/meta.json": "21998ecad691e7e66d3680f173bfe9b94c35b9481f28eff4794a23b0c9831487",
+    "analysis/loss_mass_source_binding.json": "0529d64fbb2964473d56f552c24d4dbb4dd4f0a7c03b8c3f2f4b32cc1a4723be"
+  },
+  "adapters": [
+    "AST extraction, original next_token_loss method on supplied one-hot hidden-state model adapter",
+    "Original Grug wrapper mesh=None; actual fused dispatcher replaced with explicit original CPU CE reference",
+    "Original CPU default logsumexp; z-loss disabled",
+    "Artificial prompt_length3 and fractional weight, no actual Hero field values",
+    "Original MixtureDataset with finite identity stores and null CPU mesh",
+    "Domain-disjoint projection rows make CE gradient coefficients separable; not general gradient-norm attribution"
+  ],
+  "actual_Hero_target_mass_by_domain": null,
+  "actual_Hero_gradient_share": null,
+  "actual_hardware_compute_cost": null,
+  "actual_causal_mixture_effect": null,
+  "actual_xla_fast_bwd_execution": null
+}

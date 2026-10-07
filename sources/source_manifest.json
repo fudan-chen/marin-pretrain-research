@@ -4482,5 +4482,25 @@
     "retrieved_utc": "2026-10-06T22:48:51.946039+00:00",
     "bytes": 298552,
     "sha256": "f92959e0fde69173d4ff2f96e1db23419da922e8a1fb262b54067259f968e5a2"
+  },
+  {
+    "file": "loader_background_2026_10_07/background_iterable.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/lib/levanter/src/levanter/utils/background_iterable.py",
+    "final_url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/lib/levanter/src/levanter/utils/background_iterable.py",
+    "bytes": 5129,
+    "sha256": "978aab5827736b8d30a89d1965efe9f0f2ad7fc1be8cb83909dff465feec962f",
+    "retrieved_utc": "2026-10-06T23:53:05.884953+00:00",
+    "git_revision": "b65be4c9550c5097f0a3add08933531a1c24d534",
+    "execution_binding": "Pinned public code, not verified historical Hero execution"
+  },
+  {
+    "file": "loader_background_2026_10_07/thread_utils.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/lib/levanter/src/levanter/utils/thread_utils.py",
+    "final_url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/lib/levanter/src/levanter/utils/thread_utils.py",
+    "bytes": 2269,
+    "sha256": "90864a417f40468d364891e1204e6468094abfe941943129655fac9440f0941d",
+    "retrieved_utc": "2026-10-06T23:53:08.194047+00:00",
+    "git_revision": "b65be4c9550c5097f0a3add08933531a1c24d534",
+    "execution_binding": "Pinned public code, not verified historical Hero execution"
   }
 ]

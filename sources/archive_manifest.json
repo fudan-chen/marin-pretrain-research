@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-06T22:49:54.475405+00:00",
+  "integrity_manifest_created_utc": "2026-10-06T23:53:08.619587+00:00",
   "files": [
     {
       "file": "accumulation_2026_10_07/grad_accum.py",
@@ -1398,6 +1398,20 @@
       "sha256": "21998ecad691e7e66d3680f173bfe9b94c35b9481f28eff4794a23b0c9831487",
       "url": "https://api.wandb.ai/graphql",
       "retrieved_utc": "2026-10-06T16:34:08.168879+00:00"
+    },
+    {
+      "file": "loader_background_2026_10_07/background_iterable.py",
+      "bytes": 5129,
+      "sha256": "978aab5827736b8d30a89d1965efe9f0f2ad7fc1be8cb83909dff465feec962f",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/lib/levanter/src/levanter/utils/background_iterable.py",
+      "retrieved_utc": "2026-10-06T23:53:05.884953+00:00"
+    },
+    {
+      "file": "loader_background_2026_10_07/thread_utils.py",
+      "bytes": 2269,
+      "sha256": "90864a417f40468d364891e1204e6468094abfe941943129655fac9440f0941d",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/b65be4c9550c5097f0a3add08933531a1c24d534/lib/levanter/src/levanter/utils/thread_utils.py",
+      "retrieved_utc": "2026-10-06T23:53:08.194047+00:00"
     },
     {
       "file": "marin_repo.json",
@@ -2927,8 +2941,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 225883,
-      "sha256": "f4f97b4af205cbe59345a1d387959f83dfa56c286f3751d71f3679aa02e13dfe",
+      "bytes": 227306,
+      "sha256": "412dc3d49fcaf7a791c4d3ecd9633619d0b30c84326d78c39605f120ba79efc1",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

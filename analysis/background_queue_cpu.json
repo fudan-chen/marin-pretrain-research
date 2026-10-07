@@ -1,0 +1,284 @@
+{
+  "scope": "Complete original background/thread utility modules with real stdlib queues/threads.\nLoader host producer and CPU background subclass are original; mesh and identity IO adapted.\nPending waits are bounded observations. Manual sentinel injection is cleanup only.\n",
+  "checks_passed": 24,
+  "original_checks_passed": 19,
+  "candidate_checks_passed": 5,
+  "checks": [
+    "Queued valid items precede transported producer error",
+    "Original traceback wrapper retains producer frame",
+    "Producer construction error reaches consumer",
+    "Original async producer yields ordered values then end",
+    "Repeated next after consumed sentinel remains pending in bounded observation",
+    "Probe-only sentinel cleanup terminates repeated-end consumer",
+    "Stop join waits for pending async producer rather than cancelling",
+    "External release permits original stop join to finish",
+    "Stop flag does not wake consumer already blocked in empty queue",
+    "Producer exit after stop still leaves blocked consumer pending",
+    "Explicit cleanup leaves no blocked consumer or producer",
+    "Backpressure enqueue stops through queue timeout poll",
+    "Next invoked after stop returns end",
+    "Unbuffered original wrapper repeats StopIteration correctly",
+    "Actual background queue retains shallow-loader valid batch then original error",
+    "Actual background queue carries deep-loader fault before first batch",
+    "Original unbuffered RuntimeError becomes apparent stream end",
+    "Original unbuffered OSError remains an error",
+    "Original buffered RuntimeError is transported without stream-end conversion",
+    "Candidate retains normal stream and repeats end without blocking",
+    "Candidate preserves valid FIFO items and original error before terminal end",
+    "Candidate transported error retains original producer frame",
+    "Candidate blocked consumer observes stop without injected sentinel",
+    "Candidate does not claim read cancellation and leaves no threads after release"
+  ],
+  "runtime": {
+    "python": "3.12.13",
+    "tblib": "3.2.2"
+  },
+  "cases": {
+    "buffered_error": [
+      {
+        "kind": "value",
+        "value": "good0"
+      },
+      {
+        "kind": "value",
+        "value": "good1"
+      },
+      {
+        "kind": "OSError",
+        "message": "artificial queue fault",
+        "traceback": "Traceback (most recent call last):\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/probe_background_queue_cpu.py\", line 23, in next_result\n    try:return {'kind':'value','value':next(it)}\n                                       ^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/background_iterable.py\", line 75, in __next__\n    batch.reraise()\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/background_iterable.py\", line 160, in reraise\n    raise self.exc.with_traceback(self.tb.as_traceback())\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/background_iterable.py\", line 125, in _produce_batches_sync\n    for batch in iterator:\n    ^^^^^^^^^^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/probe_background_queue_cpu.py\", line 41, in broken_stream\n    yield 'good0';yield 'good1';raise OSError('artificial queue fault')\n         ^^^^^^^^^^^^^^^^^\nOSError: artificial queue fault\n"
+      }
+    ],
+    "construction_error": {
+      "kind": "ValueError",
+      "message": "artificial constructor fault",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/probe_background_queue_cpu.py\", line 23, in next_result\n    try:return {'kind':'value','value':next(it)}\n                                       ^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/background_iterable.py\", line 75, in __next__\n    batch.reraise()\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/background_iterable.py\", line 160, in reraise\n    raise self.exc.with_traceback(self.tb.as_traceback())\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/background_iterable.py\", line 100, in _fill_queue_with_batches\n    iterator = self._producer_fn()\n    ^^^^^^^^^^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/probe_background_queue_cpu.py\", line 45, in fails_to_construct\n    def fails_to_construct():raise ValueError('artificial constructor fault')\n          ^^^^^^^^^^^^^^^^^\nValueError: artificial constructor fault\n"
+    },
+    "finite_async_first_end": [
+      {
+        "kind": "value",
+        "value": 0
+      },
+      {
+        "kind": "value",
+        "value": 1
+      },
+      {
+        "kind": "StopIteration",
+        "message": "",
+        "traceback": "Traceback (most recent call last):\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/probe_background_queue_cpu.py\", line 23, in next_result\n    try:return {'kind':'value','value':next(it)}\n                                       ^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/background_iterable.py\", line 73, in __next__\n    raise StopIteration\nStopIteration\n"
+      }
+    ],
+    "repeated_end": {
+      "pending_after_first_end": true,
+      "producer_alive": false,
+      "queue_size": 0,
+      "cleanup_result": {
+        "kind": "StopIteration",
+        "message": "",
+        "traceback": "Traceback (most recent call last):\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/probe_background_queue_cpu.py\", line 23, in next_result\n    try:return {'kind':'value','value':next(it)}\n                                       ^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/background_iterable.py\", line 73, in __next__\n    raise StopIteration\nStopIteration\n"
+      },
+      "consumer_alive_after_cleanup": false
+    },
+    "join_wait": {
+      "stop_pending_before_release": true,
+      "producer_alive_before_release": true,
+      "read_cancelled_before_release": false,
+      "all_finished_after_release": true
+    },
+    "stop_blocked_consumer": {
+      "consumer_pending_after_stop": true,
+      "producer_alive_after_stop": true,
+      "read_cancelled_after_stop": false,
+      "producer_finished_after_release": true,
+      "consumer_pending_after_producer_exit": true,
+      "cleanup_consumer_finished": true
+    },
+    "full_queue_stop": {
+      "queued_before_stop": 1,
+      "thread_alive_after_stop": false,
+      "elapsed_seconds": 1.0069440831430256,
+      "next_after_stop": {
+        "kind": "StopIteration",
+        "message": "",
+        "traceback": "Traceback (most recent call last):\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/probe_background_queue_cpu.py\", line 23, in next_result\n    try:return {'kind':'value','value':next(it)}\n                                       ^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/background_iterable.py\", line 69, in __next__\n    raise StopIteration\nStopIteration\n"
+      }
+    },
+    "unbuffered_repeated_end": [
+      {
+        "kind": "value",
+        "value": 0
+      },
+      {
+        "kind": "value",
+        "value": 1
+      },
+      {
+        "kind": "StopIteration",
+        "message": "",
+        "traceback": "Traceback (most recent call last):\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/thread_utils.py\", line 64, in __next__\n    return self._run_async_task(self.async_iter.__anext__())\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/thread_utils.py\", line 53, in _run_async_task\n    return future.result()\n           ^^^^^^^^^^^^^^^\n  File \"/Users/chen/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 456, in result\n    return self.__get_result()\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/chen/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 401, in __get_result\n    raise self._exception\nStopAsyncIteration\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/probe_background_queue_cpu.py\", line 23, in next_result\n    try:return {'kind':'value','value':next(it)}\n                                       ^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/background_iterable.py\", line 79, in __next__\n    return next(self.iterator)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/thread_utils.py\", line 70, in __next__\n    raise StopIteration\nStopIteration\n"
+      },
+      {
+        "kind": "StopIteration",
+        "message": "",
+        "traceback": "Traceback (most recent call last):\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/probe_background_queue_cpu.py\", line 23, in next_result\n    try:return {'kind':'value','value':next(it)}\n                                       ^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/background_iterable.py\", line 79, in __next__\n    return next(self.iterator)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/thread_utils.py\", line 62, in __next__\n    raise StopIteration\nStopIteration\n"
+      }
+    ],
+    "loader_fault_fetch_1": {
+      "events": [
+        {
+          "kind": "value",
+          "value": {
+            "step": 0,
+            "offset": 0,
+            "size": 4,
+            "identities": [
+              0,
+              1,
+              2,
+              3
+            ]
+          }
+        },
+        {
+          "kind": "OSError",
+          "message": "artificial unreadable identity four",
+          "traceback": "Traceback (most recent call last):\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/probe_background_queue_cpu.py\", line 23, in next_result\n    try:return {'kind':'value','value':next(it)}\n                                       ^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/background_iterable.py\", line 75, in __next__\n    batch.reraise()\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/background_iterable.py\", line 160, in reraise\n    raise self.exc.with_traceback(self.tb.as_traceback())\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/background_iterable.py\", line 134, in _produce_batches_async\n    async for batch in iterator:\n    ^^^^^^^^^^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/eval_identity_2026_10_06/loader.py\", line 307, in _produce_batches\n    batch_of_batches: list[_Batch[Ex]] = await self._do_retrieve_batch_of_batches(batches)\n    ^^^^^^^^^^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/eval_identity_2026_10_06/loader.py\", line 452, in _do_retrieve_batch_of_batches\n    individual_datums = await self.run_and_report_slowness(\n    ^^^^^^^^^^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/eval_identity_2026_10_06/loader.py\", line 497, in run_and_report_slowness\n    result = await task\n    ^^^^^^^^^^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/probe_loader_stall_cpu.py\", line 30, in get_batch\n    if 4 in indices:raise OSError('artificial unreadable identity four')\n        ^^^^^^^^^^^^^^^^^\nOSError: artificial unreadable identity four\n"
+        }
+      ],
+      "requests": [
+        [
+          0,
+          1,
+          2,
+          3
+        ],
+        [
+          4,
+          5,
+          6,
+          7
+        ]
+      ],
+      "producer_alive_after_stop": false
+    },
+    "loader_fault_fetch_4": {
+      "events": [
+        {
+          "kind": "OSError",
+          "message": "artificial unreadable identity four",
+          "traceback": "Traceback (most recent call last):\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/probe_background_queue_cpu.py\", line 23, in next_result\n    try:return {'kind':'value','value':next(it)}\n                                       ^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/background_iterable.py\", line 75, in __next__\n    batch.reraise()\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/background_iterable.py\", line 160, in reraise\n    raise self.exc.with_traceback(self.tb.as_traceback())\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/background_iterable.py\", line 134, in _produce_batches_async\n    async for batch in iterator:\n    ^^^^^^^^^^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/eval_identity_2026_10_06/loader.py\", line 307, in _produce_batches\n    batch_of_batches: list[_Batch[Ex]] = await self._do_retrieve_batch_of_batches(batches)\n    ^^^^^^^^^^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/eval_identity_2026_10_06/loader.py\", line 452, in _do_retrieve_batch_of_batches\n    individual_datums = await self.run_and_report_slowness(\n    ^^^^^^^^^^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/eval_identity_2026_10_06/loader.py\", line 497, in run_and_report_slowness\n    result = await task\n    ^^^^^^^^^^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/probe_loader_stall_cpu.py\", line 30, in get_batch\n    if 4 in indices:raise OSError('artificial unreadable identity four')\n        ^^^^^^^^^^^^^^^^^\nOSError: artificial unreadable identity four\n"
+        }
+      ],
+      "requests": [
+        [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12,
+          13,
+          14,
+          15
+        ]
+      ],
+      "producer_alive_after_stop": false
+    },
+    "unbuffered_fault_RuntimeError": {
+      "kind": "StopIteration",
+      "message": "",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/thread_utils.py\", line 53, in _run_async_task\n    return future.result()\n           ^^^^^^^^^^^^^^^\n  File \"/Users/chen/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 456, in result\n    return self.__get_result()\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/chen/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 401, in __get_result\n    raise self._exception\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/probe_background_queue_cpu.py\", line 97, in producer\n    raise error_type('artificial async runtime fault')\nRuntimeError: artificial async runtime fault\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/probe_background_queue_cpu.py\", line 23, in next_result\n    try:return {'kind':'value','value':next(it)}\n                                       ^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/background_iterable.py\", line 79, in __next__\n    return next(self.iterator)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/thread_utils.py\", line 64, in __next__\n    return self._run_async_task(self.async_iter.__anext__())\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/thread_utils.py\", line 55, in _run_async_task\n    raise StopIteration\nStopIteration\n"
+    },
+    "unbuffered_fault_OSError": {
+      "kind": "OSError",
+      "message": "artificial async runtime fault",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/probe_background_queue_cpu.py\", line 23, in next_result\n    try:return {'kind':'value','value':next(it)}\n                                       ^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/background_iterable.py\", line 79, in __next__\n    return next(self.iterator)\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/thread_utils.py\", line 64, in __next__\n    return self._run_async_task(self.async_iter.__anext__())\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/thread_utils.py\", line 53, in _run_async_task\n    return future.result()\n           ^^^^^^^^^^^^^^^\n  File \"/Users/chen/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 456, in result\n    return self.__get_result()\n           ^^^^^^^^^^^^^^^^^^^\n  File \"/Users/chen/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/concurrent/futures/_base.py\", line 401, in __get_result\n    raise self._exception\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/probe_background_queue_cpu.py\", line 97, in producer\n    raise error_type('artificial async runtime fault')\nOSError: artificial async runtime fault\n"
+    },
+    "buffered_runtime_fault": {
+      "kind": "RuntimeError",
+      "message": "artificial async runtime fault",
+      "traceback": "Traceback (most recent call last):\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/probe_background_queue_cpu.py\", line 23, in next_result\n    try:return {'kind':'value','value':next(it)}\n                                       ^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/background_iterable.py\", line 75, in __next__\n    batch.reraise()\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/background_iterable.py\", line 160, in reraise\n    raise self.exc.with_traceback(self.tb.as_traceback())\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/background_iterable.py\", line 134, in _produce_batches_async\n    async for batch in iterator:\n    ^^^^^^^^^^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/probe_background_queue_cpu.py\", line 97, in producer\n    raise error_type('artificial async runtime fault')\n        ^^^^^^^^^^^^^^^^^\nRuntimeError: artificial async runtime fault\n"
+    },
+    "candidate_finite_end": [
+      {
+        "kind": "value",
+        "value": 0
+      },
+      {
+        "kind": "value",
+        "value": 1
+      },
+      {
+        "kind": "StopIteration",
+        "message": "",
+        "traceback": "Traceback (most recent call last):\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/probe_background_queue_cpu.py\", line 23, in next_result\n    try:return {'kind':'value','value':next(it)}\n                                       ^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/background_queue_consumer_candidate.py\", line 33, in __next__\n    raise StopIteration\nStopIteration\n"
+      },
+      {
+        "kind": "StopIteration",
+        "message": "",
+        "traceback": "Traceback (most recent call last):\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/probe_background_queue_cpu.py\", line 23, in next_result\n    try:return {'kind':'value','value':next(it)}\n                                       ^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/background_queue_consumer_candidate.py\", line 24, in __next__\n    raise StopIteration\nStopIteration\n"
+      }
+    ],
+    "candidate_error": [
+      {
+        "kind": "value",
+        "value": "good0"
+      },
+      {
+        "kind": "value",
+        "value": "good1"
+      },
+      {
+        "kind": "OSError",
+        "message": "artificial queue fault",
+        "traceback": "Traceback (most recent call last):\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/probe_background_queue_cpu.py\", line 23, in next_result\n    try:return {'kind':'value','value':next(it)}\n                                       ^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/background_queue_consumer_candidate.py\", line 36, in __next__\n    item.reraise()\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/background_iterable.py\", line 160, in reraise\n    raise self.exc.with_traceback(self.tb.as_traceback())\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/sources/loader_background_2026_10_07/background_iterable.py\", line 125, in _produce_batches_sync\n    for batch in iterator:\n    ^^^^^^^^^^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/probe_background_queue_cpu.py\", line 41, in broken_stream\n    yield 'good0';yield 'good1';raise OSError('artificial queue fault')\n         ^^^^^^^^^^^^^^^^^\nOSError: artificial queue fault\n"
+      },
+      {
+        "kind": "StopIteration",
+        "message": "",
+        "traceback": "Traceback (most recent call last):\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/probe_background_queue_cpu.py\", line 23, in next_result\n    try:return {'kind':'value','value':next(it)}\n                                       ^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/background_queue_consumer_candidate.py\", line 24, in __next__\n    raise StopIteration\nStopIteration\n"
+      }
+    ],
+    "candidate_stop_consumer": {
+      "consumer_finished_before_release": true,
+      "consumer_result_before_release": {
+        "kind": "StopIteration",
+        "message": "",
+        "traceback": "Traceback (most recent call last):\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/probe_background_queue_cpu.py\", line 23, in next_result\n    try:return {'kind':'value','value':next(it)}\n                                       ^^^^^^^^\n  File \"/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/background_queue_consumer_candidate.py\", line 24, in __next__\n    raise StopIteration\nStopIteration\n"
+      },
+      "producer_alive_before_release": true,
+      "read_cancelled_before_release": false,
+      "all_finished_after_release": true
+    }
+  },
+  "source_sha256": {
+    "sources/loader_background_2026_10_07/background_iterable.py": "978aab5827736b8d30a89d1965efe9f0f2ad7fc1be8cb83909dff465feec962f",
+    "sources/loader_background_2026_10_07/thread_utils.py": "90864a417f40468d364891e1204e6468094abfe941943129655fac9440f0941d",
+    "sources/eval_identity_2026_10_06/loader.py": "d8c14060286d9998c8784ce945694958b7c61a5404bcede6e77ba34c467e077d",
+    "scripts/probe_loader_resume.py": "0679ebaddd48a0204cb61ee6dfae2c4bb270f0e187f52d674cb34d23ed95c2bf",
+    "scripts/probe_loader_stall_cpu.py": "0eae4643c032ea9fbde517cb049b3eb4224292734283f12bc909fdd346b13ef1",
+    "scripts/probe_background_queue_cpu.py": "45d8bdba8db21b161b02e87e37074b5d099c9779283f563c5ee257e3f4e8741e",
+    "scripts/background_queue_consumer_candidate.py": "812d72cdc95c4490cbcaa3e660f8241be4909db54f24ab03b79f72dee76071d2"
+  },
+  "substitutions": [
+    "null CPU mesh",
+    "artificial gated async producer",
+    "identity/fault store and host batchification",
+    "queue get observer delegates unchanged stdlib get",
+    "sentinel injected only after pending observations to terminate probe consumers"
+  ],
+  "candidate_integrated_into_Marin": false,
+  "candidate_remote_IO_cancellation": false,
+  "actual_Hero_shutdown_incident": null,
+  "actual_full_DataLoader": null,
+  "actual_remote_IO_cancellation": null,
+  "actual_distributed_shutdown": null
+}

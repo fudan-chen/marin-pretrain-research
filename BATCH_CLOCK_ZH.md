@@ -251,3 +251,49 @@ V71检查loader与日志的边界，本轮向上追到实际Harrier配置构建�
 恢复仍依据完成的state.step及历史数据声明，不依据“后台已经请求到哪里”。在重新取数前记录已请求、已交付、已完成更新三种水位；重读未完成的预取身份不等于模型训练重复。对于外部有副作用或不可重放的数据源，另建游标和提交合同，不能套用稳定随机访问identity store的结论。
 
 数据配比实验也受此影响：若调整后某域读取更慢、损坏请求更频繁或host掉队，按墙钟比较到达的loss会混入有效训练量差异。先核对成功完成的序列和有效目标预算，再比较共同进度的域loss；吞吐退化与统计收益分别报告。本轮没有生产步时、真实故障率或loss，不能量化Hero受影响的程度。
+
+
+## V100：后台队列的停止、错误和耗尽，原模块怎样执行
+
+V99只执行host管线，没有执行后台队列。这轮新增固定head的完整`background_iterable.py`与`thread_utils.py`，执行原模块、真实标准库queue/thread/asyncio及真实tblib traceback依赖，再把原loader host producer接入原CPU background subclass。CPU mesh仍是空上下文，子域仍是人工身份数据；没有完整DataLoader、设备batchify或真实IO。[两份源码与旧文件完整性](analysis/loader_background_acquisition.json)
+
+**最重要的区别：设置stop flag、唤醒消费者、取消生产请求和等待线程退出，是四件不同的事。** 对照发现正常耗尽后再次next会阻塞，且已进入空队列get的消费者不会被stop唤醒。另一个现象是stop(wait=True)等待生产线程；它不主动取消本轮事件控制的异步请求。这些不能直接归因到Hero，也不能据此断言真实远程请求一定不可取消。
+
+|原模块控制|实际结果|机制或合同|
+|---|---|---|
+|生产两条有效数据后抛OSError|先取good0/good1，后收到原OSError及生产frame|错误排在既有有效项后面，不是无条件抢先清空队列|
+|producer factory构造时抛ValueError|消费端收到ValueError|构造失败也通过原异常wrapper传递|
+|异步有限生产0、1后结束|先0、1，再StopIteration|首次耗尽正常|
+|同一buffered iterator耗尽后再次next|0.15秒观察仍等待，生产线程已退出、队列空|结束sentinel被取走，原消费端未记录持久exhausted状态|
+|异步请求未释放时stop(wait=True)|观察窗口内stop和生产线程仍等待；请求未收到取消|join等待线程结束，stop flag不取消正在await的请求|
+|消费者已经进入空队列get，再stop(wait=False)|消费者仍等待；释放请求后生产线程退出，消费者仍等待|stop没有向已阻塞的get发唤醒信号；停止后的_enqueue也不放入终止项|
+|生产者因容量1的满队列等待enqueue|stop后按原queue.put超时轮询退出|满队列backpressure与生产请求等待不是同一种阻塞|
+|未缓冲路径的原AsyncIteratorWrapper|耗尽后重复next仍返回StopIteration|该wrapper有自己的_exhausted标志，正向控制正常|
+|原未缓冲wrapper遇人工RuntimeError / OSError|RuntimeError变成StopIteration；OSError正常传播；buffered路径保留RuntimeError|异常类型与缓冲模式改变了失败表现|
+|原loader接真实background queue，fetch1/4遇同一人工坏身份|fetch1先交付有效首批再报错；fetch4首批前报错|V99的host故障边界在原队列传递中仍成立|
+
+原队列消费端先检查stop flag，再阻塞于`q.get()`；进入get之后不会重新检查，stop也没有唤醒队列。正常耗尽只入队一个sentinel，消费者取走它后抛StopIteration，但没有记住已结束。Python要求迭代器一旦抛StopIteration，后续调用继续抛出；因此buffered重复耗尽控制属于明确协议缺口。[原后台模块](https://github.com/marin-community/marin/blob/b65be4c9550c5097f0a3add08933531a1c24d534/lib/levanter/src/levanter/utils/background_iterable.py) · [Python迭代器合同](https://docs.python.org/3/library/stdtypes.html#iterator-types)
+
+这些不是测得“永久挂死”的生产记录。0.15秒用于观察特定等待状态，实际源码分支也说明当前没有可消费项或唤醒路径；探针在记录之后主动注入sentinel清理阻塞消费者。**这个注入只用于结束实验，不是原实现的恢复动作。** 所有人工等待均释放并回收相应线程，不能把清理后的退出说成stop自己成功唤醒。
+
+正常for循环通常只遇到一次StopIteration，DataLoader的新一轮迭代也构造新iterator；不能因此宣称每次评估都会卡住。问题条件是重复访问同一个已耗尽buffered iterator，或者另一线程/关闭协调器在消费者已进入空队列等待时发stop。生产线程若正在等真实存储或collective，还需另核取消与退出合同。本轮没有测这些后端。
+
+未缓冲路径另有异常合同缺口：原AsyncIteratorWrapper在_run_async_task中把RuntimeError解释为迭代结束，但try范围包括future.result，因此人工数据producer主动抛出的RuntimeError也被转成StopIteration。OSError的对照保留原异常，同一RuntimeError经过buffered队列则仍作为错误到达消费者。不能把这个差异叫作真实库存耗尽。原DataLoaderIterator在max_buffered_batches=0时使用该wrapper；同head训练入口声明buffer capacity=512、fetch=4，正常构建会使用buffered路径；因此不能用未缓冲错误解释这份入口声明的正常训练。实际Hero执行版本和运行参数仍需另绑定。[训练入口声明](https://github.com/marin-community/marin/blob/b65be4c9550c5097f0a3add08933531a1c24d534/experiments/grug/moe_hero_ep/train.py#L421)。[原线程工具](https://github.com/marin-community/marin/blob/b65be4c9550c5097f0a3add08933531a1c24d534/lib/levanter/src/levanter/utils/thread_utils.py)
+
+这条路径需要把“事件循环已经关闭或任务调度失败”和“producer读取抛错”分开处理；捕获范围不能包住所有future.result的RuntimeError。下面的消费端候选没有修改AsyncIteratorWrapper，因此没有解决未缓冲错误转结束的现象。训练或评估提前结束时，首先核对错误来源与真实库存，不以StopIteration单独证明完成了计划预算。
+
+### 一个局部候选修正，以及它没有解决的部分
+
+新增[消费者候选](scripts/background_queue_consumer_candidate.py)，只作为本地实验类，不改上游：消费端记terminal状态；用0.05秒queue.get轮询，让空队列等待可以重新观察stop flag；保留有效项与原异常的FIFO顺序，异常交付后也进入terminal。该方案选择stop后不再交付缓冲项，必须在实际系统审查丢弃与恢复水位政策。
+
+5项候选控制通过：正常流与重复耗尽、有效项后原错误、原生产frame、已阻塞消费者无sentinel注入退出，以及释放生产请求后线程清理。取数请求仍未被取消，stop(wait=True)的join语义也未改变。0.05秒是候选轮询参数，不是硬实时退出保证；本轮没有CPU开销/吞吐测量，也没有多消费者、多host或设备缓冲验证。
+
+候选依赖固定模块的私有sentinel/exception协议，不能直接当作跨版本通用补丁。更完整修复需要同时定义异常后的终态、停止是否丢缓冲、生产请求的取消/关闭、唤醒策略和join deadline；队列容量满时必须验证终止信号能否送达。这里没有发布PR、替换Marin组件或宣布生产问题已修复。
+
+### 带到自己的预训练管线
+
+检查成功路径之外的退出路径：空队列+等待消费者、满队列+等待生产者、底层请求pending、有效项后错误、首次与重复耗尽。分别验收消费者结束、生产task取消/自然完成、线程回收及其他host退出；其中任何一个成功都不能替代其余项。
+
+关闭或故障时仍区分已请求、已交付和已完成更新；排在队列里的有效批次是否训练，取决于消费与状态提交。配比调整改变访问成本后，不应将更大的prefetch水位或更多排队项当作更多训练曝光。先对齐完成step/有效目标量，再比较域loss与墙钟效率。
+
+[19项原模块＋5项局部候选控制](analysis/background_queue_cpu.json)保留原错误traceback、线程/消费者观察和清理记录。[可复跑脚本](scripts/probe_background_queue_cpu.py)使用Python3.12.13、tblib3.2.2；本轮仅在临时CPU环境补装tblib。真实Hero关闭事故、远程IO取消、多host退出和完整DataLoader均未知。

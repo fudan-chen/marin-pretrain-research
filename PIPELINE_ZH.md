@@ -320,3 +320,8 @@ V98补充恢复检查：同一当前quota、seed和global sequence cursor仍可�
 
 
 V99：将长度查询、批量读取、队列消费、设备准备和完成更新分别计时。读取watchdog仅报警；next的stalled日志在成功返回后出现。恢复用完成step而非预取水位；显式超时须审查底层取消、多host退出与重试身份合同。[原函数13项对照](BATCH_CLOCK_ZH.md)。
+
+
+V100补充退出验收：原后台队列设置stop并不唤醒已经等待空队列的消费者，join不等于取消底层请求；buffered耗尽应验证重复next仍结束。记录消费者终态、生产任务、线程回收和各host退出四层证据。局部候选仅改消费端，尚未接入Marin。[原模块与候选对照](BATCH_CLOCK_ZH.md)。
+
+V100另核未缓冲错误：RuntimeError可被原wrapper转成StopIteration，不能把迭代终止独立当作库存耗尽或训练预算完成。局部消费候选尚未修正该wrapper；保留异常来源与实际完成量。

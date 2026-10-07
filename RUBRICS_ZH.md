@@ -448,3 +448,8 @@ V98恢复规则：只有当前配比相同，不足以判为数据流连续。�
 
 
 V99：没有stalled日志不能判定loader健康，有10秒读取warning不能判定已超时或正在重试。验收分别检查等待开始/完成、实际错误传播和已交付/完成更新水位；prefetch深度的容错影响与吞吐收益应分别验证。[原host控制](BATCH_CLOCK_ZH.md)。
+
+
+V100规则：成功路径不能替代关闭路径。必测空队列消费者、满队列生产者、pending读取、有效项后错误及重复耗尽。只有consumer退出，不可判为生产IO已取消；只有producer退出，不可判为consumer已唤醒。原协议缺口已用CPU复现，Hero事故未知；局部消费候选仍需集成和分布式评审。[依据](BATCH_CLOCK_ZH.md)。
+
+V100另核未缓冲错误：RuntimeError可被原wrapper转成StopIteration，不能把迭代终止独立当作库存耗尽或训练预算完成。局部消费候选尚未修正该wrapper；保留异常来源与实际完成量。

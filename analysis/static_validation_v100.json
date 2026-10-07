@@ -1,0 +1,16 @@
+{
+  "version": "V100",
+  "checks_passed": 9,
+  "checks": [
+    "index.html unique IDs",
+    "index.html eight historical clock tables preserved plus background controls",
+    "index.html original/candidate and cleanup scope",
+    "report_standalone.html unique IDs",
+    "report_standalone.html eight historical clock tables preserved plus background controls",
+    "report_standalone.html original/candidate and cleanup scope",
+    "1598 fresh checks",
+    "500 source entries",
+    "candidate not integrated and original controls separate"
+  ],
+  "actual_browser_rendering": null
+}

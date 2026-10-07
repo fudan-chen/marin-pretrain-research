@@ -1,0 +1,26 @@
+{
+  "checks_passed": 5,
+  "checks": [
+    {
+      "name": "Historical tables retained before appended seed comparison",
+      "passed": true
+    },
+    {
+      "name": "Twelve original CPU controls and seven byte bindings valid",
+      "passed": true
+    },
+    {
+      "name": "Key allocation figure uses actual baseline and future-front bindings",
+      "passed": true
+    },
+    {
+      "name": "Both HTML variants embed accessible figure and current-slot distinction",
+      "passed": true
+    },
+    {
+      "name": "Declared run and synthetic mapping not promoted to real token evidence",
+      "passed": true
+    }
+  ],
+  "actual_browser_rendering": null
+}

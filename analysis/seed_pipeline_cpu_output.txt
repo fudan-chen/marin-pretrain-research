@@ -1,0 +1,1 @@
+Seed pipeline CPU: 12 passed; prefix differences: {'default': 0, 'repeat': 0, 'trainer_seed1': 95, 'explicit_data0': 96, 'trainer1_data0': 96, 'reordered': 96, 'zero_front': 0, 'future_front': 92, 'future_tail': 0}

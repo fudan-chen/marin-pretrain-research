@@ -207,3 +207,47 @@ all策略则允许有限库存取模。单域例子按五次出现停止，但�
 这对比较配比和顺序很关键：共同模型checkpoint之外，还要保持数据起点可解释。历史base改变，会把“比例调整”混入“换一批内容”的效果；即使总体域loss下降，也不能只归因为比例。供应库存、历史重访、供体损失和独立评估仍需一起分析。这里没有训练loss、真实缓存或Hero执行历史，不给出该效应的生产幅度或最佳配比。
 
 [16项原类CPU控制与完整身份流](analysis/mixture_resume_history_cpu.json) · [可复跑脚本](scripts/probe_mixture_resume_history_cpu.py)。依赖适配沿用既有有限identity store，未执行真实token、child shuffle、分布式loader或optimizer恢复。
+
+## V108：同一个 seed 数字，未必是同一条数据流
+
+V107 说明当前权重的 loss 相同不能证明 optimizer 历史相同。这里继续检查下一输入如何重建。GrugTrainState 没有独立 RNG 叶；固定 Hero 入口从配置重建 data/model key，再从完成 step 重建逻辑读取索引。这个设计不等于恢复缺陷，但要求配置派生与映射合同也保持一致。
+
+### None 与显式 0 并不等价
+
+原入口先执行 `data_key, model_key = jax.random.split(jax.random.PRNGKey(trainer.seed), 2)`；只有 data_seed 非 None 才覆盖为 `jax.random.PRNGKey(data_seed)`。随后原 build_train_dataset 再把 data_key 分成 mix_key 与 shuffle_key，分别供混合排列和域内 shuffle 使用。
+
+本次 CPU JAX 0.7.2 / threefry2x32 中，trainer.seed=0、data_seed=None 派生 data_key=[1797259609,2579123966]，显式 data_seed=0 则为 [0,0]。两者的整数标签看似相同，实际 key 和两个后续分支都不同。固定显式 data_seed 时，改变 trainer.seed 会改变 model_key，但本例数据流保持相同；默认 None 时，两者一起改变。
+
+10 月 7 日归档的 hero-fa4sm100-nomask-step146k 声明 trainer.seed=0、data_seed=None、MIXTURE，shuffle 为 io_block_size=256/window_blocks=512/feistel。这是配置声明，未取得生产执行 key 或真实 next token。不能把本次 CPU 派生值直接称为该运行实测 key，也没有发现生产把 None 改成 0 的记录。恢复现有运行时，应保留原派生方式；不要将 None 机械补成同名整数以为配置等价。
+
+### 尚未启用的未来域，也能参与当前 key 分配
+
+原 build_token_datasets 先用 `_has_nonzero_weight` 过滤：阶段表里只要有一个阶段的域权重大于零，就会构造该域。原 train_sets 再按已构造 datasets 的插入顺序，用 key_iterator 逐个分配 shuffle key。key_iterator 每次 split 并产出 subkey，按位置分配，不按域名派生。
+
+因此，把未来才启用的 X 插在 A/B 前面，X 会从当前构造时刻占用第一个 key。A 改用原先给 B 的 key，B 改用下一个 key。X 在当前阶段可以没有任何采样槽，A/B 的域内内容顺序却已经变化。始终零权重的 X 则在分配 key 前被过滤，没有这个影响。
+
+![未来支持域对当前 shuffle key 分配的影响](assets/seed_pipeline_keys.svg)
+
+本轮执行原入口的两段 seed 语句、原 build_train_dataset、原 train_sets/build_token_datasets/支持过滤、原 key_iterator、原 BatchSchedule/阶段换算、原 MixtureDataset 与原 Feistel/block shuffle。底层用命名 identity store 代替真实 token。每域 48 条，混合 block=8，域内 IO block=4/window=3，batch=4；未来阶段从 step24 即全局序列96开始。以下只比较此前的 0–95，当前仍是 A/B 各半。
+
+|相对基线的修改|前96槽内容变化数|完整A/B库存是否相同|完成step6后的逻辑batch（索引24–27）|
+|---|---:|---|---|
+|完全相同配置重建|0|是|B:22, B:21, B:18, A:30|
+|data_seed: None → 0|96|是|B:17, A:28, A:32, A:35|
+|始终零权重X置于前面|0|是|B:22, B:21, B:18, A:30|
+|未来正权重X置于前面|92|是|B:37, B:15, B:18, A:2|
+|未来正权重X追加末尾|0|是|B:22, B:21, B:18, A:30|
+
+始终零与未来正权重前置两个控制的声明组件顺序同为 X→A→B、阶段边界同为 [0,96]，只改变第二阶段权重。未来前置例的 mix_key 和当前逐槽 A/B 域名序列都与基线一致，当前 X 的采样数为零；变化来自现有域 shuffle key 的重新分配。完整库存相同也不保证有限窗口看到的内容相同。92/96 是这个确定 fixture 的计数，不是生产发生率、坏样本比例或 loss 变化幅度。
+
+末尾追加在本例保持前缀，只能说明这个条件下存在保持旧 key 分配的方式；不能推广成所有配方都可安全追加。已有阶段整数 quota、域顺序、库存、shuffle 参数、runtime 或数据映射有任何变化，仍需重放验证。固定按名字排序也会改掉旧运行的历史映射，不能把排序本身当成兼容修复。
+
+### 对配比与顺序实验的实际约束
+
+原来的“冻结已执行历史阶段”仍有必要，但还不够：完整阶段表的支持并集与有序构造列表，也参与当前 child key 分配。做未来阶段设计、删域或补域时，需核对这些构造信息；如果要求共享当前数据前缀，应对固定全局索引比较实际 token/hash，而不是只核对当前百分比和 seed。
+
+可以提出一种后续设计：显式记录旧域的 key 绑定，新域只领取新的绑定，并给映射格式加版本。它尚未实现或接入；直接修改当前派生策略会改变旧顺序，必须设计兼容路径与迁移验收。眼下可执行的规则是保留旧声明、导出完整派生链与 child key 表，并在候选构造后做前缀重放。下一批一致之后，再核对原 loader、state 和 optimizer 更新。
+
+12 项 CPU 控制通过，7 份核心源码与冻结 eee467… 完整 git blob 字节一致。Axis/DirectDatasetComponent 为最小类型适配，build_caches 返回空，原 direct 分支供给有限 identity store；未执行真实缓存、tokenizer、完整 LmDataConfig 实例化、DataLoader 或 checkpoint 恢复。logical batch 由原 BatchSchedule 取得，不能叫生产下一批实测。原 PRP/BlockShufflingDataset 使用真实 JAX CPU，local mesh 为 null 适配。
+
+[逐槽、child key 与全部控制](analysis/seed_pipeline_cpu.json) · [源码绑定](analysis/seed_pipeline_source_binding.json) · [脚本](scripts/probe_seed_pipeline_cpu.py) · [待执行的真实交接模板](templates/data_seed_resume_review.json)。复现：`make seed-pipeline-cpu CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。真实 Hero 数据断流、next token 与配比因果效应仍为空。

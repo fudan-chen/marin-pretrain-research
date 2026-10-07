@@ -818,7 +818,7 @@ ok('V53 dictionary order changes tie allocation',mi['tie_counts']['ABC']=={'A':4
 ok('V53 key preserves whole-block multiset but changes partial content',sorted(mi['whole_seed7'])==sorted(mi['whole_seed8']) and sorted(mi['partial_seed7'])!=sorted(mi['partial_seed8']))
 ok('V53 finite restart separates exposure from unique identity',len(mi['finite_length3_stream'])==24 and len(set(mi['finite_length3_stream']))==6)
 report['highlights']+=['V53 fourteen original mixture class and real JAX CPU identity controls; ordered dataset IDs, integer ties, finite modulo and partial windows; no actual Hero token/shuffle/restore']
-ok('V53 mixture identity chapter retains original and V54 V55 control tables',len(soup.select('#mixture-identity-guide table'))==7)
+ok('V53 mixture identity chapter retains original and V54 V55 control tables',len(soup.select('#mixture-identity-guide table'))==8)
 ish=read(A/'inner_shuffle_cpu.json')
 ok('V54 fourteen CPU/source controls with bounded Hero claims',ish['checks_passed']==len(ish['checks'])==14 and ish['runtime']['backend']=='cpu' and ish['actual_Hero_inner_shuffle'] is None and ish['actual_Hero_split_leakage'] is None and ish['declared_num_validation_sequences'] is None)
 ok('V54 PRP and dataset source identities match',all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in ish['source_sha256'].items()))
@@ -1216,6 +1216,15 @@ ok('V107 actual Hero and causal mixture effects remain unknown',ru['actual_Hero_
 rs=soup.select_one('#checkpoint-commit-guide')
 ok('V107 update comparison diagram embedded accessibly',rs is not None and rs.select_one('#resume-update-title') is not None and not rs.select('img[src="assets/resume_update_identity.svg"]'))
 report['highlights']+=['V107 eight assembled CPU state staging/donation/real IO/next-update controls; weights-only same-loss counterexample; original Hero train_step and loader unverified']
+sk=read(A/'seed_pipeline_cpu.json'); sb=read(A/'seed_pipeline_source_binding.json'); sr=read(ROOT/'templates/data_seed_resume_review.json')
+ok('V108 twelve original pipeline CPU controls source bound',sk['checks_passed']==len(sk['checks'])==12 and all(x['passed'] for x in sk['checks']) and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in sk['source_sha256'].items()))
+ok('V108 seven core sources match frozen main complete bytes',len(sb['bindings'])==7 and all(x['same_bytes'] and hashlib.sha256((ROOT/x['archive_file']).read_bytes()).hexdigest()==x['sha256'] for x in sb['bindings']) and sb['actual_latest_head_execution'] is None)
+sc=sk['cases']
+ok('V108 None explicit zero and future support controls kept distinct',sc['default']['data_key']!=sc['explicit_data0']['data_key'] and sc['explicit_data0']['first96']==sc['trainer1_data0']['first96'] and sc['future_front']['different_slots_vs_default']==92 and sc['zero_front']['different_slots_vs_default']==sc['future_tail']['different_slots_vs_default']==0 and sc['zero_front']['declared_component_order']==sc['future_front']['declared_component_order'] and sc['zero_front']['sequence_stage_starts']==sc['future_front']['sequence_stage_starts'] and [x.split(':')[0] for x in sc['default']['first96']]==[x.split(':')[0] for x in sc['future_front']['first96']])
+ok('V108 declared snapshot not actual executed keys or token evidence',sk['declared_run']['data_seed'] is None and sk['declared_run']['actual_executed_key'] is None and sk['actual_Hero_data_discontinuity'] is None and sk['actual_Hero_next_batch_identity'] is None and sk['actual_token_store'] is None and sk['actual_causal_mixture_effect'] is None)
+ok('V108 prefix review remains an unexecuted real-run template',sr['status']=='proposed_not_executed' and sr['data_key'] is None and sr['prefix_identity_gate'] is None and sr['before_and_after_domain_child_token_hashes'] is None and sr['causal_mixture_effect'] is None)
+ok('V108 child-key figure embedded accessibly',soup.select_one('#mixture-identity-guide #seed-pipeline-title') is not None and not soup.select('img[src="assets/seed_pipeline_keys.svg"]'))
+report['highlights']+=['V108 twelve CPU seed/build/shuffle/mix controls; future positive support can change current child keys; None versus explicit zero; no production token or causal loss claim']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

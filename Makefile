@@ -265,3 +265,7 @@ integer-exposure-cpu:
 .PHONY: resume-update-identity
 resume-update-identity:
 	$(CPU_PYTHON) scripts/probe_resume_update_identity.py
+
+.PHONY: seed-pipeline-cpu
+seed-pipeline-cpu:
+	$(CPU_PYTHON) scripts/probe_seed_pipeline_cpu.py

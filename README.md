@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本V107：把原 staging、CPU donation、真实本地存储和原恢复函数接到第一次更新；给出“更新前 loss 相同、仅权重初始化下一 loss 更低，却已改变 optimizer 历史”的人工反例。[恢复后的更新身份](CHECKPOINT_COMMIT_ZH.md)。
+当前版本V108：从原 seed 派生、子域 key 分配接到原 shuffle/mix；验证未来才启用的域前置时，也可能提前改变当前内容顺序。区分 None/显式0、始终零域过滤与末尾追加控制。[数据派生与前缀验收](MIXTURE_IDENTITY_ZH.md)。
 
 [MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并提供未执行的性能交互记录模板。
 

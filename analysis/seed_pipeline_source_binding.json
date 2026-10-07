@@ -1,0 +1,70 @@
+{
+  "verified_utc": "2026-10-07T07:42:33.649264+00:00",
+  "bindings": [
+    {
+      "archive_file": "sources/main_incident_2026_10_07/train.py",
+      "upstream_path": "experiments/grug/moe_hero_ep/train.py",
+      "frozen_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+      "same_bytes": true,
+      "sha256": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7",
+      "original_url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/experiments/grug/moe_hero_ep/train.py",
+      "verified_source_url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/experiments/grug/moe_hero_ep/train.py"
+    },
+    {
+      "archive_file": "sources/boundaries_2026_10_05/datasets.py",
+      "upstream_path": "lib/levanter/src/levanter/data/text/datasets.py",
+      "frozen_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+      "same_bytes": true,
+      "sha256": "4fd44ff53067beb7a2ac05cc4d41f0dda18012691751a85e7c5eb65c4849823b",
+      "original_url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/data/text/datasets.py",
+      "verified_source_url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/src/levanter/data/text/datasets.py"
+    },
+    {
+      "archive_file": "sources/tree_restore_2026_10_07/jax_utils.py",
+      "upstream_path": "lib/levanter/src/levanter/utils/jax_utils.py",
+      "frozen_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+      "same_bytes": true,
+      "sha256": "647a16ab5d7adac4166e63a429b112afdda0f11dd4fcb4866dde77cb3a4263d1",
+      "original_url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/utils/jax_utils.py",
+      "verified_source_url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/src/levanter/utils/jax_utils.py"
+    },
+    {
+      "archive_file": "sources/deepening_2026_10_04/schedule_production.py",
+      "upstream_path": "lib/levanter/src/levanter/schedule.py",
+      "frozen_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+      "same_bytes": true,
+      "sha256": "01a2faa0d7a0b5cca4aad4cd702ed9aed5114111293970d8ea379d36f40ff281",
+      "original_url": "https://raw.githubusercontent.com/marin-community/marin/ad754c6d67555d6369a4a312ff7388e43cfd08c1/lib/levanter/src/levanter/schedule.py",
+      "verified_source_url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/src/levanter/schedule.py"
+    },
+    {
+      "archive_file": "sources/deepening_2026_10_04/mixture_production.py",
+      "upstream_path": "lib/levanter/src/levanter/data/mixture.py",
+      "frozen_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+      "same_bytes": true,
+      "sha256": "67e97941a79753b2e5865f7f41c7762436a428599ecd1a60d643aa891a817685",
+      "original_url": "https://raw.githubusercontent.com/marin-community/marin/ad754c6d67555d6369a4a312ff7388e43cfd08c1/lib/levanter/src/levanter/data/mixture.py",
+      "verified_source_url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/src/levanter/data/mixture.py"
+    },
+    {
+      "archive_file": "sources/deepening_2026_10_04/dataset_production.py",
+      "upstream_path": "lib/levanter/src/levanter/data/dataset.py",
+      "frozen_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+      "same_bytes": true,
+      "sha256": "563ffddbf46ea665d00c71f92614dadd6d13478c91b9753b00dbbf21f88288a5",
+      "original_url": "https://raw.githubusercontent.com/marin-community/marin/ad754c6d67555d6369a4a312ff7388e43cfd08c1/lib/levanter/src/levanter/data/dataset.py",
+      "verified_source_url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/src/levanter/data/dataset.py"
+    },
+    {
+      "archive_file": "sources/prp_2026_10_07/_prp.py",
+      "upstream_path": "lib/levanter/src/levanter/data/_prp.py",
+      "frozen_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+      "same_bytes": true,
+      "sha256": "ff43ef12f9a19bb4fd7dd41b2280d0b6d1ce3f9879befad4f8630724abe68f66",
+      "original_url": null,
+      "verified_source_url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/src/levanter/data/_prp.py"
+    }
+  ],
+  "runtime_reconstruction": false,
+  "actual_latest_head_execution": null
+}

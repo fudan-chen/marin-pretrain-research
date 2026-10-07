@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1642,
+  "checks_passed": 1648,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -155,7 +155,8 @@
     "V104 22 candidate recovery controls; completion records and original-state retention; legacy migration and production call-chain integration unfinished; two latest core sources byte-identical, current runtime not executed",
     "V105 auth empty-schema/config-key risk refinement; eight constructed snapshot controls and two original auth tests; valid file pair not proof of shared state cut or production training skew",
     "V106 ten CPU donation and delayed-consumer controls; observation-view non-donation control; ownership diagram; GPU and full training restore unverified",
-    "V107 eight assembled CPU state staging/donation/real IO/next-update controls; weights-only same-loss counterexample; original Hero train_step and loader unverified"
+    "V107 eight assembled CPU state staging/donation/real IO/next-update controls; weights-only same-loss counterexample; original Hero train_step and loader unverified",
+    "V108 twelve CPU seed/build/shuffle/mix controls; future positive support can change current child keys; None versus explicit zero; no production token or causal loss claim"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

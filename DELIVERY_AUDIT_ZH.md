@@ -188,3 +188,7 @@ V101：源513份，18项原函数/源码刷新控制；main与开放PR分叉，�
 ## V107：恢复后更新身份
 
 8 项单 CPU 小状态控制通过；原 Grug 状态/恢复/权重初始化函数与原 stage/host writer/reader，真实 Optax Adam 和本地 OCDBT。五个核心源码与冻结 eee467 完整 blob 字节一致，归档总 556，无新增源码。三参数 quadratic、单设备适配、记录 barrier、手工 metadata 均显式标注；不宣称原 Hero train_step、真实 loader、生产 publisher 或 GPU 验证。版本与发布哈希见 analysis/release_v107.json，浏览器渲染未验收。
+
+## V108：数据派生与构造证据
+
+12 项 CPU identity 控制，7 份核心源文件与冻结 eee467 blob 相同；源归档仍556。归档 W&B 的 seed/data_seed 声明与实际执行 key 分开。图展示构造 key 绑定，表中变化数来自96槽人工控制，不是 Hero 数据事故或 loss 指标。DirectDatasetComponent/Axis 类型与空 cache 为适配，无真实 token、DataLoader、checkpoint 或模型执行。发布哈希见 analysis/release_v108.json；浏览器渲染未验收。

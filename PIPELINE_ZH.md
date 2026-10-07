@@ -352,3 +352,7 @@ V101版本和退出检查：比较main、候选PR与实际部署三种身份。�
 ### V107：配比切换前的恢复对照
 
 取得已验证 checkpoint → 固定同一批输入 → 记录不中断路径的 loss/梯度/参数增量/下一 state → 完整恢复并比较 → 单独标注 weights-only、optimizer reset、schedule reset → 接 loader 核对首批与曝光 → 才比较新配比。若 optimizer reset 是实验设计，需与配比组成独立对照；本轮只执行人工 quadratic 的完整恢复与原 weights-only 工具对照，真实 Hero 与 loader 未执行。
+
+### V108：配方改动前的数据映射交接
+
+记录 trainer.seed/data_seed及派生方式 → 保存 data/mix/shuffle/child key 表 → 核对完整阶段支持并集和有序构造列表 → 对齐历史整数quota与batch前缀 → 比较候选在同全局索引的域名/child index/token hash → 才接恢复后更新与固定eval。只改变未来阶段也要走前缀检查；仅比较当前域名配额不能发现域内 key 重分配。当前模板待真实运行填写，不把 identity fixture 内容填成生产值。

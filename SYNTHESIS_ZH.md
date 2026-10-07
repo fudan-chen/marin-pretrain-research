@@ -276,3 +276,7 @@ Iris 的 task 可以已经回到 PENDING，旧 attempt 却仍占着资源等待�
 ### V107：短期 loss 改善不一定证明恢复正确
 
 原 staging、真实 CPU donation、本地 OCDBT 与原恢复函数已经在小 Grug state 上接通。完整恢复的下一 state 与不中断路径逐叶一致；原 weights-only 工具恢复同参数，但保留 fresh Adam/count/clock。更新前 loss 同为 3.262185574，更新后分别 3.239840031 与 3.229082584，后者更低却已换了 optimizer 历史。这是人工三参数反例，不是 Hero 事故或优化建议。配比研究需要先确认恢复比较对象，再看 loss。[流程、原工具用途与数值](CHECKPOINT_COMMIT_ZH.md)。
+
+### V108：未来课程设计可能提前改变当前顺序
+
+固定入口的 data_seed=None 与显式0走不同派生路径。原 train_sets 又按完整正权重支持域的构造顺序分配 child shuffle key；未来才启用的域若插到前面，会提前改变旧域的 key。12 项 CPU 控制中，当前域名槽序列和完整库存相同，前96个内容身份仍有92处不同；末尾追加与始终零权重控制在本例保持前缀。这个机制要求配比实验核对完整支持域/顺序/key，而非只冻结过去权重。不是生产发生率或 Hero loss 因果结论。[逐槽证据与图](MIXTURE_IDENTITY_ZH.md)。

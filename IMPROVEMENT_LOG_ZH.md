@@ -555,3 +555,7 @@ V101：13份公开payload归档、499份旧非bookkeeping源字节保留；18项
 ## V107 · 从真实恢复接到第一次更新
 
 8 项拼装 CPU 控制：原 helper 取所有叶快照、真实 state donation、原 host writer/真实 OCDBT、原恢复函数、下一 state 精确对照。原 weights-only 初始化同参数却不同 Adam 历史，更新前 loss 相同、下一 loss 更低的反例收紧配比归因。5 个核心源码同冻结 eee467 git blob 字节一致；源码归档总数维持 556。增加更新图、第一次更新验收规则与管线；pending 仅携带，不应用。下一步优先取得真实 Hero 状态 inventory/固定批次续训与 loader 身份。
+
+## V108 · seed 派生与未来支持域
+
+12 项原入口/数据构造/原 shuffle 和 mix 的单 CPU 控制，7 个核心源文件同冻结 eee467 字节一致，无新增源文件，归档维持556。区分 None/显式0；未来正权重前置域提前改变 child key，但始终零域被过滤。当前域名槽序列/全库存相同仍能改变内容前缀。新增 key 分配图、完整支持域规则、真实交接空模板。优先取得实际 key manifest 与固定索引 token hash；当前未执行真实 loader/模型/恢复。

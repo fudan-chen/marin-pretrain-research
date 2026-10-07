@@ -1,0 +1,410 @@
+{
+  "scope": "Original global QB histogram wrapper and centering on a real one-device CPU shard_map.\nSynthetic margins, not original full margin construction/model or production estimator events.\nSingle-device psum/pmin/pmax executed: not multi-host collective validation.\n",
+  "checks_passed": 9,
+  "checks": [
+    {
+      "name": "Original wrapper uses real CPU single-device shard map and collectives",
+      "passed": true
+    },
+    {
+      "name": "Ordinary histogram finite",
+      "passed": true
+    },
+    {
+      "name": "Empty valid returns zeros and zero range",
+      "passed": true
+    },
+    {
+      "name": "All-equal ordinary range remains finite",
+      "passed": true
+    },
+    {
+      "name": "Invalid poison omitted from valid range and yields finite beta",
+      "passed": true
+    },
+    {
+      "name": "Valid NaN is not sanitized by histogram",
+      "passed": true
+    },
+    {
+      "name": "Valid infinity is not sanitized by histogram",
+      "passed": true
+    },
+    {
+      "name": "Finite extreme equal margins yield finite beta but nonfinite centered bias",
+      "passed": true
+    },
+    {
+      "name": "Finite wide margin subtraction exposes overflow boundary",
+      "passed": true
+    }
+  ],
+  "runtime": {
+    "jax": "0.7.2",
+    "jaxlib": "0.7.2",
+    "numpy": "2.5.3"
+  },
+  "cases": {
+    "ordinary": {
+      "margins": [
+        [
+          0.10000000149011612,
+          0.20000000298023224,
+          0.30000001192092896
+        ],
+        [
+          0.4000000059604645,
+          0.5,
+          0.6000000238418579
+        ],
+        [
+          0.699999988079071,
+          0.800000011920929,
+          0.8999999761581421
+        ],
+        [
+          1.0,
+          1.100000023841858,
+          1.2000000476837158
+        ]
+      ],
+      "valid": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "beta": [
+        0.40000665187835693,
+        0.4999966621398926,
+        0.5999866724014282
+      ],
+      "lo": 0.10000000149011612,
+      "hi": 1.2000000476837158,
+      "beta_finite": true,
+      "bias": [
+        0.09999001026153564,
+        0.0,
+        -0.09999001026153564
+      ],
+      "bias_finite": true
+    },
+    "empty_valid": {
+      "margins": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "valid": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "beta": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "lo": 0.0,
+      "hi": 0.0,
+      "beta_finite": true,
+      "bias": [
+        -0.0,
+        -0.0,
+        -0.0
+      ],
+      "bias_finite": true
+    },
+    "all_equal": {
+      "margins": [
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        [
+          1.0,
+          1.0,
+          1.0
+        ]
+      ],
+      "valid": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "beta": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "lo": 1.0,
+      "hi": 1.0,
+      "beta_finite": true,
+      "bias": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "bias_finite": true
+    },
+    "large_equal": {
+      "margins": [
+        [
+          3.0000000054977558e+38,
+          3.0000000054977558e+38,
+          3.0000000054977558e+38
+        ],
+        [
+          3.0000000054977558e+38,
+          3.0000000054977558e+38,
+          3.0000000054977558e+38
+        ],
+        [
+          3.0000000054977558e+38,
+          3.0000000054977558e+38,
+          3.0000000054977558e+38
+        ],
+        [
+          3.0000000054977558e+38,
+          3.0000000054977558e+38,
+          3.0000000054977558e+38
+        ]
+      ],
+      "valid": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "beta": [
+        3.0000000054977558e+38,
+        3.0000000054977558e+38,
+        3.0000000054977558e+38
+      ],
+      "lo": 3.0000000054977558e+38,
+      "hi": 3.0000000054977558e+38,
+      "beta_finite": true,
+      "bias": [
+        "+Inf",
+        "+Inf",
+        "+Inf"
+      ],
+      "bias_finite": false
+    },
+    "wide_finite": {
+      "margins": [
+        [
+          -3.0000000054977558e+38,
+          0.0,
+          3.0000000054977558e+38
+        ],
+        [
+          -3.0000000054977558e+38,
+          0.0,
+          3.0000000054977558e+38
+        ],
+        [
+          -3.0000000054977558e+38,
+          0.0,
+          3.0000000054977558e+38
+        ],
+        [
+          -3.0000000054977558e+38,
+          0.0,
+          3.0000000054977558e+38
+        ]
+      ],
+      "valid": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "beta": [
+        "NaN",
+        "NaN",
+        "NaN"
+      ],
+      "lo": -3.0000000054977558e+38,
+      "hi": 3.0000000054977558e+38,
+      "beta_finite": false,
+      "bias": [
+        "NaN",
+        "NaN",
+        "NaN"
+      ],
+      "bias_finite": false
+    },
+    "invalid_poison": {
+      "margins": [
+        [
+          0.10000000149011612,
+          0.20000000298023224,
+          0.30000001192092896
+        ],
+        [
+          0.4000000059604645,
+          0.5,
+          0.6000000238418579
+        ],
+        [
+          0.699999988079071,
+          0.800000011920929,
+          0.8999999761581421
+        ],
+        [
+          "NaN",
+          "+Inf",
+          "-Inf"
+        ]
+      ],
+      "valid": [
+        true,
+        true,
+        true,
+        false
+      ],
+      "beta": [
+        0.3999999761581421,
+        0.4999999701976776,
+        0.6000000238418579
+      ],
+      "lo": 0.10000000149011612,
+      "hi": 0.8999999761581421,
+      "beta_finite": true,
+      "bias": [
+        0.10000002384185791,
+        2.9802322387695312e-08,
+        -0.10000002384185791
+      ],
+      "bias_finite": true
+    },
+    "valid_nan": {
+      "margins": [
+        [
+          0.10000000149011612,
+          0.20000000298023224,
+          0.30000001192092896
+        ],
+        [
+          0.4000000059604645,
+          0.5,
+          0.6000000238418579
+        ],
+        [
+          0.699999988079071,
+          0.800000011920929,
+          0.8999999761581421
+        ],
+        [
+          "NaN",
+          0.5,
+          0.6000000238418579
+        ]
+      ],
+      "valid": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "beta": [
+        "NaN",
+        "NaN",
+        "NaN"
+      ],
+      "lo": "NaN",
+      "hi": "NaN",
+      "beta_finite": false,
+      "bias": [
+        "NaN",
+        "NaN",
+        "NaN"
+      ],
+      "bias_finite": false
+    },
+    "valid_inf": {
+      "margins": [
+        [
+          0.10000000149011612,
+          0.20000000298023224,
+          0.30000001192092896
+        ],
+        [
+          0.4000000059604645,
+          0.5,
+          0.6000000238418579
+        ],
+        [
+          0.699999988079071,
+          0.800000011920929,
+          0.8999999761581421
+        ],
+        [
+          "+Inf",
+          0.5,
+          0.6000000238418579
+        ]
+      ],
+      "valid": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "beta": [
+        "NaN",
+        "NaN",
+        "NaN"
+      ],
+      "lo": 0.10000000149011612,
+      "hi": "+Inf",
+      "beta_finite": false,
+      "bias": [
+        "NaN",
+        "NaN",
+        "NaN"
+      ],
+      "bias_finite": false
+    }
+  },
+  "source_sha256": {
+    "sources/main_incident_2026_10_07/model.py": "8fdfd89cf6814da05683f134f154525916728370368a2493843195d9a489859c",
+    "scripts/probe_qb_hist_real_cpu.py": "e2b89fd8333b2c1f537eed05156e94b4910fb6ecd9a34aee7679d55eb39371f2"
+  },
+  "actual_Hero_extreme_margin_event": null,
+  "actual_multi_device_collectives": null,
+  "actual_original_margin_construction": null,
+  "actual_GPU_execution": null,
+  "actual_estimator_causal_training_effect": null
+}

@@ -380,3 +380,8 @@ V112新增初始化入口验收：分别从零初始化与真实恢复后走原�
 ## V113：有限loss与路由状态
 
 V113增加路由数值分层：记录incoming/outgoing pending和stored/actual/next-forward bias，先执行有限性诊断，再通过共同起点/共同batch比较下一次更新；二者不是替代关系。任何拒绝保存、终止、跳步或回滚都要绑定多rank协议与数据游标，不自动把清零当修复。[未执行验收模板](templates/routing_health_review.json)。
+
+
+## V114：原估计器输入边界
+
+V114执行原QB histogram wrapper及单CPU真实collective接口，9项控制区分空有效集合、无效位置排除、有效异常传播，以及有限极端margin导致的beta/bias溢出。未执行实际Hero margin构造或跨host归约，未认定生产事故或修复。检查margin范围、beta与应用后bias分别记录；padding过滤不代替有效输入健康性验收。[完整原值与机制](QB_ESTIMATION_ZH.md)。566份来源未变。

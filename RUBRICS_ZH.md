@@ -508,3 +508,8 @@ V112补充：fresh initialization和checkpoint restore分别验收。相同值/s
 ## V113：有限loss与路由状态
 
 V113恢复/健康规则补充：loss有限不推出原pending、stored bias或应用后bias有限；全部状态重新有限也不推出历史更新等价。区分输入pending、实际前向、输出pending与下一次视图。中心化等派生操作须检查输出，不能只检查输入。本地守卫候选没有生产一致终止与开销验证。当前18条规则版本不变。[13项控制](FAILURE_BOUNDARIES_ZH.md)。
+
+
+## V114：原估计器输入边界
+
+V114执行原QB histogram wrapper及单CPU真实collective接口，9项控制区分空有效集合、无效位置排除、有效异常传播，以及有限极端margin导致的beta/bias溢出。未执行实际Hero margin构造或跨host归约，未认定生产事故或修复。检查margin范围、beta与应用后bias分别记录；padding过滤不代替有效输入健康性验收。[完整原值与机制](QB_ESTIMATION_ZH.md)。566份来源未变。

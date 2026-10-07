@@ -216,3 +216,8 @@ V112新增15项五路径CPU控制、共享与独立缓冲区记账图，以及�
 ## V113：有限loss与路由状态
 
 V113新增13项原训练闭包/路由/真实Adam/本地IO检查和三步图；执行原loop loss谓词，未执行完整loop、生产callbacks/checkpointer。人工beta输出替代原估计器，不能据此认定生产可达性或Hero事故。有限性候选仅本地JIT诊断，无分布式策略/性能/上游集成。旧566来源不变，浏览器渲染未验证。
+
+
+## V114：原估计器输入边界
+
+V114执行原QB histogram wrapper及单CPU真实collective接口，9项控制区分空有效集合、无效位置排除、有效异常传播，以及有限极端margin导致的beta/bias溢出。未执行实际Hero margin构造或跨host归约，未认定生产事故或修复。检查margin范围、beta与应用后bias分别记录；padding过滤不代替有效输入健康性验收。[完整原值与机制](QB_ESTIMATION_ZH.md)。566份来源未变。

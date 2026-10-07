@@ -1272,6 +1272,13 @@ ok('V113 candidate remains unintegrated and production estimator GPU events unkn
 ok('V113 finite-gap figure measured binding and accessible HTML embedding',pfb['analysis_sha256']==hashlib.sha256((A/'pending_finite_gap_cpu.json').read_bytes()).hexdigest() and pfb['figure_sha256']==hashlib.sha256((ROOT/'assets/pending_finite_gap.svg').read_bytes()).hexdigest() and soup.select_one('#failure-boundaries-guide #pending-finite-title') is not None and not soup.select('img[src="assets/pending_finite_gap.svg"]'))
 ok('V113 routing health template has no real event or estimator failure claim',read(ROOT/'templates/routing_health_review.json')['status']=='proposed_not_executed' and read(ROOT/'templates/routing_health_review.json')['numerical_observations']==[] and read(ROOT/'templates/routing_health_review.json')['actual_original_estimator_failure'] is None)
 report['highlights']+=['V113 thirteen original-step CPU controls; finite loss can coexist with poisoned bias and faithful OCDBT restore; finite later state not trajectory equivalence; estimator/Hero reachability unknown']
+
+qh=read(A/'qb_hist_real_cpu.json'); qc=qh['cases']
+ok('V114 nine real single-device histogram controls bound to frozen source',qh['checks_passed']==len(qh['checks'])==9 and all(x['passed'] for x in qh['checks']) and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in qh['source_sha256'].items()))
+ok('V114 empty valid zero and invalid poison filtering distinct from active poison',qc['empty_valid']['beta']==[0.,0.,0.] and qc['invalid_poison']['beta_finite'] and not qc['valid_nan']['beta_finite'] and not qc['valid_inf']['beta_finite'])
+ok('V114 finite extreme margins expose beta and centered bias separately',qc['large_equal']['beta_finite'] and not qc['large_equal']['bias_finite'] and not qc['wide_finite']['beta_finite'])
+ok('V114 actual Hero margin generation GPU and multi-device effects unknown',all(qh[k] is None for k in ['actual_Hero_extreme_margin_event','actual_multi_device_collectives','actual_original_margin_construction','actual_GPU_execution','actual_estimator_causal_training_effect']))
+report['highlights']+=['V114 nine original histogram CPU controls; real single-device shard_map; empty-valid and finite extreme margins, no Hero reachability claim']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

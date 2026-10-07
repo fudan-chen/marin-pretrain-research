@@ -583,3 +583,8 @@ V112（2026-10-07）：15项原初始化/训练闭包/本地IO控制。只复制
 ## V113：有限loss与路由状态
 
 V113（2026-10-07）：13项CPU控制将V34/V63未覆盖的原下一步与本地IO接通。四组人工beta×三步，全部loss通过原finite谓词；异常路由状态可暂时消失而参数分歧保留。另有有限3e38中心化溢出反例。两组真实OCDBT往返保留11叶字节。新增candidate_not_integrated三标志JIT诊断，未运行原QB估计器、完整loop或生产publisher；566旧来源保持。
+
+
+## V114：原估计器输入边界
+
+V114执行原QB histogram wrapper及单CPU真实collective接口，9项控制区分空有效集合、无效位置排除、有效异常传播，以及有限极端margin导致的beta/bias溢出。未执行实际Hero margin构造或跨host归约，未认定生产事故或修复。检查margin范围、beta与应用后bias分别记录；padding过滤不代替有效输入健康性验收。[完整原值与机制](QB_ESTIMATION_ZH.md)。566份来源未变。

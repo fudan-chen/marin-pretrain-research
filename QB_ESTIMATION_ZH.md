@@ -84,3 +84,28 @@ expert 0的四个margin始终是`[100,99,0,0]`，精确第二大值始终99；�
 | 能力结论核查 | 相同评估口径、固定预算、稳定性与任务退步 | 只有计数改善时保留工程诊断结论，不宣称能力提升 |
 
 这些规则接入[训练变更评审](CHANGE_REVIEW_ZH.md)，与[MoE丢弃](ROUTING_DROPS_ZH.md)一起检查。默认保留原状态作为完整变更对照，额外控制实验显式记录；本轮没有实测配比收益或给出新的生产配方。
+
+## V114：原全局histogram的真实CPU边界
+
+V19使用NumPy依赖替代检查了局部阈值与直方图；V113注入异常beta，验证后续训练与恢复检查的边界。这轮直接执行冻结`eee467…`的原`_qb_beta_hist`、`_bincount_upper_quantile`、原token轴选择和原setter中的中心化语句，使用真实JAX 0.7.2单设备`shard_map`及`psum/pmin/pmax`，没有把collective替换为identity。[9项控制](analysis/qb_hist_real_cpu.json) · [完整输出](analysis/qb_hist_real_cpu_output.txt) · [脚本](scripts/probe_qb_hist_real_cpu.py)。
+
+输入为人工4×3 margin，K=2、10000 bins；单CPU mesh的replica_dcn/data/expert轴均为1。这是真实单设备collective接口执行，不是跨设备/跨host验证；没有执行完整模型的logit与margin构造，也不是线上运行版本绑定。
+
+|人工margin与有效掩码|原估计器beta有限|原中心化bias有限|实际机制|
+|---|---|---|---|
+|普通有限范围|是|是|常态基线|
+|全部无有效token|是，全部为0|是|valid_tokens=0时lo/hi/beta归零|
+|全部为1|是|是|普通退化范围可返回有限值|
+|无效位置含NaN/+Inf/−Inf|是|是|无效位置排除出范围与计数|
+|有效位置含NaN|否|否|异常进入有效范围归约，未被清洗|
+|有效位置含+Inf|否|否|范围无上界，后续插值非有限|
+|全部有限3e38|是|否|beta保持有限，中心化归约溢出|
+|同时含有限−3e38和+3e38|否|否|`hi-lo`在float32下溢出到非有限范围|
+
+最后两项把V113的故障注入向上推进到了原估计器接口：在人工极端margin输入下，原wrapper确实可能返回非有限beta，或者有限beta进入原中心化后产生非有限bias。它们没有证明这些margin可以由真实Hero前向产生，也没有测到生产异常。值3e38特意接近float32边界，不能把它当作真实路由量级。
+
+`hi_grid=max(hi,lo+1e-6)`的保护受浮点可表示性限制：大数附近加1e-6可能仍是原值。因此不能仅凭源码有epsilon就推断所有量级下bin_width严格正且有限；也不能据本控制成功返回有限beta，反推其所有中间运算都健康。当前没有更改原归约或插值算式。
+
+实际得到的工程规则是：padding过滤与有效输入健康检查分别验收；空有效集合返回零是该估计器的合同，不表示训练loss的分母也已被处理；同时记录margin范围、range差值、beta及应用后bias。有限性检查还需接到真实模型、完整训练视图与分布式失败协议，不能只用单CPU结果决定生产跳步或清零。
+
+V113仍正确保留“原QB估计器是否曾在Hero产生异常”为空。V114只新增了原接口在人工输入下的可执行边界，未测GPU、实际margin构造、跨host归约、阈值误差对任务能力的影响或上游修复。

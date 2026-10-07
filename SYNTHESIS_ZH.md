@@ -304,3 +304,8 @@ V112得到一个会影响排障结论的反例：同一人工状态直接启动�
 ## V113：有限loss与路由状态
 
 V113确认一个完整性反例：人工异常pending可保存在原本地IO中并忠实恢复；原下一步loss仍有限，而bias非有限。后续有限beta可以覆盖异常bias，却没有撤销已改变的参数轨迹。不能仅凭loss曲线或某个健康快照验收恢复。原QB估计器是否可产生这些状态、Hero是否发生过仍未知。[机制与原值](FAILURE_BOUNDARIES_ZH.md)。
+
+
+## V114：原估计器输入边界
+
+V114执行原QB histogram wrapper及单CPU真实collective接口，9项控制区分空有效集合、无效位置排除、有效异常传播，以及有限极端margin导致的beta/bias溢出。未执行实际Hero margin构造或跨host归约，未认定生产事故或修复。检查margin范围、beta与应用后bias分别记录；padding过滤不代替有效输入健康性验收。[完整原值与机制](QB_ESTIMATION_ZH.md)。566份来源未变。

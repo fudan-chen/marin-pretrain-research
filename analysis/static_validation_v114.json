@@ -1,0 +1,26 @@
+{
+  "checks_passed": 5,
+  "checks": [
+    {
+      "name": "Old chapter prose preserved",
+      "passed": true
+    },
+    {
+      "name": "All old tables retained before appended histogram table",
+      "passed": true
+    },
+    {
+      "name": "Nine checks bind exact code and record eight input cases",
+      "passed": true
+    },
+    {
+      "name": "Both HTML variants expose original-interface boundaries without production reachability claim",
+      "passed": true
+    },
+    {
+      "name": "All 566 source files remain unchanged",
+      "passed": true
+    }
+  ],
+  "actual_browser_rendering": null
+}

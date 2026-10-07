@@ -64,11 +64,12 @@ sections=[];toc=[]
 for slug,label,file in chapters:
     result=markdown.markdown((ROOT/file).read_text(),extensions=['tables','fenced_code','toc'])
     if slug=='pending-resume-guide':
-        diagram=BeautifulSoup((ROOT/'assets/pending_resume_step.svg').read_text(),'html.parser').svg
-        diagram['style']='display:block;width:100%;height:auto'
         fragment=BeautifulSoup(result,'html.parser')
-        for placeholder in fragment.select('img[src="assets/pending_resume_step.svg"]'):
-            placeholder.replace_with(diagram)
+        for filename in ['pending_resume_step.svg','ema_alias_matrix.svg']:
+            diagram=BeautifulSoup((ROOT/'assets'/filename).read_text(),'html.parser').svg
+            diagram['style']='display:block;width:100%;height:auto'
+            for placeholder in fragment.select('img[src="assets/'+filename+'"]'):
+                placeholder.replace_with(diagram)
         result=str(fragment)
     if slug=='operational-progress-guide':
         diagram=BeautifulSoup((ROOT/'assets/operational_progress.svg').read_text(),'html.parser').svg

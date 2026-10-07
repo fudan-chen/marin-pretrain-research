@@ -287,3 +287,8 @@ V69 已经验证小状态的真实 IO 与缺叶回退，V106 验证私有快照�
 ## V111：恢复后的下一次更新
 
 V111推进了V107未覆盖的pending分支：原训练闭包中pending真实决定人工三专家的路由与梯度；11个状态叶经原本地IO与恢复策略还原，完整恢复下一次更新与不中断相同。真实QB估计、完整Transformer、多rank及生产发布器仍未执行。见[恢复、pending与EMA](PENDING_RESUME_ZH.md)。
+
+
+## V112：初始化与恢复的构造路径
+
+V112的真实本地IO控制保留状态值，却将原初始化的共享EMA叶恢复为独立缓冲区，进而改变donation可执行性。保存恢复后能训练，不足以验证从零启动路径；这也不要求checkpoint保存Python对象共享关系。把fresh与restore分成验收入口。见[构造路径矩阵](PENDING_RESUME_ZH.md)。

@@ -1,0 +1,12 @@
+{
+  "analysis_sha256": "9f627c361c2db6cd57b716f259fad5f57d2e6e89f661625a351a4cca66686d7b",
+  "figure_sha256": "73db7d04fa02cf83054c16d5d68bc2bca82801a8cbb978e5cbcd2028945ad9cc",
+  "rows": [
+    "original_shared_donated",
+    "ema_only_copy_donated",
+    "all_leaves_copy_donated",
+    "original_shared_no_donation",
+    "original_initial_state_IO_donated"
+  ],
+  "actual_production_peak_memory": null
+}

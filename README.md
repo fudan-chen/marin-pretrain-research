@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本V111：让原训练步、QB setter/路由、真实Adam和本地OCDBT恢复共同决定下一次更新；19项CPU控制说明清空pending会改变续训，并记录EMA共享缓冲区的donation边界（归档Hero EMA关闭）。[状态视图与下一步恢复](PENDING_RESUME_ZH.md)。
+当前版本V112：五条路径状态值完全相同，但共享EMA的原初始化在CPU donation中失败，真实保存恢复后却成功。15项控制隔离出EMA-only缓冲区复制候选，未集成上游；归档Hero EMA关闭。[初始化、恢复与共享缓冲区](PENDING_RESUME_ZH.md)。
 
 [MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并提供未执行的性能交互记录模板。
 

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="440" viewBox="0 0 1200 440" role="img" aria-labelledby="ema-alias-title ema-alias-desc">
+<title id="ema-alias-title">相同状态值，不同缓冲区关系</title>
+<desc id="ema-alias-desc">人工CPU模型的五种输入值完全相同。共享EMA并donation失败；只复制EMA、全复制、关闭donation或保存恢复都成功且下一次完整输出相同。字节是输入叶的缓冲区记账，不是内存峰值。</desc>
+<rect width="1200" height="440" fill="#f8fafc"/>
+<text x="24" y="37" font-family="system-ui,sans-serif" font-size="25" fill="#18344b">恢复通过，不能替代从零初始化验收</text>
+<text x="24" y="66" font-family="system-ui,sans-serif" font-size="16" fill="#18344b">真实原初始化 / 训练闭包 / 本地 OCDBT · 人工 CPU 模型 · 五种输入值相同</text>
+<text x="24" y="108" font-family="system-ui,sans-serif" font-size="16" fill="#18344b">构造路径</text>
+<text x="445" y="108" font-family="system-ui,sans-serif" font-size="16" fill="#18344b">逻辑叶字节</text>
+<text x="630" y="108" font-family="system-ui,sans-serif" font-size="16" fill="#18344b">唯一观测缓冲区字节</text>
+<text x="895" y="108" font-family="system-ui,sans-serif" font-size="16" fill="#18344b">共享组数</text>
+<text x="1050" y="108" font-family="system-ui,sans-serif" font-size="16" fill="#18344b">执行结果</text>
+<rect x="18" y="120" width="1160" height="43" rx="5" fill="#ffe5de"/>
+<text x="24" y="146" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">原初始化 + donation</text>
+<text x="445" y="146" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">116</text>
+<text x="630" y="146" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">92</text>
+<text x="895" y="146" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">2</text>
+<text x="1050" y="146" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">失败</text>
+<rect x="18" y="169" width="1160" height="43" rx="5" fill="#e6f1eb"/>
+<text x="24" y="195" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">仅复制 EMA + donation</text>
+<text x="445" y="195" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">116</text>
+<text x="630" y="195" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">116</text>
+<text x="895" y="195" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">0</text>
+<text x="1050" y="195" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">成功</text>
+<rect x="18" y="218" width="1160" height="43" rx="5" fill="#e6f1eb"/>
+<text x="24" y="244" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">全状态复制 + donation</text>
+<text x="445" y="244" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">116</text>
+<text x="630" y="244" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">116</text>
+<text x="895" y="244" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">0</text>
+<text x="1050" y="244" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">成功</text>
+<rect x="18" y="267" width="1160" height="43" rx="5" fill="#e6f1eb"/>
+<text x="24" y="293" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">原初始化，关闭 donation</text>
+<text x="445" y="293" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">116</text>
+<text x="630" y="293" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">92</text>
+<text x="895" y="293" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">2</text>
+<text x="1050" y="293" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">成功</text>
+<rect x="18" y="316" width="1160" height="43" rx="5" fill="#e6f1eb"/>
+<text x="24" y="342" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">原初始化 → 保存恢复 + donation</text>
+<text x="445" y="342" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">116</text>
+<text x="630" y="342" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">116</text>
+<text x="895" y="342" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">0</text>
+<text x="1050" y="342" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">成功</text>
+<text x="24" y="412" font-family="system-ui,sans-serif" font-size="16" fill="#18344b">仅复制 EMA 保留参数 / 优化器原缓冲区；成功分支下一次完整状态相同。不是 GPU 或内存峰值测量。</text>
+</svg>

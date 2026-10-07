@@ -370,3 +370,8 @@ V110在预算与执行记录之间增加计时检查：先声明实验预算单�
 ## V111：恢复后的下一次更新
 
 V111在恢复验收阶段加入下一次原训练更新：共同完整state与共同下一批输入，联合比较专家ID/权重、loss、参数、优化器、EMA和新pending。另测EMA/master/offload开关下的缓冲区共享与donation兼容；普通stored评估不能代替下一次训练视图。未执行的[消费者记录模板](templates/pending_consumer_review.json)保留实际checkpoint、GPU与等价结果为空。
+
+
+## V112：初始化与恢复的构造路径
+
+V112新增初始化入口验收：分别从零初始化与真实恢复后走原更新，记录叶共享组、值等价和实际deleted叶。EMA-only候选、关闭donation诊断和保存恢复不能互相替代；资源开销须另测。[未执行模板](templates/initial_state_alias_review.json)没有实际设备、部署和内存结果。

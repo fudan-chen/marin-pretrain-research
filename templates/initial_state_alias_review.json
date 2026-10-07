@@ -1,0 +1,16 @@
+{
+  "status": "proposed_not_executed",
+  "candidate_status": "candidate_not_integrated",
+  "required_paths": ["fresh_initialization", "checkpoint_restore"],
+  "required_switches": ["EMA", "master_mode", "optimizer_offload", "donation"],
+  "actual_runtime": {},
+  "actual_model_identity": null,
+  "actual_deployment_revision": null,
+  "observed_alias_groups": [],
+  "observed_deleted_leaves": [],
+  "next_update_comparisons": [],
+  "actual_GPU_validation": null,
+  "actual_peak_memory_bytes": null,
+  "actual_donation_performance_cost": null,
+  "actual_upstream_integration": null
+}

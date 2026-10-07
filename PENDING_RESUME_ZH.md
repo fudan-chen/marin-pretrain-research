@@ -83,3 +83,51 @@ return eqx.tree_at(lambda t: t.stacked_blocks.stacked.mlp.router_bias, model, ne
 5. 配比切换首步保留原pending作为生产式对照；若清空pending做机制实验，将其列为第二个干预，不能当作单纯换配比。
 
 [状态视图验收模板](templates/pending_consumer_review.json)仍为未执行草案。下一步有价值的外部证据是实际checkpoint与完整模型的固定输入对照，以及真实部署版本下的donation矩阵；本轮不能提供Hero效果、故障发生率或配比收益。
+
+
+## V112：为什么恢复成功，仍会漏掉初始化失败
+
+上一轮的成功控制复制了所有状态叶，因此尚未把“只复制EMA是否足够”单独隔离。这轮使用同一原初始化和原训练闭包，增加五条构造路径。每条路径在训练前的11叶数值完全相同，目标、输入pending、优化器和EMA系数也相同；只改变缓冲区关系、donation开关或是否经过真实保存恢复。[15项控制](analysis/ema_alias_matrix_cpu.json) · [完整执行输出](analysis/ema_alias_matrix_cpu_output.txt) · [复现脚本](scripts/probe_ema_alias_matrix.py)。V111归档和来源文件保持原字节。
+
+![相同数值的五种缓冲区构造路径](assets/ema_alias_matrix.svg)
+
+|构造路径|EMA与params共享缓冲区组数|原训练闭包是否成功|与成功参照的下一次完整状态|
+|---|---:|---|---|
+|原初始化，开启donation|2|失败：重复donation|无有效输出，不比较|
+|仅复制EMA，保留params与optimizer原缓冲区|0|成功|逐叶相同|
+|复制全部状态叶|0|成功|逐叶相同|
+|原初始化，仅关闭donation|2|成功|逐叶相同|
+|原初始化，经原本地IO保存恢复，开启donation|0|成功|逐叶相同|
+
+这里只复制EMA的控制，实际核对了参数与优化器指针在调用前没有改变，状态值全部保留。观察到的两组共享分别是`params.w ↔ ema_params.w`与两份router bias。独立复制这两个EMA叶后，原donation闭包成功执行。关闭donation的诊断只改原JIT装饰器的`donate_argnums`，没有修改训练函数体；它也保留原共享输入并得到相同完整输出。
+
+更值得留意的是第五条：原host serializer按逻辑路径分别保存数组，原reader逐叶恢复。本次真实OCDBT往返保留全部数值，但恢复出了独立缓冲区。于是，同一个初始化状态直接训练失败，先保存、恢复再训练却成功。这个反例说明：只从checkpoint开始跑回归，可能绕过从零初始化才出现的共享关系问题。它不是恢复器必须保留共享关系的要求；是启动验收必须覆盖不同构造路径的理由。
+
+### 数组相等、对象相同、缓冲区共享是三种检查
+
+这轮不仅比较Python对象身份，还在调用前读取JAX CPU数组的缓冲区指针，按逻辑叶路径归组；记录中不保存原始地址。该方法在本单设备控制中确认了共享关系，不作为多设备、切片重叠或pinned-host内存的通用检测器。
+
+五条路径的逻辑叶字节均为116。共享EMA的路径中，按观测指针去重后是92字节；复制EMA或真实恢复后是116字节，差24字节，正好对应本人工模型的两个EMA叶。这是输入数组的记账，**不是allocator、RSS、HBM峰值或训练临时内存测量**。不能按这个小模型比例预测535B峰值，也不能由“关闭donation能跑”推出它在生产中没有内存或性能代价。
+
+[JAX的donation说明](https://docs.jax.dev/en/latest/buffer_donation.html)和[jit接口](https://docs.jax.dev/en/latest/_autosummary/jax.jit.html)把donation定义为允许复用不再需要的输入缓冲区。对整个state声明donation，会涉及其pytree叶，但不保证每个叶都实际被复用。本轮三个成功donation分支中，11个输入叶有9个被标记deleted；关闭donation分支没有输入叶被标记deleted。不要在成功donation后继续拿旧state做值比较；先保存独立参照，或者比较返回的新state。
+
+### 一个可审查的初始化候选
+
+本轮提供[局部候选函数](scripts/candidate_ema_buffer_copy.py)，状态是`candidate_not_integrated`。它只为EMA建立独立数组；EMA关闭时原样返回state：
+
+```python
+if state.ema_params is None:
+    return state
+ema = jax.tree.map(lambda leaf: jnp.array(leaf, copy=True), state.ema_params)
+return dataclasses.replace(state, ema_params=ema)
+```
+
+候选用于原初始化完成后、第一次donated训练前。本轮直接执行该函数验证了EMA-only分支，未把它合入Marin；它不是每一步都需要调用的拷贝操作。跨设备sharding、master/EMA权威来源、offload和内存峰值仍须验证，不能把单CPU候选称为生产修复。
+
+仍然保留原边界：归档Hero配置`ema_beta=null`，没有证据证明Hero遇到这条EMA开启路径的错误。当前实验的Transformer.init、小模型目标和beta估计是替代；实际原QB setter、route块、初始化控制流、训练闭包、Adam和本地IO参与执行。
+
+### 应怎样改验收管线
+
+把“从零初始化”和“从checkpoint恢复”设为两个独立入口，各自至少走到第一次真实更新，再对比下一次更新。EMA/master/offload/donation开关应记录具体组合，不能只填“恢复成功”。在值、shape、dtype、状态计数之外，补充输入叶共享与实际deleted状态观察。对于可以跑通的替代路径，同时保留数值等价证据和资源开销的未知项；不要把绕过错误与生产修复合并成同一结论。
+
+[初始化构造路径验收模板](templates/initial_state_alias_review.json)保留实际设备、模型、内存和线上部署结果为空。当前只有这个人工CPU矩阵的结论，未执行GPU、分布式或完整Transformer验收。

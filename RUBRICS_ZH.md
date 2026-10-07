@@ -498,3 +498,8 @@ V110补充测量规则：单步duration、iteration_time、日历前沿速度和
 ## V111：恢复后的下一次更新
 
 V111恢复判据补充：值、shape、dtype和优化器计数之外，检查消费者的pending语义以及donation输入叶共享关系。原QB是中心化替换，同beta重复应用在本控制中幂等，零pending会重设bias；不以“应用恰好一次”推导清空协议。清空pending的配比切换应列为额外干预。当前18条规则版本不变，新增原训练步证据见[19项控制](PENDING_RESUME_ZH.md)。
+
+
+## V112：初始化与恢复的构造路径
+
+V112补充：fresh initialization和checkpoint restore分别验收。相同值/shape/dtype不保证相同输入共享关系；同一个数值状态可因构造路径不同而在donation下表现不同。记录EMA/master/offload/donation组合，将数值等价、缓冲区兼容、内存峰值和上游集成作为不同证据。当前18条规则版本不变。[实测矩阵](PENDING_RESUME_ZH.md)。

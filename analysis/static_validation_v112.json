@@ -1,0 +1,26 @@
+{
+  "checks_passed": 5,
+  "checks": [
+    {
+      "name": "All old prose in appended chapters and all historical tables retained",
+      "passed": true
+    },
+    {
+      "name": "Fifteen controls bind all original sources adapters and local candidate",
+      "passed": true
+    },
+    {
+      "name": "Five measured rows and all eleven output digests match bindings",
+      "passed": true
+    },
+    {
+      "name": "Both HTML variants expose accessible matrix and bounded hardware claims",
+      "passed": true
+    },
+    {
+      "name": "All 566 historical source files unchanged",
+      "passed": true
+    }
+  ],
+  "actual_browser_rendering": null
+}

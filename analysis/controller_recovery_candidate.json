@@ -1,0 +1,37 @@
+{
+  "status": "candidate_not_integrated",
+  "base_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+  "source_sha256": {
+    "sources/controller_restore_2026_10_07/lib/iris/src/iris/cluster/controller/checkpoint.py": "00841d128ccaef3b416a27668809bb2ceec072ea99006151910fcc35e41c134f",
+    "sources/controller_restore_2026_10_07/lib/iris/src/iris/cluster/controller/main.py": "866ef9225ec5a9b5d1916fe139f81a938fabcb6842c19d7a2f3a4331bd13b5d3"
+  },
+  "candidate_sha256": {
+    "candidates/controller_recovery/checkpoint.py": "f48b6c4961a7f1f71fde52ba7e5f5b1a6a2063ee75f23a9a193cb6ce4bcd9e55",
+    "candidates/controller_recovery/main.py": "e5b57cc6d800620fa59fde1b63bb34f69dae2db04541eff93d1269218296ed86",
+    "candidates/controller_recovery/proposal.patch": "6f4912717506245965d0b67c37214477c10c2c2d9b620266e3e4b6d2f8852848"
+  },
+  "legacy_policy": "Reject markerless checkpoints; production adoption needs explicit migration. No automatic fresh or silent auth initialization.",
+  "unverified": [
+    "cloud transport",
+    "concurrent publishers",
+    "forced process crash between renames",
+    "production integration",
+    "signing-key semantics",
+    "model training checkpoint recovery"
+  ],
+  "execution_command": [
+    "uv",
+    "run",
+    "--frozen",
+    "--no-sync",
+    "--package",
+    "marin-iris",
+    "--group",
+    "test",
+    "--no-default-groups",
+    "python",
+    "/Users/chen/Documents/ChatGPT/marin-pretrain-research/scripts/probe_controller_recovery_candidate.py"
+  ],
+  "execution_cwd": "/tmp/marin-iris-source-eee467",
+  "output_sha256": "74cac774603ca852f9a1ace6d1272fcee5649745eed8d070fa11f6dc3bb75302"
+}

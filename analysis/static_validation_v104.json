@@ -1,0 +1,35 @@
+{
+  "checks_passed": 7,
+  "checks": [
+    {
+      "name": "All V103 section tables retain ordered text",
+      "passed": true
+    },
+    {
+      "name": "22 candidate checks and execution-bound code retain exact hashes",
+      "passed": true
+    },
+    {
+      "name": "Candidate output captured and patch bound",
+      "passed": true
+    },
+    {
+      "name": "Both HTML variants explain candidate integration and legacy gaps",
+      "passed": true
+    },
+    {
+      "name": "Latest same core bytes do not claim latest runtime execution",
+      "passed": true
+    },
+    {
+      "name": "No candidate production or migration result invented",
+      "passed": true
+    },
+    {
+      "name": "Original upstream tracked checkout stays unchanged",
+      "passed": true
+    }
+  ],
+  "preserved_V103_sections_with_tables": 69,
+  "actual_browser_rendering": null
+}

@@ -4949,5 +4949,32 @@
     "bytes": 23328,
     "retrieved_utc": "2026-10-07T01:28:22.843263+00:00",
     "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
+  },
+  {
+    "file": "controller_candidate_2026_10_07/head.json",
+    "url": "https://api.github.com/repos/marin-community/marin/commits/main",
+    "git_revision": "bb208b5ed52cd82c4e5f0213af8e0c52df7d5e96",
+    "sha256": "5b11c51ceef76c701c8559f5241375baedc27bc92a0717938fb48acfee8537b2",
+    "bytes": 11373,
+    "retrieved_utc": "2026-10-07T06:35:16.952275+00:00",
+    "retrieval_time_basis": "Approximate staged complete download mtime"
+  },
+  {
+    "file": "controller_candidate_2026_10_07/checkpoint.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/bb208b5ed52cd82c4e5f0213af8e0c52df7d5e96/lib/iris/src/iris/cluster/controller/checkpoint.py",
+    "git_revision": "bb208b5ed52cd82c4e5f0213af8e0c52df7d5e96",
+    "sha256": "00841d128ccaef3b416a27668809bb2ceec072ea99006151910fcc35e41c134f",
+    "bytes": 21017,
+    "retrieved_utc": "2026-10-07T06:37:24.905060+00:00",
+    "retrieval_time_basis": "Approximate staged complete download mtime"
+  },
+  {
+    "file": "controller_candidate_2026_10_07/main.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/bb208b5ed52cd82c4e5f0213af8e0c52df7d5e96/lib/iris/src/iris/cluster/controller/main.py",
+    "git_revision": "bb208b5ed52cd82c4e5f0213af8e0c52df7d5e96",
+    "sha256": "866ef9225ec5a9b5d1916fe139f81a938fabcb6842c19d7a2f3a4331bd13b5d3",
+    "bytes": 17484,
+    "retrieved_utc": "2026-10-07T06:37:26.177004+00:00",
+    "retrieval_time_basis": "Approximate staged complete download mtime"
   }
 ]

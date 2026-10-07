@@ -70,3 +70,17 @@ SQLite 使用 WAL 时，最新提交可能还在旁边的 WAL 文件中。主文
 训练与控制器使用两套备份身份，比较 loss 前应记录实际 controller 祖先、job/task/attempt、新训练恢复点、完成 token/update 和评估身份。这里的时间戳是调度备份身份，不是模型训练 step。若配比变更的提交或调度状态被回退，不能只凭当前配置解释恢复前后的曲线。是否真的发生这种混杂，需要真实执行记录。
 
 **本章的结论是两个已复现的恢复合同缺口，和一组应补的验收条件。** 不是新的 Hero 事故数量，也不是修复已上线的报告。[12 项故障控制](analysis/controller_restore_faults.json) · [完整执行脚本](scripts/probe_controller_restore_faults.py) · [源码获取记录](analysis/controller_restore_acquisition.json)。
+
+## V104：把修复建议变成可复查的候选
+
+在研究仓库内生成完整原模块的候选副本，并执行 **22 项本地控制**。没有改上游 checkout。候选不再提前清空回滚目录；成功恢复后才将请求记为 ROLLED_BACK，第二次启动保留恢复之后的新本地写入，不再次回退。坏/缺失目标都保住原主库与 auth 的 SHA256。
+
+发布协议增加最后写入的 `checkpoint.complete.json`。这份记录包含格式、epoch、主库和 auth 压缩文件的尺寸/摘要。第二份文件或完成记录上传失败时，不推进本地 ancestry；寻找 latest 时跳过未完成目录，已有完整旧候选仍能被选中。有目录却全无完成记录时明确报错，不能当成从未保存过状态。下载验证记录身份、整组文件和摘要，再执行 SQLite 检查；相同 epoch 再发布会被拒绝覆盖已有目录。
+
+控制中既有缺 auth、错摘要，也有“摘要正确但主库或 auth 不是 SQLite”的反例。后者防止把摘要校验当成数据库有效性。完整配对 roundtrip、成功回滚只消费一次也得到检查，避免修失败路径时破坏正常恢复。[候选与逐项说明](candidates/controller_recovery/README_ZH.md) · [原代码到候选的补丁](candidates/controller_recovery/proposal.patch) · [22 项结果](analysis/controller_recovery_candidate_controls.json)。
+
+**候选仍不宜部署。** 它明确拒绝旧格式，而旧格式迁移尚未实现；原 Controller.begin_checkpoint 等生产写入调用链也未接入候选。若只替换启动入口，旧写入者还会生成无完成记录的备份，形成新的恢复阻断。原生用例的 51 项通过属于原版本，不能移作候选的通过数。还须补同时发布、强制杀进程、云端传输及两个数据库共同快照的验收。
+
+实时 main 已变为 `bb208b5ed52cd82c4e5f0213af8e0c52df7d5e96`，提交题为运行时依赖更新；checkpoint.py 与 main.py 完整下载后，同归档 eee467… 字节一致。本轮候选执行仍使用 eee467… 的冻结环境，不证明新依赖运行结果，也不证明实际部署版本。[当前源码绑定](analysis/controller_candidate_refresh.json)。
+
+由此可提炼一条管线规则：源码中某个保护函数正确，不等于所有入口都遵守它；候选的某个调用路径通过，也不等于全部生产写入者/读取者已经更新。对训练 checkpoint、optimizer、数据游标同样应逐条追踪写入、发布、选择、恢复与调用方身份，而不是看到文件存在或 restore 返回 True 就继续归因 loss。

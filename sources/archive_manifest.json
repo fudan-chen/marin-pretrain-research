@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-07T01:28:23.192027+00:00",
+  "integrity_manifest_created_utc": "2026-10-07T06:40:18.006594+00:00",
   "files": [
     {
       "file": "accumulation_2026_10_07/grad_accum.py",
@@ -279,6 +279,27 @@
       "sha256": "4a4f086b968934114ba450ec90d1e875842a04a3b79c7ae82879eda882a4d7d4",
       "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/kernels/pallas/fused_cross_entropy_loss/xla.py",
       "retrieved_utc": "2026-10-05T08:46:51.896922+00:00"
+    },
+    {
+      "file": "controller_candidate_2026_10_07/checkpoint.py",
+      "bytes": 21017,
+      "sha256": "00841d128ccaef3b416a27668809bb2ceec072ea99006151910fcc35e41c134f",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/bb208b5ed52cd82c4e5f0213af8e0c52df7d5e96/lib/iris/src/iris/cluster/controller/checkpoint.py",
+      "retrieved_utc": "2026-10-07T06:37:24.905060+00:00"
+    },
+    {
+      "file": "controller_candidate_2026_10_07/head.json",
+      "bytes": 11373,
+      "sha256": "5b11c51ceef76c701c8559f5241375baedc27bc92a0717938fb48acfee8537b2",
+      "url": "https://api.github.com/repos/marin-community/marin/commits/main",
+      "retrieved_utc": "2026-10-07T06:35:16.952275+00:00"
+    },
+    {
+      "file": "controller_candidate_2026_10_07/main.py",
+      "bytes": 17484,
+      "sha256": "866ef9225ec5a9b5d1916fe139f81a938fabcb6842c19d7a2f3a4331bd13b5d3",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/bb208b5ed52cd82c4e5f0213af8e0c52df7d5e96/lib/iris/src/iris/cluster/controller/main.py",
+      "retrieved_utc": "2026-10-07T06:37:26.177004+00:00"
     },
     {
       "file": "controller_restore_2026_10_07/lib/iris/src/iris/cluster/controller/checkpoint.py",
@@ -3263,8 +3284,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 255726,
-      "sha256": "dae8068d654c067aa6e760247be6140c8ee85ec3c6de9cd4831b33aff202229a",
+      "bytes": 257210,
+      "sha256": "0980fdd110b9aaff0cfea83e2609fe7d79bc3a1bfeefc00ea4e438f7197b3795",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

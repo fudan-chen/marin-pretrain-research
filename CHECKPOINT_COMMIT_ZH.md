@@ -292,3 +292,8 @@ V111推进了V107未覆盖的pending分支：原训练闭包中pending真实决�
 ## V112：初始化与恢复的构造路径
 
 V112的真实本地IO控制保留状态值，却将原初始化的共享EMA叶恢复为独立缓冲区，进而改变donation可执行性。保存恢复后能训练，不足以验证从零启动路径；这也不要求checkpoint保存Python对象共享关系。把fresh与restore分成验收入口。见[构造路径矩阵](PENDING_RESUME_ZH.md)。
+
+
+## V113：有限loss与路由状态
+
+V113对人工NaN/Inf pending做真实本地保存恢复，11叶二进制摘要完全一致；恢复后的原下一步仍可报有限loss并形成非有限bias。数组IO完整与数值健康是不同证据。本轮手工metadata，未调用生产调度/分布式publisher，不能认定Hero出现污染提交。见[数值水位](FAILURE_BOUNDARIES_ZH.md)。

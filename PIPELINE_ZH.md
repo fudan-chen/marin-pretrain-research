@@ -375,3 +375,8 @@ V111在恢复验收阶段加入下一次原训练更新：共同完整state与�
 ## V112：初始化与恢复的构造路径
 
 V112新增初始化入口验收：分别从零初始化与真实恢复后走原更新，记录叶共享组、值等价和实际deleted叶。EMA-only候选、关闭donation诊断和保存恢复不能互相替代；资源开销须另测。[未执行模板](templates/initial_state_alias_review.json)没有实际设备、部署和内存结果。
+
+
+## V113：有限loss与路由状态
+
+V113增加路由数值分层：记录incoming/outgoing pending和stored/actual/next-forward bias，先执行有限性诊断，再通过共同起点/共同batch比较下一次更新；二者不是替代关系。任何拒绝保存、终止、跳步或回滚都要绑定多rank协议与数据游标，不自动把清零当修复。[未执行验收模板](templates/routing_health_review.json)。

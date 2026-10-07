@@ -1,0 +1,11 @@
+{
+  "analysis_sha256": "f868473c8a875aec7bba14a00dfec182a878b7ea4cd1800dad29237e5d51d618",
+  "figure_sha256": "b1b80638eecb6870ce63ae2337259d00631e732d666316e35431693228028884",
+  "rows": [
+    "finite",
+    "one_nan",
+    "one_inf",
+    "all_large_finite"
+  ],
+  "actual_Hero_numerical_event": null
+}

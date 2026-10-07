@@ -63,6 +63,13 @@ readings={x['file']:x for x in json.loads((ROOT/'analysis/figure_readings.json')
 sections=[];toc=[]
 for slug,label,file in chapters:
     result=markdown.markdown((ROOT/file).read_text(),extensions=['tables','fenced_code','toc'])
+    if slug=='failure-boundaries-guide':
+        fragment=BeautifulSoup(result,'html.parser')
+        diagram=BeautifulSoup((ROOT/'assets/pending_finite_gap.svg').read_text(),'html.parser').svg
+        diagram['style']='display:block;width:100%;height:auto'
+        for placeholder in fragment.select('img[src="assets/pending_finite_gap.svg"]'):
+            placeholder.replace_with(diagram)
+        result=str(fragment)
     if slug=='pending-resume-guide':
         fragment=BeautifulSoup(result,'html.parser')
         for filename in ['pending_resume_step.svg','ema_alias_matrix.svg']:

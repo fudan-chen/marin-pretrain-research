@@ -125,3 +125,8 @@ V111执行原训练闭包、真实Equinox setter和原路由块，接真实Adam�
 ## V112：初始化与恢复的构造路径
 
 V112将共享EMA边界隔离为五路径矩阵：原初始化、只复制EMA、全状态复制、关闭donation、原初始化经真实保存恢复。全部输入值相同，后四者成功且下一次完整输出逐叶相同，原共享EMA donation失败。仅复制EMA保留params和optimizer缓冲区。共享关系不会自动由数值相等检查覆盖，见[15项控制及未集成候选](PENDING_RESUME_ZH.md)。
+
+
+## V113：有限loss与路由状态
+
+V113接原训练闭包、setter、路由、真实Adam及本地IO，13项CPU控制：故障注入后的loss可三步均有限，第二步stored/EMA bias非有限，第三步全部状态恢复有限但参数轨迹不同。有限极端pending还可在中心化时溢出，故需区分原pending、stored bias与next-forward bias。原估计器未执行，实际Hero事件未知。[完整对照](FAILURE_BOUNDARIES_ZH.md)。

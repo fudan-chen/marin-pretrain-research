@@ -1,0 +1,15 @@
+{
+  "status": "proposed_not_executed",
+  "candidate_status": "candidate_not_integrated",
+  "required_views": ["incoming_pending", "stored_bias", "actual_forward_bias", "outgoing_pending", "next_forward_bias"],
+  "actual_source_revision": null,
+  "actual_estimator_input_digest": null,
+  "actual_checkpoint_digest": null,
+  "numerical_observations": [],
+  "same_start_update_comparisons": [],
+  "actual_original_estimator_failure": null,
+  "actual_Hero_event": null,
+  "actual_global_guard_coverage": null,
+  "actual_guard_overhead": null,
+  "actual_upstream_integration": null
+}

@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1676,
+  "checks_passed": 1683,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -160,7 +160,8 @@
     "V109 thirteen original loss-interface CPU controls; sequence/position/target/mass ledgers and unit correction; requested fused backend explicitly replaced; actual Hero density and causal mixture benefit unknown",
     "V110 eight operational analyses; 1000 sampled observations; calendar progress distinct from step duration; source archive expanded 556 to 566; no outage attribution",
     "V111 nineteen original-step CPU controls; real local OCDBT/Adam/Equinox; pending-zero replacement and EMA-alias donation boundary; Hero EMA disabled, no production incident attribution",
-    "V112 fifteen CPU matrix controls; identical state values but fresh/restore alias difference; EMA-only local candidate not integrated; observed input bytes not peak memory"
+    "V112 fifteen CPU matrix controls; identical state values but fresh/restore alias difference; EMA-only local candidate not integrated; observed input bytes not peak memory",
+    "V113 thirteen original-step CPU controls; finite loss can coexist with poisoned bias and faithful OCDBT restore; finite later state not trajectory equivalence; estimator/Hero reachability unknown"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

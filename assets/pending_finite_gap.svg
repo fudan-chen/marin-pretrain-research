@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="560" viewBox="0 0 1200 560" role="img" aria-labelledby="pending-finite-title pending-finite-desc">
+<title id="pending-finite-title">有限loss可以跨过非有限路由状态</title>
+<desc id="pending-finite-desc">人工CPU三专家模型，原训练闭包执行三步。所有loss有限；异常pending或中心化溢出可使下一步bias非有限。第三步状态重新有限但参数已偏离参照。</desc>
+<rect width="1200" height="560" fill="#f8fafc"/>
+<text x="24" y="38" font-family="system-ui,sans-serif" font-size="26" fill="#18344b">loss 有限，不等于路由状态健康</text>
+<text x="24" y="67" font-family="system-ui,sans-serif" font-size="16" fill="#18344b">人工 beta 注入 · 原 train_step / setter / route · 非 Hero 事故或误差估计</text>
+<text x="24" y="110" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">控制</text>
+<text x="280" y="110" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">第 1 步：输出注入 beta</text>
+<text x="585" y="110" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">第 2 步：使用该 beta</text>
+<text x="890" y="110" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">第 3 步：再次有限</text>
+<text x="24" y="169" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">有限 beta 参照</text>
+<rect x="270" y="132" width="294" height="75" rx="6" fill="#e6f1eb"/>
+<text x="280" y="155" font-family="system-ui,sans-serif" font-size="16" fill="#18344b">loss 8.656469</text>
+<text x="280" y="177" font-family="system-ui,sans-serif" font-size="15" fill="#18344b">P / stored / next: Y / Y / Y</text>
+<text x="280" y="198" font-family="system-ui,sans-serif" font-size="15" fill="#215f55">参数与参照相同</text>
+<rect x="575" y="132" width="294" height="75" rx="6" fill="#e6f1eb"/>
+<text x="585" y="155" font-family="system-ui,sans-serif" font-size="16" fill="#18344b">loss 0.372697</text>
+<text x="585" y="177" font-family="system-ui,sans-serif" font-size="15" fill="#18344b">P / stored / next: Y / Y / Y</text>
+<text x="585" y="198" font-family="system-ui,sans-serif" font-size="15" fill="#215f55">参数与参照相同</text>
+<rect x="880" y="132" width="294" height="75" rx="6" fill="#e6f1eb"/>
+<text x="890" y="155" font-family="system-ui,sans-serif" font-size="16" fill="#18344b">loss 9.517222</text>
+<text x="890" y="177" font-family="system-ui,sans-serif" font-size="15" fill="#18344b">P / stored / next: Y / Y / Y</text>
+<text x="890" y="198" font-family="system-ui,sans-serif" font-size="15" fill="#215f55">参数与参照相同</text>
+<text x="24" y="254" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">注入一个 NaN beta</text>
+<rect x="270" y="217" width="294" height="75" rx="6" fill="#fff0df"/>
+<text x="280" y="240" font-family="system-ui,sans-serif" font-size="16" fill="#18344b">loss 8.656469</text>
+<text x="280" y="262" font-family="system-ui,sans-serif" font-size="15" fill="#18344b">P / stored / next: N / Y / N</text>
+<text x="280" y="283" font-family="system-ui,sans-serif" font-size="15" fill="#215f55">参数与参照相同</text>
+<rect x="575" y="217" width="294" height="75" rx="6" fill="#fff0df"/>
+<text x="585" y="240" font-family="system-ui,sans-serif" font-size="16" fill="#18344b">loss 8.509987</text>
+<text x="585" y="262" font-family="system-ui,sans-serif" font-size="15" fill="#18344b">P / stored / next: Y / N / Y</text>
+<text x="585" y="283" font-family="system-ui,sans-serif" font-size="15" fill="#a64c20">参数已偏离参照</text>
+<rect x="880" y="217" width="294" height="75" rx="6" fill="#e6f1eb"/>
+<text x="890" y="240" font-family="system-ui,sans-serif" font-size="16" fill="#18344b">loss 9.598701</text>
+<text x="890" y="262" font-family="system-ui,sans-serif" font-size="15" fill="#18344b">P / stored / next: Y / Y / Y</text>
+<text x="890" y="283" font-family="system-ui,sans-serif" font-size="15" fill="#a64c20">参数已偏离参照</text>
+<text x="24" y="339" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">注入一个 +Inf beta</text>
+<rect x="270" y="302" width="294" height="75" rx="6" fill="#fff0df"/>
+<text x="280" y="325" font-family="system-ui,sans-serif" font-size="16" fill="#18344b">loss 8.656469</text>
+<text x="280" y="347" font-family="system-ui,sans-serif" font-size="15" fill="#18344b">P / stored / next: N / Y / N</text>
+<text x="280" y="368" font-family="system-ui,sans-serif" font-size="15" fill="#215f55">参数与参照相同</text>
+<rect x="575" y="302" width="294" height="75" rx="6" fill="#fff0df"/>
+<text x="585" y="325" font-family="system-ui,sans-serif" font-size="16" fill="#18344b">loss 8.509987</text>
+<text x="585" y="347" font-family="system-ui,sans-serif" font-size="15" fill="#18344b">P / stored / next: Y / N / Y</text>
+<text x="585" y="368" font-family="system-ui,sans-serif" font-size="15" fill="#a64c20">参数已偏离参照</text>
+<rect x="880" y="302" width="294" height="75" rx="6" fill="#e6f1eb"/>
+<text x="890" y="325" font-family="system-ui,sans-serif" font-size="16" fill="#18344b">loss 9.598701</text>
+<text x="890" y="347" font-family="system-ui,sans-serif" font-size="15" fill="#18344b">P / stored / next: Y / Y / Y</text>
+<text x="890" y="368" font-family="system-ui,sans-serif" font-size="15" fill="#a64c20">参数已偏离参照</text>
+<text x="24" y="424" font-family="system-ui,sans-serif" font-size="17" fill="#18344b">有限 beta = [3e38]*3</text>
+<rect x="270" y="387" width="294" height="75" rx="6" fill="#fff0df"/>
+<text x="280" y="410" font-family="system-ui,sans-serif" font-size="16" fill="#18344b">loss 8.656469</text>
+<text x="280" y="432" font-family="system-ui,sans-serif" font-size="15" fill="#18344b">P / stored / next: Y / Y / N</text>
+<text x="280" y="453" font-family="system-ui,sans-serif" font-size="15" fill="#215f55">参数与参照相同</text>
+<rect x="575" y="387" width="294" height="75" rx="6" fill="#fff0df"/>
+<text x="585" y="410" font-family="system-ui,sans-serif" font-size="16" fill="#18344b">loss 8.509987</text>
+<text x="585" y="432" font-family="system-ui,sans-serif" font-size="15" fill="#18344b">P / stored / next: Y / N / Y</text>
+<text x="585" y="453" font-family="system-ui,sans-serif" font-size="15" fill="#a64c20">参数已偏离参照</text>
+<rect x="880" y="387" width="294" height="75" rx="6" fill="#e6f1eb"/>
+<text x="890" y="410" font-family="system-ui,sans-serif" font-size="16" fill="#18344b">loss 9.598701</text>
+<text x="890" y="432" font-family="system-ui,sans-serif" font-size="15" fill="#18344b">P / stored / next: Y / Y / Y</text>
+<text x="890" y="453" font-family="system-ui,sans-serif" font-size="15" fill="#a64c20">参数已偏离参照</text>
+<text x="24" y="518" font-family="system-ui,sans-serif" font-size="16" fill="#18344b">原 loss-only 检查接受全部 12 步；P = pending 输入有限性，stored / next = 两种 bias 视图有限性。</text>
+<text x="24" y="545" font-family="system-ui,sans-serif" font-size="16" fill="#18344b">绿色仅表示三个有限性标志通过，不证明过去更新正确；图中数值是人工平方误差。</text>
+</svg>

@@ -503,3 +503,8 @@ V111恢复判据补充：值、shape、dtype和优化器计数之外，检查消
 ## V112：初始化与恢复的构造路径
 
 V112补充：fresh initialization和checkpoint restore分别验收。相同值/shape/dtype不保证相同输入共享关系；同一个数值状态可因构造路径不同而在donation下表现不同。记录EMA/master/offload/donation组合，将数值等价、缓冲区兼容、内存峰值和上游集成作为不同证据。当前18条规则版本不变。[实测矩阵](PENDING_RESUME_ZH.md)。
+
+
+## V113：有限loss与路由状态
+
+V113恢复/健康规则补充：loss有限不推出原pending、stored bias或应用后bias有限；全部状态重新有限也不推出历史更新等价。区分输入pending、实际前向、输出pending与下一次视图。中心化等派生操作须检查输出，不能只检查输入。本地守卫候选没有生产一致终止与开销验证。当前18条规则版本不变。[13项控制](FAILURE_BOUNDARIES_ZH.md)。

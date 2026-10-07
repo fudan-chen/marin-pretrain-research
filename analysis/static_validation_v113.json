@@ -1,0 +1,26 @@
+{
+  "checks_passed": 5,
+  "checks": [
+    {
+      "name": "Old prose and tables preserved before new appendices",
+      "passed": true
+    },
+    {
+      "name": "Thirteen controls and sources match archived candidate and original bytes",
+      "passed": true
+    },
+    {
+      "name": "Twelve plotted losses match original CPU records and figure binding",
+      "passed": true
+    },
+    {
+      "name": "Both HTML variants preserve accessible figure and unknown estimator reachability",
+      "passed": true
+    },
+    {
+      "name": "All 566 old sources unchanged",
+      "passed": true
+    }
+  ],
+  "actual_browser_rendering": null
+}

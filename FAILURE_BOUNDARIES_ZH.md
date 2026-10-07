@@ -57,3 +57,49 @@
 原train_step的JIT声明donate_argnums=(0)。[JAX官方buffer donation说明](https://docs.jax.dev/en/latest/buffer_donation.html)解释了输入buffer可能被复用、之后不应继续使用。因而保存一个Python旧state引用不代表其设备buffer仍可用于回滚；是否成功复用取决于实际编译和形状条件。本轮没有执行donation或设备恢复；建议回退以内容绑定、已核对的checkpoint为依据，再验证数据与下一步状态接续。
 
 这轮允许的结论是：在所审查循环中，“loss有限”和“步已完成”不是完整状态健康证明；失败路径抑制强制末尾save有明确控制流依据；早期检查应分清非有限、几何和状态一致性。是否出现过污染提交、哪个真实checkpoint可恢复，仍需原训练事故包与实际恢复记录。
+
+## V113：loss一直有限，路由异常也可能经过保存恢复
+
+V34以人工state recorder定位了主循环的loss-only检查边界；V63执行原QB setter，看到单个非有限pending会经中心化传播，但没有执行后续专家目标；V111接上了原训练步与真实恢复。这轮进一步让原训练闭包、setter、路由块、真实Adam和本地OCDBT处理异常pending，核对“异常是否必然让下一次loss变成NaN”。本控制中，答案是否定的。
+
+[13项CPU控制与逐步原值](analysis/pending_finite_gap_cpu.json) · [执行输出](analysis/pending_finite_gap_cpu_output.txt) · [脚本](scripts/probe_pending_finite_gap.py)。原beta估计器被人工输出替代，没有证据证明真实Hero估计器产生过这些值，也没有读取真实Hero异常checkpoint。
+
+### 一条实跑的三步路径
+
+沿用V111的人工三专家模型、固定logits、平方误差、真实Adam与独立EMA缓冲区。四组控制只改变第一批输出beta：有限参照`[0,3,0]`、单NaN、单+Inf，以及三项均为有限float32的`3e38`。第二、三步输出beta恢复为共同有限值。输入beta作为模拟估计器输出，是本实验明确施加的故障，不是从生产记录发现的异常。
+
+![loss与路由状态三步对照](assets/pending_finite_gap.svg)
+
+|阶段|有限参照|注入NaN或Inf|说明|
+|---|---|---|---|
+|第1步结束|loss 8.656469；params、pending有限|同样loss、同样params；仅pending叶非有限|新pending尚未参与这一步前向，loss不会检查它|
+|第2步结束|loss 0.372697；bias有限|loss 8.509987；params与EMA的router bias非有限，Adam moment有限|异常bias可改变专家选择，但不一定将非有限值直接乘进专家输出|
+|第3步结束|loss 9.517222；状态全部有限|loss 9.598701；状态也全部有限，但参数已不同|有限beta替换bias不等于撤销上一步参数与moment的变化|
+
+12个实际训练步全部通过归档循环的原`not jnp.isfinite(metrics['train/loss'])`判定。这里只执行原判定表达式，不把它扩大为完整生产loop、callback或所有安全检查的验收。第3步状态恢复有限，也不能证明此前训练轨迹正确；只截取这一时刻做finite检查会漏掉已发生的更新分歧。
+
+为何会出现这种情况？[归档路由块](sources/routing_2026_10_05/grug_moe.py)中，bias影响top-k专家选择；combine权重来自未加bias的logits。人工输入logits及所选专家输出都有限，因而非有限bias仍可能得到有限权重与有限平方误差。NaN/Inf下的具体top-k选择是本JAX CPU运行的观察，不能承诺其他backend具有相同选择规则，也不能将这种选择视为有效路由。
+
+本轮训练闭包和setter来自冻结`eee467…`入口；route块沿用固定路由归档，形状/模型由V111适配。没有将这一组合声明为某次线上Hero进程的完整执行版本。
+
+### Pending有限，也不保证应用后的bias有限
+
+三项beta都为`3e38`时，输入pending与第1步全部状态叶均有限。但原setter先取负、求均值、再中心化；本CPU中float32中间归约溢出，得到三个+Inf bias。相同实数beta在精确算术中应中心化为零，这个对照暴露的是有限精度运算边界。
+
+这意味着，单查pending有限性或单查保存时所有state叶有限，也不够覆盖“派生的下一次前向视图”健康性。此控制的第2步确实产生非有限stored bias且loss仍有限。`3e38`是故意设置的极端诊断值，不是Hero beta量级的观测；本轮没有修改中心化算式，也没有把另一种归约顺序称为生产等价修复。改变浮点路由算术还需检查专家ID、阈值、梯度与设备策略。
+
+### 存储忠实保留异常，不负责判定它是否能训练
+
+对单NaN与单Inf控制，取第1步结束状态，用原host serializer写入真实本地TensorStore/OCDBT，等待commit，手工发布metadata，再调用原Grug恢复策略和原tree/leaf reader。11个叶的二进制摘要在写前与恢复后完全相同，包含异常pending；随后执行原下一训练步，仍得到有限loss与非有限stored bias。
+
+这是本地存储往返的实际结果；没有调用生产checkpointer调度器、分布式publisher或真实故障自动恢复。它不能证明Hero提交过异常状态，却说明数组读写成功、值忠实、manifest完整与训练状态健康是不同验收层。TensorStore不应被当作模型数值校验器。
+
+### 一个尚未集成的有限性诊断候选
+
+[局部JAX候选](scripts/candidate_qb_health_flags.py)返回三个标志：原pending、stored bias和原setter产生的next-forward bias是否有限。输入都由调用方明确提供，不重写setter、不静默置零，也不修改state。
+
+本轮实际JIT执行该候选：有限参照三步均通过；三组异常控制的第1、2步均被标出；第3步又通过，但参数仍不同于参照。这最后一项限制同样重要：**有限性诊断只能发现当下特定异常，不能证明更新正确或恢复等价。** 还需共同起点/共同数据的下一次更新对照，以及必要的范数、路由和任务指标。
+
+候选状态为`candidate_not_integrated`。它没有接入生产loop、定义跳步/回滚策略、实现多rank一致终止或测量GPU开销。若准备集成，应将当前pending、实际前向视图和本步新pending分别绑定时刻，决定在哪个同步边界汇总诊断、拒绝保存或终止；不能检测到异常就擅自清零、跳更新或继续保存，那会改变状态、数据游标和有效曝光。
+
+本轮实际Hero非有限事件、原QB估计器异常输出、生产污染checkpoint、GPU与分布式守卫覆盖、候选开销仍为空。下一步需要真实checkpoint/事故包或原估计器输入边界实验，才能判断这些反例在实际训练中是否可达。

@@ -61,6 +61,13 @@ readings={x['file']:x for x in json.loads((ROOT/'analysis/figure_readings.json')
 sections=[];toc=[]
 for slug,label,file in chapters:
     result=markdown.markdown((ROOT/file).read_text(),extensions=['tables','fenced_code','toc'])
+    if slug=='checkpoint-memory-guide':
+        diagram=BeautifulSoup((ROOT/'assets/donation_snapshot_flow.svg').read_text(),'html.parser').svg
+        diagram['style']='display:block;width:100%;height:auto'
+        fragment=BeautifulSoup(result,'html.parser')
+        for placeholder in fragment.select('img[src="assets/donation_snapshot_flow.svg"]'):
+            placeholder.replace_with(diagram)
+        result=str(fragment)
     if slug=='controller-recovery-guide':
         diagram=BeautifulSoup((ROOT/'assets/controller_restore_contract.svg').read_text(),'html.parser').svg
         diagram['style']='display:block;width:100%;height:auto'

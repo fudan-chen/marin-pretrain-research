@@ -1,0 +1,84 @@
+{
+  "checks_passed": 10,
+  "checks": [
+    {
+      "name": "retained external CPU host view prevents donation in this runtime",
+      "passed": true
+    },
+    {
+      "name": "detached private host snapshot 8",
+      "passed": true
+    },
+    {
+      "name": "original JAX input deleted after actual donation 8",
+      "passed": true
+    },
+    {
+      "name": "two actual donated updates produce expected new state 8",
+      "passed": true
+    },
+    {
+      "name": "delayed consumer still receives pre-donation snapshot 8",
+      "passed": true
+    },
+    {
+      "name": "detached private host snapshot 4096",
+      "passed": true
+    },
+    {
+      "name": "original JAX input deleted after actual donation 4096",
+      "passed": true
+    },
+    {
+      "name": "two actual donated updates produce expected new state 4096",
+      "passed": true
+    },
+    {
+      "name": "delayed consumer still receives pre-donation snapshot 4096",
+      "passed": true
+    },
+    {
+      "name": "host-memory branch ownership survives source mutation with explicit adapter",
+      "passed": true
+    }
+  ],
+  "cases": [
+    {
+      "size": 8,
+      "input_deleted": true,
+      "saved_first": 0.0,
+      "new_first": 200.0,
+      "independent_host_memory": true
+    },
+    {
+      "size": 4096,
+      "input_deleted": true,
+      "saved_first": 0.0,
+      "new_first": 200.0,
+      "independent_host_memory": true
+    }
+  ],
+  "retained_host_view_control": {
+    "input_deleted": false,
+    "view_first": 0.0,
+    "snapshot_first": 0.0,
+    "updated_first": 100.0
+  },
+  "source_sha256": {
+    "sources/donation_snapshot_2026_10_07/lib/levanter/src/levanter/tensorstore_serialization.py": "5dddf8c6cc87cb062593482abe6775eee59eea443c28c7fd8d8b7ddf261f89ea",
+    "sources/donation_snapshot_2026_10_07/lib/levanter/tests/test_tensorstore_serialization.py": "33867056a1a7eb8bd170a4047febed9c6d54cea315214e31baa34b2d2690fdc8",
+    "sources/donation_snapshot_2026_10_07/lib/levanter/src/levanter/checkpoint.py": "3997faa8082442fcdf16df2fd0c13bf30a26a9c5db62eb81cce0758bff4a2274",
+    "sources/main_incident_2026_10_07/train.py": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7",
+    "scripts/probe_donation_snapshot_cpu.py": "a41aa9c204fc2b255e3446824e40432902645bceb42410c3b5b39892b988bd7a"
+  },
+  "jax_version": "0.11.1",
+  "jaxlib_version": "0.11.1",
+  "numpy_version": "2.3.5",
+  "devices": [
+    "cpu:0"
+  ],
+  "boundary": "Original helper AST and constants; actual CPU JAX arrays, jitted donate_argnums updates, event-gated delayed NumPy copy consumer. No full Levanter import, TensorStore IO, GPU DMA, pinned allocator, multirank or actual Hero TrainState. Host-memory branch uses explicit minimal __array__ adapter.",
+  "actual_GPU_donation": null,
+  "actual_Hero_checkpoint_integrity": null,
+  "actual_training_resume": null
+}

@@ -66,3 +66,39 @@
 建议一次保存测量同时记录：每rank实际plan、budget peak、当前RSS、offloaded基线、commit future的数量/完成数、仍可达快照引用，以及保存交接/commit耗时。先用同一个state和固定写入后端比较budget档位，再选择满足内存余量的最快档位；不要在同一轮同时改副本切分、chunk、concurrency和allocator而把结果归给一个参数。
 
 本轮17项检查包含原asyncio budget、配置默认值、原shape/replica规划与区域覆盖、整分失败边界；规划使用synthetic JAX类型与sharding，真实GPU/存储测量仍为空。[脚本](scripts/probe_checkpoint_memory.py) · [原值与作用范围](analysis/checkpoint_memory_probe.json)。它接续[保存提交管线](CHECKPOINT_COMMIT_ZH.md)，优先补实际writer布局和每rank内存证据，再决定是否调保存频率与budget。
+
+## V106：保存快照怎样跨过下一次 buffer donation
+
+把 V105 的共同快照问题带回 Hero 入口，先区分已有的保护。固定 main eee467… 的 GrugTrainState 包含 step、params、master_params、opt_state、ema_params 与 pending_qb_betas；主循环在 train_step 返回新 state 后，用 state 的完成更新数请求保存。train_step 的 JIT 明确声明 `donate_argnums=(0,)`，后续更新可以复用输入 state 的 buffer。已有状态时钟与恢复游标结论继续成立，本轮不把这些再算成新发现。
+
+真正要问的是：保存交接返回后，写入者持有什么数据。原 `_transfer_shard_to_pageable_host` 对 host 分支使用 `np.array(..., copy=True)`；CPU 分支排队 host copy 后也生成私有 NumPy 数组；GPU 分支先转 pageable CPU，再生成私有 NumPy 数组，并删除中间 JAX staging array。后端可以长时间引用私有快照，而不依赖下一次训练可能 donate 的 buffer。这个复制是状态所有权边界，不能仅因看见额外 host 内存就删掉。[原 staging helper](sources/donation_snapshot_2026_10_07/lib/levanter/src/levanter/tensorstore_serialization.py)。
+
+### 同步 staging 与异步 commit 分开
+
+原 `_serialize_arrays` 的 `issue_write` 先取得 host byte budget，再 `await stage()`。它让 TensorStore 用 `can_reference_source_data_indefinitely=True` 写入复制后的数组；budget 到 commit future 完成才释放。`asyncio.run(write_all())` 返回后，已经遍历并 staging 该进程负责的 writes；之后才把 commit futures 加到 manager。这里的异步允许 commit 晚于交接，不是允许下一次训练先改原 buffer、再回来生成快照。
+
+由于 budget 要到 commit 才释放，后续 shard 的 staging 可能等待前面的提交腾出预算。因此“异步保存”也不等于 on_step 恒定很快返回；其等待可发生在 snapshot 获取阶段。实际分片、写入速度、超大条目和 process 数仍决定内存/吞吐，不能由这段控制流直接给出 Hero 的延迟估计。
+
+### 原单测名字与实际执行范围
+
+上游 `test_pageable_checkpoint_staging_detaches_from_donated_jax_buffer` 创建真实 JAX CPU 数组并执行 helper，断言值相等且 `np.shares_memory` 为 False；测试体没有真正调用一次带 donation 的 JIT。这是有用的所有权断言，但不能把名字当作 GPU donation 或完整保存恢复的测试证据。[原测试](sources/donation_snapshot_2026_10_07/lib/levanter/tests/test_tensorstore_serialization.py)。
+
+本轮补充控制使用原 helper AST 和原常量，执行真实 CPU JAX `donate_argnums=(0,)` 更新，以事件控制延迟消费者；没有导入完整 Levanter，也没有执行 TensorStore 写入。两组大小分别 8、4096。先 staging，消费者等待；随后真实 donation 更新两次，再放行消费者读取私有快照。另用明确的最小 `__array__` 适配器检查 host-memory 分支的复制，不把它叫真实 pinned allocator。
+
+[逐项检查与版本](analysis/donation_snapshot_cpu.json) · [执行脚本](scripts/probe_donation_snapshot_cpu.py)。结果区分 JAX 输入实际是否 deleted、独立快照值与更新后状态值；没有真实 GPU DMA、多 rank、完整 GrugTrainState 或模型续训。CPU helper 通过也不足以确认 GPU 分支、所有 writer 入口或当时部署版本正确。
+
+### 共同状态时刻与快照所有权不是同一个问题
+
+V105 的人工跨库反例说明“各文件有效不代表同一状态切面”。这里保护的是“已经取到的快照，不被后续 donation 破坏”。两者都需要验收，但不能互相替代。完整训练还需证明：所有叶来自同一个已完成 state；异步消费者持有独立数据；完成标记在所有必需数组提交后发布；恢复模板没有漏掉 opt_state/master/pending 等字段；loader 从该 state 的时钟与历史 batch/mixture 声明继续。
+
+优化保存内存之前，先测这些行为。减少 copy、延迟 staging、让训练提前继续，都可能改变所有权合同；没有 donation 后延迟读取与真实 restore 对照，就不能称为无损优化。当前 GPU/真实训练恢复证据仍缺，后续优先补这两项。
+
+### 本地结果与一个会让测试失真的观察动作
+
+JAX/jaxlib 0.11.1、NumPy 2.3.5 的单 CPU 环境中，10 项控制通过。两组实际 donation 的旧输入 `is_deleted()` 都为 True；两次更新后首值为 200，事件放行后的保存首值仍为 0，且完整数组相等。
+
+首次实验保留 `np.asarray(x)` 视图来检查共享内存，结果旧输入没有 deleted，断言失败。最终脚本将它保留为独立对照：同一环境保留外部视图时输入未 deleted、更新值为 100；真正 donation 的两组在共享检查后释放视图，再执行更新。这个现象限定在本次 CPU/runtime，不推出所有平台都阻止 donation。它提醒测试者：观察 buffer 的方式也可能改变所有权。只写 `donate_argnums`、不检查实际失效，就可能误报测试覆盖。
+
+![保存快照的所有权时序](assets/donation_snapshot_flow.svg)
+
+这不是 Hero 配比优劣的新证据。它是解释恢复后 loss 变化的前置验收：先确认参数、优化器与游标对应同一保存状态，再比较固定域 loss。若恢复身份未确认，暂缓将跳变归因于数据顺序或配比。

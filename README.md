@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本V105：核对 auth 已为空库、签名密钥来自配置；8 项快照控制显示整组完成不等于共同状态时刻，另有 2 项原认证测试通过。[证据与判断边界](CONTROLLER_RECOVERY_ZH.md)。
+当前版本V106：回到 Hero 保存与 donation 边界，补原 staging helper 的真实单 CPU donation 与延迟消费者控制；区分快照所有权、共同状态时刻与异步 commit。[保存内存解释](CHECKPOINT_MEMORY_ZH.md)。
 
 [MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并提供未执行的性能交互记录模板。
 

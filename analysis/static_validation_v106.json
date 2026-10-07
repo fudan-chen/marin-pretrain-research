@@ -1,0 +1,26 @@
+{
+  "checks_passed": 5,
+  "checks": [
+    {
+      "name": "All previous tables retained in order",
+      "passed": true
+    },
+    {
+      "name": "Ten CPU checks source and script bound",
+      "passed": true
+    },
+    {
+      "name": "Actual donation distinguished from retained view control",
+      "passed": true
+    },
+    {
+      "name": "Both HTML variants embed accessible ownership diagram",
+      "passed": true
+    },
+    {
+      "name": "GPU and full training restoration not claimed",
+      "passed": true
+    }
+  ],
+  "actual_browser_rendering": null
+}

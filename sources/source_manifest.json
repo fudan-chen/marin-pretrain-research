@@ -5016,5 +5016,35 @@
     "bytes": 80378,
     "retrieved_utc": "2026-10-07T06:53:13.955204+00:00",
     "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
+  },
+  {
+    "file": "donation_snapshot_2026_10_07/lib/levanter/src/levanter/tensorstore_serialization.py",
+    "upstream_path": "lib/levanter/src/levanter/tensorstore_serialization.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/src/levanter/tensorstore_serialization.py",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "sha256": "5dddf8c6cc87cb062593482abe6775eee59eea443c28c7fd8d8b7ddf261f89ea",
+    "bytes": 52269,
+    "retrieved_utc": "2026-10-07T06:57:51.514575+00:00",
+    "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
+  },
+  {
+    "file": "donation_snapshot_2026_10_07/lib/levanter/tests/test_tensorstore_serialization.py",
+    "upstream_path": "lib/levanter/tests/test_tensorstore_serialization.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/tests/test_tensorstore_serialization.py",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "sha256": "33867056a1a7eb8bd170a4047febed9c6d54cea315214e31baa34b2d2690fdc8",
+    "bytes": 24218,
+    "retrieved_utc": "2026-10-07T06:57:51.983795+00:00",
+    "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
+  },
+  {
+    "file": "donation_snapshot_2026_10_07/lib/levanter/src/levanter/checkpoint.py",
+    "upstream_path": "lib/levanter/src/levanter/checkpoint.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/src/levanter/checkpoint.py",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "sha256": "3997faa8082442fcdf16df2fd0c13bf30a26a9c5db62eb81cce0758bff4a2274",
+    "bytes": 56177,
+    "retrieved_utc": "2026-10-07T06:57:52.366679+00:00",
+    "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
   }
 ]

@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-07T06:53:15.461424+00:00",
+  "integrity_manifest_created_utc": "2026-10-07T06:57:57.011023+00:00",
   "files": [
     {
       "file": "accumulation_2026_10_07/grad_accum.py",
@@ -685,6 +685,27 @@
       "sha256": "ecd9444c84cba0fcfc104271d62e7fb28bf093f21df5a5f73e61f7b03f282f7e",
       "url": "https://raw.githubusercontent.com/marin-community/marin/621bf9738b3ed9536aafc34b77cf8147740f1c17/lib/levanter/tests/test_varying_mixture.py",
       "retrieved_utc": "2026-10-03T22:35:59.050248+00:00"
+    },
+    {
+      "file": "donation_snapshot_2026_10_07/lib/levanter/src/levanter/checkpoint.py",
+      "bytes": 56177,
+      "sha256": "3997faa8082442fcdf16df2fd0c13bf30a26a9c5db62eb81cce0758bff4a2274",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/src/levanter/checkpoint.py",
+      "retrieved_utc": "2026-10-07T06:57:52.366679+00:00"
+    },
+    {
+      "file": "donation_snapshot_2026_10_07/lib/levanter/src/levanter/tensorstore_serialization.py",
+      "bytes": 52269,
+      "sha256": "5dddf8c6cc87cb062593482abe6775eee59eea443c28c7fd8d8b7ddf261f89ea",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/src/levanter/tensorstore_serialization.py",
+      "retrieved_utc": "2026-10-07T06:57:51.514575+00:00"
+    },
+    {
+      "file": "donation_snapshot_2026_10_07/lib/levanter/tests/test_tensorstore_serialization.py",
+      "bytes": 24218,
+      "sha256": "33867056a1a7eb8bd170a4047febed9c6d54cea315214e31baa34b2d2690fdc8",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/tests/test_tensorstore_serialization.py",
+      "retrieved_utc": "2026-10-07T06:57:51.983795+00:00"
     },
     {
       "file": "engineering_2026_10_05/issue_8435.json",
@@ -3312,8 +3333,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 259993,
-      "sha256": "bd1f94c59e18047402044ca8faefa2649fb01b342586069926e51c966af4732a",
+      "bytes": 262021,
+      "sha256": "f8c075f984cd8cf7a55dbd4abe350e6a467b787effb2b8a37c9d799f9daf60f3",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

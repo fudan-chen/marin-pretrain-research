@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1632,
+  "checks_passed": 1637,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -18,7 +18,7 @@
     "four new config contrasts / six step393 resume windows",
     "seventeen embedded figures",
     "all relative HTML links valid",
-    "553 source archive checksums valid",
+    "556 source archive checksums valid",
     "18 authored rubrics / seven claim-stage decisions",
     "five interpretation cases / four metrics with switchable baselines",
     "17 figure-reading entries / five preserved collapsed tables",
@@ -153,7 +153,8 @@
     "V102 original upstream local SQLite transition tests; gang cumulative budget, sibling cascade, stale attempts and capacity finalization; no production training recovery claim",
     "V103 51 upstream recovery/reopen cases and 12 fault controls; ordinary failure preservation, requested rollback preclear and partial-publish completeness gap; no production incident attribution",
     "V104 22 candidate recovery controls; completion records and original-state retention; legacy migration and production call-chain integration unfinished; two latest core sources byte-identical, current runtime not executed",
-    "V105 auth empty-schema/config-key risk refinement; eight constructed snapshot controls and two original auth tests; valid file pair not proof of shared state cut or production training skew"
+    "V105 auth empty-schema/config-key risk refinement; eight constructed snapshot controls and two original auth tests; valid file pair not proof of shared state cut or production training skew",
+    "V106 ten CPU donation and delayed-consumer controls; observation-view non-donation control; ownership diagram; GPU and full training restore unverified"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

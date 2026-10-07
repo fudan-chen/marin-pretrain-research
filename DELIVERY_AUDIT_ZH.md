@@ -180,3 +180,7 @@ V101：源513份，18项原函数/源码刷新控制；main与开放PR分叉，�
 新增 4 份完整 auth/迁移/test/controller 源码，保留 548 份旧非 bookkeeping 文件，归档总 553。当前 auth 无业务表，签名 key 来自配置 secret，收紧 V103/V104 风险解释。8 项原/候选顺序快照控制通过；构造表 0/1 状态对可通过摘要与数据库检查，不代表生产 auth 不变量或真实训练错配。2 项原认证测试通过、61 未选；重建认证对象不当成完整服务重启。
 
 下一步回到训练 TrainState、异步 save 引用和 loader 完成时钟；当前真实 Hero 组件身份仍未知。发布校验见 analysis/release_v105.json；本轮未做浏览器渲染验收。
+
+## V106：快照所有权的执行边界
+
+10 项单 CPU donation 控制通过；2 组实际 donation、1 组保留视图对照、1 个显式 host 适配器分支。源码/脚本 SHA 与运行版本归档，新增 3 个完整文件，总 556；保留 552 个旧非 bookkeeping 文件。原函数 AST 执行不等于完整模块/训练入口执行；未做 GPU、TensorStore IO、多 rank、完整恢复或浏览器渲染验收。发布哈希见 analysis/release_v106.json。

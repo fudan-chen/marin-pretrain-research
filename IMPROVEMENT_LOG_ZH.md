@@ -547,3 +547,7 @@ V101：13份公开payload归档、499份旧非bookkeeping源字节保留；18项
 新增 4 份完整 auth/迁移/test/controller 源码，保留 548 份旧非 bookkeeping 文件，归档总 553。当前 auth 无业务表，签名 key 来自配置 secret，收紧 V103/V104 风险解释。8 项原/候选顺序快照控制通过；构造表 0/1 状态对可通过摘要与数据库检查，不代表生产 auth 不变量或真实训练错配。2 项原认证测试通过、61 未选；重建认证对象不当成完整服务重启。
 
 下一步回到训练 TrainState、异步 save 引用和 loader 完成时钟；当前真实 Hero 组件身份仍未知。发布校验见 analysis/release_v105.json；本轮未做浏览器渲染验收。
+
+## V106 · donation 与延迟消费者
+
+新增 3 份完整源码，保留 552 份旧非 bookkeeping 文件，归档 556。原 staging helper AST、真实 JAX CPU、事件门控 NumPy 消费者完成 10 项控制。首次观察视图阻止 donation 的断言失败，最终作为显式对照保留；实际 donation 两组释放观察视图并核实 deleted。增加所有权时序图与验收规则。没有 TensorStore IO、GPU DMA、多 rank、完整 TrainState 或生产事故归因。下一步优先用完整 state 与真实存储复核，不能从本轮推算性能收益。

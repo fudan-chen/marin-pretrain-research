@@ -17,3 +17,5 @@ uv run --frozen --no-sync --package marin-iris --group test --no-default-groups 
 ```
 
 研究结论可以采用，生产候选继续保留。应先完成调用链接入和旧格式迁移，再用真实中断、同 epoch 并发、对象存储故障与状态恢复对照决定是否值得合并。
+
+V105 范围复核：当前原 auth 数据库没有业务表，签名密钥来自配置 secret；两文件要求不能直接解释为保护当前签名密钥。人工跨文件 generation 控制显示候选会发布并接受 main=0/auth=1 的有效数据库对，因此完成记录不保证共同 snapshot。这个反例不是生产 auth 状态或真实训练状态；候选未因此升级保证。

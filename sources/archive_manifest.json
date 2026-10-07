@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-07T06:40:18.006594+00:00",
+  "integrity_manifest_created_utc": "2026-10-07T06:53:15.461424+00:00",
   "files": [
     {
       "file": "accumulation_2026_10_07/grad_accum.py",
@@ -3283,9 +3283,37 @@
       "retrieved_utc": "2026-10-05T10:54:35.572009+00:00"
     },
     {
+      "file": "snapshot_semantics_2026_10_07/lib/iris/src/iris/cluster/controller/auth.py",
+      "bytes": 33780,
+      "sha256": "f5c9efb6750d945a8b31220be9f4aa8e9722f2bc69160ccbefba79f979023d01",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/auth.py",
+      "retrieved_utc": "2026-10-07T06:53:13.747163+00:00"
+    },
+    {
+      "file": "snapshot_semantics_2026_10_07/lib/iris/src/iris/cluster/controller/controller.py",
+      "bytes": 80378,
+      "sha256": "29759039c2efd585073ea63300b9e04a5c2a4b76139583f0275c8cf5de9ee3c4",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/controller.py",
+      "retrieved_utc": "2026-10-07T06:53:13.955204+00:00"
+    },
+    {
+      "file": "snapshot_semantics_2026_10_07/lib/iris/src/iris/cluster/controller/migrations/0050_drop_controller_secrets.py",
+      "bytes": 906,
+      "sha256": "1f23ff4d405fac2d77b49888253f3710e21712880a2b79b005245a6ac3642d13",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/migrations/0050_drop_controller_secrets.py",
+      "retrieved_utc": "2026-10-07T06:53:13.831947+00:00"
+    },
+    {
+      "file": "snapshot_semantics_2026_10_07/lib/iris/tests/cluster/controller/test_auth.py",
+      "bytes": 34476,
+      "sha256": "c90e136284e7efb848dd45cee846773e67945913bc4eab3b18af18ad84339127",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/tests/cluster/controller/test_auth.py",
+      "retrieved_utc": "2026-10-07T06:53:13.895968+00:00"
+    },
+    {
       "file": "source_manifest.json",
-      "bytes": 257210,
-      "sha256": "0980fdd110b9aaff0cfea83e2609fe7d79bc3a1bfeefc00ea4e438f7197b3795",
+      "bytes": 259993,
+      "sha256": "bd1f94c59e18047402044ca8faefa2649fb01b342586069926e51c966af4732a",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

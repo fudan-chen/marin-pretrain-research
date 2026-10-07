@@ -1,0 +1,27 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.13, pytest-9.0.3, pluggy-1.6.0 -- /private/tmp/marin-iris-source-eee467/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /private/tmp/marin-iris-source-eee467/lib/iris
+configfile: pyproject.toml
+plugins: playwright-0.7.2, xdist-3.8.0, timeout-2.4.0, flakefinder-1.1.0, asyncio-1.4.0, anyio-4.14.2, base-url-2.1.0
+timeout: 10.0s
+timeout method: thread
+timeout func_only: False
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 63 items / 61 deselected / 2 selected
+
+lib/iris/tests/cluster/controller/test_auth.py::test_require_persistent_signing_key PASSED [ 50%]
+lib/iris/tests/cluster/controller/test_auth.py::test_worker_token_differs_after_restart PASSED [100%]
+
+=============================== warnings summary ===============================
+lib/iris/tests/cluster/controller/test_auth.py:58
+  /private/tmp/marin-iris-source-eee467/lib/iris/tests/cluster/controller/test_auth.py:58: StarletteDeprecationWarning: Using `httpx` with `starlette.testclient` is deprecated; install `httpx2` instead.
+    from starlette.testclient import TestClient
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+----------------- generated xml file: /tmp/marin-v105-auth.xml -----------------
+============================= slowest 25 durations =============================
+0.01s call     tests/cluster/controller/test_auth.py::test_worker_token_differs_after_restart
+
+(5 durations < 0.005s hidden.  Use -vv to show these durations.)
+================= 2 passed, 61 deselected, 1 warning in 0.33s ==================

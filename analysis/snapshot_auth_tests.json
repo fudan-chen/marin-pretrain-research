@@ -1,0 +1,43 @@
+{
+  "observed_tool_exitcode": 0,
+  "cases": [
+    {
+      "name": "test_require_persistent_signing_key",
+      "outcome": "passed"
+    },
+    {
+      "name": "test_worker_token_differs_after_restart",
+      "outcome": "passed"
+    }
+  ],
+  "passed": 2,
+  "deselected": 61,
+  "command": [
+    "uv",
+    "run",
+    "--frozen",
+    "--no-sync",
+    "--package",
+    "marin-iris",
+    "--group",
+    "test",
+    "--no-default-groups",
+    "pytest",
+    "-n",
+    "0",
+    "--tb=short",
+    "lib/iris/tests/cluster/controller/test_auth.py",
+    "-k",
+    "persistent_signing_key or restart",
+    "--junitxml=/tmp/marin-v105-auth.xml"
+  ],
+  "safe_default_marker_expression": "not slow and not docker and not requires_cluster and not manual",
+  "artifact_sha256": {
+    "analysis/snapshot_auth_tests.txt": "dd9ce24cd2a459d6359ceae758924e62d6e1062297e454d42057f1099cf189da",
+    "analysis/snapshot_auth_tests.xml": "296524f1df86035e3702aed92b7f57197c70ca064812ffc7586cb9f7889f7ffc",
+    "analysis/snapshot_semantics_output.txt": "5e2cbb2995065750e114334916795a9f40a45708d3ed05d93c26efe28cff5d0c"
+  },
+  "runtime_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+  "boundary": "Original auth functions using generated test keys, reconstructed objects, no full controller restart or production secrets",
+  "actual_production_secret_identity": null
+}

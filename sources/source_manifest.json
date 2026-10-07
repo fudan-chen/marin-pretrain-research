@@ -4976,5 +4976,45 @@
     "bytes": 17484,
     "retrieved_utc": "2026-10-07T06:37:26.177004+00:00",
     "retrieval_time_basis": "Approximate staged complete download mtime"
+  },
+  {
+    "file": "snapshot_semantics_2026_10_07/lib/iris/src/iris/cluster/controller/auth.py",
+    "upstream_path": "lib/iris/src/iris/cluster/controller/auth.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/auth.py",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "sha256": "f5c9efb6750d945a8b31220be9f4aa8e9722f2bc69160ccbefba79f979023d01",
+    "bytes": 33780,
+    "retrieved_utc": "2026-10-07T06:53:13.747163+00:00",
+    "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
+  },
+  {
+    "file": "snapshot_semantics_2026_10_07/lib/iris/src/iris/cluster/controller/migrations/0050_drop_controller_secrets.py",
+    "upstream_path": "lib/iris/src/iris/cluster/controller/migrations/0050_drop_controller_secrets.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/migrations/0050_drop_controller_secrets.py",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "sha256": "1f23ff4d405fac2d77b49888253f3710e21712880a2b79b005245a6ac3642d13",
+    "bytes": 906,
+    "retrieved_utc": "2026-10-07T06:53:13.831947+00:00",
+    "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
+  },
+  {
+    "file": "snapshot_semantics_2026_10_07/lib/iris/tests/cluster/controller/test_auth.py",
+    "upstream_path": "lib/iris/tests/cluster/controller/test_auth.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/tests/cluster/controller/test_auth.py",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "sha256": "c90e136284e7efb848dd45cee846773e67945913bc4eab3b18af18ad84339127",
+    "bytes": 34476,
+    "retrieved_utc": "2026-10-07T06:53:13.895968+00:00",
+    "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
+  },
+  {
+    "file": "snapshot_semantics_2026_10_07/lib/iris/src/iris/cluster/controller/controller.py",
+    "upstream_path": "lib/iris/src/iris/cluster/controller/controller.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/controller.py",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "sha256": "29759039c2efd585073ea63300b9e04a5c2a4b76139583f0275c8cf5de9ee3c4",
+    "bytes": 80378,
+    "retrieved_utc": "2026-10-07T06:53:13.955204+00:00",
+    "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
   }
 ]

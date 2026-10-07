@@ -1,0 +1,26 @@
+{
+  "checks_passed": 5,
+  "checks": [
+    {
+      "name": "Prior tables retained in order with new snapshot table appended",
+      "passed": true
+    },
+    {
+      "name": "Eight snapshot controls source and candidate bound",
+      "passed": true
+    },
+    {
+      "name": "Two original auth cases match original JUnit",
+      "passed": true
+    },
+    {
+      "name": "Both HTML variants carry auth content and constructed-data distinction",
+      "passed": true
+    },
+    {
+      "name": "No production invariant or training skew invented",
+      "passed": true
+    }
+  ],
+  "actual_browser_rendering": null
+}

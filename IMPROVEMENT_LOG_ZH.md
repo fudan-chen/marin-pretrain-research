@@ -541,3 +541,9 @@ V101：13份公开payload归档、499份旧非bookkeeping源字节保留；18项
 22 项本地候选控制通过：移除回滚预清空；最后写完成记录、整组尺寸/SHA 与 SQLite 校验、部分发布排除及同 epoch 覆盖拒绝。保留完整原模块副本/补丁/生成脚本/执行脚本，不改上游 checkout。旧格式拒绝是兼容缺口；原生产 Controller.begin_checkpoint 等入口尚未接入；不能宣布修复上线。
 
 新增 3 份当前 head/源码归档，保留 545 份旧非 bookkeeping 文件，总 549；新 head bb208b… 两份源码同旧基线字节一致，最新依赖未执行。浏览器渲染、云端存储、并发、强制中断、auth 密钥与训练 checkpoint 仍未验证。完整校验与发布哈希见 analysis/release_v104.json。
+
+## V105：状态内容与共同快照边界
+
+新增 4 份完整 auth/迁移/test/controller 源码，保留 548 份旧非 bookkeeping 文件，归档总 553。当前 auth 无业务表，签名 key 来自配置 secret，收紧 V103/V104 风险解释。8 项原/候选顺序快照控制通过；构造表 0/1 状态对可通过摘要与数据库检查，不代表生产 auth 不变量或真实训练错配。2 项原认证测试通过、61 未选；重建认证对象不当成完整服务重启。
+
+下一步回到训练 TrainState、异步 save 引用和 loader 完成时钟；当前真实 Hero 组件身份仍未知。发布校验见 analysis/release_v105.json；本轮未做浏览器渲染验收。

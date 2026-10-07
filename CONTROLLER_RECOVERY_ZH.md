@@ -84,3 +84,32 @@ SQLite 使用 WAL 时，最新提交可能还在旁边的 WAL 文件中。主文
 实时 main 已变为 `bb208b5ed52cd82c4e5f0213af8e0c52df7d5e96`，提交题为运行时依赖更新；checkpoint.py 与 main.py 完整下载后，同归档 eee467… 字节一致。本轮候选执行仍使用 eee467… 的冻结环境，不证明新依赖运行结果，也不证明实际部署版本。[当前源码绑定](analysis/controller_candidate_refresh.json)。
 
 由此可提炼一条管线规则：源码中某个保护函数正确，不等于所有入口都遵守它；候选的某个调用路径通过，也不等于全部生产写入者/读取者已经更新。对训练 checkpoint、optimizer、数据游标同样应逐条追踪写入、发布、选择、恢复与调用方身份，而不是看到文件存在或 restore 返回 True 就继续归因 loss。
+
+## V105：收紧 auth 风险判断，区分整组完成与共同快照
+
+深入到当前 `ControllerDB`、迁移 0050 和认证入口后，确认 **当前 auth.sqlite3 已无业务表，控制面签名密钥来自配置 secret，而非该数据库**。挂载 auth schema 是为旧迁移 SQL 兼容。新建原 ControllerDB 后，实际查询也得到 auth 的业务表列表为空。这收紧了 V103/V104 的风险解释：缺文件仍违反当前 probe 的双文件要求，主库单独下载返回 True 的行为仍已复现；但不能据此推断当前签名密钥丢失。[删除旧密钥表的原迁移](sources/snapshot_semantics_2026_10_07/lib/iris/src/iris/cluster/controller/migrations/0050_drop_controller_secrets.py) · [原认证入口](https://github.com/marin-community/marin/blob/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/auth.py)。
+
+原上游两项认证用例通过，另 61 项未选择。配置 peers 而没有持久 signing_key 时要求报错；没有 peers 时允许临时密钥。同一持久 key 下重建两个认证对象，worker token 不同，旧新 token 都能在第二个对象下验证。这里没有重启真实控制器、访问生产 secret 或测试配置加载失败；只是把密钥身份与数据库文件恢复分开。[原命令、结果与输出](analysis/snapshot_auth_tests.json)。
+
+### 已完成的文件也能来自不同状态时刻
+
+原 `backup_databases` 先完成 main 的 SQLite snapshot 复制，再单独备份 auth。我们只在临时数据库里增加两张 `research_generation` 表；当前生产 auth 没有这些表。两张表起始均为 0。在原 main backup 完成之后、auth backup 之前，通过原 transaction 对两表提交 generation=1。这是确定性顺序交错，不是模拟操作系统线程竞争，也没有测试崩溃时多文件事务原子性。
+
+|控制输入|备份的 main/auth|两个文件各自检查|它说明什么|
+|---|---|---|---|
+|原版本，无插入更新|0 / 0|都为 ok|安静窗口的对照|
+|原版本，两次 backup 之间提交更新|0 / 1|都为 ok|单文件 snapshot 不自动提供跨文件共同切面|
+|V104 候选，相同交错|0 / 1|都为 ok|候选并未改变 snapshot 获取顺序|
+|候选把该组发布、校验摘要、下载恢复|仍为 0 / 1|probe healthy=True|完成记录保证组的字节和完整性，不验证构造的业务 generation 相等|
+
+**8 项本地控制通过。** 两库活状态在更新后都是 1，而备份是 0/1；这不是复制损坏，因此 SHA 和 quick_check 不能识别这个构造的业务不变量。这个反例约束了候选保证的范围，但不建立当前 Iris 业务错误或真实训练状态错配。[执行记录](analysis/snapshot_semantics.json) · [完整脚本](scripts/probe_snapshot_semantics.py)。
+
+不要把 SQLite 自身单事务原子性、单文件 snapshot、多文件顺序备份和整个发布协议混为一谈。SQLite 官方的原子提交说明还区分 rollback journal 与 WAL；本轮没有测系统崩溃，不能从成功提交推导断电时跨库原子性。[SQLite 官方说明](https://www.sqlite.org/atomiccommit.html)。
+
+### 对模型、optimizer 与数据游标的可迁移结论
+
+这轮不再给“缺 auth”扩大生产严重性。更有价值的规则是：首先证明多个组件之间确实存在需要保存的不变量，再测试获取快照的时刻是否能保住它。模型参数、optimizer 状态、schedule/update 计数与数据游标经常需要对应同一次完成更新，但这一点必须沿实际训练保存入口核对，不能把本轮人工 generation 当成 Hero 的训练事实。
+
+已有 manifest 可以保存“完成更新身份 + 各组件状态身份”，但若采集时刻已经错开，事后写同一个 step 标签也不会修复。候选将来需要区分冻结状态时刻与异步序列化时刻；是否使用读屏障、不可变状态引用或版本验证重试，应按真实更新与 IO 路径决定。简单给所有备份加全局锁可能阻塞 heartbeat，既没有在本轮实现，也没有延迟测量。
+
+本轮的下一步是回到训练 checkpoint 的原调用链，核对模型/optimizer 是否来自同一个 TrainState、异步保存持有什么引用，以及 loader 游标使用哪个完成更新时钟。当前未取得真实 Hero restore 的组件身份，继续保留 unknown。

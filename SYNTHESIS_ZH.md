@@ -252,3 +252,7 @@ V100：原后台队列错误按FIFO传递，正常耗尽后重复next却可等�
 
 
 V101：实时复查没有新事故正文；新增main/提案版本对照。五份数据/队列源码同字节，train环境辅助函数不同：main carry默认0.75/85，提案0.78/105；显式overlap在ragged无carry分支的保留/强制行为不同。Iris分类依赖disruption而非单独exit137。未绑定实际部署或节点根因。[完整对照](RECENT_MOE_CHANGES_ZH.md)。
+
+### 恢复不是单个状态位（V102）
+
+Iris 的 task 可以已经回到 PENDING，旧 attempt 却仍占着资源等待终止确认。这是避免旧进程未退出就重复分配容量的合同。连带退出不重复消耗根故障预算，但轮流崩溃的多个 rank 仍会累计消耗 job 的 FAILED attempt 总预算。[三本账与恢复时间线](GANG_RECOVERY_ZH.md)。配比评估应另查完成 token/update 与固定评估；重新 RUNNING 并不提供模型恢复状态和数据顺序的证据。

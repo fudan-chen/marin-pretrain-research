@@ -1,0 +1,39 @@
+{
+  "checks_passed": 7,
+  "checks": [
+    {
+      "name": "New chapter has two complete scene tables",
+      "passed": true
+    },
+    {
+      "name": "Both HTML variants inline the accessible recovery diagram",
+      "passed": true
+    },
+    {
+      "name": "All V101 section tables retain ordered text",
+      "passed": true
+    },
+    {
+      "name": "33 native passes agree with complete JUnit XML",
+      "passed": true
+    },
+    {
+      "name": "Native run outputs and archived source match recorded SHA256",
+      "passed": true
+    },
+    {
+      "name": "Template contains no invented recovery events",
+      "passed": true
+    },
+    {
+      "name": "Production revision and recovery remain unknown",
+      "passed": true
+    }
+  ],
+  "preserved_V101_sections_with_tables": 67,
+  "actual_browser_rendering": null,
+  "quicklook_scope": "Only a cropped thumbnail inspected; not complete SVG or browser QA",
+  "source_sha256": {
+    "assets/gang_recovery_flow.svg": "a816e3aadcccf54c326db7e1613e6ce4e84bacec1973b7f70a484187512b5ddc"
+  }
+}

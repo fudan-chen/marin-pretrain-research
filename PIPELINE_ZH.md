@@ -328,3 +328,7 @@ V100另核未缓冲错误：RuntimeError可被原wrapper转成StopIteration，�
 
 
 V101版本和退出检查：比较main、候选PR与实际部署三种身份。分叉图不解释成回退；逐文件绑定并执行最终环境default/forced行为。事故按命名task的reason/exitCode、True disruption condition与retry budget分类，不用137或NoExecute猜GPU根因。[18项控制](RECENT_MOE_CHANGES_ZH.md)。
+
+### 故障窗口进入配比比较前的门槛（V102）
+
+把原始失败分类连到 `(job,task,attempt,worker)`，再核对触发 rank 与连带 rank 的预算变化、stop 与退出确认、释放与重新 placement。最后绑定新 attempt 的 checkpoint、optimizer、数据游标及完成更新。停机和重放单列；配比切换与重排同窗时，先保留两者混杂，不能按墙钟曲线自动归因。当前源码/本地测试可查 [Gang 恢复](GANG_RECOVERY_ZH.md)，生产恢复链仍待证据。

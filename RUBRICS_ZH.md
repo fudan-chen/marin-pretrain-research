@@ -456,3 +456,7 @@ V100另核未缓冲错误：RuntimeError可被原wrapper转成StopIteration，�
 
 
 V101规则：未合并提案头不等于main，main不等于部署；default不等于forced，mode名不等于最终环境。exit137单独不足以归因taint/基础设施失败；错误预算要看原condition和命名task状态。当前实况正文与V77/V83相同，不计新增事故。[对照依据](RECENT_MOE_CHANGES_ZH.md)。
+
+### Gang 恢复评审的三个追问（V102）
+
+沿用现有规则，不增加分数：第一次应用 FAILED 与连带 COSCHED_FAILED 是否分别计账？旧 attempt 的资源释放是否有 worker 退出确认？新 attempt 是否有 checkpoint、数据游标和首个完成更新的对应记录？分别检查重试预算、容量账和训练进度，不能用一个 job RUNNING 截图替代。[源码与原生测试解释](GANG_RECOVERY_ZH.md)。

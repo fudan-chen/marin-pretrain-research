@@ -523,3 +523,9 @@ V100：新增两份同head完整后台/线程模块，保留497份旧非bookkeep
 
 
 V101：13份公开payload归档、499份旧非bookkeeping源字节保留；18项main/提案host与Pod分类控制。纠正刷新时将已收录NoExecute记录称为新增的判断，正文没有变化；逐文件绑定五同一异，实际部署与GPU/节点根因仍未知。
+
+## V102：从退出分类追到 gang 重排与容量确认
+
+固定 main eee467…；19 份完整原源码/测试/lock 归档，保留 512 份旧非 bookkeeping 文件。运行未改写的上游 test_transitions.py：33 passed、91 deselected，保留默认安全 marker 排除，单进程；原 pytest 输出 1.70 秒。完整 checkout 的 tracked 源码执行前后不变。实际部署、Hero 重试参数、逐 attempt checkpoint/游标和控制器崩溃重启仍未知。
+
+新增 [Gang 恢复解释](GANG_RECOVERY_ZH.md)、两条时间线 SVG、原命令/环境/XML/输出和未执行的恢复轨迹模板。全报告验证与发布产物见 analysis/release_v102.json；浏览器渲染未验证，Quick Look 缩略图不替代完整页面 QA。下一步优先补进程重启后的 SQLite 恢复和真实训练恢复链。

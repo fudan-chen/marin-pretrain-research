@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-07T00:10:29.591922+00:00",
+  "integrity_manifest_created_utc": "2026-10-07T00:24:21.913987+00:00",
   "files": [
     {
       "file": "accumulation_2026_10_07/grad_accum.py",
@@ -965,6 +965,139 @@
       "sha256": "068a2af0588db08fa2f8facc8249672cd9877e3f7676ad83b4ae781abcb8f7d0",
       "url": "https://api.wandb.ai/graphql",
       "retrieved_utc": "2026-10-04T06:03:27.870820+00:00"
+    },
+    {
+      "file": "gang_recovery_2026_10_07/AGENTS.md",
+      "bytes": 10888,
+      "sha256": "4a41c103521bcfa750d0bbd3a166f3e39684f6ae2238cd61304f7d69967bbace",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/AGENTS.md",
+      "retrieved_utc": "2026-10-07T00:24:21.168011+00:00"
+    },
+    {
+      "file": "gang_recovery_2026_10_07/lib/iris/AGENTS.md",
+      "bytes": 12257,
+      "sha256": "66fd2fa03363b23abb4047723bd7b8975fc8b0547cd9f91f60f4da395d6890bd",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/AGENTS.md",
+      "retrieved_utc": "2026-10-07T00:24:21.185879+00:00"
+    },
+    {
+      "file": "gang_recovery_2026_10_07/lib/iris/TESTING.md",
+      "bytes": 9616,
+      "sha256": "579cc276e68fb5207c1f628ea399a61150e4c4463864f9f6e01d9bdabbe293ef",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/TESTING.md",
+      "retrieved_utc": "2026-10-07T00:24:21.201941+00:00"
+    },
+    {
+      "file": "gang_recovery_2026_10_07/lib/iris/pyproject.toml",
+      "bytes": 5570,
+      "sha256": "f940d5ef51953238608adbfb37a035f0332c4bd0e3925c147e207883e854c98b",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/pyproject.toml",
+      "retrieved_utc": "2026-10-07T00:24:21.218304+00:00"
+    },
+    {
+      "file": "gang_recovery_2026_10_07/lib/iris/src/iris/cluster/controller/db.py",
+      "bytes": 30857,
+      "sha256": "c5460e75e4d9e39de19950a84ea2d280ccfbb3f35733016312df52732fd866ba",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/db.py",
+      "retrieved_utc": "2026-10-07T00:24:21.447359+00:00"
+    },
+    {
+      "file": "gang_recovery_2026_10_07/lib/iris/src/iris/cluster/controller/reads.py",
+      "bytes": 89100,
+      "sha256": "cbf552da021656a8b5a95b5d8e04ca9a775931478483c7174dbbd0ce5a3f41f0",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/reads.py",
+      "retrieved_utc": "2026-10-07T00:24:21.413902+00:00"
+    },
+    {
+      "file": "gang_recovery_2026_10_07/lib/iris/src/iris/cluster/controller/reconcile/batches.py",
+      "bytes": 29259,
+      "sha256": "46f56b89b3386178344008ab8d574a270277afa4d1bdd884cca11d388791be3c",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/reconcile/batches.py",
+      "retrieved_utc": "2026-10-07T00:24:21.377425+00:00"
+    },
+    {
+      "file": "gang_recovery_2026_10_07/lib/iris/src/iris/cluster/controller/reconcile/job.py",
+      "bytes": 4655,
+      "sha256": "fc0e16b3dde5323700bbf253b42c80c286a680e8a7047d5261f402a6e0b8fb4e",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/reconcile/job.py",
+      "retrieved_utc": "2026-10-07T00:24:21.361393+00:00"
+    },
+    {
+      "file": "gang_recovery_2026_10_07/lib/iris/src/iris/cluster/controller/reconcile/overlay.py",
+      "bytes": 16545,
+      "sha256": "834a0a31ffc92992df4836b4e3032ab868bce593ea80300884dfa46981fd36a9",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/reconcile/overlay.py",
+      "retrieved_utc": "2026-10-07T00:24:21.396661+00:00"
+    },
+    {
+      "file": "gang_recovery_2026_10_07/lib/iris/src/iris/cluster/controller/reconcile/task.py",
+      "bytes": 21887,
+      "sha256": "5cbcc7bf8e883208859afd6d195f3e601892b6615f6944189b5b1a7c60451799",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/reconcile/task.py",
+      "retrieved_utc": "2026-10-07T00:24:21.344431+00:00"
+    },
+    {
+      "file": "gang_recovery_2026_10_07/lib/iris/src/iris/cluster/controller/schema.py",
+      "bytes": 29562,
+      "sha256": "74ddb6b11006137f57155db6422573d87f6b029d11e51497c58be66184d4b9b9",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/schema.py",
+      "retrieved_utc": "2026-10-07T00:24:21.430533+00:00"
+    },
+    {
+      "file": "gang_recovery_2026_10_07/lib/iris/src/iris/cluster/controller/task_state.py",
+      "bytes": 6529,
+      "sha256": "d018ee1cd37fc8e0edc49b75bb0d0f57754a1291b822ae12553cf92b4037fc83",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/task_state.py",
+      "retrieved_utc": "2026-10-07T00:24:21.327268+00:00"
+    },
+    {
+      "file": "gang_recovery_2026_10_07/lib/iris/src/iris/testing/controller.py",
+      "bytes": 42498,
+      "sha256": "46ed4c784ad2bfef2ae44c8957d16e7ac2a77397fd00db8d0c89297f76a85cf7",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/testing/controller.py",
+      "retrieved_utc": "2026-10-07T00:24:21.285348+00:00"
+    },
+    {
+      "file": "gang_recovery_2026_10_07/lib/iris/src/iris/testing/transitions.py",
+      "bytes": 5130,
+      "sha256": "3490a448fd4a2254d8eecdfe4999565175ecc583a7f1c2549d00d4d0210386fc",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/testing/transitions.py",
+      "retrieved_utc": "2026-10-07T00:24:21.301818+00:00"
+    },
+    {
+      "file": "gang_recovery_2026_10_07/lib/iris/tests/cluster/controller/conftest.py",
+      "bytes": 839,
+      "sha256": "6bf27c9584112256fb55d316957a9ef8ffd0ebd67b078c90fda513191017c7d0",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/tests/cluster/controller/conftest.py",
+      "retrieved_utc": "2026-10-07T00:24:21.251451+00:00"
+    },
+    {
+      "file": "gang_recovery_2026_10_07/lib/iris/tests/cluster/controller/test_transitions.py",
+      "bytes": 167763,
+      "sha256": "ec5ac9143555afd0d1caa7e432e265179f9faa5d2a6581730bfd14ba31397100",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/tests/cluster/controller/test_transitions.py",
+      "retrieved_utc": "2026-10-07T00:24:21.267865+00:00"
+    },
+    {
+      "file": "gang_recovery_2026_10_07/lib/iris/tests/conftest.py",
+      "bytes": 10110,
+      "sha256": "e9b435f99cbe48ee270b8ec3b4ae548345045deb0d6b0c8ce9d9f63521782887",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/tests/conftest.py",
+      "retrieved_utc": "2026-10-07T00:24:21.234932+00:00"
+    },
+    {
+      "file": "gang_recovery_2026_10_07/pyproject.toml",
+      "bytes": 21183,
+      "sha256": "bcbfadddfec691d61e116fad470fd24bf5a9a432dabebe87a734bb9bd638885b",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/pyproject.toml",
+      "retrieved_utc": "2026-10-07T00:24:21.117236+00:00"
+    },
+    {
+      "file": "gang_recovery_2026_10_07/uv.lock",
+      "bytes": 3441434,
+      "sha256": "dac134585b397b9e1618910d5789b806731c99bac51b9be2447180b029b08088",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/uv.lock",
+      "retrieved_utc": "2026-10-07T00:24:21.146085+00:00"
     },
     {
       "file": "harrier_mix_12d8b6f0.py",
@@ -3032,8 +3165,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 234189,
-      "sha256": "1fc9921303a9316af01b53ed5a1c9c7b499a1334837e788302aa39c9bf4cbd56",
+      "bytes": 246289,
+      "sha256": "dca54bfa98a7cafb55503452c44a047c2bd09c3e2038ff3ac077b16ae25b37c8",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

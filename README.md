@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本V101：main与未合并MoE提案的同输入环境对照、Iris退出分类与实况刷新；18项控制，明确default/forced和源码/部署区别。[版本与故障归因](RECENT_MOE_CHANGES_ZH.md)。
+当前版本V102：继续核对 Iris 的 gang 重试、累计失败预算和旧 attempt 资源归还；新增场景对照与恢复流程图。33 项原生本地测试通过，结果见 [执行记录](analysis/gang_recovery_native_tests.json)，生产部署及训练恢复链仍待确认。[Gang 恢复文档](GANG_RECOVERY_ZH.md)。
 
 [MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并提供未执行的性能交互记录模板。
 

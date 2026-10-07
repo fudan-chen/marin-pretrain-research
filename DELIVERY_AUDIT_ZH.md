@@ -156,3 +156,9 @@ V100：源归档500份，新增两份同head完整模块；19项原queue/thread�
 
 
 V101：源513份，18项原函数/源码刷新控制；main与开放PR分叉，环境输出、纯Pod分类和真实事故证据分别记录。没有新增事故、生产部署、完整scheduler或GPU训练验证；报告静态检查不等于浏览器渲染。
+
+## V102：从退出分类追到 gang 重排与容量确认
+
+固定 main eee467…；19 份完整原源码/测试/lock 归档，保留 512 份旧非 bookkeeping 文件。运行未改写的上游 test_transitions.py：33 passed、91 deselected，保留默认安全 marker 排除，单进程；原 pytest 输出 1.70 秒。完整 checkout 的 tracked 源码执行前后不变。实际部署、Hero 重试参数、逐 attempt checkpoint/游标和控制器崩溃重启仍未知。
+
+新增 [Gang 恢复解释](GANG_RECOVERY_ZH.md)、两条时间线 SVG、原命令/环境/XML/输出和未执行的恢复轨迹模板。全报告验证与发布产物见 analysis/release_v102.json；浏览器渲染未验证，Quick Look 缩略图不替代完整页面 QA。下一步优先补进程重启后的 SQLite 恢复和真实训练恢复链。

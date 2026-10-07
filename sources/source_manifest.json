@@ -4619,5 +4619,195 @@
     "retrieved_utc": "2026-10-07T00:06:24.041744+00:00",
     "retrieval_time_basis": "Approximate local complete download mtime, not exact server timestamp",
     "execution_binding": "Public source/snapshot; actual deployed revision unknown"
+  },
+  {
+    "file": "gang_recovery_2026_10_07/pyproject.toml",
+    "upstream_path": "pyproject.toml",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/pyproject.toml",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "sha256": "bcbfadddfec691d61e116fad470fd24bf5a9a432dabebe87a734bb9bd638885b",
+    "bytes": 21183,
+    "retrieved_utc": "2026-10-07T00:24:21.117236+00:00",
+    "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
+  },
+  {
+    "file": "gang_recovery_2026_10_07/uv.lock",
+    "upstream_path": "uv.lock",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/uv.lock",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "sha256": "dac134585b397b9e1618910d5789b806731c99bac51b9be2447180b029b08088",
+    "bytes": 3441434,
+    "retrieved_utc": "2026-10-07T00:24:21.146085+00:00",
+    "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
+  },
+  {
+    "file": "gang_recovery_2026_10_07/AGENTS.md",
+    "upstream_path": "AGENTS.md",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/AGENTS.md",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "sha256": "4a41c103521bcfa750d0bbd3a166f3e39684f6ae2238cd61304f7d69967bbace",
+    "bytes": 10888,
+    "retrieved_utc": "2026-10-07T00:24:21.168011+00:00",
+    "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
+  },
+  {
+    "file": "gang_recovery_2026_10_07/lib/iris/AGENTS.md",
+    "upstream_path": "lib/iris/AGENTS.md",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/AGENTS.md",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "sha256": "66fd2fa03363b23abb4047723bd7b8975fc8b0547cd9f91f60f4da395d6890bd",
+    "bytes": 12257,
+    "retrieved_utc": "2026-10-07T00:24:21.185879+00:00",
+    "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
+  },
+  {
+    "file": "gang_recovery_2026_10_07/lib/iris/TESTING.md",
+    "upstream_path": "lib/iris/TESTING.md",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/TESTING.md",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "sha256": "579cc276e68fb5207c1f628ea399a61150e4c4463864f9f6e01d9bdabbe293ef",
+    "bytes": 9616,
+    "retrieved_utc": "2026-10-07T00:24:21.201941+00:00",
+    "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
+  },
+  {
+    "file": "gang_recovery_2026_10_07/lib/iris/pyproject.toml",
+    "upstream_path": "lib/iris/pyproject.toml",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/pyproject.toml",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "sha256": "f940d5ef51953238608adbfb37a035f0332c4bd0e3925c147e207883e854c98b",
+    "bytes": 5570,
+    "retrieved_utc": "2026-10-07T00:24:21.218304+00:00",
+    "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
+  },
+  {
+    "file": "gang_recovery_2026_10_07/lib/iris/tests/conftest.py",
+    "upstream_path": "lib/iris/tests/conftest.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/tests/conftest.py",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "sha256": "e9b435f99cbe48ee270b8ec3b4ae548345045deb0d6b0c8ce9d9f63521782887",
+    "bytes": 10110,
+    "retrieved_utc": "2026-10-07T00:24:21.234932+00:00",
+    "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
+  },
+  {
+    "file": "gang_recovery_2026_10_07/lib/iris/tests/cluster/controller/conftest.py",
+    "upstream_path": "lib/iris/tests/cluster/controller/conftest.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/tests/cluster/controller/conftest.py",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "sha256": "6bf27c9584112256fb55d316957a9ef8ffd0ebd67b078c90fda513191017c7d0",
+    "bytes": 839,
+    "retrieved_utc": "2026-10-07T00:24:21.251451+00:00",
+    "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
+  },
+  {
+    "file": "gang_recovery_2026_10_07/lib/iris/tests/cluster/controller/test_transitions.py",
+    "upstream_path": "lib/iris/tests/cluster/controller/test_transitions.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/tests/cluster/controller/test_transitions.py",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "sha256": "ec5ac9143555afd0d1caa7e432e265179f9faa5d2a6581730bfd14ba31397100",
+    "bytes": 167763,
+    "retrieved_utc": "2026-10-07T00:24:21.267865+00:00",
+    "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
+  },
+  {
+    "file": "gang_recovery_2026_10_07/lib/iris/src/iris/testing/controller.py",
+    "upstream_path": "lib/iris/src/iris/testing/controller.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/testing/controller.py",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "sha256": "46ed4c784ad2bfef2ae44c8957d16e7ac2a77397fd00db8d0c89297f76a85cf7",
+    "bytes": 42498,
+    "retrieved_utc": "2026-10-07T00:24:21.285348+00:00",
+    "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
+  },
+  {
+    "file": "gang_recovery_2026_10_07/lib/iris/src/iris/testing/transitions.py",
+    "upstream_path": "lib/iris/src/iris/testing/transitions.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/testing/transitions.py",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "sha256": "3490a448fd4a2254d8eecdfe4999565175ecc583a7f1c2549d00d4d0210386fc",
+    "bytes": 5130,
+    "retrieved_utc": "2026-10-07T00:24:21.301818+00:00",
+    "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
+  },
+  {
+    "file": "gang_recovery_2026_10_07/lib/iris/src/iris/cluster/controller/task_state.py",
+    "upstream_path": "lib/iris/src/iris/cluster/controller/task_state.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/task_state.py",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "sha256": "d018ee1cd37fc8e0edc49b75bb0d0f57754a1291b822ae12553cf92b4037fc83",
+    "bytes": 6529,
+    "retrieved_utc": "2026-10-07T00:24:21.327268+00:00",
+    "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
+  },
+  {
+    "file": "gang_recovery_2026_10_07/lib/iris/src/iris/cluster/controller/reconcile/task.py",
+    "upstream_path": "lib/iris/src/iris/cluster/controller/reconcile/task.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/reconcile/task.py",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "sha256": "5cbcc7bf8e883208859afd6d195f3e601892b6615f6944189b5b1a7c60451799",
+    "bytes": 21887,
+    "retrieved_utc": "2026-10-07T00:24:21.344431+00:00",
+    "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
+  },
+  {
+    "file": "gang_recovery_2026_10_07/lib/iris/src/iris/cluster/controller/reconcile/job.py",
+    "upstream_path": "lib/iris/src/iris/cluster/controller/reconcile/job.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/reconcile/job.py",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "sha256": "fc0e16b3dde5323700bbf253b42c80c286a680e8a7047d5261f402a6e0b8fb4e",
+    "bytes": 4655,
+    "retrieved_utc": "2026-10-07T00:24:21.361393+00:00",
+    "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
+  },
+  {
+    "file": "gang_recovery_2026_10_07/lib/iris/src/iris/cluster/controller/reconcile/batches.py",
+    "upstream_path": "lib/iris/src/iris/cluster/controller/reconcile/batches.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/reconcile/batches.py",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "sha256": "46f56b89b3386178344008ab8d574a270277afa4d1bdd884cca11d388791be3c",
+    "bytes": 29259,
+    "retrieved_utc": "2026-10-07T00:24:21.377425+00:00",
+    "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
+  },
+  {
+    "file": "gang_recovery_2026_10_07/lib/iris/src/iris/cluster/controller/reconcile/overlay.py",
+    "upstream_path": "lib/iris/src/iris/cluster/controller/reconcile/overlay.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/reconcile/overlay.py",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "sha256": "834a0a31ffc92992df4836b4e3032ab868bce593ea80300884dfa46981fd36a9",
+    "bytes": 16545,
+    "retrieved_utc": "2026-10-07T00:24:21.396661+00:00",
+    "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
+  },
+  {
+    "file": "gang_recovery_2026_10_07/lib/iris/src/iris/cluster/controller/reads.py",
+    "upstream_path": "lib/iris/src/iris/cluster/controller/reads.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/reads.py",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "sha256": "cbf552da021656a8b5a95b5d8e04ca9a775931478483c7174dbbd0ce5a3f41f0",
+    "bytes": 89100,
+    "retrieved_utc": "2026-10-07T00:24:21.413902+00:00",
+    "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
+  },
+  {
+    "file": "gang_recovery_2026_10_07/lib/iris/src/iris/cluster/controller/schema.py",
+    "upstream_path": "lib/iris/src/iris/cluster/controller/schema.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/schema.py",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "sha256": "74ddb6b11006137f57155db6422573d87f6b029d11e51497c58be66184d4b9b9",
+    "bytes": 29562,
+    "retrieved_utc": "2026-10-07T00:24:21.430533+00:00",
+    "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
+  },
+  {
+    "file": "gang_recovery_2026_10_07/lib/iris/src/iris/cluster/controller/db.py",
+    "upstream_path": "lib/iris/src/iris/cluster/controller/db.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/db.py",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "sha256": "c5460e75e4d9e39de19950a84ea2d280ccfbb3f35733016312df52732fd866ba",
+    "bytes": 30857,
+    "retrieved_utc": "2026-10-07T00:24:21.447359+00:00",
+    "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
   }
 ]

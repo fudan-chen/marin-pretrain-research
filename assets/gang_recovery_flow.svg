@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="350" viewBox="0 0 1100 350" role="img" aria-labelledby="gang-recovery-title gang-recovery-desc">
+<title id="gang-recovery-title">Gang 重试与资源确认的两条时间线</title><desc id="gang-recovery-desc">控制器要求重排之后，旧 attempt 的资源直到退出确认才释放；新 attempt 的训练恢复另需 checkpoint 与完成更新证据。示意图不表示真实耗时。</desc>
+<rect width="1100" height="350" fill="#f8fafc"/>
+<g font-family="sans-serif" fill="#172b4d"><text x="30" y="38" font-size="23">一个 rank 失败：逻辑重排、资源释放、训练推进分开确认</text><text x="30" y="67" font-size="15">机制示意 · 无真实时长或 Hero 生产轨迹</text>
+<g fill="#e0e7ff" stroke="#6366f1"><rect x="30" y="95" width="220" height="72" rx="8"/><rect x="295" y="95" width="225" height="72" rx="8"/><rect x="565" y="95" width="240" height="72" rx="8"/></g>
+<text x="45" y="121" font-size="17">触发 rank：FAILED</text><text x="45" y="147" font-size="15">应用失败账目累计一次</text><text x="310" y="121" font-size="17">siblings 连带退出</text><text x="310" y="147" font-size="15">COSCHED_FAILED，不重复扣预算</text><text x="580" y="121" font-size="17">预算内：回到 PENDING</text><text x="580" y="147" font-size="15">旧 attempt 可能尚未确认退出</text>
+<g stroke="#475569" stroke-width="2"><path d="M250 132h45m-9 -5 9 5-9 5M520 132h45m-9 -5 9 5-9 5" fill="none"/></g>
+<rect x="295" y="198" width="510" height="58" rx="8" fill="#fff1db" stroke="#c18420"/><text x="310" y="222" font-size="17">资源账：保持占用 → 终止心跳确认 → 可释放</text><text x="310" y="243" font-size="14">finished_at 由退出确认补记；stop 请求不足以归还容量</text>
+<rect x="835" y="198" width="240" height="100" rx="8" fill="#dff5ec" stroke="#16846a"/><text x="850" y="225" font-size="17">新 attempt</text><text x="850" y="251" font-size="15">placement / checkpoint / 游标</text><text x="850" y="277" font-size="15">首个完成更新：另取训练证据</text><path d="M805 226h30m-9 -5 9 5-9 5" fill="none" stroke="#475569" stroke-width="2"/>
+<text x="30" y="328" font-size="16">预算耗尽 → 作业终止；重新 Running 仍不能证明 checkpoint、数据顺序与学习进度已经恢复。</text></g></svg>

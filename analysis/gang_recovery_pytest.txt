@@ -1,0 +1,74 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.13, pytest-9.0.3, pluggy-1.6.0 -- /private/tmp/marin-iris-source-eee467/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /private/tmp/marin-iris-source-eee467/lib/iris
+configfile: pyproject.toml
+plugins: playwright-0.7.2, xdist-3.8.0, timeout-2.4.0, flakefinder-1.1.0, asyncio-1.4.0, anyio-4.14.2, base-url-2.1.0
+timeout: 10.0s
+timeout method: thread
+timeout func_only: False
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 124 items / 91 deselected / 33 selected
+
+lib/iris/tests/cluster/controller/test_transitions.py::test_cancel_job_holds_resources_until_heartbeat_finalization PASSED [  3%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_heartbeat_finalizes_stranded_attempt_after_producer_terminal PASSED [  6%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_batch_success_and_failure_is_order_independent[True] PASSED [  9%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_batch_success_and_failure_is_order_independent[False] PASSED [ 12%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_worker_reported_killed_on_live_attempt_retries_under_preemption_budget PASSED [ 15%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_worker_reported_killed_terminal_when_preemption_budget_exhausted PASSED [ 18%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_worker_reported_killed_on_coscheduled_task_requeues_the_gang PASSED [ 21%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_max_task_failures_tolerance PASSED [ 24%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_coscheduled_crash_loop_fails_on_cumulative_budget PASSED [ 27%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_timeout_charges_cumulative_failure_budget PASSED [ 30%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_coscheduled_cascade_ignores_late_sibling_heartbeats PASSED [ 33%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_coscheduled_cascade_survives_same_batch_sibling_update PASSED [ 36%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_worker_failure_drives_coscheduled_job_terminal[False] PASSED [ 39%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_worker_failure_drives_coscheduled_job_terminal[True] PASSED [ 42%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_coscheduled_cascade_holds_sibling_resources_until_heartbeat PASSED [ 45%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_coscheduled_task_worker_failure_kills_siblings PASSED [ 48%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_coscheduled_task_success_does_not_affect_siblings PASSED [ 51%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_non_coscheduled_task_failure_does_not_kill_siblings PASSED [ 54%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_coscheduled_retriable_failure_bounces_siblings_to_pending PASSED [ 57%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_coscheduled_worker_failure_bounces_siblings PASSED [ 60%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_coscheduled_terminal_preempt_cascades_siblings PASSED [ 63%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_coscheduled_bounced_job_recoschedules_to_single_slice PASSED [ 66%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_stale_attempt_ignored PASSED [ 69%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_stale_attempt_for_non_terminal_is_dropped PASSED [ 72%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_compute_demand_entries_counts_coscheduled_job_once PASSED [ 75%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_compute_demand_entries_counts_non_coscheduled_tasks_individually PASSED [ 78%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_compute_demand_entries_mixed_coscheduled_and_regular PASSED [ 81%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_recompute_fails_job_on_cumulative_failures_while_active[one-failure-retried] PASSED [ 84%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_recompute_fails_job_on_cumulative_failures_while_active[failures-spread-across-tasks] PASSED [ 87%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_recompute_keeps_job_running_within_budget[within-cumulative-budget] PASSED [ 90%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_is_derived_task_error[5-Coscheduled sibling /j/7 bounced for atomic re-scheduling-True] PASSED [ 93%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_is_derived_task_error[5-Coscheduled sibling /j/7 failed-True] PASSED [ 96%]
+lib/iris/tests/cluster/controller/test_transitions.py::test_is_derived_task_error[5-AssertionError: expected 'Coscheduled sibling' in header-False] PASSED [100%]
+
+- generated xml file: /Users/chen/Documents/ChatGPT/marin-pretrain-research/analysis/gang_recovery_pytest.xml -
+============================= slowest 25 durations =============================
+0.10s call     tests/cluster/controller/test_transitions.py::test_coscheduled_cascade_ignores_late_sibling_heartbeats
+0.10s call     tests/cluster/controller/test_transitions.py::test_coscheduled_terminal_preempt_cascades_siblings
+0.08s call     tests/cluster/controller/test_transitions.py::test_coscheduled_crash_loop_fails_on_cumulative_budget
+0.06s call     tests/cluster/controller/test_transitions.py::test_coscheduled_task_worker_failure_kills_siblings
+0.06s call     tests/cluster/controller/test_transitions.py::test_coscheduled_cascade_holds_sibling_resources_until_heartbeat
+0.05s call     tests/cluster/controller/test_transitions.py::test_worker_reported_killed_on_coscheduled_task_requeues_the_gang
+0.04s call     tests/cluster/controller/test_transitions.py::test_coscheduled_worker_failure_bounces_siblings
+0.04s call     tests/cluster/controller/test_transitions.py::test_coscheduled_retriable_failure_bounces_siblings_to_pending
+0.04s call     tests/cluster/controller/test_transitions.py::test_max_task_failures_tolerance
+0.04s call     tests/cluster/controller/test_transitions.py::test_coscheduled_bounced_job_recoschedules_to_single_slice
+0.04s call     tests/cluster/controller/test_transitions.py::test_non_coscheduled_task_failure_does_not_kill_siblings
+0.04s call     tests/cluster/controller/test_transitions.py::test_coscheduled_task_success_does_not_affect_siblings
+0.03s call     tests/cluster/controller/test_transitions.py::test_coscheduled_cascade_survives_same_batch_sibling_update
+0.03s call     tests/cluster/controller/test_transitions.py::test_cancel_job_holds_resources_until_heartbeat_finalization
+0.03s call     tests/cluster/controller/test_transitions.py::test_batch_success_and_failure_is_order_independent[False]
+0.03s call     tests/cluster/controller/test_transitions.py::test_batch_success_and_failure_is_order_independent[True]
+0.03s call     tests/cluster/controller/test_transitions.py::test_stale_attempt_ignored
+0.03s call     tests/cluster/controller/test_transitions.py::test_worker_failure_drives_coscheduled_job_terminal[False]
+0.03s call     tests/cluster/controller/test_transitions.py::test_worker_failure_drives_coscheduled_job_terminal[True]
+0.02s call     tests/cluster/controller/test_transitions.py::test_timeout_charges_cumulative_failure_budget
+0.02s call     tests/cluster/controller/test_transitions.py::test_worker_reported_killed_on_live_attempt_retries_under_preemption_budget
+0.02s call     tests/cluster/controller/test_transitions.py::test_worker_reported_killed_terminal_when_preemption_budget_exhausted
+0.02s call     tests/cluster/controller/test_transitions.py::test_heartbeat_finalizes_stranded_attempt_after_producer_terminal
+0.02s call     tests/cluster/controller/test_transitions.py::test_stale_attempt_for_non_terminal_is_dropped
+0.02s setup    tests/cluster/controller/test_transitions.py::test_cancel_job_holds_resources_until_heartbeat_finalization
+====================== 33 passed, 91 deselected in 1.70s =======================

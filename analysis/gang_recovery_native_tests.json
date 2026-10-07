@@ -1,0 +1,262 @@
+{
+  "source_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+  "command": [
+    "uv",
+    "run",
+    "--frozen",
+    "--no-sync",
+    "--package",
+    "marin-iris",
+    "--group",
+    "test",
+    "--no-default-groups",
+    "pytest",
+    "-n",
+    "0",
+    "--tb=short",
+    "lib/iris/tests/cluster/controller/test_transitions.py",
+    "-k",
+    "coscheduled or stale_attempt or cumulative or max_task_failures_tolerance or timeout_charges or cancel_job_holds_resources or heartbeat_finalizes_stranded or worker_reported_killed or batch_success_and_failure",
+    "--junitxml=/Users/chen/Documents/ChatGPT/marin-pretrain-research/analysis/gang_recovery_pytest.xml"
+  ],
+  "started_utc": "2026-10-07T00:38:19.562103+00:00",
+  "duration_seconds": 6.7643032089999995,
+  "returncode": 0,
+  "tracked_source_unchanged": true,
+  "cases": [
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_cancel_job_holds_resources_until_heartbeat_finalization",
+      "seconds": 0.054,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_heartbeat_finalizes_stranded_attempt_after_producer_terminal",
+      "seconds": 0.034,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_batch_success_and_failure_is_order_independent[True]",
+      "seconds": 0.044,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_batch_success_and_failure_is_order_independent[False]",
+      "seconds": 0.045,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_worker_reported_killed_on_live_attempt_retries_under_preemption_budget",
+      "seconds": 0.035,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_worker_reported_killed_terminal_when_preemption_budget_exhausted",
+      "seconds": 0.034,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_worker_reported_killed_on_coscheduled_task_requeues_the_gang",
+      "seconds": 0.058,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_max_task_failures_tolerance",
+      "seconds": 0.053,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_coscheduled_crash_loop_fails_on_cumulative_budget",
+      "seconds": 0.096,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_timeout_charges_cumulative_failure_budget",
+      "seconds": 0.042,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_coscheduled_cascade_ignores_late_sibling_heartbeats",
+      "seconds": 0.119,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_coscheduled_cascade_survives_same_batch_sibling_update",
+      "seconds": 0.049,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_worker_failure_drives_coscheduled_job_terminal[False]",
+      "seconds": 0.041,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_worker_failure_drives_coscheduled_job_terminal[True]",
+      "seconds": 0.04,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_coscheduled_cascade_holds_sibling_resources_until_heartbeat",
+      "seconds": 0.071,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_coscheduled_task_worker_failure_kills_siblings",
+      "seconds": 0.078,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_coscheduled_task_success_does_not_affect_siblings",
+      "seconds": 0.05,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_non_coscheduled_task_failure_does_not_kill_siblings",
+      "seconds": 0.05,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_coscheduled_retriable_failure_bounces_siblings_to_pending",
+      "seconds": 0.052,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_coscheduled_worker_failure_bounces_siblings",
+      "seconds": 0.053,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_coscheduled_terminal_preempt_cascades_siblings",
+      "seconds": 0.113,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_coscheduled_bounced_job_recoschedules_to_single_slice",
+      "seconds": 0.051,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_stale_attempt_ignored",
+      "seconds": 0.04,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_stale_attempt_for_non_terminal_is_dropped",
+      "seconds": 0.033,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_compute_demand_entries_counts_coscheduled_job_once",
+      "seconds": 0.019,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_compute_demand_entries_counts_non_coscheduled_tasks_individually",
+      "seconds": 0.019,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_compute_demand_entries_mixed_coscheduled_and_regular",
+      "seconds": 0.019,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_recompute_fails_job_on_cumulative_failures_while_active[one-failure-retried]",
+      "seconds": 0.001,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_recompute_fails_job_on_cumulative_failures_while_active[failures-spread-across-tasks]",
+      "seconds": 0.0,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_recompute_keeps_job_running_within_budget[within-cumulative-budget]",
+      "seconds": 0.0,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_is_derived_task_error[5-Coscheduled sibling /j/7 bounced for atomic re-scheduling-True]",
+      "seconds": 0.0,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_is_derived_task_error[5-Coscheduled sibling /j/7 failed-True]",
+      "seconds": 0.0,
+      "outcome": "passed"
+    },
+    {
+      "classname": "tests.cluster.controller.test_transitions",
+      "name": "test_is_derived_task_error[5-AssertionError: expected 'Coscheduled sibling' in header-False]",
+      "seconds": 0.0,
+      "outcome": "passed"
+    }
+  ],
+  "passed": 33,
+  "source_sha256": {
+    "sources/gang_recovery_2026_10_07/pyproject.toml": "bcbfadddfec691d61e116fad470fd24bf5a9a432dabebe87a734bb9bd638885b",
+    "sources/gang_recovery_2026_10_07/uv.lock": "dac134585b397b9e1618910d5789b806731c99bac51b9be2447180b029b08088",
+    "sources/gang_recovery_2026_10_07/AGENTS.md": "4a41c103521bcfa750d0bbd3a166f3e39684f6ae2238cd61304f7d69967bbace",
+    "sources/gang_recovery_2026_10_07/lib/iris/AGENTS.md": "66fd2fa03363b23abb4047723bd7b8975fc8b0547cd9f91f60f4da395d6890bd",
+    "sources/gang_recovery_2026_10_07/lib/iris/TESTING.md": "579cc276e68fb5207c1f628ea399a61150e4c4463864f9f6e01d9bdabbe293ef",
+    "sources/gang_recovery_2026_10_07/lib/iris/pyproject.toml": "f940d5ef51953238608adbfb37a035f0332c4bd0e3925c147e207883e854c98b",
+    "sources/gang_recovery_2026_10_07/lib/iris/tests/conftest.py": "e9b435f99cbe48ee270b8ec3b4ae548345045deb0d6b0c8ce9d9f63521782887",
+    "sources/gang_recovery_2026_10_07/lib/iris/tests/cluster/controller/conftest.py": "6bf27c9584112256fb55d316957a9ef8ffd0ebd67b078c90fda513191017c7d0",
+    "sources/gang_recovery_2026_10_07/lib/iris/tests/cluster/controller/test_transitions.py": "ec5ac9143555afd0d1caa7e432e265179f9faa5d2a6581730bfd14ba31397100",
+    "sources/gang_recovery_2026_10_07/lib/iris/src/iris/testing/controller.py": "46ed4c784ad2bfef2ae44c8957d16e7ac2a77397fd00db8d0c89297f76a85cf7",
+    "sources/gang_recovery_2026_10_07/lib/iris/src/iris/testing/transitions.py": "3490a448fd4a2254d8eecdfe4999565175ecc583a7f1c2549d00d4d0210386fc",
+    "sources/gang_recovery_2026_10_07/lib/iris/src/iris/cluster/controller/task_state.py": "d018ee1cd37fc8e0edc49b75bb0d0f57754a1291b822ae12553cf92b4037fc83",
+    "sources/gang_recovery_2026_10_07/lib/iris/src/iris/cluster/controller/reconcile/task.py": "5cbcc7bf8e883208859afd6d195f3e601892b6615f6944189b5b1a7c60451799",
+    "sources/gang_recovery_2026_10_07/lib/iris/src/iris/cluster/controller/reconcile/job.py": "fc0e16b3dde5323700bbf253b42c80c286a680e8a7047d5261f402a6e0b8fb4e",
+    "sources/gang_recovery_2026_10_07/lib/iris/src/iris/cluster/controller/reconcile/batches.py": "46f56b89b3386178344008ab8d574a270277afa4d1bdd884cca11d388791be3c",
+    "sources/gang_recovery_2026_10_07/lib/iris/src/iris/cluster/controller/reconcile/overlay.py": "834a0a31ffc92992df4836b4e3032ab868bce593ea80300884dfa46981fd36a9",
+    "sources/gang_recovery_2026_10_07/lib/iris/src/iris/cluster/controller/reads.py": "cbf552da021656a8b5a95b5d8e04ca9a775931478483c7174dbbd0ce5a3f41f0",
+    "sources/gang_recovery_2026_10_07/lib/iris/src/iris/cluster/controller/schema.py": "74ddb6b11006137f57155db6422573d87f6b029d11e51497c58be66184d4b9b9",
+    "sources/gang_recovery_2026_10_07/lib/iris/src/iris/cluster/controller/db.py": "c5460e75e4d9e39de19950a84ea2d280ccfbb3f35733016312df52732fd866ba"
+  },
+  "platform": "macOS-15.7.5-arm64-arm-64bit",
+  "python": "Python 3.12.13",
+  "safe_default_marker_expression": "not slow and not docker and not requires_cluster and not manual",
+  "test_boundary": "Original upstream tests, real local SQLite/controller; constructed workers and observations; no live backend, GPU or real training checkpoint",
+  "dependency_preparation": "Initial unfrozen sync interrupted during resolution; frozen existing upstream uv.lock used, no upstream source edits",
+  "artifact_sha256": {
+    "analysis/gang_recovery_pytest.xml": "3400871de84d4cf57523a6ab3b117a73a8228306250d6c69c3bb10976ad85f3c",
+    "analysis/gang_recovery_pytest.txt": "6e040365ab85e4b97143341bf9a7d1a2fbcf960a97d5b3065a95f2b906487a2c",
+    "analysis/gang_recovery_environment.txt": "664b86093ce7e1bcd3fca9cea77ce3d17c9bbb3b970e2e16f796450f81c95882"
+  },
+  "actual_Hero_deployed_revision": null,
+  "actual_Hero_retry_parameters": null,
+  "actual_Hero_recovery_trace": null,
+  "actual_controller_crash_restart": null
+}

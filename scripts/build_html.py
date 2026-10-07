@@ -53,12 +53,20 @@ chapters.insert(0,('eval-weight-guide','micro权重反推与PTB均值贡献','EV
 chapters.insert(0,('gradient-accumulation-guide','梯度累积、有效分母与更新方向','GRADIENT_ACCUMULATION_ZH.md'))
 chapters.insert(0,('masked-numerics-guide','零权重、非有限值与反向梯度','MASKED_NUMERICS_ZH.md'))
 chapters.insert(0,('zero-gradient-state-guide','零梯度、空目标与训练时钟','ZERO_GRADIENT_STATE_ZH.md'))
-priority=['synthesis-guide','optimizer-guide','zero-gradient-state-guide','masked-numerics-guide','gradient-accumulation-guide','eval-weight-guide','live-oct7-guide','repeat-exposure-guide','packing-fields-guide','eval-target-alignment-guide','eval-format-guide','eval-array-export-guide','eval-replay-guide','eval-identity-guide','live-observation-guide','mixture-range-guide','batch-clock-guide','failure-boundaries-guide','observability-guide','muon-direction-guide','adamh-state-guide','muon-geometry-guide','engineering-map-guide','delivery-audit-guide','checkpoint-memory-guide','checkpoint-commit-guide','eval-metrics-guide','mix-trajectory-guide','router-precision-guide','short-conv-guide','loss-triage','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
+chapters.insert(0,('gang-recovery-guide','Gang重试、预算与资源归还','GANG_RECOVERY_ZH.md'))
+priority=['synthesis-guide','gang-recovery-guide','optimizer-guide','zero-gradient-state-guide','masked-numerics-guide','gradient-accumulation-guide','eval-weight-guide','live-oct7-guide','repeat-exposure-guide','packing-fields-guide','eval-target-alignment-guide','eval-format-guide','eval-array-export-guide','eval-replay-guide','eval-identity-guide','live-observation-guide','mixture-range-guide','batch-clock-guide','failure-boundaries-guide','observability-guide','muon-direction-guide','adamh-state-guide','muon-geometry-guide','engineering-map-guide','delivery-audit-guide','checkpoint-memory-guide','checkpoint-commit-guide','eval-metrics-guide','mix-trajectory-guide','router-precision-guide','short-conv-guide','loss-triage','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
 chapters.sort(key=lambda c:priority.index(c[0]) if c[0] in priority else len(priority))
 readings={x['file']:x for x in json.loads((ROOT/'analysis/figure_readings.json').read_text())}
 sections=[];toc=[]
 for slug,label,file in chapters:
     result=markdown.markdown((ROOT/file).read_text(),extensions=['tables','fenced_code','toc'])
+    if slug=='gang-recovery-guide':
+        diagram=BeautifulSoup((ROOT/'assets/gang_recovery_flow.svg').read_text(),'html.parser').svg
+        diagram['style']='display:block;width:100%;height:auto'
+        fragment=BeautifulSoup(result,'html.parser')
+        for placeholder in fragment.select('img[src="assets/gang_recovery_flow.svg"]'):
+            placeholder.replace_with(diagram)
+        result=str(fragment)
     if slug=='recent-moe-guide':
         perf_svg=BeautifulSoup((ROOT/'assets/moe_performance_attribution.svg').read_text(),'html.parser').svg
         perf_svg['style']='display:block;width:100%;height:auto'

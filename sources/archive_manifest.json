@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-07T06:57:57.011023+00:00",
+  "integrity_manifest_created_utc": "2026-10-07T13:34:52.445270+00:00",
   "files": [
     {
       "file": "accumulation_2026_10_07/grad_accum.py",
@@ -1855,6 +1855,76 @@
       "retrieved_utc": "2026-10-06T22:48:51.946039+00:00"
     },
     {
+      "file": "operational_2026_10_07/_metrics.py",
+      "bytes": 7699,
+      "sha256": "3cf6b72b50dd851b3acdab681ac6a07f79961bbb3f4b9c225cbc9556ef6f4beb",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/src/levanter/callbacks/_metrics.py",
+      "retrieved_utc": "2026-10-07T13:06:55.085395+00:00"
+    },
+    {
+      "file": "operational_2026_10_07/comments_8435.json",
+      "bytes": 106995,
+      "sha256": "961fa251b7b9c11aed54a123c0570414b4c05ba9e9f3106bdcdf59191cef6a58",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8435/comments?per_page=100",
+      "retrieved_utc": "2026-10-07T13:04:02.544313+00:00"
+    },
+    {
+      "file": "operational_2026_10_07/comments_8506.json",
+      "bytes": 155452,
+      "sha256": "d8225e676fb83d84c3c15e8f4a9ac7a8a2339fca50aadcd9ddd6bfd62c2f4950",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8506/comments?per_page=100",
+      "retrieved_utc": "2026-10-07T13:04:02.084902+00:00"
+    },
+    {
+      "file": "operational_2026_10_07/comments_8870.json",
+      "bytes": 111784,
+      "sha256": "0b31e85fdbfeb4e938ff4c11dc7736e93ced670dbe838fe54440152bdb9f28ec",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8870/comments?per_page=100",
+      "retrieved_utc": "2026-10-07T13:04:00.563800+00:00"
+    },
+    {
+      "file": "operational_2026_10_07/issue_8435.json",
+      "bytes": 8902,
+      "sha256": "a54694915dc162c10a2754ad58dfae46cad0ea9573c01b0db151e42a0743ddc2",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8435",
+      "retrieved_utc": "2026-10-07T13:04:03.077881+00:00"
+    },
+    {
+      "file": "operational_2026_10_07/issue_8506.json",
+      "bytes": 3937,
+      "sha256": "2a01e45e4d3fa84f52a4383a942c14fd64e909914a6af1b02cab38df8b854365",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8506",
+      "retrieved_utc": "2026-10-07T13:04:00.532219+00:00"
+    },
+    {
+      "file": "operational_2026_10_07/issue_8870.json",
+      "bytes": 7534,
+      "sha256": "19866ee91b32ada6cc196ad699bdf9dd0eac75dd669add143f4ae4ce6af52ae1",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/8870",
+      "retrieved_utc": "2026-10-07T13:04:02.234775+00:00"
+    },
+    {
+      "file": "operational_2026_10_07/state_adapter.py",
+      "bytes": 2580,
+      "sha256": "fdde652f95b9fb82d322d5e4cfed3b0750fdb15cd7507869e39a4e47bd82b70b",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/src/levanter/callbacks/state_adapter.py",
+      "retrieved_utc": "2026-10-07T13:07:07.829654+00:00"
+    },
+    {
+      "file": "operational_2026_10_07/wandb_meta.json",
+      "bytes": 342582,
+      "sha256": "42d0a84503781d0034a6274b38ebed6bde1fed81f431c2f658c0d3cb3eb9ad67",
+      "url": "https://api.wandb.ai/graphql",
+      "retrieved_utc": "2026-10-07T13:04:07.059748+00:00"
+    },
+    {
+      "file": "operational_2026_10_07/wandb_operational_history.json",
+      "bytes": 185169,
+      "sha256": "24c52b737f6939afeaf37a66819d5c103a2c8268821341016cf93a2d9fa27138",
+      "url": "https://api.wandb.ai/graphql",
+      "retrieved_utc": "2026-10-07T13:04:23.163225+00:00"
+    },
+    {
       "file": "optimizer_2026_10_05/optimizer.py",
       "bytes": 11656,
       "sha256": "50dddad265e18974e8529f7a9df26d37e44430ffc5442d5c93e58cb2e924ae0e",
@@ -3333,8 +3403,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 262021,
-      "sha256": "f8c075f984cd8cf7a55dbd4abe350e6a467b787effb2b8a37c9d799f9daf60f3",
+      "bytes": 266665,
+      "sha256": "e317a69168eff8b7c1664527f8d910f88b940babddc2135598bf1cda30f6e0b9",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

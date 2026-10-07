@@ -5046,5 +5046,108 @@
     "bytes": 56177,
     "retrieved_utc": "2026-10-07T06:57:52.366679+00:00",
     "retrieval_time_basis": "Local git-blob archive completion; full checkout previously fetched from public GitHub"
+  },
+  {
+    "file": "operational_2026_10_07/issue_8435.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8435",
+    "http_status": 200,
+    "bytes": 8902,
+    "sha256": "a54694915dc162c10a2754ad58dfae46cad0ea9573c01b0db151e42a0743ddc2",
+    "retrieved_utc": "2026-10-07T13:04:03.077881+00:00",
+    "pagination_next": false
+  },
+  {
+    "file": "operational_2026_10_07/issue_8506.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8506",
+    "http_status": 200,
+    "bytes": 3937,
+    "sha256": "2a01e45e4d3fa84f52a4383a942c14fd64e909914a6af1b02cab38df8b854365",
+    "retrieved_utc": "2026-10-07T13:04:00.532219+00:00",
+    "pagination_next": false
+  },
+  {
+    "file": "operational_2026_10_07/issue_8870.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8870",
+    "http_status": 200,
+    "bytes": 7534,
+    "sha256": "19866ee91b32ada6cc196ad699bdf9dd0eac75dd669add143f4ae4ce6af52ae1",
+    "retrieved_utc": "2026-10-07T13:04:02.234775+00:00",
+    "pagination_next": false
+  },
+  {
+    "file": "operational_2026_10_07/comments_8435.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8435/comments?per_page=100",
+    "http_status": 200,
+    "bytes": 106995,
+    "sha256": "961fa251b7b9c11aed54a123c0570414b4c05ba9e9f3106bdcdf59191cef6a58",
+    "retrieved_utc": "2026-10-07T13:04:02.544313+00:00",
+    "pagination_next": false
+  },
+  {
+    "file": "operational_2026_10_07/comments_8506.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8506/comments?per_page=100",
+    "http_status": 200,
+    "bytes": 155452,
+    "sha256": "d8225e676fb83d84c3c15e8f4a9ac7a8a2339fca50aadcd9ddd6bfd62c2f4950",
+    "retrieved_utc": "2026-10-07T13:04:02.084902+00:00",
+    "pagination_next": false
+  },
+  {
+    "file": "operational_2026_10_07/comments_8870.json",
+    "url": "https://api.github.com/repos/marin-community/marin/issues/8870/comments?per_page=100",
+    "http_status": 200,
+    "bytes": 111784,
+    "sha256": "0b31e85fdbfeb4e938ff4c11dc7736e93ced670dbe838fe54440152bdb9f28ec",
+    "retrieved_utc": "2026-10-07T13:04:00.563800+00:00",
+    "pagination_next": false
+  },
+  {
+    "file": "operational_2026_10_07/wandb_meta.json",
+    "url": "https://api.wandb.ai/graphql",
+    "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-fa4sm100-nomask-step146k",
+    "http_status": 200,
+    "bytes": 342582,
+    "sha256": "42d0a84503781d0034a6274b38ebed6bde1fed81f431c2f658c0d3cb3eb9ad67",
+    "retrieved_utc": "2026-10-07T13:04:07.059748+00:00",
+    "query": "query($e:String!,$p:String!,$r:String!){project(name:$p,entityName:$e){run(name:$r){name state heartbeatAt config summaryMetrics}}}",
+    "variables": {
+      "e": "marin-community",
+      "p": "marin_moe",
+      "r": "hero-fa4sm100-nomask-step146k"
+    }
+  },
+  {
+    "file": "operational_2026_10_07/wandb_operational_history.json",
+    "url": "https://api.wandb.ai/graphql",
+    "public_run_url": "https://wandb.ai/marin-community/marin_moe/runs/hero-fa4sm100-nomask-step146k",
+    "http_status": 200,
+    "bytes": 185169,
+    "sha256": "24c52b737f6939afeaf37a66819d5c103a2c8268821341016cf93a2d9fa27138",
+    "retrieved_utc": "2026-10-07T13:04:23.163225+00:00",
+    "query": "query($e:String!,$p:String!,$r:String!,$specs:[JSONString!]!){project(name:$p,entityName:$e){run(name:$r){sampledHistory(specs:$specs)}}}",
+    "variables": {
+      "e": "marin-community",
+      "p": "marin_moe",
+      "r": "hero-fa4sm100-nomask-step146k",
+      "specs": [
+        "{\"keys\": [\"_step\", \"_timestamp\", \"throughput/total_tokens\", \"throughput/duration\", \"throughput/iteration_time\"], \"minStep\": 146000, \"maxStep\": 219519, \"samples\": 1000}"
+      ]
+    }
+  },
+  {
+    "file": "operational_2026_10_07/_metrics.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/src/levanter/callbacks/_metrics.py",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "bytes": 7699,
+    "sha256": "3cf6b72b50dd851b3acdab681ac6a07f79961bbb3f4b9c225cbc9556ef6f4beb",
+    "retrieved_utc": "2026-10-07T13:06:55.085395+00:00"
+  },
+  {
+    "file": "operational_2026_10_07/state_adapter.py",
+    "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/levanter/src/levanter/callbacks/state_adapter.py",
+    "git_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+    "bytes": 2580,
+    "sha256": "fdde652f95b9fb82d322d5e4cfed3b0750fdb15cd7507869e39a4e47bd82b70b",
+    "retrieved_utc": "2026-10-07T13:07:07.829654+00:00"
   }
 ]

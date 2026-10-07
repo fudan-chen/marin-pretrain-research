@@ -1,0 +1,11 @@
+{
+  "status": "proposed_not_executed",
+  "budget_unit": null,
+  "required_event_fields": ["attempt_id", "utc", "monotonic_seconds", "step", "input_cursor", "event_kind", "source_digest"],
+  "event_kinds": ["batch_start", "batch_end", "train_start", "train_end", "eval_start", "eval_end", "save_requested", "save_committed", "failed", "restore_start", "restore_end", "device_allocation_start", "device_allocation_end"],
+  "events": [],
+  "actual_fault_downtime_seconds": null,
+  "actual_unique_scored_token_progress": null,
+  "actual_domain_loading_cost": null,
+  "actual_causal_mixture_effect": null
+}

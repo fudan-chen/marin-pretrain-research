@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1654,
+  "checks_passed": 1661,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -157,7 +157,8 @@
     "V106 ten CPU donation and delayed-consumer controls; observation-view non-donation control; ownership diagram; GPU and full training restore unverified",
     "V107 eight assembled CPU state staging/donation/real IO/next-update controls; weights-only same-loss counterexample; original Hero train_step and loader unverified",
     "V108 twelve CPU seed/build/shuffle/mix controls; future positive support can change current child keys; None versus explicit zero; no production token or causal loss claim",
-    "V109 thirteen original loss-interface CPU controls; sequence/position/target/mass ledgers and unit correction; requested fused backend explicitly replaced; actual Hero density and causal mixture benefit unknown"
+    "V109 thirteen original loss-interface CPU controls; sequence/position/target/mass ledgers and unit correction; requested fused backend explicitly replaced; actual Hero density and causal mixture benefit unknown",
+    "V110 eight operational analyses; 1000 sampled observations; calendar progress distinct from step duration; source archive expanded 556 to 566; no outage attribution"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

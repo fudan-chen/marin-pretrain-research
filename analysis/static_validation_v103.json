@@ -1,0 +1,38 @@
+{
+  "checks_passed": 7,
+  "checks": [
+    {
+      "name": "Three recovery scene tables complete",
+      "passed": true
+    },
+    {
+      "name": "Both variants embed accessible diagram without external placeholder",
+      "passed": true
+    },
+    {
+      "name": "All V102 section tables retain ordered text",
+      "passed": true
+    },
+    {
+      "name": "51 original passes match two original JUnit records",
+      "passed": true
+    },
+    {
+      "name": "Current source, fault script and native outputs match execution hashes",
+      "passed": true
+    },
+    {
+      "name": "Original file preservation and partial restore observations retained",
+      "passed": true
+    },
+    {
+      "name": "Production, key impact and forced-kill recovery explicitly unknown",
+      "passed": true
+    }
+  ],
+  "preserved_V102_sections_with_tables": 68,
+  "actual_browser_rendering": null,
+  "source_sha256": {
+    "assets/controller_restore_contract.svg": "236324fd240de4f6aa87124a5ce136d845abb8f1bc7311bcfbbc6fc69536fbf3"
+  }
+}

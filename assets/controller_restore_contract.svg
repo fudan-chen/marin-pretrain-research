@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="410" viewBox="0 0 1100 410" role="img" aria-labelledby="controller-contract-title controller-contract-desc">
+<title id="controller-contract-title">控制器备份发布与恢复合同的故障控制</title><desc id="controller-contract-desc">人工本地故障：普通恢复保留旧库，请求回滚先清空再失败；两份数据库只上传主库时，最新目录仍可被选中，下载成功不等于数据库对完整。</desc>
+<rect width="1100" height="410" fill="#f8fafc"/>
+<g font-family="sans-serif" fill="#172b4d"><text x="28" y="36" font-size="23">备份文件存在，还要检查失败保护与整组完成</text><text x="28" y="63" font-size="15">固定源码、本地 file://、人工故障 · 不表示 Hero 已发生事故</text>
+<g stroke="#64748b" fill="#eef2ff"><rect x="28" y="90" width="315" height="70" rx="8"/><rect x="382" y="90" width="315" height="70" rx="8"/><rect x="736" y="90" width="335" height="70" rx="8"/></g>
+<text x="42" y="118" font-size="18">普通恢复</text><text x="42" y="144" font-size="16">staging 下载、检查</text><text x="396" y="118" font-size="18">坏备份 / 不存在</text><text x="396" y="144" font-size="16">抛错，清理 staging</text><text x="750" y="118" font-size="18">原本地库仍保留</text><text x="750" y="144" font-size="16">构造 marker=7 未变化</text>
+<g stroke="#b45309" fill="#fff1db"><rect x="28" y="185" width="315" height="70" rx="8"/><rect x="382" y="185" width="315" height="70" rx="8"/><rect x="736" y="185" width="335" height="70" rx="8"/></g>
+<text x="42" y="213" font-size="18">请求回滚</text><text x="42" y="239" font-size="16">先清空本地目录，再下载</text><text x="396" y="213" font-size="18">相同故障输入</text><text x="396" y="239" font-size="16">抛错，请求仍未清除</text><text x="750" y="213" font-size="18">原本地主库已不存在</text><text x="750" y="239" font-size="16">不保证其他备份也已丢失</text>
+<g stroke="#b45309" fill="#fff1db"><rect x="28" y="280" width="315" height="70" rx="8"/><rect x="382" y="280" width="315" height="70" rx="8"/><rect x="736" y="280" width="335" height="70" rx="8"/></g>
+<text x="42" y="308" font-size="18">主库完成，auth 上传失败</text><text x="42" y="334" font-size="16">本地 ancestry 没有更新</text><text x="396" y="308" font-size="18">数字目录仍被选为 latest</text><text x="396" y="334" font-size="16">下载主库返回 True</text><text x="750" y="308" font-size="18">完整性探测不通过</text><text x="750" y="334" font-size="16">缺 auth；实际密钥影响未测</text>
+<g stroke="#475569" stroke-width="2" fill="none"><path d="M343 125h39m-9-5 9 5-9 5M697 125h39m-9-5 9 5-9 5M343 220h39m-9-5 9 5-9 5M697 220h39m-9-5 9 5-9 5M343 315h39m-9-5 9 5-9 5M697 315h39m-9-5 9 5-9 5"/></g>
+<text x="28" y="389" font-size="16">待验收：失败前后保住旧状态；整组完成后再发布；调度备份与训练 checkpoint 分别绑定。</text></g></svg>

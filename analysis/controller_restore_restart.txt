@@ -1,0 +1,24 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.13, pytest-9.0.3, pluggy-1.6.0 -- /private/tmp/marin-iris-source-eee467/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /private/tmp/marin-iris-source-eee467/lib/iris
+configfile: pyproject.toml
+plugins: playwright-0.7.2, xdist-3.8.0, timeout-2.4.0, flakefinder-1.1.0, asyncio-1.4.0, anyio-4.14.2, base-url-2.1.0
+timeout: 10.0s
+timeout method: thread
+timeout func_only: False
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 2 items
+
+lib/iris/tests/journeys/test_restart.py::test_controller_when_reopened_preserves_attempt_and_resumes_without_duplicate_launch PASSED [ 50%]
+lib/iris/tests/journeys/test_endpoints.py::test_coordinator_endpoint_survives_controller_restart_and_moves_to_the_replacement_attempt PASSED [100%]
+
+--------------- generated xml file: /tmp/marin-v103-restart.xml ----------------
+============================= slowest 25 durations =============================
+0.16s call     tests/journeys/test_restart.py::test_controller_when_reopened_preserves_attempt_and_resumes_without_duplicate_launch
+0.11s call     tests/journeys/test_endpoints.py::test_coordinator_endpoint_survives_controller_restart_and_moves_to_the_replacement_attempt
+0.04s setup    tests/journeys/test_restart.py::test_controller_when_reopened_preserves_attempt_and_resumes_without_duplicate_launch
+0.02s teardown tests/journeys/test_restart.py::test_controller_when_reopened_preserves_attempt_and_resumes_without_duplicate_launch
+0.02s setup    tests/journeys/test_endpoints.py::test_coordinator_endpoint_survives_controller_restart_and_moves_to_the_replacement_attempt
+0.01s teardown tests/journeys/test_endpoints.py::test_coordinator_endpoint_survives_controller_restart_and_moves_to_the_replacement_attempt
+============================== 2 passed in 0.37s ===============================

@@ -529,3 +529,9 @@ V101：13份公开payload归档、499份旧非bookkeeping源字节保留；18项
 固定 main eee467…；19 份完整原源码/测试/lock 归档，保留 512 份旧非 bookkeeping 文件。运行未改写的上游 test_transitions.py：33 passed、91 deselected，保留默认安全 marker 排除，单进程；原 pytest 输出 1.70 秒。完整 checkout 的 tracked 源码执行前后不变。实际部署、Hero 重试参数、逐 attempt checkpoint/游标和控制器崩溃重启仍未知。
 
 新增 [Gang 恢复解释](GANG_RECOVERY_ZH.md)、两条时间线 SVG、原命令/环境/XML/输出和未执行的恢复轨迹模板。全报告验证与发布产物见 analysis/release_v102.json；浏览器渲染未验证，Quick Look 缩略图不替代完整页面 QA。下一步优先补进程重启后的 SQLite 恢复和真实训练恢复链。
+
+## V103：控制器重开、备份一致性与失败保护
+
+51 项原上游用例通过（49+2）；12 项人工本地故障控制通过。固定 main eee467…，新增 14 份完整源码/测试，保留 531 份旧非 bookkeeping 文件；归档总 546。原源码未改，未运行云端集群操作。普通坏/缺失目标恢复保留原两份文件 SHA；请求回滚提前清空；auth 上传失败留下可发现的部分目录，下载返回成功与完整性探测要求不同。
+
+新增 [控制器恢复文档](CONTROLLER_RECOVERY_ZH.md)与机制图、逐用例/XML/日志/环境、完整原函数故障控制脚本。正常 stop 后重开有本地证据；强制杀进程、真实云传输、实际 auth 密钥影响与训练状态恢复仍未知。建议待实施，没有把源码缺口称为生产事故或上线修复。发布校验见 analysis/release_v103.json；浏览器渲染未核对。

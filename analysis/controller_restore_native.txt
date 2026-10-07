@@ -1,0 +1,90 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.12.13, pytest-9.0.3, pluggy-1.6.0 -- /private/tmp/marin-iris-source-eee467/.venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /private/tmp/marin-iris-source-eee467/lib/iris
+configfile: pyproject.toml
+plugins: playwright-0.7.2, xdist-3.8.0, timeout-2.4.0, flakefinder-1.1.0, asyncio-1.4.0, anyio-4.14.2, base-url-2.1.0
+timeout: 10.0s
+timeout method: thread
+timeout func_only: False
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 51 items / 2 deselected / 49 selected
+
+lib/iris/tests/journeys/test_checkpoint.py::test_checkpoint_restore_preserves_snapshot_and_discards_later_writes PASSED [  2%]
+lib/iris/tests/journeys/test_checkpoint.py::test_active_task_restored_from_checkpoint_retries_after_runtime_loss PASSED [  4%]
+lib/iris/tests/cluster/controller/test_checkpoint.py::test_write_checkpoint_uploads_compressed PASSED [  6%]
+lib/iris/tests/cluster/controller/test_checkpoint.py::test_download_checkpoint_to_local PASSED [  8%]
+lib/iris/tests/cluster/controller/test_checkpoint.py::test_probe_database_dir_rejects_corrupt_sqlite PASSED [ 10%]
+lib/iris/tests/cluster/controller/test_checkpoint.py::test_download_checkpoint_returns_false_when_missing PASSED [ 12%]
+lib/iris/tests/cluster/controller/test_checkpoint.py::test_latest_checkpoint_epoch_ms_none_when_missing PASSED [ 14%]
+lib/iris/tests/cluster/controller/test_checkpoint.py::test_latest_checkpoint_epoch_ms_matches_written_checkpoint PASSED [ 16%]
+lib/iris/tests/cluster/controller/test_checkpoint.py::test_download_from_explicit_path PASSED [ 18%]
+lib/iris/tests/cluster/controller/test_checkpoint.py::test_write_checkpoint_roundtrip PASSED [ 20%]
+lib/iris/tests/cluster/controller/test_checkpoint.py::test_write_checkpoint_cleans_up_temp_file PASSED [ 22%]
+lib/iris/tests/cluster/controller/test_checkpoint.py::test_download_checkpoint_restores_when_local_missing PASSED [ 24%]
+lib/iris/tests/cluster/controller/test_checkpoint.py::test_download_from_explicit_path_pairs_auth_db PASSED [ 26%]
+lib/iris/tests/cluster/controller/test_checkpoint.py::test_download_uncompressed_fallback PASSED [ 28%]
+lib/iris/tests/cluster/controller/test_checkpoint.py::test_prune_old_checkpoints PASSED [ 30%]
+lib/iris/tests/cluster/controller/test_checkpoint.py::test_prune_keeps_recent_checkpoints PASSED [ 32%]
+lib/iris/tests/cluster/controller/test_db.py::test_transaction_rollback_on_exception PASSED [ 34%]
+lib/iris/tests/cluster/controller/test_db.py::test_register_hook_fires PASSED [ 36%]
+lib/iris/tests/cluster/controller/test_db.py::test_read_snapshot_returns_consistent_data PASSED [ 38%]
+lib/iris/tests/cluster/controller/test_db.py::test_backup_with_concurrent_commits_preserves_snapshot PASSED [ 40%]
+lib/iris/tests/cluster/controller/test_rollout.py::test_prepare_controller_state_fresh_removes_existing_database PASSED [ 42%]
+lib/iris/tests/cluster/controller/test_rollout.py::test_prepare_controller_state_applies_requested_rollback_once PASSED [ 44%]
+lib/iris/tests/cluster/controller/test_rollout.py::test_prepare_controller_state_rollback_without_checkpoint_reuses_local_database PASSED [ 46%]
+lib/iris/tests/cluster/controller/test_rollout.py::test_prepare_controller_state_reuses_local_database_at_latest_checkpoint PASSED [ 48%]
+lib/iris/tests/cluster/controller/test_rollout.py::test_prepare_controller_state_restores_latest_when_local_ancestry_differs PASSED [ 51%]
+lib/iris/tests/cluster/controller/test_rollout.py::test_prepare_controller_state_restores_requested_checkpoint_when_local_absent PASSED [ 53%]
+lib/iris/tests/cluster/controller/test_rollout.py::test_prepare_controller_state_rejects_missing_checkpoint PASSED [ 55%]
+lib/iris/tests/cluster/controller/test_rollout.py::test_prepare_controller_state_rejects_checkpoint_without_numeric_epoch PASSED [ 57%]
+lib/iris/tests/cluster/controller/test_rollout.py::test_prepare_controller_state_quarantines_corrupt_database_before_restore PASSED [ 59%]
+lib/iris/tests/cluster/controller/test_migration_runner.py::test_fresh_db_marks_every_delta_applied_without_running_it PASSED [ 61%]
+lib/iris/tests/cluster/controller/test_migration_runner.py::test_fresh_db_schema_matches_replaying_every_delta PASSED [ 63%]
+lib/iris/tests/cluster/controller/test_migration_runner.py::test_legacy_db_runs_every_unrecorded_delta PASSED [ 65%]
+lib/iris/tests/cluster/controller/test_migration_runner.py::test_only_unrecorded_deltas_run PASSED [ 67%]
+lib/iris/tests/cluster/controller/test_migration_runner.py::test_reopening_a_migrated_db_changes_nothing PASSED [ 69%]
+lib/iris/tests/cluster/controller/test_endpoints_projection.py::test_projection_loads_existing_rows_on_startup PASSED [ 71%]
+lib/iris/tests/cluster/controller/test_endpoints_projection.py::test_add_updates_memory_after_commit PASSED [ 73%]
+lib/iris/tests/cluster/controller/test_endpoints_projection.py::test_projection_publishes_one_atomic_mutation_per_transaction PASSED [ 75%]
+lib/iris/tests/cluster/controller/test_endpoints_projection.py::test_rollback_leaves_memory_untouched PASSED [ 77%]
+lib/iris/tests/cluster/controller/test_endpoints_projection.py::test_add_rejects_terminal_task PASSED [ 79%]
+lib/iris/tests/cluster/controller/test_endpoints_projection.py::test_remove_drops_endpoint_by_id PASSED [ 81%]
+lib/iris/tests/cluster/controller/test_endpoints_projection.py::test_remove_by_job_ids_drops_subtree PASSED [ 83%]
+lib/iris/tests/cluster/controller/test_endpoints_projection.py::test_query_by_exact_name PASSED [ 85%]
+lib/iris/tests/cluster/controller/test_endpoints_projection.py::test_query_by_prefix PASSED [ 87%]
+lib/iris/tests/cluster/controller/test_endpoints_projection.py::test_query_by_task_ids PASSED [ 89%]
+lib/iris/tests/cluster/controller/test_endpoints_projection.py::test_query_by_endpoint_ids PASSED [ 91%]
+lib/iris/tests/cluster/controller/test_endpoints_projection.py::test_query_limit PASSED [ 93%]
+lib/iris/tests/cluster/controller/test_endpoints_projection.py::test_query_empty_matches_all PASSED [ 95%]
+lib/iris/tests/cluster/controller/test_endpoints_projection.py::test_resolve_returns_address_for_exact_name PASSED [ 97%]
+lib/iris/tests/cluster/controller/test_endpoints_projection.py::test_replace_from_resets_dict PASSED [100%]
+
+---------------- generated xml file: /tmp/marin-v103-native.xml ----------------
+============================= slowest 25 durations =============================
+0.20s call     tests/journeys/test_checkpoint.py::test_checkpoint_restore_preserves_snapshot_and_discards_later_writes
+0.11s call     tests/journeys/test_checkpoint.py::test_active_task_restored_from_checkpoint_retries_after_runtime_loss
+0.08s call     tests/cluster/controller/test_rollout.py::test_prepare_controller_state_applies_requested_rollback_once
+0.05s call     tests/cluster/controller/test_migration_runner.py::test_fresh_db_schema_matches_replaying_every_delta
+0.04s setup    tests/journeys/test_checkpoint.py::test_checkpoint_restore_preserves_snapshot_and_discards_later_writes
+0.04s call     tests/cluster/controller/test_db.py::test_backup_with_concurrent_commits_preserves_snapshot
+0.03s call     tests/cluster/controller/test_migration_runner.py::test_legacy_db_runs_every_unrecorded_delta
+0.03s call     tests/cluster/controller/test_rollout.py::test_prepare_controller_state_restores_latest_when_local_ancestry_differs
+0.03s call     tests/cluster/controller/test_rollout.py::test_prepare_controller_state_quarantines_corrupt_database_before_restore
+0.02s call     tests/cluster/controller/test_rollout.py::test_prepare_controller_state_restores_requested_checkpoint_when_local_absent
+0.02s call     tests/cluster/controller/test_checkpoint.py::test_download_from_explicit_path
+0.02s call     tests/cluster/controller/test_rollout.py::test_prepare_controller_state_reuses_local_database_at_latest_checkpoint
+0.02s call     tests/cluster/controller/test_checkpoint.py::test_download_checkpoint_restores_when_local_missing
+0.02s call     tests/cluster/controller/test_checkpoint.py::test_download_checkpoint_to_local
+0.02s call     tests/cluster/controller/test_checkpoint.py::test_write_checkpoint_roundtrip
+0.02s teardown tests/journeys/test_checkpoint.py::test_active_task_restored_from_checkpoint_retries_after_runtime_loss
+0.02s call     tests/cluster/controller/test_checkpoint.py::test_download_uncompressed_fallback
+0.02s setup    tests/cluster/controller/test_endpoints_projection.py::test_query_by_exact_name
+0.02s call     tests/cluster/controller/test_checkpoint.py::test_download_from_explicit_path_pairs_auth_db
+0.02s call     tests/cluster/controller/test_checkpoint.py::test_write_checkpoint_uploads_compressed
+0.02s setup    tests/cluster/controller/test_endpoints_projection.py::test_query_by_endpoint_ids
+0.02s setup    tests/cluster/controller/test_endpoints_projection.py::test_query_limit
+0.02s call     tests/cluster/controller/test_rollout.py::test_prepare_controller_state_fresh_removes_existing_database
+0.02s call     tests/cluster/controller/test_checkpoint.py::test_latest_checkpoint_epoch_ms_matches_written_checkpoint
+0.02s call     tests/cluster/controller/test_migration_runner.py::test_reopening_a_migrated_db_changes_nothing
+======================= 49 passed, 2 deselected in 1.45s =======================

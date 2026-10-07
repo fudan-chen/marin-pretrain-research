@@ -1,0 +1,400 @@
+{
+  "source_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+  "runs": [
+    {
+      "observed_tool_exitcode": 0,
+      "command": [
+        "uv",
+        "run",
+        "--frozen",
+        "--no-sync",
+        "--package",
+        "marin-iris",
+        "--group",
+        "test",
+        "--no-default-groups",
+        "pytest",
+        "-n",
+        "0",
+        "--tb=short",
+        "lib/iris/tests/journeys/test_checkpoint.py",
+        "lib/iris/tests/cluster/controller/test_checkpoint.py",
+        "lib/iris/tests/cluster/controller/test_db.py",
+        "lib/iris/tests/cluster/controller/test_rollout.py",
+        "lib/iris/tests/cluster/controller/test_migration_runner.py",
+        "lib/iris/tests/cluster/controller/test_endpoints_projection.py",
+        "-k",
+        "not periodic_checkpoint and not begin_checkpoint",
+        "--junitxml=/tmp/marin-v103-native.xml"
+      ],
+      "stdout_and_stderr_file": "analysis/controller_restore_native.txt",
+      "cases": [
+        {
+          "classname": "tests.journeys.test_checkpoint",
+          "name": "test_checkpoint_restore_preserves_snapshot_and_discards_later_writes",
+          "seconds": 0.243,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.journeys.test_checkpoint",
+          "name": "test_active_task_restored_from_checkpoint_retries_after_runtime_loss",
+          "seconds": 0.142,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_checkpoint",
+          "name": "test_write_checkpoint_uploads_compressed",
+          "seconds": 0.017,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_checkpoint",
+          "name": "test_download_checkpoint_to_local",
+          "seconds": 0.02,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_checkpoint",
+          "name": "test_probe_database_dir_rejects_corrupt_sqlite",
+          "seconds": 0.01,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_checkpoint",
+          "name": "test_download_checkpoint_returns_false_when_missing",
+          "seconds": 0.001,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_checkpoint",
+          "name": "test_latest_checkpoint_epoch_ms_none_when_missing",
+          "seconds": 0.001,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_checkpoint",
+          "name": "test_latest_checkpoint_epoch_ms_matches_written_checkpoint",
+          "seconds": 0.017,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_checkpoint",
+          "name": "test_download_from_explicit_path",
+          "seconds": 0.021,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_checkpoint",
+          "name": "test_write_checkpoint_roundtrip",
+          "seconds": 0.019,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_checkpoint",
+          "name": "test_write_checkpoint_cleans_up_temp_file",
+          "seconds": 0.015,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_checkpoint",
+          "name": "test_download_checkpoint_restores_when_local_missing",
+          "seconds": 0.02,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_checkpoint",
+          "name": "test_download_from_explicit_path_pairs_auth_db",
+          "seconds": 0.017,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_checkpoint",
+          "name": "test_download_uncompressed_fallback",
+          "seconds": 0.018,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_checkpoint",
+          "name": "test_prune_old_checkpoints",
+          "seconds": 0.001,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_checkpoint",
+          "name": "test_prune_keeps_recent_checkpoints",
+          "seconds": 0.015,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_db",
+          "name": "test_transaction_rollback_on_exception",
+          "seconds": 0.011,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_db",
+          "name": "test_register_hook_fires",
+          "seconds": 0.01,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_db",
+          "name": "test_read_snapshot_returns_consistent_data",
+          "seconds": 0.011,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_db",
+          "name": "test_backup_with_concurrent_commits_preserves_snapshot",
+          "seconds": 0.051,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_rollout",
+          "name": "test_prepare_controller_state_fresh_removes_existing_database",
+          "seconds": 0.017,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_rollout",
+          "name": "test_prepare_controller_state_applies_requested_rollback_once",
+          "seconds": 0.081,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_rollout",
+          "name": "test_prepare_controller_state_rollback_without_checkpoint_reuses_local_database",
+          "seconds": 0.013,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_rollout",
+          "name": "test_prepare_controller_state_reuses_local_database_at_latest_checkpoint",
+          "seconds": 0.02,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_rollout",
+          "name": "test_prepare_controller_state_restores_latest_when_local_ancestry_differs",
+          "seconds": 0.032,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_rollout",
+          "name": "test_prepare_controller_state_restores_requested_checkpoint_when_local_absent",
+          "seconds": 0.021,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_rollout",
+          "name": "test_prepare_controller_state_rejects_missing_checkpoint",
+          "seconds": 0.001,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_rollout",
+          "name": "test_prepare_controller_state_rejects_checkpoint_without_numeric_epoch",
+          "seconds": 0.001,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_rollout",
+          "name": "test_prepare_controller_state_quarantines_corrupt_database_before_restore",
+          "seconds": 0.031,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_migration_runner",
+          "name": "test_fresh_db_marks_every_delta_applied_without_running_it",
+          "seconds": 0.012,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_migration_runner",
+          "name": "test_fresh_db_schema_matches_replaying_every_delta",
+          "seconds": 0.047,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_migration_runner",
+          "name": "test_legacy_db_runs_every_unrecorded_delta",
+          "seconds": 0.035,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_migration_runner",
+          "name": "test_only_unrecorded_deltas_run",
+          "seconds": 0.016,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_migration_runner",
+          "name": "test_reopening_a_migrated_db_changes_nothing",
+          "seconds": 0.016,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_endpoints_projection",
+          "name": "test_projection_loads_existing_rows_on_startup",
+          "seconds": 0.016,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_endpoints_projection",
+          "name": "test_add_updates_memory_after_commit",
+          "seconds": 0.017,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_endpoints_projection",
+          "name": "test_projection_publishes_one_atomic_mutation_per_transaction",
+          "seconds": 0.018,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_endpoints_projection",
+          "name": "test_rollback_leaves_memory_untouched",
+          "seconds": 0.016,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_endpoints_projection",
+          "name": "test_add_rejects_terminal_task",
+          "seconds": 0.016,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_endpoints_projection",
+          "name": "test_remove_drops_endpoint_by_id",
+          "seconds": 0.015,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_endpoints_projection",
+          "name": "test_remove_by_job_ids_drops_subtree",
+          "seconds": 0.018,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_endpoints_projection",
+          "name": "test_query_by_exact_name",
+          "seconds": 0.018,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_endpoints_projection",
+          "name": "test_query_by_prefix",
+          "seconds": 0.016,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_endpoints_projection",
+          "name": "test_query_by_task_ids",
+          "seconds": 0.017,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_endpoints_projection",
+          "name": "test_query_by_endpoint_ids",
+          "seconds": 0.018,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_endpoints_projection",
+          "name": "test_query_limit",
+          "seconds": 0.018,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_endpoints_projection",
+          "name": "test_query_empty_matches_all",
+          "seconds": 0.017,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_endpoints_projection",
+          "name": "test_resolve_returns_address_for_exact_name",
+          "seconds": 0.016,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.cluster.controller.test_endpoints_projection",
+          "name": "test_replace_from_resets_dict",
+          "seconds": 0.026,
+          "outcome": "passed"
+        }
+      ],
+      "passed": 49
+    },
+    {
+      "observed_tool_exitcode": 0,
+      "command": [
+        "uv",
+        "run",
+        "--frozen",
+        "--no-sync",
+        "--package",
+        "marin-iris",
+        "--group",
+        "test",
+        "--no-default-groups",
+        "pytest",
+        "-n",
+        "0",
+        "--tb=short",
+        "lib/iris/tests/journeys/test_restart.py",
+        "lib/iris/tests/journeys/test_endpoints.py::test_coordinator_endpoint_survives_controller_restart_and_moves_to_the_replacement_attempt",
+        "--junitxml=/tmp/marin-v103-restart.xml"
+      ],
+      "stdout_and_stderr_file": "analysis/controller_restore_restart.txt",
+      "cases": [
+        {
+          "classname": "tests.journeys.test_restart",
+          "name": "test_controller_when_reopened_preserves_attempt_and_resumes_without_duplicate_launch",
+          "seconds": 0.215,
+          "outcome": "passed"
+        },
+        {
+          "classname": "tests.journeys.test_endpoints",
+          "name": "test_coordinator_endpoint_survives_controller_restart_and_moves_to_the_replacement_attempt",
+          "seconds": 0.13,
+          "outcome": "passed"
+        }
+      ],
+      "passed": 2
+    }
+  ],
+  "passed": 51,
+  "tracked_source_unchanged": true,
+  "source_sha256": {
+    "sources/controller_restore_2026_10_07/lib/iris/src/iris/cluster/controller/checkpoint.py": "00841d128ccaef3b416a27668809bb2ceec072ea99006151910fcc35e41c134f",
+    "sources/controller_restore_2026_10_07/lib/iris/src/iris/cluster/controller/main.py": "866ef9225ec5a9b5d1916fe139f81a938fabcb6842c19d7a2f3a4331bd13b5d3",
+    "sources/controller_restore_2026_10_07/lib/iris/src/iris/cluster/controller/rollout.py": "94842a3d008931a9aecf158759fcae397f0c049954928a5244bc239229abd17a",
+    "sources/controller_restore_2026_10_07/lib/iris/src/iris/cluster/controller/projections/endpoints.py": "b839c0edf392682ddfd18414cd65b2f0ac959cd03fbf9e49e3fbd479dcbbe673",
+    "sources/controller_restore_2026_10_07/lib/iris/tests/cluster/controller/test_checkpoint.py": "f17631f409aa9ab376ed17d01b1651651e2434b37634aa9e524f92944898d369",
+    "sources/controller_restore_2026_10_07/lib/iris/tests/cluster/controller/test_db.py": "cb2842cd95742944bec8e761571d5164acf0506f818b692dee0a30ace33d8de8",
+    "sources/controller_restore_2026_10_07/lib/iris/tests/cluster/controller/test_rollout.py": "d3f647e38488c6986b2a1e3cb50b7e3c6a4074e881d1d252a30b8fe6f07eee43",
+    "sources/controller_restore_2026_10_07/lib/iris/tests/cluster/controller/test_migration_runner.py": "f5e4211a3141e365bfbd184e0db754b577b2d92c3b392eb496d4861f24f1cad4",
+    "sources/controller_restore_2026_10_07/lib/iris/tests/cluster/controller/test_endpoints_projection.py": "92fa50b8a100a2d5c9c71f508f7f5ffe756a84fd186b7579bc79a5c4325cba31",
+    "sources/controller_restore_2026_10_07/lib/iris/tests/journeys/test_checkpoint.py": "33767707ea07587b1cdfd4324007b266b511ed74b83ff08475066768325acf62",
+    "sources/controller_restore_2026_10_07/lib/iris/tests/journeys/test_restart.py": "e83432d3b427b4d162182ac810b08ea980842f400dd7cae07411aa3365925a02",
+    "sources/controller_restore_2026_10_07/lib/iris/tests/journeys/test_endpoints.py": "8e489efb6fcf5bb039c6fc0b986e7d60b3f928b0bf2768d2fc6aad85dddbd472",
+    "sources/controller_restore_2026_10_07/lib/iris/tests/journeys/conftest.py": "7c94032a6e3c011163b8b1701d2a44494e8da69037db8104850a174095945424",
+    "sources/controller_restore_2026_10_07/lib/iris/src/iris/testing/journeys/world.py": "e1811b39a7e106ac5d6c5cc9ec5582740f1533ca78cb34ce61809386a015beb3",
+    "sources/gang_recovery_2026_10_07/lib/iris/src/iris/cluster/controller/db.py": "c5460e75e4d9e39de19950a84ea2d280ccfbb3f35733016312df52732fd866ba"
+  },
+  "artifact_sha256": {
+    "analysis/controller_restore_native.xml": "04e9a4760344b129ce05072779f7ae2fac1ee2ac1ce0face0412bf3773d0aed9",
+    "analysis/controller_restore_native.txt": "90ca35cd9d94ffd88b7e04e0f43cf7212ff3d5813a3d28a3ea8e7398d52ab2ee",
+    "analysis/controller_restore_restart.xml": "a78a6b903ec9daeb28fdce7aeaeba56d14ff8b32144dcc027492d85540e0bc1a",
+    "analysis/controller_restore_restart.txt": "cc314132f88e34bafae4a45903e3bd7ebef16b2dfbf5580f61d1d6afb908cf7e",
+    "analysis/controller_restore_environment.txt": "664b86093ce7e1bcd3fca9cea77ce3d17c9bbb3b970e2e16f796450f81c95882",
+    "analysis/controller_restore_fault_output.txt": "481d2e09b975395e0b2eec72c59df1cfabe2d29c217feb6df9f0ac5949cbb7ae"
+  },
+  "platform": "macOS-15.7.5-arm64-arm-64bit",
+  "safe_default_marker_expression": "not slow and not docker and not requires_cluster and not manual",
+  "boundary": "Original upstream local SQLite, file:// checkpoint and journey tests. Journey closes and rebuilds real Controller over SQLite; ScriptedTaskBackend, manual clock and local log stack. Not forced process death, real worker/GPU, cloud transport or training weights.",
+  "actual_production_incident": null,
+  "actual_forced_process_kill_restore": null,
+  "actual_training_checkpoint_restore": null
+}

@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-07T00:24:21.913987+00:00",
+  "integrity_manifest_created_utc": "2026-10-07T01:28:23.192027+00:00",
   "files": [
     {
       "file": "accumulation_2026_10_07/grad_accum.py",
@@ -279,6 +279,104 @@
       "sha256": "4a4f086b968934114ba450ec90d1e875842a04a3b79c7ae82879eda882a4d7d4",
       "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/kernels/pallas/fused_cross_entropy_loss/xla.py",
       "retrieved_utc": "2026-10-05T08:46:51.896922+00:00"
+    },
+    {
+      "file": "controller_restore_2026_10_07/lib/iris/src/iris/cluster/controller/checkpoint.py",
+      "bytes": 21017,
+      "sha256": "00841d128ccaef3b416a27668809bb2ceec072ea99006151910fcc35e41c134f",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/checkpoint.py",
+      "retrieved_utc": "2026-10-07T01:28:22.661812+00:00"
+    },
+    {
+      "file": "controller_restore_2026_10_07/lib/iris/src/iris/cluster/controller/main.py",
+      "bytes": 17484,
+      "sha256": "866ef9225ec5a9b5d1916fe139f81a938fabcb6842c19d7a2f3a4331bd13b5d3",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/main.py",
+      "retrieved_utc": "2026-10-07T01:28:22.675949+00:00"
+    },
+    {
+      "file": "controller_restore_2026_10_07/lib/iris/src/iris/cluster/controller/projections/endpoints.py",
+      "bytes": 19920,
+      "sha256": "b839c0edf392682ddfd18414cd65b2f0ac959cd03fbf9e49e3fbd479dcbbe673",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/projections/endpoints.py",
+      "retrieved_utc": "2026-10-07T01:28:22.702720+00:00"
+    },
+    {
+      "file": "controller_restore_2026_10_07/lib/iris/src/iris/cluster/controller/rollout.py",
+      "bytes": 3323,
+      "sha256": "94842a3d008931a9aecf158759fcae397f0c049954928a5244bc239229abd17a",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/cluster/controller/rollout.py",
+      "retrieved_utc": "2026-10-07T01:28:22.688927+00:00"
+    },
+    {
+      "file": "controller_restore_2026_10_07/lib/iris/src/iris/testing/journeys/world.py",
+      "bytes": 23328,
+      "sha256": "e1811b39a7e106ac5d6c5cc9ec5582740f1533ca78cb34ce61809386a015beb3",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/src/iris/testing/journeys/world.py",
+      "retrieved_utc": "2026-10-07T01:28:22.843263+00:00"
+    },
+    {
+      "file": "controller_restore_2026_10_07/lib/iris/tests/cluster/controller/test_checkpoint.py",
+      "bytes": 9099,
+      "sha256": "f17631f409aa9ab376ed17d01b1651651e2434b37634aa9e524f92944898d369",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/tests/cluster/controller/test_checkpoint.py",
+      "retrieved_utc": "2026-10-07T01:28:22.716683+00:00"
+    },
+    {
+      "file": "controller_restore_2026_10_07/lib/iris/tests/cluster/controller/test_db.py",
+      "bytes": 4496,
+      "sha256": "cb2842cd95742944bec8e761571d5164acf0506f818b692dee0a30ace33d8de8",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/tests/cluster/controller/test_db.py",
+      "retrieved_utc": "2026-10-07T01:28:22.729858+00:00"
+    },
+    {
+      "file": "controller_restore_2026_10_07/lib/iris/tests/cluster/controller/test_endpoints_projection.py",
+      "bytes": 8718,
+      "sha256": "92fa50b8a100a2d5c9c71f508f7f5ffe756a84fd186b7579bc79a5c4325cba31",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/tests/cluster/controller/test_endpoints_projection.py",
+      "retrieved_utc": "2026-10-07T01:28:22.773438+00:00"
+    },
+    {
+      "file": "controller_restore_2026_10_07/lib/iris/tests/cluster/controller/test_migration_runner.py",
+      "bytes": 8850,
+      "sha256": "f5e4211a3141e365bfbd184e0db754b577b2d92c3b392eb496d4861f24f1cad4",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/tests/cluster/controller/test_migration_runner.py",
+      "retrieved_utc": "2026-10-07T01:28:22.758018+00:00"
+    },
+    {
+      "file": "controller_restore_2026_10_07/lib/iris/tests/cluster/controller/test_rollout.py",
+      "bytes": 6284,
+      "sha256": "d3f647e38488c6986b2a1e3cb50b7e3c6a4074e881d1d252a30b8fe6f07eee43",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/tests/cluster/controller/test_rollout.py",
+      "retrieved_utc": "2026-10-07T01:28:22.743499+00:00"
+    },
+    {
+      "file": "controller_restore_2026_10_07/lib/iris/tests/journeys/conftest.py",
+      "bytes": 678,
+      "sha256": "7c94032a6e3c011163b8b1701d2a44494e8da69037db8104850a174095945424",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/tests/journeys/conftest.py",
+      "retrieved_utc": "2026-10-07T01:28:22.829078+00:00"
+    },
+    {
+      "file": "controller_restore_2026_10_07/lib/iris/tests/journeys/test_checkpoint.py",
+      "bytes": 1333,
+      "sha256": "33767707ea07587b1cdfd4324007b266b511ed74b83ff08475066768325acf62",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/tests/journeys/test_checkpoint.py",
+      "retrieved_utc": "2026-10-07T01:28:22.788919+00:00"
+    },
+    {
+      "file": "controller_restore_2026_10_07/lib/iris/tests/journeys/test_endpoints.py",
+      "bytes": 2403,
+      "sha256": "8e489efb6fcf5bb039c6fc0b986e7d60b3f928b0bf2768d2fc6aad85dddbd472",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/tests/journeys/test_endpoints.py",
+      "retrieved_utc": "2026-10-07T01:28:22.815588+00:00"
+    },
+    {
+      "file": "controller_restore_2026_10_07/lib/iris/tests/journeys/test_restart.py",
+      "bytes": 860,
+      "sha256": "e83432d3b427b4d162182ac810b08ea980842f400dd7cae07411aa3365925a02",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/eee467718515b2383fc3a433014afce4ab075b05/lib/iris/tests/journeys/test_restart.py",
+      "retrieved_utc": "2026-10-07T01:28:22.802764+00:00"
     },
     {
       "file": "data_overview.html",
@@ -3165,8 +3263,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 246289,
-      "sha256": "dca54bfa98a7cafb55503452c44a047c2bd09c3e2038ff3ac077b16ae25b37c8",
+      "bytes": 255726,
+      "sha256": "dae8068d654c067aa6e760247be6140c8ee85ec3c6de9cd4831b33aff202229a",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

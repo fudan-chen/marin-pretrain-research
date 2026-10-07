@@ -1,0 +1,175 @@
+{
+  "created_utc": "2026-10-07T01:32:28.571949+00:00",
+  "executed_script_sha256": "0bd47771cccffdaca4be58d32eba4a4e0e5c135b71e4ba112b845eedd617f8ee",
+  "source_revision": "eee467718515b2383fc3a433014afce4ab075b05",
+  "source_sha256": {
+    "sources/controller_restore_2026_10_07/lib/iris/src/iris/cluster/controller/checkpoint.py": "00841d128ccaef3b416a27668809bb2ceec072ea99006151910fcc35e41c134f",
+    "sources/controller_restore_2026_10_07/lib/iris/src/iris/cluster/controller/main.py": "866ef9225ec5a9b5d1916fe139f81a938fabcb6842c19d7a2f3a4331bd13b5d3",
+    "sources/controller_restore_2026_10_07/lib/iris/src/iris/cluster/controller/rollout.py": "94842a3d008931a9aecf158759fcae397f0c049954928a5244bc239229abd17a",
+    "sources/controller_restore_2026_10_07/lib/iris/src/iris/cluster/controller/projections/endpoints.py": "b839c0edf392682ddfd18414cd65b2f0ac959cd03fbf9e49e3fbd479dcbbe673",
+    "sources/controller_restore_2026_10_07/lib/iris/tests/cluster/controller/test_checkpoint.py": "f17631f409aa9ab376ed17d01b1651651e2434b37634aa9e524f92944898d369",
+    "sources/controller_restore_2026_10_07/lib/iris/tests/cluster/controller/test_db.py": "cb2842cd95742944bec8e761571d5164acf0506f818b692dee0a30ace33d8de8",
+    "sources/controller_restore_2026_10_07/lib/iris/tests/cluster/controller/test_rollout.py": "d3f647e38488c6986b2a1e3cb50b7e3c6a4074e881d1d252a30b8fe6f07eee43",
+    "sources/controller_restore_2026_10_07/lib/iris/tests/cluster/controller/test_migration_runner.py": "f5e4211a3141e365bfbd184e0db754b577b2d92c3b392eb496d4861f24f1cad4",
+    "sources/controller_restore_2026_10_07/lib/iris/tests/cluster/controller/test_endpoints_projection.py": "92fa50b8a100a2d5c9c71f508f7f5ffe756a84fd186b7579bc79a5c4325cba31",
+    "sources/controller_restore_2026_10_07/lib/iris/tests/journeys/test_checkpoint.py": "33767707ea07587b1cdfd4324007b266b511ed74b83ff08475066768325acf62",
+    "sources/controller_restore_2026_10_07/lib/iris/tests/journeys/test_restart.py": "e83432d3b427b4d162182ac810b08ea980842f400dd7cae07411aa3365925a02",
+    "sources/controller_restore_2026_10_07/lib/iris/tests/journeys/test_endpoints.py": "8e489efb6fcf5bb039c6fc0b986e7d60b3f928b0bf2768d2fc6aad85dddbd472",
+    "sources/controller_restore_2026_10_07/lib/iris/tests/journeys/conftest.py": "7c94032a6e3c011163b8b1701d2a44494e8da69037db8104850a174095945424",
+    "sources/controller_restore_2026_10_07/lib/iris/src/iris/testing/journeys/world.py": "e1811b39a7e106ac5d6c5cc9ec5582740f1533ca78cb34ce61809386a015beb3",
+    "sources/gang_recovery_2026_10_07/lib/iris/src/iris/cluster/controller/db.py": "c5460e75e4d9e39de19950a84ea2d280ccfbb3f35733016312df52732fd866ba"
+  },
+  "checks_passed": 12,
+  "checks": [
+    {
+      "name": "ordinary_corrupt raises and cleanup finishes",
+      "passed": true
+    },
+    {
+      "name": "ordinary_corrupt retains original state",
+      "passed": true
+    },
+    {
+      "name": "ordinary_missing raises and cleanup finishes",
+      "passed": true
+    },
+    {
+      "name": "ordinary_missing retains original state",
+      "passed": true
+    },
+    {
+      "name": "rollback_corrupt raises and cleanup finishes",
+      "passed": true
+    },
+    {
+      "name": "rollback_corrupt removes original state before failing",
+      "passed": true
+    },
+    {
+      "name": "rollback_missing raises and cleanup finishes",
+      "passed": true
+    },
+    {
+      "name": "rollback_missing removes original state before failing",
+      "passed": true
+    },
+    {
+      "name": "failed second-file upload leaves local ancestry unchanged",
+      "passed": true
+    },
+    {
+      "name": "partial checkpoint remains discoverable as latest",
+      "passed": true
+    },
+    {
+      "name": "main-only checkpoint download returns true but pair probe unhealthy",
+      "passed": true
+    },
+    {
+      "name": "startup accepts partial download and DB construction creates missing auth file",
+      "passed": true
+    }
+  ],
+  "cases": {
+    "ordinary_corrupt": {
+      "result": null,
+      "exception": "DatabaseError",
+      "message": "file is not a database",
+      "local_main_exists": true,
+      "local_marker": 7,
+      "before_file_sha256": {
+        "controller.sqlite3": "6bf29d9c3906ab533a5efed9414c8014f75c7ce6072d04b306ee70faa09bac84",
+        "auth.sqlite3": "0999a76e7e8b8ccfbfce39843ec9160f2de83768396db7bddb94e9bf749991df"
+      },
+      "after_file_sha256": {
+        "controller.sqlite3": "6bf29d9c3906ab533a5efed9414c8014f75c7ce6072d04b306ee70faa09bac84",
+        "auth.sqlite3": "0999a76e7e8b8ccfbfce39843ec9160f2de83768396db7bddb94e9bf749991df"
+      },
+      "original_file_bytes_preserved": true,
+      "staging_dirs_remaining": [],
+      "rollout_phase": null
+    },
+    "ordinary_missing": {
+      "result": null,
+      "exception": "ValueError",
+      "message": "Checkpoint not found: file:///var/folders/fr/z9sql57n2gx7wp37d74d4bg40000gn/T/iris-research-restore-euwfr7hg/False-missing/remote/controller-state/9999999999999",
+      "local_main_exists": true,
+      "local_marker": 7,
+      "before_file_sha256": {
+        "controller.sqlite3": "6043c7ebfd00ec528a3ee64e6cf032ee4cff1a576bb7db6f1e6112db3fb8efef",
+        "auth.sqlite3": "0999a76e7e8b8ccfbfce39843ec9160f2de83768396db7bddb94e9bf749991df"
+      },
+      "after_file_sha256": {
+        "controller.sqlite3": "6043c7ebfd00ec528a3ee64e6cf032ee4cff1a576bb7db6f1e6112db3fb8efef",
+        "auth.sqlite3": "0999a76e7e8b8ccfbfce39843ec9160f2de83768396db7bddb94e9bf749991df"
+      },
+      "original_file_bytes_preserved": true,
+      "staging_dirs_remaining": [],
+      "rollout_phase": null
+    },
+    "rollback_corrupt": {
+      "result": null,
+      "exception": "DatabaseError",
+      "message": "file is not a database",
+      "local_main_exists": false,
+      "local_marker": null,
+      "before_file_sha256": {
+        "controller.sqlite3": "a69a063b58a1dd0879ae9d12a3df14f82955e52c6a81f8d0b92a6bd4171332f2",
+        "auth.sqlite3": "0999a76e7e8b8ccfbfce39843ec9160f2de83768396db7bddb94e9bf749991df"
+      },
+      "after_file_sha256": {
+        "controller.sqlite3": null,
+        "auth.sqlite3": null
+      },
+      "original_file_bytes_preserved": false,
+      "staging_dirs_remaining": [],
+      "rollout_phase": "rollback_requested"
+    },
+    "rollback_missing": {
+      "result": null,
+      "exception": "ValueError",
+      "message": "Rollback checkpoint not found: file:///var/folders/fr/z9sql57n2gx7wp37d74d4bg40000gn/T/iris-research-restore-euwfr7hg/True-missing/remote/controller-state/9999999999999",
+      "local_main_exists": false,
+      "local_marker": null,
+      "before_file_sha256": {
+        "controller.sqlite3": "55368651570f80e53a5e2e06ca4e7631346231fd624e00aa752ad4fdcaf60db3",
+        "auth.sqlite3": "0999a76e7e8b8ccfbfce39843ec9160f2de83768396db7bddb94e9bf749991df"
+      },
+      "after_file_sha256": {
+        "controller.sqlite3": null,
+        "auth.sqlite3": null
+      },
+      "original_file_bytes_preserved": false,
+      "staging_dirs_remaining": [],
+      "rollout_phase": "rollback_requested"
+    },
+    "partial_upload": {
+      "result": null,
+      "exception": "OSError",
+      "message": "injected second-file upload failure",
+      "local_ancestry": null,
+      "latest_epoch_ms": 1791336748495,
+      "main_uploaded": true,
+      "auth_uploaded": false
+    },
+    "partial_download": {
+      "returned": true,
+      "before_healthy": true,
+      "after_healthy": false,
+      "detail": "auth.sqlite3 is missing",
+      "marker": 3,
+      "auth_exists": false
+    },
+    "partial_startup": {
+      "result": null,
+      "exception": null,
+      "before_db_open_healthy": false,
+      "after_db_open_healthy": true,
+      "marker": 3
+    }
+  },
+  "boundary": "Original installed Iris full modules, local file:// storage, original SQLite/zstd; patch only auth-file upload to raise OSError. Numeric checkpoint and marker values are constructed. No production cluster operations or user state touched.",
+  "actual_production_incident": null,
+  "actual_auth_key_loss": null,
+  "actual_training_checkpoint_restore": null
+}

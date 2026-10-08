@@ -628,3 +628,8 @@ V117接原causal目标mask、attention有效性、投影margin和四CPU histogra
 ## V122：历史源码与恢复证据
 
 V122补上部分历史源码缺口：公开commit为空，但两份代码artifact可读；下载五文件，核对两份清单，上传混合器仅阶段查找表示不同。80组条件重算与V121一致。一个续训日志确认step-393读取和后续进度。下一步仍需实际入口/导入路径、历史key和checkpoint输入身份；当前不能判真实重复token或loss影响。
+
+
+## V123：随机流与seed语义
+
+V123取得8份来源：三候选入口、checkpoint辅助、key迭代器、JAX版本与两份依赖清单。三入口选定key路径一致；JAX0.11.0/0.7.2各9项控制、两版本5项比较通过。None转0与partitionable flag变化均改200桶key；未确认历史实际key、导入路径或token。后续可沿入口调用者与运行导入证据继续绑定，不重复把声明派生称为历史恢复。

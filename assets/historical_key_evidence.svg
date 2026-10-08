@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 340" role="img" aria-labelledby="historical-key-title historical-key-desc">
+<title id="historical-key-title">相同训练seed，None与显式0沿不同路径生成数据key</title>
+<desc id="historical-key-desc">给定训练seed0、threefry2x32和partitionable true。默认None取根拆分的第一个key；显式0覆盖为PRNGKey0。模型初始化key相同，但200桶child key不同。实际恢复模型与历史执行key未验证。</desc>
+<rect width="960" height="340" rx="12" fill="#f5f7fa"/>
+<g font-family="sans-serif" fill="#17263b">
+<text x="26" y="32" font-size="20" font-weight="700">同一个训练 seed=0，数据流仍可能不同</text>
+<text x="26" y="58" font-size="14" fill="#52657a">给定 threefry2x32，jax_threefry_partitionable=True；展示上传源码下的 CPU 派生结果</text>
+<rect x="24" y="78" width="440" height="185" rx="9" fill="#deefe7" stroke="#388263"/>
+<rect x="496" y="78" width="440" height="185" rx="9" fill="#e6eefb" stroke="#557ca8"/>
+<g font-size="17" font-weight="700"><text x="42" y="106">data_seed=None：保留根 key 的拆分结果</text><text x="514" y="106">data_seed=0：显式覆盖数据 key</text></g>
+<g font-size="15">
+<text x="42" y="137">data_key = [1797259609, 2579123966]</text><text x="514" y="137">data_key = [0, 0]</text>
+<text x="42" y="166">↓ 再拆分一次</text><text x="514" y="166">↓ 再拆分一次</text>
+<text x="42" y="195">mix_key = [4165894930, 804218099]</text><text x="514" y="195">mix_key = [1797259609, 2579123966]</text>
+<text x="42" y="235">shuffle_key → 200 个命名桶 child key</text><text x="514" y="235">200 个 child key 均与左侧不同</text>
+<text x="26" y="292">模型初始化 key 相同；续训参数还受 checkpoint 恢复分支控制，不能由初始化 key 直接判断。</text>
+<text x="26" y="320" fill="#52657a">JAX 0.11.0 / 0.7.2 所选控制一致 · 实际历史执行 key、缓存映射与 token 仍未验证</text>
+</g></g></svg>

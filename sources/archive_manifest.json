@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-08T02:56:36.668542+00:00",
+  "integrity_manifest_created_utc": "2026-10-08T03:07:00.139314+00:00",
   "files": [
     {
       "file": "accumulation_2026_10_07/grad_accum.py",
@@ -1322,6 +1322,62 @@
       "sha256": "8ce21440371c8efd367fe52d950af9a461e1ad52e8736909748b8689b8828fa1",
       "url": "https://api.github.com/search/issues?q=repo%3Amarin-community%2Fmarin+hero+gate+router&per_page=20",
       "retrieved_utc": "2026-10-03T21:34:50.604354+00:00"
+    },
+    {
+      "file": "historical_key_2026_10_08/checkpointing.py",
+      "bytes": 7536,
+      "sha256": "bfb990c8ebc2f2eea1bd2d7a37935eb16c49e66952892ca23189ed7f7e4811b1",
+      "url": "https://api.wandb.ai/artifactsV2/default/marin-community/marin_moe/source-marin_moe-_callable_runner.py/QXJ0aWZhY3Q6MzQ0NDg4ODI4Nw%3D%3D/65dcdd125213b0c16bd409d3446650e7/checkpointing.py",
+      "retrieved_utc": "2026-10-08T03:00:43.698365+00:00"
+    },
+    {
+      "file": "historical_key_2026_10_08/continuation_requirements.txt",
+      "bytes": 6008,
+      "sha256": "cdd1c3977f350878f355f5a7780c2bffe68cad1c847f6a8b82aeb1bde38f92b5",
+      "url": "https://api.wandb.ai/files/marin-community/marin_moe/h100-d512-mix-proportional-zero-c00-seed0-from10pct-20260826-rno2a/requirements.txt",
+      "retrieved_utc": "2026-10-08T03:00:57.335070+00:00"
+    },
+    {
+      "file": "historical_key_2026_10_08/jax_utils.py",
+      "bytes": 20957,
+      "sha256": "6e9ff514b482ceb2c12d10719418989c4d6fad5c4cdc29b6c3749912fe1d5849",
+      "url": "https://api.wandb.ai/artifactsV2/default/marin-community/marin_moe/source-marin_moe-_callable_runner.py/QXJ0aWZhY3Q6MzQ0NDg4ODI4Nw%3D%3D/579963c59786da2792708ee909256aea/jax_utils.py",
+      "retrieved_utc": "2026-10-08T03:00:46.611589+00:00"
+    },
+    {
+      "file": "historical_key_2026_10_08/jax_version.py",
+      "bytes": 6849,
+      "sha256": "f8d782855b46304fd9cbe92bc2cef17cbf5cd70360017046f40ad539bf886eab",
+      "url": "https://api.wandb.ai/artifactsV2/default/marin-community/marin_moe/source-marin_moe-_callable_runner.py/QXJ0aWZhY3Q6MzQ1NDEwMTg2Mg%3D%3D/2977f1be25761b874f319dabcf896c62/version.py",
+      "retrieved_utc": "2026-10-08T03:00:49.187577+00:00"
+    },
+    {
+      "file": "historical_key_2026_10_08/producer_requirements.txt",
+      "bytes": 6008,
+      "sha256": "fecbe0d749aef8f1999c90561ee294a00c519eb036a2502ae4024141f3edf629",
+      "url": "https://api.wandb.ai/files/marin-community/marin_moe/h100-ladder-d512-ep8-bs1024-791tpp-10pct-20260826-rno2a/requirements.txt",
+      "retrieved_utc": "2026-10-08T03:00:54.302235+00:00"
+    },
+    {
+      "file": "historical_key_2026_10_08/train_base.py",
+      "bytes": 25517,
+      "sha256": "98240d07f55efc521626b623f908296b04b6028ddad94e7d3bf9172a568ec20f",
+      "url": "https://api.wandb.ai/artifactsV2/default/marin-community/marin_moe/source-marin_moe-_callable_runner.py/QXJ0aWZhY3Q6MzQ0NDg4ODI4Nw%3D%3D/e775810b1786c2e3d119b179d668d2b6/train.py",
+      "retrieved_utc": "2026-10-08T03:00:29.627023+00:00"
+    },
+    {
+      "file": "historical_key_2026_10_08/train_ep.py",
+      "bytes": 53508,
+      "sha256": "7d5f62141104cf2948957391b35145f8a196002c6bf9d56e71c38ce03b1b483d",
+      "url": "https://api.wandb.ai/artifactsV2/default/marin-community/marin_moe/source-marin_moe-_callable_runner.py/QXJ0aWZhY3Q6MzQ1NDEwMTg2Mg%3D%3D/b68e4b3d874e93cfb9ffe3bfb5d9fc5c/train.py",
+      "retrieved_utc": "2026-10-08T03:00:39.390471+00:00"
+    },
+    {
+      "file": "historical_key_2026_10_08/train_moe.py",
+      "bytes": 23875,
+      "sha256": "ae88a8d1e95b7bcd75710bb2913fbcadf429e17257a8ef3fec23f815c49a0024",
+      "url": "https://api.wandb.ai/artifactsV2/default/marin-community/marin_moe/source-marin_moe-_callable_runner.py/QXJ0aWZhY3Q6MzQ0NDg4ODI4Nw%3D%3D/a8ca827247d89d1d150a0e430924c6a8/train.py",
+      "retrieved_utc": "2026-10-08T03:00:36.197918+00:00"
     },
     {
       "file": "integer_exposure_2026_10_07/mixture.py",
@@ -3536,8 +3592,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 275594,
-      "sha256": "8a86223ad27c66c80770d6005a101e67868cfbedb6758adf93e63a823f5f5984",
+      "bytes": 279229,
+      "sha256": "a1ecebfd17d78156946a3d0c4b55dd7c74ee795909456300dfc208a2f9379804",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

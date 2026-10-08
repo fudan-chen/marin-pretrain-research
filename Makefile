@@ -282,3 +282,12 @@ run-code-replay:
 	$(CPU_PYTHON) scripts/analyze_run_code_provenance.py
 run-code-static:
 	$(PYTHON) scripts/validate_run_code_static.py
+
+.PHONY: historical-key-snapshot historical-key-replay historical-key-compare
+historical-key-snapshot:
+	$(PYTHON) scripts/acquire_historical_key_sources.py
+	$(PYTHON) scripts/archive_manifest.py
+historical-key-replay:
+	$(CPU_PYTHON) scripts/probe_historical_key_pipeline.py
+historical-key-compare:
+	$(PYTHON) scripts/analyze_historical_key_versions.py

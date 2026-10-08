@@ -1,0 +1,592 @@
+# Copyright The Levanter Authors
+# SPDX-License-Identifier: Apache-2.0
+
+import contextlib
+import functools
+import json
+import warnings
+from dataclasses import fields
+from typing import Any, Callable, Optional, TypeVar
+
+import equinox as eqx
+import haliax as hax
+import haliax.partitioning
+import jax
+import jax._src.distributed as jax_distributed
+import numpy as np
+from haliax import is_named_array
+from haliax._src.util import index_where
+from haliax.jax_utils import is_jax_array_like
+from haliax.partitioning import ResourceAxis, ResourceMapping
+from jax import numpy as jnp
+from jax._src.mesh import get_concrete_mesh
+from jax.sharding import AxisType, Mesh, NamedSharding, PartitionSpec
+from jaxtyping import PRNGKeyArray, PyTree
+
+from levanter.utils.mesh import create_mesh_from_axis_specs
+from levanter.utils.tree_utils import key_path_to_str, tree_flatten_one_level_with_keys
+
+X = TypeVar("X")
+T = TypeVar("T", bound=PyTree)
+L = TypeVar("L")
+
+
+def jnp_to_python(a: jnp.ndarray):
+    if isinstance(a, (float, int)):
+        return float(a)
+    elif a.shape == () or a.shape == (1,):
+        return a.item()
+    else:
+        return a.tolist()
+
+
+@contextlib.contextmanager
+def use_cpu_device():
+    """Temporarily sets the default device to CPU"""
+    cpu = jax.local_devices(backend="cpu")[0]
+    with jax.default_device(cpu):
+        yield cpu
+
+
+@contextlib.contextmanager
+def local_cpu_mesh():
+    """Temporarily sets the default device to CPU and creates a mesh with a single CPU device"""
+    cpu = jax.local_devices(backend="cpu")[0]
+    mesh = create_mesh_from_axis_specs(
+        ici_axes={
+            ResourceAxis.REPLICA: 1,
+            ResourceAxis.DATA: 1,
+            ResourceAxis.MODEL: 1,
+            ResourceAxis.CONTEXT: 1,
+        },
+        dcn_axes={},
+        devices=[cpu],
+    )
+    with use_cpu_device(), haliax.partitioning.set_mesh(mesh):
+        yield mesh
+
+
+def is_inside_jit():
+    """Returns True if we're currently inside a jit"""
+    return isinstance(jnp.zeros(()), jax.core.Tracer)
+
+
+def _flatten_axis_resource(axis_resource: Any) -> tuple[str, ...]:
+    if axis_resource is None:
+        return ()
+    if isinstance(axis_resource, str):
+        return (axis_resource,)
+    if isinstance(axis_resource, tuple | list):
+        names: list[str] = []
+        for axis in axis_resource:
+            names.extend(_flatten_axis_resource(axis))
+        return tuple(names)
+    return ()
+
+
+def axis_resource_is_explicit(mesh: Mesh, axis_resource: Any) -> bool:
+    """Return True iff all axis names in ``axis_resource`` map to explicit mesh axes."""
+    axis_types = dict(zip(mesh.axis_names, mesh.axis_types, strict=True))
+    axis_names = _flatten_axis_resource(axis_resource)
+    if len(axis_names) == 0:
+        return False
+    for axis_name in axis_names:
+        axis_type = axis_types.get(axis_name)
+        if axis_type is None or axis_type != AxisType.Explicit:
+            return False
+    return True
+
+
+def parameter_count(model: PyTree):
+    # especially with jax.vjp, we get duplicate arrays and want to uniq them
+    # NB we need to use object identity here, mostly because of ShapedDtypeStruct
+    leaves = {id(x): x for x in jax.tree_util.tree_leaves(model) if is_jax_array_like(x)}
+    return sum(x.size for x in leaves.values())
+
+
+def move_tree_to_memory_kind(tree: T, *, memory_kind: str) -> T:
+    """Move JAX array leaves in ``tree`` to ``memory_kind`` while preserving structure."""
+
+    def _move_leaf(leaf):
+        if isinstance(leaf, jax.Array):
+            sharding = getattr(leaf, "sharding", None)
+            if sharding is None:
+                # Traced leaves inside jit do not expose concrete sharding metadata.
+                # Treat as no-op and rely on explicit `device_put(..., out_shardings=...)`
+                # at jit boundaries when memory-kind transfers are required.
+                return leaf
+            if sharding.memory_kind == memory_kind:
+                return leaf
+            return jax.device_put(leaf, sharding.with_memory_kind(memory_kind))
+        return leaf
+
+    return jax.tree.map(_move_leaf, tree)
+
+
+_sync_counter = 0
+
+
+def multihost_broadcast_sync(obj: X, is_source: Optional[bool] = None, timeout: float = 200.0) -> X:
+    """
+    Uses jax's unpublished distributed api to sync a value across hosts using json dump. If is_source is None, then
+    process_index 0 is the source.
+    """
+    global _sync_counter
+    key = f"LEVANTER_MULTIHOST_BROADCAST_SYNC{_sync_counter}"
+    if is_source is None:
+        is_source = jax.process_index() == 0
+
+    if jax.process_count() == 1:
+        return obj
+
+    client = jax_distributed.global_state.client
+
+    if client is None:
+        raise RuntimeError("multihost_broadcast_sync requires jax distributed client to be initialized")
+
+    if is_source:
+        serialized = json.dumps(obj)
+        client.key_value_set(key, serialized)
+
+    client.wait_at_barrier(f"multihost_broadcast_sync{_sync_counter}", timeout_in_ms=int(timeout * 1000.0))
+
+    if not is_source:
+        serialized = client.blocking_key_value_get(key, timeout_in_ms=int(timeout * 1000.0))
+        obj = json.loads(serialized)
+
+    _sync_counter += 1
+    return obj
+
+
+def multihost_allgather_sync(obj: X, timeout: float = 200.0) -> list[X]:
+    """Exchange a JSON-serializable value among all JAX processes."""
+    global _sync_counter
+    process_count = jax.process_count()
+    if process_count == 1:
+        return [obj]
+
+    client = jax_distributed.global_state.client
+    if client is None:
+        raise RuntimeError("multihost_allgather_sync requires jax distributed client to be initialized")
+
+    key = f"LEVANTER_MULTIHOST_ALLGATHER_SYNC{_sync_counter}"
+    client.key_value_set(f"{key}/{jax.process_index()}", json.dumps(obj))
+    client.wait_at_barrier(f"multihost_allgather_sync{_sync_counter}", timeout_in_ms=int(timeout * 1000.0))
+
+    gathered = [
+        json.loads(client.blocking_key_value_get(f"{key}/{process_index}", timeout_in_ms=int(timeout * 1000.0)))
+        for process_index in range(process_count)
+    ]
+    _sync_counter += 1
+    return gathered
+
+
+def barrier_sync_named(barrier_id: str, timeout: float = 200):
+    """Wait for every process at ``barrier_id``, raising once ``timeout`` seconds elapse.
+
+    Barriers are one-shot, so a caller that barriers repeatedly must vary the id. Prefer this over
+    a device collective such as ``jax.experimental.multihost_utils.sync_global_devices``, which
+    cannot be cancelled and so waits indefinitely when one process is late.
+    """
+    if jax.process_count() == 1:
+        return
+
+    try:
+        from jaxlib.xla_extension import DistributedRuntimeClient  # noqa: PLC0415  # guarded: jaxlib version fallback
+    except ModuleNotFoundError:  # jaxlib>=0.6.2
+        from jax._src.lib import _jax as _jax_lib  # noqa: PLC0415  # guarded: jaxlib version fallback
+
+        DistributedRuntimeClient = _jax_lib.DistributedRuntimeClient
+
+    client: Optional[DistributedRuntimeClient] = jax_distributed.global_state.client
+
+    if client is None:
+        raise RuntimeError("barrier_sync_named requires jax distributed client to be initialized")
+
+    client.wait_at_barrier(barrier_id, timeout_in_ms=int(timeout * 1000.0))
+
+
+def barrier_sync(timeout: float = 200):
+    """
+    Uses jax's unpublished distributed api to wait for all processes to reach a barrier. This is useful for ensuring
+    that all processes have reached a certain point in the code before continuing.
+
+    The barrier id comes from a process-local counter, so every process must reach this call the
+    same number of times. Use :func:`barrier_sync_named` where that cannot be guaranteed.
+    """
+    global _sync_counter
+    if jax.process_count() == 1:
+        return
+
+    _sync_counter += 1
+    barrier_sync_named(f"levanter_barrier_sync_{_sync_counter}", timeout=timeout)
+
+
+# from https://stackoverflow.com/questions/2166818/how-to-check-if-an-object-is-an-instance-of-a-namedtuple
+# python is a disgusting language
+def _isnamedtupleinstance(x):
+    t = type(x)
+    b = t.__bases__
+    if len(b) != 1 or b[0] is not tuple:
+        return False
+    f = getattr(t, "_fields", None)
+    if not isinstance(f, tuple):
+        return False
+    return all(isinstance(n, str) for n in f)
+
+
+def leaf_key_paths(
+    pytree,
+    prefix: Optional[str] = "",
+    *,
+    is_leaf: Optional[Callable[[Any], bool]] = None,
+    use_state_dict_keys: bool = False,
+):
+    """Creates unique, hopefully meaningful key paths for each leaf in a pytree. This is useful for
+    serialization mostly. This functions knows about dicts, lists, NamedTuples, tuples, and equinox-style modules"""
+    # TODO: jax now has a tree_flatten_with_path function. We should use that instead
+    rec = lambda x, p: leaf_key_paths(  # noqa: E731
+        x, prefix=join_key(prefix, p), is_leaf=is_leaf, use_state_dict_keys=use_state_dict_keys
+    )
+
+    out: PyTree[str]
+
+    if is_leaf is not None and is_leaf(pytree):
+        out = prefix
+    elif pytree is None:
+        out = None
+    elif isinstance(pytree, dict):
+        out = {k: rec(v, k) for k, v in pytree.items()}
+    elif _isnamedtupleinstance(pytree):
+        d = {k: rec(v, k) for k, v in pytree._asdict().items()}
+        out = pytree.__class__(**d)
+    elif isinstance(pytree, list):
+        out = [rec(v, str(i)) for i, v in enumerate(pytree)]
+    elif isinstance(pytree, tuple):
+        out = tuple(rec(v, str(i)) for i, v in enumerate(pytree))
+    elif isinstance(pytree, eqx.Module):
+        rec_values = []
+        for field in fields(pytree):
+            if field.metadata.get("static", False):
+                continue
+            field_name = field.name
+            field_value = getattr(pytree, field_name)
+
+            if use_state_dict_keys and hasattr(pytree, "_state_dict_key_map"):
+                field_name = pytree._state_dict_key_map().get(field_name, field_name)
+
+            rec_value = rec(field_value, field_name)
+            rec_values.append(rec_value)
+
+        _, tree_def = eqx.tree_flatten_one_level(pytree)
+        out = jax.tree_util.tree_unflatten(tree_def, rec_values)
+    elif isinstance(pytree, hax.NamedArray):
+        leaves, treedef = jax.tree_util.tree_flatten(pytree, is_leaf=is_leaf)
+        out = jax.tree_util.tree_unflatten(treedef, [f"{prefix}"])
+    else:
+        leaves, treedef = jax.tree_util.tree_flatten(pytree)
+        if len(leaves) == 0:
+            out = None
+        elif len(leaves) == 1:
+            out = jax.tree_util.tree_unflatten(treedef, [f"{prefix}"])
+        else:
+            # new behavior: use registered keys
+            leaves_with_keys, treedef = tree_flatten_one_level_with_keys(pytree)
+            out_leaves = []
+            for key, leaf in leaves_with_keys:
+                if key is None:
+                    out_leaves.append(join_key(prefix, ""))
+                else:
+                    key_str = key_path_to_str([key])
+                    rec_pref = join_key(prefix, key_str)
+                    out_leaves.append(
+                        leaf_key_paths(leaf, rec_pref, is_leaf=is_leaf, use_state_dict_keys=use_state_dict_keys)
+                    )
+            out = jax.tree_util.tree_unflatten(treedef, out_leaves)
+
+    return out
+
+
+def join_key(prefix, k):
+    if k is None:
+        return prefix
+    return f"{prefix}.{k}" if prefix else k
+
+
+def key_iterator(key: PRNGKeyArray | int):
+    if isinstance(key, int):
+        key = jax.random.PRNGKey(key)
+    while True:
+        key, subkey = jax.random.split(key)
+        yield subkey
+
+
+def is_inexact_arrayish(x):
+    """
+    Similar to [equinox.is_inexact_array][] but works on anything that has a shape and dtype
+    and the dtype is inexact.
+
+    Specifically, we want to work with [jax.ShapeDtypeStruct][]s, which are not arrays.
+    """
+    if hasattr(x, "shape") and hasattr(x, "dtype"):
+        return jnp.issubdtype(x.dtype, jnp.inexact)
+    else:
+        return False
+
+
+def best_effort_sharding(shape, *, devices=None, mesh=None):
+    if hasattr(shape, "shape"):
+        shape = shape.shape
+
+    if devices is None:
+        devices = jax.devices()
+
+    if mesh is None:
+        # TODO: we shouldn't be getting a concrete mesh here. Need to fix/remove this whole function
+        mesh = get_concrete_mesh()
+        if mesh is not None and mesh.shape == ():
+            mesh = None
+
+    if mesh is None:
+        device_shape = (len(devices),)
+        # we want to shard an array with shape shape across len(devices)
+        # each axis in the array has to be divisible by the corresponding axis in device_shape, so
+        # we iterate from the right, taking the gcd of the shape and the left-most axis of device_shape
+        num_devices = device_shape[0]
+
+        for i in range(len(shape) - 1, -1, -1):
+            shape_i = shape[i]
+            gcd = np.gcd(shape_i, num_devices)
+            num_devices //= gcd
+            device_shape = (num_devices, gcd) + device_shape[1:]
+
+        device_mesh = np.array(devices).reshape(list(device_shape))
+        axis_names = [f"d{i}" for i in range(len(shape))]
+        mesh = Mesh(device_mesh, ["b"] + axis_names)
+        sharding = NamedSharding(mesh, PartitionSpec(*axis_names))
+        return sharding
+    else:
+        # get the existing mesh and find the FSDP axis
+        num_devices = mesh.shape[hax.partitioning.ResourceAxis.DATA]
+
+        for i in range(len(shape) - 1, -1, -1):
+            shape_i = shape[i]
+            if shape_i % num_devices == 0:
+                sharded_axis = i
+                break
+        else:
+            return NamedSharding(mesh, PartitionSpec(None))
+
+        axis_sharding: list[str | None] = [None] * len(shape)
+        axis_sharding[sharded_axis] = hax.partitioning.ResourceAxis.DATA
+        sharding = NamedSharding(mesh, PartitionSpec(*axis_sharding))
+
+        return sharding
+
+
+def estimated_free_device_memory(device=None) -> Optional[float]:
+    """
+    Returns free memory in GiB. If the device doesn't support memory stats, returns None. If no device is provided,
+    sums across all devices.
+    Args:
+        device: if None, sums all devices
+
+    Returns:
+
+    """
+    if device is not None:
+        devices = [device]
+    else:
+        devices = jax.devices()
+
+    total = 0.0
+    for device in devices:
+        stats = device.memory_stats()
+        if stats is None:
+            return None
+        else:
+            limit = stats.get("bytes_limit", None)
+            if limit is None:
+                return None
+
+            in_use = stats.get("bytes_in_use", 0)
+
+            total += (limit - in_use) // (1024.0**3)
+
+    return total
+
+
+def zeros_like_tree(tree: T, axis_mapping: Optional[ResourceMapping] = None, dtype: Optional[jnp.dtype] = None) -> T:
+    """
+    Creates a tree of zeros with the same structure as the input tree. If the input tree contains NamedArrays, then
+    those will be sharded according to the axis_mapping (or the context axis mapping if not provided).
+    """
+    _zeros = functools.partial(_zeros_like, axis_mapping, dtype)
+    acc = jax.tree_util.tree_map(_zeros, tree, is_leaf=is_named_array)
+    return acc
+
+
+def _zeros_like(mapping, dtype, n):
+    if isinstance(n, hax.NamedArray):
+        return hax.shard(hax.zeros_like(n, dtype=dtype), mapping)
+    elif is_jax_array_like(n):
+        return jnp.zeros_like(n, dtype)
+    else:
+        assert jnp.isscalar(n)
+        if dtype is None:
+            # if it's a nan, we want to go to 0
+            if n != n:
+                return 0
+            return n - n
+        else:
+            return jnp.zeros((), dtype=dtype)
+
+
+def broadcast_shard(x: T, out_axis_specs: Any, source: int = 0) -> T:
+    """
+    Given a tree of arrays that are on a single source host, and other data (e.g. zeros) with
+    the same structure, broadcast and shard the data to all hosts, using the axis mapping provided.
+
+    For some reason, I had a ton of trouble figuring this out.
+
+    Our strategy is, for each leaf:
+     1. create a host_local_array_to_global_array with the data if we're the source, or zeros if we're not.
+        This gives us an array [num_devices, ...]
+     2. Then, inside jit, we select the source'th element of the array, then reshard with the out_axis_specs
+
+    """
+    current_mesh = hax.partitioning._get_mesh()
+    assert current_mesh is not None, "broadcast_shard requires an active mesh"
+
+    axis_names = current_mesh.axis_names
+
+    valid_device_for_process = index_where(lambda d: d.host_id == source, current_mesh.devices.flatten())
+    sharding = NamedSharding(
+        current_mesh,
+        PartitionSpec(
+            axis_names,
+        ),
+    )
+
+    def pre_jit(x):
+        if jax.process_index() == source:
+            inp = np.asarray(jax.device_get(x))
+        else:
+            inp = np.zeros(x.shape, dtype=x.dtype)
+
+        shape = (len(jax.devices()),) + inp.shape
+        inp = np.expand_dims(inp, axis=0)
+        out = jax.make_array_from_callback(shape, sharding, lambda _: inp)
+
+        return out
+
+    def in_jit(x, pspec):
+        if isinstance(x, hax.NamedArray):
+            arr = x.array
+        else:
+            arr = x
+        arr = jax.lax.with_sharding_constraint(arr[valid_device_for_process], pspec)
+
+        if isinstance(x, hax.NamedArray):
+            return hax.named(arr, x.axis_names)
+        else:
+            return arr
+
+    x = jax.tree.map(pre_jit, x)
+    out = eqx.filter_jit(jax.tree.map)(in_jit, x, out_axis_specs, is_leaf=is_named_array)
+
+    return out
+
+
+def tree_broadcast_to(prefix: PyTree[L], t: T, *, is_leaf: Optional[Callable[[Any], bool]] = None) -> T:
+    """
+    Broadcasts a prefix tree to match the structure of a full tree. This is useful when you need to
+    tree_map over t and prefix (using t as the leaves) but prefix is a tree prefix of t.
+    """
+    return jax.tree.map(
+        # note the swap
+        lambda pref, xtree: jax.tree.map(lambda x: pref, xtree, is_leaf=is_leaf),
+        prefix,
+        t,
+        is_leaf=is_leaf,
+    )
+
+
+def sharded_tree_size(
+    tree, mesh: Optional[haliax.partitioning.MeshLike] | None = None, mapping: ResourceMapping | None = None
+) -> int:
+    """
+    Returns the size of a sharded tree, in bytes. If the tree is sharded, this returns the size of a per-device shard.
+
+    If mesh is None, uses the current mesh.
+    If mapping is None, uses the current mapping.
+
+    For named arrays, this uses the provided mesh and mapping to determine the sharding.
+    For real jax.Arrays, uses their existing sharding.
+    Inside jit or with ShapeDTypeStruct, see if there is a sharding. If not, assumes unsharded.
+    For other arrays, assumes unsharded.
+
+    Args:
+        tree: the tree to measure
+        mesh: the mesh to use for sharding. If None, uses the current mesh.
+    """
+    if mesh is None:
+        mesh = jax.sharding.get_abstract_mesh()
+
+    if mapping is None:
+        mapping = haliax.partitioning.current_thread_local_mapping()
+
+    def _mesh_axis_size(axis_name) -> int:
+        if mesh is None:
+            return 1
+        return mesh.shape[axis_name]
+
+    def _shards_for_pspec(pspec):
+        if mesh is None or pspec is None:
+            return 1
+
+        count = 1
+        for axis in pspec:
+            if axis is None:
+                continue
+            if isinstance(axis, tuple):
+                for sub_axis in axis:
+                    count *= _mesh_axis_size(sub_axis)
+            else:
+                count *= _mesh_axis_size(axis)
+        return count
+
+    def _size(x):
+        if isinstance(x, hax.NamedArray):
+            pspec = haliax.partitioning.pspec_for(x, mapping)
+            num_shards = _shards_for_pspec(pspec)
+            x_a = x.array
+            if hasattr(x_a, "nbytes"):
+                return x_a.nbytes // num_shards
+            else:
+                return x_a.size * x_a.dtype.itemsize // num_shards
+        elif is_jax_array_like(x):
+            sharding = getattr(x, "sharding", None)
+            pspec = getattr(sharding, "spec", None) if sharding is not None else None
+            if pspec is None and sharding is not None:
+                warnings.warn(
+                    f"{x} has sharding {sharding} but no spec. Assuming unsharded. If you see this, please report a bug."
+                )
+            num_shards = _shards_for_pspec(pspec)
+
+            # ShapeDtypeStruct doesn't have nbytes
+            if hasattr(x, "nbytes"):
+                total = x.nbytes
+            else:
+                shape = getattr(x, "shape", None)
+                dtype = getattr(x, "dtype", None)
+                if shape is None or dtype is None:
+                    raise ValueError("Unable to determine byte size for JAX array-like leaf without shape/dtype")
+                total = int(np.prod(shape)) * np.dtype(dtype).itemsize
+
+            return total // num_shards if num_shards > 0 else total
+        else:
+            assert jnp.isscalar(x)
+            return jnp.dtype(type(x)).itemsize
+
+    return sum(jax.tree.leaves(jax.tree.map(_size, tree, is_leaf=is_named_array)))

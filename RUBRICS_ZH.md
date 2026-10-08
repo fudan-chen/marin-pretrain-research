@@ -553,3 +553,8 @@ V117接原causal目标mask、attention有效性、投影margin和四CPU histogra
 ## V122：历史源码与恢复证据
 
 补充源码谱系判断：文件名相同不足以绑定历史行为；文件不同也不自动推翻局部结论。先匹配上传快照摘要，再比较具体方法，最后核查实际入口、恢复状态和输入身份。本轮两份清单五文件绑定、一个续训恢复日志及80组条件重算通过，实际imports/checkpoint内容/token尚缺。[可填写检查管线](RUN_CODE_PROVENANCE_ZH.md)。
+
+
+## V123：随机流与seed语义
+
+随机流规则补充：None、缺省与合法0需保留语义；记录PRNG实现、相关flag、拆分路径与桶顺序。默认换训练seed同时改变模型与数据key，不能单称模型初始化方差。统一显式数据seed的候选须与同流基线比较；接续旧run不能静默补0。[原代码、反事实与两个CPU版本](RUN_CODE_PROVENANCE_ZH.md)。

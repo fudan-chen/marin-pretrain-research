@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1720,
+  "checks_passed": 1724,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -170,7 +170,8 @@
     "V119 fifteen original author evaluation-wrapper CPU controls; force signatures and deduplication boundary; seven source payloads, 573 archived files; production adoption unknown",
     "V120 4320 archived baseline-relative responses; 80 full-history conditional key replays and trimmed controls; apparent generic key-change hypothesis rejected, no historical or causal attribution",
     "V121 producer metadata acquired, original 49152-slot block replay at step393 after phase384, sparse partial IDs and unexecuted bridge; actual repeated tokens and loss effect unknown",
-    "V122 two uploaded code inventories, five source bindings, one continuation step393 read log and historical-source conditional replay; actual imports/checkpoint contents/tokens unknown"
+    "V122 two uploaded code inventories, five source bindings, one continuation step393 read log and historical-source conditional replay; actual imports/checkpoint contents/tokens unknown",
+    "V123 three candidate entrypoint key paths agree; None/zero and partitionable flag alter all200child keys; selected JAX0.11/0.7 CPU controls agree; initialization key distinct from restored model state"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

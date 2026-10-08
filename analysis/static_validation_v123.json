@@ -1,0 +1,26 @@
+{
+  "checks_passed": 5,
+  "checks": [
+    {
+      "name": "584 prior non-bookkeeping sources preserved and eight acquisition records appended",
+      "passed": true
+    },
+    {
+      "name": "Five cross-runtime and both nine-control results bind archived sources and current probes",
+      "passed": true
+    },
+    {
+      "name": "Independent key records verifyNone-zero semantics, fixed data seed and flag changes",
+      "passed": true
+    },
+    {
+      "name": "Runtime comparison and boundary counts preserve all historical execution unknowns",
+      "passed": true
+    },
+    {
+      "name": "Prior prose and tables retained, both HTML variants distinguish initialization from restore",
+      "passed": true
+    }
+  ],
+  "actual_browser_rendering": null
+}

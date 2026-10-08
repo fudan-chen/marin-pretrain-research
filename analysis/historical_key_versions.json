@@ -1,0 +1,148 @@
+{
+  "scope": "Compare selected historical source/key controls on two recorded CPU runtimes.",
+  "checks_passed": 5,
+  "checks": [
+    {
+      "name": "Six selected historical source payloads match both independent run manifests",
+      "passed": true
+    },
+    {
+      "name": "Both dependency records and uploaded JAX version declare0.11.0 with numpy2.3.5",
+      "passed": true
+    },
+    {
+      "name": "Both runtime probes bind current script/source bytes and nine scoped controls",
+      "passed": true
+    },
+    {
+      "name": "Eight variants all child keys and mixed-block prefixes match between0.11.0 and0.7.2",
+      "passed": true
+    },
+    {
+      "name": "Source-derived-key two-declaration boundary controls agree across selected versions",
+      "passed": true
+    }
+  ],
+  "bindings": [
+    {
+      "file": "sources/historical_key_2026_10_08/train_base.py",
+      "artifact_path": "experiments/grug/base/train.py",
+      "matches_both_run_manifests": true
+    },
+    {
+      "file": "sources/historical_key_2026_10_08/train_moe.py",
+      "artifact_path": "experiments/grug/moe/train.py",
+      "matches_both_run_manifests": true
+    },
+    {
+      "file": "sources/historical_key_2026_10_08/train_ep.py",
+      "artifact_path": "experiments/grug/moe_hero_ep/train.py",
+      "matches_both_run_manifests": true
+    },
+    {
+      "file": "sources/historical_key_2026_10_08/checkpointing.py",
+      "artifact_path": "experiments/grug/checkpointing.py",
+      "matches_both_run_manifests": true
+    },
+    {
+      "file": "sources/historical_key_2026_10_08/jax_utils.py",
+      "artifact_path": "lib/levanter/src/levanter/utils/jax_utils.py",
+      "matches_both_run_manifests": true
+    },
+    {
+      "file": "sources/historical_key_2026_10_08/jax_version.py",
+      "artifact_path": ".venv/lib/python3.12/site-packages/jax/version.py",
+      "matches_both_run_manifests": true
+    }
+  ],
+  "runtime_comparison": {
+    "first": {
+      "python": "3.12.13",
+      "jax": "0.11.0",
+      "jaxlib": "0.11.0",
+      "numpy": "2.3.5",
+      "backend": "cpu",
+      "default_prng_impl": "threefry2x32"
+    },
+    "second": {
+      "python": "3.12.13",
+      "jax": "0.7.2",
+      "jaxlib": "0.7.2",
+      "numpy": "2.5.3",
+      "backend": "cpu",
+      "default_prng_impl": "threefry2x32"
+    },
+    "selected_outputs_equal": true
+  },
+  "summary": {
+    "declared_default": {
+      "data_key": [
+        1797259609,
+        2579123966
+      ],
+      "mix_key": [
+        4165894930,
+        804218099
+      ],
+      "shuffle_key": [
+        1353695780,
+        2116000888
+      ]
+    },
+    "explicit_data_seed_zero": {
+      "data_key": [
+        0,
+        0
+      ],
+      "mix_key": [
+        1797259609,
+        2579123966
+      ],
+      "shuffle_key": [
+        928981903,
+        3453687069
+      ]
+    },
+    "changed_child_keys_none_vs_zero": 200,
+    "changed_child_keys_partitionable_true_vs_false": 200,
+    "boundary_with_declared_derived_key": {
+      "producer_prefix_sha256": "879e021ed836b217c67fb9eceb701a1c14155b82834692db5cb2377e315e44a0",
+      "continuation_prefix_sha256": "742999d7f9727914562797312b0b6ea6040a8da05a043678e61edbd05a28bfc0",
+      "unmatched_prefix_logical_ids_each_side": 7938,
+      "hybrid_block_repeated_logical_ids": 5346,
+      "next_batch_repeated_logical_ids": 129,
+      "prefix_count_half_l1": 2574
+    }
+  },
+  "source_sha256": {
+    "analysis/historical_child_keys_jax_0_11_0.csv": "f630a4eb27500fa52ce45c7963d3d284fee4ef8c4f3494ec89a502bea5820f32",
+    "analysis/historical_child_keys_jax_0_7_2.csv": "f630a4eb27500fa52ce45c7963d3d284fee4ef8c4f3494ec89a502bea5820f32",
+    "analysis/historical_key_acquisition_v123.json": "61c0a7ed87630078f5ca8e59267fb75b53404a0d6bf566ee0b0a8cef64d30ed2",
+    "analysis/historical_key_pipeline_jax_0_11_0.json": "dc9cdea001b68bc1952cb53de14432661dd07d24a57a30f5636265244ee63361",
+    "analysis/historical_key_pipeline_jax_0_7_2.json": "86384549791e0f2b1c6f350b4f5d3a5a37ca9e419aa95ea03af607cc85327cda",
+    "scripts/analyze_historical_key_versions.py": "afa4cd61eff26e3659a28d8b4fb1caa9fee33e02c943608f9828a0e1c4723618",
+    "sources/historical_key_2026_10_08/checkpointing.py": "bfb990c8ebc2f2eea1bd2d7a37935eb16c49e66952892ca23189ed7f7e4811b1",
+    "sources/historical_key_2026_10_08/continuation_requirements.txt": "cdd1c3977f350878f355f5a7780c2bffe68cad1c847f6a8b82aeb1bde38f92b5",
+    "sources/historical_key_2026_10_08/jax_utils.py": "6e9ff514b482ceb2c12d10719418989c4d6fad5c4cdc29b6c3749912fe1d5849",
+    "sources/historical_key_2026_10_08/jax_version.py": "f8d782855b46304fd9cbe92bc2cef17cbf5cd70360017046f40ad539bf886eab",
+    "sources/historical_key_2026_10_08/producer_requirements.txt": "fecbe0d749aef8f1999c90561ee294a00c519eb036a2502ae4024141f3edf629",
+    "sources/historical_key_2026_10_08/train_base.py": "98240d07f55efc521626b623f908296b04b6028ddad94e7d3bf9172a568ec20f",
+    "sources/historical_key_2026_10_08/train_ep.py": "7d5f62141104cf2948957391b35145f8a196002c6bf9d56e71c38ce03b1b483d",
+    "sources/historical_key_2026_10_08/train_moe.py": "ae88a8d1e95b7bcd75710bb2913fbcadf429e17257a8ef3fec23f815c49a0024",
+    "sources/run_code_2026_10_08/continuation_code_manifest.json": "d6065e8b8bc37dd4340ee7e3d5caeb341dd0bcdcc37f24ae02fc6859c4d76c2f",
+    "sources/run_code_2026_10_08/producer_code_manifest.json": "3cccb85753fd78a0113efb8162c5edb282935784ad157cd3534e13004ff8e97d"
+  },
+  "scope_limit": "Selected seed/key/mixed-block controls on CPU only; not full environment equivalence or proof of actual historical key execution. Synthetic finite identities, no actual child shuffle/cache/simulation or token read.",
+  "restore_source_observation": {
+    "file": "sources/historical_key_2026_10_08/train_ep.py",
+    "initialization_line": 844,
+    "restore_assignment_line": 848,
+    "status": "source_inspected_not_executed",
+    "implication": "Changed initialization key does not prove changed restored model parameters"
+  },
+  "actual_executed_historical_key": null,
+  "actual_runtime_imports_verified": null,
+  "actual_token_repetition_count": null,
+  "actual_training_loss_effect": null,
+  "actual_model_seed_variance_isolated": null
+}

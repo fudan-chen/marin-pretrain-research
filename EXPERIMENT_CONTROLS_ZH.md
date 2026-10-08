@@ -101,3 +101,7 @@
 ## 配置合同的执行补充
 
 上述阶段与预算限制依赖实际执行保障。历史源码用assert维护其中若干外部配置条件；Python优化模式会移除它们。新控制说明绕过整块限制之后可能重复身份，并不获得任意边界支持。[断言、取模与曝光账本](ASSERTION_CONTRACTS_ZH.md)保留合法/非法输入与显式异常候选的完整对照；历史Hero是否启用该模式未知。
+
+## V135：先确认收益，再扩因素
+
+[确认手册](CONFIRMATION_PLAYBOOK_ZH.md)把三组BPB删seed敏感性、独立生成能力确认与源码恢复/计划验收对应。只改配比先用两臂；确需改N或schedule时用 [四臂合同](templates/mixture_schedule_confirmation.json)，固定完整optimizer state与观察预算，分别解释配比、计划及所声明指标尺度的交互。它是待执行合同，没有训练结果或自动启动能力。

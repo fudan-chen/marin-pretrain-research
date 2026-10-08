@@ -1,0 +1,108 @@
+{
+  "schema": "marin-mixture-schedule-confirmation/1",
+  "status": "planned_not_executed",
+  "launchable": false,
+  "question": "Separate mixture effect, optimization-plan effect, and their interaction after a common checkpoint",
+  "source_artifact_digests": {},
+  "common_origin": {
+    "checkpoint_path": null,
+    "checkpoint_content_digest": null,
+    "restore_intent": "full_resume_required",
+    "observed_restored_path": null,
+    "observed_state_step": null,
+    "params_master_pending_ema_digest": null,
+    "optimizer_tree_digest": null,
+    "runtime_import_hashes": {},
+    "next_batch_identity_digest": null,
+    "next_update_replay_evidence": null
+  },
+  "fixed_window": {
+    "start_update": null,
+    "end_update_exclusive": null,
+    "historical_batch_schedule": null,
+    "actual_input_positions_per_arm": null,
+    "stop_condition_separate_from_scheduler_horizon": true
+  },
+  "data_contract": {
+    "inventory_revision": null,
+    "complete_component_order": [],
+    "root_and_child_key_evidence": null,
+    "pool_membership_digest": null,
+    "within_pool_index_mapping_digest": null,
+    "consumed_prefix_and_resume_mapping": null,
+    "expected_integer_exposure_by_arm": {},
+    "observed_input_target_weight_and_routing_ledgers": {},
+    "phase_boundaries_fixed_across_plan_factor": null,
+    "within_mixture_input_trace_equal_across_plan_factor": null
+  },
+  "optimization_plans": {
+    "P0": {
+      "description": "Original schedule definition",
+      "horizon_updates": null,
+      "quantity_units": {},
+      "expanded_cycle_boundaries": [],
+      "actual_next_lr_by_group": {},
+      "schedule_state_counts": {},
+      "adam_counts": {},
+      "decay_horizon": null
+    },
+    "P1": {
+      "description": "Explicitly proposed replanning; complete restored optimizer state retained",
+      "horizon_updates": null,
+      "quantity_units": {},
+      "expanded_cycle_boundaries": [],
+      "actual_next_lr_by_group": {},
+      "schedule_state_counts": {},
+      "adam_counts": {},
+      "decay_horizon": null
+    }
+  },
+  "arms": [
+    {
+      "id": "M0P0",
+      "mixture": "baseline_frozen",
+      "optimization_plan": "P0",
+      "optimizer_reset": false,
+      "training_result": null
+    },
+    {
+      "id": "M1P0",
+      "mixture": "candidate_frozen",
+      "optimization_plan": "P0",
+      "optimizer_reset": false,
+      "training_result": null
+    },
+    {
+      "id": "M0P1",
+      "mixture": "baseline_frozen",
+      "optimization_plan": "P1",
+      "optimizer_reset": false,
+      "training_result": null
+    },
+    {
+      "id": "M1P1",
+      "mixture": "candidate_frozen",
+      "optimization_plan": "P1",
+      "optimizer_reset": false,
+      "training_result": null
+    }
+  ],
+  "confirmation": {
+    "paired_continuation_repeats": [],
+    "candidate_freeze_timestamp": null,
+    "heldout_eval_identity": null,
+    "model_view_and_pending_policy": null,
+    "primary_metric": null,
+    "generation_metric_and_decoding": null,
+    "guardrail_tasks_and_tolerances": {},
+    "predeclared_cost_limit": null,
+    "actual_evidence": null
+  },
+  "contrasts": {
+    "mixture_under_original_plan": "Y(M1P0)-Y(M0P0)",
+    "plan_under_baseline_mixture": "Y(M0P1)-Y(M0P0)",
+    "interaction_on_declared_metric_scale": "Y(M1P1)-Y(M1P0)-Y(M0P1)+Y(M0P0)"
+  },
+  "decision": null,
+  "actual_training_executed": false
+}

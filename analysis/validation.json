@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1773,
+  "checks_passed": 1778,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -181,7 +181,8 @@
     "V131 eleven original pinned loop/scope/dispatch artificial fault controls: context chains, event short circuit and else failures; no production incident or IO proof",
     "V132 twelve original discovery/layout/reader/policy and entry guard controls with real local tiny OCDBT fixtures: parent versus concrete optional classification, malformed markers and explicit initialization intent; no historical Hero reset proof",
     "V133 fourteen original scheduler/build + real Optax injection/selected Adam controls: new horizon recomputes LR and decay, independent outer/wrapped clocks; synthetic paths and unused-group identities, no disk/full Hero or loss proof",
-    "V134 sixteen original scheduler boundary and candidate-unit/preflight controls, archived recipe contrast, synthetic scientific LR curves; not parser acceptance or actual Hero schedule incident"
+    "V134 sixteen original scheduler boundary and candidate-unit/preflight controls, archived recipe contrast, synthetic scientific LR curves; not parser acceptance or actual Hero schedule incident",
+    "V135 archived three-seed sensitivity and confirmation priorities, original-state/input/plan contracts and unexecuted mixture-by-plan draft; no new training or generation/transfer evidence"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

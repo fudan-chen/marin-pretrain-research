@@ -343,3 +343,7 @@ schedule-config-cpu:
 	$(CPU_PYTHON) scripts/probe_schedule_config_cpu.py
 schedule-config-figure:
 	$(PYTHON) scripts/plot_schedule_config.py
+
+.PHONY: confirmation-priorities
+confirmation-priorities:
+	$(PYTHON) scripts/analyze_confirmation_priorities.py

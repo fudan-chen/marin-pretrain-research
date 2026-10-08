@@ -1,0 +1,374 @@
+{
+  "scope": "Archived three-seed endpoint sensitivity; descriptive, selected candidate, no new training.",
+  "checks_passed": 11,
+  "checks": [
+    {
+      "name": "macro three distinct archived continuation labels",
+      "passed": true
+    },
+    {
+      "name": "macro aggregate independently matches archived summary",
+      "passed": true
+    },
+    {
+      "name": "code_text three distinct archived continuation labels",
+      "passed": true
+    },
+    {
+      "name": "code_text aggregate independently matches archived summary",
+      "passed": true
+    },
+    {
+      "name": "humaneval_target three distinct archived continuation labels",
+      "passed": true
+    },
+    {
+      "name": "humaneval_target aggregate independently matches archived summary",
+      "passed": true
+    },
+    {
+      "name": "gsm8k_target three distinct archived continuation labels",
+      "passed": true
+    },
+    {
+      "name": "gsm8k_target aggregate independently matches archived summary",
+      "passed": true
+    },
+    {
+      "name": "math pooled direction changes under leave-one-out against proportional",
+      "passed": true
+    },
+    {
+      "name": "math against old remains worse in all selected leave-one-out subsets",
+      "passed": true
+    },
+    {
+      "name": "macro and code targets improve in all selected leave-one-out subsets",
+      "passed": true
+    }
+  ],
+  "metrics": {
+    "macro": {
+      "metric": "eval_dropless/paloma/macro_bpb",
+      "all_pairs": {
+        "proportional": {
+          "n": 3,
+          "selected_mean_bpb": 1.1860119501749675,
+          "baseline_mean_bpb": 1.1865977048873901,
+          "absolute_delta": -0.0005857547124226148,
+          "relative_pct": -0.04936422091581516
+        },
+        "old": {
+          "n": 3,
+          "selected_mean_bpb": 1.1860119501749675,
+          "baseline_mean_bpb": 1.1933826208114624,
+          "absolute_delta": -0.00737067063649488,
+          "relative_pct": -0.6176284544417987
+        }
+      },
+      "per_seed_pct": {
+        "0": -0.002582176252119428,
+        "1": -0.04236656540742567,
+        "2": -0.10314581679711221
+      },
+      "leave_one_seed_out": {
+        "0": {
+          "proportional": {
+            "n": 2,
+            "selected_mean_bpb": 1.1857974529266357,
+            "baseline_mean_bpb": 1.1866607666015625,
+            "absolute_delta": -0.0008633136749267578,
+            "relative_pct": -0.07275151409944502
+          },
+          "old": {
+            "n": 2,
+            "selected_mean_bpb": 1.1857974529266357,
+            "baseline_mean_bpb": 1.193457007408142,
+            "absolute_delta": -0.007659554481506348,
+            "relative_pct": -0.6417955933025854
+          }
+        },
+        "1": {
+          "proportional": {
+            "n": 2,
+            "selected_mean_bpb": 1.1858476400375366,
+            "baseline_mean_bpb": 1.186474859714508,
+            "absolute_delta": -0.0006272196769714355,
+            "relative_pct": -0.052864135454366856
+          },
+          "old": {
+            "n": 2,
+            "selected_mean_bpb": 1.1858476400375366,
+            "baseline_mean_bpb": 1.193126618862152,
+            "absolute_delta": -0.0072789788246154785,
+            "relative_pct": -0.6100759726203386
+          }
+        },
+        "2": {
+          "proportional": {
+            "n": 2,
+            "selected_mean_bpb": 1.18639075756073,
+            "baseline_mean_bpb": 1.1866574883460999,
+            "absolute_delta": -0.00026673078536987305,
+            "relative_pct": -0.02247748722689069
+          },
+          "old": {
+            "n": 2,
+            "selected_mean_bpb": 1.18639075756073,
+            "baseline_mean_bpb": 1.193564236164093,
+            "absolute_delta": -0.007173478603363037,
+            "relative_pct": -0.6010131994585666
+          }
+        }
+      },
+      "loo_proportional_pct_range": [
+        -0.07275151409944502,
+        -0.02247748722689069
+      ]
+    },
+    "code_text": {
+      "metric": "eval_dropless/paloma/dolma_100_programing_languages-llama3/bpb",
+      "all_pairs": {
+        "proportional": {
+          "n": 3,
+          "selected_mean_bpb": 0.6789210438728333,
+          "baseline_mean_bpb": 0.6915642619132996,
+          "absolute_delta": -0.012643218040466309,
+          "relative_pct": -1.8282058135114188
+        },
+        "old": {
+          "n": 3,
+          "selected_mean_bpb": 0.6789210438728333,
+          "baseline_mean_bpb": 0.7044887542724609,
+          "absolute_delta": -0.025567710399627686,
+          "relative_pct": -3.6292574217216544
+        }
+      },
+      "per_seed_pct": {
+        "0": -1.8840814108954107,
+        "1": -1.8973965193818332,
+        "2": -1.7027102346617085
+      },
+      "leave_one_seed_out": {
+        "0": {
+          "proportional": {
+            "n": 2,
+            "selected_mean_bpb": 0.6786687970161438,
+            "baseline_mean_bpb": 0.6911102533340454,
+            "absolute_delta": -0.012441456317901611,
+            "relative_pct": -1.8002129555858448
+          },
+          "old": {
+            "n": 2,
+            "selected_mean_bpb": 0.6786687970161438,
+            "baseline_mean_bpb": 0.7036006152629852,
+            "absolute_delta": -0.02493181824684143,
+            "relative_pct": -3.543461689203131
+          }
+        },
+        "1": {
+          "proportional": {
+            "n": 2,
+            "selected_mean_bpb": 0.6788272559642792,
+            "baseline_mean_bpb": 0.6912247836589813,
+            "absolute_delta": -0.012397527694702148,
+            "relative_pct": -1.7935594885756467
+          },
+          "old": {
+            "n": 2,
+            "selected_mean_bpb": 0.6788272559642792,
+            "baseline_mean_bpb": 0.7041357457637787,
+            "absolute_delta": -0.02530848979949951,
+            "relative_pct": -3.594262889188693
+          }
+        },
+        "2": {
+          "proportional": {
+            "n": 2,
+            "selected_mean_bpb": 0.6792670786380768,
+            "baseline_mean_bpb": 0.692357748746872,
+            "absolute_delta": -0.013090670108795166,
+            "relative_pct": -1.8907378638411299
+          },
+          "old": {
+            "n": 2,
+            "selected_mean_bpb": 0.6792670786380768,
+            "baseline_mean_bpb": 0.7057299017906189,
+            "absolute_delta": -0.026462823152542114,
+            "relative_pct": -3.749709780668087
+          }
+        }
+      },
+      "loo_proportional_pct_range": [
+        -1.8907378638411299,
+        -1.7935594885756467
+      ]
+    },
+    "humaneval_target": {
+      "metric": "logprob_humaneval_10shot",
+      "all_pairs": {
+        "proportional": {
+          "n": 3,
+          "selected_mean_bpb": 0.49672331175246504,
+          "baseline_mean_bpb": 0.5370011142126808,
+          "absolute_delta": -0.040277802460215784,
+          "relative_pct": -7.500506310730604
+        },
+        "old": {
+          "n": 3,
+          "selected_mean_bpb": 0.49672331175246504,
+          "baseline_mean_bpb": 0.5176012245548983,
+          "absolute_delta": -0.020877912802433285,
+          "relative_pct": -4.0335903031116
+        }
+      },
+      "per_seed_pct": {
+        "0": -7.180219449228764,
+        "1": -9.263596288029142,
+        "2": -6.039815105266932
+      },
+      "leave_one_seed_out": {
+        "0": {
+          "proportional": {
+            "n": 2,
+            "selected_mean_bpb": 0.4961200221544362,
+            "baseline_mean_bpb": 0.537277652691784,
+            "absolute_delta": -0.04115763053734778,
+            "relative_pct": -7.66040246251567
+          },
+          "old": {
+            "n": 2,
+            "selected_mean_bpb": 0.4961200221544362,
+            "baseline_mean_bpb": 0.5196410160512613,
+            "absolute_delta": -0.02352099389682516,
+            "relative_pct": -4.526392869362117
+          }
+        },
+        "1": {
+          "proportional": {
+            "n": 2,
+            "selected_mean_bpb": 0.5000166158885021,
+            "baseline_mean_bpb": 0.53541343582081,
+            "absolute_delta": -0.03539681993230792,
+            "relative_pct": -6.611119102389207
+          },
+          "old": {
+            "n": 2,
+            "selected_mean_bpb": 0.5000166158885021,
+            "baseline_mean_bpb": 0.5149447746124294,
+            "absolute_delta": -0.014928158723927276,
+            "relative_pct": -2.898982465675637
+          }
+        },
+        "2": {
+          "proportional": {
+            "n": 2,
+            "selected_mean_bpb": 0.49403329721445677,
+            "baseline_mean_bpb": 0.5383122541254484,
+            "absolute_delta": -0.044278956910991596,
+            "relative_pct": -8.225515315999631
+          },
+          "old": {
+            "n": 2,
+            "selected_mean_bpb": 0.49403329721445677,
+            "baseline_mean_bpb": 0.5182178830010041,
+            "absolute_delta": -0.024184585786547363,
+            "relative_pct": -4.666875956980531
+          }
+        }
+      },
+      "loo_proportional_pct_range": [
+        -8.225515315999631,
+        -6.611119102389207
+      ]
+    },
+    "gsm8k_target": {
+      "metric": "logprob_gsm8k_5shot",
+      "all_pairs": {
+        "proportional": {
+          "n": 3,
+          "selected_mean_bpb": 0.7802076989485478,
+          "baseline_mean_bpb": 0.7688293388233775,
+          "absolute_delta": 0.01137836012517035,
+          "relative_pct": 1.4799591470564755
+        },
+        "old": {
+          "n": 3,
+          "selected_mean_bpb": 0.7802076989485478,
+          "baseline_mean_bpb": 0.7038808875598414,
+          "absolute_delta": 0.07632681138870645,
+          "relative_pct": 10.843711306512404
+        }
+      },
+      "per_seed_pct": {
+        "0": 4.67544095116903,
+        "1": -0.845320843478925,
+        "2": 0.4962174356990978
+      },
+      "leave_one_seed_out": {
+        "0": {
+          "proportional": {
+            "n": 2,
+            "selected_mean_bpb": 0.7604550360610054,
+            "baseline_mean_bpb": 0.7616941770258393,
+            "absolute_delta": -0.001239140964833907,
+            "relative_pct": -0.16268221580376663
+          },
+          "old": {
+            "n": 2,
+            "selected_mean_bpb": 0.7604550360610054,
+            "baseline_mean_bpb": 0.6852085299501876,
+            "absolute_delta": 0.07524650611081785,
+            "relative_pct": 10.981548364012351
+          }
+        },
+        "1": {
+          "proportional": {
+            "n": 2,
+            "selected_mean_bpb": 0.7993660904856921,
+            "baseline_mean_bpb": 0.7791361384979538,
+            "absolute_delta": 0.02022995198773825,
+            "relative_pct": 2.596459205029089
+          },
+          "old": {
+            "n": 2,
+            "selected_mean_bpb": 0.7993660904856921,
+            "baseline_mean_bpb": 0.7335120604315839,
+            "absolute_delta": 0.06585403005410817,
+            "relative_pct": 8.977906922942891
+          }
+        },
+        "2": {
+          "proportional": {
+            "n": 2,
+            "selected_mean_bpb": 0.7808019702989458,
+            "baseline_mean_bpb": 0.7656577009463392,
+            "absolute_delta": 0.015144269352606599,
+            "relative_pct": 1.9779425367091097
+          },
+          "old": {
+            "n": 2,
+            "selected_mean_bpb": 0.7808019702989458,
+            "baseline_mean_bpb": 0.6929220722977528,
+            "absolute_delta": 0.087879898001193,
+            "relative_pct": 12.682508107986855
+          }
+        }
+      },
+      "loo_proportional_pct_range": [
+        -0.16268221580376663,
+        2.596459205029089
+      ]
+    }
+  },
+  "source_sha256": {
+    "analysis/strong_baseline_paired.csv": "41cb372b18ba95756393461665cfed62f75597176ab55ac2f8dd9104e705ec10",
+    "analysis/strong_baseline_comparison.csv": "23fa7ba8d25db16c197f93f67d4d2bb5c6d309c8ace29b4ec90c805e7862a5f4"
+  },
+  "script_sha256": "ac5d879cf095af1badee3a79a20a992a697ba92a650a9a3c8c522db20ba4a7cd",
+  "selection_bias_corrected": false,
+  "confidence_intervals_computed": false,
+  "actual_new_training_runs": 0,
+  "actual_generated_task_accuracy": null,
+  "actual_535B_transfer_effect": null
+}

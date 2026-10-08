@@ -1,5 +1,7 @@
 # 版本记录
 
+V136 (2026-10-08): 12 CPU controls for original loss denominator dtype; direct low precision counterexamples and original causal constructor protection. Added readable Chinese diagnosis and pre-mixture reduction checks. No production incident or GPU claim.
+
 ## 第九轮，2026-10-05
 
 增加十题理解协议、三维人工锚点、关键越界和30份作者校准例；原回答、展开参考、评分事件、修订和分歧仲裁可保存与导出。工具不自动判断中文，不计算总分，不生成训练阶段决定；没有实际读者或效度结果。

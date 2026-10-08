@@ -1,0 +1,275 @@
+{
+  "scope": "Original Grug wrapper + original CPU CE reference/reducer, direct weight dtype controls.\nOriginal causal constructor protects dtype with an attention-mask adapter. No fused GPU or production incident.\n",
+  "checks_passed": 12,
+  "checks": [
+    {
+      "name": "BF16 sum of 257 unit weights rounds to256",
+      "passed": true
+    },
+    {
+      "name": "BF16 denominator changes normalized loss and gradient",
+      "passed": true
+    },
+    {
+      "name": "shared API FP32 loss promotes weights and avoids selected BF16 denominator gap",
+      "passed": true
+    },
+    {
+      "name": "FP16 represented unit weights sum to inf at65536",
+      "passed": true
+    },
+    {
+      "name": "finite zero loss and zero head gradient pass loss finiteness after denominator overflow",
+      "passed": true
+    },
+    {
+      "name": "uniform half scaling restores nonzero normalized loss and gradient in overflow control",
+      "passed": true
+    },
+    {
+      "name": "shared API with FP32 per-token loss remains finite for original FP16 weights",
+      "passed": true
+    },
+    {
+      "name": "promoting represented weights before wrapper restores selected loss and gradient",
+      "passed": true
+    },
+    {
+      "name": "original causal constructor promotes BF16 weights and removes final target",
+      "passed": true
+    },
+    {
+      "name": "original causal constructor protects selected FP16 input with65536 valid targets",
+      "passed": true
+    },
+    {
+      "name": "promotion cannot recover small weights already rounded tozero",
+      "passed": true
+    },
+    {
+      "name": "explicit backend substitution rather than GPU dispatcher execution",
+      "passed": true
+    }
+  ],
+  "cases": {
+    "bf16_257": {
+      "positions": 257,
+      "weight_dtype": "bfloat16",
+      "weight_scale": 1.0,
+      "weight_sum_dtype": "bfloat16",
+      "original_weight_sum": 256.0,
+      "FP32_sum_of_represented_weights": 257.0,
+      "wrapper_loss": 0.6958550810813904,
+      "wrapper_loss_finite": true,
+      "head_gradient": [
+        [
+          -0.501953125,
+          0.501953125
+        ]
+      ],
+      "shared_API_mean_loss": 0.6931474804878235,
+      "constructor_applied": false,
+      "weight_promotion_before_wrapper": false
+    },
+    "fp32_257": {
+      "positions": 257,
+      "weight_dtype": "float32",
+      "weight_scale": 1.0,
+      "weight_sum_dtype": "float32",
+      "original_weight_sum": 257.0,
+      "FP32_sum_of_represented_weights": 257.0,
+      "wrapper_loss": 0.6931474804878235,
+      "wrapper_loss_finite": true,
+      "head_gradient": [
+        [
+          -0.5,
+          0.5
+        ]
+      ],
+      "shared_API_mean_loss": 0.6931474804878235,
+      "constructor_applied": false,
+      "weight_promotion_before_wrapper": false
+    },
+    "fp16_65536": {
+      "positions": 65536,
+      "weight_dtype": "float16",
+      "weight_scale": 1.0,
+      "weight_sum_dtype": "float16",
+      "original_weight_sum": "inf",
+      "FP32_sum_of_represented_weights": 65536.0,
+      "wrapper_loss": 0.0,
+      "wrapper_loss_finite": true,
+      "head_gradient": [
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "shared_API_mean_loss": 0.6931471824645996,
+      "constructor_applied": false,
+      "weight_promotion_before_wrapper": false
+    },
+    "fp16_65536_half_scale": {
+      "positions": 65536,
+      "weight_dtype": "float16",
+      "weight_scale": 0.5,
+      "weight_sum_dtype": "float16",
+      "original_weight_sum": 32768.0,
+      "FP32_sum_of_represented_weights": 32768.0,
+      "wrapper_loss": 0.6931471824645996,
+      "wrapper_loss_finite": true,
+      "head_gradient": [
+        [
+          -0.5,
+          0.5
+        ]
+      ],
+      "shared_API_mean_loss": 0.6931471824645996,
+      "constructor_applied": false,
+      "weight_promotion_before_wrapper": false
+    },
+    "fp32_65536": {
+      "positions": 65536,
+      "weight_dtype": "float32",
+      "weight_scale": 1.0,
+      "weight_sum_dtype": "float32",
+      "original_weight_sum": 65536.0,
+      "FP32_sum_of_represented_weights": 65536.0,
+      "wrapper_loss": 0.6931471824645996,
+      "wrapper_loss_finite": true,
+      "head_gradient": [
+        [
+          -0.5,
+          0.5
+        ]
+      ],
+      "shared_API_mean_loss": 0.6931471824645996,
+      "constructor_applied": false,
+      "weight_promotion_before_wrapper": false
+    },
+    "promoted_fp16_65536": {
+      "positions": 65536,
+      "weight_dtype": "float32",
+      "weight_scale": 1.0,
+      "weight_sum_dtype": "float32",
+      "original_weight_sum": 65536.0,
+      "FP32_sum_of_represented_weights": 65536.0,
+      "wrapper_loss": 0.6931471824645996,
+      "wrapper_loss_finite": true,
+      "head_gradient": [
+        [
+          -0.5,
+          0.5
+        ]
+      ],
+      "shared_API_mean_loss": 0.6931471824645996,
+      "constructor_applied": false,
+      "weight_promotion_before_wrapper": true
+    },
+    "causal_constructor_bf16_258": {
+      "positions": 258,
+      "weight_dtype": "float32",
+      "weight_scale": 1.0,
+      "weight_sum_dtype": "float32",
+      "original_weight_sum": 257.0,
+      "FP32_sum_of_represented_weights": 257.0,
+      "wrapper_loss": 0.6931474804878235,
+      "wrapper_loss_finite": true,
+      "head_gradient": [
+        [
+          -0.5,
+          0.5
+        ]
+      ],
+      "shared_API_mean_loss": 0.6931474804878235,
+      "constructor_applied": true,
+      "weight_promotion_before_wrapper": false
+    },
+    "causal_constructor_fp16_65537": {
+      "positions": 65537,
+      "weight_dtype": "float32",
+      "weight_scale": 1.0,
+      "weight_sum_dtype": "float32",
+      "original_weight_sum": 65536.0,
+      "FP32_sum_of_represented_weights": 65536.0,
+      "wrapper_loss": 0.693147599697113,
+      "wrapper_loss_finite": true,
+      "head_gradient": [
+        [
+          -0.5,
+          0.5
+        ]
+      ],
+      "shared_API_mean_loss": 0.693147599697113,
+      "constructor_applied": true,
+      "weight_promotion_before_wrapper": false
+    }
+  },
+  "backend_calls": [
+    {
+      "requested": "xla_fast_bwd",
+      "executed": "original CPU reference",
+      "requested_logits_dtype": "<class 'jax.numpy.float32'>",
+      "input_weight_dtype": "bfloat16"
+    },
+    {
+      "requested": "xla_fast_bwd",
+      "executed": "original CPU reference",
+      "requested_logits_dtype": "<class 'jax.numpy.float32'>",
+      "input_weight_dtype": "float32"
+    },
+    {
+      "requested": "xla_fast_bwd",
+      "executed": "original CPU reference",
+      "requested_logits_dtype": "<class 'jax.numpy.float32'>",
+      "input_weight_dtype": "float16"
+    },
+    {
+      "requested": "xla_fast_bwd",
+      "executed": "original CPU reference",
+      "requested_logits_dtype": "<class 'jax.numpy.float32'>",
+      "input_weight_dtype": "float16"
+    },
+    {
+      "requested": "xla_fast_bwd",
+      "executed": "original CPU reference",
+      "requested_logits_dtype": "<class 'jax.numpy.float32'>",
+      "input_weight_dtype": "float32"
+    },
+    {
+      "requested": "xla_fast_bwd",
+      "executed": "original CPU reference",
+      "requested_logits_dtype": "<class 'jax.numpy.float32'>",
+      "input_weight_dtype": "float32"
+    },
+    {
+      "requested": "xla_fast_bwd",
+      "executed": "original CPU reference",
+      "requested_logits_dtype": "<class 'jax.numpy.float32'>",
+      "input_weight_dtype": "float32"
+    },
+    {
+      "requested": "xla_fast_bwd",
+      "executed": "original CPU reference",
+      "requested_logits_dtype": "<class 'jax.numpy.float32'>",
+      "input_weight_dtype": "float32"
+    }
+  ],
+  "source_sha256": {
+    "sources/scale_2026_10_05/grug_loss.py": "97e86e8a7540cafeb4be9695da9a5c8342f3780b7fee6cbb45de79ffc50c15ba",
+    "sources/boundaries_2026_10_05/examples.py": "199a86abfd0f85eca39e6e73042c05ba56822dc35c26a5ed048dbb2f1299ec49",
+    "sources/contracts_2026_10_05/api.py": "5efeea2badba92dbc2dce9d0fc2306f12a2bf754dd2d8bee16b1dcd3ed0e355d",
+    "sources/contracts_2026_10_05/reference.py": "f113b3b6872af2d6aa4658cf4326b6c52c2675bf537690d5653604e9d559c0d5"
+  },
+  "probe_script_sha256": "70762c347c7de95273f08e60620657e0cc0856a596f1601d964faa8f4165b8fe",
+  "runtime": {
+    "jax": "0.7.2",
+    "numpy": "2.5.3",
+    "backend": "cpu"
+  },
+  "actual_Hero_low_precision_weight_denominator": null,
+  "actual_fused_GPU_execution": null,
+  "actual_distributed_reduction": null,
+  "actual_training_loss_effect": null,
+  "upstream_patch_applied": false
+}

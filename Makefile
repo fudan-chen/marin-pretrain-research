@@ -347,3 +347,7 @@ schedule-config-figure:
 .PHONY: confirmation-priorities
 confirmation-priorities:
 	$(PYTHON) scripts/analyze_confirmation_priorities.py
+
+.PHONY: loss-denominator-dtype
+loss-denominator-dtype:
+	$(CPU_PYTHON) scripts/probe_loss_denominator_dtype_cpu.py

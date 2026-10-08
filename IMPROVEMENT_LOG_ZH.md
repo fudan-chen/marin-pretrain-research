@@ -1,5 +1,7 @@
 # 持续改进记录：下一步要减少哪种不确定性
 
+V139：原 custom_vjp 装饰器和 defvjp 注册、前向残余、slow/scan 反向完成 14 项 CPU 控制、16 组输入/路径。FP16 极端转换中的直接 streaming 求导异常被原显式反向避开；正常梯度、lse cotangent 和所选 scan JIT 对照通过。新增范围明确的机制图。没有公共 dispatcher、GPU、真实性能或训练效果证明。
+
 V138：原输入 validator、full/streaming CE 与 reducer 的 14 项 CPU 控制，包含 JIT 与前向有限差分。发现正越界标签有限 loss/梯度不一致、负标签后端分歧和零权重 streaming NaN；离线候选仅验证标签拒绝与忽略位置替换。重整综合入口，避免版本注记挤占解释。没有真实非法目标事件或融合 GPU 结论。
 
 V137：13 项四本地 CPU 控制，实际原 shard_map/psum 与 autodiff；局部 FP16 分母有限但全局溢出，FP32 不均/空片正确，复制轴不重复计数，全空目标有零 loss/非有限梯度。最初缺 __file__ 失败后补齐重跑；未新增来源、GPU或生产训练。

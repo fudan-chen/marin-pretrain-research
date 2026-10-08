@@ -1,0 +1,563 @@
+{
+  "scope": "Original custom_vjp decorator and defvjp registration, fwd, slow backward and scan backward on CPU synthetic tensors; original reference comparison, not public dispatcher or GPU kernel.",
+  "checks_passed": 14,
+  "checks": [
+    {
+      "name": "Normal FP32 full and direct streaming value and both gradients agree",
+      "passed": true
+    },
+    {
+      "name": "Original slow custom VJP normal FP32 agrees with full reference",
+      "passed": true
+    },
+    {
+      "name": "Original scan custom VJP normal FP32 agrees with full reference",
+      "passed": true
+    },
+    {
+      "name": "Extreme inputs finite before requested FP16 conversion",
+      "passed": true
+    },
+    {
+      "name": "Direct streaming FP16 finite zero forward has nonfinite gradient",
+      "passed": true
+    },
+    {
+      "name": "Full reference selected FP16 extreme gradient is finite zero",
+      "passed": true
+    },
+    {
+      "name": "Changing only direct streaming block size removes selected gradient failure",
+      "passed": true
+    },
+    {
+      "name": "Original slow custom VJP avoids selected direct streaming differentiation failure",
+      "passed": true
+    },
+    {
+      "name": "Original scan custom VJP avoids selected direct streaming differentiation failure",
+      "passed": true
+    },
+    {
+      "name": "Original scan custom VJP selected extreme JIT matches eager",
+      "passed": true
+    },
+    {
+      "name": "BF16 and FP32 direct streaming selected controls remain finite",
+      "passed": true
+    },
+    {
+      "name": "Nonzero lse cotangent propagates through original slow custom VJP",
+      "passed": true
+    },
+    {
+      "name": "Nonzero lse cotangent propagates through original scan custom VJP",
+      "passed": true
+    },
+    {
+      "name": "Nonzero z objective differs from pure CE while all selected normal paths agree",
+      "passed": true
+    }
+  ],
+  "cases": {
+    "normal_full": {
+      "backend": "full",
+      "logits_dtype": "<class 'jax.numpy.float32'>",
+      "vocab_block_size": 2,
+      "z_coefficient": 0.0,
+      "jit": false,
+      "input_finite": true,
+      "represented_logits": [
+        [
+          -1.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "loss": 0.4076058864593506,
+      "loss_finite": true,
+      "hidden_gradient": [
+        [
+          -0.4247896373271942
+        ]
+      ],
+      "head_gradient": [
+        [
+          0.09003057330846786,
+          0.2447284758090973,
+          -0.33475905656814575
+        ]
+      ],
+      "gradient_finite": true
+    },
+    "fp16_extreme_full": {
+      "backend": "full",
+      "logits_dtype": "<class 'jax.numpy.float16'>",
+      "vocab_block_size": 2,
+      "z_coefficient": 0.0,
+      "jit": false,
+      "input_finite": true,
+      "represented_logits": [
+        [
+          "-inf",
+          "-inf",
+          0.0
+        ]
+      ],
+      "loss": 0.0,
+      "loss_finite": true,
+      "hidden_gradient": [
+        [
+          0.0
+        ]
+      ],
+      "head_gradient": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "gradient_finite": true
+    },
+    "normal_z_full": {
+      "backend": "full",
+      "logits_dtype": "<class 'jax.numpy.float32'>",
+      "vocab_block_size": 2,
+      "z_coefficient": 0.1,
+      "jit": false,
+      "input_finite": true,
+      "represented_logits": [
+        [
+          -1.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "loss": 0.6057413220405579,
+      "loss_finite": true,
+      "hidden_gradient": [
+        [
+          -0.2628556787967682
+        ]
+      ],
+      "head_gradient": [
+        [
+          0.11537609249353409,
+          0.3136247396469116,
+          -0.1474795937538147
+        ]
+      ],
+      "gradient_finite": true
+    },
+    "normal_streaming_autodiff": {
+      "backend": "streaming_autodiff",
+      "logits_dtype": "<class 'jax.numpy.float32'>",
+      "vocab_block_size": 2,
+      "z_coefficient": 0.0,
+      "jit": false,
+      "input_finite": true,
+      "represented_logits": [
+        [
+          -1.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "loss": 0.4076058864593506,
+      "loss_finite": true,
+      "hidden_gradient": [
+        [
+          -0.42478957772254944
+        ]
+      ],
+      "head_gradient": [
+        [
+          0.09003058075904846,
+          0.24472849071025848,
+          -0.334758996963501
+        ]
+      ],
+      "gradient_finite": true
+    },
+    "fp16_extreme_streaming_autodiff": {
+      "backend": "streaming_autodiff",
+      "logits_dtype": "<class 'jax.numpy.float16'>",
+      "vocab_block_size": 2,
+      "z_coefficient": 0.0,
+      "jit": false,
+      "input_finite": true,
+      "represented_logits": [
+        [
+          "-inf",
+          "-inf",
+          0.0
+        ]
+      ],
+      "loss": 0.0,
+      "loss_finite": true,
+      "hidden_gradient": [
+        [
+          "nan"
+        ]
+      ],
+      "head_gradient": [
+        [
+          "nan",
+          "nan",
+          0.0
+        ]
+      ],
+      "gradient_finite": false
+    },
+    "normal_z_streaming_autodiff": {
+      "backend": "streaming_autodiff",
+      "logits_dtype": "<class 'jax.numpy.float32'>",
+      "vocab_block_size": 2,
+      "z_coefficient": 0.1,
+      "jit": false,
+      "input_finite": true,
+      "represented_logits": [
+        [
+          -1.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "loss": 0.6057413220405579,
+      "loss_finite": true,
+      "hidden_gradient": [
+        [
+          -0.2628556489944458
+        ]
+      ],
+      "head_gradient": [
+        [
+          0.11537609994411469,
+          0.3136247396469116,
+          -0.14747953414916992
+        ]
+      ],
+      "gradient_finite": true
+    },
+    "normal_custom_slow": {
+      "backend": "custom_slow",
+      "logits_dtype": "<class 'jax.numpy.float32'>",
+      "vocab_block_size": 2,
+      "z_coefficient": 0.0,
+      "jit": false,
+      "input_finite": true,
+      "represented_logits": [
+        [
+          -1.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "loss": 0.4076058864593506,
+      "loss_finite": true,
+      "hidden_gradient": [
+        [
+          -0.42478957772254944
+        ]
+      ],
+      "head_gradient": [
+        [
+          0.09003058075904846,
+          0.24472849071025848,
+          -0.334758996963501
+        ]
+      ],
+      "gradient_finite": true
+    },
+    "fp16_extreme_custom_slow": {
+      "backend": "custom_slow",
+      "logits_dtype": "<class 'jax.numpy.float16'>",
+      "vocab_block_size": 2,
+      "z_coefficient": 0.0,
+      "jit": false,
+      "input_finite": true,
+      "represented_logits": [
+        [
+          "-inf",
+          "-inf",
+          0.0
+        ]
+      ],
+      "loss": 0.0,
+      "loss_finite": true,
+      "hidden_gradient": [
+        [
+          0.0
+        ]
+      ],
+      "head_gradient": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "gradient_finite": true
+    },
+    "normal_z_custom_slow": {
+      "backend": "custom_slow",
+      "logits_dtype": "<class 'jax.numpy.float32'>",
+      "vocab_block_size": 2,
+      "z_coefficient": 0.1,
+      "jit": false,
+      "input_finite": true,
+      "represented_logits": [
+        [
+          -1.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "loss": 0.6057413220405579,
+      "loss_finite": true,
+      "hidden_gradient": [
+        [
+          -0.2628556489944458
+        ]
+      ],
+      "head_gradient": [
+        [
+          0.11537609994411469,
+          0.3136247396469116,
+          -0.14747953414916992
+        ]
+      ],
+      "gradient_finite": true
+    },
+    "normal_custom_scan": {
+      "backend": "custom_scan",
+      "logits_dtype": "<class 'jax.numpy.float32'>",
+      "vocab_block_size": 2,
+      "z_coefficient": 0.0,
+      "jit": false,
+      "input_finite": true,
+      "represented_logits": [
+        [
+          -1.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "loss": 0.4076058864593506,
+      "loss_finite": true,
+      "hidden_gradient": [
+        [
+          -0.42478957772254944
+        ]
+      ],
+      "head_gradient": [
+        [
+          0.09003058075904846,
+          0.24472849071025848,
+          -0.334758996963501
+        ]
+      ],
+      "gradient_finite": true
+    },
+    "fp16_extreme_custom_scan": {
+      "backend": "custom_scan",
+      "logits_dtype": "<class 'jax.numpy.float16'>",
+      "vocab_block_size": 2,
+      "z_coefficient": 0.0,
+      "jit": false,
+      "input_finite": true,
+      "represented_logits": [
+        [
+          "-inf",
+          "-inf",
+          0.0
+        ]
+      ],
+      "loss": 0.0,
+      "loss_finite": true,
+      "hidden_gradient": [
+        [
+          0.0
+        ]
+      ],
+      "head_gradient": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "gradient_finite": true
+    },
+    "normal_z_custom_scan": {
+      "backend": "custom_scan",
+      "logits_dtype": "<class 'jax.numpy.float32'>",
+      "vocab_block_size": 2,
+      "z_coefficient": 0.1,
+      "jit": false,
+      "input_finite": true,
+      "represented_logits": [
+        [
+          -1.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "loss": 0.6057413220405579,
+      "loss_finite": true,
+      "hidden_gradient": [
+        [
+          -0.2628556489944458
+        ]
+      ],
+      "head_gradient": [
+        [
+          0.11537609994411469,
+          0.3136247396469116,
+          -0.14747954905033112
+        ]
+      ],
+      "gradient_finite": true
+    },
+    "fp16_extreme_stream_block3": {
+      "backend": "streaming_autodiff",
+      "logits_dtype": "<class 'jax.numpy.float16'>",
+      "vocab_block_size": 3,
+      "z_coefficient": 0.0,
+      "jit": false,
+      "input_finite": true,
+      "represented_logits": [
+        [
+          "-inf",
+          "-inf",
+          0.0
+        ]
+      ],
+      "loss": 0.0,
+      "loss_finite": true,
+      "hidden_gradient": [
+        [
+          0.0
+        ]
+      ],
+      "head_gradient": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "gradient_finite": true
+    },
+    "bf16_extreme_stream": {
+      "backend": "streaming_autodiff",
+      "logits_dtype": "<class 'jax.numpy.bfloat16'>",
+      "vocab_block_size": 2,
+      "z_coefficient": 0.0,
+      "jit": false,
+      "input_finite": true,
+      "represented_logits": [
+        [
+          -99840.0,
+          -99840.0,
+          0.0
+        ]
+      ],
+      "loss": 0.0,
+      "loss_finite": true,
+      "hidden_gradient": [
+        [
+          0.0
+        ]
+      ],
+      "head_gradient": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "gradient_finite": true
+    },
+    "fp32_extreme_stream": {
+      "backend": "streaming_autodiff",
+      "logits_dtype": "<class 'jax.numpy.float32'>",
+      "vocab_block_size": 2,
+      "z_coefficient": 0.0,
+      "jit": false,
+      "input_finite": true,
+      "represented_logits": [
+        [
+          -100000.0,
+          -100000.0,
+          0.0
+        ]
+      ],
+      "loss": 0.0,
+      "loss_finite": true,
+      "hidden_gradient": [
+        [
+          0.0
+        ]
+      ],
+      "head_gradient": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "gradient_finite": true
+    },
+    "fp16_extreme_custom_scan_jit": {
+      "backend": "custom_scan",
+      "logits_dtype": "<class 'jax.numpy.float16'>",
+      "vocab_block_size": 2,
+      "z_coefficient": 0.0,
+      "jit": true,
+      "input_finite": true,
+      "represented_logits": [
+        [
+          "-inf",
+          "-inf",
+          0.0
+        ]
+      ],
+      "loss": 0.0,
+      "loss_finite": true,
+      "hidden_gradient": [
+        [
+          0.0
+        ]
+      ],
+      "head_gradient": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "gradient_finite": true
+    }
+  },
+  "source_sha256": {
+    "sources/contracts_2026_10_05/reference.py": "f113b3b6872af2d6aa4658cf4326b6c52c2675bf537690d5653604e9d559c0d5",
+    "sources/contracts_2026_10_05/xla.py": "4a4f086b968934114ba450ec90d1e875842a04a3b79c7ae82879eda882a4d7d4"
+  },
+  "probe_script_sha256": "e6e0accfa3f950e515aa52cf24690e3b8897dddf600854e90f9bd79977d2395f",
+  "runtime": {
+    "jax": "0.7.2",
+    "numpy": "2.5.3",
+    "backend": "cpu"
+  },
+  "substitutions": [
+    "Select original default CPU logsumexp",
+    "Select jnp.logaddexp and jnp.exp default CPU branches"
+  ],
+  "actual_backend_dispatcher_execution": false,
+  "actual_Hero_FP16_logits_event": null,
+  "actual_GPU_execution": null,
+  "actual_training_loss_effect": null,
+  "upstream_patch_applied": false
+}

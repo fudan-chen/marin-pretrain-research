@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本V138：14 项原始 CE 标签边界控制，发现有限 loss 与自动微分不一致的非法目标路径，以及零权重不能屏蔽的 streaming 非法目标。[标签、词表与后端合同](CE_LABEL_BOUNDS_ZH.md)。
+当前版本V139：14 项原 custom VJP 注册链 CPU 控制；同一极端输入上，直接 streaming 参考求导出现 NaN，而原 slow/scan 显式反向保持有限。[同一前向，两条反向](CE_BACKWARD_PATH_ZH.md)。
 
 [MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并提供未执行的性能交互记录模板。
 

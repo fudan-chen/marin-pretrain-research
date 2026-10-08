@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1792,
+  "checks_passed": 1797,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -185,7 +185,8 @@
     "V135 archived three-seed sensitivity and confirmation priorities, original-state/input/plan contracts and unexecuted mixture-by-plan draft; no new training or generation/transfer evidence",
     "V136 twelve source-bound CPU loss denominator controls: finite zero loss on direct FP16 input, original causal FP32 protection, no production or GPU evidence",
     "V137 thirteen real four-local-CPU original loss shard_map/psum/autodiff controls; collective overflow despite finite local sums, FP32 target/axis semantics, all-empty gradient; explicit CPU CE/sharding adapters, no GPU or production claim",
-    "V138 fourteen original full/streaming CE target-boundary CPU controls, invalid finite-forward/autodiff discrepancy, masked invalid NaN, target-only offline candidate; no production/GPU claim"
+    "V138 fourteen original full/streaming CE target-boundary CPU controls, invalid finite-forward/autodiff discrepancy, masked invalid NaN, target-only offline candidate; no production/GPU claim",
+    "V139 fourteen original custom VJP registration/fwd/slow-scan backward CPU controls; reference differentiation failure not reproduced through selected original explicit backward, normal/lse cotangents and selected JIT; no dispatcher/GPU/production claim"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

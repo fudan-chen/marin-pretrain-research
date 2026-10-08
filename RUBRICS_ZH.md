@@ -1,5 +1,7 @@
 # Rubrics：证据允许我们把结论推进到哪一步
 
+V139 执行补充：反向证据须注明参考自动微分、手工 scan、原 custom VJP 注册入口或公共 dispatcher。对照至少含正常非零梯度与罚项 cotangent；参考异常不自动等于训练内核异常。[14 项注册链控制](CE_BACKWARD_PATH_ZH.md)。
+
 V138 执行补充：形状/整数类型不等于 token ID 合法。检查逻辑与物理词表、特殊 token 和移位目标；有效目标越界应拒绝，明确忽略位置在 CE 前安全处理，不能依赖乘零或 clip。跨后端同时核对 loss 与梯度。[原函数控制](CE_LABEL_BOUNDS_ZH.md)。
 
 V137 执行补充：分片不变性须固定全局样本与权重，核对局部、全局及累积的分母 dtype/参与轴。局部 finite 不能代替全局 finite；含空片与全空分别验证。复制轴不能计入有效人口。[四设备原实现控制](LOSS_DENOMINATOR_ZH.md)。

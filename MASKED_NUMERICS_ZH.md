@@ -72,3 +72,7 @@ JAX的[where说明](https://docs.jax.dev/en/latest/_autosummary/jax.numpy.where.
 正分母排除的是全零归约条件，不保证每条序列被屏蔽末位的hidden、logits或上游导数有限。inactive非有限风险仍需另查；不能因为T为正就宣布数值验收通过。
 
 故当前结论是：数值危险分支已在CPU复现，但公开正常配方的条件推导不支持用它解释Hero历史loss。调查应先记录实际T与inactive非有限值，确认触发，再进入修复。
+
+## V139 新增：注册链与参考求导的证据分开
+
+本章旧控制只直接执行反向 scan，未运行 custom VJP 注册入口。[新增注册链专题](CE_BACKWARD_PATH_ZH.md)已在小型 CPU 输入上执行原装饰器、defvjp、前向残余和两条反向，发现选定极端 FP16 转换中参考自动微分异常，而 slow/scan custom VJP 均有限。这不补齐本章零权重异常的完整后端验收，也不证明公共 dispatcher 或 GPU 已测试。

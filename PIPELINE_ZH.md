@@ -4,6 +4,8 @@
 
 配比效果归因前，先检查输入和目标合同：tokenizer/cache 身份 → 输入与目标 ID 范围 → 忽略位置在 CE 前的处理 → 跨后端 loss/梯度 → 分母精度、参与轴与累积方式。已执行[标签边界 CPU 控制](CE_LABEL_BOUNDS_ZH.md)与[四本地 CPU 全局归约](LOSS_DENOMINATOR_ZH.md)；融合 GPU、多主机及真实训练影响仍待验证。
 
+后端验收须绑定实际反向入口：[原 custom VJP 注册链](CE_BACKWARD_PATH_ZH.md)已完成正常目标、罚项 cotangent 与极端转换控制；直接参考求导、手工反向子函数、原注册入口和公共 dispatcher 分别记录，不能互相代填。
+
 ## 1. 七个阶段的输入和产物
 
 | 阶段 | 输入与问题 | 留下什么 | 哪些缺口需要先处理 |

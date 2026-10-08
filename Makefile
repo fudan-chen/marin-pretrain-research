@@ -359,3 +359,7 @@ loss-denominator-mesh:
 .PHONY: ce-label-bounds
 ce-label-bounds:
 	$(CPU_PYTHON) scripts/probe_ce_label_bounds_cpu.py
+
+.PHONY: ce-custom-vjp
+ce-custom-vjp:
+	$(CPU_PYTHON) scripts/probe_ce_custom_vjp_cpu.py

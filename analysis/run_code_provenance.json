@@ -1,0 +1,267 @@
+{
+  "scope": "Bind two public code artifacts to selected source and rerun prior synthetic boundary replay.\nArtifact declaration and host log are evidence; actual imports, checkpoint contents and tokens remain unverified.\n",
+  "checks_passed": 8,
+  "checks": [
+    {
+      "name": "Anonymous inventories complete and explicitly bound to two different runs",
+      "passed": true
+    },
+    {
+      "name": "Five downloaded files match size and W&B MD5 in both independent manifests",
+      "passed": true
+    },
+    {
+      "name": "Historical mixed-block source differs only in stage selection method AST",
+      "passed": true
+    },
+    {
+      "name": "Selected support/key methods and original batch schedule identical to artifact sources",
+      "passed": true
+    },
+    {
+      "name": "Three previously replayed async loader methods identical despite whole-file differences",
+      "passed": true
+    },
+    {
+      "name": "Producer log records scratch start and continuation records step393 read plus first progress394",
+      "passed": true
+    },
+    {
+      "name": "All eighty synthetic boundary outputs and controls unchanged with uploaded historical sources",
+      "passed": true
+    },
+    {
+      "name": "Stage representation difference preserves selected actual aligned-boundary probes",
+      "passed": true
+    }
+  ],
+  "run_names": {
+    "producer": "h100-ladder-d512-ep8-bs1024-791tpp-10pct-20260826-rno2a",
+    "continuation": "h100-d512-mix-proportional-zero-c00-seed0-from10pct-20260826-rno2a"
+  },
+  "git_commits": {
+    "producer": null,
+    "continuation": null
+  },
+  "manifest_entries": {
+    "producer": 29890,
+    "continuation": 29896
+  },
+  "file_bindings": [
+    {
+      "local_file": "sources/run_code_2026_10_08/mixture.py",
+      "artifact_path": "lib/levanter/src/levanter/data/mixture.py",
+      "bytes": 23012,
+      "sha256": "7f5a3182bdaec60b2ee45e3961eef47afa57028f1fdfa03111f2a43355b35757",
+      "manifest_md5_base64": "31z8fIPUzp2uMW7cc6Imwg==",
+      "matches_both_run_manifests": true
+    },
+    {
+      "local_file": "sources/run_code_2026_10_08/loader.py",
+      "artifact_path": "lib/levanter/src/levanter/data/loader.py",
+      "bytes": 27824,
+      "sha256": "d57acc2413e5e479ac34fcaed8b8301dd67f1b5d319db3ed036a5c6f53add88e",
+      "manifest_md5_base64": "cWwOjvB5FTzc8aENJqtYLQ==",
+      "matches_both_run_manifests": true
+    },
+    {
+      "local_file": "sources/run_code_2026_10_08/datasets.py",
+      "artifact_path": "lib/levanter/src/levanter/data/text/datasets.py",
+      "bytes": 43691,
+      "sha256": "d242bedf000cdb0d72ec050bee0d50bcd62cc131c226b845a9d9c4914eadd534",
+      "manifest_md5_base64": "3YyU/u6QIrM++YdajZflcg==",
+      "matches_both_run_manifests": true
+    },
+    {
+      "local_file": "sources/run_code_2026_10_08/schedule.py",
+      "artifact_path": "lib/levanter/src/levanter/schedule.py",
+      "bytes": 5065,
+      "sha256": "01a2faa0d7a0b5cca4aad4cd702ed9aed5114111293970d8ea379d36f40ff281",
+      "manifest_md5_base64": "wKseXc1N25yurU8CYKdRFA==",
+      "matches_both_run_manifests": true
+    },
+    {
+      "local_file": "sources/run_code_2026_10_08/train_lm.py",
+      "artifact_path": "lib/levanter/src/levanter/main/train_lm.py",
+      "bytes": 21197,
+      "sha256": "7b935ddf9bafc7acea7cf610628e9395a0ac0d647e274e8e7768ce173e5916bb",
+      "manifest_md5_base64": "+k8tJuh+dvONtLYugj3S0A==",
+      "matches_both_run_manifests": true
+    }
+  ],
+  "support_and_key_method_ast_equivalence": {
+    "_has_nonzero_weight": true,
+    "build_token_datasets": true,
+    "train_sets": true,
+    "tagged_eval_sets": true
+  },
+  "loader_method_ast_equivalence": {
+    "_produce_batches": true,
+    "_dataset_get_available_batch_number": true,
+    "_do_retrieve_batch_of_batches": true
+  },
+  "stage_probes": [
+    {
+      "role": "producer",
+      "block": 0,
+      "old_stage": 0,
+      "historical_stage": 0
+    },
+    {
+      "role": "producer",
+      "block": 7,
+      "old_stage": 0,
+      "historical_stage": 0
+    },
+    {
+      "role": "producer",
+      "block": 8,
+      "old_stage": 0,
+      "historical_stage": 0
+    },
+    {
+      "role": "producer",
+      "block": 9,
+      "old_stage": 0,
+      "historical_stage": 0
+    },
+    {
+      "role": "producer",
+      "block": 64,
+      "old_stage": 0,
+      "historical_stage": 0
+    },
+    {
+      "role": "producer",
+      "block": 65,
+      "old_stage": 1,
+      "historical_stage": 1
+    },
+    {
+      "role": "producer",
+      "block": 66,
+      "old_stage": 1,
+      "historical_stage": 1
+    },
+    {
+      "role": "producer",
+      "block": 81,
+      "old_stage": 1,
+      "historical_stage": 1
+    },
+    {
+      "role": "continuation",
+      "block": 0,
+      "old_stage": 0,
+      "historical_stage": 0
+    },
+    {
+      "role": "continuation",
+      "block": 7,
+      "old_stage": 0,
+      "historical_stage": 0
+    },
+    {
+      "role": "continuation",
+      "block": 8,
+      "old_stage": 1,
+      "historical_stage": 1
+    },
+    {
+      "role": "continuation",
+      "block": 9,
+      "old_stage": 1,
+      "historical_stage": 1
+    },
+    {
+      "role": "continuation",
+      "block": 64,
+      "old_stage": 1,
+      "historical_stage": 1
+    },
+    {
+      "role": "continuation",
+      "block": 65,
+      "old_stage": 2,
+      "historical_stage": 2
+    },
+    {
+      "role": "continuation",
+      "block": 66,
+      "old_stage": 2,
+      "historical_stage": 2
+    },
+    {
+      "role": "continuation",
+      "block": 81,
+      "old_stage": 2,
+      "historical_stage": 2
+    }
+  ],
+  "log_evidence": [
+    {
+      "role": "producer",
+      "file": "sources/run_code_2026_10_08/producer_output.log.txt",
+      "line": 5,
+      "text": "I20260826 17:37:12 131586965488064 experiments.grug.checkpointing Checkpoint not found under ['s3://marin-us-east-02a/marin/grug/h100-ladder-d512-ep8-bs1024-791tpp-10pct-20260826-rno2a/2026.08.26/checkpoints', 's3://marin-us-east-02a/tmp/ttl=14d/checkpoints-temp/marin-us-east-02a/marin/grug/h100-ladder-d512-ep8-bs1024-791tpp-10pct-20260826-rno2a/2026.08.26/checkpoints', 's3://marin-us-east-02a/tmp/ttl=14d/checkpoints-temp/marin-us-east-02a/marin/grug/h100-ladder-d512-ep8-bs1024-791tpp-10pct-20260826-rno2a/2026.08.26/checkpoints']. Starting from scratch."
+    },
+    {
+      "role": "producer",
+      "file": "sources/run_code_2026_10_08/producer_output.log.txt",
+      "line": 1029,
+      "text": "I20260826 17:59:56 131586965488064 levanter.checkpoint Saving checkpoint at step 393."
+    },
+    {
+      "role": "continuation",
+      "file": "sources/run_code_2026_10_08/continuation_output.log.txt",
+      "line": 3,
+      "text": "I20260829 00:15:41 125095170544064 levanter.checkpoint Loading checkpoint from s3://marin-us-east-02a/marin/grug/h100-ladder-d512-ep8-bs1024-791tpp-10pct-20260826-rno2a/2026.08.26/checkpoints/step-393"
+    },
+    {
+      "role": "continuation",
+      "file": "sources/run_code_2026_10_08/continuation_output.log.txt",
+      "line": 5,
+      "text": "I20260829 00:15:48 125095170544064 levanter.tensorstore_serialization Restore read 0.65GiB from TensorStore and materialized 1.54GiB across 130 arrays in 6.0s (0.11 GiB/s), peak 2.42GiB of a 16.00GiB budget"
+    },
+    {
+      "role": "continuation",
+      "file": "sources/run_code_2026_10_08/continuation_output.log.txt",
+      "line": 798,
+      "text": "I20260829 00:19:00 125095170544064 tqdm_loggable.tqdm_logging Progress on:train 394it/3.93kit rate:3.0it/s remaining:19:58 elapsed:02:13 postfix:-"
+    }
+  ],
+  "historical_replay_checks": 12,
+  "historical_replay_cases": 80,
+  "historical_replay_matches_prior": true,
+  "source_sha256": {
+    "analysis/ablation_resume_boundary.json": "8bd43077bc7b9540f361039bb41fc60bae89942945f40d520d3ad4eef3360186",
+    "analysis/historical_ablation_resume_boundary.json": "7d91b630099925f7fbc7772f4ab2c01dee229d281128f6afa72e2dd361e5587b",
+    "scripts/acquire_run_code_provenance.py": "68d9d318dc055b0ed9ce1795a72c59deec5feb96f7a58c20b37b96b5411fe5be",
+    "scripts/analyze_run_code_provenance.py": "44157a58af0653c0461602d7f565135505e3ad73f83c3d9dce27ef739f9ba2e8",
+    "scripts/probe_ablation_resume_boundary.py": "d8a3a67008ce105b5a06b52ca26034f798282a0f03bb6f8b97089b954ae4558b",
+    "scripts/probe_loader_resume.py": "0679ebaddd48a0204cb61ee6dfae2c4bb270f0e187f52d674cb34d23ed95c2bf",
+    "scripts/probe_mixture_identity_cpu.py": "9537f8a87ed09c702fc696c351f496eba84297ad53bcafd3c398729732f2d9c5",
+    "sources/deepening_2026_10_04/datasets_production.py": "47d95f41313356831bcc4b8861ecc765cbc04c6e8c32dc2c5a35abd74c619e4d",
+    "sources/deepening_2026_10_04/mixture_production.py": "67e97941a79753b2e5865f7f41c7762436a428599ecd1a60d643aa891a817685",
+    "sources/deepening_2026_10_04/schedule_production.py": "01a2faa0d7a0b5cca4aad4cd702ed9aed5114111293970d8ea379d36f40ff281",
+    "sources/eval_identity_2026_10_06/loader.py": "d8c14060286d9998c8784ce945694958b7c61a5404bcede6e77ba34c467e077d",
+    "sources/run_code_2026_10_08/continuation_code_manifest.json": "d6065e8b8bc37dd4340ee7e3d5caeb341dd0bcdcc37f24ae02fc6859c4d76c2f",
+    "sources/run_code_2026_10_08/continuation_inventory.json": "f4a9fc3e07fb5bbe50fa909a6ebe4a5c2df4abbc0cc052cf8d7855130a2e39df",
+    "sources/run_code_2026_10_08/continuation_output.log.txt": "46e954951bb36d2a18f3d8e23f2dfc3b7245e4cedd82529f6e2884cf0b196214",
+    "sources/run_code_2026_10_08/datasets.py": "d242bedf000cdb0d72ec050bee0d50bcd62cc131c226b845a9d9c4914eadd534",
+    "sources/run_code_2026_10_08/loader.py": "d57acc2413e5e479ac34fcaed8b8301dd67f1b5d319db3ed036a5c6f53add88e",
+    "sources/run_code_2026_10_08/mixture.py": "7f5a3182bdaec60b2ee45e3961eef47afa57028f1fdfa03111f2a43355b35757",
+    "sources/run_code_2026_10_08/producer_code_manifest.json": "3cccb85753fd78a0113efb8162c5edb282935784ad157cd3534e13004ff8e97d",
+    "sources/run_code_2026_10_08/producer_inventory.json": "ba3e5a2ccd14d3226492d808f5da05cd5f2173956ccd1b71619b47d1ab1ed69e",
+    "sources/run_code_2026_10_08/producer_output.log.txt": "90ed6e9ab981cc9a0fe1f1c7feac60afab225e8ad20b37ed367eb4484285e39c",
+    "sources/run_code_2026_10_08/schedule.py": "01a2faa0d7a0b5cca4aad4cd702ed9aed5114111293970d8ea379d36f40ff281",
+    "sources/run_code_2026_10_08/train_lm.py": "7b935ddf9bafc7acea7cf610628e9395a0ac0d647e274e8e7768ce173e5916bb"
+  },
+  "scope_limit": "Only two run artifacts; five selected source files. Uploaded bytes are not an import/module-origin trace. Synthetic IDs, supplied keys, finite identity stores remain substitutions.",
+  "actual_checkpoint_contents_verified": null,
+  "actual_runtime_imports_verified": null,
+  "actual_historical_mixture_key": null,
+  "actual_token_repetition_count": null,
+  "actual_training_loss_effect": null,
+  "all_eighty_artifacts_verified": null
+}

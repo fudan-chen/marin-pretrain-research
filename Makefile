@@ -273,3 +273,12 @@ seed-pipeline-cpu:
 .PHONY: loss-mass-cpu
 loss-mass-cpu:
 	$(CPU_PYTHON) scripts/probe_loss_mass_cpu.py
+
+.PHONY: run-code-snapshot run-code-replay run-code-static
+run-code-snapshot:
+	$(PYTHON) scripts/acquire_run_code_provenance.py
+	$(PYTHON) scripts/archive_manifest.py
+run-code-replay:
+	$(CPU_PYTHON) scripts/analyze_run_code_provenance.py
+run-code-static:
+	$(PYTHON) scripts/validate_run_code_static.py

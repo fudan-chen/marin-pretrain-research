@@ -5221,5 +5221,98 @@
     "bytes": 116909,
     "sha256": "ec3e3235f978348b5528c0d3ebef1b92d5985b3f9aeb836d03f19cc03967ca5a",
     "retrieved_utc": "2026-10-08T02:31:51.435860+00:00"
+  },
+  {
+    "file": "run_code_2026_10_08/producer_inventory.json",
+    "url": "https://api.wandb.ai/graphql",
+    "bytes": 81776,
+    "sha256": "ba3e5a2ccd14d3226492d808f5da05cd5f2173956ccd1b71619b47d1ab1ed69e",
+    "retrieved_utc": "2026-10-08T02:51:30.829423+00:00",
+    "request": {
+      "query": "query($e:String!,$p:String!,$r:String!){project(name:$p,entityName:$e){run(name:$r){name commit config files(first:100){edges{node{name sizeBytes url}} pageInfo{hasNextPage endCursor}}}}}",
+      "variables": {
+        "e": "marin-community",
+        "p": "marin_moe",
+        "r": "h100-ladder-d512-ep8-bs1024-791tpp-10pct-20260826-rno2a"
+      }
+    }
+  },
+  {
+    "file": "run_code_2026_10_08/producer_code_manifest.json",
+    "url": "https://api.wandb.ai/files/marin-community/marin_moe/h100-ladder-d512-ep8-bs1024-791tpp-10pct-20260826-rno2a/artifact/3431807529/wandb_manifest.json",
+    "bytes": 7893772,
+    "sha256": "3cccb85753fd78a0113efb8162c5edb282935784ad157cd3534e13004ff8e97d",
+    "retrieved_utc": "2026-10-08T02:51:35.544519+00:00"
+  },
+  {
+    "file": "run_code_2026_10_08/producer_output.log.txt",
+    "url": "https://api.wandb.ai/files/marin-community/marin_moe/h100-ladder-d512-ep8-bs1024-791tpp-10pct-20260826-rno2a/output.log",
+    "bytes": 214310,
+    "sha256": "90ed6e9ab981cc9a0fe1f1c7feac60afab225e8ad20b37ed367eb4484285e39c",
+    "retrieved_utc": "2026-10-08T02:51:38.717635+00:00"
+  },
+  {
+    "file": "run_code_2026_10_08/continuation_inventory.json",
+    "url": "https://api.wandb.ai/graphql",
+    "bytes": 89408,
+    "sha256": "f4a9fc3e07fb5bbe50fa909a6ebe4a5c2df4abbc0cc052cf8d7855130a2e39df",
+    "retrieved_utc": "2026-10-08T02:51:42.518786+00:00",
+    "request": {
+      "query": "query($e:String!,$p:String!,$r:String!){project(name:$p,entityName:$e){run(name:$r){name commit config files(first:100){edges{node{name sizeBytes url}} pageInfo{hasNextPage endCursor}}}}}",
+      "variables": {
+        "e": "marin-community",
+        "p": "marin_moe",
+        "r": "h100-d512-mix-proportional-zero-c00-seed0-from10pct-20260826-rno2a"
+      }
+    }
+  },
+  {
+    "file": "run_code_2026_10_08/continuation_code_manifest.json",
+    "url": "https://api.wandb.ai/files/marin-community/marin_moe/h100-d512-mix-proportional-zero-c00-seed0-from10pct-20260826-rno2a/artifact/3456659559/wandb_manifest.json",
+    "bytes": 7895157,
+    "sha256": "d6065e8b8bc37dd4340ee7e3d5caeb341dd0bcdcc37f24ae02fc6859c4d76c2f",
+    "retrieved_utc": "2026-10-08T02:51:47.013447+00:00"
+  },
+  {
+    "file": "run_code_2026_10_08/continuation_output.log.txt",
+    "url": "https://api.wandb.ai/files/marin-community/marin_moe/h100-d512-mix-proportional-zero-c00-seed0-from10pct-20260826-rno2a/output.log",
+    "bytes": 340376,
+    "sha256": "46e954951bb36d2a18f3d8e23f2dfc3b7245e4cedd82529f6e2884cf0b196214",
+    "retrieved_utc": "2026-10-08T02:51:51.000343+00:00"
+  },
+  {
+    "file": "run_code_2026_10_08/mixture.py",
+    "url": "https://api.wandb.ai/artifactsV2/default/marin-community/marin_moe/source-marin_moe-_callable_runner.py/QXJ0aWZhY3Q6MzQ0NDg4ODI4Nw%3D%3D/df5cfc7c83d4ce9dae316edc73a226c2/mixture.py",
+    "bytes": 23012,
+    "sha256": "7f5a3182bdaec60b2ee45e3961eef47afa57028f1fdfa03111f2a43355b35757",
+    "retrieved_utc": "2026-10-08T02:51:53.464270+00:00"
+  },
+  {
+    "file": "run_code_2026_10_08/loader.py",
+    "url": "https://api.wandb.ai/artifactsV2/default/marin-community/marin_moe/source-marin_moe-_callable_runner.py/QXJ0aWZhY3Q6MzQ0NDg4ODI4Nw%3D%3D/716c0e8ef079153cdcf1a10d26ab582d/loader.py",
+    "bytes": 27824,
+    "sha256": "d57acc2413e5e479ac34fcaed8b8301dd67f1b5d319db3ed036a5c6f53add88e",
+    "retrieved_utc": "2026-10-08T02:51:57.108721+00:00"
+  },
+  {
+    "file": "run_code_2026_10_08/datasets.py",
+    "url": "https://api.wandb.ai/artifactsV2/default/marin-community/marin_moe/source-marin_moe-_callable_runner.py/QXJ0aWZhY3Q6MzQ1NDEwMTg2Mg%3D%3D/dd8c94feee9022b33ef9875a8d97e572/datasets.py",
+    "bytes": 43691,
+    "sha256": "d242bedf000cdb0d72ec050bee0d50bcd62cc131c226b845a9d9c4914eadd534",
+    "retrieved_utc": "2026-10-08T02:52:00.799651+00:00"
+  },
+  {
+    "file": "run_code_2026_10_08/schedule.py",
+    "url": "https://api.wandb.ai/artifactsV2/default/marin-community/marin_moe/source-marin_moe-_callable_runner.py/QXJ0aWZhY3Q6Mjk5MTk3MjcwMA%3D%3D/c0ab1e5dcd4ddb9caead4f0260a75114/schedule.py",
+    "bytes": 5065,
+    "sha256": "01a2faa0d7a0b5cca4aad4cd702ed9aed5114111293970d8ea379d36f40ff281",
+    "retrieved_utc": "2026-10-08T02:52:03.584842+00:00"
+  },
+  {
+    "file": "run_code_2026_10_08/train_lm.py",
+    "url": "https://api.wandb.ai/artifactsV2/default/marin-community/marin_moe/source-marin_moe-_callable_runner.py/QXJ0aWZhY3Q6MzQ0NDg4ODI4Nw%3D%3D/fa4f2d26e87e76f38db4b62e823dd2d0/train_lm.py",
+    "bytes": 21197,
+    "sha256": "7b935ddf9bafc7acea7cf610628e9395a0ac0d647e274e8e7768ce173e5916bb",
+    "retrieved_utc": "2026-10-08T02:52:08.104272+00:00"
   }
 ]

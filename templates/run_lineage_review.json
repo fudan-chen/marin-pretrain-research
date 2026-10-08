@@ -1,0 +1,22 @@
+{
+  "status": "proposed_not_executed",
+  "producer_run": null,
+  "continuation_run": null,
+  "declared_phase_starts": [],
+  "run_inventory_source": null,
+  "code_manifest_source": null,
+  "source_file_bindings": [],
+  "selected_method_comparisons": [],
+  "actual_entrypoint_verified": null,
+  "actual_module_paths_and_hashes": [],
+  "declared_checkpoint": null,
+  "restore_read_log_evidence": [],
+  "loaded_state_step": null,
+  "mixture_key_origin": null,
+  "cache_identities": [],
+  "block_position": null,
+  "before_after_input_identity_samples": [],
+  "actual_token_repetition_count": null,
+  "training_loss_effect": null,
+  "decision": null
+}

@@ -38,6 +38,7 @@ chapters.insert(0,('muon-direction-guide','Muon方向、NS迭代与矩阵布局'
 chapters.insert(0,('observability-guide','监控成本、记录时刻与事故重放','OBSERVABILITY_ZH.md'))
 chapters.insert(0,('failure-boundaries-guide','有限loss、失败路径与数值验收水位','FAILURE_BOUNDARIES_ZH.md'))
 chapters.insert(0,('batch-clock-guide','配比阶段、batch前缀与日志时钟','BATCH_CLOCK_ZH.md'))
+chapters.insert(0,('run-code-guide','历史加载器、源码快照与恢复证据','RUN_CODE_PROVENANCE_ZH.md'))
 chapters.insert(0,('mixture-range-guide','大曝光量、混合计数与索引范围','MIXTURE_RANGE_ZH.md'))
 chapters.insert(0,('live-observation-guide','10月6日：新进度与16域端点观察','LIVE_2026_10_06_ZH.md'))
 chapters.insert(0,('eval-identity-guide','评估输入身份、重复遍历与末批','EVAL_IDENTITY_ZH.md'))
@@ -258,6 +259,12 @@ for slug,label,file in chapters:
         resume_svg=BeautifulSoup((ROOT/'assets/ablation_resume_boundary.svg').read_text(),'html.parser').svg
         resume_svg['style']='display:block;width:100%;height:auto;'
         resume_placeholder.replace_with(resume_svg)
+    code_placeholder=soup.select_one('#run-code-evidence-placeholder')
+    if code_placeholder is not None:
+        code_svg=BeautifulSoup((ROOT/'assets/run_code_evidence.svg').read_text(),'html.parser').svg
+        code_svg['style']='display:block;width:100%;min-width:760px;height:auto;'
+        code_wrap=soup.new_tag('div',attrs={'class':'table-wrap','style':'overflow-x:auto;'})
+        code_wrap.append(code_svg);code_placeholder.replace_with(code_wrap)
     clock_placeholder=soup.select_one('#restore-data-clock-placeholder')
     if clock_placeholder is not None:
         clock_svg=BeautifulSoup((ROOT/'assets/restore_data_clock.svg').read_text(),'html.parser').svg

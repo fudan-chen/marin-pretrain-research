@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 280" role="img" aria-labelledby="run-code-evidence-title run-code-evidence-desc">
+<title id="run-code-evidence-title">历史运行证据：哪些已取得，哪些仍缺</title>
+<desc id="run-code-evidence-desc">两份配置与代码快照、一个续训恢复日志已取得；实际导入路径、checkpoint内容与token身份仍未验证。箭头表示需要继续核查，不表示已经证明因果。</desc>
+<rect width="960" height="280" rx="12" fill="#f5f7fa"/>
+<g font-family="sans-serif" fill="#17263b">
+<text x="28" y="34" font-size="20" font-weight="700">证据不能跳级：从声明，走到真正读入了什么</text>
+<g font-size="16" font-weight="700">
+<rect x="24" y="58" width="210" height="148" rx="9" fill="#deefe7" stroke="#388263"/><text x="40" y="85">① 配置与运行身份</text>
+<rect x="258" y="58" width="210" height="148" rx="9" fill="#deefe7" stroke="#388263"/><text x="274" y="85">② 上传源码快照</text>
+<rect x="492" y="58" width="210" height="148" rx="9" fill="#e6eefb" stroke="#557ca8"/><text x="508" y="85">③ 恢复读取日志</text>
+<rect x="726" y="58" width="210" height="148" rx="9" fill="#fff0db" stroke="#b37a2d"/><text x="742" y="85">④ 状态与真实输入</text></g>
+<g font-size="15">
+<text x="40" y="117">生产 + 一个续训 run</text><text x="40" y="145">阶段声明已归档</text><text x="40" y="177">commit 字段为空</text>
+<text x="274" y="117">两份清单 / 五个文件</text><text x="274" y="145">80组条件复算一致</text><text x="274" y="177">实际 imports 仍未知</text>
+<text x="508" y="117">一个续训 run</text><text x="508" y="145">读取 step-393</text><text x="508" y="177">随后显示进度 394it</text>
+<text x="742" y="117">checkpoint 内容未知</text><text x="742" y="145">历史 key / token 未知</text><text x="742" y="177">不能判真实重复事故</text>
+<text x="239" y="143">→</text><text x="473" y="143">→</text><text x="707" y="143">→</text>
+<text x="28" y="238">源码快照提高局部机制可信度；日志支持曾发生读取；两者都不能替代输入身份核查。</text>
+<text x="28" y="262" fill="#52657a">V122 · 颜色表示本轮证据范围，不是生产成功率或因果置信度</text>
+</g></g></svg>

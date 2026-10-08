@@ -1,0 +1,26 @@
+{
+  "checks_passed": 5,
+  "checks": [
+    {
+      "name": "573 prior non-bookkeeping sources preserved and eleven acquisition records appended",
+      "passed": true
+    },
+    {
+      "name": "Independent five-file content digests match both public code manifests",
+      "passed": true
+    },
+    {
+      "name": "Every saved restore-log line is verbatim and uncertainty remains explicit",
+      "passed": true
+    },
+    {
+      "name": "All historical-source replay cases and sixteen-thousand cell rows preserve prior values",
+      "passed": true
+    },
+    {
+      "name": "Prior prose and table prefixes preserved, both HTML variants expose scoped evidence diagram",
+      "passed": true
+    }
+  ],
+  "actual_browser_rendering": null
+}

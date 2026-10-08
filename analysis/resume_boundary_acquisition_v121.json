@@ -1,0 +1,20 @@
+{
+  "records": [
+    {
+      "file": "resume_boundary_2026_10_08/producer_meta.json",
+      "url": "https://api.wandb.ai/graphql",
+      "final_url": "https://api.wandb.ai/graphql",
+      "request": {
+        "query": "query($e:String!,$p:String!,$r:String!){project(name:$p,entityName:$e){run(name:$r){name displayName state createdAt config summaryMetrics}}}",
+        "variables": {
+          "e": "marin-community",
+          "p": "marin_moe",
+          "r": "h100-ladder-d512-ep8-bs1024-791tpp-10pct-20260826-rno2a"
+        }
+      },
+      "bytes": 116909,
+      "sha256": "ec3e3235f978348b5528c0d3ebef1b92d5985b3f9aeb836d03f19cc03967ca5a",
+      "retrieved_utc": "2026-10-08T02:31:51.435860+00:00"
+    }
+  ]
+}

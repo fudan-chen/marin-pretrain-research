@@ -253,6 +253,11 @@ for slug,label,file in chapters:
         boundary_svg=BeautifulSoup((ROOT/'assets/mixture_boundary_logging.svg').read_text(),'html.parser').svg
         boundary_svg['style']='display:block;width:100%;height:auto;'
         boundary_placeholder.replace_with(boundary_svg)
+    resume_placeholder=soup.select_one('#ablation-resume-boundary-placeholder')
+    if resume_placeholder is not None:
+        resume_svg=BeautifulSoup((ROOT/'assets/ablation_resume_boundary.svg').read_text(),'html.parser').svg
+        resume_svg['style']='display:block;width:100%;height:auto;'
+        resume_placeholder.replace_with(resume_svg)
     clock_placeholder=soup.select_one('#restore-data-clock-placeholder')
     if clock_placeholder is not None:
         clock_svg=BeautifulSoup((ROOT/'assets/restore_data_clock.svg').read_text(),'html.parser').svg

@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-08T02:08:48.873906+00:00",
+  "integrity_manifest_created_utc": "2026-10-08T02:35:56.733818+00:00",
   "files": [
     {
       "file": "accumulation_2026_10_07/grad_accum.py",
@@ -3171,6 +3171,13 @@
       "retrieved_utc": "2026-10-06T21:38:27.835978+00:00"
     },
     {
+      "file": "resume_boundary_2026_10_08/producer_meta.json",
+      "bytes": 116909,
+      "sha256": "ec3e3235f978348b5528c0d3ebef1b92d5985b3f9aeb836d03f19cc03967ca5a",
+      "url": "https://api.wandb.ai/graphql",
+      "retrieved_utc": "2026-10-08T02:31:51.435860+00:00"
+    },
+    {
       "file": "router_precision_2026_10_05/launch_diagnostics.py",
       "bytes": 23757,
       "sha256": "bd223c9c3c8de1e1d693aa4b680f115edefcff2d03d7cc7fb3df922fa0a81270",
@@ -3452,8 +3459,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 270017,
-      "sha256": "041fafadefb60a2002c03543a1b499b24f7de70552f4265c90bf01ed4e7e6681",
+      "bytes": 270680,
+      "sha256": "4699cf33719d30a0a6369672d7e63145b4df48df5f129763e03b1714a900dfb1",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

@@ -1,0 +1,26 @@
+{
+  "checks_passed": 5,
+  "checks": [
+    {
+      "name": "Historical prose prefixes and all prior section tables retained",
+      "passed": true
+    },
+    {
+      "name": "572 prior non-bookkeeping sources unchanged and one acquisition appended",
+      "passed": true
+    },
+    {
+      "name": "Public producer request and response bind phase declarations and nominal progress",
+      "passed": true
+    },
+    {
+      "name": "Twelve bound source controls and 16000 per-cell records conserve prefix slots",
+      "passed": true
+    },
+    {
+      "name": "Both HTML variants expose declared timeline and preserve historical repetition uncertainty",
+      "passed": true
+    }
+  ],
+  "actual_browser_rendering": null
+}

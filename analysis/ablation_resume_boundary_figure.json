@@ -1,0 +1,19 @@
+{
+  "analysis_sha256": "8bd43077bc7b9540f361039bb41fc60bae89942945f40d520d3ad4eef3360186",
+  "figure_sha256": "d95d1da5a8b6ac8ee5f2a25a9240b856e62db25073cab387c593d596f1b74e71",
+  "png_sha256": "d762b5321e3291f5806359325e596ff1b13661842046a8e7af7e41c69b894236",
+  "geometry": {
+    "batch_size": 1024,
+    "sequence_length": 4096,
+    "block_sequences": 49152,
+    "step384_global_sequence": 393216,
+    "step393_global_sequence": 402432,
+    "block_index": 8,
+    "cut_sequences": 9216,
+    "nominal_positions_in_nine_steps": 37748736,
+    "next_aligned_step": 432,
+    "bridge_resumed_updates": 39
+  },
+  "actual_bridge_training_result": null,
+  "actual_browser_rendering": null
+}

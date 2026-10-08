@@ -1,0 +1,7 @@
+{
+  "analysis_sha256": "154cca740747e5f957bbe3fc1e2d7f1a42bf0f6d61cda7a2d0bdb15eb824cc0a",
+  "figure_sha256": "f95150c5d36e83bf94274fc29d676a38132f8cff7bd02356af32842e1bca8b44",
+  "png_sha256": "50ee5f0d4b945d9280d8f453168ea480ddf86fe7e99293a0d64e7fab5ae294ac",
+  "source_kind": "original_source_synthetic_cpu_controls_and_local_candidate",
+  "actual_training_loss_effect": null
+}

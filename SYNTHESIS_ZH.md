@@ -376,3 +376,7 @@ V117接原causal目标mask、attention有效性、投影margin和四CPU histogra
 ### V133：完整state之外还有新构建的优化计划
 
 原scheduler/build与真实Optax注入的14项控制：相同state在不同N下得到不同LR和衰减；缓存lr在下一步重新求值，外层count与WrappedScheduleState.count并不互相替代。只重置调度count可让参数不动而Adam状态继续推进。配比比较须绑定实际计划和各时钟。[机制对照](OPTIMIZER_SCHEDULE_ZH.md)。仅选中人工Adam组，无完整Hero/GPU或语言loss收益。
+
+### V134：配置能构造，不证明计划符合意图
+
+固定scheduler16项控制确认数值1按完整周期解释，小比例在短预算可取整成零，未排序/越界周期端点可生成有限但不合意的曲线。新图展示条件行为，10月7日归档Hero声明没有使用这些反例。先核对单位与周期几何，再解释loss变化。[原值、图与候选验收](SCHEDULE_CONFIG_ZH.md)。

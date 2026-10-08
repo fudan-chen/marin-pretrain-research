@@ -605,3 +605,7 @@ V117接原causal目标mask、attention有效性、投影margin和四CPU histogra
 ## V133应用例：状态相同与计划接续
 
 沿用18项规则。续训证据应同时绑定原N/新N、schedule定义与单位、各组LR、各schedule count、Adam count和下一步update；不能拿缓存lr或一个outer count替代。只改配比与配比加预算重规划是不同干预。[14项原构造/注入控制](OPTIMIZER_SCHEDULE_ZH.md)。
+
+## V134应用例：配置类型、单位与几何
+
+沿用18项规则。保存原值/类型/意图单位，以及真实预算下的周期点和warmup/stable/decay整数步数；在边界前后、恢复count及末端检查实际LR。构造成功或有限性不代替合法周期和声明的连续性合同。人工反例与归档Hero声明分开，候选parser/生产迁移未验证。[16项控制与图](SCHEDULE_CONFIG_ZH.md)。

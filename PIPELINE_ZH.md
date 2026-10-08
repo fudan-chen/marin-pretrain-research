@@ -477,3 +477,7 @@ V117接原causal目标mask、attention有效性、投影margin和四CPU histogra
 ## V133：预算重规划进入干预定义
 
 共同checkpoint比较之前，分别核对实际下一步LR、专用衰减和完整计数器。原状态能被新optimizer接受，不证明原优化计划接续；改变N或重置部分count需独立对照或标为组合干预。先做同状态同梯度update对照，再做同batch完整训练和固定评估。[源码与控制](OPTIMIZER_SCHEDULE_ZH.md)。
+
+## V134：配置进入训练前先展开计划
+
+小规模与正式N分别展开LR计划，检查比例取整后零长度、非正cycles、非单调端点、负minimum；绑定实际优化器消费的count。比较配比前先排除这些未声明的计划变化。16项原方法控制与本地显式单位候选见 [配置章节](SCHEDULE_CONFIG_ZH.md)，没有Hero事故或训练收益确认。

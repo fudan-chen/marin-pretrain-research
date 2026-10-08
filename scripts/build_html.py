@@ -67,12 +67,20 @@ chapters.insert(0,('checkpoint-failure-policy-guide','保存失败、去重与�
 chapters.insert(0,('exception-provenance-guide','异常链、结束事件与恢复归因','EXCEPTION_PROVENANCE_ZH.md'))
 chapters.insert(0,('optional-resume-guide','可选恢复与启动身份','OPTIONAL_RESUME_ZH.md'))
 chapters.insert(0,('optimizer-schedule-guide','优化状态与学习率计划接续','OPTIMIZER_SCHEDULE_ZH.md'))
-priority=['synthesis-guide','training-decisions-guide','experiment-controls-guide','assertion-contracts-guide','weight-domain-guide','pending-resume-guide','optional-resume-guide','operational-progress-guide','gang-recovery-guide','controller-recovery-guide','optimizer-guide','optimizer-schedule-guide','zero-gradient-state-guide','masked-numerics-guide','gradient-accumulation-guide','eval-weight-guide','live-oct7-guide','repeat-exposure-guide','packing-fields-guide','eval-target-alignment-guide','eval-format-guide','eval-array-export-guide','eval-replay-guide','eval-identity-guide','live-observation-guide','mixture-range-guide','batch-clock-guide','failure-boundaries-guide','exception-provenance-guide','observability-guide','muon-direction-guide','adamh-state-guide','muon-geometry-guide','engineering-map-guide','delivery-audit-guide','checkpoint-memory-guide','async-manager-guide','checkpoint-failure-policy-guide','checkpoint-commit-guide','eval-metrics-guide','mix-trajectory-guide','router-precision-guide','short-conv-guide','loss-triage','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
+chapters.insert(0,('schedule-config-guide','学习率配置的单位与周期几何','SCHEDULE_CONFIG_ZH.md'))
+priority=['synthesis-guide','training-decisions-guide','experiment-controls-guide','assertion-contracts-guide','weight-domain-guide','pending-resume-guide','optional-resume-guide','operational-progress-guide','gang-recovery-guide','controller-recovery-guide','optimizer-guide','optimizer-schedule-guide','schedule-config-guide','zero-gradient-state-guide','masked-numerics-guide','gradient-accumulation-guide','eval-weight-guide','live-oct7-guide','repeat-exposure-guide','packing-fields-guide','eval-target-alignment-guide','eval-format-guide','eval-array-export-guide','eval-replay-guide','eval-identity-guide','live-observation-guide','mixture-range-guide','batch-clock-guide','failure-boundaries-guide','exception-provenance-guide','observability-guide','muon-direction-guide','adamh-state-guide','muon-geometry-guide','engineering-map-guide','delivery-audit-guide','checkpoint-memory-guide','async-manager-guide','checkpoint-failure-policy-guide','checkpoint-commit-guide','eval-metrics-guide','mix-trajectory-guide','router-precision-guide','short-conv-guide','loss-triage','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
 chapters.sort(key=lambda c:priority.index(c[0]) if c[0] in priority else len(priority))
 readings={x['file']:x for x in json.loads((ROOT/'analysis/figure_readings.json').read_text())}
 sections=[];toc=[]
 for slug,label,file in chapters:
     result=markdown.markdown((ROOT/file).read_text(),extensions=['tables','fenced_code','toc'])
+    if slug=='schedule-config-guide':
+        fragment=BeautifulSoup(result,'html.parser')
+        diagram=BeautifulSoup((ROOT/'assets/schedule_config.svg').read_text(),'html.parser').svg
+        diagram['style']='display:block;width:100%;height:auto'
+        for placeholder in fragment.select('img[src="assets/schedule_config.svg"]'):
+            placeholder.replace_with(diagram)
+        result=str(fragment)
     if slug=='practical':
         fragment=BeautifulSoup(result,'html.parser')
         diagram=BeautifulSoup((ROOT/'assets/ablation_context.svg').read_text(),'html.parser').svg

@@ -313,3 +313,7 @@ V125在既有历史源上新增9项CPU和数学控制，595份来源未变。新
 ## V133增量审计
 
 新增同固定提交scheduler源码1份（23388字节），旧595份非bookkeeping来源字节保留。14项原scheduler/build/真实Optax控制；单叶Adam组、未选组identity、路径适配、内存state转交。无磁盘恢复、完整模型或训练loss。本轮HTML结构检查与报告验证见发布账本，未做浏览器渲染验收。[正文](OPTIMIZER_SCHEDULE_ZH.md)。
+
+## V134增量审计
+
+16项CPU控制、16个人工配置及一份归档声明对照；候选显式单位和8个preflight反例仅本地执行。新增双面板科学SVG/PNG并实际查看PNG；HTML仅结构与链接核对。597份来源归档条目不变，无配置parser、真实GPU或语言loss结果。[正文](SCHEDULE_CONFIG_ZH.md)。

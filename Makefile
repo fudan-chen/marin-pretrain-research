@@ -337,3 +337,9 @@ optimizer-schedule-source:
 	$(PYTHON) scripts/archive_manifest.py
 optimizer-schedule-resume-cpu:
 	$(CPU_PYTHON) scripts/probe_optimizer_schedule_resume_cpu.py
+
+.PHONY: schedule-config-cpu schedule-config-figure
+schedule-config-cpu:
+	$(CPU_PYTHON) scripts/probe_schedule_config_cpu.py
+schedule-config-figure:
+	$(PYTHON) scripts/plot_schedule_config.py

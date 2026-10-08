@@ -680,3 +680,7 @@ V129底层错误一次性消费之后，V130接到原Checkpointer调用者。11�
 ## V133，2026-10-08：新闭包如何解释旧optimizer state
 
 新增固定基础scheduler来源，接原Hero build与真实Optax注入/Adam。14项控制区分N改变、LR/decay解耦、缓存字段及outer/schedule count重置。首次夹具选token_embed，不在专用衰减目标中，隔离decay断言失败；修正为匹配router的人工路径后重跑，不将失败解释为上游错误。全参数树和未选MuonH/AdamH不在验证范围。网页工具raw链接cache miss后通过HTTPS实际取得来源；归档保留URL/hash，无历史runtime绑定。报告新增状态与计划接续合同，生产效应未知。
+
+## V134，2026-10-08：数值合法性之外检查计划几何
+
+原scheduler16项控制区分数值1、微小比例、周期端点与minimum；新增科学图及显式单位/preflight候选。最初假设N0会返回常量peak，原执行却在无周期后IndexError；更正断言与文档，不保留错误假设。候选预检最初还让零周期/空list进入原异常，随后补提前ValueError保护并重跑。10月7日声明N390251/warmup.01换算3902，明确未命中人工反例；实际执行绑定未知。旧结果和来源保持，未向上游应用候选。

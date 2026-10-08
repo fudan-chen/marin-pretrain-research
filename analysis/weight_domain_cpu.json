@@ -1,0 +1,668 @@
+{
+  "scope": "Execute uploaded full MixtureDataset with finite identity stores and malformed numeric weights.\nOriginal class dependency adapters from assertion probe; no tokens, model, actual incident or loss.\n",
+  "checks_passed": 13,
+  "checks": [
+    {
+      "name": "Actual CPU backend and normal compile level",
+      "passed": true
+    },
+    {
+      "name": "Negative and zero-sum already rejected explicitly",
+      "passed": true
+    },
+    {
+      "name": "NaN-only later stage silently normalizes to empty and assigns all eight to first A",
+      "passed": true
+    },
+    {
+      "name": "Finite overflow later stage silently normalizes both weights to zero then assigns all to A",
+      "passed": true
+    },
+    {
+      "name": "First-child fallback follows reversed actual dataset order",
+      "passed": true
+    },
+    {
+      "name": "Static forms fail later rather than share staged silent behavior",
+      "passed": true
+    },
+    {
+      "name": "Tiny representable positive weight retained but receives zero integer quota",
+      "passed": true
+    },
+    {
+      "name": "Positive finite ratio underflows to zero and filters A from mixture dataset index",
+      "passed": true
+    },
+    {
+      "name": "Original config post_init does not preempt numeric malformed weight cases",
+      "passed": true
+    },
+    {
+      "name": "Counterfactual finite-total guard rejects all eight malformed inputs",
+      "passed": true
+    },
+    {
+      "name": "Minimal guard preserves selected valid and tiny-input trajectories without claiming underflow fix",
+      "passed": true
+    },
+    {
+      "name": "Both archived recipes five stages finite nonnegative and no sum overflow",
+      "passed": true
+    },
+    {
+      "name": "Minimal guard preserves all five archived normalized vectors and integer quotas",
+      "passed": true
+    }
+  ],
+  "runtime": {
+    "python": "3.12.13",
+    "jax": "0.11.0",
+    "numpy": "2.3.5",
+    "backend": "cpu"
+  },
+  "cases": {
+    "valid_half": {
+      "accepted": true,
+      "normalized_hex": [
+        {
+          "A": "0x1.0000000000000p-1",
+          "B": "0x1.0000000000000p-1"
+        }
+      ],
+      "dataset_index": [
+        "A",
+        "B"
+      ],
+      "quotas": [
+        {
+          "A": 4,
+          "B": 4
+        }
+      ],
+      "stream": [
+        "A:0",
+        "A:1",
+        "A:2",
+        "A:3",
+        "B:0",
+        "B:1",
+        "B:2",
+        "B:3",
+        "A:4",
+        "A:5",
+        "A:6",
+        "A:7",
+        "B:4",
+        "B:5",
+        "B:6",
+        "B:7"
+      ],
+      "warnings": []
+    },
+    "negative": {
+      "accepted": false,
+      "error_type": "ValueError",
+      "error": "Dataset weights cannot be negative, got {'A': 1.0, 'B': -0.1}"
+    },
+    "all_zero": {
+      "accepted": false,
+      "error_type": "ValueError",
+      "error": "Datasets' weights cannot sum to 0, got {'A': 0.0, 'B': 0.0}"
+    },
+    "nan_only_static": {
+      "accepted": false,
+      "error_type": "ValueError",
+      "error": "attempt to get argmax of an empty sequence"
+    },
+    "nan_only_later": {
+      "accepted": true,
+      "normalized_hex": [
+        {
+          "A": "0x1.0000000000000p-1",
+          "B": "0x1.0000000000000p-1"
+        },
+        {}
+      ],
+      "dataset_index": [
+        "A",
+        "B"
+      ],
+      "quotas": [
+        {
+          "A": 4,
+          "B": 4
+        },
+        {
+          "A": 8,
+          "B": 0
+        }
+      ],
+      "stream": [
+        "A:0",
+        "A:1",
+        "A:2",
+        "A:3",
+        "B:0",
+        "B:1",
+        "B:2",
+        "B:3",
+        "A:4",
+        "A:5",
+        "A:6",
+        "A:7",
+        "A:8",
+        "A:9",
+        "A:10",
+        "A:11"
+      ],
+      "warnings": []
+    },
+    "inf_static": {
+      "accepted": false,
+      "error_type": "ValueError",
+      "error": "attempt to get argmax of an empty sequence"
+    },
+    "inf_later": {
+      "accepted": false,
+      "error_type": "ValueError",
+      "error": "cannot convert float NaN to integer"
+    },
+    "finite_overflow_static": {
+      "accepted": false,
+      "error_type": "ValueError",
+      "error": "attempt to get argmax of an empty sequence"
+    },
+    "finite_overflow_later": {
+      "accepted": true,
+      "normalized_hex": [
+        {
+          "A": "0x1.0000000000000p-1",
+          "B": "0x1.0000000000000p-1"
+        },
+        {
+          "A": "0x0.0p+0",
+          "B": "0x0.0p+0"
+        }
+      ],
+      "dataset_index": [
+        "A",
+        "B"
+      ],
+      "quotas": [
+        {
+          "A": 4,
+          "B": 4
+        },
+        {
+          "A": 8,
+          "B": 0
+        }
+      ],
+      "stream": [
+        "A:0",
+        "A:1",
+        "A:2",
+        "A:3",
+        "B:0",
+        "B:1",
+        "B:2",
+        "B:3",
+        "A:4",
+        "A:5",
+        "A:6",
+        "A:7",
+        "A:8",
+        "A:9",
+        "A:10",
+        "A:11"
+      ],
+      "warnings": []
+    },
+    "tiny_positive": {
+      "accepted": true,
+      "normalized_hex": [
+        {
+          "A": "0x0.00000000007e8p-1022",
+          "B": "0x1.0000000000000p+0"
+        }
+      ],
+      "dataset_index": [
+        "A",
+        "B"
+      ],
+      "quotas": [
+        {
+          "A": 0,
+          "B": 8
+        }
+      ],
+      "stream": [
+        "B:0",
+        "B:1",
+        "B:2",
+        "B:3",
+        "B:4",
+        "B:5",
+        "B:6",
+        "B:7",
+        "B:8",
+        "B:9",
+        "B:10",
+        "B:11",
+        "B:12",
+        "B:13",
+        "B:14",
+        "B:15"
+      ],
+      "warnings": [
+        "Dataset A has 0 samples in the block, but weight of 1e-320. Recommend increasing block size."
+      ]
+    },
+    "positive_ratio_underflow": {
+      "accepted": true,
+      "normalized_hex": [
+        {
+          "A": "0x0.0p+0",
+          "B": "0x1.0000000000000p+0"
+        }
+      ],
+      "dataset_index": [
+        "B"
+      ],
+      "quotas": [
+        {
+          "B": 8
+        }
+      ],
+      "stream": [
+        "B:0",
+        "B:1",
+        "B:2",
+        "B:3",
+        "B:4",
+        "B:5",
+        "B:6",
+        "B:7",
+        "B:8",
+        "B:9",
+        "B:10",
+        "B:11",
+        "B:12",
+        "B:13",
+        "B:14",
+        "B:15"
+      ],
+      "warnings": []
+    }
+  },
+  "original_config_post_init": {
+    "valid_half": {
+      "accepted": true
+    },
+    "negative": {
+      "accepted": true
+    },
+    "all_zero": {
+      "accepted": true
+    },
+    "nan_only_static": {
+      "accepted": true
+    },
+    "nan_only_later": {
+      "accepted": true
+    },
+    "inf_static": {
+      "accepted": true
+    },
+    "inf_later": {
+      "accepted": true
+    },
+    "finite_overflow_static": {
+      "accepted": true
+    },
+    "finite_overflow_later": {
+      "accepted": true
+    },
+    "tiny_positive": {
+      "accepted": true
+    },
+    "positive_ratio_underflow": {
+      "accepted": true
+    }
+  },
+  "reversed_cases": {
+    "nan_only_later": {
+      "accepted": true,
+      "normalized_hex": [
+        {
+          "A": "0x1.0000000000000p-1",
+          "B": "0x1.0000000000000p-1"
+        },
+        {}
+      ],
+      "dataset_index": [
+        "B",
+        "A"
+      ],
+      "quotas": [
+        {
+          "B": 4,
+          "A": 4
+        },
+        {
+          "B": 8,
+          "A": 0
+        }
+      ],
+      "stream": [
+        "B:0",
+        "B:1",
+        "B:2",
+        "B:3",
+        "A:0",
+        "A:1",
+        "A:2",
+        "A:3",
+        "B:4",
+        "B:5",
+        "B:6",
+        "B:7",
+        "B:8",
+        "B:9",
+        "B:10",
+        "B:11"
+      ],
+      "warnings": []
+    },
+    "finite_overflow_later": {
+      "accepted": true,
+      "normalized_hex": [
+        {
+          "A": "0x1.0000000000000p-1",
+          "B": "0x1.0000000000000p-1"
+        },
+        {
+          "A": "0x0.0p+0",
+          "B": "0x0.0p+0"
+        }
+      ],
+      "dataset_index": [
+        "B",
+        "A"
+      ],
+      "quotas": [
+        {
+          "B": 4,
+          "A": 4
+        },
+        {
+          "B": 8,
+          "A": 0
+        }
+      ],
+      "stream": [
+        "B:0",
+        "B:1",
+        "B:2",
+        "B:3",
+        "A:0",
+        "A:1",
+        "A:2",
+        "A:3",
+        "B:4",
+        "B:5",
+        "B:6",
+        "B:7",
+        "B:8",
+        "B:9",
+        "B:10",
+        "B:11"
+      ],
+      "warnings": []
+    }
+  },
+  "counterfactual_finite_guard_cases": {
+    "valid_half": {
+      "accepted": true,
+      "normalized_hex": [
+        {
+          "A": "0x1.0000000000000p-1",
+          "B": "0x1.0000000000000p-1"
+        }
+      ],
+      "dataset_index": [
+        "A",
+        "B"
+      ],
+      "quotas": [
+        {
+          "A": 4,
+          "B": 4
+        }
+      ],
+      "stream": [
+        "A:0",
+        "A:1",
+        "A:2",
+        "A:3",
+        "B:0",
+        "B:1",
+        "B:2",
+        "B:3",
+        "A:4",
+        "A:5",
+        "A:6",
+        "A:7",
+        "B:4",
+        "B:5",
+        "B:6",
+        "B:7"
+      ],
+      "warnings": []
+    },
+    "negative": {
+      "accepted": false,
+      "error_type": "ValueError",
+      "error": "Dataset weights cannot be negative, got {'A': 1.0, 'B': -0.1}"
+    },
+    "all_zero": {
+      "accepted": false,
+      "error_type": "ValueError",
+      "error": "Weight sum must be positive and finite"
+    },
+    "nan_only_static": {
+      "accepted": false,
+      "error_type": "ValueError",
+      "error": "All weight values must be finite"
+    },
+    "nan_only_later": {
+      "accepted": false,
+      "error_type": "ValueError",
+      "error": "All weight values must be finite"
+    },
+    "inf_static": {
+      "accepted": false,
+      "error_type": "ValueError",
+      "error": "All weight values must be finite"
+    },
+    "inf_later": {
+      "accepted": false,
+      "error_type": "ValueError",
+      "error": "All weight values must be finite"
+    },
+    "finite_overflow_static": {
+      "accepted": false,
+      "error_type": "ValueError",
+      "error": "Weight sum must be positive and finite"
+    },
+    "finite_overflow_later": {
+      "accepted": false,
+      "error_type": "ValueError",
+      "error": "Weight sum must be positive and finite"
+    },
+    "tiny_positive": {
+      "accepted": true,
+      "normalized_hex": [
+        {
+          "A": "0x0.00000000007e8p-1022",
+          "B": "0x1.0000000000000p+0"
+        }
+      ],
+      "dataset_index": [
+        "A",
+        "B"
+      ],
+      "quotas": [
+        {
+          "A": 0,
+          "B": 8
+        }
+      ],
+      "stream": [
+        "B:0",
+        "B:1",
+        "B:2",
+        "B:3",
+        "B:4",
+        "B:5",
+        "B:6",
+        "B:7",
+        "B:8",
+        "B:9",
+        "B:10",
+        "B:11",
+        "B:12",
+        "B:13",
+        "B:14",
+        "B:15"
+      ],
+      "warnings": [
+        "Dataset A has 0 samples in the block, but weight of 1e-320. Recommend increasing block size."
+      ]
+    },
+    "positive_ratio_underflow": {
+      "accepted": true,
+      "normalized_hex": [
+        {
+          "A": "0x0.0p+0",
+          "B": "0x1.0000000000000p+0"
+        }
+      ],
+      "dataset_index": [
+        "B"
+      ],
+      "quotas": [
+        {
+          "B": 8
+        }
+      ],
+      "stream": [
+        "B:0",
+        "B:1",
+        "B:2",
+        "B:3",
+        "B:4",
+        "B:5",
+        "B:6",
+        "B:7",
+        "B:8",
+        "B:9",
+        "B:10",
+        "B:11",
+        "B:12",
+        "B:13",
+        "B:14",
+        "B:15"
+      ],
+      "warnings": []
+    }
+  },
+  "archived_recipe_geometry": "All declared phase weight dictionaries retained; phase starts remapped to synthetic aligned one-block boundaries for normalization/quota comparison, not historical exposure replay",
+  "archived_recipe_controls": [
+    {
+      "role": "producer",
+      "declared_start": 0,
+      "diagnostic_sequence_begin": 0,
+      "all_raw_finite_nonnegative": true,
+      "raw_sum_hex": "0x1.fffffffffffffp-1",
+      "positive_min": 9.168930566858915e-10,
+      "positive_max": 0.0480314596077799,
+      "positive_weight_components_this_phase": 200,
+      "normalized_equal": true,
+      "integer_quota_equal": true,
+      "retained_components_full_history": 200
+    },
+    {
+      "role": "producer",
+      "declared_start": 3120,
+      "diagnostic_sequence_begin": 49152,
+      "all_raw_finite_nonnegative": true,
+      "raw_sum_hex": "0x1.0000000000001p+0",
+      "positive_min": 1.0881882858492625e-08,
+      "positive_max": 0.0520169205245205,
+      "positive_weight_components_this_phase": 200,
+      "normalized_equal": true,
+      "integer_quota_equal": true,
+      "retained_components_full_history": 200
+    },
+    {
+      "role": "continuation",
+      "declared_start": 0,
+      "diagnostic_sequence_begin": 0,
+      "all_raw_finite_nonnegative": true,
+      "raw_sum_hex": "0x1.fffffffffffffp-1",
+      "positive_min": 9.168930566858915e-10,
+      "positive_max": 0.0480314596077799,
+      "positive_weight_components_this_phase": 200,
+      "normalized_equal": true,
+      "integer_quota_equal": true,
+      "retained_components_full_history": 200
+    },
+    {
+      "role": "continuation",
+      "declared_start": 384,
+      "diagnostic_sequence_begin": 49152,
+      "all_raw_finite_nonnegative": true,
+      "raw_sum_hex": "0x1.0000000000000p+0",
+      "positive_min": 2.0345052083333332e-05,
+      "positive_max": 0.030132472694598737,
+      "positive_weight_components_this_phase": 194,
+      "normalized_equal": true,
+      "integer_quota_equal": true,
+      "retained_components_full_history": 200
+    },
+    {
+      "role": "continuation",
+      "declared_start": 3120,
+      "diagnostic_sequence_begin": 98304,
+      "all_raw_finite_nonnegative": true,
+      "raw_sum_hex": "0x1.0000000000000p+0",
+      "positive_min": 2.0345052083333332e-05,
+      "positive_max": 0.030132472694598737,
+      "positive_weight_components_this_phase": 194,
+      "normalized_equal": true,
+      "integer_quota_equal": true,
+      "retained_components_full_history": 200
+    }
+  ],
+  "source_sha256": {
+    "sources/run_code_2026_10_08/mixture.py": "7f5a3182bdaec60b2ee45e3961eef47afa57028f1fdfa03111f2a43355b35757",
+    "sources/run_code_2026_10_08/datasets.py": "d242bedf000cdb0d72ec050bee0d50bcd62cc131c226b845a9d9c4914eadd534",
+    "scripts/probe_assertion_contracts_cpu.py": "e69d084cb608aabff73779784ede19b027b737b01648b4bb856c16edcac2417d",
+    "sources/run_code_2026_10_08/producer_inventory.json": "ba3e5a2ccd14d3226492d808f5da05cd5f2173956ccd1b71619b47d1ab1ed69e",
+    "sources/run_code_2026_10_08/continuation_inventory.json": "f4a9fc3e07fb5bbe50fa909a6ebe4a5c2df4abbc0cc052cf8d7855130a2e39df"
+  },
+  "probe_script_sha256": "03bb87824fc630341f21f8b67963417036e462422e03c9c7343b7a6b3c45d8c1",
+  "substitutions": [
+    "Original full historical class with assertion probe dependency adapters",
+    "Strict finite artificial identities length100, no actual200cell cache",
+    "Block size8 and randomize_blocks=False for diagnostic identities; real recipe integer vectors use49152",
+    "Counterfactual wrapper adds finite values and positive finite same-order sum guard, then calls unchanged original normalizer"
+  ],
+  "actual_Hero_nonfinite_weights": null,
+  "actual_Hero_weight_sum_overflow": null,
+  "actual_training_loss_effect": null,
+  "actual_GPU_execution": null,
+  "counterfactual_guard_deployed": false
+}

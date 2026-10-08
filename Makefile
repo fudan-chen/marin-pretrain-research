@@ -307,3 +307,7 @@ prefix-sampling-cpu:
 .PHONY: assertion-contracts-cpu
 assertion-contracts-cpu:
 	$(CPU_PYTHON) scripts/probe_assertion_contracts_cpu.py
+
+.PHONY: weight-domain-cpu
+weight-domain-cpu:
+	$(CPU_PYTHON) scripts/probe_weight_domain_cpu.py

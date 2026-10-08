@@ -588,3 +588,8 @@ V117接原causal目标mask、attention有效性、投影margin和四CPU histogra
 ## V129：异步manager与任务级失败
 
 保存验收分别审查任务身份与首次失败、future对象、源数组可达性和RSS。completed future列表存在不能独立证明模型数组仍在；后续wait正常也不能撤销已观察到的提交/发布失败。新增规则说明未改变18项机器评分结构。[实际依赖控制](ASYNC_MANAGER_ZH.md)。
+
+
+## V130：保存调度与失败策略
+
+保存失败评审增加请求身份、交接水位、metadata发布与retention结果。重试要说明触发条件和attempt，不能将force开关视为原子覆盖或分布式重试保证。已发布后的清理错误不自动归为数据提交失败。[原调用链控制](CHECKPOINT_FAILURE_POLICY_ZH.md)。

@@ -302,3 +302,8 @@ V113对人工NaN/Inf pending做真实本地保存恢复，11叶二进制摘要�
 ## V129：异步manager与任务级失败
 
 原AsyncManager的commit或发布回调失败会向调用者抛出一次并清异常字段，单进程第二次等待可正常返回。任务级失败记录不能由后一次wait覆盖；数据提交、发布与可恢复水位分别验收。真实多rank协调路径未执行。[原线程控制](ASYNC_MANAGER_ZH.md)。
+
+
+## V130：保存调度与失败策略
+
+原Checkpointer五方法、原发布回调与原manager组合执行11项控制。交接前失败不推进step但消费请求；交接后失败推进去重/time水位，同step普通调用不重提；retention失败发生在metadata之后。虚拟后端只记录事件，无真实写入删除或restore。两来源并非已证明的历史部署组合。[分层故障与策略](CHECKPOINT_FAILURE_POLICY_ZH.md)。

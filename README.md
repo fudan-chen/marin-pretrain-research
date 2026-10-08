@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本V129：取得两份运行artifact绑定的JAX异步manager依赖，执行线程、错误消费、引用所有权与真实TensorStore内存提交控制。区分已完成future、源数组可达性与保存失败事实。[源码与排障结论](ASYNC_MANAGER_ZH.md)。
+当前版本V130：接通原保存调度、发布回调和异步manager，分别注入交接、commit、metadata与retention失败，核对请求消费、同step去重和time重试触发。11项控制，无真实checkpoint写入或删除。[调用合同与故障策略](CHECKPOINT_FAILURE_POLICY_ZH.md)。
 
 [MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并提供未执行的性能交互记录模板。
 

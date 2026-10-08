@@ -460,3 +460,8 @@ V117接原causal目标mask、attention有效性、投影margin和四CPU histogra
 ## V129：异步manager与任务级失败
 
 保存/恢复支线补依赖原类体执行证据。建议保留任务级首次错误与失败水位，分别测manager列表、callback、数组根引用及allocator；清理私有字段只作为受控诊断，集成前核对写入使用结束和版本接口。真实分布式保存与独立restore仍待验证。
+
+
+## V130：保存调度与失败策略
+
+保存支线按交接前、commit、metadata及retention四类失败安排后续；显式请求可能已消费，step/time调度水位可能已推进。建议另存失败attempt并明确重新排队/同step重试政策；本轮未实现生产重试或验证覆盖路径。

@@ -318,3 +318,7 @@ async-manager-source:
 	$(PYTHON) scripts/archive_manifest.py
 async-manager-cpu:
 	$(CPU_PYTHON) scripts/probe_async_manager_cpu.py
+
+.PHONY: checkpoint-schedule-cpu
+checkpoint-schedule-cpu:
+	$(CPU_PYTHON) scripts/probe_checkpoint_schedule_cpu.py

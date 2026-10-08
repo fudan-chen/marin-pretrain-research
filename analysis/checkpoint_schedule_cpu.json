@@ -1,0 +1,482 @@
+{
+  "scope": "Original Checkpointer scheduling methods + original uploaded AsyncManager + original publication callback.\nManual object construction, virtual writer/metadata/retention events; no filesystem writes, deletes or model.\nSources are a fixed Marin snapshot and uploaded JAX dependency, not a proven historical deployed pair.\n",
+  "checks_passed": 11,
+  "checks": [
+    {
+      "name": "Original source method selection complete",
+      "passed": true
+    },
+    {
+      "name": "Synchronous staging failure leaves handoff watermark unchanged but consumes request",
+      "passed": true
+    },
+    {
+      "name": "Consumed request not automatically retried without time step or fresh-request trigger",
+      "passed": true
+    },
+    {
+      "name": "Commit and metadata failures keep updated handoff step but no new publication",
+      "passed": true
+    },
+    {
+      "name": "Ordinary same-step call does not resubmit failed post-handoff save",
+      "passed": true
+    },
+    {
+      "name": "Explicit force control after consumed failure resubmits and publishes same virtual path",
+      "passed": true
+    },
+    {
+      "name": "Commit and metadata failures never invoke retention in selected callback chain",
+      "passed": true
+    },
+    {
+      "name": "Retention failure follows actual virtual metadata publication and preserves marker despite wait error",
+      "passed": true
+    },
+    {
+      "name": "Successful permanent save publishes then requests temporary pruning only after metadata",
+      "passed": true
+    },
+    {
+      "name": "Time-triggered failed handoff suppresses immediate time retry at following update",
+      "passed": true
+    },
+    {
+      "name": "Single-process CPU only",
+      "passed": true
+    }
+  ],
+  "runtime": {
+    "python": "3.12.13",
+    "jax": "0.7.2",
+    "numpy": "2.5.3",
+    "backend": "cpu"
+  },
+  "cases": {
+    "sync_failure": {
+      "on_step": {
+        "returned": false,
+        "error": "staging failed"
+      },
+      "wait": {
+        "returned": true
+      },
+      "before_same_step": {
+        "last_handoff_step": 0,
+        "last_handoff_time": "2026-10-08T00:00:00",
+        "request_pending": null,
+        "published_steps": [
+          5
+        ],
+        "submitted_steps": [],
+        "events": []
+      },
+      "same_step": {
+        "returned": true
+      },
+      "after_same_step": {
+        "last_handoff_step": 0,
+        "last_handoff_time": "2026-10-08T00:00:00",
+        "request_pending": null,
+        "published_steps": [
+          5
+        ],
+        "submitted_steps": [],
+        "events": []
+      },
+      "later_without_new_request": {
+        "on_step": {
+          "returned": true
+        },
+        "state": {
+          "last_handoff_step": 0,
+          "last_handoff_time": "2026-10-08T00:00:00",
+          "request_pending": null,
+          "published_steps": [
+            5
+          ],
+          "submitted_steps": [],
+          "events": []
+        }
+      }
+    },
+    "commit_failure": {
+      "on_step": {
+        "returned": true
+      },
+      "wait": {
+        "returned": false,
+        "error": "commit failed"
+      },
+      "before_same_step": {
+        "last_handoff_step": 10,
+        "last_handoff_time": "2026-10-08T00:01:41",
+        "request_pending": null,
+        "published_steps": [
+          5
+        ],
+        "submitted_steps": [
+          10
+        ],
+        "events": [
+          [
+            "writer_submit",
+            10
+          ]
+        ]
+      },
+      "same_step": {
+        "returned": true
+      },
+      "after_same_step": {
+        "last_handoff_step": 10,
+        "last_handoff_time": "2026-10-08T00:01:41",
+        "request_pending": null,
+        "published_steps": [
+          5
+        ],
+        "submitted_steps": [
+          10
+        ],
+        "events": [
+          [
+            "writer_submit",
+            10
+          ]
+        ]
+      },
+      "forced_control": {
+        "on_step": {
+          "returned": true
+        },
+        "wait": {
+          "returned": true
+        },
+        "state": {
+          "last_handoff_step": 10,
+          "last_handoff_time": "2026-10-08T00:01:41",
+          "request_pending": null,
+          "published_steps": [
+            5,
+            10
+          ],
+          "submitted_steps": [
+            10,
+            10
+          ],
+          "events": [
+            [
+              "writer_submit",
+              10
+            ],
+            [
+              "writer_submit",
+              10
+            ],
+            [
+              "metadata_attempt",
+              10
+            ],
+            [
+              "metadata_published",
+              10
+            ],
+            [
+              "prune_attempt",
+              0
+            ]
+          ]
+        }
+      }
+    },
+    "metadata_failure": {
+      "on_step": {
+        "returned": true
+      },
+      "wait": {
+        "returned": false,
+        "error": "metadata failed"
+      },
+      "before_same_step": {
+        "last_handoff_step": 10,
+        "last_handoff_time": "2026-10-08T00:01:41",
+        "request_pending": null,
+        "published_steps": [
+          5
+        ],
+        "submitted_steps": [
+          10
+        ],
+        "events": [
+          [
+            "writer_submit",
+            10
+          ],
+          [
+            "metadata_attempt",
+            10
+          ]
+        ]
+      },
+      "same_step": {
+        "returned": true
+      },
+      "after_same_step": {
+        "last_handoff_step": 10,
+        "last_handoff_time": "2026-10-08T00:01:41",
+        "request_pending": null,
+        "published_steps": [
+          5
+        ],
+        "submitted_steps": [
+          10
+        ],
+        "events": [
+          [
+            "writer_submit",
+            10
+          ],
+          [
+            "metadata_attempt",
+            10
+          ]
+        ]
+      },
+      "forced_control": {
+        "on_step": {
+          "returned": true
+        },
+        "wait": {
+          "returned": true
+        },
+        "state": {
+          "last_handoff_step": 10,
+          "last_handoff_time": "2026-10-08T00:01:41",
+          "request_pending": null,
+          "published_steps": [
+            5,
+            10
+          ],
+          "submitted_steps": [
+            10,
+            10
+          ],
+          "events": [
+            [
+              "writer_submit",
+              10
+            ],
+            [
+              "metadata_attempt",
+              10
+            ],
+            [
+              "writer_submit",
+              10
+            ],
+            [
+              "metadata_attempt",
+              10
+            ],
+            [
+              "metadata_published",
+              10
+            ],
+            [
+              "prune_attempt",
+              0
+            ]
+          ]
+        }
+      }
+    },
+    "retention_failure": {
+      "on_step": {
+        "returned": true
+      },
+      "wait": {
+        "returned": false,
+        "error": "retention failed"
+      },
+      "before_same_step": {
+        "last_handoff_step": 10,
+        "last_handoff_time": "2026-10-08T00:01:41",
+        "request_pending": null,
+        "published_steps": [
+          5,
+          10
+        ],
+        "submitted_steps": [
+          10
+        ],
+        "events": [
+          [
+            "writer_submit",
+            10
+          ],
+          [
+            "metadata_attempt",
+            10
+          ],
+          [
+            "metadata_published",
+            10
+          ],
+          [
+            "prune_attempt",
+            0
+          ]
+        ]
+      },
+      "same_step": {
+        "returned": true
+      },
+      "after_same_step": {
+        "last_handoff_step": 10,
+        "last_handoff_time": "2026-10-08T00:01:41",
+        "request_pending": null,
+        "published_steps": [
+          5,
+          10
+        ],
+        "submitted_steps": [
+          10
+        ],
+        "events": [
+          [
+            "writer_submit",
+            10
+          ],
+          [
+            "metadata_attempt",
+            10
+          ],
+          [
+            "metadata_published",
+            10
+          ],
+          [
+            "prune_attempt",
+            0
+          ]
+        ]
+      }
+    },
+    "success": {
+      "on_step": {
+        "returned": true
+      },
+      "wait": {
+        "returned": true
+      },
+      "before_same_step": {
+        "last_handoff_step": 10,
+        "last_handoff_time": "2026-10-08T00:01:41",
+        "request_pending": null,
+        "published_steps": [
+          5,
+          10
+        ],
+        "submitted_steps": [
+          10
+        ],
+        "events": [
+          [
+            "writer_submit",
+            10
+          ],
+          [
+            "metadata_attempt",
+            10
+          ],
+          [
+            "metadata_published",
+            10
+          ],
+          [
+            "prune_attempt",
+            0
+          ]
+        ]
+      },
+      "same_step": {
+        "returned": true
+      },
+      "after_same_step": {
+        "last_handoff_step": 10,
+        "last_handoff_time": "2026-10-08T00:01:41",
+        "request_pending": null,
+        "published_steps": [
+          5,
+          10
+        ],
+        "submitted_steps": [
+          10
+        ],
+        "events": [
+          [
+            "writer_submit",
+            10
+          ],
+          [
+            "metadata_attempt",
+            10
+          ],
+          [
+            "metadata_published",
+            10
+          ],
+          [
+            "prune_attempt",
+            0
+          ]
+        ]
+      }
+    },
+    "time_after_failure": {
+      "wait": {
+        "returned": false,
+        "error": "commit failed"
+      },
+      "next_step": {
+        "returned": true
+      },
+      "state": {
+        "last_handoff_step": 1,
+        "last_handoff_time": "2026-10-08T00:01:41",
+        "request_pending": null,
+        "published_steps": [
+          5
+        ],
+        "submitted_steps": [
+          1
+        ],
+        "events": [
+          [
+            "writer_submit",
+            1
+          ]
+        ]
+      }
+    }
+  },
+  "source_sha256": {
+    "sources/checkpoint_commit_2026_10_05/checkpoint.py": "3997faa8082442fcdf16df2fd0c13bf30a26a9c5db62eb81cce0758bff4a2274",
+    "sources/async_manager_2026_10_08/serialization.py": "bedaf69435b1073636f94ac909ab0174287be709ae7e8ddaec8bc4b6ee650328",
+    "scripts/probe_async_manager_cpu.py": "3b34c32f0e59f0cce3008db9028117839659ce4eb02edd840badc016042f5532"
+  },
+  "probe_script_sha256": "55b5b9edf310bde40b0f21108b9a59b2c760c9042d514b62b989d53174488c28",
+  "substitutions": [
+    "Manual Shell field initialization; five unmodified Checkpointer methods",
+    "Original nested global save_checkpoint.my_callback with in-memory metadata and retention backends",
+    "Original uploaded AsyncManager class via definitions-only previous probe adapter",
+    "Single-process broadcast identity adapter, NumPy boolean array instead of device broadcast",
+    "Virtual writer boundary replaces serializer/filesystem; no actual file publication or deletion",
+    "Fixed Marin source snapshot plus uploaded JAX dependency, not proven historical deployed pair"
+  ],
+  "actual_Hero_failed_save_deduplication": null,
+  "actual_production_checkpoint_deleted": null,
+  "actual_full_checkpoint_restore": null,
+  "actual_training_loss_effect": null
+}

@@ -119,3 +119,8 @@
 ## V129：异步manager与任务级失败
 
 新增[异步manager所有权与错误消费](ASYNC_MANAGER_ZH.md)。1份双清单绑定依赖，10项控制：完成future列表保留、旧列表替换释放、独立callback根引用、错误抛出一次，以及真实TensorStore源数组已回收的限制。修正保存内存总图；未认定生产RSS根因或修复完成。
+
+
+## V130：保存调度与失败策略
+
+新增[保存失败与重试触发](CHECKPOINT_FAILURE_POLICY_ZH.md)：原Checkpointer五方法、原发布回调及原manager的11项组合控制，定位交接水位、一次性请求、同step去重、时间节流与清理失败的边界。无新增来源或真实存储操作。

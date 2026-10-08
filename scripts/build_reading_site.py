@@ -94,8 +94,11 @@ for sid in groups[-1][3].split():
 tooldoc.body.insert(1,toolnav)
 toolstyle=tooldoc.new_tag('style');toolstyle.string='.tool-inactive{display:none!important}';tooldoc.head.append(toolstyle)
 switcher=tooldoc.new_tag('script')
-switcher.string="""(function(){const sections=Array.from(document.querySelectorAll('main > section[id]'));function show(){const id=location.hash.slice(1);const chosen=sections.find(s=>s.id===id)||sections[0];sections.forEach(s=>s.classList.toggle('tool-inactive',s!==chosen));}window.addEventListener('hashchange',show);show();})();"""
+switcher.string="""(function(){const sections=Array.from(document.querySelectorAll('main > section[id]'));function show(){const id=location.hash.slice(1);const chosen=sections.find(s=>s.id===id||s.contains(document.getElementById(id)))||sections[0];sections.forEach(s=>s.classList.toggle('tool-inactive',s!==chosen));}window.addEventListener('hashchange',show);show();})();"""
 tooldoc.body.append(switcher)
+chaptermap=tooldoc.new_tag('script')
+chaptermap.string='const readingChapterTargets='+json.dumps(ids_to_page)+';document.addEventListener("click",function(e){const a=e.target.closest("a[href]");if(!a)return;const href=a.getAttribute("href");if(href.startsWith("#")&&!document.getElementById(href.slice(1))&&readingChapterTargets[href.slice(1)]){e.preventDefault();location.href=readingChapterTargets[href.slice(1)]+href;}});'
+tooldoc.body.append(chaptermap)
 (OUT/'tools.html').write_text(str(tooldoc))
 for sid in groups[-1][3].split():
  (OUT/(sid+'.html')).write_text(shell(title(sections[sid]),'<h1>'+html.escape(title(sections[sid]))+'</h1><p><a href="tools.html#'+sid+'">打开交互工具 →</a></p>'))

@@ -1,5 +1,7 @@
 # 版本记录
 
+V137 (2026-10-08): 13 real four-local-CPU controls of original loss shard_map/psum and autodiff, covering collective overflow, unequal targets/empty shard, two token axes, replicated non-token axis and all-zero global targets. Explicit CPU CE and sharding helper adapters; no GPU or production claim.
+
 V136 (2026-10-08): 12 CPU controls for original loss denominator dtype; direct low precision counterexamples and original causal constructor protection. Added readable Chinese diagnosis and pre-mixture reduction checks. No production incident or GPU claim.
 
 ## 第九轮，2026-10-05

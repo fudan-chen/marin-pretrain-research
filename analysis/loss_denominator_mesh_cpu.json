@@ -1,0 +1,399 @@
+{
+  "scope": "Original wrapper shard_map and psum on four virtual local CPU devices, original CPU CE reference; actual collectives, no GPU or multi-host network. Synthetic tensors and sharding helper adapters.",
+  "checks_passed": 13,
+  "checks": [
+    {
+      "name": "Four real local CPU devices available",
+      "passed": true
+    },
+    {
+      "name": "Unequal targets including empty shard globally weighted mean agrees",
+      "passed": true
+    },
+    {
+      "name": "Unequal targets including empty shard gradient agrees and is finite",
+      "passed": true
+    },
+    {
+      "name": "BF16 local rounding persists through psum",
+      "passed": true
+    },
+    {
+      "name": "FP16 global overflow despite finite local denominators",
+      "passed": true
+    },
+    {
+      "name": "FP16 globally overflowed mean has finite zero loss and zero gradient",
+      "passed": true
+    },
+    {
+      "name": "Uniform half scaling violates invariance on overflow path",
+      "passed": true
+    },
+    {
+      "name": "FP32 same global token count restores expected loss and gradient",
+      "passed": true
+    },
+    {
+      "name": "Original multi token-axis psum also exposes global overflow",
+      "passed": true
+    },
+    {
+      "name": "FP32 two token axes agree with reference",
+      "passed": true
+    },
+    {
+      "name": "All zero global weights have zero loss but nonfinite head gradient",
+      "passed": true
+    },
+    {
+      "name": "Replicated non-token model axis is not counted twice",
+      "passed": true
+    },
+    {
+      "name": "Original shard_map and collective run with explicit CPU reference backend substitution",
+      "passed": true
+    }
+  ],
+  "cases": {
+    "unequal_targets_fp32": {
+      "mesh_shape": {
+        "data": 4
+      },
+      "shape": [
+        4,
+        258
+      ],
+      "weight_dtype": "<class 'jax.numpy.float32'>",
+      "local_denominators": [
+        257.0,
+        1.0,
+        0.0,
+        258.0
+      ],
+      "global_denominator": 516.0,
+      "FP32_represented_weight_sum": 516.0,
+      "loss": 0.6931474804878235,
+      "loss_finite": true,
+      "head_gradient": [
+        [
+          0.0019379854202270508,
+          -0.0019379854202270508
+        ]
+      ],
+      "head_gradient_finite": true,
+      "reference_loss": 0.6931474804878235,
+      "reference_head_gradient": [
+        [
+          0.0019379951991140842,
+          -0.0019379951991140842
+        ]
+      ]
+    },
+    "bf16_four_shards": {
+      "mesh_shape": {
+        "data": 4
+      },
+      "shape": [
+        4,
+        257
+      ],
+      "weight_dtype": "<class 'jax.numpy.bfloat16'>",
+      "local_denominators": [
+        256.0,
+        256.0,
+        256.0,
+        256.0
+      ],
+      "global_denominator": 1024.0,
+      "FP32_represented_weight_sum": 1028.0,
+      "loss": 0.6958550810813904,
+      "loss_finite": true,
+      "head_gradient": [
+        [
+          -0.501953125,
+          0.501953125
+        ]
+      ],
+      "head_gradient_finite": true,
+      "reference_loss": 0.6931475400924683,
+      "reference_head_gradient": [
+        [
+          -0.49999427795410156,
+          0.49999427795410156
+        ]
+      ]
+    },
+    "fp16_global_overflow": {
+      "mesh_shape": {
+        "data": 4
+      },
+      "shape": [
+        4,
+        16384
+      ],
+      "weight_dtype": "<class 'jax.numpy.float16'>",
+      "local_denominators": [
+        16384.0,
+        16384.0,
+        16384.0,
+        16384.0
+      ],
+      "global_denominator": "inf",
+      "FP32_represented_weight_sum": 65536.0,
+      "loss": 0.0,
+      "loss_finite": true,
+      "head_gradient": [
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "head_gradient_finite": true,
+      "reference_loss": 0.6931471824645996,
+      "reference_head_gradient": [
+        [
+          -0.5,
+          0.5
+        ]
+      ]
+    },
+    "fp16_uniform_half": {
+      "mesh_shape": {
+        "data": 4
+      },
+      "shape": [
+        4,
+        16384
+      ],
+      "weight_dtype": "<class 'jax.numpy.float16'>",
+      "local_denominators": [
+        8192.0,
+        8192.0,
+        8192.0,
+        8192.0
+      ],
+      "global_denominator": 32768.0,
+      "FP32_represented_weight_sum": 32768.0,
+      "loss": 0.6931473016738892,
+      "loss_finite": true,
+      "head_gradient": [
+        [
+          -0.5,
+          0.5
+        ]
+      ],
+      "head_gradient_finite": true,
+      "reference_loss": 0.6931471824645996,
+      "reference_head_gradient": [
+        [
+          -0.5,
+          0.5
+        ]
+      ]
+    },
+    "fp32_global_baseline": {
+      "mesh_shape": {
+        "data": 4
+      },
+      "shape": [
+        4,
+        16384
+      ],
+      "weight_dtype": "<class 'jax.numpy.float32'>",
+      "local_denominators": [
+        16384.0,
+        16384.0,
+        16384.0,
+        16384.0
+      ],
+      "global_denominator": 65536.0,
+      "FP32_represented_weight_sum": 65536.0,
+      "loss": 0.6931473016738892,
+      "loss_finite": true,
+      "head_gradient": [
+        [
+          -0.5,
+          0.5
+        ]
+      ],
+      "head_gradient_finite": true,
+      "reference_loss": 0.6931471824645996,
+      "reference_head_gradient": [
+        [
+          -0.5,
+          0.5
+        ]
+      ]
+    },
+    "fp16_two_axes": {
+      "mesh_shape": {
+        "data": 2,
+        "sequence": 2
+      },
+      "shape": [
+        256,
+        256
+      ],
+      "weight_dtype": "<class 'jax.numpy.float16'>",
+      "local_denominators": [
+        16384.0,
+        16384.0,
+        16384.0,
+        16384.0
+      ],
+      "global_denominator": "inf",
+      "FP32_represented_weight_sum": 65536.0,
+      "loss": 0.0,
+      "loss_finite": true,
+      "head_gradient": [
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "head_gradient_finite": true,
+      "reference_loss": 0.6931471824645996,
+      "reference_head_gradient": [
+        [
+          -0.5,
+          0.5
+        ]
+      ]
+    },
+    "fp32_two_axes": {
+      "mesh_shape": {
+        "data": 2,
+        "sequence": 2
+      },
+      "shape": [
+        256,
+        256
+      ],
+      "weight_dtype": "<class 'jax.numpy.float32'>",
+      "local_denominators": [
+        16384.0,
+        16384.0,
+        16384.0,
+        16384.0
+      ],
+      "global_denominator": 65536.0,
+      "FP32_represented_weight_sum": 65536.0,
+      "loss": 0.6931473016738892,
+      "loss_finite": true,
+      "head_gradient": [
+        [
+          -0.5,
+          0.5
+        ]
+      ],
+      "head_gradient_finite": true,
+      "reference_loss": 0.6931471824645996,
+      "reference_head_gradient": [
+        [
+          -0.5,
+          0.5
+        ]
+      ]
+    },
+    "all_zero_fp32": {
+      "mesh_shape": {
+        "data": 4
+      },
+      "shape": [
+        4,
+        8
+      ],
+      "weight_dtype": "<class 'jax.numpy.float32'>",
+      "local_denominators": [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "global_denominator": 0.0,
+      "FP32_represented_weight_sum": 0.0,
+      "loss": 0.0,
+      "loss_finite": true,
+      "head_gradient": [
+        [
+          "nan",
+          "nan"
+        ]
+      ],
+      "head_gradient_finite": false,
+      "reference_loss": 0.0,
+      "reference_head_gradient": [
+        [
+          "nan",
+          "nan"
+        ]
+      ]
+    },
+    "fp32_replicated_model_axis": {
+      "mesh_shape": {
+        "data": 2,
+        "model": 2
+      },
+      "shape": [
+        4,
+        16384
+      ],
+      "weight_dtype": "<class 'jax.numpy.float32'>",
+      "local_denominators": [
+        32768.0,
+        32768.0,
+        32768.0,
+        32768.0
+      ],
+      "global_denominator": 65536.0,
+      "FP32_represented_weight_sum": 65536.0,
+      "loss": 0.6931474804878235,
+      "loss_finite": true,
+      "head_gradient": [
+        [
+          -0.5,
+          0.5
+        ]
+      ],
+      "head_gradient_finite": true,
+      "reference_loss": 0.6931471824645996,
+      "reference_head_gradient": [
+        [
+          -0.5,
+          0.5
+        ]
+      ]
+    }
+  },
+  "runtime": {
+    "jax": "0.7.2",
+    "numpy": "2.5.3",
+    "devices": [
+      "TFRT_CPU_0",
+      "TFRT_CPU_1",
+      "TFRT_CPU_2",
+      "TFRT_CPU_3"
+    ]
+  },
+  "source_sha256": {
+    "sources/scale_2026_10_05/grug_loss.py": "97e86e8a7540cafeb4be9695da9a5c8342f3780b7fee6cbb45de79ffc50c15ba",
+    "sources/boundaries_2026_10_05/examples.py": "199a86abfd0f85eca39e6e73042c05ba56822dc35c26a5ed048dbb2f1299ec49",
+    "sources/contracts_2026_10_05/api.py": "5efeea2badba92dbc2dce9d0fc2306f12a2bf754dd2d8bee16b1dcd3ed0e355d",
+    "sources/contracts_2026_10_05/reference.py": "f113b3b6872af2d6aa4658cf4326b6c52c2675bf537690d5653604e9d559c0d5"
+  },
+  "base_probe_sha256": "70762c347c7de95273f08e60620657e0cc0856a596f1601d964faa8f4165b8fe",
+  "probe_script_sha256": "6558f76aa58288b75025a3bfeb56bc292c694305ef71fd0452fdaff62d3e3fe8",
+  "adapters": [
+    "NamedSharding spec lookup instead of partition_spec_of",
+    "_axis_names tuple normalization",
+    "_current_mesh explicit test mesh",
+    "_reshard_for_shard_map real device_put with NamedSharding",
+    "original CPU reference and reducer instead of fused backend dispatcher"
+  ],
+  "actual_GPU_execution": null,
+  "actual_multi_host_execution": null,
+  "actual_Hero_weight_dtype": null,
+  "actual_training_loss_effect": null,
+  "upstream_patch_applied": false
+}

@@ -351,3 +351,7 @@ confirmation-priorities:
 .PHONY: loss-denominator-dtype
 loss-denominator-dtype:
 	$(CPU_PYTHON) scripts/probe_loss_denominator_dtype_cpu.py
+
+.PHONY: loss-denominator-mesh
+loss-denominator-mesh:
+	$(CPU_PYTHON) scripts/probe_loss_denominator_mesh_cpu.py

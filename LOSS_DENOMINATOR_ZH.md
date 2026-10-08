@@ -51,4 +51,34 @@ BF16 对照的误差因子约为 257/256，即 0.390625%。FP16 对照更隐蔽�
 
 执行 `CPU_PYTHON=/tmp/marin-loss-mass-v109/bin/python make loss-denominator-dtype`。脚本通过 AST 提取原函数，attention mask 使用小型适配器；请求的 `xla_fast_bwd` 被显式替换为原始 CPU CE 参考加共享归约函数。各源文件和脚本 SHA、运行环境、8 组结果及 12 项断言见 [结果 JSON](analysis/loss_denominator_dtype_cpu.json) 与 [复现脚本](scripts/probe_loss_denominator_dtype_cpu.py)。
 
-结合 [有效目标与梯度累积](GRADIENT_ACCUMULATION_ZH.md)、[mask 数值边界](MASKED_NUMERICS_ZH.md) 和 [下一笔算力怎样安排](CONFIRMATION_PLAYBOOK_ZH.md) 阅读。生产 dtype、GPU 内核、分布式归约及训练影响仍未验证。
+结合 [有效目标与梯度累积](GRADIENT_ACCUMULATION_ZH.md)、[mask 数值边界](MASKED_NUMERICS_ZH.md) 和 [下一笔算力怎样安排](CONFIRMATION_PLAYBOOK_ZH.md) 阅读。以上是 V136 的单设备证据边界；生产 dtype、GPU 内核和训练影响仍未验证，多设备补测见下节。
+
+## V137：局部分母有限，跨设备求和后仍可能溢出
+
+V136 只执行无 mesh 分支。V137 启动一个独立 JAX 进程，配置四个本地虚拟 CPU 设备，实际执行原包装器中的 `jax.shard_map`、`jax.lax.psum` 及其自动微分。这次不是用 Python 相加模拟 collective，也不是四台机器或 GPU 测试。融合 CE 仍明确替换为原 CPU 参考实现；sharding 查询与重分片辅助函数使用小型适配器，其中重分片实际调用 `device_put` 和 `NamedSharding`。
+
+|四设备控制|各本地分母|全局分母|实际观察|
+|---|---|---:|---|
+|FP16，四个 token 分片|16,384 × 4|inf|loss=0，分类头梯度=[0,0]，两者均有限|
+|相同输入，全部权重乘 0.5|8,192 × 4|32,768|loss≈ln(2)，梯度=[-0.5,+0.5]|
+|相同输入，权重使用 FP32|16,384 × 4|65,536|loss 与梯度恢复参考值|
+|BF16，每片 257 个单位权重|256 × 4|1,024|真实权重和 1,028，loss 放大约 1,028/1,024|
+|FP32，有效目标数不均且含空片|257、1、0、258|516|全局 loss、梯度与 FP32 参考一致|
+|FP16，data×sequence 的 2×2 mesh|16,384 × 4|inf|原多 token 轴 psum 同样产生有限零 loss/梯度|
+|FP32，同样的 2×2 token mesh|16,384 × 4|65,536|与参考值一致|
+|FP32，data×model 的 2×2 mesh，model 仅复制|32,768 × 4（含复制副本）|65,536|只归约 data 轴，没有把复制副本重复计数|
+|FP32，所有分片目标权重全零|0 × 4|0|前向 loss=0，但分类头梯度非有限|
+
+最后一行与“只有一个空片”不同。一个空片并不会必然导致全局梯度异常：其他片仍有目标时，原实现先聚合总分子与总分母，再做除法，本次 FP32 对照通过。所有片都为空时，`where` 的零输出保护仍未让本次自动微分梯度变得有限。这延续了已有单设备的零分母结论，但增加了原 collective 路径的证据。
+
+复制轴控制也不等于执行了词表分片：原包装器把 lm_head 设为复制，本次 model 轴上的副本不承载不同词表。它只验证本次 token sharding 声明下，分母没有沿无关复制轴额外累加；不能推广为所有模型并行设计都已正确。
+
+### 对大批量训练的具体影响
+
+如果全局参与求和的权重和超出了归约输出 dtype 的范围，多加数据并行设备并不能靠缩小单片分母解决问题。本例的 65,536 个目标拆成四份，每份都没有溢出，全局 FP16 分母依然溢出。检查必须覆盖 **局部权重和 → 全局权重和 → 梯度累积总权重**，且分别注明 dtype、参与轴与是否包含复制副本。
+
+这不意味着 Hero 的大批量必然失效。V136 已验证正常 causal 构造入口输出 FP32，本轮则验证了 FP32 在选定四设备控制中的正确结果。实际生产入口、真实权重 dtype、GPU 编译和多主机通信仍缺运行证据。
+
+对于配比实验，新增一个可执行门槛：固定全局样本集合与权重，对照单设备和设备分片后的 loss/梯度；至少覆盖不均目标数、空片、两个 token 轴及复制轴。分片只是实现策略时，不应改变希望优化的目标。若同时改变样本、精度或累积方式，应逐项拆开，不能把差异全部归因于数据配比。
+
+本轮 9 组控制、13 项断言，见[四 CPU 原值](analysis/loss_denominator_mesh_cpu.json)和[复现脚本](scripts/probe_loss_denominator_mesh_cpu.py)。执行 `CPU_PYTHON=/tmp/marin-loss-mass-v109/bin/python make loss-denominator-mesh`。脚本只加载 V136 探针的定义前缀，不执行旧结果生成；原 source 与两个脚本的 SHA 均绑定。最初运行曾因定义前缀缺少 `__file__` 失败，补齐路径上下文后重新执行；最终结果文件只记录成功执行的控制。本轮没有上游补丁、生产事故归因、性能结论或新的训练结果。

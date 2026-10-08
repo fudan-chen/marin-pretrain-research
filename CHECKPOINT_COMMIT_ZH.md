@@ -297,3 +297,8 @@ V112的真实本地IO控制保留状态值，却将原初始化的共享EMA叶�
 ## V113：有限loss与路由状态
 
 V113对人工NaN/Inf pending做真实本地保存恢复，11叶二进制摘要完全一致；恢复后的原下一步仍可报有限loss并形成非有限bias。数组IO完整与数值健康是不同证据。本轮手工metadata，未调用生产调度/分布式publisher，不能认定Hero出现污染提交。见[数值水位](FAILURE_BOUNDARIES_ZH.md)。
+
+
+## V129：异步manager与任务级失败
+
+原AsyncManager的commit或发布回调失败会向调用者抛出一次并清异常字段，单进程第二次等待可正常返回。任务级失败记录不能由后一次wait覆盖；数据提交、发布与可恢复水位分别验收。真实多rank协调路径未执行。[原线程控制](ASYNC_MANAGER_ZH.md)。

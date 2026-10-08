@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-08T03:17:28.069339+00:00",
+  "integrity_manifest_created_utc": "2026-10-08T04:13:07.866010+00:00",
   "files": [
     {
       "file": "accumulation_2026_10_07/grad_accum.py",
@@ -21,6 +21,13 @@
       "sha256": "722ed10ea6c36440049c5f5a4eb9ea98abcfe7cd761a52e3973a3031b0755716",
       "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/experiments/grug/moe_hero_ep/adamh.py",
       "retrieved_utc": "2026-10-05T15:31:29.437363+00:00"
+    },
+    {
+      "file": "async_manager_2026_10_08/serialization.py",
+      "bytes": 13477,
+      "sha256": "bedaf69435b1073636f94ac909ab0174287be709ae7e8ddaec8bc4b6ee650328",
+      "url": "https://api.wandb.ai/artifactsV2/default/marin-community/marin_moe/source-marin_moe-_callable_runner.py/QXJ0aWZhY3Q6MzQ0NDg4ODI4Nw%3D%3D/376ffe20111f65661f80e88f5c5e94d8/serialization.py",
+      "retrieved_utc": "2026-10-08T04:09:56.121692+00:00"
     },
     {
       "file": "boundaries_2026_10_05/attention_core.py",
@@ -3606,8 +3613,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 280189,
-      "sha256": "e8e3e6a5b36e85ba8f9858b1fa850c36f086b0470adb5567753b8f0fb3f22c20",
+      "bytes": 280727,
+      "sha256": "840ee7385c6c933c7d8770ae8dc1643d0f199997af9d6a2f00720a24d28e62e7",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

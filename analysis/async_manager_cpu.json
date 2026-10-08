@@ -1,0 +1,105 @@
+{
+  "scope": "Uploaded JAX AsyncManager class with real Python threads; single-process dependency adapters.\nControlled standard-library futures and real TensorStore memory-only commit; no distributed save or model.\n",
+  "checks_passed": 10,
+  "checks": [
+    {
+      "name": "Original manager joins worker but retains completed controlled future and its payload",
+      "passed": true
+    },
+    {
+      "name": "Replacing list releases old controlled payload, not unbounded historical list accumulation",
+      "passed": true
+    },
+    {
+      "name": "Retained callback is independent ownership path in controlled closure",
+      "passed": true
+    },
+    {
+      "name": "Commit exception skips callback and propagates once to waiting caller",
+      "passed": true
+    },
+    {
+      "name": "Successful commit with failed callback also raises only once",
+      "passed": true
+    },
+    {
+      "name": "Unfinished commit reaches original blocking result before callback",
+      "passed": true
+    },
+    {
+      "name": "Resolving controlled commit releases worker and invokes callback once",
+      "passed": true
+    },
+    {
+      "name": "Real in-memory TensorStore commit completes and retains actual future list with correct data",
+      "passed": true
+    },
+    {
+      "name": "Single-process execution remains explicit",
+      "passed": true
+    },
+    {
+      "name": "Dependency source matches both archived run manifests",
+      "passed": true
+    }
+  ],
+  "runtime": {
+    "python": "3.12.13",
+    "jax": "0.7.2",
+    "numpy": "2.5.3",
+    "tensorstore": "0.1.69",
+    "backend": "cpu"
+  },
+  "controlled_future_retention": {
+    "thread_cleared": true,
+    "completed_future_list_length": 1,
+    "payload_alive_after_wait": true,
+    "old_payload_alive_after_new_list": false
+  },
+  "controlled_callback_payload_alive_after_future_clear": true,
+  "commit_failure": {
+    "first_wait": {
+      "returned": false,
+      "error_type": "RuntimeError",
+      "error": "local commit failed"
+    },
+    "second_wait": {
+      "returned": true
+    },
+    "callback_calls": 0
+  },
+  "callback_failure": {
+    "first_wait": {
+      "returned": false,
+      "error_type": "RuntimeError",
+      "error": "publish failed"
+    },
+    "second_wait": {
+      "returned": true
+    },
+    "callback_calls": 1
+  },
+  "tensorstore_memory_observation": {
+    "bytes": 32,
+    "completed_future_list_length": 1,
+    "snapshot_alive_after_wait": false,
+    "stored_values_equal": true,
+    "snapshot_alive_after_explicit_future_clear": false
+  },
+  "source_sha256": {
+    "sources/async_manager_2026_10_08/serialization.py": "bedaf69435b1073636f94ac909ab0174287be709ae7e8ddaec8bc4b6ee650328"
+  },
+  "probe_script_sha256": "3b34c32f0e59f0cce3008db9028117839659ce4eb02edd840badc016042f5532",
+  "substitutions": [
+    "Original uploaded AsyncManager class only, not full JAX serialization module",
+    "Real installed JAX0.7.2 single-process queries/monitoring; uploaded class from recorded dependency",
+    "Distributed client None, runtime-error and barrier-error class adapters; no multi-rank branch",
+    "Controlled stdlib Future payloads and closure owners, distinct from opaque TensorStore futures",
+    "Real TensorStore write/commit to memory-only Zarr store,32bytes; no production filesystem or model checkpoint"
+  ],
+  "actual_Hero_future_retained_bytes": null,
+  "actual_RSS_effect": null,
+  "actual_distributed_barrier": null,
+  "actual_full_checkpoint_restore": null,
+  "actual_Hero_runtime_import_binding": null
+}

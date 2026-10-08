@@ -5392,5 +5392,13 @@
     "bytes": 9007,
     "sha256": "ff43ef12f9a19bb4fd7dd41b2280d0b6d1ce3f9879befad4f8630724abe68f66",
     "retrieved_utc": "2026-10-08T03:12:44.352775+00:00"
+  },
+  {
+    "file": "async_manager_2026_10_08/serialization.py",
+    "url": "https://api.wandb.ai/artifactsV2/default/marin-community/marin_moe/source-marin_moe-_callable_runner.py/QXJ0aWZhY3Q6MzQ0NDg4ODI4Nw%3D%3D/376ffe20111f65661f80e88f5c5e94d8/serialization.py",
+    "artifact_path": ".venv/lib/python3.12/site-packages/jax/experimental/array_serialization/serialization.py",
+    "bytes": 13477,
+    "sha256": "bedaf69435b1073636f94ac909ab0174287be709ae7e8ddaec8bc4b6ee650328",
+    "retrieved_utc": "2026-10-08T04:09:56.121692+00:00"
   }
 ]

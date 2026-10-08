@@ -311,3 +311,10 @@ assertion-contracts-cpu:
 .PHONY: weight-domain-cpu
 weight-domain-cpu:
 	$(CPU_PYTHON) scripts/probe_weight_domain_cpu.py
+
+.PHONY: async-manager-source async-manager-cpu
+async-manager-source:
+	$(PYTHON) scripts/acquire_async_manager_source.py
+	$(PYTHON) scripts/archive_manifest.py
+async-manager-cpu:
+	$(CPU_PYTHON) scripts/probe_async_manager_cpu.py

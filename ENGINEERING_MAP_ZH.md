@@ -61,7 +61,7 @@
 
 **作者做过什么，结果到哪一步。** 作者先后尝试缓存/并发限制、malloc_trim与jemalloc，并纠正completed futures引用；没有在报告里认定第一项措施根治。
 
-**本地核对的范围。** 本地检查预算/规划，未执行真实manager的引用清理，也未测RSS。
+**本地核对的范围。** 已执行上传依赖原AsyncManager的线程、错误消费和引用路径。受控Future可保留数组；真实32字节TensorStore内存提交后，manager列表仍保留future但源数组weakref已失效。未测RSS或执行生产保存；[原值与边界](ASYNC_MANAGER_ZH.md)。
 
 **下一项检查（未执行）。** 同一state重复保存，分别测writer/non-writer RSS、future完成/可达引用、allocator retained bytes。
 

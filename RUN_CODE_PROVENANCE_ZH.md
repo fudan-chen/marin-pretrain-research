@@ -218,3 +218,8 @@ V124说明先shuffle再slice会改变入选集合。继续查原`BlockShufflingD
 ## V128：桶级权重的数值合同
 
 原历史混合器与配置初始化执行13项CPU控制。合法历史后的NaN-only或求和溢出阶段可落入整块首桶余数回退；单阶段相同输入则后续报错。有限性前置wrapper拒绝8种异常输入，保留两份小规模归档配方五阶段的原归一化和整数向量。完整历史保留200桶，个别阶段194正权重；比较边界人工重映射，仅验数值向量。[机制与原值](WEIGHT_DOMAIN_ZH.md)。
+
+
+## V129：异步manager与任务级失败
+
+新增1份上传依赖serialization.py，13477字节，两份代码清单size/MD5一致。执行其AsyncManager原类体，安装JAX0.7.2提供单进程查询/monitoring，与上传依赖版本身份分开；真实TensorStore仅内存driver32字节。595旧来源中的594份非bookkeeping保持，source_manifest追加记录，来源总计596。[完整来源与控制](ASYNC_MANAGER_ZH.md)。

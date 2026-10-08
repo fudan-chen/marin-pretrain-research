@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1743,
+  "checks_passed": 1748,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -175,7 +175,8 @@
     "V124 original shuffle->slice->restart artificial controls: changing key can change selected subset; source-only state schema and loader rebuild; positive-weight zero-length boundary not historical incident",
     "V125 source-prefix support cap and fixed tail exclusion, explicit uniform-subset reference, four window interventions; structured artificial indices not actual document/quality/performance evidence",
     "V127 eleven original-source CPU controls at compile0/1/2 and actual normal/-O probe launch: optimized malformed stages repeat identities or generate negative logical offsets; explicit guard candidate local only, historical Hero optimization mode unknown",
-    "V128 thirteen original class/config CPU controls: malformed later-stage empty or zero normalized weights interact with remainder fallback; finite guard local candidate preserves five full-history recipe vectors; no actual535B incident or loss effect"
+    "V128 thirteen original class/config CPU controls: malformed later-stage empty or zero normalized weights interact with remainder fallback; finite guard local candidate preserves five full-history recipe vectors; no actual535B incident or loss effect",
+    "V129 uploaded JAX dependency bound to two manifests, ten original manager controls with real threads and32byte TensorStore memory commit; future/list ownership and once-consumed errors distinct from RSS/production recovery"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

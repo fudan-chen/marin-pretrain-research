@@ -102,3 +102,8 @@ JAX/jaxlib 0.11.1、NumPy 2.3.5 的单 CPU 环境中，10 项控制通过。两�
 ![保存快照的所有权时序](assets/donation_snapshot_flow.svg)
 
 这不是 Hero 配比优劣的新证据。它是解释恢复后 loss 变化的前置验收：先确认参数、优化器与游标对应同一保存状态，再比较固定域 loss。若恢复身份未确认，暂缓将跳变归因于数据顺序或配比。
+
+
+## V129：异步manager与任务级失败
+
+新增两份run artifact绑定的JAX依赖，执行原AsyncManager的10项控制。等待后列表/回调仍保留，列表替换释放旧受控payload；真实32字节TensorStore源数组却已回收，不能把受控Future结果当真实模型快照保留证明。未测RSS。[所有者、错误消费与真实后端边界](ASYNC_MANAGER_ZH.md)。

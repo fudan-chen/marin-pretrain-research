@@ -298,3 +298,8 @@ simulated-inventory-snapshot:
 	$(PYTHON) scripts/archive_manifest.py
 simulated-inventory-cpu:
 	$(CPU_PYTHON) scripts/probe_simulated_inventory_cpu.py
+
+.PHONY: prefix-sampling-cpu
+prefix-sampling-cpu:
+	$(CPU_PYTHON) scripts/probe_prefix_sampling_structure.py
+	$(PYTHON) scripts/plot_prefix_sampling_structure.py

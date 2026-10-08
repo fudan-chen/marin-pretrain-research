@@ -1,0 +1,26 @@
+{
+  "analysis_sha256": "b42d788d84b9c3c6c545707669e94955644f42b735a73bda821180a378236f21",
+  "figure_sha256": "e3184b119c7b892d82cb0b2de6fd5153ea9f45b2ea1a72782654cb123fe04d3e",
+  "png_sha256": "3b6c18fbff2c867ba44ef126ffc0e8a9c78f7cb5eb9ee9e7601998689ae82ee1",
+  "observed_prefix_distinct_blocks": [
+    442,
+    442,
+    452,
+    438
+  ],
+  "window_values": [
+    1,
+    64,
+    512,
+    4096
+  ],
+  "window_distinct_blocks": [
+    4,
+    64,
+    442,
+    873
+  ],
+  "uniform_subset_expected_distinct_blocks": 787.5234220027763,
+  "source_kind": "synthetic_original_source_cpu_control_and_explicit_mathematical_reference",
+  "actual_training_loss_effect": null
+}

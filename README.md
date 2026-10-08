@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本V124：执行历史shuffle→模拟切片→restart路径，确认换key可改变保留子集；同checkpoint和同step不足以替代数据谱系。新增子集/顺序/曝光对照与零长度边界。[源码、控制原值与实践规则](RUN_CODE_PROVENANCE_ZH.md)。
+当前版本V125：审计block shuffle前缀的抽样支持范围和尾部排除；原窗口限制不等于全库存等概率子集。比较四种window，区分输入干预与性能优化。[源码证明、人工控制与配比规则](RUN_CODE_PROVENANCE_ZH.md)。
 
 [MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并提供未执行的性能交互记录模板。
 

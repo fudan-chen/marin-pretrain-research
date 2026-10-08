@@ -1,0 +1,18 @@
+{
+  "status": "proposed_not_executed",
+  "sampling_contract": null,
+  "raw_sequence_lengths": {},
+  "io_block_size": null,
+  "window_blocks": null,
+  "slice_lengths": {},
+  "eligible_index_groups": {},
+  "excluded_tail_positions": {},
+  "actual_document_source_mapping": null,
+  "actual_selected_identity_manifest": null,
+  "source_group_composition": {},
+  "tail_composition_evidence": [],
+  "subset_fixed_for_io_comparison": null,
+  "actual_io_benchmark": null,
+  "actual_quality_evaluation": null,
+  "decision": null
+}

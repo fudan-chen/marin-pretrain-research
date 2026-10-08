@@ -1,0 +1,26 @@
+{
+  "checks_passed": 5,
+  "checks": [
+    {
+      "name": "All595prior source payloads and acquisition/archive bookkeeping unchanged",
+      "passed": true
+    },
+    {
+      "name": "Four independently regrouped879identity prefixes obey recorded512-block cap",
+      "passed": true
+    },
+    {
+      "name": "Exact support counterexample and independent pair expectation match without inference to quality",
+      "passed": true
+    },
+    {
+      "name": "Scientific points and theoretical reference bound with all production effects unknown",
+      "passed": true
+    },
+    {
+      "name": "Prior prose/tables retained and both HTML variants distinguish sampling geometry from quality",
+      "passed": true
+    }
+  ],
+  "actual_browser_rendering": null
+}

@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1728,
+  "checks_passed": 1732,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -172,7 +172,8 @@
     "V121 producer metadata acquired, original 49152-slot block replay at step393 after phase384, sparse partial IDs and unexecuted bridge; actual repeated tokens and loss effect unknown",
     "V122 two uploaded code inventories, five source bindings, one continuation step393 read log and historical-source conditional replay; actual imports/checkpoint contents/tokens unknown",
     "V123 three candidate entrypoint key paths agree; None/zero and partitionable flag alter all200child keys; selected JAX0.11/0.7 CPU controls agree; initialization key distinct from restored model state",
-    "V124 original shuffle->slice->restart artificial controls: changing key can change selected subset; source-only state schema and loader rebuild; positive-weight zero-length boundary not historical incident"
+    "V124 original shuffle->slice->restart artificial controls: changing key can change selected subset; source-only state schema and loader rebuild; positive-weight zero-length boundary not historical incident",
+    "V125 source-prefix support cap and fixed tail exclusion, explicit uniform-subset reference, four window interventions; structured artificial indices not actual document/quality/performance evidence"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

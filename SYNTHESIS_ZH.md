@@ -349,3 +349,8 @@ V117接原causal目标mask、attention有效性、投影margin和四CPU histogra
 ## V124：模拟子集与恢复数据流
 
 同checkpoint不是完整的数据控制。历史入口恢复模型状态后重新建数据集；模拟搜索先shuffle再slice，换数据key可能换保留子集。先固定真实子集与数据流身份，再把loss差归因给权重；本轮原代码控制只使用人工身份，未测实际质量收益。[V124机制与模板](RUN_CODE_PROVENANCE_ZH.md)。
+
+
+## V125：前缀抽样支持与IO布局
+
+模拟搜索还需审查“怎么抽到子集”。历史窗口式shuffle的前缀不等于全库存等概率子集；这是源码支持范围结论，并不直接证明真实质量偏差。先取得真实身份/来源构成，再评估是否需要重抽或改window。[V125反例与边界](RUN_CODE_PROVENANCE_ZH.md)。

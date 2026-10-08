@@ -259,6 +259,11 @@ for slug,label,file in chapters:
         resume_svg=BeautifulSoup((ROOT/'assets/ablation_resume_boundary.svg').read_text(),'html.parser').svg
         resume_svg['style']='display:block;width:100%;height:auto;'
         resume_placeholder.replace_with(resume_svg)
+    prefix_placeholder=soup.select_one('#prefix-sampling-placeholder')
+    if prefix_placeholder is not None:
+        prefix_svg=BeautifulSoup((ROOT/'assets/prefix_sampling_structure.svg').read_text(),'html.parser').svg
+        prefix_svg['style']='display:block;width:100%;height:auto;'
+        prefix_placeholder.replace_with(prefix_svg)
     sim_placeholder=soup.select_one('#simulated-inventory-placeholder')
     if sim_placeholder is not None:
         sim_svg=BeautifulSoup((ROOT/'assets/simulated_inventory.svg').read_text(),'html.parser').svg

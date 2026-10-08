@@ -1,0 +1,26 @@
+{
+  "checks_passed": 5,
+  "checks": [
+    {
+      "name": "592 prior non-bookkeeping source payloads unchanged and two acquisition records appended",
+      "passed": true
+    },
+    {
+      "name": "All independently counted finite-pool intersections and lengths agree",
+      "passed": true
+    },
+    {
+      "name": "Independent exposure totals and zero-length arithmetic preserve source threshold",
+      "passed": true
+    },
+    {
+      "name": "Diagram bound to artificial data and all production implications remain unknown",
+      "passed": true
+    },
+    {
+      "name": "Historical prose/table prefixes preserved and both HTML variants retain causal limits",
+      "passed": true
+    }
+  ],
+  "actual_browser_rendering": null
+}

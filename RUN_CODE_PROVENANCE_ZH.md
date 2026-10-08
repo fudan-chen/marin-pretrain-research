@@ -125,3 +125,47 @@ V121/V122用直接给定的混合器key做边界控制。V123改用上传入口�
 4. **声明派生不等于执行证明。** 实际入口、导入文件摘要、执行的key和输入身份一旦可取得，应与本轮派生结果逐项对照；匹配之前，不把CPU身份控制升级成历史训练事故。
 
 新增[随机流评审模板](templates/random_stream_review.json)，为空且未执行。可用`make historical-key-replay CPU_PYTHON=/path/to/python-with-jax`生成当前运行时版本的控制结果；分别运行两套环境后，再执行`make historical-key-compare`。两个环境都要独立保留，不能升级前轮环境后声称做过跨版本比较。
+
+## V124：checkpoint接续，还要核对被抽到的训练子集
+
+历史EP入口先从启动配置生成数据key，恢复模型状态后，再调用`build_train_dataset`创建数据集；随后以`state.step`调用`train_loader.iter_from_step`。其`GrugTrainState`有六个顶层字段：`step`、`params`、`master_params`、`opt_state`、`ema_params`、`pending_qb_betas`，没有显式的数据key、数据配方或加载器游标字段。
+
+这是所见源码的状态边界，**不是整个历史checkpoint文件内容的完整审计**；嵌套状态和外部元数据也未检查。它说明恢复的step还需要与重建的数据流函数一起解释。只要改变了该函数的输入，同一个step就可能定位到另一批样本，模型checkpoint相同也不能替代数据谱系检查。
+
+这次进一步执行此前被替代的库存切片过程。上传的[原train_sets](sources/run_code_2026_10_08/datasets.py)先分配child key并构建block shuffle，再执行：
+
+```python
+true_length_of_dataset = len(ds.as_sync_dataset())
+simulated_length_of_dataset = int(true_length_of_dataset * simulated_data_ratio)
+sliced_datasets[name] = ds.slice_dataset(end_index=simulated_length_of_dataset)
+```
+
+因此，`slice`截的是**乱序后的位置前缀**。换key可能改变被截进来的样本集合；不能一概说“只是换了一种读取顺序”。新取得的历史[dataset.py](sources/simulated_inventory_2026_10_08/dataset.py)与[PRP源码](sources/simulated_inventory_2026_10_08/_prp.py)摘要均匹配生产和续训的代码清单。本轮执行原shuffle、slice和restart逻辑，未再禁用模拟库存分支。
+
+<div id="simulated-inventory-placeholder"></div>
+
+### 两个人工桶，把集合、顺序和重复拆开看
+
+以下全部是有限命名身份控制，不是真实缓存或文本。两个桶名为c00q0、c00q1；它们只是用来标记身份，并不宣称复现了真实桶内容。
+
+1. 每桶完整库存48条，使用两套数据key生成原block shuffle，不截取。读取顺序不同，但每桶集合都仍是全部48条。这与此前“完整人工库存跨key保持相同”的控制一致。
+2. 同样的48条，乱序后各截取24条。两套key下，c00q0的共同身份只有8条，c00q1有16条；集合已改变。该控制使用较小IO块4、window3来便于查看原值。
+3. 使用公开预算比`16,483,614,720 / 18,750,000,000,000 = 0.0008791261184`，即约0.0879126%，并使用公开shuffle参数IO块256、window512。给每个人工桶1,000,000条身份，原函数各保留879条；两套key在这两个控制桶中的集合交都为0。这不是对真实训练子集重合率的估计，更不是均匀抽样或独立抽样的证明。
+4. 固定key与切片，仅将两个桶的混合权重从1:1改成1:3。保留的子集和child key完全一致。原混合器抽取512槽时，桶曝光从256/256变为128/384；restart反复读取的是各自保留的24条，而非自动访问被截掉的另24条。
+
+[完整身份、集合交与曝光直方图](analysis/simulated_inventory_cpu.json)。原函数构建、shuffle、slice和restart共9项控制通过，运行于JAX 0.11.0 CPU。同步长度查询使用代理，存储、tokenizer、packing和实际200桶库存仍未执行。
+
+### 一个真实比例下的取整边界
+
+模拟长度使用向下取整，当前比例下，人工子库存至少需要1138条序列才能留下1条；1137条会变成0。源码不会因为权重正就把长度自动保底为1，原restart读取这类空有限数据集会抛出`ValueError`。
+
+这里发现的是可执行边界，**没有证据表明这次生产或搜索真实出现了空桶**。真实长度要读取原token数据集的序列数，不能直接把组成报告的token数除以4096当成精确结果。自行做缩比搜索时，可以在启动前按原长度函数计算各桶截取长度，对“正权重但零长度”的情况明确报错或重新设计缩比；不应静默补1后继续声称曝光缩比完全相同。
+
+### 对配比研究的影响
+
+- **多seed的含义再增加一层。** 在模拟切片启用时，数据key变化可能同时改变保留子集、子集顺序及重复曝光的对象。当前控制不能给三者分摊loss贡献；只报告“数据顺序seed方差”会过窄。
+- **配比候选应先共享子集，再比较权重。** 从头做对照时，固定缓存版本、支持集合、桶顺序、PRNG配置、child key与切片边界，并归档选中身份的摘要。权重变更本身不应顺便重抽库存。已有80份历史声明在支持与key分配上的控制仍保留，但没有读取80份真实子集，不把“条件应相同”写成“已逐一实测相同”。
+- **拆开验证子集泛化与顺序稳健性。** 固定同一子集改变其中的顺序，是一种对照；重抽子集，是另一种。当前入口把shuffle和前缀截取串在一起，单独改变其key不能隔离这两者。独立子集选择与子集内shuffle需要额外的受控实现，本轮未实现或训练。
+- **续训评审增加数据流摘要。** checkpoint侧记录模型状态，旁边仍应保存阶段历史、派生key、库存长度、切片边界、缓存身份和恢复块坐标。先证明候选与基线读到可比的输入，再解释loss变化；否则“同checkpoint”这一项不足以支撑数据域归因。
+
+[模拟库存评审模板](templates/simulated_inventory_review.json)仍为空且未执行。复查命令为`make simulated-inventory-cpu CPU_PYTHON=/path/to/python-with-jax`；来源已有归档，可离线复算，不启动模型训练或读取真实checkpoint。

@@ -1,0 +1,22 @@
+{
+  "status": "proposed_not_executed",
+  "estimand": null,
+  "cache_version": null,
+  "raw_sequence_lengths": {},
+  "simulation_ratio": null,
+  "selected_lengths": {},
+  "positive_weight_empty_cells": [],
+  "support_order": [],
+  "prng_config": {},
+  "derived_keys": {},
+  "actual_executed_keys": {},
+  "selected_identity_digests": {},
+  "subset_fixed_across_arms": null,
+  "subset_order_fixed_across_arms": null,
+  "declared_restore_step": null,
+  "loaded_state_step": null,
+  "mixture_block_position": null,
+  "actual_checkpoint_contents_verified": null,
+  "actual_training_pool_membership_verified": null,
+  "actual_training_result": null
+}

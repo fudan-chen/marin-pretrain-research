@@ -259,6 +259,12 @@ for slug,label,file in chapters:
         resume_svg=BeautifulSoup((ROOT/'assets/ablation_resume_boundary.svg').read_text(),'html.parser').svg
         resume_svg['style']='display:block;width:100%;height:auto;'
         resume_placeholder.replace_with(resume_svg)
+    sim_placeholder=soup.select_one('#simulated-inventory-placeholder')
+    if sim_placeholder is not None:
+        sim_svg=BeautifulSoup((ROOT/'assets/simulated_inventory.svg').read_text(),'html.parser').svg
+        sim_svg['style']='display:block;width:100%;min-width:760px;height:auto;'
+        sim_wrap=soup.new_tag('div',attrs={'class':'table-wrap','style':'overflow-x:auto;'})
+        sim_wrap.append(sim_svg);sim_placeholder.replace_with(sim_wrap)
     key_placeholder=soup.select_one('#historical-key-evidence-placeholder')
     if key_placeholder is not None:
         key_svg=BeautifulSoup((ROOT/'assets/historical_key_evidence.svg').read_text(),'html.parser').svg

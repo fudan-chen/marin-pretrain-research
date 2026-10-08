@@ -291,3 +291,10 @@ historical-key-replay:
 	$(CPU_PYTHON) scripts/probe_historical_key_pipeline.py
 historical-key-compare:
 	$(PYTHON) scripts/analyze_historical_key_versions.py
+
+.PHONY: simulated-inventory-snapshot simulated-inventory-cpu
+simulated-inventory-snapshot:
+	$(PYTHON) scripts/acquire_simulated_inventory_source.py
+	$(PYTHON) scripts/archive_manifest.py
+simulated-inventory-cpu:
+	$(CPU_PYTHON) scripts/probe_simulated_inventory_cpu.py

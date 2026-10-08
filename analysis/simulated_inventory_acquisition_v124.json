@@ -1,0 +1,20 @@
+{
+  "records": [
+    {
+      "file": "simulated_inventory_2026_10_08/dataset.py",
+      "url": "https://api.wandb.ai/artifactsV2/default/marin-community/marin_moe/source-marin_moe-_callable_runner.py/QXJ0aWZhY3Q6MzQ0NDg4ODI4Nw%3D%3D/dae1b181b1ab5b92543f73852c618718/dataset.py",
+      "artifact_path": "lib/levanter/src/levanter/data/dataset.py",
+      "bytes": 22242,
+      "sha256": "b539015dbda23015df097a7b3dcaf391f6247a7adb672124699629d83a73235a",
+      "retrieved_utc": "2026-10-08T03:12:40.818321+00:00"
+    },
+    {
+      "file": "simulated_inventory_2026_10_08/_prp.py",
+      "url": "https://api.wandb.ai/artifactsV2/default/marin-community/marin_moe/source-marin_moe-_callable_runner.py/QXJ0aWZhY3Q6MjgxNjM5NTEwOQ%3D%3D/6afd902fe69be40f3844542a8135d6ef/_prp.py",
+      "artifact_path": "lib/levanter/src/levanter/data/_prp.py",
+      "bytes": 9007,
+      "sha256": "ff43ef12f9a19bb4fd7dd41b2280d0b6d1ce3f9879befad4f8630724abe68f66",
+      "retrieved_utc": "2026-10-08T03:12:44.352775+00:00"
+    }
+  ]
+}

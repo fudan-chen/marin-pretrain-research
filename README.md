@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本V123：沿历史入口重建seed到混合器/200桶的key链；None与0不同，默认换seed同时改变模型初始化key与数据key。JAX 0.11.0和0.7.2的选定CPU控制一致。[随机流机制、对照规则与原值](RUN_CODE_PROVENANCE_ZH.md)。
+当前版本V124：执行历史shuffle→模拟切片→restart路径，确认换key可改变保留子集；同checkpoint和同step不足以替代数据谱系。新增子集/顺序/曝光对照与零长度边界。[源码、控制原值与实践规则](RUN_CODE_PROVENANCE_ZH.md)。
 
 [MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并提供未执行的性能交互记录模板。
 

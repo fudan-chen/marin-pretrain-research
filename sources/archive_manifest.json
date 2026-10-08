@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-08T03:07:00.139314+00:00",
+  "integrity_manifest_created_utc": "2026-10-08T03:17:28.069339+00:00",
   "files": [
     {
       "file": "accumulation_2026_10_07/grad_accum.py",
@@ -3563,6 +3563,20 @@
       "retrieved_utc": "2026-10-05T10:54:35.572009+00:00"
     },
     {
+      "file": "simulated_inventory_2026_10_08/_prp.py",
+      "bytes": 9007,
+      "sha256": "ff43ef12f9a19bb4fd7dd41b2280d0b6d1ce3f9879befad4f8630724abe68f66",
+      "url": "https://api.wandb.ai/artifactsV2/default/marin-community/marin_moe/source-marin_moe-_callable_runner.py/QXJ0aWZhY3Q6MjgxNjM5NTEwOQ%3D%3D/6afd902fe69be40f3844542a8135d6ef/_prp.py",
+      "retrieved_utc": "2026-10-08T03:12:44.352775+00:00"
+    },
+    {
+      "file": "simulated_inventory_2026_10_08/dataset.py",
+      "bytes": 22242,
+      "sha256": "b539015dbda23015df097a7b3dcaf391f6247a7adb672124699629d83a73235a",
+      "url": "https://api.wandb.ai/artifactsV2/default/marin-community/marin_moe/source-marin_moe-_callable_runner.py/QXJ0aWZhY3Q6MzQ0NDg4ODI4Nw%3D%3D/dae1b181b1ab5b92543f73852c618718/dataset.py",
+      "retrieved_utc": "2026-10-08T03:12:40.818321+00:00"
+    },
+    {
       "file": "snapshot_semantics_2026_10_07/lib/iris/src/iris/cluster/controller/auth.py",
       "bytes": 33780,
       "sha256": "f5c9efb6750d945a8b31220be9f4aa8e9722f2bc69160ccbefba79f979023d01",
@@ -3592,8 +3606,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 279229,
-      "sha256": "a1ecebfd17d78156946a3d0c4b55dd7c74ee795909456300dfc208a2f9379804",
+      "bytes": 280189,
+      "sha256": "e8e3e6a5b36e85ba8f9858b1fa850c36f086b0470adb5567753b8f0fb3f22c20",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

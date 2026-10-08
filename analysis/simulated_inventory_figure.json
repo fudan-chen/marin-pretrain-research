@@ -1,0 +1,17 @@
+{
+  "analysis_sha256": "2a1312d19ffa2f791e6dc2f67f20d009372125384cce5b1a1b9ec332b7548a19",
+  "figure_sha256": "dad8b7f3b14c5107bee2d0937184c6b410dd1fb4be00ce080a08a674cfca2811",
+  "full_intersections": [
+    48,
+    48
+  ],
+  "half_intersections": [
+    8,
+    16
+  ],
+  "realratio_intersections": [
+    0,
+    0
+  ],
+  "actual_training_pool_membership_verified": null
+}

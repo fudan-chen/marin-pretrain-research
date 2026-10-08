@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 370" role="img" aria-labelledby="sim-inventory-title sim-inventory-desc">
+<title id="sim-inventory-title">模拟库存先乱序再截取，换key可能改变子集集合</title>
+<desc id="sim-inventory-desc">原函数顺序为完整库存、child key乱序、前缀切片、混合器restart。两个人工桶各48条时完整集合跨key相同；截取24条后两套key的集合交分别8条和16条。实际历史子集未验证。</desc>
+<rect width="960" height="370" rx="12" fill="#f5f7fa"/>
+<g font-family="sans-serif" fill="#17263b">
+<text x="26" y="34" font-size="20" font-weight="700">换 key：既可能换顺序，也可能换“入选的是谁”</text>
+<g font-size="16" font-weight="700">
+<rect x="24" y="58" width="210" height="62" rx="8" fill="#e6eefb"/><text x="42" y="95">完整人工身份库存</text>
+<rect x="258" y="58" width="210" height="62" rx="8" fill="#e6eefb"/><text x="276" y="95">child key → shuffle</text>
+<rect x="492" y="58" width="210" height="62" rx="8" fill="#fff0db"/><text x="510" y="95">截取乱序位置前缀</text>
+<rect x="726" y="58" width="210" height="62" rx="8" fill="#deefe7"/><text x="744" y="95">restart 重复该子集</text></g>
+<g font-size="18"><text x="239" y="96">→</text><text x="473" y="96">→</text><text x="707" y="96">→</text></g>
+<rect x="24" y="142" width="440" height="110" rx="8" fill="#deefe7" stroke="#388263"/>
+<rect x="496" y="142" width="440" height="110" rx="8" fill="#fff0db" stroke="#b37a2d"/>
+<g font-size="17" font-weight="700"><text x="42" y="174">完整读取：每个人工桶 48 条</text><text x="514" y="174">各截取 24 条：集合已改变</text></g>
+<g font-size="16"><text x="42" y="207">两套 key 的集合交：48 / 48 条</text><text x="514" y="207">两套 key 的集合交：8 / 16 条</text>
+<text x="42" y="235">顺序不同，完整集合仍相同</text><text x="514" y="235">仅固定总长度不足以固定样本</text>
+<text x="26" y="287">公开比例与 shuffle 参数 + 每桶人工百万身份 → 各保留 879 条；两套 key 的交为 0 / 0。</text>
+<text x="26" y="317">固定 key 只改权重：人工选中集合不变，曝光次数改变；没有读取真实缓存或训练模型。</text>
+<text x="26" y="347" fill="#52657a">V124 · 所有集合数字均来自人工身份 CPU 控制，不能估计真实 run 的子集重合率或 loss 效应</text>
+</g></g></svg>

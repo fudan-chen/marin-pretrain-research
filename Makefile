@@ -303,3 +303,7 @@ simulated-inventory-cpu:
 prefix-sampling-cpu:
 	$(CPU_PYTHON) scripts/probe_prefix_sampling_structure.py
 	$(PYTHON) scripts/plot_prefix_sampling_structure.py
+
+.PHONY: assertion-contracts-cpu
+assertion-contracts-cpu:
+	$(CPU_PYTHON) scripts/probe_assertion_contracts_cpu.py

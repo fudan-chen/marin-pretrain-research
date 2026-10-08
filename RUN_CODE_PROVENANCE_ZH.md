@@ -208,3 +208,8 @@ V124说明先shuffle再slice会改变入选集合。继续查原`BlockShufflingD
 4. **性能变更也要过数据合同。** window、IO块大小、PRP版本都可能改变输入身份。候选须同时报告样本集合变化、真实IO成本和质量结果；只有CPU索引更分散，不足以进入生产切换。
 
 新增[前缀抽样评审模板](templates/prefix_sampling_review.json)，保留抽样合同、尾部与分组证据、性能/质量结果为空。`make prefix-sampling-cpu CPU_PYTHON=/path/to/python-with-jax`可重跑9项源码与数学控制。当前仍未验证真实模拟子集代表性、数据域质量偏差或535B收益。
+
+
+## V127：配置断言与执行模式
+
+对已有两份绑定历史源码执行11项CPU控制，比较编译级别0/1/2。配置assert移除后，未对齐阶段可造成重复身份，非零首阶段产生负逻辑位置并被restart取模掩盖。四处显式异常候选保持合法轨迹并拒绝三类非法配置；仅局部AST控制，未修改上游。[完整机制与原值](ASSERTION_CONTRACTS_ZH.md)。

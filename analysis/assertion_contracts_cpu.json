@@ -1,0 +1,2061 @@
+{
+  "scope": "Execute unchanged uploaded sampler/config bodies at Python compile optimization 0/1/2.\nSynthetic finite identities, dependency adapters, CPU JAX; no full launcher or training.\nProbe acceptance checks deliberately use explicit raises, not removable asserts.\n",
+  "checks_passed": 11,
+  "checks": [
+    {
+      "name": "Actual CPU backend",
+      "passed": true
+    },
+    {
+      "name": "Aligned accepted stream identical across all three compile levels",
+      "passed": true
+    },
+    {
+      "name": "Unaligned stages rejected in optimization0",
+      "passed": true
+    },
+    {
+      "name": "Unaligned optimization1 and2 run original sampler and repeat eight identities",
+      "passed": true
+    },
+    {
+      "name": "Nonzero first stage rejected normally but produces negative logical offsets when optimized",
+      "passed": true
+    },
+    {
+      "name": "Restart modulo maps optimized negative logical offset to finite tail identity",
+      "passed": true
+    },
+    {
+      "name": "Budget split exclusivity removed by optimization1 and2",
+      "passed": true
+    },
+    {
+      "name": "Legal config accepted and explicit ValueError protections survive all levels",
+      "passed": true
+    },
+    {
+      "name": "Optimized unaligned stream contains A8 through A15 twice",
+      "passed": true
+    },
+    {
+      "name": "Counterfactual explicit guards preserve aligned stream at all compile levels",
+      "passed": true
+    },
+    {
+      "name": "Counterfactual explicit guards reject three invalid configurations at all compile levels",
+      "passed": true
+    }
+  ],
+  "runtime": {
+    "python": "3.12.13",
+    "probe_interpreter_optimize": 0,
+    "jax": "0.11.0",
+    "numpy": "2.3.5",
+    "backend": "cpu"
+  },
+  "probe_script_sha256": "e69d084cb608aabff73779784ede19b027b737b01648b4bb856c16edcac2417d",
+  "compiled_source_optimization_levels": [
+    0,
+    1,
+    2
+  ],
+  "cases": {
+    "0": {
+      "aligned": {
+        "accepted": true,
+        "stream": [
+          "A:0",
+          "A:1",
+          "A:2",
+          "A:3",
+          "A:4",
+          "A:5",
+          "A:6",
+          "A:7",
+          "B:0",
+          "B:1",
+          "B:2",
+          "B:3",
+          "B:4",
+          "B:5",
+          "B:6",
+          "B:7",
+          "A:8",
+          "A:9",
+          "A:10",
+          "A:11",
+          "A:12",
+          "A:13",
+          "A:14",
+          "A:15",
+          "A:16",
+          "A:17",
+          "A:18",
+          "A:19",
+          "A:20",
+          "A:21",
+          "A:22",
+          "A:23"
+        ],
+        "logical_unwrapped": [
+          [
+            "A",
+            0
+          ],
+          [
+            "A",
+            1
+          ],
+          [
+            "A",
+            2
+          ],
+          [
+            "A",
+            3
+          ],
+          [
+            "A",
+            4
+          ],
+          [
+            "A",
+            5
+          ],
+          [
+            "A",
+            6
+          ],
+          [
+            "A",
+            7
+          ],
+          [
+            "B",
+            0
+          ],
+          [
+            "B",
+            1
+          ],
+          [
+            "B",
+            2
+          ],
+          [
+            "B",
+            3
+          ],
+          [
+            "B",
+            4
+          ],
+          [
+            "B",
+            5
+          ],
+          [
+            "B",
+            6
+          ],
+          [
+            "B",
+            7
+          ],
+          [
+            "A",
+            8
+          ],
+          [
+            "A",
+            9
+          ],
+          [
+            "A",
+            10
+          ],
+          [
+            "A",
+            11
+          ],
+          [
+            "A",
+            12
+          ],
+          [
+            "A",
+            13
+          ],
+          [
+            "A",
+            14
+          ],
+          [
+            "A",
+            15
+          ],
+          [
+            "A",
+            16
+          ],
+          [
+            "A",
+            17
+          ],
+          [
+            "A",
+            18
+          ],
+          [
+            "A",
+            19
+          ],
+          [
+            "A",
+            20
+          ],
+          [
+            "A",
+            21
+          ],
+          [
+            "A",
+            22
+          ],
+          [
+            "A",
+            23
+          ]
+        ],
+        "counts_after_stage": [
+          [
+            8,
+            0
+          ],
+          [
+            8,
+            8
+          ]
+        ],
+        "stages_for_first_four_blocks": [
+          0,
+          1,
+          2,
+          2
+        ],
+        "repeated_identity_slots": 0
+      },
+      "unaligned": {
+        "accepted": false,
+        "error_type": "AssertionError",
+        "error": "stage 1: start_seq_index for a stage must be a multiple of block_size, got start_seq_index=9 and block_size=8"
+      },
+      "nonzero_first": {
+        "accepted": false,
+        "error_type": "AssertionError",
+        "error": ""
+      },
+      "mixed_budget_split": {
+        "accepted": false,
+        "error_type": "AssertionError",
+        "error": "max_train_batches/num_validation_sequences and simulated data budget cannot all be set"
+      },
+      "valid_config": {
+        "accepted": true
+      },
+      "explicit_weight_error": {
+        "accepted": false,
+        "error_type": "ValueError",
+        "error": "Weight keys must be subset of component keys."
+      },
+      "explicit_empty_error": "ValueError"
+    },
+    "1": {
+      "aligned": {
+        "accepted": true,
+        "stream": [
+          "A:0",
+          "A:1",
+          "A:2",
+          "A:3",
+          "A:4",
+          "A:5",
+          "A:6",
+          "A:7",
+          "B:0",
+          "B:1",
+          "B:2",
+          "B:3",
+          "B:4",
+          "B:5",
+          "B:6",
+          "B:7",
+          "A:8",
+          "A:9",
+          "A:10",
+          "A:11",
+          "A:12",
+          "A:13",
+          "A:14",
+          "A:15",
+          "A:16",
+          "A:17",
+          "A:18",
+          "A:19",
+          "A:20",
+          "A:21",
+          "A:22",
+          "A:23"
+        ],
+        "logical_unwrapped": [
+          [
+            "A",
+            0
+          ],
+          [
+            "A",
+            1
+          ],
+          [
+            "A",
+            2
+          ],
+          [
+            "A",
+            3
+          ],
+          [
+            "A",
+            4
+          ],
+          [
+            "A",
+            5
+          ],
+          [
+            "A",
+            6
+          ],
+          [
+            "A",
+            7
+          ],
+          [
+            "B",
+            0
+          ],
+          [
+            "B",
+            1
+          ],
+          [
+            "B",
+            2
+          ],
+          [
+            "B",
+            3
+          ],
+          [
+            "B",
+            4
+          ],
+          [
+            "B",
+            5
+          ],
+          [
+            "B",
+            6
+          ],
+          [
+            "B",
+            7
+          ],
+          [
+            "A",
+            8
+          ],
+          [
+            "A",
+            9
+          ],
+          [
+            "A",
+            10
+          ],
+          [
+            "A",
+            11
+          ],
+          [
+            "A",
+            12
+          ],
+          [
+            "A",
+            13
+          ],
+          [
+            "A",
+            14
+          ],
+          [
+            "A",
+            15
+          ],
+          [
+            "A",
+            16
+          ],
+          [
+            "A",
+            17
+          ],
+          [
+            "A",
+            18
+          ],
+          [
+            "A",
+            19
+          ],
+          [
+            "A",
+            20
+          ],
+          [
+            "A",
+            21
+          ],
+          [
+            "A",
+            22
+          ],
+          [
+            "A",
+            23
+          ]
+        ],
+        "counts_after_stage": [
+          [
+            8,
+            0
+          ],
+          [
+            8,
+            8
+          ]
+        ],
+        "stages_for_first_four_blocks": [
+          0,
+          1,
+          2,
+          2
+        ],
+        "repeated_identity_slots": 0
+      },
+      "unaligned": {
+        "accepted": true,
+        "stream": [
+          "A:0",
+          "A:1",
+          "A:2",
+          "A:3",
+          "A:4",
+          "A:5",
+          "A:6",
+          "A:7",
+          "A:8",
+          "A:9",
+          "A:10",
+          "A:11",
+          "A:12",
+          "A:13",
+          "A:14",
+          "A:15",
+          "B:0",
+          "B:1",
+          "B:2",
+          "B:3",
+          "B:4",
+          "B:5",
+          "B:6",
+          "B:7",
+          "A:8",
+          "A:9",
+          "A:10",
+          "A:11",
+          "A:12",
+          "A:13",
+          "A:14",
+          "A:15"
+        ],
+        "logical_unwrapped": [
+          [
+            "A",
+            0
+          ],
+          [
+            "A",
+            1
+          ],
+          [
+            "A",
+            2
+          ],
+          [
+            "A",
+            3
+          ],
+          [
+            "A",
+            4
+          ],
+          [
+            "A",
+            5
+          ],
+          [
+            "A",
+            6
+          ],
+          [
+            "A",
+            7
+          ],
+          [
+            "A",
+            8
+          ],
+          [
+            "A",
+            9
+          ],
+          [
+            "A",
+            10
+          ],
+          [
+            "A",
+            11
+          ],
+          [
+            "A",
+            12
+          ],
+          [
+            "A",
+            13
+          ],
+          [
+            "A",
+            14
+          ],
+          [
+            "A",
+            15
+          ],
+          [
+            "B",
+            0
+          ],
+          [
+            "B",
+            1
+          ],
+          [
+            "B",
+            2
+          ],
+          [
+            "B",
+            3
+          ],
+          [
+            "B",
+            4
+          ],
+          [
+            "B",
+            5
+          ],
+          [
+            "B",
+            6
+          ],
+          [
+            "B",
+            7
+          ],
+          [
+            "A",
+            8
+          ],
+          [
+            "A",
+            9
+          ],
+          [
+            "A",
+            10
+          ],
+          [
+            "A",
+            11
+          ],
+          [
+            "A",
+            12
+          ],
+          [
+            "A",
+            13
+          ],
+          [
+            "A",
+            14
+          ],
+          [
+            "A",
+            15
+          ]
+        ],
+        "counts_after_stage": [
+          [
+            8,
+            0
+          ],
+          [
+            8,
+            8
+          ]
+        ],
+        "stages_for_first_four_blocks": [
+          0,
+          0,
+          1,
+          2
+        ],
+        "repeated_identity_slots": 8
+      },
+      "nonzero_first": {
+        "accepted": true,
+        "stream": [
+          "A:92",
+          "A:93",
+          "A:94",
+          "A:95",
+          "A:96",
+          "A:97",
+          "A:98",
+          "A:99",
+          "A:0",
+          "A:1",
+          "A:2",
+          "A:3",
+          "A:4",
+          "A:5",
+          "A:6",
+          "A:7",
+          "A:8",
+          "A:9",
+          "A:10",
+          "A:11",
+          "A:12",
+          "A:13",
+          "A:14",
+          "A:15",
+          "A:16",
+          "A:17",
+          "A:18",
+          "A:19",
+          "A:20",
+          "A:21",
+          "A:22",
+          "A:23"
+        ],
+        "logical_unwrapped": [
+          [
+            "A",
+            -8
+          ],
+          [
+            "A",
+            -7
+          ],
+          [
+            "A",
+            -6
+          ],
+          [
+            "A",
+            -5
+          ],
+          [
+            "A",
+            -4
+          ],
+          [
+            "A",
+            -3
+          ],
+          [
+            "A",
+            -2
+          ],
+          [
+            "A",
+            -1
+          ],
+          [
+            "A",
+            0
+          ],
+          [
+            "A",
+            1
+          ],
+          [
+            "A",
+            2
+          ],
+          [
+            "A",
+            3
+          ],
+          [
+            "A",
+            4
+          ],
+          [
+            "A",
+            5
+          ],
+          [
+            "A",
+            6
+          ],
+          [
+            "A",
+            7
+          ],
+          [
+            "A",
+            8
+          ],
+          [
+            "A",
+            9
+          ],
+          [
+            "A",
+            10
+          ],
+          [
+            "A",
+            11
+          ],
+          [
+            "A",
+            12
+          ],
+          [
+            "A",
+            13
+          ],
+          [
+            "A",
+            14
+          ],
+          [
+            "A",
+            15
+          ],
+          [
+            "A",
+            16
+          ],
+          [
+            "A",
+            17
+          ],
+          [
+            "A",
+            18
+          ],
+          [
+            "A",
+            19
+          ],
+          [
+            "A",
+            20
+          ],
+          [
+            "A",
+            21
+          ],
+          [
+            "A",
+            22
+          ],
+          [
+            "A",
+            23
+          ]
+        ],
+        "counts_after_stage": [],
+        "stages_for_first_four_blocks": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "repeated_identity_slots": 0
+      },
+      "mixed_budget_split": {
+        "accepted": true
+      },
+      "valid_config": {
+        "accepted": true
+      },
+      "explicit_weight_error": {
+        "accepted": false,
+        "error_type": "ValueError",
+        "error": "Weight keys must be subset of component keys."
+      },
+      "explicit_empty_error": "ValueError"
+    },
+    "2": {
+      "aligned": {
+        "accepted": true,
+        "stream": [
+          "A:0",
+          "A:1",
+          "A:2",
+          "A:3",
+          "A:4",
+          "A:5",
+          "A:6",
+          "A:7",
+          "B:0",
+          "B:1",
+          "B:2",
+          "B:3",
+          "B:4",
+          "B:5",
+          "B:6",
+          "B:7",
+          "A:8",
+          "A:9",
+          "A:10",
+          "A:11",
+          "A:12",
+          "A:13",
+          "A:14",
+          "A:15",
+          "A:16",
+          "A:17",
+          "A:18",
+          "A:19",
+          "A:20",
+          "A:21",
+          "A:22",
+          "A:23"
+        ],
+        "logical_unwrapped": [
+          [
+            "A",
+            0
+          ],
+          [
+            "A",
+            1
+          ],
+          [
+            "A",
+            2
+          ],
+          [
+            "A",
+            3
+          ],
+          [
+            "A",
+            4
+          ],
+          [
+            "A",
+            5
+          ],
+          [
+            "A",
+            6
+          ],
+          [
+            "A",
+            7
+          ],
+          [
+            "B",
+            0
+          ],
+          [
+            "B",
+            1
+          ],
+          [
+            "B",
+            2
+          ],
+          [
+            "B",
+            3
+          ],
+          [
+            "B",
+            4
+          ],
+          [
+            "B",
+            5
+          ],
+          [
+            "B",
+            6
+          ],
+          [
+            "B",
+            7
+          ],
+          [
+            "A",
+            8
+          ],
+          [
+            "A",
+            9
+          ],
+          [
+            "A",
+            10
+          ],
+          [
+            "A",
+            11
+          ],
+          [
+            "A",
+            12
+          ],
+          [
+            "A",
+            13
+          ],
+          [
+            "A",
+            14
+          ],
+          [
+            "A",
+            15
+          ],
+          [
+            "A",
+            16
+          ],
+          [
+            "A",
+            17
+          ],
+          [
+            "A",
+            18
+          ],
+          [
+            "A",
+            19
+          ],
+          [
+            "A",
+            20
+          ],
+          [
+            "A",
+            21
+          ],
+          [
+            "A",
+            22
+          ],
+          [
+            "A",
+            23
+          ]
+        ],
+        "counts_after_stage": [
+          [
+            8,
+            0
+          ],
+          [
+            8,
+            8
+          ]
+        ],
+        "stages_for_first_four_blocks": [
+          0,
+          1,
+          2,
+          2
+        ],
+        "repeated_identity_slots": 0
+      },
+      "unaligned": {
+        "accepted": true,
+        "stream": [
+          "A:0",
+          "A:1",
+          "A:2",
+          "A:3",
+          "A:4",
+          "A:5",
+          "A:6",
+          "A:7",
+          "A:8",
+          "A:9",
+          "A:10",
+          "A:11",
+          "A:12",
+          "A:13",
+          "A:14",
+          "A:15",
+          "B:0",
+          "B:1",
+          "B:2",
+          "B:3",
+          "B:4",
+          "B:5",
+          "B:6",
+          "B:7",
+          "A:8",
+          "A:9",
+          "A:10",
+          "A:11",
+          "A:12",
+          "A:13",
+          "A:14",
+          "A:15"
+        ],
+        "logical_unwrapped": [
+          [
+            "A",
+            0
+          ],
+          [
+            "A",
+            1
+          ],
+          [
+            "A",
+            2
+          ],
+          [
+            "A",
+            3
+          ],
+          [
+            "A",
+            4
+          ],
+          [
+            "A",
+            5
+          ],
+          [
+            "A",
+            6
+          ],
+          [
+            "A",
+            7
+          ],
+          [
+            "A",
+            8
+          ],
+          [
+            "A",
+            9
+          ],
+          [
+            "A",
+            10
+          ],
+          [
+            "A",
+            11
+          ],
+          [
+            "A",
+            12
+          ],
+          [
+            "A",
+            13
+          ],
+          [
+            "A",
+            14
+          ],
+          [
+            "A",
+            15
+          ],
+          [
+            "B",
+            0
+          ],
+          [
+            "B",
+            1
+          ],
+          [
+            "B",
+            2
+          ],
+          [
+            "B",
+            3
+          ],
+          [
+            "B",
+            4
+          ],
+          [
+            "B",
+            5
+          ],
+          [
+            "B",
+            6
+          ],
+          [
+            "B",
+            7
+          ],
+          [
+            "A",
+            8
+          ],
+          [
+            "A",
+            9
+          ],
+          [
+            "A",
+            10
+          ],
+          [
+            "A",
+            11
+          ],
+          [
+            "A",
+            12
+          ],
+          [
+            "A",
+            13
+          ],
+          [
+            "A",
+            14
+          ],
+          [
+            "A",
+            15
+          ]
+        ],
+        "counts_after_stage": [
+          [
+            8,
+            0
+          ],
+          [
+            8,
+            8
+          ]
+        ],
+        "stages_for_first_four_blocks": [
+          0,
+          0,
+          1,
+          2
+        ],
+        "repeated_identity_slots": 8
+      },
+      "nonzero_first": {
+        "accepted": true,
+        "stream": [
+          "A:92",
+          "A:93",
+          "A:94",
+          "A:95",
+          "A:96",
+          "A:97",
+          "A:98",
+          "A:99",
+          "A:0",
+          "A:1",
+          "A:2",
+          "A:3",
+          "A:4",
+          "A:5",
+          "A:6",
+          "A:7",
+          "A:8",
+          "A:9",
+          "A:10",
+          "A:11",
+          "A:12",
+          "A:13",
+          "A:14",
+          "A:15",
+          "A:16",
+          "A:17",
+          "A:18",
+          "A:19",
+          "A:20",
+          "A:21",
+          "A:22",
+          "A:23"
+        ],
+        "logical_unwrapped": [
+          [
+            "A",
+            -8
+          ],
+          [
+            "A",
+            -7
+          ],
+          [
+            "A",
+            -6
+          ],
+          [
+            "A",
+            -5
+          ],
+          [
+            "A",
+            -4
+          ],
+          [
+            "A",
+            -3
+          ],
+          [
+            "A",
+            -2
+          ],
+          [
+            "A",
+            -1
+          ],
+          [
+            "A",
+            0
+          ],
+          [
+            "A",
+            1
+          ],
+          [
+            "A",
+            2
+          ],
+          [
+            "A",
+            3
+          ],
+          [
+            "A",
+            4
+          ],
+          [
+            "A",
+            5
+          ],
+          [
+            "A",
+            6
+          ],
+          [
+            "A",
+            7
+          ],
+          [
+            "A",
+            8
+          ],
+          [
+            "A",
+            9
+          ],
+          [
+            "A",
+            10
+          ],
+          [
+            "A",
+            11
+          ],
+          [
+            "A",
+            12
+          ],
+          [
+            "A",
+            13
+          ],
+          [
+            "A",
+            14
+          ],
+          [
+            "A",
+            15
+          ],
+          [
+            "A",
+            16
+          ],
+          [
+            "A",
+            17
+          ],
+          [
+            "A",
+            18
+          ],
+          [
+            "A",
+            19
+          ],
+          [
+            "A",
+            20
+          ],
+          [
+            "A",
+            21
+          ],
+          [
+            "A",
+            22
+          ],
+          [
+            "A",
+            23
+          ]
+        ],
+        "counts_after_stage": [],
+        "stages_for_first_four_blocks": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "repeated_identity_slots": 0
+      },
+      "mixed_budget_split": {
+        "accepted": true
+      },
+      "valid_config": {
+        "accepted": true
+      },
+      "explicit_weight_error": {
+        "accepted": false,
+        "error_type": "ValueError",
+        "error": "Weight keys must be subset of component keys."
+      },
+      "explicit_empty_error": "ValueError"
+    }
+  },
+  "counterfactual_explicit_guard_cases": {
+    "0": {
+      "aligned": {
+        "accepted": true,
+        "stream": [
+          "A:0",
+          "A:1",
+          "A:2",
+          "A:3",
+          "A:4",
+          "A:5",
+          "A:6",
+          "A:7",
+          "B:0",
+          "B:1",
+          "B:2",
+          "B:3",
+          "B:4",
+          "B:5",
+          "B:6",
+          "B:7",
+          "A:8",
+          "A:9",
+          "A:10",
+          "A:11",
+          "A:12",
+          "A:13",
+          "A:14",
+          "A:15",
+          "A:16",
+          "A:17",
+          "A:18",
+          "A:19",
+          "A:20",
+          "A:21",
+          "A:22",
+          "A:23"
+        ],
+        "logical_unwrapped": [
+          [
+            "A",
+            0
+          ],
+          [
+            "A",
+            1
+          ],
+          [
+            "A",
+            2
+          ],
+          [
+            "A",
+            3
+          ],
+          [
+            "A",
+            4
+          ],
+          [
+            "A",
+            5
+          ],
+          [
+            "A",
+            6
+          ],
+          [
+            "A",
+            7
+          ],
+          [
+            "B",
+            0
+          ],
+          [
+            "B",
+            1
+          ],
+          [
+            "B",
+            2
+          ],
+          [
+            "B",
+            3
+          ],
+          [
+            "B",
+            4
+          ],
+          [
+            "B",
+            5
+          ],
+          [
+            "B",
+            6
+          ],
+          [
+            "B",
+            7
+          ],
+          [
+            "A",
+            8
+          ],
+          [
+            "A",
+            9
+          ],
+          [
+            "A",
+            10
+          ],
+          [
+            "A",
+            11
+          ],
+          [
+            "A",
+            12
+          ],
+          [
+            "A",
+            13
+          ],
+          [
+            "A",
+            14
+          ],
+          [
+            "A",
+            15
+          ],
+          [
+            "A",
+            16
+          ],
+          [
+            "A",
+            17
+          ],
+          [
+            "A",
+            18
+          ],
+          [
+            "A",
+            19
+          ],
+          [
+            "A",
+            20
+          ],
+          [
+            "A",
+            21
+          ],
+          [
+            "A",
+            22
+          ],
+          [
+            "A",
+            23
+          ]
+        ],
+        "counts_after_stage": [
+          [
+            8,
+            0
+          ],
+          [
+            8,
+            8
+          ]
+        ],
+        "stages_for_first_four_blocks": [
+          0,
+          1,
+          2,
+          2
+        ],
+        "repeated_identity_slots": 0
+      },
+      "unaligned": {
+        "accepted": false,
+        "error_type": "ValueError",
+        "error": "stage 1: start_seq_index for a stage must be a multiple of block_size, got start_seq_index=9 and block_size=8"
+      },
+      "nonzero_first": {
+        "accepted": false,
+        "error_type": "ValueError",
+        "error": "Invalid stage configuration"
+      },
+      "mixed_budget_split": {
+        "accepted": false,
+        "error_type": "ValueError",
+        "error": "max_train_batches/num_validation_sequences and simulated data budget cannot all be set"
+      }
+    },
+    "1": {
+      "aligned": {
+        "accepted": true,
+        "stream": [
+          "A:0",
+          "A:1",
+          "A:2",
+          "A:3",
+          "A:4",
+          "A:5",
+          "A:6",
+          "A:7",
+          "B:0",
+          "B:1",
+          "B:2",
+          "B:3",
+          "B:4",
+          "B:5",
+          "B:6",
+          "B:7",
+          "A:8",
+          "A:9",
+          "A:10",
+          "A:11",
+          "A:12",
+          "A:13",
+          "A:14",
+          "A:15",
+          "A:16",
+          "A:17",
+          "A:18",
+          "A:19",
+          "A:20",
+          "A:21",
+          "A:22",
+          "A:23"
+        ],
+        "logical_unwrapped": [
+          [
+            "A",
+            0
+          ],
+          [
+            "A",
+            1
+          ],
+          [
+            "A",
+            2
+          ],
+          [
+            "A",
+            3
+          ],
+          [
+            "A",
+            4
+          ],
+          [
+            "A",
+            5
+          ],
+          [
+            "A",
+            6
+          ],
+          [
+            "A",
+            7
+          ],
+          [
+            "B",
+            0
+          ],
+          [
+            "B",
+            1
+          ],
+          [
+            "B",
+            2
+          ],
+          [
+            "B",
+            3
+          ],
+          [
+            "B",
+            4
+          ],
+          [
+            "B",
+            5
+          ],
+          [
+            "B",
+            6
+          ],
+          [
+            "B",
+            7
+          ],
+          [
+            "A",
+            8
+          ],
+          [
+            "A",
+            9
+          ],
+          [
+            "A",
+            10
+          ],
+          [
+            "A",
+            11
+          ],
+          [
+            "A",
+            12
+          ],
+          [
+            "A",
+            13
+          ],
+          [
+            "A",
+            14
+          ],
+          [
+            "A",
+            15
+          ],
+          [
+            "A",
+            16
+          ],
+          [
+            "A",
+            17
+          ],
+          [
+            "A",
+            18
+          ],
+          [
+            "A",
+            19
+          ],
+          [
+            "A",
+            20
+          ],
+          [
+            "A",
+            21
+          ],
+          [
+            "A",
+            22
+          ],
+          [
+            "A",
+            23
+          ]
+        ],
+        "counts_after_stage": [
+          [
+            8,
+            0
+          ],
+          [
+            8,
+            8
+          ]
+        ],
+        "stages_for_first_four_blocks": [
+          0,
+          1,
+          2,
+          2
+        ],
+        "repeated_identity_slots": 0
+      },
+      "unaligned": {
+        "accepted": false,
+        "error_type": "ValueError",
+        "error": "stage 1: start_seq_index for a stage must be a multiple of block_size, got start_seq_index=9 and block_size=8"
+      },
+      "nonzero_first": {
+        "accepted": false,
+        "error_type": "ValueError",
+        "error": "Invalid stage configuration"
+      },
+      "mixed_budget_split": {
+        "accepted": false,
+        "error_type": "ValueError",
+        "error": "max_train_batches/num_validation_sequences and simulated data budget cannot all be set"
+      }
+    },
+    "2": {
+      "aligned": {
+        "accepted": true,
+        "stream": [
+          "A:0",
+          "A:1",
+          "A:2",
+          "A:3",
+          "A:4",
+          "A:5",
+          "A:6",
+          "A:7",
+          "B:0",
+          "B:1",
+          "B:2",
+          "B:3",
+          "B:4",
+          "B:5",
+          "B:6",
+          "B:7",
+          "A:8",
+          "A:9",
+          "A:10",
+          "A:11",
+          "A:12",
+          "A:13",
+          "A:14",
+          "A:15",
+          "A:16",
+          "A:17",
+          "A:18",
+          "A:19",
+          "A:20",
+          "A:21",
+          "A:22",
+          "A:23"
+        ],
+        "logical_unwrapped": [
+          [
+            "A",
+            0
+          ],
+          [
+            "A",
+            1
+          ],
+          [
+            "A",
+            2
+          ],
+          [
+            "A",
+            3
+          ],
+          [
+            "A",
+            4
+          ],
+          [
+            "A",
+            5
+          ],
+          [
+            "A",
+            6
+          ],
+          [
+            "A",
+            7
+          ],
+          [
+            "B",
+            0
+          ],
+          [
+            "B",
+            1
+          ],
+          [
+            "B",
+            2
+          ],
+          [
+            "B",
+            3
+          ],
+          [
+            "B",
+            4
+          ],
+          [
+            "B",
+            5
+          ],
+          [
+            "B",
+            6
+          ],
+          [
+            "B",
+            7
+          ],
+          [
+            "A",
+            8
+          ],
+          [
+            "A",
+            9
+          ],
+          [
+            "A",
+            10
+          ],
+          [
+            "A",
+            11
+          ],
+          [
+            "A",
+            12
+          ],
+          [
+            "A",
+            13
+          ],
+          [
+            "A",
+            14
+          ],
+          [
+            "A",
+            15
+          ],
+          [
+            "A",
+            16
+          ],
+          [
+            "A",
+            17
+          ],
+          [
+            "A",
+            18
+          ],
+          [
+            "A",
+            19
+          ],
+          [
+            "A",
+            20
+          ],
+          [
+            "A",
+            21
+          ],
+          [
+            "A",
+            22
+          ],
+          [
+            "A",
+            23
+          ]
+        ],
+        "counts_after_stage": [
+          [
+            8,
+            0
+          ],
+          [
+            8,
+            8
+          ]
+        ],
+        "stages_for_first_four_blocks": [
+          0,
+          1,
+          2,
+          2
+        ],
+        "repeated_identity_slots": 0
+      },
+      "unaligned": {
+        "accepted": false,
+        "error_type": "ValueError",
+        "error": "stage 1: start_seq_index for a stage must be a multiple of block_size, got start_seq_index=9 and block_size=8"
+      },
+      "nonzero_first": {
+        "accepted": false,
+        "error_type": "ValueError",
+        "error": "Invalid stage configuration"
+      },
+      "mixed_budget_split": {
+        "accepted": false,
+        "error_type": "ValueError",
+        "error": "max_train_batches/num_validation_sequences and simulated data budget cannot all be set"
+      }
+    }
+  },
+  "counterfactual_patch_applied_upstream": false,
+  "assertion_inventory": {
+    "sources/run_code_2026_10_08/mixture.py": [
+      {
+        "line": 204,
+        "condition": "self._is_finite_cache is not None"
+      },
+      {
+        "line": 241,
+        "condition": "len(indices) == len(blocks) == len(block_ids)"
+      },
+      {
+        "line": 437,
+        "condition": "self._total_length is not None"
+      },
+      {
+        "line": 73,
+        "condition": "start_seq_index == 0"
+      },
+      {
+        "line": 75,
+        "condition": "start_seq_index % block_size == 0"
+      },
+      {
+        "line": 79,
+        "condition": "start_seq_index > weight_stages[i - 1][0]"
+      },
+      {
+        "line": 267,
+        "condition": "final_batch[idx] is None"
+      },
+      {
+        "line": 268,
+        "condition": "len(final_batch) > idx"
+      }
+    ],
+    "sources/run_code_2026_10_08/datasets.py": [
+      {
+        "line": 686,
+        "condition": "self.experiment_budget is None and self.target_budget is None"
+      },
+      {
+        "line": 838,
+        "condition": "initial_batch_size is not None"
+      },
+      {
+        "line": 845,
+        "condition": "num_sequences <= len_dataset"
+      }
+    ]
+  },
+  "source_sha256": {
+    "sources/run_code_2026_10_08/mixture.py": "7f5a3182bdaec60b2ee45e3961eef47afa57028f1fdfa03111f2a43355b35757",
+    "sources/run_code_2026_10_08/datasets.py": "d242bedf000cdb0d72ec050bee0d50bcd62cc131c226b845a9d9c4914eadd534"
+  },
+  "substitutions": [
+    "AsyncDataset generic base",
+    "StopStrategy constants",
+    "local CPU mesh null context",
+    "value future",
+    "finite strict identity stores A and B length100",
+    "compile optimize explicitly0/1/2 for original selected bodies, not full module import or launcher"
+  ],
+  "actual_historical_PYTHONOPTIMIZE": null,
+  "actual_Hero_assertion_bypass": null,
+  "actual_training_loss_effect": null,
+  "actual_GPU_execution": null
+}

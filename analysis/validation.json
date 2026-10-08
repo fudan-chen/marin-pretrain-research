@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1733,
+  "checks_passed": 1738,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -173,7 +173,8 @@
     "V122 two uploaded code inventories, five source bindings, one continuation step393 read log and historical-source conditional replay; actual imports/checkpoint contents/tokens unknown",
     "V123 three candidate entrypoint key paths agree; None/zero and partitionable flag alter all200child keys; selected JAX0.11/0.7 CPU controls agree; initialization key distinct from restored model state",
     "V124 original shuffle->slice->restart artificial controls: changing key can change selected subset; source-only state schema and loader rebuild; positive-weight zero-length boundary not historical incident",
-    "V125 source-prefix support cap and fixed tail exclusion, explicit uniform-subset reference, four window interventions; structured artificial indices not actual document/quality/performance evidence"
+    "V125 source-prefix support cap and fixed tail exclusion, explicit uniform-subset reference, four window interventions; structured artificial indices not actual document/quality/performance evidence",
+    "V127 eleven original-source CPU controls at compile0/1/2 and actual normal/-O probe launch: optimized malformed stages repeat identities or generate negative logical offsets; explicit guard candidate local only, historical Hero optimization mode unknown"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

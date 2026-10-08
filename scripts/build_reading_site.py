@@ -75,7 +75,7 @@ for intro in tooldoc.select('main > .intro'):intro.decompose()
 for aside in tooldoc.select('aside'):aside.decompose()
 for script in tooldoc.find_all('script'):
  if script.string and script.get('type')!='application/json':
-  text=str(script.string).replace("$('#toc-search').addEventListener", "$('#toc-search')?.addEventListener")
+  text=str(script.string).replace("$('#toc-search').addEventListener", "$('#toc-search')?.addEventListener").replace("$('#print-report').addEventListener", "$('#print-report')?.addEventListener")
   # Script-generated chapter links must also leave the tools page.
   for chapter in sections:
    if owner[chapter]!='tools':
@@ -87,6 +87,15 @@ for link in tooldoc.select('link[href]'):
 for tag in tooldoc.select('body > a.top-link'):tag.decompose()
 style=tooldoc.new_tag('style');style.string='.layout{display:block!important}main{max-width:1100px;margin:auto!important;padding:30px 24px}';tooldoc.head.append(style)
 nav=BeautifulSoup('<nav style="padding:20px"><a href="index.html">← 返回主题目录</a> · <a href="../report_standalone.html">完整报告</a></nav>','html.parser').nav;tooldoc.body.insert(0,nav)
+toolnav=tooldoc.new_tag('nav')
+toolnav['style']='max-width:1100px;margin:auto;padding:20px;display:flex;gap:14px;flex-wrap:wrap'
+for sid in groups[-1][3].split():
+ a=tooldoc.new_tag('a',href='#'+sid);a.string=title(sections[sid]);toolnav.append(a)
+tooldoc.body.insert(1,toolnav)
+toolstyle=tooldoc.new_tag('style');toolstyle.string='.tool-inactive{display:none!important}';tooldoc.head.append(toolstyle)
+switcher=tooldoc.new_tag('script')
+switcher.string="""(function(){const sections=Array.from(document.querySelectorAll('main > section[id]'));function show(){const id=location.hash.slice(1);const chosen=sections.find(s=>s.id===id)||sections[0];sections.forEach(s=>s.classList.toggle('tool-inactive',s!==chosen));}window.addEventListener('hashchange',show);show();})();"""
+tooldoc.body.append(switcher)
 (OUT/'tools.html').write_text(str(tooldoc))
 for sid in groups[-1][3].split():
  (OUT/(sid+'.html')).write_text(shell(title(sections[sid]),'<h1>'+html.escape(title(sections[sid]))+'</h1><p><a href="tools.html#'+sid+'">打开交互工具 →</a></p>'))

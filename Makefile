@@ -355,3 +355,7 @@ loss-denominator-dtype:
 .PHONY: loss-denominator-mesh
 loss-denominator-mesh:
 	$(CPU_PYTHON) scripts/probe_loss_denominator_mesh_cpu.py
+
+.PHONY: ce-label-bounds
+ce-label-bounds:
+	$(CPU_PYTHON) scripts/probe_ce_label_bounds_cpu.py

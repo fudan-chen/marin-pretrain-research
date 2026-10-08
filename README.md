@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本V137：实际四本地 CPU 执行原 loss shard_map/psum 和自动微分，13 项控制覆盖全局溢出、不均目标、空片和复制轴。[分母精度与配比验收](LOSS_DENOMINATOR_ZH.md)。
+当前版本V138：14 项原始 CE 标签边界控制，发现有限 loss 与自动微分不一致的非法目标路径，以及零权重不能屏蔽的 streaming 非法目标。[标签、词表与后端合同](CE_LABEL_BOUNDS_ZH.md)。
 
 [MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并提供未执行的性能交互记录模板。
 
@@ -18,7 +18,7 @@ V26对V25的micro/macro命名错误已[明确更正](EVAL_METRICS_ZH.md)。
 |MoE和文档边界有哪些具体陷阱|[路由丢弃](ROUTING_DROPS_ZH.md)、[分位数均衡](QB_ESTIMATION_ZH.md)、[router精度](ROUTER_PRECISION_ZH.md)、[文档边界](DOCUMENT_BOUNDARIES_ZH.md)、[ShortConv](SHORT_CONV_ZH.md)|
 |训练在跑，但不知道checkpoint是否可靠|[保存提交与恢复](CHECKPOINT_COMMIT_ZH.md) → [保存内存与写入计划](CHECKPOINT_MEMORY_ZH.md) → [工程证据链](ENGINEERING_GUIDE_ZH.md)|
 
-离线HTML包含科学图、性能图解及原值入口，另有机制与提交控制流示意图。各原函数探针明确列出替代依赖，没有运行真实GPU训练、模型checkpoint恢复或分布式提交。各版本来源、验证范围与历史更正分别保留。
+离线HTML包含科学图、性能图解及原值入口，另有机制与提交控制流示意图。各原函数探针明确列出替代依赖；部分已执行本地小状态保存恢复及多虚拟 CPU collective，但没有执行融合 GPU 训练、生产 Hero checkpoint 恢复或多主机提交。各版本来源、验证范围与历史更正分别保留。
 
 这是一份独立的中文研究报告，重点是读懂故障机制、核实Loss变化、还原实际数据配比，以及设计自己的配比与顺序实验。最新吞吐摘要为[V110归档](OPERATIONAL_PROGRESS_ZH.md)，约10.128T/4K、目标18T；[此前评估观察](LIVE_2026_10_07_ZH.md)仍为当时9.915T快照；旧段落中的10月6日54.18%属于历史观察。旧数值图与其分析保持10月4日快照，工程issue于10月6日复核正文和评论未变。
 

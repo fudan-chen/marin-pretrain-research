@@ -1,0 +1,326 @@
+{
+  "scope": "Original shape validator, full and streaming reference CE and reducer on tiny CPU tensors; autodiff and JIT, not fused dispatcher, GPU or production tokenizer input.",
+  "checks_passed": 14,
+  "checks": [
+    {
+      "name": "Valid target CPU backends agree in loss and gradient",
+      "passed": true
+    },
+    {
+      "name": "Original shape dtype validator accepts all selected invalid integer labels",
+      "passed": true
+    },
+    {
+      "name": "Positive out of vocabulary full reference returns finite last-class loss",
+      "passed": true
+    },
+    {
+      "name": "Positive out of vocabulary full reference gradient lacks target subtraction",
+      "passed": true
+    },
+    {
+      "name": "Full reference invalid forward shift derivative differs from autodiff",
+      "passed": true
+    },
+    {
+      "name": "JIT preserves selected positive invalid finite forward and gradient gap",
+      "passed": true
+    },
+    {
+      "name": "Negative one wraps in full reference but is infinite in streaming",
+      "passed": true
+    },
+    {
+      "name": "Selected positive invalid labels yield streaming infinite loss",
+      "passed": true
+    },
+    {
+      "name": "Masking invalid streaming target after CE does not avoid NaN loss",
+      "passed": true
+    },
+    {
+      "name": "Inactive sanitized labels restore backend agreement",
+      "passed": true
+    },
+    {
+      "name": "Offline candidate rejects selected active invalid labels",
+      "passed": true
+    },
+    {
+      "name": "Candidate checks labels before narrowing casts",
+      "passed": true
+    },
+    {
+      "name": "Offline candidate preserves valid target labels",
+      "passed": true
+    },
+    {
+      "name": "Sanitized masked case agrees with single valid target",
+      "passed": true
+    }
+  ],
+  "cases": {
+    "0": {
+      "full": {
+        "loss": 2.4076058864593506,
+        "loss_finite": true,
+        "gradient": [
+          [
+            -0.9099694490432739,
+            0.2447284758090973,
+            0.6652409434318542
+          ]
+        ],
+        "gradient_sum": -5.960464477539063e-08,
+        "validator_accepted": true
+      },
+      "streaming": {
+        "loss": 2.4076058864593506,
+        "loss_finite": true,
+        "gradient": [
+          [
+            -0.9099694490432739,
+            0.24472849071025848,
+            0.665241003036499
+          ]
+        ],
+        "gradient_sum": 5.960464477539063e-08,
+        "validator_accepted": true
+      }
+    },
+    "2": {
+      "full": {
+        "loss": 0.4076058864593506,
+        "loss_finite": true,
+        "gradient": [
+          [
+            0.09003057330846786,
+            0.2447284758090973,
+            -0.33475905656814575
+          ]
+        ],
+        "gradient_sum": 0.0,
+        "validator_accepted": true
+      },
+      "streaming": {
+        "loss": 0.4076058864593506,
+        "loss_finite": true,
+        "gradient": [
+          [
+            0.09003058075904846,
+            0.24472849071025848,
+            -0.334758996963501
+          ]
+        ],
+        "gradient_sum": 5.960464477539063e-08,
+        "validator_accepted": true
+      }
+    },
+    "-1": {
+      "full": {
+        "loss": 0.4076058864593506,
+        "loss_finite": true,
+        "gradient": [
+          [
+            0.09003057330846786,
+            0.2447284758090973,
+            -0.33475905656814575
+          ]
+        ],
+        "gradient_sum": 0.0,
+        "validator_accepted": true
+      },
+      "streaming": {
+        "loss": "inf",
+        "loss_finite": false,
+        "gradient": [
+          [
+            0.09003058075904846,
+            0.24472849071025848,
+            0.665241003036499
+          ]
+        ],
+        "gradient_sum": 1.0,
+        "validator_accepted": true
+      }
+    },
+    "3": {
+      "full": {
+        "loss": 0.4076058864593506,
+        "loss_finite": true,
+        "gradient": [
+          [
+            0.09003057330846786,
+            0.2447284758090973,
+            0.6652409434318542
+          ]
+        ],
+        "gradient_sum": 1.0,
+        "validator_accepted": true
+      },
+      "streaming": {
+        "loss": "inf",
+        "loss_finite": false,
+        "gradient": [
+          [
+            0.09003058075904846,
+            0.24472849071025848,
+            0.665241003036499
+          ]
+        ],
+        "gradient_sum": 1.0,
+        "validator_accepted": true
+      }
+    },
+    "100": {
+      "full": {
+        "loss": 0.4076058864593506,
+        "loss_finite": true,
+        "gradient": [
+          [
+            0.09003057330846786,
+            0.2447284758090973,
+            0.6652409434318542
+          ]
+        ],
+        "gradient_sum": 1.0,
+        "validator_accepted": true
+      },
+      "streaming": {
+        "loss": "inf",
+        "loss_finite": false,
+        "gradient": [
+          [
+            0.09003058075904846,
+            0.24472849071025848,
+            0.665241003036499
+          ]
+        ],
+        "gradient_sum": 1.0,
+        "validator_accepted": true
+      }
+    },
+    "-100": {
+      "full": {
+        "loss": 2.4076058864593506,
+        "loss_finite": true,
+        "gradient": [
+          [
+            0.09003057330846786,
+            0.2447284758090973,
+            0.6652409434318542
+          ]
+        ],
+        "gradient_sum": 1.0,
+        "validator_accepted": true
+      },
+      "streaming": {
+        "loss": "inf",
+        "loss_finite": false,
+        "gradient": [
+          [
+            0.09003058075904846,
+            0.24472849071025848,
+            0.665241003036499
+          ]
+        ],
+        "gradient_sum": 1.0,
+        "validator_accepted": true
+      }
+    },
+    "masked_invalid_full": {
+      "loss": 2.4076058864593506,
+      "gradient": [
+        [
+          -0.9099694490432739,
+          0.2447284758090973,
+          0.6652409434318542
+        ]
+      ],
+      "gradient_finite": true
+    },
+    "masked_invalid_streaming": {
+      "loss": "nan",
+      "gradient": [
+        [
+          -0.9099694490432739,
+          0.24472849071025848,
+          0.665241003036499
+        ]
+      ],
+      "gradient_finite": true
+    },
+    "positive_oob_shift": {
+      "finite_difference_directional": 0.0,
+      "autodiff_directional": 1.0,
+      "jit_loss": 0.4076058864593506,
+      "jit_gradient": [
+        [
+          0.09003057330846786,
+          0.2447284758090973,
+          0.6652409434318542
+        ]
+      ],
+      "epsilon": 0.01
+    },
+    "candidate_sanitized_inactive": {
+      "labels": [
+        0,
+        0
+      ],
+      "backends": {
+        "full": {
+          "loss": 2.4076058864593506,
+          "gradient": [
+            [
+              -0.9099694490432739,
+              0.2447284758090973,
+              0.6652409434318542
+            ]
+          ]
+        },
+        "streaming": {
+          "loss": 2.4076058864593506,
+          "gradient": [
+            [
+              -0.9099694490432739,
+              0.24472849071025848,
+              0.665241003036499
+            ]
+          ]
+        }
+      }
+    }
+  },
+  "candidate_rejections": {
+    "-1": "ValueError",
+    "3": "ValueError",
+    "100": "ValueError",
+    "-100": "ValueError"
+  },
+  "candidate_cast_rejections": {
+    "fractional": "TypeError",
+    "wide_integer": "ValueError"
+  },
+  "source_sha256": {
+    "sources/contracts_2026_10_05/reference.py": "f113b3b6872af2d6aa4658cf4326b6c52c2675bf537690d5653604e9d559c0d5",
+    "sources/contracts_2026_10_05/api.py": "5efeea2badba92dbc2dce9d0fc2306f12a2bf754dd2d8bee16b1dcd3ed0e355d",
+    "sources/contracts_2026_10_05/model.py": "8fdfd89cf6814da05683f134f154525916728370368a2493843195d9a489859c"
+  },
+  "probe_script_sha256": "d510c2f6f3e60a9cc9214dae819391bff4474036053ca824cca201a4d38bd931",
+  "runtime": {
+    "jax": "0.7.2",
+    "numpy": "2.5.3",
+    "backend": "cpu"
+  },
+  "substitutions": [
+    "Select original default CPU logsumexp",
+    "Select jnp.logaddexp CPU branch; no TPU accuracy branch or fused dispatcher"
+  ],
+  "official_background": "https://docs.jax.dev/en/latest/notebooks/Common_Gotchas_in_JAX.html",
+  "candidate_scope": "Offline NumPy label check and explicit inactive-label replacement only; not full input validator or production JIT hook",
+  "actual_Hero_invalid_target_event": null,
+  "actual_fused_GPU_execution": null,
+  "actual_training_loss_effect": null,
+  "upstream_patch_applied": false
+}

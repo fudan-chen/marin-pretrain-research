@@ -236,3 +236,8 @@ V116执行原模型router投影/top-k/margin与真实四CPU histogram，9项控�
 ## V117：目标与路由人口分开记账
 
 V117接原causal目标mask、attention有效性、投影margin和四CPU histogram，9项控制：只改loss_weight不改变QB有效人口；零直接目标位置仍可改变阈值。boolean空query与additive mask的有效性合同不同。每域输入/路由有效/正目标/加权目标分开记录，不静默将prompt改为padding。本轮人工answer-only不是Hero配方，未测attention、完整梯度或能力收益；566份来源不变。[原值及边界](DOCUMENT_BOUNDARIES_ZH.md)。
+
+
+## V118：研究收束为训练决策
+
+新增[训练决策备忘录](TRAINING_DECISIONS_ZH.md)：六类症状的最小对照、#9352评估修正但排序不变的数值案例、配比五本账及供体/顺序/独立确认管线。将继续观察、废弃候选、进入放大验证分开，不给未执行实验判通过。新增机器可读案例只复算既有作者报告，无新训练、生产采用或最优配比结论；566份来源保持。

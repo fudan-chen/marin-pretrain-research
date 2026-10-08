@@ -57,7 +57,8 @@ chapters.insert(0,('controller-recovery-guide','控制器备份、回滚与失�
 chapters.insert(0,('gang-recovery-guide','Gang重试、预算与资源归还','GANG_RECOVERY_ZH.md'))
 chapters.insert(0,('operational-progress-guide','日历进度、步时与事故对齐','OPERATIONAL_PROGRESS_ZH.md'))
 chapters.insert(0,('pending-resume-guide','Pending恢复、评估视图与EMA donation','PENDING_RESUME_ZH.md'))
-priority=['synthesis-guide','pending-resume-guide','operational-progress-guide','gang-recovery-guide','controller-recovery-guide','optimizer-guide','zero-gradient-state-guide','masked-numerics-guide','gradient-accumulation-guide','eval-weight-guide','live-oct7-guide','repeat-exposure-guide','packing-fields-guide','eval-target-alignment-guide','eval-format-guide','eval-array-export-guide','eval-replay-guide','eval-identity-guide','live-observation-guide','mixture-range-guide','batch-clock-guide','failure-boundaries-guide','observability-guide','muon-direction-guide','adamh-state-guide','muon-geometry-guide','engineering-map-guide','delivery-audit-guide','checkpoint-memory-guide','checkpoint-commit-guide','eval-metrics-guide','mix-trajectory-guide','router-precision-guide','short-conv-guide','loss-triage','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
+chapters.insert(0,('training-decisions-guide','训练决策：什么时候值得改数据','TRAINING_DECISIONS_ZH.md'))
+priority=['synthesis-guide','training-decisions-guide','pending-resume-guide','operational-progress-guide','gang-recovery-guide','controller-recovery-guide','optimizer-guide','zero-gradient-state-guide','masked-numerics-guide','gradient-accumulation-guide','eval-weight-guide','live-oct7-guide','repeat-exposure-guide','packing-fields-guide','eval-target-alignment-guide','eval-format-guide','eval-array-export-guide','eval-replay-guide','eval-identity-guide','live-observation-guide','mixture-range-guide','batch-clock-guide','failure-boundaries-guide','observability-guide','muon-direction-guide','adamh-state-guide','muon-geometry-guide','engineering-map-guide','delivery-audit-guide','checkpoint-memory-guide','checkpoint-commit-guide','eval-metrics-guide','mix-trajectory-guide','router-precision-guide','short-conv-guide','loss-triage','qb-guide','routing-guide','change-guide','quality-guide','dedup-guide','cache-guide','boundary-guide','state-guide','contracts-guide','scale-guide']
 chapters.sort(key=lambda c:priority.index(c[0]) if c[0] in priority else len(priority))
 readings={x['file']:x for x in json.loads((ROOT/'analysis/figure_readings.json').read_text())}
 sections=[];toc=[]
@@ -365,7 +366,9 @@ mapping.update({'ENGINEERINGLAB':(ROOT/'assets/engineering.html').read_text(),'E
 # Show the synthesis before interactive labs; retain their ids and behavior.
 intro=sections.pop(0)
 assert 'id="synthesis-guide"' in intro
-mapping['SYNTHESISINTRO']=intro
+decision_intro=sections.pop(0)
+assert 'id="training-decisions-guide"' in decision_intro
+mapping['SYNTHESISINTRO']=intro+'\n'+decision_intro
 mapping['SECTIONS']='\n'.join(sections)
 intro_nav='<a class="major" href="#synthesis-guide">结论与操作顺序：怎样用这份研究</a>'
 mapping['NAV']=intro_nav+mapping['NAV'].replace(intro_nav,'')

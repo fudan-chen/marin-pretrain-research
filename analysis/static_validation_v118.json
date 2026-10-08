@@ -1,0 +1,26 @@
+{
+  "checks_passed": 5,
+  "checks": [
+    {
+      "name": "Quoted author values and all computed differences match archived source",
+      "passed": true
+    },
+    {
+      "name": "No new training or production adoption claimed",
+      "passed": true
+    },
+    {
+      "name": "Both reports include decision guide with three tables and numerical example",
+      "passed": true
+    },
+    {
+      "name": "Every historical section table retained",
+      "passed": true
+    },
+    {
+      "name": "All 566 historical source payloads byte preserved",
+      "passed": true
+    }
+  ],
+  "actual_browser_rendering": null
+}

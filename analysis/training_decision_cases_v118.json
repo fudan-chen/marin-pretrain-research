@@ -1,0 +1,22 @@
+{
+  "version": "V118",
+  "evidence_status": "archived_author_report_not_local_training",
+  "source": "sources/thread_9352.md",
+  "current": {
+    "a1": 2.22020006,
+    "a2": 2.22016478,
+    "correction": -3.528e-05
+  },
+  "preferred": {
+    "a1": 2.2209115,
+    "a2": 2.22088742,
+    "correction": -2.408e-05
+  },
+  "actual_production_fix_deployed": null,
+  "actual_new_training_result": null,
+  "preferred_minus_current": {
+    "a1": 0.00071144,
+    "a2": 0.00072264
+  },
+  "delta_change": 1.12e-05
+}

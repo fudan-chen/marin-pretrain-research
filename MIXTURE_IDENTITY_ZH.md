@@ -251,3 +251,8 @@ V107 说明当前权重的 loss 相同不能证明 optimizer 历史相同。这�
 12 项 CPU 控制通过，7 份核心源码与冻结 eee467… 完整 git blob 字节一致。Axis/DirectDatasetComponent 为最小类型适配，build_caches 返回空，原 direct 分支供给有限 identity store；未执行真实缓存、tokenizer、完整 LmDataConfig 实例化、DataLoader 或 checkpoint 恢复。logical batch 由原 BatchSchedule 取得，不能叫生产下一批实测。原 PRP/BlockShufflingDataset 使用真实 JAX CPU，local mesh 为 null 适配。
 
 [逐槽、child key 与全部控制](analysis/seed_pipeline_cpu.json) · [源码绑定](analysis/seed_pipeline_source_binding.json) · [脚本](scripts/probe_seed_pipeline_cpu.py) · [待执行的真实交接模板](templates/data_seed_resume_review.json)。复现：`make seed-pipeline-cpu CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。真实 Hero 数据断流、next token 与配比因果效应仍为空。
+
+
+## V120：删域响应依赖参照，过期历史也参与key分配
+
+重算80次删域的54字段4320行响应；两套参照下Paloma/GSM8K/HumanEval方向反转分别6/9/31个域，均非显著性结论。真实配置保留过去的正权重阶段，原函数条件复算仍给200桶相同命名child key；剪历史反事实才过滤额外桶并改变key。11项分析控制、16000条key记录和新响应图；不归因为历史事故或535B配比最优解。[原值、源码与可执行规则](PRACTICAL_ZH.md)。

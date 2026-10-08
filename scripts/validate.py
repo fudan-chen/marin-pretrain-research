@@ -103,7 +103,7 @@ ok('Order compensation and observed one-update mismatch are separated',all(float
 for short in ['r-stem-pre-high','r-stem-cool-high']:
     h=read(P/(short+'_step_windows.json'))['data']['project']['run']['sampledHistory'];pts=[json.loads(x) if isinstance(x,str) else x for x in h[0]]
     ok('Observed first resumed updates '+short,[x['_step'] for x in pts]==list(range(393,431)))
-ok('80 full appendix rows and offline planner embedded',len(soup.select('#practical table')[-1].select('tbody tr'))==80 and 'MixPlanner.analyze' in stand and soup.select_one('#planner-example') is not None)
+ok('80 full appendix rows and offline planner embedded',sum(len(t.select('tbody tr'))==80 for t in soup.select('#practical table'))==1 and 'MixPlanner.analyze' in stand and soup.select_one('#planner-example') is not None)
 ok('Planner meaningful numeric checks passed',read(A/'planner_validation.json')['test_groups_passed']==12 and read(A/'planner_validation.json')['random_schedule_cases']==100)
 # Fourth round: independently check endpoint, decomposition and frontier claims.
 f=read(A/'findings_audit.json');PM='eval_dropless/paloma/macro_bpb';PC='eval_dropless/paloma/dolma_100_programing_languages-llama3/bpb';HE='logprob_humaneval_10shot';GM='logprob_gsm8k_5shot'
@@ -1311,6 +1311,12 @@ ok('V119 multiple hooks and duplicate scoring expose wrapper invocation boundary
 ok('V119 source refresh preserves issue body and does not claim deployment',read(S/'eval_fix_2026_10_08/issue_9352.json')['body']==read(S/'issue_9352.json')['body'] and ec['issue_status']['state']=='open' and ef['actual_production_fix_deployed'] is None)
 ok('V119 wrapper scope remains local CPU not full training or measured Paloma cost',all(ef[k] is None for k in ['actual_GPU_execution','actual_Paloma_loss','actual_full_training_loop_execution','actual_eager_QB_memory_cost']))
 report['highlights']+=['V119 fifteen original author evaluation-wrapper CPU controls; force signatures and deduplication boundary; seven source payloads, 573 archived files; production adoption unknown']
+ac=read(A/'ablation_context.json'); ar=ac['conditional_key_replays']; astats=ac['response_stats']
+ok('V120 eleven archived-response and original-source key allocation controls bound',ac['checks_passed']==len(ac['checks'])==11 and all(x['passed'] for x in ac['checks']) and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in ac['source_sha256'].items()))
+ok('V120 full recorded ablation history retains support and child keys unlike trimmed control',len(ar)==80 and all(x['remaining_cells']==200 and x['remaining_changed_child_keys']==0 for x in ar) and all(b['trimmed_support']==199 and b['trimmed_changed_child_keys']==89 for b in ac['baselines'].values()))
+ok('V120 observed reference-dependent signs not promoted to training or causal confidence',ac['response_rows']==4320 and ac['key_replay_rows']==16000 and [astats[k]['opposite_sign_count'] for k in ['paloma_macro_bpb','logprob_gsm8k_5shot','logprob_humaneval_10shot']]==[6,9,31] and not ac['posthoc_thresholds_are_significance_tests'] and all(ac[k] is None for k in ['actual_historical_child_keys','actual_token_stream_difference','actual_key_reassignment_loss_effect','actual_independent_training_confirmation','actual_535B_transfer_effect']))
+ok('V120 response figure embedded with all points and source-linked accessible evidence',soup.select_one('#practical #ablation-context-title') is not None and not soup.select('img[src="assets/ablation_context.svg"]') and len(read(A/'ablation_context_figure.json')['panels'])==3)
+report['highlights']+=['V120 4320 archived baseline-relative responses; 80 full-history conditional key replays and trimmed controls; apparent generic key-change hypothesis rejected, no historical or causal attribution']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

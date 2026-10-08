@@ -613,3 +613,8 @@ V117接原causal目标mask、attention有效性、投影margin和四CPU histogra
 ## V119：评估补丁的调用合同
 
 固定作者最终fork补丁，执行原setter、runner、StepInfo与tagged callback的15项CPU控制：current/EMA视图正确且raw state不改，普通/未到期回调无QB应用；评分去重前已执行setter，装饰器会转发force。当前两种eval hook兼容，人工plain hook不兼容，不归为生产事故。完整循环、GPU、实际成本与生产采用未验证。7份新来源，API正文未变，来源总数573。[局部结果与工程规则](PENDING_RESUME_ZH.md)。
+
+
+## V120：删域响应依赖参照，过期历史也参与key分配
+
+重算80次删域的54字段4320行响应；两套参照下Paloma/GSM8K/HumanEval方向反转分别6/9/31个域，均非显著性结论。真实配置保留过去的正权重阶段，原函数条件复算仍给200桶相同命名child key；剪历史反事实才过滤额外桶并改变key。11项分析控制、16000条key记录和新响应图；不归因为历史事故或535B配比最优解。[原值、源码与可执行规则](PRACTICAL_ZH.md)。

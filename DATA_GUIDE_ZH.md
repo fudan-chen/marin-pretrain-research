@@ -412,3 +412,8 @@ V89修正整数曝光解释：同一W&B权重在Python 3.9/3.12本地原函数�
 ## V117：目标与路由人口分开记账
 
 V117接原causal目标mask、attention有效性、投影margin和四CPU histogram，9项控制：只改loss_weight不改变QB有效人口；零直接目标位置仍可改变阈值。boolean空query与additive mask的有效性合同不同。每域输入/路由有效/正目标/加权目标分开记录，不静默将prompt改为padding。本轮人工answer-only不是Hero配方，未测attention、完整梯度或能力收益；566份来源不变。[原值及边界](DOCUMENT_BOUNDARIES_ZH.md)。
+
+
+## V120：删域响应依赖参照，过期历史也参与key分配
+
+重算80次删域的54字段4320行响应；两套参照下Paloma/GSM8K/HumanEval方向反转分别6/9/31个域，均非显著性结论。真实配置保留过去的正权重阶段，原函数条件复算仍给200桶相同命名child key；剪历史反事实才过滤额外桶并改变key。11项分析控制、16000条key记录和新响应图；不归因为历史事故或535B配比最优解。[原值、源码与可执行规则](PRACTICAL_ZH.md)。

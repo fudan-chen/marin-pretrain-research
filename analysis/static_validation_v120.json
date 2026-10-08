@@ -1,0 +1,27 @@
+{
+  "checks_passed": 5,
+  "checks": [
+    {
+      "name": "Historical appended prose and all previous section tables retained",
+      "passed": true
+    },
+    {
+      "name": "All 573 archived source files byte preserved",
+      "passed": true
+    },
+    {
+      "name": "4320 response contrasts independently recomputed from pinned raw registry",
+      "passed": true
+    },
+    {
+      "name": "Eleven controls bind configs and original methods with complete history and unchanged recorded keys",
+      "passed": true
+    },
+    {
+      "name": "Both HTML variants expose all-point response plot and unknown historical/causal effects",
+      "passed": true
+    }
+  ],
+  "raw_registry_sha256": "c0f293ba2fdadec851196332f7c9d5c363f5a7ed5561014146dd34ce978eec9a",
+  "actual_browser_rendering": null
+}

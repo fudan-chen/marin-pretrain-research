@@ -1,0 +1,1673 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>优化器分组：配置、状态时钟与实际更新 · Marin 预训练研究</title><link rel="stylesheet" href="reading.css"></head><body><header><nav><a href="index.html">主题目录</a><a href="../report_standalone.html">完整报告（保留）</a><a href="code.html">源码与候选补丁</a><a href="tools.html">交互工具</a></nav></header><main><p class="muted"><a href="theme-optimizer.html">06 · 优化器与学习率</a> / 本页只含一篇专题</p><details class="chapter-toc"><summary>本篇目录</summary><ol><li><a href="#optimizer-guide-1">1. 参数名决定进入哪一组</a></li><li><a href="#optimizer-guide-2">2. 缺失、零与正值不能混为一谈</a></li><li><a href="#optimizer-guide-3-router_bias">3. 衰减作用于权重，排除router_bias</a></li><li><a href="#optimizer-guide-4-adam-count">4. 衰减时钟来自Adam count</a></li><li><a href="#optimizer-guide-5-clipping">5. clipping的位置决定它约束什么</a></li><li><a href="#optimizer-guide-6-optimizer">6. 配比实验要冻结的不只是optimizer名称</a></li><li><a href="#optimizer-guide-v51cpu">V51：真实CPU裁剪对照与状态验收</a></li><li><a href="#optimizer-guide-v85">V85：梯度有限，范数仍可能坏掉；裁剪全零也不等于停止更新</a></li><li><a href="#optimizer-guide-_2">溢出发生在梯度平方，不必发生在梯度本身</a></li><li><a href="#optimizer-guide-_3">范数失败会怎样进入已有动量</a></li><li><a href="#optimizer-guide-dtype">应该检查哪个dtype</a></li><li><a href="#optimizer-guide-v86">V86：状态能接上，续训更新也未必相同</a></li><li><a href="#optimizer-guide-_4">一个恢复计数器，涉及两种不同机制</a></li><li><a href="#optimizer-guide-_5">续训与数据配比变更应该怎样验收</a></li><li><a href="#optimizer-guide-v133count">V133：外层学习率注入与多份count</a></li></ol></details><section class="chapter" id="optimizer-guide"><h1 id="optimizer-guide-_1">优化器分组：配置、状态时钟与实际更新</h1>
+<p>看到<code>weight_decay=0.1</code>，不能直接把Hero的所有权重更新理解成AdamW。这个训练入口使用自定义MuonH、AdamH、Adam三组变换，字段是否生效要沿<code>build</code>追查。本章新增一份固定源码，执行16项原掩码和衰减包装辅助函数检查。<a href="code-7afda1a43e921c67.html">源码</a> · <a href="../analysis/optimizer_probe.json">探针原值</a></p>
+<p>早期探针用NumPy、平面参数树和恒等Adam，只检查分组、衰减附加项与状态转发。V51增加真实Optax CPU分组裁剪对照和原AdamH模块检查；人工标签不证明真实模型分组，也没有执行完整Hero optimizer build、训练或checkpoint恢复。</p>
+<h2 id="optimizer-guide-1">1. 参数名决定进入哪一组</h2>
+<p><code>create_mask</code>先检查名称，再检查维数。不是“所有二维矩阵都用MuonH”。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>叶子路径/条件</th>
+<th>组</th>
+<th>为什么需要记录</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>token_embed、router_bias、准确以<code>.router</code>或<code>.attn_gate</code>结尾</td>
+<td>Adam</td>
+<td>embedding/router/gate虽可为矩阵，名称分支先命中</td>
+</tr>
+<tr>
+<td>output_proj或lm_head</td>
+<td>AdamH</td>
+<td>输出投影采用独立变换</td>
+</tr>
+<tr>
+<td>gated_norm</td>
+<td>MuonH</td>
+<td>比普通<code>.weight</code>规则优先</td>
+</tr>
+<tr>
+<td>其余以<code>.weight</code>结尾</td>
+<td>Adam</td>
+<td>归一化增益和小SConv kernel靠这条规则分流</td>
+</tr>
+<tr>
+<td>其余2/3/4维叶子</td>
+<td>MuonH</td>
+<td>扫描层轴与专家轴使矩阵堆叠成3/4维</td>
+</tr>
+<tr>
+<td>其余</td>
+<td>Adam</td>
+<td>兜底，不应由名称猜测具体算法</td>
+</tr>
+</tbody>
+</table></div>
+<p>因此，模块改名、包装层改变路径、<code>weight</code>与矩阵属性命名变化，可能改变优化器组，即使张量数值和形状相同。应导出实际参数树的“路径、shape、组、衰减mask”，而不仅保存optimizer名称。探针中的<code>router_extra</code>是假想路径，展示准确后缀的边界，不表示真实模型存在这个参数。</p>
+<p>旧版<code>code_optimizer.py</code>把包含<code>.router</code>的路径分到Adam，新版改用准确后缀；标准<code>.router</code>与<code>router_bias</code>在两版仍进入Adam。不能从规则变窄推断真实模型已有叶子被误分，须核对实际参数树。</p>
+<h2 id="optimizer-guide-2">2. 缺失、零与正值不能混为一谈</h2>
+<p>新版<code>gate_router_weight_decay</code>默认<code>0.0</code>，仅在<code>&gt;0.0</code>时启用专用包装；其余走普通<code>scale_by_adam</code>。旧版12d8b6f0的归档文件没有该专用衰减分支。</p>
+<p>六份ladder optimizer记录为：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>配置组</th>
+<th>专用衰减字段</th>
+<th style="text-align: right;">通用weight_decay</th>
+<th>max_grad_norm</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>三份旧rav-ladder</td>
+<td>缺失</td>
+<td style="text-align: right;">0.1</td>
+<td>None</td>
+</tr>
+<tr>
+<td>三份新h100-mix25</td>
+<td>显式0</td>
+<td style="text-align: right;">0.1</td>
+<td>None</td>
+</tr>
+</tbody>
+</table></div>
+<p>缺失字段是“尚未声明”，不是显式传入Python的<code>None</code>。在固定新版类按默认构造时，缺失会落到0；如果直接传入<code>None</code>，<code>None &gt; 0.0</code>并不成立为合法比较。报告中的旧值null表示归档字段缺失，不能拿它推断运行时采用了None语义。</p>
+<p>这个自定义<code>build</code>没有读取通用<code>self.weight_decay</code>来添加全参数衰减；专用分支读取的是<code>gate_router_weight_decay</code>。所以归档通用0.1并不能证明该分支为router施加0.1衰减。MuonH/AdamH内部又有自己的几何更新，不能把缺少AdamW附加项说成“整个系统没有正则化”。</p>
+<p>在这两个源码版本下，缺失→显式0不构成专用衰减开关变化的证据。跨组的学习率、beta2、epsilon等差异仍在；真实执行SHA与解析后的配置尚未全部绑定。<a href="change-guide.html#change-guide">配置差异核查</a></p>
+<h2 id="optimizer-guide-3-router_bias">3. 衰减作用于权重，排除router_bias</h2>
+<p>专用mask只匹配准确以<code>.attn_gate</code>、<code>.router</code>结尾的叶子。<code>router_bias</code>虽然在Adam组，却被专用衰减排除；token embedding、普通norm也不匹配这个mask。</p>
+<p>正值分支的更新顺序是：</p>
+<pre><code class="language-text">按当前组做可选gradient clipping
+→ scale_by_adam，得到自适应方向a_t
+→ 对gate/router权重加 λ_t × p_t
+→ 整个Adam组乘 −adam_lr_t
+</code></pre>
+<p>因此目标叶子的更新是<code>−adam_lr_t × (a_t + λ_t p_t)</code>。专用衰减项也乘Adam组学习率，不能只看lambda判断每步收缩。它是自适应方向之后的附加项，不参与该次Adam矩估计；不同于把L2项加到原梯度再送入Adam。</p>
+<p>权重衰减可能影响router logits的幅度，进一步影响专家选择、sigmoid combine和beta估计，但实际幅度与训练效果未测。router_bias还走独立的pending beta设置路径，不能把衰减mask里没有bias解释成它被冻结。<a href="qb-guide.html#qb-guide">路由状态</a></p>
+<h2 id="optimizer-guide-4-adam-count">4. 衰减时钟来自Adam count</h2>
+<p>包装在更新前读取<code>state.count</code>，然后让底层Adam更新自己的状态，再使用：</p>
+<p><code>λ_t = λ_0 × max(1 − input_count / total_steps, 0)</code></p>
+<p>它直接返回底层next_state，没有另设衰减状态结构。源码设计意图是保留原Adam状态布局，方便从无衰减分支继续使用已保存的count与moments；结构相同不代替checkpoint兼容性实测。</p>
+<p>人工设置λ0=0.2、total_steps=100；底层Adam用恒等方向替代，Adam组学习率人为设为0.01：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: right;">输入count</th>
+<th style="text-align: right;">λ_t</th>
+<th>人工router参数 <code>[3,6]</code> 更新后</th>
+<th>人工router_bias <code>[5,10]</code> 更新后</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.2</td>
+<td><code>[2.989,5.983]</code></td>
+<td><code>[4.995,9.995]</code></td>
+</tr>
+<tr>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">0.1</td>
+<td><code>[2.992,5.989]</code></td>
+<td><code>[4.995,9.995]</code></td>
+</tr>
+<tr>
+<td style="text-align: right;">100</td>
+<td style="text-align: right;">0</td>
+<td><code>[2.995,5.995]</code></td>
+<td><code>[4.995,9.995]</code></td>
+</tr>
+<tr>
+<td style="text-align: right;">150</td>
+<td style="text-align: right;">0</td>
+<td><code>[2.995,5.995]</code></td>
+<td><code>[4.995,9.995]</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>方向各元素人为设为0.5。这里验证的是原衰减包装的算术，不是Adam算法数值结果。</p>
+<p>只恢复权重而重建optimizer时，count与moments可能重置；完整恢复则应保留。若重建的total_steps变了，即使count相同，衰减系数也可能不同。训练state.step、Adam count、外层学习率schedule count必须分别记录，不能假定三者永远相等。探针未执行真实恢复；真实差异应通过同checkpoint的一步输出与完整状态摘要确认。</p>
+<h2 id="optimizer-guide-5-clipping">5. clipping的位置决定它约束什么</h2>
+<p><code>clip_by_global_norm</code>在三条组变换内部各出现一次，然后通过multi_transform按参数标签组合。结合<a href="https://optax.readthedocs.io/en/latest/api/combining_optimizers.html#optax.partition" rel="noopener" target="_blank">Optax参数分组接口</a>，应将这里理解为组内梯度范数裁剪，不能把它自动翻译为全模型只做一次global norm裁剪。早期这里只核对三个源码调用位置。V51用真实Optax 0.2.5 multi_transform执行人工标签对照，确认该组内归约语义；未执行完整Hero分组构建。</p>
+<p>六份历史配置及10月7日归档声明的max_grad_norm均为None，因此没有证据表明这些运行启用了该裁剪分支。即便开启，裁剪发生在Adam自适应方向与附加衰减之前，不等于把最终参数更新范数限制到同一个阈值。MuonH与AdamH也各有后续变换，需分别核查最终update/parameter比。</p>
+<h2 id="optimizer-guide-6-optimizer">6. 配比实验要冻结的不只是optimizer名称</h2>
+<p>配比改变梯度分布。如果同时重置moments、改变组标签、衰减时钟或学习率，loss改善可能来自不同更新规则；即使全部保持，optimizer对新分布的适应也是完整配比干预的一部分。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>核查动作</th>
+<th>保存的证据</th>
+<th>允许的结论</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>确认真实分组</td>
+<td>完整参数路径、shape、组与mask摘要</td>
+<td>哪些叶子采用哪条更新路径</td>
+</tr>
+<tr>
+<td>确认有效配置</td>
+<td>解析后的默认值、专用/通用字段、执行SHA</td>
+<td>配置差异是否真的改变分支</td>
+</tr>
+<tr>
+<td>确认状态时钟</td>
+<td>state.step、Adam count、schedule count、total_steps</td>
+<td>恢复后学习率与衰减是否接续</td>
+</tr>
+<tr>
+<td>确认一步更新</td>
+<td>固定权重/输入/state，保存梯度与最终update</td>
+<td>修复是否改变更新语义，不能代填长期能力</td>
+</tr>
+<tr>
+<td>确认完整干预</td>
+<td>固定预算和评估，记录稳定性与任务退步</td>
+<td>新配比及其状态适应的整体效果</td>
+</tr>
+</tbody>
+</table></div>
+<p>这些动作接入<a href="change-guide.html#change-guide">训练变更评审</a>。专用字段不生效、mask误匹配、恢复时钟重置是三种不同的问题，需要不同证据；本轮没有认定Hero实际存在其中任何一种故障。</p>
+<h2 id="optimizer-guide-v51cpu">V51：真实CPU裁剪对照与状态验收</h2>
+<p>控制实验用三个人工标签与梯度范数3、4、12，对应三条clip-only变换。标签按源码分组结构命名，不是实际Hero参数路径；真实Optax只在每个标签的active子树里计算其global norm。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>归约控制</th>
+<th>三个组的输出范数</th>
+<th style="text-align: right;">合并输出范数</th>
+<th>结论范围</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>不裁剪，identity分组</td>
+<td>3、4、12</td>
+<td style="text-align: right;">13</td>
+<td>对应无clipping的API控制，不是完整训练更新</td>
+</tr>
+<tr>
+<td>每组阈值1</td>
+<td>1、1、1</td>
+<td style="text-align: right;">1.732051</td>
+<td>每组受约束，合并范数可以超过1</td>
+</tr>
+<tr>
+<td>全模型先裁剪到1</td>
+<td>3/13、4/13、12/13</td>
+<td style="text-align: right;">1</td>
+<td>保留组间相对比例；不同于逐组裁剪</td>
+</tr>
+<tr>
+<td>原AdamH，首步gradient阈值0.01</td>
+<td>输入gradient范数0.010000</td>
+<td style="text-align: right;">参数update范数0.177336</td>
+<td>梯度范数界不自动成为参数update范数界；两者单位不同</td>
+</tr>
+<tr>
+<td>原AdamH，首步clipped/unclipped</td>
+<td>首次参数update差3.79e-07</td>
+<td style="text-align: right;">moment差0.546723</td>
+<td>参数首次几乎相同，状态仍不同</td>
+</tr>
+<tr>
+<td>同一后续非零gradient</td>
+<td>后续update差0.149793</td>
+<td style="text-align: right;">—</td>
+<td>短期更新相似不能验收策略等价</td>
+</tr>
+</tbody>
+</table></div>
+<p>AdamH对Adam方向做归一化。在首步、epsilon影响很小的人工例子中，整个梯度乘正比例后，mu也同比缩放、nu按平方缩放，逐元素方向比例可能近乎抵消；但保存的mu/nu幅度已经改变。下一步固定同一参数输入、加入相同新梯度后，旧moment与新梯度的相对份额不同，差异重新进入方向。这个对照只在首步使用两种不同输入，后续参数与梯度输入共同；不是两条完整“持续开启/关闭裁剪”的训练曲线。lr=0.1、epsilon=1e−8和2×2矩阵均为人工控制，不外推到535B。</p>
+<p>验收应保存原梯度的全模型/各组范数、每组clip系数与触发率、clipping后的梯度、moment/count、最终update/parameter比，并观察后续有效步。若microbatch采用不同有效分母，其梯度尺度也可能改变裁剪触发；应先固定归约口径，再比较裁剪策略。<a href="gradient-accumulation-guide.html#gradient-accumulation-guide">梯度累积审计</a>的反例不能直接代填本次训练的触发频率。</p>
+<p>当前公开归档max_grad_norm=None，危险/差异分支是迁移与配置变更的验收对象，不能作为已发生的Hero裁剪事故。没有执行真实create_mask、MuonH Newton–Schulz、完整multi_transform组链、调度、GPU/TPU或历史状态重放。</p>
+<p><a href="../analysis/group_clipping_cpu.json">10项CPU与源码检查</a>记录原值、人工标签、模块SHA和Optax函数来源SHA。<a href="code-761bb3798f836d28.html">脚本</a>使用真实Optax分组控制与未修改的AdamH模块；完整Hero build仍未知。使用V50的<a href="../requirements-optimizer-cpu.txt">CPU依赖</a>，入口为<code>make clipping-cpu CPU_PYTHON=/你的环境/bin/python</code>；通常report构建只读取冻结结果。</p>
+<h2 id="optimizer-guide-v85">V85：梯度有限，范数仍可能坏掉；裁剪全零也不等于停止更新</h2>
+<p>本节针对<strong>可选裁剪分支</strong>。公开10月7日配置归档的max_grad_norm=None；没有证据表明Hero实际启用了它。因此以下是迁移和配置变更的数值合同检查，不是Hero裁剪事故。本轮取得与近期train.py同一head b65be4c9550c5097f0a3add08933531a1c24d534的完整optimizer.py和adamh.py；执行真实Optax 0.2.5 clip与原AdamH模块，没有完整Hero build、模型loss或GPU。</p>
+<h3 id="optimizer-guide-_2">溢出发生在梯度平方，不必发生在梯度本身</h3>
+<p>安装的Optax 0.2.5源码中，global_norm先对每个leaf做abs_sq和sum，再将各leaf求和并sqrt；clip比较g_norm&lt;max_norm，否则每个leaf执行(t/g_norm.astype(t.dtype))*max_norm。它没有在这里显式把每个梯度leaf转成FP32。对有限FP16矩阵，平方已经可能超出表示范围；先出错再求和，后面的有限性检查无法恢复原范数。</p>
+<p>用2×2同值人工梯度，执行原库函数、独立float64范数参考和“先整体转FP32裁剪，再cast回原dtype”的比较控制。<a href="../analysis/clipping_precision_cpu.json">19项CPU检查</a>包括eager/JIT一致性；比较控制没有修改上游，也不是经过训练验证的修复。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>梯度dtype / 每项数值 / 阈值</th>
+<th style="text-align: right;">原计算范数</th>
+<th style="text-align: right;">原裁剪后的独立float64范数</th>
+<th style="text-align: right;">FP32裁剪再cast回后的独立范数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FP16 / 300 / 1</td>
+<td style="text-align: right;">Infinity</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td>FP16 / 0.0001 / 0.00001</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0.0002000332</td>
+<td style="text-align: right;">0.00001001358</td>
+</tr>
+<tr>
+<td>BF16 / 300 / 1</td>
+<td style="text-align: right;">600</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td>BF16 / 0.0001 / 0.00001</td>
+<td style="text-align: right;">0.0002002716</td>
+<td style="text-align: right;">0.00001001358</td>
+<td style="text-align: right;">0.00001001358</td>
+</tr>
+<tr>
+<td>FP32 / 300 / 1</td>
+<td style="text-align: right;">600</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td>FP32 / 0.0001 / 0.00001</td>
+<td style="text-align: right;">0.0002000000</td>
+<td style="text-align: right;">0.0000100000</td>
+<td style="text-align: right;">0.0000100000</td>
+</tr>
+</tbody>
+</table></div>
+<p>第一行的四项梯度均有限，真实范数600；原FP16平方/累积得到无穷，有限梯度除以它成为全零，输出也全有限。第二行的实际范数约0.0002000332，约为阈值20倍；平方下溢得到范数0，trigger选择原梯度，裁剪根本没有触发。两种情况都不能靠“裁剪结果没有NaN”排除。</p>
+<p>FP32比较控制避免了这两例的范数失败，但cast回低精度仍有舍入。小值控制的最终范数0.00001001358略高于阈值；不能把该控制写成“任何dtype下严格保证≤阈值”。本轮的BF16/FP32六个对应值没有出现FP16这两类失败，不能外推任意幅值、leaf数量或分布式归约都安全。</p>
+<h3 id="optimizer-guide-_3">范数失败会怎样进入已有动量</h3>
+<p>人工FP32参数从[[2,0],[0,1]]开始，原AdamH用梯度[[1,4],[2,3]]预热一次。然后从同一预热参数和moment/count分成两路：FP16范数溢出得到的全零梯度，以及FP32范数控制得到的范数1梯度；两路均转FP32后送入同一原AdamH，排除其输入dtype差异。</p>
+<p>全零一路的count仍从1到2，mu和nu分别按0.9、0.95衰减，参数update范数为0.1882047；正确保留梯度的一路update范数为0.1802129，两路update差的L2为0.0146983。这个合成控制把“范数溢出→有限全零梯度→已有状态继续更新”接到实际原模块。它没有语言loss，没有完整分组、学习率调度或生产checkpoint；数值不表示Hero的实际误差量级。</p>
+<h3 id="optimizer-guide-dtype">应该检查哪个dtype</h3>
+<p>不能从activation dtype直接推断进入裁剪的gradient dtype。近期原train_step在FP32 pinned-host master模式下先_FP32_POLICY.cast_to_param(grads)，再调用optimizer.update；另一分支直接传grads。该顺序是固定源码静态证据，本轮没有执行完整master路径，也不知道某次Hero实际gradient dtype。</p>
+<p>V51已验证裁剪位于组内变换，而不是全模型只做一次；本节则检查同一leaf的范数数值。组范围、实际梯度dtype、范数平方/累积dtype和裁剪后cast必须一起记录。给一个max_grad_norm数字不足以定义完整行为，训练CE有限或activation为BF16也不能代填这些字段。</p>
+<p>迁移验收可以按四层保存：原梯度有限性及独立高精度范数；原clip使用的norm/dtype与系数；clip后的梯度；同状态optimizer更新与下一状态。发现有限全零时，先辨别是真正无梯度还是范数溢出；发现norm=0时，检查是否为平方下溢。提升范数精度是本控制中的有效区分手段，但是否要改实现、如何保持分片和性能，仍需实际执行包、GPU与训练评估。</p>
+<p>新增2份同head源码，旧489份非bookkeeping来源字节保持，来源现492份；<a href="../analysis/clipping_precision_acquisition.json">获取台账</a>可复核。归档声明裁剪关闭、真实gradient dtype、GPU与训练收益分别记录，不能把可选分支反例改写成生产根因。复现：<code>make clipping-precision-cpu CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python</code>。</p>
+<h2 id="optimizer-guide-v86">V86：状态能接上，续训更新也未必相同</h2>
+<p>前面的衰减探针替换了Adam和参数路径，本轮补齐这两项：执行Optax 0.2.5真实Adam、原衰减包装、同head原leaf_key_paths，以及原create_mask方法。参数为人工嵌套Equinox树，包含blocks.0.mlp.router、router_bias、attn_gate、普通weight、token_embed和output_proj。原路径函数和掩码选中两份权重而排除router_bias；没有加载实际535B参数树。NamedArray类型分派使用未执行的类型占位，全部实验叶子为普通JAX数组。</p>
+<p>原包装读取输入state.count，先执行Adam，再把λ₀×max(1−count/N,0)×param加到目标叶子的方向；外层scale(-lr)才得到最终更新。它不把衰减加入Adam的mu/nu。本轮把普通Adam预热后的ScaleByAdamState直接传入原包装：结构被接受，输出mu、nu、count与同输入普通Adam逐叶完全一致，eager/JIT结果一致。这证明当前依赖版本下的辅助变换可直接接收该内存状态；没有执行磁盘checkpoint恢复、完整multi_transform、inject_hyperparams或Hero build。</p>
+<h3 id="optimizer-guide-_4">一个恢复计数器，涉及两种不同机制</h3>
+<p>人工router参数为[2,4]，固定参数与常量梯度0.25预热50次，仅构造真实moments，不构成训练轨迹。beta1=0.9、beta2=0.95、epsilon和专用λ₀=0.02取归档配置；N=100、学习率0.01为人工值。然后从相同参数分出五个独立对照。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>独立对照</th>
+<th>输入Adam count / 本次N</th>
+<th style="text-align: right;">本步衰减系数</th>
+<th style="text-align: right;">router自适应方向每项</th>
+<th>最终router更新两项</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>完整保留内存状态</td>
+<td>50 / 100</td>
+<td style="text-align: right;">0.010</td>
+<td style="text-align: right;">约1.000000</td>
+<td>−0.010200、−0.010400</td>
+</tr>
+<tr>
+<td>只改变训练总步数</td>
+<td>50 / 200</td>
+<td style="text-align: right;">0.015</td>
+<td style="text-align: right;">约1.000000</td>
+<td>−0.010300、−0.010600</td>
+</tr>
+<tr>
+<td>重新初始化整个Adam状态</td>
+<td>0 / 100</td>
+<td style="text-align: right;">0.020</td>
+<td style="text-align: right;">约1.000000</td>
+<td>−0.010400、−0.010800</td>
+</tr>
+<tr>
+<td>保留mu/nu，仅把count改为0</td>
+<td>0 / 100</td>
+<td style="text-align: right;">0.020</td>
+<td style="text-align: right;">约2.311793</td>
+<td>−0.023518、−0.023918</td>
+</tr>
+<tr>
+<td>保留mu/nu，仅把count改为100</td>
+<td>100 / 100</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">约1.030978</td>
+<td>−0.010310、−0.010310</td>
+</tr>
+</tbody>
+</table></div>
+<p>第二行与第一行具有相同参数、输入梯度、moments和count，区别仅是N。衰减附加项增加50%；因此“完整保留optimizer state”不足以保证续训采用相同衰减计划，还必须绑定构建时的总训练步数。它不是说延长训练预算不允许，而是应把这种变化纳入干预定义。</p>
+<p>第四行是人为破坏计数器一致性的控制：既然mu/nu来自50步，就不能只把count写成0后视为新训练。count还用于Adam偏差校正；本例自适应方向从约1变成2.31，超过衰减变化本身。第五行同样人为修改count，不能称为真的训练至100步；它只说明衰减系数到0不意味着参数冻结。重新初始化全部状态的第三行则有一致的新mu/nu/count，在这个常量梯度首步方向接近1，不能因此外推任意真实梯度历史都等价。</p>
+<h3 id="optimizer-guide-_5">续训与数据配比变更应该怎样验收</h3>
+<p>恢复前保存parameter、mu、nu、Adam count、外层schedule count、trainer.step、原N及实际lr；恢复后按同一批输入检查下一步。把两种目标分别验收：忠实续训要求这些状态与计划保持原定义；主动重启优化或改预算要求明确记录改变哪些字段，再以共同checkpoint和固定评估确认影响。不要把“loader没有报错”当成第一种目标的证明。</p>
+<p>改变配比时重置优化器，会同时改变moment适应、Adam偏差校正、专用衰减时钟和可能的外层学习率。此时loss变化不能单归因于数据。若要先观察配比效应，保持共同状态和计划、只改变采样输入；若研究重置是否有利，则把它另列为实验因素。这里是由实现推导的实验要求，尚无真实Hero配比干预结果。</p>
+<p><a href="../analysis/decay_resume_cpu.json">15项CPU检查</a>保存原路径、真实状态控制和逐项更新；<a href="code-e892d3a148b35f7b.html">脚本</a>可复核。新增1份同head路径源码，491份旧非bookkeeping来源字节保持，归档共493份。本轮没有发现或宣称Hero实际发生count错配，没有执行GPU、磁盘恢复或长期训练收益验证。复现使用已记录的CPU环境及Equinox依赖：<code>PYTHONPATH=/tmp/marin-tensorstore-lib make decay-resume-cpu CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python</code>。</p>
+<h2 id="optimizer-guide-v133count">V133：外层学习率注入与多份count</h2>
+<p>补足V86未执行的外层：固定scheduler与原Hero build配合真实Optax注入，14项CPU控制。同一内存state重建N100→200，下步adam_lr从0.006变为0.0085，专用衰减也改变；缓存hyperparams不能锁定下一步。只改外层count不会重置WrappedScheduleState；只改schedule count可让lr为0，而Adam仍推进。未选中MuonH/AdamH为identity，单叶路径适配、无磁盘恢复或完整Hero训练。<a href="optimizer-schedule-guide.html#optimizer-schedule-guide">详细机制与数值</a>。</p><figure class="scientific-figure"><svg height="288pt" style="display:block;width:100%;height:auto" version="1.1" viewbox="0 0 576 288" width="576pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<metadata>
+<rdf:rdf xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<cc:work>
+<dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"></dc:type>
+<dc:format>image/svg+xml</dc:format>
+<dc:creator>
+<cc:agent>
+<dc:title>Matplotlib v3.9.4, https://matplotlib.org/</dc:title>
+</cc:agent>
+</dc:creator>
+</cc:work>
+</rdf:rdf>
+</metadata>
+<defs>
+<style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+</defs>
+<g id="groupclip-figure_1">
+<g id="groupclip-patch_1">
+<path d="M 0 288
+L 576 288
+L 576 0
+L 0 0
+z
+" style="fill: #ffffff"></path>
+</g>
+<g id="groupclip-axes_1">
+<g id="groupclip-patch_2">
+<path d="M 47.72 260.12
+L 565.2 260.12
+L 565.2 37.968
+L 47.72 37.968
+z
+" style="fill: #ffffff"></path>
+</g>
+<g id="groupclip-patch_3">
+<path clip-path="url(#groupclip-p9574566e8d)" d="M 71.241818 260.12
+L 132.22431 260.12
+L 132.22431 48.546667
+L 71.241818 48.546667
+z
+" style="fill: #1f77b4"></path>
+</g>
+<g id="groupclip-patch_4">
+<path clip-path="url(#groupclip-p9574566e8d)" d="M 245.477508 260.12
+L 306.46 260.12
+L 306.46 48.546667
+L 245.477508 48.546667
+z
+" style="fill: #1f77b4"></path>
+</g>
+<g id="groupclip-patch_5">
+<path clip-path="url(#groupclip-p9574566e8d)" d="M 419.713199 260.12
+L 480.69569 260.12
+L 480.69569 48.546667
+L 419.713199 48.546667
+z
+" style="fill: #1f77b4"></path>
+</g>
+<g id="groupclip-patch_6">
+<path clip-path="url(#groupclip-p9574566e8d)" d="M 132.22431 260.12
+L 193.206801 260.12
+L 193.206801 211.295385
+L 132.22431 211.295385
+z
+" style="fill: #ff7f0e"></path>
+</g>
+<g id="groupclip-patch_7">
+<path clip-path="url(#groupclip-p9574566e8d)" d="M 306.46 260.12
+L 367.442492 260.12
+L 367.442492 195.020513
+L 306.46 195.020513
+z
+" style="fill: #ff7f0e"></path>
+</g>
+<g id="groupclip-patch_8">
+<path clip-path="url(#groupclip-p9574566e8d)" d="M 480.69569 260.12
+L 541.678182 260.12
+L 541.678182 64.821538
+L 480.69569 64.821538
+z
+" style="fill: #ff7f0e"></path>
+</g>
+<g id="groupclip-matplotlib.axis_1">
+<g id="groupclip-xtick_1">
+<g id="groupclip-line2d_1">
+<defs>
+<path d="M 0 0
+L 0 3.5
+" id="groupclip-m505878ad72" style="stroke: #000000; stroke-width: 0.8"></path>
+</defs>
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="132.22431" xlink:href="#groupclip-m505878ad72" y="260.12"></use>
+</g>
+</g>
+<g id="groupclip-text_1">
+<!-- muonh label -->
+<g transform="translate(101.106341 274.718437) scale(0.1 -0.1)">
+<defs>
+<path d="M 3328 2828
+Q 3544 3216 3844 3400
+Q 4144 3584 4550 3584
+Q 5097 3584 5394 3201
+Q 5691 2819 5691 2113
+L 5691 0
+L 5113 0
+L 5113 2094
+Q 5113 2597 4934 2840
+Q 4756 3084 4391 3084
+Q 3944 3084 3684 2787
+Q 3425 2491 3425 1978
+L 3425 0
+L 2847 0
+L 2847 2094
+Q 2847 2600 2669 2842
+Q 2491 3084 2119 3084
+Q 1678 3084 1418 2786
+Q 1159 2488 1159 1978
+L 1159 0
+L 581 0
+L 581 3500
+L 1159 3500
+L 1159 2956
+Q 1356 3278 1631 3431
+Q 1906 3584 2284 3584
+Q 2666 3584 2933 3390
+Q 3200 3197 3328 2828
+z
+" id="groupclip-DejaVuSans-6d" transform="scale(0.015625)"></path>
+<path d="M 544 1381
+L 544 3500
+L 1119 3500
+L 1119 1403
+Q 1119 906 1312 657
+Q 1506 409 1894 409
+Q 2359 409 2629 706
+Q 2900 1003 2900 1516
+L 2900 3500
+L 3475 3500
+L 3475 0
+L 2900 0
+L 2900 538
+Q 2691 219 2414 64
+Q 2138 -91 1772 -91
+Q 1169 -91 856 284
+Q 544 659 544 1381
+z
+M 1991 3584
+L 1991 3584
+z
+" id="groupclip-DejaVuSans-75" transform="scale(0.015625)"></path>
+<path d="M 1959 3097
+Q 1497 3097 1228 2736
+Q 959 2375 959 1747
+Q 959 1119 1226 758
+Q 1494 397 1959 397
+Q 2419 397 2687 759
+Q 2956 1122 2956 1747
+Q 2956 2369 2687 2733
+Q 2419 3097 1959 3097
+z
+M 1959 3584
+Q 2709 3584 3137 3096
+Q 3566 2609 3566 1747
+Q 3566 888 3137 398
+Q 2709 -91 1959 -91
+Q 1206 -91 779 398
+Q 353 888 353 1747
+Q 353 2609 779 3096
+Q 1206 3584 1959 3584
+z
+" id="groupclip-DejaVuSans-6f" transform="scale(0.015625)"></path>
+<path d="M 3513 2113
+L 3513 0
+L 2938 0
+L 2938 2094
+Q 2938 2591 2744 2837
+Q 2550 3084 2163 3084
+Q 1697 3084 1428 2787
+Q 1159 2491 1159 1978
+L 1159 0
+L 581 0
+L 581 3500
+L 1159 3500
+L 1159 2956
+Q 1366 3272 1645 3428
+Q 1925 3584 2291 3584
+Q 2894 3584 3203 3211
+Q 3513 2838 3513 2113
+z
+" id="groupclip-DejaVuSans-6e" transform="scale(0.015625)"></path>
+<path d="M 3513 2113
+L 3513 0
+L 2938 0
+L 2938 2094
+Q 2938 2591 2744 2837
+Q 2550 3084 2163 3084
+Q 1697 3084 1428 2787
+Q 1159 2491 1159 1978
+L 1159 0
+L 581 0
+L 581 4863
+L 1159 4863
+L 1159 2956
+Q 1366 3272 1645 3428
+Q 1925 3584 2291 3584
+Q 2894 3584 3203 3211
+Q 3513 2838 3513 2113
+z
+" id="groupclip-DejaVuSans-68" transform="scale(0.015625)"></path>
+<path id="groupclip-DejaVuSans-20" transform="scale(0.015625)"></path>
+<path d="M 603 4863
+L 1178 4863
+L 1178 0
+L 603 0
+L 603 4863
+z
+" id="groupclip-DejaVuSans-6c" transform="scale(0.015625)"></path>
+<path d="M 2194 1759
+Q 1497 1759 1228 1600
+Q 959 1441 959 1056
+Q 959 750 1161 570
+Q 1363 391 1709 391
+Q 2188 391 2477 730
+Q 2766 1069 2766 1631
+L 2766 1759
+L 2194 1759
+z
+M 3341 1997
+L 3341 0
+L 2766 0
+L 2766 531
+Q 2569 213 2275 61
+Q 1981 -91 1556 -91
+Q 1019 -91 701 211
+Q 384 513 384 1019
+Q 384 1609 779 1909
+Q 1175 2209 1959 2209
+L 2766 2209
+L 2766 2266
+Q 2766 2663 2505 2880
+Q 2244 3097 1772 3097
+Q 1472 3097 1187 3025
+Q 903 2953 641 2809
+L 641 3341
+Q 956 3463 1253 3523
+Q 1550 3584 1831 3584
+Q 2591 3584 2966 3190
+Q 3341 2797 3341 1997
+z
+" id="groupclip-DejaVuSans-61" transform="scale(0.015625)"></path>
+<path d="M 3116 1747
+Q 3116 2381 2855 2742
+Q 2594 3103 2138 3103
+Q 1681 3103 1420 2742
+Q 1159 2381 1159 1747
+Q 1159 1113 1420 752
+Q 1681 391 2138 391
+Q 2594 391 2855 752
+Q 3116 1113 3116 1747
+z
+M 1159 2969
+Q 1341 3281 1617 3432
+Q 1894 3584 2278 3584
+Q 2916 3584 3314 3078
+Q 3713 2572 3713 1747
+Q 3713 922 3314 415
+Q 2916 -91 2278 -91
+Q 1894 -91 1617 61
+Q 1341 213 1159 525
+L 1159 0
+L 581 0
+L 581 4863
+L 1159 4863
+L 1159 2969
+z
+" id="groupclip-DejaVuSans-62" transform="scale(0.015625)"></path>
+<path d="M 3597 1894
+L 3597 1613
+L 953 1613
+Q 991 1019 1311 708
+Q 1631 397 2203 397
+Q 2534 397 2845 478
+Q 3156 559 3463 722
+L 3463 178
+Q 3153 47 2828 -22
+Q 2503 -91 2169 -91
+Q 1331 -91 842 396
+Q 353 884 353 1716
+Q 353 2575 817 3079
+Q 1281 3584 2069 3584
+Q 2775 3584 3186 3129
+Q 3597 2675 3597 1894
+z
+M 3022 2063
+Q 3016 2534 2758 2815
+Q 2500 3097 2075 3097
+Q 1594 3097 1305 2825
+Q 1016 2553 972 2059
+L 3022 2063
+z
+" id="groupclip-DejaVuSans-65" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#groupclip-DejaVuSans-6d"></use>
+<use x="97.412109" xlink:href="#groupclip-DejaVuSans-75"></use>
+<use x="160.791016" xlink:href="#groupclip-DejaVuSans-6f"></use>
+<use x="221.972656" xlink:href="#groupclip-DejaVuSans-6e"></use>
+<use x="285.351562" xlink:href="#groupclip-DejaVuSans-68"></use>
+<use x="348.730469" xlink:href="#groupclip-DejaVuSans-20"></use>
+<use x="380.517578" xlink:href="#groupclip-DejaVuSans-6c"></use>
+<use x="408.300781" xlink:href="#groupclip-DejaVuSans-61"></use>
+<use x="469.580078" xlink:href="#groupclip-DejaVuSans-62"></use>
+<use x="533.056641" xlink:href="#groupclip-DejaVuSans-65"></use>
+<use x="594.580078" xlink:href="#groupclip-DejaVuSans-6c"></use>
+</g>
+</g>
+</g>
+<g id="groupclip-xtick_2">
+<g id="groupclip-line2d_2">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="306.46" xlink:href="#groupclip-m505878ad72" y="260.12"></use>
+</g>
+</g>
+<g id="groupclip-text_2">
+<!-- adamh label -->
+<g transform="translate(275.436563 274.718437) scale(0.1 -0.1)">
+<defs>
+<path d="M 2906 2969
+L 2906 4863
+L 3481 4863
+L 3481 0
+L 2906 0
+L 2906 525
+Q 2725 213 2448 61
+Q 2172 -91 1784 -91
+Q 1150 -91 751 415
+Q 353 922 353 1747
+Q 353 2572 751 3078
+Q 1150 3584 1784 3584
+Q 2172 3584 2448 3432
+Q 2725 3281 2906 2969
+z
+M 947 1747
+Q 947 1113 1208 752
+Q 1469 391 1925 391
+Q 2381 391 2643 752
+Q 2906 1113 2906 1747
+Q 2906 2381 2643 2742
+Q 2381 3103 1925 3103
+Q 1469 3103 1208 2742
+Q 947 2381 947 1747
+z
+" id="groupclip-DejaVuSans-64" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#groupclip-DejaVuSans-61"></use>
+<use x="61.279297" xlink:href="#groupclip-DejaVuSans-64"></use>
+<use x="124.755859" xlink:href="#groupclip-DejaVuSans-61"></use>
+<use x="186.035156" xlink:href="#groupclip-DejaVuSans-6d"></use>
+<use x="283.447266" xlink:href="#groupclip-DejaVuSans-68"></use>
+<use x="346.826172" xlink:href="#groupclip-DejaVuSans-20"></use>
+<use x="378.613281" xlink:href="#groupclip-DejaVuSans-6c"></use>
+<use x="406.396484" xlink:href="#groupclip-DejaVuSans-61"></use>
+<use x="467.675781" xlink:href="#groupclip-DejaVuSans-62"></use>
+<use x="531.152344" xlink:href="#groupclip-DejaVuSans-65"></use>
+<use x="592.675781" xlink:href="#groupclip-DejaVuSans-6c"></use>
+</g>
+</g>
+</g>
+<g id="groupclip-xtick_3">
+<g id="groupclip-line2d_3">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="480.69569" xlink:href="#groupclip-m505878ad72" y="260.12"></use>
+</g>
+</g>
+<g id="groupclip-text_3">
+<!-- adam label -->
+<g transform="translate(452.841003 274.718437) scale(0.1 -0.1)">
+<use xlink:href="#groupclip-DejaVuSans-61"></use>
+<use x="61.279297" xlink:href="#groupclip-DejaVuSans-64"></use>
+<use x="124.755859" xlink:href="#groupclip-DejaVuSans-61"></use>
+<use x="186.035156" xlink:href="#groupclip-DejaVuSans-6d"></use>
+<use x="283.447266" xlink:href="#groupclip-DejaVuSans-20"></use>
+<use x="315.234375" xlink:href="#groupclip-DejaVuSans-6c"></use>
+<use x="343.017578" xlink:href="#groupclip-DejaVuSans-61"></use>
+<use x="404.296875" xlink:href="#groupclip-DejaVuSans-62"></use>
+<use x="467.773438" xlink:href="#groupclip-DejaVuSans-65"></use>
+<use x="529.296875" xlink:href="#groupclip-DejaVuSans-6c"></use>
+</g>
+</g>
+</g>
+</g>
+<g id="groupclip-matplotlib.axis_2">
+<g id="groupclip-ytick_1">
+<g id="groupclip-line2d_4">
+<defs>
+<path d="M 0 0
+L -3.5 0
+" id="groupclip-m5a11084ffa" style="stroke: #000000; stroke-width: 0.8"></path>
+</defs>
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="47.72" xlink:href="#groupclip-m5a11084ffa" y="260.12"></use>
+</g>
+</g>
+<g id="groupclip-text_4">
+<!-- 0.0 -->
+<g transform="translate(24.816875 263.919219) scale(0.1 -0.1)">
+<defs>
+<path d="M 2034 4250
+Q 1547 4250 1301 3770
+Q 1056 3291 1056 2328
+Q 1056 1369 1301 889
+Q 1547 409 2034 409
+Q 2525 409 2770 889
+Q 3016 1369 3016 2328
+Q 3016 3291 2770 3770
+Q 2525 4250 2034 4250
+z
+M 2034 4750
+Q 2819 4750 3233 4129
+Q 3647 3509 3647 2328
+Q 3647 1150 3233 529
+Q 2819 -91 2034 -91
+Q 1250 -91 836 529
+Q 422 1150 422 2328
+Q 422 3509 836 4129
+Q 1250 4750 2034 4750
+z
+" id="groupclip-DejaVuSans-30" transform="scale(0.015625)"></path>
+<path d="M 684 794
+L 1344 794
+L 1344 0
+L 684 0
+L 684 794
+z
+" id="groupclip-DejaVuSans-2e" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#groupclip-DejaVuSans-30"></use>
+<use x="63.623047" xlink:href="#groupclip-DejaVuSans-2e"></use>
+<use x="95.410156" xlink:href="#groupclip-DejaVuSans-30"></use>
+</g>
+</g>
+</g>
+<g id="groupclip-ytick_2">
+<g id="groupclip-line2d_5">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="47.72" xlink:href="#groupclip-m5a11084ffa" y="217.805333"></use>
+</g>
+</g>
+<g id="groupclip-text_5">
+<!-- 0.2 -->
+<g transform="translate(24.816875 221.604552) scale(0.1 -0.1)">
+<defs>
+<path d="M 1228 531
+L 3431 531
+L 3431 0
+L 469 0
+L 469 531
+Q 828 903 1448 1529
+Q 2069 2156 2228 2338
+Q 2531 2678 2651 2914
+Q 2772 3150 2772 3378
+Q 2772 3750 2511 3984
+Q 2250 4219 1831 4219
+Q 1534 4219 1204 4116
+Q 875 4013 500 3803
+L 500 4441
+Q 881 4594 1212 4672
+Q 1544 4750 1819 4750
+Q 2544 4750 2975 4387
+Q 3406 4025 3406 3419
+Q 3406 3131 3298 2873
+Q 3191 2616 2906 2266
+Q 2828 2175 2409 1742
+Q 1991 1309 1228 531
+z
+" id="groupclip-DejaVuSans-32" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#groupclip-DejaVuSans-30"></use>
+<use x="63.623047" xlink:href="#groupclip-DejaVuSans-2e"></use>
+<use x="95.410156" xlink:href="#groupclip-DejaVuSans-32"></use>
+</g>
+</g>
+</g>
+<g id="groupclip-ytick_3">
+<g id="groupclip-line2d_6">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="47.72" xlink:href="#groupclip-m5a11084ffa" y="175.490667"></use>
+</g>
+</g>
+<g id="groupclip-text_6">
+<!-- 0.4 -->
+<g transform="translate(24.816875 179.289885) scale(0.1 -0.1)">
+<defs>
+<path d="M 2419 4116
+L 825 1625
+L 2419 1625
+L 2419 4116
+z
+M 2253 4666
+L 3047 4666
+L 3047 1625
+L 3713 1625
+L 3713 1100
+L 3047 1100
+L 3047 0
+L 2419 0
+L 2419 1100
+L 313 1100
+L 313 1709
+L 2253 4666
+z
+" id="groupclip-DejaVuSans-34" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#groupclip-DejaVuSans-30"></use>
+<use x="63.623047" xlink:href="#groupclip-DejaVuSans-2e"></use>
+<use x="95.410156" xlink:href="#groupclip-DejaVuSans-34"></use>
+</g>
+</g>
+</g>
+<g id="groupclip-ytick_4">
+<g id="groupclip-line2d_7">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="47.72" xlink:href="#groupclip-m5a11084ffa" y="133.176"></use>
+</g>
+</g>
+<g id="groupclip-text_7">
+<!-- 0.6 -->
+<g transform="translate(24.816875 136.975219) scale(0.1 -0.1)">
+<defs>
+<path d="M 2113 2584
+Q 1688 2584 1439 2293
+Q 1191 2003 1191 1497
+Q 1191 994 1439 701
+Q 1688 409 2113 409
+Q 2538 409 2786 701
+Q 3034 994 3034 1497
+Q 3034 2003 2786 2293
+Q 2538 2584 2113 2584
+z
+M 3366 4563
+L 3366 3988
+Q 3128 4100 2886 4159
+Q 2644 4219 2406 4219
+Q 1781 4219 1451 3797
+Q 1122 3375 1075 2522
+Q 1259 2794 1537 2939
+Q 1816 3084 2150 3084
+Q 2853 3084 3261 2657
+Q 3669 2231 3669 1497
+Q 3669 778 3244 343
+Q 2819 -91 2113 -91
+Q 1303 -91 875 529
+Q 447 1150 447 2328
+Q 447 3434 972 4092
+Q 1497 4750 2381 4750
+Q 2619 4750 2861 4703
+Q 3103 4656 3366 4563
+z
+" id="groupclip-DejaVuSans-36" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#groupclip-DejaVuSans-30"></use>
+<use x="63.623047" xlink:href="#groupclip-DejaVuSans-2e"></use>
+<use x="95.410156" xlink:href="#groupclip-DejaVuSans-36"></use>
+</g>
+</g>
+</g>
+<g id="groupclip-ytick_5">
+<g id="groupclip-line2d_8">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="47.72" xlink:href="#groupclip-m5a11084ffa" y="90.861333"></use>
+</g>
+</g>
+<g id="groupclip-text_8">
+<!-- 0.8 -->
+<g transform="translate(24.816875 94.660552) scale(0.1 -0.1)">
+<defs>
+<path d="M 2034 2216
+Q 1584 2216 1326 1975
+Q 1069 1734 1069 1313
+Q 1069 891 1326 650
+Q 1584 409 2034 409
+Q 2484 409 2743 651
+Q 3003 894 3003 1313
+Q 3003 1734 2745 1975
+Q 2488 2216 2034 2216
+z
+M 1403 2484
+Q 997 2584 770 2862
+Q 544 3141 544 3541
+Q 544 4100 942 4425
+Q 1341 4750 2034 4750
+Q 2731 4750 3128 4425
+Q 3525 4100 3525 3541
+Q 3525 3141 3298 2862
+Q 3072 2584 2669 2484
+Q 3125 2378 3379 2068
+Q 3634 1759 3634 1313
+Q 3634 634 3220 271
+Q 2806 -91 2034 -91
+Q 1263 -91 848 271
+Q 434 634 434 1313
+Q 434 1759 690 2068
+Q 947 2378 1403 2484
+z
+M 1172 3481
+Q 1172 3119 1398 2916
+Q 1625 2713 2034 2713
+Q 2441 2713 2670 2916
+Q 2900 3119 2900 3481
+Q 2900 3844 2670 4047
+Q 2441 4250 2034 4250
+Q 1625 4250 1398 4047
+Q 1172 3844 1172 3481
+z
+" id="groupclip-DejaVuSans-38" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#groupclip-DejaVuSans-30"></use>
+<use x="63.623047" xlink:href="#groupclip-DejaVuSans-2e"></use>
+<use x="95.410156" xlink:href="#groupclip-DejaVuSans-38"></use>
+</g>
+</g>
+</g>
+<g id="groupclip-ytick_6">
+<g id="groupclip-line2d_9">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="47.72" xlink:href="#groupclip-m5a11084ffa" y="48.546667"></use>
+</g>
+</g>
+<g id="groupclip-text_9">
+<!-- 1.0 -->
+<g transform="translate(24.816875 52.345885) scale(0.1 -0.1)">
+<defs>
+<path d="M 794 531
+L 1825 531
+L 1825 4091
+L 703 3866
+L 703 4441
+L 1819 4666
+L 2450 4666
+L 2450 531
+L 3481 531
+L 3481 0
+L 794 0
+L 794 531
+z
+" id="groupclip-DejaVuSans-31" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#groupclip-DejaVuSans-31"></use>
+<use x="63.623047" xlink:href="#groupclip-DejaVuSans-2e"></use>
+<use x="95.410156" xlink:href="#groupclip-DejaVuSans-30"></use>
+</g>
+</g>
+</g>
+<g id="groupclip-text_10">
+<!-- Post-clip gradient norm -->
+<g transform="translate(18.737188 207.314312) rotate(-90) scale(0.1 -0.1)">
+<defs>
+<path d="M 1259 4147
+L 1259 2394
+L 2053 2394
+Q 2494 2394 2734 2622
+Q 2975 2850 2975 3272
+Q 2975 3691 2734 3919
+Q 2494 4147 2053 4147
+L 1259 4147
+z
+M 628 4666
+L 2053 4666
+Q 2838 4666 3239 4311
+Q 3641 3956 3641 3272
+Q 3641 2581 3239 2228
+Q 2838 1875 2053 1875
+L 1259 1875
+L 1259 0
+L 628 0
+L 628 4666
+z
+" id="groupclip-DejaVuSans-50" transform="scale(0.015625)"></path>
+<path d="M 2834 3397
+L 2834 2853
+Q 2591 2978 2328 3040
+Q 2066 3103 1784 3103
+Q 1356 3103 1142 2972
+Q 928 2841 928 2578
+Q 928 2378 1081 2264
+Q 1234 2150 1697 2047
+L 1894 2003
+Q 2506 1872 2764 1633
+Q 3022 1394 3022 966
+Q 3022 478 2636 193
+Q 2250 -91 1575 -91
+Q 1294 -91 989 -36
+Q 684 19 347 128
+L 347 722
+Q 666 556 975 473
+Q 1284 391 1588 391
+Q 1994 391 2212 530
+Q 2431 669 2431 922
+Q 2431 1156 2273 1281
+Q 2116 1406 1581 1522
+L 1381 1569
+Q 847 1681 609 1914
+Q 372 2147 372 2553
+Q 372 3047 722 3315
+Q 1072 3584 1716 3584
+Q 2034 3584 2315 3537
+Q 2597 3491 2834 3397
+z
+" id="groupclip-DejaVuSans-73" transform="scale(0.015625)"></path>
+<path d="M 1172 4494
+L 1172 3500
+L 2356 3500
+L 2356 3053
+L 1172 3053
+L 1172 1153
+Q 1172 725 1289 603
+Q 1406 481 1766 481
+L 2356 481
+L 2356 0
+L 1766 0
+Q 1100 0 847 248
+Q 594 497 594 1153
+L 594 3053
+L 172 3053
+L 172 3500
+L 594 3500
+L 594 4494
+L 1172 4494
+z
+" id="groupclip-DejaVuSans-74" transform="scale(0.015625)"></path>
+<path d="M 313 2009
+L 1997 2009
+L 1997 1497
+L 313 1497
+L 313 2009
+z
+" id="groupclip-DejaVuSans-2d" transform="scale(0.015625)"></path>
+<path d="M 3122 3366
+L 3122 2828
+Q 2878 2963 2633 3030
+Q 2388 3097 2138 3097
+Q 1578 3097 1268 2742
+Q 959 2388 959 1747
+Q 959 1106 1268 751
+Q 1578 397 2138 397
+Q 2388 397 2633 464
+Q 2878 531 3122 666
+L 3122 134
+Q 2881 22 2623 -34
+Q 2366 -91 2075 -91
+Q 1284 -91 818 406
+Q 353 903 353 1747
+Q 353 2603 823 3093
+Q 1294 3584 2113 3584
+Q 2378 3584 2631 3529
+Q 2884 3475 3122 3366
+z
+" id="groupclip-DejaVuSans-63" transform="scale(0.015625)"></path>
+<path d="M 603 3500
+L 1178 3500
+L 1178 0
+L 603 0
+L 603 3500
+z
+M 603 4863
+L 1178 4863
+L 1178 4134
+L 603 4134
+L 603 4863
+z
+" id="groupclip-DejaVuSans-69" transform="scale(0.015625)"></path>
+<path d="M 1159 525
+L 1159 -1331
+L 581 -1331
+L 581 3500
+L 1159 3500
+L 1159 2969
+Q 1341 3281 1617 3432
+Q 1894 3584 2278 3584
+Q 2916 3584 3314 3078
+Q 3713 2572 3713 1747
+Q 3713 922 3314 415
+Q 2916 -91 2278 -91
+Q 1894 -91 1617 61
+Q 1341 213 1159 525
+z
+M 3116 1747
+Q 3116 2381 2855 2742
+Q 2594 3103 2138 3103
+Q 1681 3103 1420 2742
+Q 1159 2381 1159 1747
+Q 1159 1113 1420 752
+Q 1681 391 2138 391
+Q 2594 391 2855 752
+Q 3116 1113 3116 1747
+z
+" id="groupclip-DejaVuSans-70" transform="scale(0.015625)"></path>
+<path d="M 2906 1791
+Q 2906 2416 2648 2759
+Q 2391 3103 1925 3103
+Q 1463 3103 1205 2759
+Q 947 2416 947 1791
+Q 947 1169 1205 825
+Q 1463 481 1925 481
+Q 2391 481 2648 825
+Q 2906 1169 2906 1791
+z
+M 3481 434
+Q 3481 -459 3084 -895
+Q 2688 -1331 1869 -1331
+Q 1566 -1331 1297 -1286
+Q 1028 -1241 775 -1147
+L 775 -588
+Q 1028 -725 1275 -790
+Q 1522 -856 1778 -856
+Q 2344 -856 2625 -561
+Q 2906 -266 2906 331
+L 2906 616
+Q 2728 306 2450 153
+Q 2172 0 1784 0
+Q 1141 0 747 490
+Q 353 981 353 1791
+Q 353 2603 747 3093
+Q 1141 3584 1784 3584
+Q 2172 3584 2450 3431
+Q 2728 3278 2906 2969
+L 2906 3500
+L 3481 3500
+L 3481 434
+z
+" id="groupclip-DejaVuSans-67" transform="scale(0.015625)"></path>
+<path d="M 2631 2963
+Q 2534 3019 2420 3045
+Q 2306 3072 2169 3072
+Q 1681 3072 1420 2755
+Q 1159 2438 1159 1844
+L 1159 0
+L 581 0
+L 581 3500
+L 1159 3500
+L 1159 2956
+Q 1341 3275 1631 3429
+Q 1922 3584 2338 3584
+Q 2397 3584 2469 3576
+Q 2541 3569 2628 3553
+L 2631 2963
+z
+" id="groupclip-DejaVuSans-72" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#groupclip-DejaVuSans-50"></use>
+<use x="56.677734" xlink:href="#groupclip-DejaVuSans-6f"></use>
+<use x="117.859375" xlink:href="#groupclip-DejaVuSans-73"></use>
+<use x="169.958984" xlink:href="#groupclip-DejaVuSans-74"></use>
+<use x="209.167969" xlink:href="#groupclip-DejaVuSans-2d"></use>
+<use x="245.251953" xlink:href="#groupclip-DejaVuSans-63"></use>
+<use x="300.232422" xlink:href="#groupclip-DejaVuSans-6c"></use>
+<use x="328.015625" xlink:href="#groupclip-DejaVuSans-69"></use>
+<use x="355.798828" xlink:href="#groupclip-DejaVuSans-70"></use>
+<use x="419.275391" xlink:href="#groupclip-DejaVuSans-20"></use>
+<use x="451.0625" xlink:href="#groupclip-DejaVuSans-67"></use>
+<use x="514.539062" xlink:href="#groupclip-DejaVuSans-72"></use>
+<use x="555.652344" xlink:href="#groupclip-DejaVuSans-61"></use>
+<use x="616.931641" xlink:href="#groupclip-DejaVuSans-64"></use>
+<use x="680.408203" xlink:href="#groupclip-DejaVuSans-69"></use>
+<use x="708.191406" xlink:href="#groupclip-DejaVuSans-65"></use>
+<use x="769.714844" xlink:href="#groupclip-DejaVuSans-6e"></use>
+<use x="833.09375" xlink:href="#groupclip-DejaVuSans-74"></use>
+<use x="872.302734" xlink:href="#groupclip-DejaVuSans-20"></use>
+<use x="904.089844" xlink:href="#groupclip-DejaVuSans-6e"></use>
+<use x="967.46875" xlink:href="#groupclip-DejaVuSans-6f"></use>
+<use x="1028.650391" xlink:href="#groupclip-DejaVuSans-72"></use>
+<use x="1068.013672" xlink:href="#groupclip-DejaVuSans-6d"></use>
+</g>
+</g>
+</g>
+<g id="groupclip-patch_9">
+<path d="M 47.72 260.12
+L 47.72 37.968
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="groupclip-patch_10">
+<path d="M 565.2 260.12
+L 565.2 37.968
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="groupclip-patch_11">
+<path d="M 47.72 260.12
+L 565.2 260.12
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="groupclip-patch_12">
+<path d="M 47.72 37.968
+L 565.2 37.968
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="groupclip-text_11">
+<!-- Real Optax CPU with artificial group labels -->
+<g transform="translate(190.293125 19.650406) scale(0.11 -0.11)">
+<defs>
+<path d="M 2841 2188
+Q 3044 2119 3236 1894
+Q 3428 1669 3622 1275
+L 4263 0
+L 3584 0
+L 2988 1197
+Q 2756 1666 2539 1819
+Q 2322 1972 1947 1972
+L 1259 1972
+L 1259 0
+L 628 0
+L 628 4666
+L 2053 4666
+Q 2853 4666 3247 4331
+Q 3641 3997 3641 3322
+Q 3641 2881 3436 2590
+Q 3231 2300 2841 2188
+z
+M 1259 4147
+L 1259 2491
+L 2053 2491
+Q 2509 2491 2742 2702
+Q 2975 2913 2975 3322
+Q 2975 3731 2742 3939
+Q 2509 4147 2053 4147
+L 1259 4147
+z
+" id="groupclip-DejaVuSans-52" transform="scale(0.015625)"></path>
+<path d="M 2522 4238
+Q 1834 4238 1429 3725
+Q 1025 3213 1025 2328
+Q 1025 1447 1429 934
+Q 1834 422 2522 422
+Q 3209 422 3611 934
+Q 4013 1447 4013 2328
+Q 4013 3213 3611 3725
+Q 3209 4238 2522 4238
+z
+M 2522 4750
+Q 3503 4750 4090 4092
+Q 4678 3434 4678 2328
+Q 4678 1225 4090 567
+Q 3503 -91 2522 -91
+Q 1538 -91 948 565
+Q 359 1222 359 2328
+Q 359 3434 948 4092
+Q 1538 4750 2522 4750
+z
+" id="groupclip-DejaVuSans-4f" transform="scale(0.015625)"></path>
+<path d="M 3513 3500
+L 2247 1797
+L 3578 0
+L 2900 0
+L 1881 1375
+L 863 0
+L 184 0
+L 1544 1831
+L 300 3500
+L 978 3500
+L 1906 2253
+L 2834 3500
+L 3513 3500
+z
+" id="groupclip-DejaVuSans-78" transform="scale(0.015625)"></path>
+<path d="M 4122 4306
+L 4122 3641
+Q 3803 3938 3442 4084
+Q 3081 4231 2675 4231
+Q 1875 4231 1450 3742
+Q 1025 3253 1025 2328
+Q 1025 1406 1450 917
+Q 1875 428 2675 428
+Q 3081 428 3442 575
+Q 3803 722 4122 1019
+L 4122 359
+Q 3791 134 3420 21
+Q 3050 -91 2638 -91
+Q 1578 -91 968 557
+Q 359 1206 359 2328
+Q 359 3453 968 4101
+Q 1578 4750 2638 4750
+Q 3056 4750 3426 4639
+Q 3797 4528 4122 4306
+z
+" id="groupclip-DejaVuSans-43" transform="scale(0.015625)"></path>
+<path d="M 556 4666
+L 1191 4666
+L 1191 1831
+Q 1191 1081 1462 751
+Q 1734 422 2344 422
+Q 2950 422 3222 751
+Q 3494 1081 3494 1831
+L 3494 4666
+L 4128 4666
+L 4128 1753
+Q 4128 841 3676 375
+Q 3225 -91 2344 -91
+Q 1459 -91 1007 375
+Q 556 841 556 1753
+L 556 4666
+z
+" id="groupclip-DejaVuSans-55" transform="scale(0.015625)"></path>
+<path d="M 269 3500
+L 844 3500
+L 1563 769
+L 2278 3500
+L 2956 3500
+L 3675 769
+L 4391 3500
+L 4966 3500
+L 4050 0
+L 3372 0
+L 2619 2869
+L 1863 0
+L 1184 0
+L 269 3500
+z
+" id="groupclip-DejaVuSans-77" transform="scale(0.015625)"></path>
+<path d="M 2375 4863
+L 2375 4384
+L 1825 4384
+Q 1516 4384 1395 4259
+Q 1275 4134 1275 3809
+L 1275 3500
+L 2222 3500
+L 2222 3053
+L 1275 3053
+L 1275 0
+L 697 0
+L 697 3053
+L 147 3053
+L 147 3500
+L 697 3500
+L 697 3744
+Q 697 4328 969 4595
+Q 1241 4863 1831 4863
+L 2375 4863
+z
+" id="groupclip-DejaVuSans-66" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#groupclip-DejaVuSans-52"></use>
+<use x="64.982422" xlink:href="#groupclip-DejaVuSans-65"></use>
+<use x="126.505859" xlink:href="#groupclip-DejaVuSans-61"></use>
+<use x="187.785156" xlink:href="#groupclip-DejaVuSans-6c"></use>
+<use x="215.568359" xlink:href="#groupclip-DejaVuSans-20"></use>
+<use x="247.355469" xlink:href="#groupclip-DejaVuSans-4f"></use>
+<use x="326.066406" xlink:href="#groupclip-DejaVuSans-70"></use>
+<use x="389.542969" xlink:href="#groupclip-DejaVuSans-74"></use>
+<use x="428.751953" xlink:href="#groupclip-DejaVuSans-61"></use>
+<use x="490.03125" xlink:href="#groupclip-DejaVuSans-78"></use>
+<use x="549.210938" xlink:href="#groupclip-DejaVuSans-20"></use>
+<use x="580.998047" xlink:href="#groupclip-DejaVuSans-43"></use>
+<use x="650.822266" xlink:href="#groupclip-DejaVuSans-50"></use>
+<use x="711.125" xlink:href="#groupclip-DejaVuSans-55"></use>
+<use x="784.318359" xlink:href="#groupclip-DejaVuSans-20"></use>
+<use x="816.105469" xlink:href="#groupclip-DejaVuSans-77"></use>
+<use x="897.892578" xlink:href="#groupclip-DejaVuSans-69"></use>
+<use x="925.675781" xlink:href="#groupclip-DejaVuSans-74"></use>
+<use x="964.884766" xlink:href="#groupclip-DejaVuSans-68"></use>
+<use x="1028.263672" xlink:href="#groupclip-DejaVuSans-20"></use>
+<use x="1060.050781" xlink:href="#groupclip-DejaVuSans-61"></use>
+<use x="1121.330078" xlink:href="#groupclip-DejaVuSans-72"></use>
+<use x="1162.443359" xlink:href="#groupclip-DejaVuSans-74"></use>
+<use x="1201.652344" xlink:href="#groupclip-DejaVuSans-69"></use>
+<use x="1229.435547" xlink:href="#groupclip-DejaVuSans-66"></use>
+<use x="1264.640625" xlink:href="#groupclip-DejaVuSans-69"></use>
+<use x="1292.423828" xlink:href="#groupclip-DejaVuSans-63"></use>
+<use x="1347.404297" xlink:href="#groupclip-DejaVuSans-69"></use>
+<use x="1375.1875" xlink:href="#groupclip-DejaVuSans-61"></use>
+<use x="1436.466797" xlink:href="#groupclip-DejaVuSans-6c"></use>
+<use x="1464.25" xlink:href="#groupclip-DejaVuSans-20"></use>
+<use x="1496.037109" xlink:href="#groupclip-DejaVuSans-67"></use>
+<use x="1559.513672" xlink:href="#groupclip-DejaVuSans-72"></use>
+<use x="1598.376953" xlink:href="#groupclip-DejaVuSans-6f"></use>
+<use x="1659.558594" xlink:href="#groupclip-DejaVuSans-75"></use>
+<use x="1722.9375" xlink:href="#groupclip-DejaVuSans-70"></use>
+<use x="1786.414062" xlink:href="#groupclip-DejaVuSans-20"></use>
+<use x="1818.201172" xlink:href="#groupclip-DejaVuSans-6c"></use>
+<use x="1845.984375" xlink:href="#groupclip-DejaVuSans-61"></use>
+<use x="1907.263672" xlink:href="#groupclip-DejaVuSans-62"></use>
+<use x="1970.740234" xlink:href="#groupclip-DejaVuSans-65"></use>
+<use x="2032.263672" xlink:href="#groupclip-DejaVuSans-6c"></use>
+<use x="2060.046875" xlink:href="#groupclip-DejaVuSans-73"></use>
+</g>
+<!-- Latest archived Hero recipe: max_grad_norm=None -->
+<g transform="translate(163.539922 31.968) scale(0.11 -0.11)">
+<defs>
+<path d="M 628 4666
+L 1259 4666
+L 1259 531
+L 3531 531
+L 3531 0
+L 628 0
+L 628 4666
+z
+" id="groupclip-DejaVuSans-4c" transform="scale(0.015625)"></path>
+<path d="M 191 3500
+L 800 3500
+L 1894 563
+L 2988 3500
+L 3597 3500
+L 2284 0
+L 1503 0
+L 191 3500
+z
+" id="groupclip-DejaVuSans-76" transform="scale(0.015625)"></path>
+<path d="M 628 4666
+L 1259 4666
+L 1259 2753
+L 3553 2753
+L 3553 4666
+L 4184 4666
+L 4184 0
+L 3553 0
+L 3553 2222
+L 1259 2222
+L 1259 0
+L 628 0
+L 628 4666
+z
+" id="groupclip-DejaVuSans-48" transform="scale(0.015625)"></path>
+<path d="M 750 794
+L 1409 794
+L 1409 0
+L 750 0
+L 750 794
+z
+M 750 3309
+L 1409 3309
+L 1409 2516
+L 750 2516
+L 750 3309
+z
+" id="groupclip-DejaVuSans-3a" transform="scale(0.015625)"></path>
+<path d="M 3263 -1063
+L 3263 -1509
+L -63 -1509
+L -63 -1063
+L 3263 -1063
+z
+" id="groupclip-DejaVuSans-5f" transform="scale(0.015625)"></path>
+<path d="M 678 2906
+L 4684 2906
+L 4684 2381
+L 678 2381
+L 678 2906
+z
+M 678 1631
+L 4684 1631
+L 4684 1100
+L 678 1100
+L 678 1631
+z
+" id="groupclip-DejaVuSans-3d" transform="scale(0.015625)"></path>
+<path d="M 628 4666
+L 1478 4666
+L 3547 763
+L 3547 4666
+L 4159 4666
+L 4159 0
+L 3309 0
+L 1241 3903
+L 1241 0
+L 628 0
+L 628 4666
+z
+" id="groupclip-DejaVuSans-4e" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#groupclip-DejaVuSans-4c"></use>
+<use x="55.712891" xlink:href="#groupclip-DejaVuSans-61"></use>
+<use x="116.992188" xlink:href="#groupclip-DejaVuSans-74"></use>
+<use x="156.201172" xlink:href="#groupclip-DejaVuSans-65"></use>
+<use x="217.724609" xlink:href="#groupclip-DejaVuSans-73"></use>
+<use x="269.824219" xlink:href="#groupclip-DejaVuSans-74"></use>
+<use x="309.033203" xlink:href="#groupclip-DejaVuSans-20"></use>
+<use x="340.820312" xlink:href="#groupclip-DejaVuSans-61"></use>
+<use x="402.099609" xlink:href="#groupclip-DejaVuSans-72"></use>
+<use x="440.962891" xlink:href="#groupclip-DejaVuSans-63"></use>
+<use x="495.943359" xlink:href="#groupclip-DejaVuSans-68"></use>
+<use x="559.322266" xlink:href="#groupclip-DejaVuSans-69"></use>
+<use x="587.105469" xlink:href="#groupclip-DejaVuSans-76"></use>
+<use x="646.285156" xlink:href="#groupclip-DejaVuSans-65"></use>
+<use x="707.808594" xlink:href="#groupclip-DejaVuSans-64"></use>
+<use x="771.285156" xlink:href="#groupclip-DejaVuSans-20"></use>
+<use x="803.072266" xlink:href="#groupclip-DejaVuSans-48"></use>
+<use x="878.267578" xlink:href="#groupclip-DejaVuSans-65"></use>
+<use x="939.791016" xlink:href="#groupclip-DejaVuSans-72"></use>
+<use x="978.654297" xlink:href="#groupclip-DejaVuSans-6f"></use>
+<use x="1039.835938" xlink:href="#groupclip-DejaVuSans-20"></use>
+<use x="1071.623047" xlink:href="#groupclip-DejaVuSans-72"></use>
+<use x="1110.486328" xlink:href="#groupclip-DejaVuSans-65"></use>
+<use x="1172.009766" xlink:href="#groupclip-DejaVuSans-63"></use>
+<use x="1226.990234" xlink:href="#groupclip-DejaVuSans-69"></use>
+<use x="1254.773438" xlink:href="#groupclip-DejaVuSans-70"></use>
+<use x="1318.25" xlink:href="#groupclip-DejaVuSans-65"></use>
+<use x="1379.773438" xlink:href="#groupclip-DejaVuSans-3a"></use>
+<use x="1413.464844" xlink:href="#groupclip-DejaVuSans-20"></use>
+<use x="1445.251953" xlink:href="#groupclip-DejaVuSans-6d"></use>
+<use x="1542.664062" xlink:href="#groupclip-DejaVuSans-61"></use>
+<use x="1603.943359" xlink:href="#groupclip-DejaVuSans-78"></use>
+<use x="1663.123047" xlink:href="#groupclip-DejaVuSans-5f"></use>
+<use x="1713.123047" xlink:href="#groupclip-DejaVuSans-67"></use>
+<use x="1776.599609" xlink:href="#groupclip-DejaVuSans-72"></use>
+<use x="1817.712891" xlink:href="#groupclip-DejaVuSans-61"></use>
+<use x="1878.992188" xlink:href="#groupclip-DejaVuSans-64"></use>
+<use x="1942.46875" xlink:href="#groupclip-DejaVuSans-5f"></use>
+<use x="1992.46875" xlink:href="#groupclip-DejaVuSans-6e"></use>
+<use x="2055.847656" xlink:href="#groupclip-DejaVuSans-6f"></use>
+<use x="2117.029297" xlink:href="#groupclip-DejaVuSans-72"></use>
+<use x="2156.392578" xlink:href="#groupclip-DejaVuSans-6d"></use>
+<use x="2253.804688" xlink:href="#groupclip-DejaVuSans-3d"></use>
+<use x="2337.59375" xlink:href="#groupclip-DejaVuSans-4e"></use>
+<use x="2412.398438" xlink:href="#groupclip-DejaVuSans-6f"></use>
+<use x="2473.580078" xlink:href="#groupclip-DejaVuSans-6e"></use>
+<use x="2536.958984" xlink:href="#groupclip-DejaVuSans-65"></use>
+</g>
+</g>
+<g id="groupclip-legend_1">
+<g id="groupclip-patch_13">
+<path d="M 54.02 71.588625
+L 181.244844 71.588625
+Q 183.044844 71.588625 183.044844 69.788625
+L 183.044844 44.268
+Q 183.044844 42.468 181.244844 42.468
+L 54.02 42.468
+Q 52.22 42.468 52.22 44.268
+L 52.22 69.788625
+Q 52.22 71.588625 54.02 71.588625
+z
+" style="fill: #ffffff; opacity: 0.8; stroke: #cccccc; stroke-linejoin: miter"></path>
+</g>
+<g id="groupclip-patch_14">
+<path d="M 55.82 52.906594
+L 73.82 52.906594
+L 73.82 46.606594
+L 55.82 46.606594
+z
+" style="fill: #1f77b4"></path>
+</g>
+<g id="groupclip-text_12">
+<!-- Per-group clip to 1 -->
+<g transform="translate(81.02 52.906594) scale(0.09 -0.09)">
+<use xlink:href="#groupclip-DejaVuSans-50"></use>
+<use x="56.677734" xlink:href="#groupclip-DejaVuSans-65"></use>
+<use x="118.201172" xlink:href="#groupclip-DejaVuSans-72"></use>
+<use x="152.939453" xlink:href="#groupclip-DejaVuSans-2d"></use>
+<use x="189.023438" xlink:href="#groupclip-DejaVuSans-67"></use>
+<use x="252.5" xlink:href="#groupclip-DejaVuSans-72"></use>
+<use x="291.363281" xlink:href="#groupclip-DejaVuSans-6f"></use>
+<use x="352.544922" xlink:href="#groupclip-DejaVuSans-75"></use>
+<use x="415.923828" xlink:href="#groupclip-DejaVuSans-70"></use>
+<use x="479.400391" xlink:href="#groupclip-DejaVuSans-20"></use>
+<use x="511.1875" xlink:href="#groupclip-DejaVuSans-63"></use>
+<use x="566.167969" xlink:href="#groupclip-DejaVuSans-6c"></use>
+<use x="593.951172" xlink:href="#groupclip-DejaVuSans-69"></use>
+<use x="621.734375" xlink:href="#groupclip-DejaVuSans-70"></use>
+<use x="685.210938" xlink:href="#groupclip-DejaVuSans-20"></use>
+<use x="716.998047" xlink:href="#groupclip-DejaVuSans-74"></use>
+<use x="756.207031" xlink:href="#groupclip-DejaVuSans-6f"></use>
+<use x="817.388672" xlink:href="#groupclip-DejaVuSans-20"></use>
+<use x="849.175781" xlink:href="#groupclip-DejaVuSans-31"></use>
+</g>
+</g>
+<g id="groupclip-patch_15">
+<path d="M 55.82 66.116906
+L 73.82 66.116906
+L 73.82 59.816906
+L 55.82 59.816906
+z
+" style="fill: #ff7f0e"></path>
+</g>
+<g id="groupclip-text_13">
+<!-- Whole-model clip to 1 -->
+<g transform="translate(81.02 66.116906) scale(0.09 -0.09)">
+<defs>
+<path d="M 213 4666
+L 850 4666
+L 1831 722
+L 2809 4666
+L 3519 4666
+L 4500 722
+L 5478 4666
+L 6119 4666
+L 4947 0
+L 4153 0
+L 3169 4050
+L 2175 0
+L 1381 0
+L 213 4666
+z
+" id="groupclip-DejaVuSans-57" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#groupclip-DejaVuSans-57"></use>
+<use x="98.876953" xlink:href="#groupclip-DejaVuSans-68"></use>
+<use x="162.255859" xlink:href="#groupclip-DejaVuSans-6f"></use>
+<use x="223.4375" xlink:href="#groupclip-DejaVuSans-6c"></use>
+<use x="251.220703" xlink:href="#groupclip-DejaVuSans-65"></use>
+<use x="312.744141" xlink:href="#groupclip-DejaVuSans-2d"></use>
+<use x="348.828125" xlink:href="#groupclip-DejaVuSans-6d"></use>
+<use x="446.240234" xlink:href="#groupclip-DejaVuSans-6f"></use>
+<use x="507.421875" xlink:href="#groupclip-DejaVuSans-64"></use>
+<use x="570.898438" xlink:href="#groupclip-DejaVuSans-65"></use>
+<use x="632.421875" xlink:href="#groupclip-DejaVuSans-6c"></use>
+<use x="660.205078" xlink:href="#groupclip-DejaVuSans-20"></use>
+<use x="691.992188" xlink:href="#groupclip-DejaVuSans-63"></use>
+<use x="746.972656" xlink:href="#groupclip-DejaVuSans-6c"></use>
+<use x="774.755859" xlink:href="#groupclip-DejaVuSans-69"></use>
+<use x="802.539062" xlink:href="#groupclip-DejaVuSans-70"></use>
+<use x="866.015625" xlink:href="#groupclip-DejaVuSans-20"></use>
+<use x="897.802734" xlink:href="#groupclip-DejaVuSans-74"></use>
+<use x="937.011719" xlink:href="#groupclip-DejaVuSans-6f"></use>
+<use x="998.193359" xlink:href="#groupclip-DejaVuSans-20"></use>
+<use x="1029.980469" xlink:href="#groupclip-DejaVuSans-31"></use>
+</g>
+</g>
+</g>
+</g>
+</g>
+<defs>
+<clippath id="groupclip-p9574566e8d">
+<rect height="222.152" width="517.48" x="47.72" y="37.968"></rect>
+</clippath>
+</defs>
+</svg><figcaption>真实Optax CPU、人工分组标签；最新归档声明裁剪为None，图示不是Hero已启用的配置。</figcaption></figure></section><nav class="pager"><span></span><a href="optimizer-schedule-guide.html">下一篇 →</a></nav></main></body></html>

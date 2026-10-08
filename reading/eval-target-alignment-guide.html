@@ -1,0 +1,84 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>下一 token 对齐与有效目标覆盖 · Marin 预训练研究</title><link rel="stylesheet" href="reading.css"></head><body><header><nav><a href="index.html">主题目录</a><a href="../report_standalone.html">完整报告（保留）</a><a href="code.html">源码与候选补丁</a><a href="tools.html">交互工具</a></nav></header><main><p class="muted"><a href="theme-eval.html">07 · 评估与曲线解释</a> / 本页只含一篇专题</p><details class="chapter-toc"><summary>本篇目录</summary><ol><li><a href="#eval-target-alignment-guide-_1">从源码到检查条件</a></li><li><a href="#eval-target-alignment-guide-_2">一个错位如何污染配比判断</a></li><li><a href="#eval-target-alignment-guide-_3">连续窗口的覆盖账目</a></li><li><a href="#eval-target-alignment-guide-_4">使用顺序</a></li></ol></details><section class="chapter" id="eval-target-alignment-guide"><h1 id="eval-target-alignment-guide-token">下一 token 对齐与有效目标覆盖</h1>
+<p>两次导出的输入摘要相同，只能证明数组相同；不能证明评分token的坐标正确。如果两次都把当前位置token当作预测目标，比较器仍可能得到一致结果。离线导出器现在支持<code>target_contract="causal_next_token_v1"</code>，按固定源码的下一token规则检查有效位置。空白生产manifest默认采用这项约束，已有通用数组接口保持可用，但会明确标记未检查下一token对齐。</p>
+<h2 id="eval-target-alignment-guide-_1">从源码到检查条件</h2>
+<p>固定<code>_default_lm_eval_loss_fn</code>返回模型loss、样本loss权重，以及<code>roll(input_tokens,-1,axis=-1)</code>得到的目标ID。<code>GrugLmExample.causal_loss_mask</code>把窗口最后一个预测位置设为零。这两处必须一起理解：roll会把首token绕回末位，但这不是一个有权重的真实下一token任务。<a href="code-fbacf6814eecc394.html">评估实现</a>及<a href="code-6622836f6fa2bb5e.html">原mask实现</a></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>检查</th>
+<th>为什么要检查</th>
+<th>边界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>输入与scoring ID形状一致</td>
+<td>默认实现对同一窗口逐位置取下一token</td>
+<td>自定义压缩评分输出须走通用接口，不冒充此契约</td>
+</tr>
+<tr>
+<td>每行末位权重为零</td>
+<td>排除绕回窗口首token的伪目标</td>
+<td>不证明其他位置的权重正确</td>
+</tr>
+<tr>
+<td>权重大于零的位置，scoring ID等于右侧输入token</td>
+<td>避免byte表分母与有效预测目标错位</td>
+<td>不检查零权重位置的ID是否恰好等于roll结果</td>
+</tr>
+<tr>
+<td>只接受已知contract名称</td>
+<td>避免拼错字段值后默默跳过检查</td>
+<td>未提供contract时保留通用接口，并输出未验证标记</td>
+</tr>
+</tbody>
+</table></div>
+<p>为何允许零权重位置的ID不同？它们不进入N/T/B；框架可能将不计分的末位ID清零。原始ID仍被纳入数组摘要，变化仍会被比较器识别。这项容许不放宽已有ID范围、有限数值、exclusive域标签等检查。</p>
+<p>输入mask的语义、模型loss数组是否真正与这些位置对应、tokenizer与checkpoint是否真实匹配，仍须由运行采集验证。不能把<code>active_next_token_alignment_verified=true</code>读成“完整评估已经正确”。它仅表示对提供的数组核对了上述坐标关系。</p>
+<h2 id="eval-target-alignment-guide-_2">一个错位如何污染配比判断</h2>
+<p>人工窗口<code>[1,2,EOS,3]</code>的有效目标为<code>[2,EOS,3]</code>，权重为<code>[1,1,1,0]</code>。假设byte表对应<code>EOS/1/2/3</code>的长度是<code>0/1/2/3</code>，有效字节分母为5。若误用当前位置ID，分母变成3；即便loss数组不变，BPB也会改变。这里的字节值、token ID与loss都是人工输入，不是Marin真实tokenizer或模型结果。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>数组变更</th>
+<th>新增检查的结果</th>
+<th>对结论的意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>有效位置改为输入ID而非后继ID</td>
+<td>拒绝</td>
+<td>不能用错位目标的byte分母解释配比收益</td>
+</tr>
+<tr>
+<td>窗口末位给正权重</td>
+<td>拒绝</td>
+<td>排除把roll的绕回值计入目标</td>
+</tr>
+<tr>
+<td>有效位置给0.25权重并错位</td>
+<td>拒绝</td>
+<td>分数权重仍是有效目标，不能只检查权重等于1的位置</td>
+</tr>
+<tr>
+<td>零权重末位ID清零</td>
+<td>允许；数组摘要仍变化</td>
+<td>N/T/B不变与原数组完全相同是不同判断</td>
+</tr>
+<tr>
+<td>省略contract</td>
+<td>通用导出允许，并标记false</td>
+<td>没有验证的性质不会因为工具运行成功就成立</td>
+</tr>
+</tbody>
+</table></div>
+<p>18项人工数组、原mask/长度方法与固定调用点检查见<a href="code-a0b6b4982821f608.html">测试</a>和<a href="../analysis/eval_target_alignment_validation.json">结果</a>。原导出器的23项测试也重新通过；没有真实GPU前向、模型loss对齐验证或Hero数组。</p>
+<h2 id="eval-target-alignment-guide-_3">连续窗口的覆盖账目</h2>
+<p>当连续缓存有M个输入位置、窗口长度为L时，固定<code>TokenSeqDataset</code>生成<code>n=floor(M/L)</code>个完整窗口，余数为<code>r=M mod L</code>。若采用原默认因果mask、其他权重都为1且没有ignore/padding，有效目标数为<code>n*(L-1)</code>，而不是M。相对全部缓存输入位置，未作为有效目标出现的位置数量为<code>r+n</code>：r个尾部位置未进入窗口，另有每个窗口的首位置没有窗口内前驱来预测它。</p>
+<p>例如M=9、L=4，得到两窗口、一个尾部余数、六个有效目标。这不表示模型丢弃了三次本应存在的任务：窗口首位没有前驱本来就是该评分定义的一部分。跨窗口重叠或单独插入BOS可以定义其他任务，但会同时改变上下文、算量或目标集合。</p>
+<p>L=4096且M足够大时，仅窗口首位这一项约占输入位置的1/4096；实际总覆盖还受余数与其他权重影响。小域的r/M可能较大，因此不能给所有域套同一个覆盖率。真实M、插入特殊token的方式和有效权重尚未从Hero缓存取得，这里不估计PTB实际缺失数量。</p>
+<p>配比验收要同时保留三本账：名义训练位置、真正进入输入的缓存位置、具有正权重的目标及权重总和。分数权重存在时，“正权重目标个数”和“有效权重总和”也不同。现有导出器计算的是后者T。评估覆盖与训练曝光要分别记录，不能拿评估公式直接推算训练消耗。</p>
+<h2 id="eval-target-alignment-guide-_4">使用顺序</h2>
+<p>从<a href="../templates/eval_array_manifest.json">空白manifest</a>采集真实全局数组，再运行<a href="code-f92f08e2ec636fb7.html">导出器</a>和<a href="code-b6f100403e0b2d65.html">对照工具</a>。先看contract是否检查通过，再看输入摘要与N/T/B，不以“within tolerance”替代目标坐标验收。最后把相同评分定义用于配比反事实分支。</p>
+<p>数组摘要算法仍为<code>typed_global_eval_arrays_v2</code>，没有修改帧或字节规则。contract检查的结果写入<code>array_export</code>元信息；比较器不会据它独立认证模型前向。这个新检查修补了离线接口的验收缺口，没有新增训练收益结论。</p></section><nav class="pager"><a href="eval-format-guide.html">← 上一篇</a><a href="eval-identity-guide.html">下一篇 →</a></nav></main></body></html>

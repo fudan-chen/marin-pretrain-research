@@ -1,0 +1,180 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>从候选排行榜走到可解释的选择 · Marin 预训练研究</title><link rel="stylesheet" href="reading.css"></head><body><header><nav><a href="index.html">主题目录</a><a href="../report_standalone.html">完整报告（保留）</a><a href="code.html">源码与候选补丁</a><a href="tools.html">交互工具</a></nav></header><main><p class="muted"><a href="theme-data.html">02 · 数据配比与实验设计</a> / 本页只含一篇专题</p><details class="chapter-toc"><summary>本篇目录</summary><ol><li><a href="#decision-guide-1">1. 这轮追查了什么，查到哪一步</a></li><li><a href="#decision-guide-2">2. 先划清可接受范围，再在范围内排序</a></li><li><a href="#decision-guide-3">3. 九个教学情景的实测重算</a></li><li><a href="#decision-guide-4-197c">4. 197c为什么既值得看，又不能直接推荐</a></li><li><a href="#decision-guide-5">5. 没有符合条件者，应该怎样办</a></li><li><a href="#decision-guide-6-json">6. 从探索JSON到确认契约</a></li><li><a href="#decision-guide-7-rubrics">7. 用真实反例回放Rubrics</a></li><li><a href="#decision-guide-8">8. 可视化如何帮助你找下一次实验</a></li><li><a href="#decision-guide-9">9. 本轮结论和下一问题</a></li></ol></details><section class="chapter" id="decision-guide"><h1 id="decision-guide-_1">从候选排行榜走到可解释的选择</h1>
+<p>同一批终点，主目标与退步限制不同，入围方案就会改变。<strong>这不是额外训练收益，而是把选择条件说清以后，对已有观测重新筛选。</strong> 本轮的决策实验室让你看到这种变化，留下为什么保留或排除某个候选的记录。</p>
+<p>目前仍没有还原Marin选择996f时的完整目标、拟合模型、约束和执行过程。不能因为替代方案在几项seed0指标上更好，就替作者补出一个决策理由，或断言作者选错。</p>
+<h2 id="decision-guide-1">1. 这轮追查了什么，查到哪一步</h2>
+<p>新入口固定在Marin revision <code>84869ae8c91ffe64e9f761c5bd714542eb1876e0</code>，来源另存目录，旧训练曲线和HF终点没有刷新。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>已检查的入口</th>
+<th>得到了什么</th>
+<th>没有得到什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>最新main固定代码树，完整递归列表</td>
+<td>文件名含selector/regmix/swarm/mixprior等词的命中；两个命中属于网页解析与评估提示选择</td>
+<td>对应配比选择器实现、拟合参数、选择契约</td>
+</tr>
+<tr>
+<td>GitHub issue/PR按完整配比哈希查询</td>
+<td>仅#9126；<code>incomplete_results=false</code></td>
+<td>选择过程的新增公开说明</td>
+</tr>
+<tr>
+<td>按swarm ID查询</td>
+<td>同样仅#9126；正文与上轮归档相同</td>
+<td>能解释为何996f最终被选中的真实目标和约束</td>
+</tr>
+<tr>
+<td>固定HF swarm的字段与registry目录</td>
+<td>权重、终点、预算、模型规模、数据store和评估来源</td>
+<td>历史selector目标、拟合模型和约束执行记录</td>
+</tr>
+</tbody>
+</table></div>
+<p>这里的“未恢复”限定于已查入口：文件名搜索没有读取每个blob内容，没有遍历全部分支；issue查询也不是所有评论的完整全文检索。因此它不是“互联网任何地方都不存在”的证明。R12继续保持未确认。<a href="../analysis/selector_provenance_audit.json">本轮入口审计</a> · <a href="../sources/decision_2026_10_04/marin_tree.json">固定代码树</a> · <a href="https://github.com/marin-community/marin/issues/9126" rel="noopener" target="_blank">#9126</a></p>
+<p>原报告已经把配置中的权重与实测终点对应起来。那回答的是“实施了哪套配比，观察到什么”；本轮追查的是“按什么条件从候选中作出选择”，两者不能互相替代。</p>
+<h2 id="decision-guide-2">2. 先划清可接受范围，再在范围内排序</h2>
+<p>设候选为c，参照为b。每个指标的变化是：</p>
+<pre><code class="language-text">Δ_j(c | b) = 100 × [ BPB_j(c) / BPB_j(b) − 1 ]
+符合条件：每个启用的指标都满足 Δ_j ≤ 对应最大退步阈值
+观察排名：在符合条件的候选中，按主目标BPB从小到大排列
+</code></pre>
+<p>0%表示不退步；+2%允许该BPB最多升高2%；−1%要求至少改善1%。这是相对BPB变化，不能写成正确率下降2个百分点。没有启用限制时，工具只给单目标排名；候选其他项的退步依然存在。</p>
+<p>如果医学保底是一条硬要求，代码收益不能抵消它。加权总分会隐含允许这种抵消，除非这本来就是业务愿意接受的交换。如果业务确实接受交换，可以设计明确效用函数；但要在确认实验以前确定单位、权重和可接受风险，不能在已知结果后改权重，再声称“最优”获得验证。</p>
+<h2 id="decision-guide-3">3. 九个教学情景的实测重算</h2>
+<p>下表是本报告自拟条件，所有排名只用相同d512续训范围的seed0。它没有使用三seed均值，也没有使用535B正确率。条件是在结果已公开后设定的，属于探索性重算。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>seed0参照</th>
+<th>主目标 / 硬限制</th>
+<th style="text-align: right;">符合条件数</th>
+<th>当前条件下主目标最小的候选</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>库存比例</td>
+<td>Paloma，无限制</td>
+<td style="text-align: right;">597</td>
+<td>4602cace15312bd4</td>
+</tr>
+<tr>
+<td>库存比例</td>
+<td>HumanEval；Paloma≤0%，GSM8K≤0%</td>
+<td style="text-align: right;">12</td>
+<td>b100ad1935c71002</td>
+</tr>
+<tr>
+<td>库存比例</td>
+<td>Paloma；三指标≤0%，MedQA≤2%，Belebele/Include≤1%</td>
+<td style="text-align: right;">0</td>
+<td>没有符合条件者</td>
+</tr>
+<tr>
+<td>旧Harrier</td>
+<td>Paloma，无限制</td>
+<td style="text-align: right;">597</td>
+<td>4602cace15312bd4</td>
+</tr>
+<tr>
+<td>旧Harrier</td>
+<td>HumanEval；Paloma≤0%，GSM8K≤0%</td>
+<td style="text-align: right;">61</td>
+<td>1d28fbf0c12e9932</td>
+</tr>
+<tr>
+<td>旧Harrier</td>
+<td>Paloma；三指标≤0%，MedQA≤2%，Belebele/Include≤1%</td>
+<td style="text-align: right;">2</td>
+<td>44bfd83cf7199b40</td>
+</tr>
+<tr>
+<td>选中996f</td>
+<td>Paloma，无限制</td>
+<td style="text-align: right;">597</td>
+<td>4602cace15312bd4</td>
+</tr>
+<tr>
+<td>选中996f</td>
+<td>HumanEval；Paloma≤0%，GSM8K≤0%</td>
+<td style="text-align: right;">85</td>
+<td>197c9f5ceff6b9ee</td>
+</tr>
+<tr>
+<td>选中996f</td>
+<td>Paloma；三指标≤0%，MedQA≤2%，Belebele/Include≤1%</td>
+<td style="text-align: right;">1</td>
+<td>996f489106c7b922</td>
+</tr>
+</tbody>
+</table></div>
+<p>“三指标”是Paloma macro、HumanEval目标文本、GSM8K目标文本。Belebele和Include平均与其语言组成项有重叠，不能当作独立证据投票。<a href="../analysis/decision_validation.json">九情景完整结果</a> · <a href="../analysis/decision_candidates.csv">597候选七指标原值</a></p>
+<p>只按Paloma排序时，996f在seed0的观察排名为116，197c为19。这不能反推Marin按纯Paloma终点作过选择：历史目标未知。应保留这个可核对事实与未知边界。</p>
+<p>还要注意参照的逻辑：以996f自己为参照，996f每项变化必然是零，所以非负退步阈值会让它符合条件。这是算术性质，不是新增性能验证。换参照后，对候选的判断必须重算，不能沿用先前的“通过”。</p>
+<h2 id="decision-guide-4-197c">4. 197c为什么既值得看，又不能直接推荐</h2>
+<p>相对选中996f的seed0，197c在Paloma、HumanEval和GSM8K三个BPB上都更低；但MedQA升高约10.36%，Belebele平均升高约1.81%，Include平均升高约1.57%。</p>
+<p>因此，在上表“代码主目标 + 数学/通用文本不退步”条件下，它是符合条件者里HumanEval BPB最低的候选；加入示例中的医学/语言限制后，它被排除。<strong>同一候选被保留或排除，需要对应到明确的用途和代价。</strong> 这解释的是本报告的条件重算，不能冒充Marin当时的实际决策。</p>
+<p>197c仍只公开一个seed。即便它在设定范围内观察排名第一，下一项证据也应该是冻结候选后的重复和独立实际任务评估，而不是再给这个单点添加“领先”形容词。<a href="../analysis/candidate_197c_counterexample.csv">逐项反例表</a></p>
+<h2 id="decision-guide-5">5. 没有符合条件者，应该怎样办</h2>
+<p>一个常见误操作是把限制逐渐放宽，直到想要的候选入围，然后只展示最后一版。这样得到的是事后选择，无法证明原要求已经满足。</p>
+<p>工具不会自动放宽。它返回零个符合条件者，并保留每个候选的越界项。合理的下一步可以是：核查参照和指标口径；承认当前候选族不满足目标；从具体供体转移预算，生成新的风险修复候选；或由真实用途决定修改风险范围。修改时保留旧阈值、原因和冻结时间，并用新的确认实验检验。固定数据上的阈值探索与未来确认应分开记录。</p>
+<p>“没有符合条件者”也不是“这些模型全部不好”。它只表示这批候选在这些seed0指标与这些阈值下，没有达到你设的交集。实际能力是否达标仍需生成测试。</p>
+<h2 id="decision-guide-6-json">6. 从探索JSON到确认契约</h2>
+<p>实验室导出的JSON保存数据摘要、HF版本、参照、主目标、启用阈值、符合/排除数量和前十候选。它固定标记<code>exploratory_reanalysis_not_preregistered</code>，并明确历史selector未恢复、独立确认未执行、能力正确率未验证。</p>
+<p>接下来填写<a href="../templates/selection_contract.json">确认选择契约模板</a>，先冻结未来要检验的候选、主目标、确认集、生成协议、最低效果与停止条件。共同checkpoint内容、桶manifest、tokenizer和预算不能为空；退步限制要写清参照、单位、聚合方式以及如何处理波动。</p>
+<p>契约的冻结只约束未来实验，不能把已经看过的597个终点变成预先注册的确认集。确认失败也应留下结果与返回分支，不能再悄悄切回原搜索排名。</p>
+<h2 id="decision-guide-7-rubrics">7. 用真实反例回放Rubrics</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>待评审主张</th>
+<th>实际反例或边界</th>
+<th>应用哪些规则，怎么处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>197c三项更好，所以通用模型应直接采用它</td>
+<td>医学和语言BPB有退步；只有seed0</td>
+<td>R06/R07/R12/R15：列出风险，记录目标，再做独立生成确认</td>
+</tr>
+<tr>
+<td>996f以自己为参照通过所有0%限制，说明它可靠</td>
+<td>自比变化必然是零</td>
+<td>R04/R12：换有竞争力的外部参照；自比只用于定位替代候选</td>
+</tr>
+<tr>
+<td>没有符合条件者，系统自动放宽限制后通过</td>
+<td>已改变原问题</td>
+<td>R12/R18：保留旧结果，解释修订，并重新冻结未来确认条件</td>
+</tr>
+<tr>
+<td>597次搜索说明这个排名稳定</td>
+<td>多数候选仅seed0；搜索极值被挑选</td>
+<td>R07：搜索规模与独立重复分开，不把候选数量当置信度</td>
+</tr>
+<tr>
+<td>补了入口检索，R12就可以通过</td>
+<td>入口边界明确，历史目标仍没恢复</td>
+<td>R01/R12：来源审计通过不替代目标证据，R12维持未确认</td>
+</tr>
+<tr>
+<td>目标与风险已经填写，所以可以开始生产切换</td>
+<td>只有事后BPB重算</td>
+<td>R11/R14/R15：需要规模、执行状态和真实能力验证</td>
+</tr>
+</tbody>
+</table></div>
+<p>这些案例检查的是规则能否阻止错误陈述、工具能否保留限制与未知。它们不是外部审稿一致性或评分效度研究。本轮没有增加规则数量，也没有把历史未知判定改成通过。</p>
+<h2 id="decision-guide-8">8. 可视化如何帮助你找下一次实验</h2>
+<p>散点保留全部597个终点，横轴Paloma、纵轴HumanEval，以当前参照归一。所有点使用同一坐标，极端退步没有截走；左下对应两项BPB更低。已排除点仍可见，因为它们告诉你是哪类取舍被当前要求拒绝。</p>
+<p>完整范围里，少数极端退步会把附近候选挤在一起。可切换到聚焦参照与两个候选的局部范围；图旁明确显示范围内/外数量。局部显示只改变坐标与画出的点，不改变597个候选的筛选、排名或导出。不能把局部图当成没有范围外退步的证明。</p>
+<p>二维图没有画出数学、医学和语言全部维度，所以符合条件由七指标中的启用限制计算，不能从位置独自判断。表格保留各项相对变化、精确BPB提示和排除原因，完整CSV可以离线复算。</p>
+<p>例如你关心代码，但数学是保底要求：先看哪些方案符合交集，再比较代码指标；若它们都没有预期幅度，应优先做数学修复与供体交换实验。这里仍不能由某个桶权重和BPB的相关性直接推断应该加多少该桶。</p>
+<h2 id="decision-guide-9">9. 本轮结论和下一问题</h2>
+<p>候选讨论现在能保留选择条件、被排除项、完整原值与未来确认合同。它没有改变“完整selector仍未恢复”“535B能力尚未由这组代理终点确认”的研究边界。</p>
+<p>下一项有结论价值的工作是：核查候选之间的200桶预算差，把“哪些任务退步”对应到可控的供体/接收域实验。对应关系先作为干预假设，不把观察关联写成桶的因果贡献。若找到真实selector契约，先用它重放现有终点，再判断本轮教学情景与真实用途有哪些差异。</p></section><nav class="pager"><a href="mix-trajectory-guide.html">← 上一篇</a><a href="transfer-guide.html">下一篇 →</a></nav></main></body></html>

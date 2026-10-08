@@ -1,0 +1,83 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>标签越界：loss 有限，梯度仍可能不可信 · Marin 预训练研究</title><link rel="stylesheet" href="reading.css"></head><body><header><nav><a href="index.html">主题目录</a><a href="../report_standalone.html">完整报告（保留）</a><a href="code.html">源码与候选补丁</a><a href="tools.html">交互工具</a></nav></header><main><p class="muted"><a href="theme-loss.html">04 · Loss、梯度与数值精度</a> / 本页只含一篇专题</p><details class="chapter-toc"><summary>本篇目录</summary><ol><li><a href="#ce-label-bounds-guide-_1">问题发生在哪里</a></li><li><a href="#ce-label-bounds-guide-loss_1">一个三类别例子，怎样暴露有限 loss 的误导</a></li><li><a href="#ce-label-bounds-guide-_2">零权重为什么没有自动屏蔽非法标签</a></li><li><a href="#ce-label-bounds-guide-_3">候选入口合同：先拒绝有效目标越界，再处理明确忽略的位置</a></li><li><a href="#ce-label-bounds-guide-marin">与 Marin 正常路径、数据配比及恢复的对应</a></li><li><a href="#ce-label-bounds-guide-_4">复现与证据边界</a></li></ol></details><section class="chapter" id="ce-label-bounds-guide"><h1 id="ce-label-bounds-guide-loss">标签越界：loss 有限，梯度仍可能不可信</h1>
+<p>V138，2026-10-08。本章沿数据入口核对 token 目标与 CE 后端的合同。执行固定源码的输入校验、完整 logits 参考 CE、streaming 参考 CE 和共享 reducer，完成 14 项 CPU 控制。测试包含真实自动微分、JIT 和前向有限差分，但没有执行融合后端调度、GPU 内核或真实 Hero 输入。</p>
+<h2 id="ce-label-bounds-guide-_1">问题发生在哪里</h2>
+<p>共享接口的 <a href="code-511b01056d2b34c1.html"><code>_validate_inputs</code></a> 检查 rank、batch/hidden 形状匹配，以及 labels 是否为整数。它没有检查 <code>0 &lt;= labels &lt; vocab_size</code>。因而“通过原校验”只证明结构满足这些检查，不证明目标 ID 合法。</p>
+<p>完整 logits <a href="code-85669132e02ac7b1.html">参考实现</a>用 <code>logits[row, labels]</code> 取得目标 logit。streaming 实现则逐块寻找标签所在区间，目标 logit 初值为负无穷；未落入有效词表的标签得不到合法目标 logit。这两种写法对合法标签表达相同目标，对非法标签却不提供相同的结果。</p>
+<p>JAX <a href="https://docs.jax.dev/en/latest/notebooks/Common_Gotchas_in_JAX.html" rel="noopener" target="_blank">官方边界说明</a>指出：越界读取与越界更新的处理并非互逆，自动微分可能使两者交换，应避免依赖越界行为。这里不把某次 CPU 观察当作后端必须保证的语义；用原函数实测来确认当前受控环境下具体发生了什么。</p>
+<h2 id="ce-label-bounds-guide-loss_1">一个三类别例子，怎样暴露有限 loss 的误导</h2>
+<p>输入隐藏特征为 1，分类头为 <code>[0,1,2]</code>，词表大小 V=3。合法 token ID 只有 0、1、2。单样本权重为 1。下表中的“梯度和”是三个分类头参数的梯度相加。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>目标标签</th>
+<th style="text-align: right;">完整 logits 参考 loss</th>
+<th style="text-align: right;">streaming 参考 loss</th>
+<th style="text-align: right;">完整参考梯度和</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0，合法</td>
+<td style="text-align: right;">约 2.407606</td>
+<td style="text-align: right;">约 2.407606</td>
+<td style="text-align: right;">约 0</td>
+<td>两条路径 loss 与梯度一致</td>
+</tr>
+<tr>
+<td>2，合法</td>
+<td style="text-align: right;">约 0.407606</td>
+<td style="text-align: right;">约 0.407606</td>
+<td style="text-align: right;">约 0</td>
+<td>两条路径一致</td>
+</tr>
+<tr>
+<td>-1，非法 token ID</td>
+<td style="text-align: right;">约 0.407606</td>
+<td style="text-align: right;">inf</td>
+<td style="text-align: right;">约 0</td>
+<td>完整参考按本次索引语义取末类，streaming 不把它视为合法目标</td>
+</tr>
+<tr>
+<td>3，刚超过词表</td>
+<td style="text-align: right;">约 0.407606</td>
+<td style="text-align: right;">inf</td>
+<td style="text-align: right;">约 1</td>
+<td>完整参考的有限 loss 不代表梯度正确</td>
+</tr>
+<tr>
+<td>100，远超词表</td>
+<td style="text-align: right;">约 0.407606</td>
+<td style="text-align: right;">inf</td>
+<td style="text-align: right;">约 1</td>
+<td>同样通过原结构校验，但不满足目标合同</td>
+</tr>
+</tbody>
+</table></div>
+<p>为何梯度和重要？对合法 CE，把每个类别 logit 同时加一个常数，不改变概率，也不改变 loss。因此沿“所有类别一起平移”的方向，导数应为零。</p>
+<p>对标签 3，本次原完整参考的前向 loss 与末类标签 2 相同；将三个参数同时加减 0.01，前向中心有限差分约为零。但自动微分给出方向导数约 1，JIT 后仍复现。具体机制是本运行时的越界读取给出边界值，而反向更新没有对应的合法目标减项。<strong>前向数值看似合理、loss 与梯度均有限，仍可能不满足本次前向所呈现的导数关系。</strong> 有限差分这里只是一维诊断，不是全模型梯度验证。</p>
+<p>负标签也不是一种可移植的 ignore 约定。<code>-1</code> 在某个数组索引路径取末类，不意味着它是合法 token，更不意味着 streaming 或融合实现支持相同约定。探针另保留 <code>-100</code> 的原值；本章不声称 Marin 使用这种哨兵。</p>
+<h2 id="ce-label-bounds-guide-_2">零权重为什么没有自动屏蔽非法标签</h2>
+<p>再用两个样本，目标为 <code>[0,3]</code>，权重为 <code>[1,0]</code>。理想目标是只计算第一个样本。原共享 reducer 在 CE 之后相乘权重：</p>
+<pre><code class="language-text">完整 logits 参考：第二项得到有限但非法语义的 CE → 乘零 → 本例 loss 有限
+streaming 参考：第二项 CE 为 inf → 乘零 → NaN → 总 loss 为 NaN
+</code></pre>
+<p>不能把“某一路径乘零后没出错”当作输入可跨后端使用的依据，也不能从 NaN loss 自动推断梯度一定 NaN；本次 masked streaming 对照的 loss 为 NaN，梯度却仍有限；探针逐项保存两者，分别核对。这里关心的是目标数据的合法性，不是用一个后端的偶然结果定义 ignore 行为。</p>
+<h2 id="ce-label-bounds-guide-_3">候选入口合同：先拒绝有效目标越界，再处理明确忽略的位置</h2>
+<p>本轮加入一个离线 NumPy 候选，仅处理目标标签：</p>
+<ol>
+<li>原始标签必须为整数，标签与权重 shape 必须一致；在缩窄 dtype 前检查范围，避免把浮点标签截断或把大整数回绕成合法 ID。</li>
+<li>任何非零权重位置的标签必须在物理 CE 词表范围内，否则拒绝。</li>
+<li>明确权重为零的位置，在进入 CE 之前把标签替换为合法的 0，权重仍为零。</li>
+</ol>
+<p>候选拒绝了四种有效位置的非法标签；对 <code>[0,3]</code> / <code>[1,0]</code> 输出 <code>[0,0]</code>，两条原 CE 路径的 loss 和梯度恢复一致，并与单个合法目标相符。合法 <code>[0,2]</code> 的标签保持原样。新增控制还拒绝了浮点标签 2.9 与大整数 2^32，避免候选自身的类型转换掩盖非法输入。</p>
+<p>这不是完整数据校验器：候选不负责权重非负有限、tokenizer 身份、输入 embedding、全空目标或分布式检查，也没有作为生产 JIT 内 hook 安装。若非法值还出现在输入 token 中，只修 labels 不能修好 embedding 查表。也不要将有效越界标签直接 clip 到词表内——那会把无效样本改成另一个有权重的目标。</p>
+<h2 id="ce-label-bounds-guide-marin">与 Marin 正常路径、数据配比及恢复的对应</h2>
+<p>源码查阅发现，<a href="code-e42e9d52d19b8f17.html">归档模型 loss 方法</a>使用后移 token IDs 作为标签，并在末尾补 0。这是正常末位置处理的静态依据，本轮没有执行该完整模型；不能把直接 CE 反例描述成它必然产生非法标签。</p>
+<p>需要进一步检查的真实入口包括：不同 tokenizer 生成的 token cache 混用、词表扩展后的旧缓存、特殊 token 配置变化、外部标签哨兵，以及训练恢复时 tokenizer/embedding/head 是否仍绑定同一版本。这些是待核对的可达性条件，不是已观察到的 Marin 故障。物理 head 可能还含为分片对齐而补齐的词表槽，物理范围检查也不能证明 ID 在逻辑 tokenizer 词表中有正确语义。</p>
+<p>对于配比研究，多加一个域之前，应确认该域和基线共享 token ID 合同。否则换配比也会改变非法目标的出现频率，后端切换又可能改变失败方式；此时不能直接把 loss 差值归因于数据质量。反过来，本轮没有真实域的异常计数，不允许据此解释既有 Marin 配比实验。</p>
+<p>可复用的预检顺序为：绑定 tokenizer 与 cache 身份 → 检查输入 token 和移位后目标的逻辑/物理范围 → 明确忽略位置与安全替换政策 → 合法样本的跨后端 loss/梯度对照 → 再进入分母、设备归约和配比效果比较。范围合法仍不能证明移位正确或 tokenizer 身份相同。</p>
+<h2 id="ce-label-bounds-guide-_4">复现与证据边界</h2>
+<p>固定原始版本 <code>84869ae8c91ffe64e9f761c5bd714542eb1876e0</code>，JAX 0.7.2 CPU。通过 AST 加载原函数，显式选择原默认 CPU logsumexp 与 <code>jnp.logaddexp</code>；没有运行 TPU 精度分支、融合 dispatcher、custom backward 内核或大模型训练。流式 block_size=2，在 V=3 时包含末尾 padding，非法标签 3 也不是可评分的 padding 类。</p>
+<p><a href="code-38e13a13f7b601d2.html">脚本</a> · <a href="../analysis/ce_label_bounds_cpu.json">14 项控制和逐项原值</a>。运行 <code>CPU_PYTHON=/tmp/marin-loss-mass-v109/bin/python make ce-label-bounds</code>。源码与脚本 SHA 保存在 JSON 中。结合<a href="masked-numerics-guide.html#masked-numerics-guide">零权重数值边界</a>、<a href="loss-denominator-guide.html#loss-denominator-guide">分母与归约轴</a>、<a href="packing-fields-guide.html#packing-fields-guide">packing 字段合同</a>阅读。</p>
+<p>尚缺真实 Hero 非法目标事件、融合 GPU 行为及训练效果证据；本轮没有修改上游。</p></section><nav class="pager"><a href="loss-denominator-guide.html">← 上一篇</a><a href="ce-backward-path-guide.html">下一篇 →</a></nav></main></body></html>

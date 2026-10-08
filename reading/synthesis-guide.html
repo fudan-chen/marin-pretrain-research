@@ -1,0 +1,248 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>读完这些故障后，自己的预训练应该怎样改 · Marin 预训练研究</title><link rel="stylesheet" href="reading.css"></head><body><header><nav><a href="index.html">主题目录</a><a href="../report_standalone.html">完整报告（保留）</a><a href="code.html">源码与候选补丁</a><a href="tools.html">交互工具</a></nav></header><main><p class="muted"><a href="theme-start.html">01 · 全貌与阅读路线</a> / 本页只含一篇专题</p><details class="chapter-toc"><summary>本篇目录</summary><ol><li><a href="#synthesis-guide-_2">先按症状进入，不必顺着版本号读</a></li><li><a href="#synthesis-guide-1">1. 目前能够下的结论</a></li><li><a href="#synthesis-guide-2">2. 想调整数据，先过三道检查</a></li><li><a href="#synthesis-guide-_3">第一道：计划量与实际量有没有对上</a></li><li><a href="#synthesis-guide-_4">第二道：验证变化是广泛改善还是集中在少数域</a></li><li><a href="#synthesis-guide-_5">第三道：让一个实验只回答一个问题</a></li><li><a href="#synthesis-guide-3">3. 数据与工程的联合作业顺序</a></li><li><a href="#synthesis-guide-4">4. 一套最小而完整的配比实验</a></li><li><a href="#synthesis-guide-5">5. 怎样读报告，才不会被专题数量淹没</a></li><li><a href="#synthesis-guide-_6">拆批也可能改变目标：先核对分母</a></li><li><a href="#synthesis-guide-_7">前向有限仍需检查反向与触发条件</a></li><li><a href="#synthesis-guide-v50update0">V50：空目标处理不能只把梯度或update改成0</a></li><li><a href="#synthesis-guide-v51">V51：裁剪验收要看归约范围和后续状态</a></li><li><a href="#synthesis-guide-v52">V52：加载器恢复控制</a></li><li><a href="#synthesis-guide-v53">V53：混合数据身份</a></li><li><a href="#synthesis-guide-v54shuffle">V54：桶内shuffle与切分</a></li><li><a href="#synthesis-guide-v55">V55：小实验库存缩放</a></li><li><a href="#synthesis-guide-v56moe">V56：新MoE提案</a></li><li><a href="#synthesis-guide-v57">V57：性能归因</a></li><li><a href="#synthesis-guide-v102">恢复不是单个状态位（V102）</a></li><li><a href="#synthesis-guide-v103">控制器恢复的失败验收（V103）</a></li><li><a href="#synthesis-guide-v104">候选通过与生产接入分开验收（V104）</a></li><li><a href="#synthesis-guide-v105">先确认状态内容，再判断备份风险（V105）</a></li><li><a href="#synthesis-guide-v106">V106：异步保存为何需要一份独立数据</a></li><li><a href="#synthesis-guide-v107-loss">V107：短期 loss 改善不一定证明恢复正确</a></li><li><a href="#synthesis-guide-v108">V108：未来课程设计可能提前改变当前顺序</a></li><li><a href="#synthesis-guide-v109">V109：配比账本要分开序列和计分</a></li><li><a href="#synthesis-guide-v110">V110：进度的测量边界</a></li><li><a href="#synthesis-guide-v111">V111：恢复后的下一次更新</a></li><li><a href="#synthesis-guide-v112">V112：初始化与恢复的构造路径</a></li><li><a href="#synthesis-guide-v113loss">V113：有限loss与路由状态</a></li><li><a href="#synthesis-guide-v114">V114：原估计器输入边界</a></li><li><a href="#synthesis-guide-v115">V115：归约一致与近似误差</a></li><li><a href="#synthesis-guide-v116margin">V116：margin的原投影入口</a></li><li><a href="#synthesis-guide-v117">V117：目标与路由人口分开记账</a></li><li><a href="#synthesis-guide-v118">V118：研究收束为训练决策</a></li><li><a href="#synthesis-guide-v119">V119：评估补丁的调用合同</a></li><li><a href="#synthesis-guide-v120key">V120：删域响应依赖参照，过期历史也参与key分配</a></li><li><a href="#synthesis-guide-v121">V121：配比边界早于共同恢复点</a></li><li><a href="#synthesis-guide-v124">V124：模拟子集与恢复数据流</a></li><li><a href="#synthesis-guide-v125io">V125：前缀抽样支持与IO布局</a></li><li><a href="#synthesis-guide-v131">V131：训练失败的最后一条报错可能来自收尾</a></li><li><a href="#synthesis-guide-v132checkpoint">V132：同一个坏checkpoint，恢复路径也会改变启动结果</a></li><li><a href="#synthesis-guide-v133state">V133：完整state之外还有新构建的优化计划</a></li><li><a href="#synthesis-guide-v134">V134：配置能构造，不证明计划符合意图</a></li><li><a href="#synthesis-guide-v135">V135：把故障细节收束成确认路线</a></li></ol></details><section class="chapter" id="synthesis-guide"><h1 id="synthesis-guide-_1">读完这些故障后，自己的预训练应该怎样改</h1>
+<p>这份研究的中心结论是：预训练配方与实现细节必须一起评审。配比决定计划接触什么数据；缓存、取整、恢复和loss权重决定实际学习什么；优化器状态与路由决定同一批数据怎样更新模型；评估和checkpoint决定我们能否正确判断进展、可靠地继续训练。只盯其中一个loss曲线，无法覆盖这几条链。</p>
+<p>数值诊断还须先核对目标合同：<a href="ce-label-bounds-guide.html#ce-label-bounds-guide">标签边界控制</a>表明，非法目标可以给出有限 loss 与不一致的自动微分；<a href="loss-denominator-guide.html#loss-denominator-guide">分母与归约轴控制</a>则表明，局部有限并不保证全局有限。正常入口可能已有保护，是否适用必须绑定实际执行路径，不能把人工反例当成 Hero 事故。</p>
+<p>检查也要找到真正执行的保护：<a href="ce-backward-path-guide.html#ce-backward-path-guide">原 custom VJP 控制</a>中，参考函数直接求导的异常没有在原 slow/scan 显式反向复现。后端评审应绑定注册链、残余与 cotangent，既不漏掉数值边界，也不把另一条路径的异常归因给实际训练。</p>
+<p>更新量还受分块与转换位置影响：<a href="ce-gradient-dtype-guide.html#ce-gradient-dtype-guide">原 CE 梯度 dtype 控制</a>在普通 BF16 输入中复现旧跨块累计少算、新 scan 保留总量；纯 FP16 的另一控制则定位 GEMM 前归零。按实际操作数、累计 buffer 和块大小判断，不能用 FP32 loss 或有限梯度替代更新验收。</p>
+<p>配比实验的最新综合入口是<a href="experiment-controls-guide.html#experiment-controls-guide">六类干预对照</a>：加权重、换子集、调顺序和改IO窗口，可能改变不同的实际输入。先声明希望测量的效应，再决定哪些身份、预算和状态必须固定。</p>
+<p>配置校验也需核对执行方式：<a href="assertion-contracts-guide.html#assertion-contracts-guide">原混合器的断言控制</a>表明，Python优化模式移除整块约束后，非法阶段可以产生合法范围内的重复身份。源码有检查、数据可读、实际曝光正确，是三个需要分别确认的条件。历史Hero是否使用该模式尚未知。</p>
+<p>桶级配比还需检查归一化前后支持和整数曝光：<a href="weight-domain-guide.html#weight-domain-guide">数值合同控制</a>表明，坏后续阶段可以被余数逻辑分成完整合法batch。预算守恒不能代替每桶实际配额核对。</p>
+<p>保存验收的新增结论是：<a href="async-manager-guide.html#async-manager-guide">异步manager控制</a>将完成future、源数组引用与一次性错误消费分开。第二次wait正常返回不能覆盖第一次失败；future列表保留也不能单独推断模型快照或RSS。</p>
+<p>调用方的<a href="checkpoint-failure-policy-guide.html#checkpoint-failure-policy-guide">保存失败控制</a>进一步说明：交接step/time可以在后台失败前推进，显式请求也可能已消费；需要单独的失败attempt与重试政策。metadata后的retention错误应先查清理，不能只按一次wait的成败决定全量重写。</p>
+<p>下面把已有研究收束为可执行的判断。作者记录、固定源码、本地人工反例和建议实验分别标明。本章没有新增训练结果，不把本地检查通过当作535B稳定性证明。完整问题—动作—原因对照仍在<a href="engineering-map-guide.html#engineering-map-guide">15案工程总图</a>和<a href="report.html#report">主报告</a>；需要精确原值时沿链接进入专题。</p>
+<h2 id="synthesis-guide-_2">先按症状进入，不必顺着版本号读</h2>
+<p>先分清哪一层改变了：输入与评分口径 → 路由和梯度 → 状态接续 → 实际运行环境。下面七个入口把源码机制、已有控制、下一项实验与结论边界对应起来。点击症状展开；它们帮助选择调查路径，不会自动判定根因。CPU反例、真实本地IO和生产训练证据不能互相替代。</p>
+<div class="diagnostic-routes" id="diagnostic-routes"><details id="diagnostic-route-loss"><summary>换配比后，训练 loss 立刻下降</summary><div class="route-body"><p><strong>先查什么：</strong>先确认目标口径与输入，而不是先给配比排优劣。</p><p><strong>源码说明：</strong>原next_token_loss与输出z-loss路径说明：预测不变，输入分布或有效目标质量改变也会改变日志；共同logit平移还可只改变输出z-loss。</p><p><strong>最小对照：</strong>在两个checkpoint上分别评分同一份旧输入与新输入，保留四格N/T；纯CE和含z-loss目标分开。真实样本与分母不一致时，先修对齐。</p><p><strong>怎样决定下一步：</strong>四格齐全，只能分解评分差异；要判断训练收益，还需冻结评估和独立续训确认。缺格时保留未知。</p><p class="route-evidence"><a href="loss-triage.html#loss-triage">进入完整解释</a><a href="../analysis/loss_composition_cpu.json">结果记录（7项局部检查）</a><a href="../analysis/loss_cross_replay_cpu.json">结果记录（18项局部检查）</a></p><p class="route-boundary"><strong>证据范围：</strong>已有四格结果是人工CPU控制，不是Hero配比因果实验。</p></div></details><details id="diagnostic-route-nan"><summary>loss 有限，但梯度或下一状态非有限</summary><div class="route-body"><p><strong>先查什么：</strong>查看有效分母与反向，不只检查forward loss。</p><p><strong>源码说明：</strong>原微批方法平均各chunk均值；空目标chunk可forward为0而反向NaN。给已形成的均值乘回目标质量，不一定能消除内部NaN。</p><p><strong>最小对照：</strong>保留每个chunk的N、T及累积前后梯度；对比sum-first与mean-of-means，覆盖T=0和正的小数质量。检查更新后的state及保存交接。</p><p><strong>怎样决定下一步：</strong>先修分母/空chunk处理并重新核对梯度；若改了目标定义，按训练函数变更评审。有限loss不允许直接进入保存验收。</p><p class="route-evidence"><a href="gradient-accumulation-guide.html#gradient-accumulation-guide">进入完整解释</a><a href="../analysis/microbatch_loss_cpu.json">结果记录（10项局部检查）</a></p><p class="route-boundary"><strong>证据范围：</strong>CPU控制已显示差异，未证明Hero生产走了此微批路径或发生同类事故。</p></div></details><details id="diagnostic-route-drop"><summary>总 drop rate 没变，模型表现却变了</summary><div class="route-body"><p><strong>先查什么：</strong>把接受身份与保留权重质量接到每个样本。</p><p><strong>源码说明：</strong>原裁剪有expert/sender前缀优先；chunk局部容量不能跨块借用。被丢的已选logit仍可能通过裁剪前归一化分母影响router梯度。</p><p><strong>最小对照：</strong>同checkpoint、同样本比selected/accepted身份、每chunk需求与容量、保留权重总和、输出和router梯度；按真实领域ID分组，不能把expert ID当领域。</p><p><strong>怎样决定下一步：</strong>接受语义改变时，属于完整训练行为变更；不能只凭总drop率或吞吐批准等价。领域影响需独立固定评估。</p><p class="route-evidence"><a href="routing-guide.html#routing-guide">进入完整解释</a><a href="../analysis/receiver_layout_cpu.json">结果记录（10项局部检查）</a><a href="../analysis/post_clip_router_cpu.json">结果记录（15项局部检查）</a></p><p class="route-boundary"><strong>证据范围：</strong>已有布局与权重控制均为合成CPU/host重放，没有生产领域drop记录。</p></div></details><details id="diagnostic-route-kernel"><summary>换 kernel 后，前向一致且所有梯度有限</summary><div class="route-body"><p><strong>先查什么：</strong>逐段比较权重梯度、router梯度和同状态更新。</p><p><strong>源码说明：</strong>原EXPERT_SIDE从已舍入的weighted cotangent恢复dweight；真实portable MLP控制出现向上舍入、归零及BF16非下溢差异。</p><p><strong>最小对照：</strong>绑定backend、dtype、loss scale、接受mask与输出；分别对照dweight、router/专家梯度，再从同optimizer moment/count比较更新，并做长窗同步与恢复。</p><p><strong>怎样决定下一步：</strong>前向一致只通过前向检查；不得把局部梯度误差的大小直接换成能力或稳定性结论。真实更新/长窗缺失时继续验证。</p><p class="route-evidence"><a href="recent-moe-guide.html#recent-moe-guide">进入完整解释</a><a href="../analysis/portable_router_precision_cpu.json">结果记录（17项局部检查）</a></p><p class="route-boundary"><strong>证据范围：</strong>本控制没有真实GPU、语言loss、完整分布式backward或优化器更新。</p></div></details><details id="diagnostic-route-eval"><summary>macro 变坏、micro 变好，或者一个域跳动很大</summary><div class="route-body"><p><strong>先查什么：</strong>对齐模型视图、评估内容、标签布局与逐批分母。</p><p><strong>源码说明：</strong>原评估器根macro可含空域初始零，子级macro过滤空域；BPB的分批聚合和零权重NaN也有单独边界。</p><p><strong>最小对照：</strong>保留逐批目标、权重、字节、tag layout及N/T/B；先在同checkpoint重复评分，再看逐域贡献。总分变化与特定训练桶之间不作直接因果映射。</p><p><strong>怎样决定下一步：</strong>口径/输入不齐先重评；口径齐再讨论真实模型差异。平均改善不能替代保底域与冻结后的确认。</p><p class="route-evidence"><a href="eval-metrics-guide.html#eval-metrics-guide">进入完整解释</a><a href="../analysis/tagged_eval_accumulator_cpu.json">结果记录（12项局部检查）</a></p><p class="route-boundary"><strong>证据范围：</strong>这些原函数控制不能证明某次Hero公开曲线受评估bug影响。</p></div></details><details id="diagnostic-route-restore"><summary>日志显示 Loaded 成功，但恢复后轨迹不同</summary><div class="route-body"><p><strong>先查什么：</strong>核对实际候选、状态字段和共同的下一输入。</p><p><strong>源码说明：</strong>原恢复政策在缺manifest叶子时可能回退旧候选；manifest列出的实际数组缺失可直接报错。master/compute迁移与pending路由状态影响后续路径。</p><p><strong>最小对照：</strong>把未中断轨迹与恢复轨迹放在同输入/key上对比多步；逐项查params/master、optimizer、EMA、pending beta、step与loader cursor，保存实际路径和缺失项。</p><p><strong>怎样决定下一步：</strong>只读回数组不够；状态或下一输入不一致，先解决接续身份，暂不解释配比/优化器收益。</p><p class="route-evidence"><a href="state-guide.html#state-guide">进入完整解释</a><a href="../analysis/grug_state_restore_real_io.json">结果记录（9项局部检查）</a></p><p class="route-boundary"><strong>证据范围：</strong>已有真实本地数组IO控制，不是完整Hero模型、跨rank保存或生产状态清单。</p></div></details><details id="diagnostic-route-runtime"><summary>改了配置，但速度或内存结果不符合预期</summary><div class="route-body"><p><strong>先查什么：</strong>确认参数传到任务且在backend初始化前生效。</p><p><strong>源码说明：</strong>原defaults保留部分继承值并强制部分安全flags；dispatcher过滤环境，下游再补值；PJRT guard只检查版本前缀。</p><p><strong>最小对照：</strong>保存父helper前、dispatch过滤/resolve后、child初始化前、backend加载后四份记录；检查重复flags、硬件补值、实际wheel/插件路径和SHA。</p><p><strong>怎样决定下一步：</strong>实际生效环境和加载对象未知时，不能把性能差异归因于配置请求。不要把GIT_COMMIT字符串当源码树证明。</p><p class="route-evidence"><a href="routing-guide.html#routing-guide">进入完整解释</a><a href="../analysis/runtime_defaults.json">结果记录（13项局部检查）</a><a href="../analysis/launch_binding.json">结果记录（13项局部检查）</a></p><p class="route-boundary"><strong>证据范围：</strong>已有隔离host检查；未创建任务、运行完整resolver、加载plugin或初始化GPU。</p></div></details></div>
+<p>若同时改变数据、kernel、batch和恢复路径，先把执行身份与共同起点对齐。随后用固定输入做机制诊断，再用固定评估验证能力。记录一项检查通过了什么，而不要把所有通过项合成一个“训练已经健康”的总分。<a href="../analysis/diagnostic_routes.json">入口数据与结果绑定</a></p>
+<h2 id="synthesis-guide-1">1. 目前能够下的结论</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>结论</th>
+<th>支持它的具体材料</th>
+<th>影响自己的哪项决定</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>短窗数值和速度通过，不足以接受生产kernel切换</td>
+<td>作者ragged切换/回退、候选短窗通过后1590步复发；<a href="engineering-map-guide.html#engineering-map-guide">工程总图</a></td>
+<td>分别验收数值、速度、长窗同步与完整状态恢复，不用一个通过灯代替四项</td>
+</tr>
+<tr>
+<td>loss有限不保证更新后的状态健康</td>
+<td><a href="failure-boundaries-guide.html#failure-boundaries-guide">原主循环人工执行</a>：先更新state，再检查当前loss；人工坏更新可到达保存交接</td>
+<td>接受水位应检查下一state；事件结束、保存交接、提交完成与独立恢复分开记录</td>
+</tr>
+<tr>
+<td>权重声明与有效曝光可以不同</td>
+<td><a href="batch-clock-guide.html#batch-clock-guide">原混合方法</a>：整块截断与集中分配余数；阶段日志记录声明比例</td>
+<td>设计微小配比调整前，先看每桶整数计数是否真的改变</td>
+</tr>
+<tr>
+<td>相同step不保证相同数据位置</td>
+<td><a href="batch-clock-guide.html#batch-clock-guide">batch累积时钟</a>、<a href="order-guide.html#order-guide">历史边缘块账本</a></td>
+<td>改batch或恢复配比时，保存已消耗前缀并绑定真实cursor，不用当前batch反推历史</td>
+</tr>
+<tr>
+<td>计数溢出是可复现风险，但未在Hero声明下触发</td>
+<td><a href="mixture-range-guide.html#mixture-range-guide">原方法反例与逐桶上界</a>：Hero最大上界约2.57亿，低于int32限制</td>
+<td>按每个实际组件预检中间乘法与累计上界；缩粗分桶或增加CPT预算后重检</td>
+</tr>
+<tr>
+<td>整体评估改善与各域表现并不等价</td>
+<td><a href="live-observation-guide.html#live-observation-guide">10月6日观察</a>：PTB贡献约66%的宏CE改善；<a href="live-oct7-guide.html#live-oct7-guide">10月7日新增点</a>：PTB反弹，macro CE上升而micro CE下降，14域端点改善；<a href="eval-weight-guide.html#eval-weight-guide">条件权重反推</a>解释PTB对两种均值贡献的量级差异，但不证明真实分母</td>
+<td>同时保留macro、micro、逐域和敏感性分解；没有固定评估确认前不按端点改比例</td>
+</tr>
+<tr>
+<td>默认评估设计为重复遍历，仍需绑定实际内容</td>
+<td><a href="eval-identity-guide.html#eval-identity-guide">评估身份</a>：不shuffle、无截断、从0遍历；缓存内容哈希未知</td>
+<td>调查PTB时先验证实际输入与模型视图，而不是直接假定每轮随机重抽</td>
+</tr>
+</tbody>
+</table></div>
+<p>第一行来自作者生产记录；第二、第五行包含本地人工反例；其余各行混合固定源码与公开观测，限定范围见专题。它们不是同一种实验，也不应相加成“七项已验证训练收益”。</p>
+<h2 id="synthesis-guide-2">2. 想调整数据，先过三道检查</h2>
+<h3 id="synthesis-guide-_3">第一道：计划量与实际量有没有对上</h3>
+<p>库存约23.106T，训练目标18T，不能把库存占比直接当训练权重。40个语义cluster×5档形成200个训练桶，配置的另外23个组件属于验证来源。Q档也不是一套可直接迁移到任意数据的“质量真值”；评分窗口、校准和筛选实现需单独核对。<a href="data.html#data">数据配比</a>、<a href="quality-guide.html#quality-guide">质量桶</a></p>
+<p>对每桶同时存四项：库存量、阶段声明比例、整块整数计数、真实读取/评分量。阶段预算必须用历史batch累积换算；不足完整块的边缘单列，不能删掉后再宣称同预算。累计曝光轮数是预算量/库存量，不意味着每篇文档恰好出现相同次数。</p>
+<p><strong>检查不通过时先改读取与预算设计，不进入配比优劣排名。</strong> 否则在比较的可能是不同曝光量或不同文本，而不是自己想研究的比例。</p>
+<h3 id="synthesis-guide-_4">第二道：验证变化是广泛改善还是集中在少数域</h3>
+<p>10月6日归档观察约9.75T/4K，当时仍在同一声明配比阶段；它是历史窗口，不是当前实时进度。197999→209999的宏CE改善约−0.0265，去PTB后其余15域平均约−0.00969；两个数字同时成立。twitterAAE的端点变差但中间有升有降，不能称作持续退化，更不能把它直接映射到某个训练cluster。<a href="live-observation-guide.html#live-observation-guide">原值与图</a></p>
+<p>这里对自己的实验最实用的做法是：在选候选前确定目标域与保底域，记录平均值由谁推动；发现集中变化时，先核对该域真实输入、分母及可重复性。只看最好的域会漏掉退步，只看最差的一点也可能被波动误导。</p>
+<p>需要重评时，<a href="eval-replay-guide.html#eval-replay-guide">记录检查器</a>能区分模型视图、输入/分批/分母声明和逐批N差异。它不能替你生成真实运行记录，或独立验证记录内的数组哈希。</p>
+<h3 id="synthesis-guide-_5">第三道：让一个实验只回答一个问题</h3>
+<p>现有候选中，197c与996f同时改变195个桶，40个域累计份额都变；这种比较不能单独证明“数学加量”或“高质量后置”有效。<a href="transfer-guide.html#transfer-guide">预算分解</a></p>
+<p>精心调整配比不是从这组数字直接抄一个最优比例，而是：固定总预算，选一个接收域和明确供体，先判断到底研究域总量还是域内Q档；需要研究顺序时，先匹配每桶累计量与边缘块，再改变时序。候选选择用过的任务/seed不能独立证明选择后的收益，还需要冻结后的确认。</p>
+<h2 id="synthesis-guide-3">3. 数据与工程的联合作业顺序</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>现在看到什么</th>
+<th>先处理什么</th>
+<th>满足什么才进入下一步</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>换配比后训练CE突然变化</td>
+<td>对齐真实输入、权重与drop；固定评估另看</td>
+<td>能区分分布变化、读取变化和评估变化，再讨论学习收益</td>
+</tr>
+<tr>
+<td>固定评估一个域变化特别大</td>
+<td>绑定逐批输入/分母，做同checkpoint重评</td>
+<td>真实输入与模型视图一致，数值差异可解释，再追训练轨迹</td>
+</tr>
+<tr>
+<td>换kernel后快了，数值差很小</td>
+<td>核对组合变更、固定token与固定时间两种预算、长窗同步</td>
+<td>分别确认速度、数值、稳定性和回退状态；不要把速度增幅叫能力增幅</td>
+</tr>
+<tr>
+<td>参数范数保持但训练突然坏了</td>
+<td>保留更新方向、moment/count、组轴、实际optimizer视图</td>
+<td>范数、方向与状态均能解释；“范数没变”不解除调查</td>
+</tr>
+<tr>
+<td>checkpoint显示保存或Loaded成功</td>
+<td>检查提交标记、全部状态与独立恢复、placement和内存峰值</td>
+<td>真实保存后恢复通过；成功日志不能代替它</td>
+</tr>
+<tr>
+<td>自己的小代理选出一个好候选</td>
+<td>保留强基线、退步项与选择过程，做独立确认</td>
+<td>收益与波动、能力任务和规模迁移分开验收</td>
+</tr>
+</tbody>
+</table></div>
+<p>这是本报告建议的工作顺序，未在用户自己的训练上执行。相关阅读为<a href="loss-triage.html#loss-triage">loss诊断</a>、<a href="observability-guide.html#observability-guide">优化器事故记录</a>、<a href="checkpoint-commit-guide.html#checkpoint-commit-guide">保存提交</a>、<a href="checkpoint-memory-guide.html#checkpoint-memory-guide">保存内存</a>和<a href="scale-guide.html#scale-guide">跨规模比较</a>。</p>
+<h2 id="synthesis-guide-4">4. 一套最小而完整的配比实验</h2>
+<p>这里没有新的推荐百分比。缺少自己的库存、目标任务、历史曝光和预算时，给出百分比会掩盖这些决定性的输入。可以先按既有<a href="transfer-guide.html#transfer-guide">四臂草案</a>做以下实验设计：</p>
+<ol>
+<li><strong>固定比较对象。</strong> 从同checkpoint与完整optimizer/router状态开始；保留旧配比强基线。冻结评估内容、模型视图、总token和墙钟预算口径。</li>
+<li><strong>明确交换。</strong> 声明接收域、供体、交换量，以及是否改变域内Q档。用整数混合块编译；记录零计数和集中余数。</li>
+<li><strong>把因素拆开。</strong> 旧总量/新总量与旧Q构成/新Q构成组成四臂。每臂预算、长度、batch历史和恢复前缀对齐；保留各自checkpoint和数据记录。</li>
+<li><strong>先确认收益，再研究顺序。</strong> 用冻结后的重复与保底任务检验方向；如果研究先后，匹配累计桶量并用共同边缘块控制余数，不在换顺序时悄悄换总量。</li>
+<li><strong>最后放大。</strong> 同时检查任务收益与工程稳定性。设置阶段结论为继续观察、退回设计或进入下一规模；只有代理BPB改善时，仍保留能力与迁移未知。</li>
+</ol>
+<p>完整的阶段输入、产物和返回分支见<a href="pipeline.html#pipeline">七阶段管线</a>。上面的顺序是对已有管线的阅读压缩，不改动18条规则的版本，也不新增一个“所有风险总分”。</p>
+<h2 id="synthesis-guide-5">5. 怎样读报告，才不会被专题数量淹没</h2>
+<p><strong>要理解这次训练发生了什么：</strong> 本章 → <a href="engineering-map-guide.html#engineering-map-guide">工程15案</a> → 选择自己关心的症状 → 核对作者动作与本地源码范围。</p>
+<p><strong>要为自己的训练设计配比：</strong> 本章第二节 → <a href="data.html#data">数据账本</a> → <a href="decision-guide.html#decision-guide">候选比较</a> → <a href="transfer-guide.html#transfer-guide">供体实验</a> → <a href="batch-clock-guide.html#batch-clock-guide">顺序与时钟</a>。</p>
+<p><strong>要诊断当前异常：</strong> 本章第三节 → <a href="loss-triage.html#loss-triage">loss流程</a> → 相应的状态/读取/优化器/保存专题；先保留真实异常记录，不用合成探针结论替代自己的运行。</p>
+<p>每次调查最终写清三句话：观察到什么，哪个具体对象或运算能解释它，还有哪项材料会推翻这个解释。然后执行相关<a href="rubrics.html#rubrics">判断规则</a>。这比记住某个成功配方更容易迁移，也让“工程细节决定训练好坏”变成能复查的工作。</p>
+<p>本章只综合已有材料；没有新增数据抓取、GPU实验、真实恢复或读者理解验证。最新数值观察仍固定于10月6日新快照，其余历史专题保留各自日期。</p>
+<h2 id="synthesis-guide-_6">拆批也可能改变目标：先核对分母</h2>
+<p><a href="gradient-accumulation-guide.html#gradient-accumulation-guide">梯度累积审计</a>追踪固定版通用Trainer、累积器与Hero专用路径。若各块返回有效token均值，普通平均会给不同有效数的块相同份额；人工标量例子甚至改变梯度方向。等固定位置分母和等有效分母都有一致的正例。当前Hero专用函数没有调用该通用累积器，因此这是一条迁移验收规则，不能归因其历史loss。真实模型还需验证路由、RNG、裁剪及optimizer状态。</p>
+<h2 id="synthesis-guide-_7">前向有限仍需检查反向与触发条件</h2>
+<p><a href="masked-numerics-guide.html#masked-numerics-guide">零权重审计</a>已经在真实JAX CPU上复现：原mean全零weight时loss为0、反向为NaN；安全分母对照解决局部除零，但不能排除上游NaN。另一个有限输入padding正例与reference梯度一致。公开text配方在固定代码正常执行条件下应有46,126,080有效目标，因此这项局部复现不能解释Hero历史事故，需先取得实际T与inactive非有限值记录。</p>
+<h2 id="synthesis-guide-v50update0">V50：空目标处理不能只把梯度或update改成0</h2>
+<p><a href="zero-gradient-state-guide.html#zero-gradient-state-guide">原AdamH模块CPU对照</a>确认：有历史moment时，零梯度仍产生非零更新；只丢弃最终update，状态仍推进，下一有效步也会改变。空目标应按实际global T与接受策略判断，不能按grad==0跳步，也不能用某个未使用expert的叶梯度为0触发整步跳过。moment/count、训练step、调度、EMA与QB应分别记录接受条件。本轮只执行optimizer局部对照，完整Hero步与事故触发仍未验证；规则锚点不变。</p>
+<h2 id="synthesis-guide-v51">V51：裁剪验收要看归约范围和后续状态</h2>
+<p><a href="optimizer-guide.html#optimizer-guide">分组章节的CPU对照</a>确认三组各裁剪到1时合并范数为√3，且原AdamH首步近乎相同的参数更新可留下不同moment；固定后续参数与梯度，差异仍进入下一次update。验收需记录clip范围、系数/触发率、moment/count和后续有效步，不能只看首次更新相似。最新归档max_grad_norm=None；这不是Hero已启用裁剪的事件证据，规则锚点不变。</p>
+<h2 id="synthesis-guide-v52">V52：加载器恢复控制</h2>
+<p>恢复时区分store预取水位、交付水位与完成更新水位。原异步host函数的人工控制表明，提前取到的索引不能代替state.step重建的下一批；相同索引仍须绑定token身份。<a href="batch-clock-guide.html#batch-clock-guide">加载器恢复控制</a>。</p>
+<h2 id="synthesis-guide-v53">V53：混合数据身份</h2>
+<p>同key与按名称计的配额仍不能重建序列：原混合类把有序dataset_index编码进ID，整数余数并列也受此顺序影响；有限库存长度与内容版本继续决定子索引身份。<a href="mixture-identity-guide.html#mixture-identity-guide">真实CPU映射控制</a>。</p>
+<h2 id="synthesis-guide-v54shuffle">V54：桶内shuffle与切分</h2>
+<p>固定seed的train/val切分仍依赖库存快照。原CPU控制在同快照下互斥，跨长度快照则出现旧train/new-val身份交集；最新Hero未声明启用该拆分，不据此认定泄漏。<a href="mixture-identity-guide.html#mixture-identity-guide">桶内shuffle与切分</a>。</p>
+<h2 id="synthesis-guide-v55">V55：小实验库存缩放</h2>
+<p>同比缩训练预算与库存，只在连续条件下保持曝光轮数。原train_sets逐桶floor后，小库存误差可能很大或变0；模型配比收益还需区分权重、库存多样性与重复曝光。<a href="mixture-identity-guide.html#mixture-identity-guide">原小实验控制</a>。</p>
+<h2 id="synthesis-guide-v56moe">V56：新MoE提案</h2>
+<p>新MoE提案把未写内存、路由梯度近似与调度预算同时带入评审。#9832/#9833快照均未合并；原patch语句CPU控制显示zero权重/float16小乘积的梯度边界。作者短窗提速不能代替生产部署或长程等价。<a href="recent-moe-guide.html#recent-moe-guide">源码提案</a>。</p>
+<h2 id="synthesis-guide-v57">V57：性能归因</h2>
+<p>单项加速在完整图中可能暴露通信。作者表中shared GEMM加入时慢0.014秒，最终移除却慢0.35%/0.22%；条件效果不能当组件独立收益。时间降幅、相对速度与MFU百分点需分开。<a href="recent-moe-guide.html#recent-moe-guide">性能图解</a>。</p>
+<p>V58判断：正bf16输入仍可能乘积下溢，但局部dS差异不必传到router logits。数值优化验收要继续到同状态参数更新与固定评估，见<a href="recent-moe-guide.html#recent-moe-guide">反向链分析</a>。</p>
+<p>V59核对原router：bias决定选择，权重取unbiased logits；epsilon可主导归一化。极端CPU输入说明边界，未证明Hero发生此问题，见<a href="recent-moe-guide.html#recent-moe-guide">原权重路径</a>。</p>
+<p>V60观察：一个assignment的一档bf16舍入误差，在人工集成中改变两个选中专家的router梯度；同差异在fresh与共同warm状态产生的更新尺度相差很大。评审必须检查归一化耦合与moments，见<a href="recent-moe-guide.html#recent-moe-guide">反向链与更新</a>。</p>
+<p>V61收紧配比结论：67个保留评估点无法区分108000配比与108778执行改动；level矩阵秩2/3，分段矩阵秩4/6。真实轨迹可筛候选与退步域，不能据此估计桶边际收益或最优权重，见<a href="mix-trajectory-guide.html#mix-trajectory-guide">事件可区分性</a>。</p>
+<p>V62补充正面证据与取舍：d512选中配方在三pair的Paloma/代码/Uncheatable macro都改善，但manosphere和BBC news均退步。swarm参与过选择，不是独立确认；V61仅限制535B长期轨迹的事件拆分。见<a href="mix-trajectory-guide.html#mix-trajectory-guide">逐seed结果</a>。</p>
+<p>V63原JAX控制显示：专家ID变化时，bf16权重数组仍可能相同；单个非有限pending可经中心化传播到整层bias。恢复和评估比较应联合绑定ID/权重与消费者状态视图。人工控制非生产事故证据，见<a href="state-guide.html#state-guide">状态章节</a>。</p>
+<p>V64原恢复入口控制核对永久元数据、master权威布局、严格加载及pending请求。manifest存在时不从陈旧目录改选master；损坏与缺失分开。推理恢复不等于训练恢复，真实数组IO仍未知，见<a href="checkpoint-commit-guide.html#checkpoint-commit-guide">保存与恢复</a>。</p>
+<p>V65 的进一步结论：checkpoint 能读到有限值，并不足以说明恢复的是保存前的状态。小数组真实 Zarr3/OCDBT 实测中，未写块与删逻辑块会读作零；这是验收条件的反例，不是 Hero 事故归因。应将保存预期内容与恢复内容对应，具体见保存提交章节。</p>
+<p>V66 推进到原 host-array 保存函数与真实单进程 manager。受控元数据冲突会释放预算、允许另一数组写完，但整次失败且不调用成功 callback；上次未取出的异常会阻止下一次保存开始。需要按保存 attempt 判断根因和水位，不能只看报错发生在哪次 save。</p>
+<p>V67 将原发现与原 leaf restore 接到真实 IO。人工标志会让部分写入目录成为候选，strict 缺叶检查不会拒绝合法填充值块；manifest 声明形状与实际 store 形状的比较也未在该 leaf reader 中执行。完整状态层是否另有保护未知，故结论是应检查各层合同，而非将受控输入归成 Hero 的真实事故。</p>
+<p>V68 补齐 V67 的一部分上层边界：原 NamedArray 重建在检查开启时确实拒绝错误轴尺寸，普通 ShapeDtypeStruct 叶则按存储形状返回；两类在本例都接受 int32 替代 float32。避免将底层缺约束写成上层全无保护，也避免将轴尺寸保护写成完整 schema 保证。</p>
+<p>V69 多字段实测显示，缺 manifest 叶和缺实际数组元数据进入不同异常/回退路径；最后一个 legacy 错误可能把原先缺一叶显示成缺六叶。原 master 布局 hook 的来源选择也被真实 IO 验证。结合源码分析 bug 时，异常产生层与 state 来源比表面报错文字更有诊断价值。</p>
+<p>V70 将恢复研究接回配比：原候选选择相信 metadata 排序，原训练入口用 state.step 启动数据消费。人工水位不一致与历史 batch 改写会改变下一批身份及阶段推算。没有对齐这些时钟，恢复附近 loss 的配比归因会先失去处理时刻依据；本轮没有测真实 loss。</p>
+<p>V71 原 callback 与原混合联合实测排除了本例正常路径的错一拍/半批跨界；只有故意把旧边界拼到新 loader 时出现 A4/B4，而日志仍记起点 stage0。配置标签不是观测域占比，域样本占比也不是有效 loss target 占比，不能连跳两层解释 loss。</p>
+<p>V72 原模型 loss 方法联动显示，同样两条域序列、同样预测，仅有效目标 A1/B3→A3/B1 就使 mean 下降1.5；原 cross_entropy_loss 指标在启用输出罚项时包含它。训练曲线有诊断价值，配比收益仍需固定评估与目标质量分解。</p>
+<p>V73 新的理解练习：四格重放显示同一预测变化在旧分布改善、在新分布退步；平均 loss 下降仍可能掩盖域内退化。先查看域内 NLL，再核对参考分布与交互项，详见 <a href="loss-triage.html#loss-triage">loss诊断</a>。</p>
+<p>V74 提醒：从逐位置loss到最终日志还有累计与覆盖政策。原评估控制确认根级/父级空域差异、T&lt;1分母下限与零权重NaN传播。选配比先核对评估覆盖和数值有效性，详见 <a href="eval-metrics-guide.html#eval-metrics-guide">评估分母</a>。</p>
+<p>V75 实验接口的教训：weight单列广播可让原CE翻倍，byte ID单列可让BPB翻倍，标签列交换则能通过结构检查却换掉域内结论。多标签又是原功能，不能一律当错。配比判断须先验收测量接口，见<a href="eval-metrics-guide.html#eval-metrics-guide">评估分析</a>。</p>
+<p>V76 原CE自动微分接入原通用累积器：有效T=1/3时head梯度方向反转；T=0/3时loss有限、梯度NaN。分子优先的小例恢复整批结果，但真实训练入口与辅助项仍需验证。详见<a href="gradient-accumulation-guide.html#gradient-accumulation-guide">梯度累积</a>。</p>
+<p>V77回到实况：新NoExecute驱逐记录，#9708关闭未合并，#9833仅注释/docstring修订但澄清portable仍保存专家输出。当前源码AST与状态证据已核对，生产节点根因、部署与GPU收益未独立验证，见<a href="recent-moe-guide.html#recent-moe-guide">MoE提案</a>。</p>
+<p>V78把portable残差分析接到原CPU/XLA执行：尾部NaN未污染普通梯度，但raw row-dot允许未定义；保存out破坏控制只改变row-dot支线。完整梯度合同必须覆盖caller选择和映射，详见<a href="recent-moe-guide.html#recent-moe-guide">MoE工程分析</a>。</p>
+<p>V79 原裁剪/offset/chunk计划与host身份重放：总逻辑容量32仍丢5；编号重排保持总接受数却改变接受身份。数据配比要从真实样本追到assignment接受mask，不能仅看全局drop，详见<a href="routing-guide.html#routing-guide">路由容量</a>。</p>
+<p>V80补上接受mask后的权重路径：丢弃assignment的权重梯度为零，不保证已选router logit梯度为零，因为它仍在归一化分母中。原函数15项CPU控制验证这一点；assignment接受率之外还需看保留权重质量。裁剪后重归一化改变前向及router梯度，不能当成等价修复。详见<a href="routing-guide.html#routing-guide">权重路径</a>。</p>
+<p>V85补充可选裁剪的数值合同：FP16有限梯度可能在范数平方时溢出/下溢，裁剪输出仍有限；原AdamH已有状态会继续更新。公开归档max_grad_norm=None，不能当作Hero事故。详见<a href="optimizer-guide.html#optimizer-guide">裁剪输入与状态</a>。</p>
+<p>V86把“状态结构兼容”推进为真实Adam内存状态对照：相同count和moments在不同总训练步数N下仍产生不同衰减；只重置count还改变偏差校正。15项CPU检查不证明Hero发生过错配。见<a href="optimizer-guide.html#optimizer-guide">续训与配比干预</a>。</p>
+<p>V87把总训练步数N与配比顺序接起来：原构建函数重算切换点，短实验的阶段碰撞会覆盖main；固定spec的八轮校验不自动约束延长后的raw预算。应共同核查阶段表、各桶曝光和优化器时钟。详见<a href="batch-clock-guide.html#batch-clock-guide">预算重建</a>。</p>
+<p>V88区分连续权重、整数域assignment与真实有效目标：原spec控制中c27q0名义轮数6.7408→6.6256，c22q0正连续预算但零assignment。历史W&amp;B配置与源码JSON分别保留，见<a href="mixture-range-guide.html#mixture-range-guide">整数曝光</a>。</p>
+<p>V89核对旧/新整数计数：Python sum版本变化经归一化/截断放大，同一归档权重也会产生不同quota。V36保留为历史本地结果，V88的来源差异解释已补正。见<a href="mixture-range-guide.html#mixture-range-guide">运行时取整</a>。</p>
+<p>V90修订工程判断：缺失桶反例说明底层接口需要调用方保证支持范围；正常配置已经拒绝未知桶名。继续核对构造后的实际子域，别用声明检查代替读取证据。详见<a href="mixture-identity-guide.html#mixture-identity-guide">为什么底层6/4反例不是Hero事故证据</a>。</p>
+<p>V91结论：普通活跃训练缓存缺失会在构造层拒绝；验证缺失却可省略，因此先检查评估面板身份再解释loss。正权重空concat另有构造边界，但归档组件没有该形状，不能归因Hero曲线。<a href="mixture-identity-guide.html#mixture-identity-guide">构造路径与验收</a></p>
+<p>V92工程结论：不要把源码中的串行缓存构建直接改成线程池。读取完成顺序被显式恢复为组件顺序；跨机还需相同构建计划。as_completed快速发现失败也不等于整个调用快速退出，需要核对运行中IO和executor清理时序。<a href="cache-guide.html#cache-guide">并发与派发控制</a></p>
+<p>V93可执行入口：<a href="code-242c28493356d39e.html">数据记录检查器</a>区分conflict、needs_evidence和record_consistent_only。当前归档示例返回needs_evidence，缺实际子域、域顺序、host计划与评估身份；这表示公开材料不足以证明执行，不表示Hero故障。工具只查记录，不核对真实token或批准训练。<a href="pipeline.html#pipeline">模板与用法</a></p>
+<p>V94：数据记录建议使用<a href="code-163ec07d01be05d2.html">严格版本</a>。V93存在未知类型/错误子域形状可被判自洽、缺host覆盖无法发现等漏项，现保留并补回归；新工具要求expected_hosts，当前归档仍缺执行证据。<a href="pipeline.html#pipeline">修正范围</a></p>
+<p>V95补证：单条/批量原读取在集中人工配额下可以不同；阶段prefix坏掉时则一致地读错。restart可返回合法身份而隐藏负索引。Hero声明下本地原前缀与宽参考相同、逐桶上界安全，未认定生产事故。<a href="mixture-range-guide.html#mixture-range-guide">端到端读取对照</a></p>
+<p>V96：原first_exhausted在人工部分块中可以报告包含越界读取的长度；all_exhausted总次数也不等于unique覆盖。Hero归档声明restart，所以不是该运行的有限停止事故证据。自己的有限策略应做末块读取与覆盖验收。<a href="mixture-identity-guide.html#mixture-identity-guide">停止合同</a></p>
+<p>V97解释修正：累计域次数不一定等于已覆盖连续域内索引。部分混合块下，读够库存长度仍可能没看完库存；后续还可新增身份。V45连续公式需要其区间前提，整块与边缘分开核算。<a href="repeat-exposure-guide.html#repeat-exposure-guide">重复覆盖边界</a></p>
+<p>V98新增恢复结论：过去阶段参与重建当前域内偏移。当前域名次序和配额可以完全相同，实际身份却改变；取模也可能令不同历史暂时呈现相同身份流。共同checkpoint下的配比实验应固定或明确迁移数据历史。<a href="mixture-identity-guide.html#mixture-identity-guide">源码与对照</a>。未测生产恢复或loss收益。</p>
+<p>V99：loader的慢请求日志不构成超时恢复合同。有限长度等待在读取watchdog之外，同步stalled日志事后发出；预取将多批读取合并，一次后部故障可在首批交付前传播。配比收益比较须区分有效训练进度与数据访问成本。未观测Hero卡顿或训练收益。<a href="batch-clock-guide.html#batch-clock-guide">详情</a>。</p>
+<p>V100：原后台队列错误按FIFO传递，正常耗尽后重复next却可等待空队列，stop也不唤醒已经阻塞的消费者。局部候选修正消费终态与stop观察，未解决生产IO取消或join deadline。训练退出、恢复和配比比较必须分别核对已请求、已交付与完成更新水位。<a href="batch-clock-guide.html#batch-clock-guide">源码、19项原模块及5项候选控制</a>。</p>
+<p>V101：实时复查没有新事故正文；新增main/提案版本对照。五份数据/队列源码同字节，train环境辅助函数不同：main carry默认0.75/85，提案0.78/105；显式overlap在ragged无carry分支的保留/强制行为不同。Iris分类依赖disruption而非单独exit137。未绑定实际部署或节点根因。<a href="recent-moe-guide.html#recent-moe-guide">完整对照</a>。</p>
+<h3 id="synthesis-guide-v102">恢复不是单个状态位（V102）</h3>
+<p>Iris 的 task 可以已经回到 PENDING，旧 attempt 却仍占着资源等待终止确认。这是避免旧进程未退出就重复分配容量的合同。连带退出不重复消耗根故障预算，但轮流崩溃的多个 rank 仍会累计消耗 job 的 FAILED attempt 总预算。<a href="gang-recovery-guide.html#gang-recovery-guide">三本账与恢复时间线</a>。配比评估应另查完成 token/update 与固定评估；重新 RUNNING 并不提供模型恢复状态和数据顺序的证据。</p>
+<h3 id="synthesis-guide-v103">控制器恢复的失败验收（V103）</h3>
+<p>正常 roundtrip 通过以后，再用坏主库、缺失目标和第二份上传失败核对调用链。要求失败后保住原状态、候选整组完成、恢复身份明确，并把控制器备份与模型/optimizer/游标备份分别绑定。当前固定源码的普通恢复保住两份文件，但请求回滚先清空；部分主库发布也能被选为 latest。本轮是原函数本地故障控制，未修上游或证明生产发生。<a href="controller-recovery-guide.html#controller-recovery-guide">证据与待实施建议</a>。</p>
+<h3 id="synthesis-guide-v104">候选通过与生产接入分开验收（V104）</h3>
+<p>检查所有写入者与读取者是否使用同一完成合同，旧格式迁移是否明确；文件配对、字节摘要、数据库可用性与共同状态时刻分别验收。22 项控制支持本地候选路径，不覆盖原生产调用链、并发、强制中断或模型恢复。<a href="controller-recovery-guide.html#controller-recovery-guide">恢复候选与未完成门槛</a>。</p>
+<h3 id="synthesis-guide-v105">先确认状态内容，再判断备份风险（V105）</h3>
+<p>当前 auth 无业务表、签名 key 来自配置，缺文件不能直接推成密钥丢失。人工交错控制中各文件均有效且摘要通过，仍可来自不同 generation；先识别真实跨组件不变量，再审计 snapshot 获取时刻。文件完整、字节正确、数据库可用、共同状态时刻分别验收。<a href="controller-recovery-guide.html#controller-recovery-guide">源码与控制</a>。</p>
+<h3 id="synthesis-guide-v106">V106：异步保存为何需要一份独立数据</h3>
+<p>固定原 helper 在 staging 阶段复制数据，随后训练才可复用旧 buffer。10 项单 CPU 控制中，真实 donation 后延迟消费者仍得到旧值；保留观察视图的对照却未发生 donation。结论是保留快照所有权保护，并在测试里核实 donation 是否真正发生。减少 copy 或提前返回属于合同变更，需另验；本轮没有得到 GPU 内存收益、完整恢复或配比因果效应。<a href="checkpoint-memory-guide.html#checkpoint-memory-guide">详解与时序图</a>。</p>
+<h3 id="synthesis-guide-v107-loss">V107：短期 loss 改善不一定证明恢复正确</h3>
+<p>原 staging、真实 CPU donation、本地 OCDBT 与原恢复函数已经在小 Grug state 上接通。完整恢复的下一 state 与不中断路径逐叶一致；原 weights-only 工具恢复同参数，但保留 fresh Adam/count/clock。更新前 loss 同为 3.262185574，更新后分别 3.239840031 与 3.229082584，后者更低却已换了 optimizer 历史。这是人工三参数反例，不是 Hero 事故或优化建议。配比研究需要先确认恢复比较对象，再看 loss。<a href="checkpoint-commit-guide.html#checkpoint-commit-guide">流程、原工具用途与数值</a>。</p>
+<h3 id="synthesis-guide-v108">V108：未来课程设计可能提前改变当前顺序</h3>
+<p>固定入口的 data_seed=None 与显式0走不同派生路径。原 train_sets 又按完整正权重支持域的构造顺序分配 child shuffle key；未来才启用的域若插到前面，会提前改变旧域的 key。12 项 CPU 控制中，当前域名槽序列和完整库存相同，前96个内容身份仍有92处不同；末尾追加与始终零权重控制在本例保持前缀。这个机制要求配比实验核对完整支持域/顺序/key，而非只冻结过去权重。不是生产发生率或 Hero loss 因果结论。<a href="mixture-identity-guide.html#mixture-identity-guide">逐槽证据与图</a>。</p>
+<h3 id="synthesis-guide-v109">V109：配比账本要分开序列和计分</h3>
+<p>修正数据指南“权重使用有效训练token口径”的含混表述：原sampler按序列分配quota，loss按Σloss_weight归约。13项CPU控制中，两域序列各半、计分密度3:1时，目标系数为75%/25%；loss都为ln2仍可有不同梯度系数。统一缩放权重则不改归一化loss/梯度，所以权重和也不是独立信息量。反密度换算只是指定系数的条件候选，不是Hero配比优化结论。<a href="data.html#data">四账本、原值与适用范围</a>。</p>
+<h2 id="synthesis-guide-v110">V110：进度的测量边界</h2>
+<p>V110新增一条资源判断：常态单步快，不等于跨天的训练前沿推进快。公开采样的单步duration中位数14.806秒，端点日历平均16.116秒/日志步；聚合范围不同，不能将差额解释为停机比例。先用时间与步数定位区间，再用生命周期事件查原因；没有域级加载证据，不据此改变数据配比。详见<a href="operational-progress-guide.html#operational-progress-guide">四种时钟与事故对齐</a>。</p>
+<h2 id="synthesis-guide-v111">V111：恢复后的下一次更新</h2>
+<p>V111得到一个更具体的源码结论：恢复不只要求“参数加载成功”。原QB setter始终替换bias，因此预先应用pending后再清零会改变下一次训练；完整状态恢复则在人工模型的原训练闭包中复现相同更新。实际运行还暴露EMA初始化共享参数与整状态donation的CPU兼容性边界；Hero归档配置没有开启EMA，不归为生产事故。<a href="pending-resume-guide.html#pending-resume-guide">完整机制、19项控制与局限</a>。</p>
+<h2 id="synthesis-guide-v112">V112：初始化与恢复的构造路径</h2>
+<p>V112得到一个会影响排障结论的反例：同一人工状态直接启动失败，经真实保存恢复却成功，因为值相同但EMA共享缓冲区被拆开。只复制EMA或关闭donation也成功且下一次完整状态相同。恢复测试不能覆盖所有初始化错误；局部CPU候选不等于生产修复。详见<a href="pending-resume-guide.html#pending-resume-guide">初始化与恢复五路径</a>。</p>
+<h2 id="synthesis-guide-v113loss">V113：有限loss与路由状态</h2>
+<p>V113确认一个完整性反例：人工异常pending可保存在原本地IO中并忠实恢复；原下一步loss仍有限，而bias非有限。后续有限beta可以覆盖异常bias，却没有撤销已改变的参数轨迹。不能仅凭loss曲线或某个健康快照验收恢复。原QB估计器是否可产生这些状态、Hero是否发生过仍未知。<a href="failure-boundaries-guide.html#failure-boundaries-guide">机制与原值</a>。</p>
+<h2 id="synthesis-guide-v114">V114：原估计器输入边界</h2>
+<p>V114执行原QB histogram wrapper及单CPU真实collective接口，9项控制区分空有效集合、无效位置排除、有效异常传播，以及有限极端margin导致的beta/bias溢出。未执行实际Hero margin构造或跨host归约，未认定生产事故或修复。检查margin范围、beta与应用后bias分别记录；padding过滤不代替有效输入健康性验收。<a href="qb-guide.html#qb-guide">完整原值与机制</a>。566份来源未变。</p>
+<h2 id="synthesis-guide-v115">V115：归约一致与近似误差</h2>
+<p>V115执行四虚拟CPU设备的原histogram，11项控制：单/四设备、跨分片重排、空分片与padding过滤一致；其他专家的人工离群值扩大共同网格，精确参考阈值未变而histogram阈值与固定query专家集合改变。有限与归约一致不等于估计近似稳定。配比研究应另记margin分布、箱宽及参考误差，不能直接将人工例子解释为真实数据域问题。未测GPU/网络/完整模型或性能；566份来源保持。<a href="qb-guide.html#qb-guide">原值与分析</a>。</p>
+<h2 id="synthesis-guide-v116margin">V116：margin的原投影入口</h2>
+<p>V116执行原模型router投影/top-k/margin与真实四CPU histogram，9项控制。明确QB使用原logits减带bias alpha，sigmoid只用于combine；零bias E3/K2的每行margin最小值为0，非零bias可有负margin。满足原局部路径约束的人工离群值仍能改变共享网格，但较小离群值的阈值误差变化未改变共同query专家集合。未运行完整模型或真实域/能力对照，566份来源不变。<a href="qb-guide.html#qb-guide">完整原值与边界</a>。</p>
+<h2 id="synthesis-guide-v117">V117：目标与路由人口分开记账</h2>
+<p>V117接原causal目标mask、attention有效性、投影margin和四CPU histogram，9项控制：只改loss_weight不改变QB有效人口；零直接目标位置仍可改变阈值。boolean空query与additive mask的有效性合同不同。每域输入/路由有效/正目标/加权目标分开记录，不静默将prompt改为padding。本轮人工answer-only不是Hero配方，未测attention、完整梯度或能力收益；566份来源不变。<a href="boundary-guide.html#boundary-guide">原值及边界</a>。</p>
+<h2 id="synthesis-guide-v118">V118：研究收束为训练决策</h2>
+<p>新增<a href="training-decisions-guide.html#training-decisions-guide">训练决策备忘录</a>：六类症状的最小对照、#9352评估修正但排序不变的数值案例、配比五本账及供体/顺序/独立确认管线。将继续观察、废弃候选、进入放大验证分开，不给未执行实验判通过。新增机器可读案例只复算既有作者报告，无新训练、生产采用或最优配比结论；566份来源保持。</p>
+<h2 id="synthesis-guide-v119">V119：评估补丁的调用合同</h2>
+<p>固定作者最终fork补丁，执行原setter、runner、StepInfo与tagged callback的15项CPU控制：current/EMA视图正确且raw state不改，普通/未到期回调无QB应用；评分去重前已执行setter，装饰器会转发force。当前两种eval hook兼容，人工plain hook不兼容，不归为生产事故。完整循环、GPU、实际成本与生产采用未验证。7份新来源，API正文未变，来源总数573。<a href="pending-resume-guide.html#pending-resume-guide">局部结果与工程规则</a>。</p>
+<h2 id="synthesis-guide-v120key">V120：删域响应依赖参照，过期历史也参与key分配</h2>
+<p>重算80次删域的54字段4320行响应；两套参照下Paloma/GSM8K/HumanEval方向反转分别6/9/31个域，均非显著性结论。真实配置保留过去的正权重阶段，原函数条件复算仍给200桶相同命名child key；剪历史反事实才过滤额外桶并改变key。11项分析控制、16000条key记录和新响应图；不归因为历史事故或535B配比最优解。<a href="practical.html#practical">原值、源码与可执行规则</a>。</p>
+<h2 id="synthesis-guide-v121">V121：配比边界早于共同恢复点</h2>
+<p>新取得生产run声明0/3120阶段，与80份续训的0/384/3120不同；日志前沿对应393次更新。原49,152槽混合块条件复算显示部分块前缀计数和逻辑身份不同，不能扩大为真实重复token事故。直接改393违反原整块assert；step432桥接合法但改变39次续训更新和预算，仍未执行。12项控制、逐桶原值与时间线；实际checkpoint、历史key及训练收益未知。<a href="batch-clock-guide.html#batch-clock-guide">恢复边界与部分块</a>。</p>
+<h2 id="synthesis-guide-v124">V124：模拟子集与恢复数据流</h2>
+<p>同checkpoint不是完整的数据控制。历史入口恢复模型状态后重新建数据集；模拟搜索先shuffle再slice，换数据key可能换保留子集。先固定真实子集与数据流身份，再把loss差归因给权重；本轮原代码控制只使用人工身份，未测实际质量收益。<a href="run-code-guide.html#run-code-guide">V124机制与模板</a>。</p>
+<h2 id="synthesis-guide-v125io">V125：前缀抽样支持与IO布局</h2>
+<p>模拟搜索还需审查“怎么抽到子集”。历史窗口式shuffle的前缀不等于全库存等概率子集；这是源码支持范围结论，并不直接证明真实质量偏差。先取得真实身份/来源构成，再评估是否需要重抽或改window。<a href="run-code-guide.html#run-code-guide">V125反例与边界</a>。</p>
+<h3 id="synthesis-guide-v131">V131：训练失败的最后一条报错可能来自收尾</h3>
+<p>固定源码11项人工控制显示，finally进度hook或日志再次失败，会成为最外层异常，先前训练错误仍在context。CHECKPOINT_FINISHED即使保存交接抛错也可能发出；最终wait失败也可能没有训练体fatal日志。排错需完整异常链，恢复需commit/发布/读取证据；这些缺失时，不应把重启后loss变化解释为配比收益。见 <a href="exception-provenance-guide.html#exception-provenance-guide">异常链与恢复归因</a>。未证明Hero实际出现该事故。</p>
+<h3 id="synthesis-guide-v132checkpoint">V132：同一个坏checkpoint，恢复路径也会改变启动结果</h3>
+<p>原策略/真实本地IO的12项控制确认：optional模式下，父目录搜索会把已发现但缺叶的checkpoint记为失败恢复，直接指定同一具体目录却可能返回初始state。完整数组的坏marker在父目录下可被跳过；JSON null则中止扫描。由此建议独立声明首次启动/续训/weights-only，并记录实际祖先，再开展配比比较。见 <a href="optional-resume-guide.html#optional-resume-guide">启动合同</a>。这些是人工夹具结果，Hero是否受影响未知。</p>
+<h3 id="synthesis-guide-v133state">V133：完整state之外还有新构建的优化计划</h3>
+<p>原scheduler/build与真实Optax注入的14项控制：相同state在不同N下得到不同LR和衰减；缓存lr在下一步重新求值，外层count与WrappedScheduleState.count并不互相替代。只重置调度count可让参数不动而Adam状态继续推进。配比比较须绑定实际计划和各时钟。<a href="optimizer-schedule-guide.html#optimizer-schedule-guide">机制对照</a>。仅选中人工Adam组，无完整Hero/GPU或语言loss收益。</p>
+<h3 id="synthesis-guide-v134">V134：配置能构造，不证明计划符合意图</h3>
+<p>固定scheduler16项控制确认数值1按完整周期解释，小比例在短预算可取整成零，未排序/越界周期端点可生成有限但不合意的曲线。新图展示条件行为，10月7日归档Hero声明没有使用这些反例。先核对单位与周期几何，再解释loss变化。<a href="schedule-config-guide.html#schedule-config-guide">原值、图与候选验收</a>。</p>
+<h3 id="synthesis-guide-v135">V135：把故障细节收束成确认路线</h3>
+<p>已有三组终点删去任一seed，代码文本与HumanEval目标BPB仍改善；GSM8K相对比例基线方向可翻转。由此优先独立确认代码生成收益并核实数学风险，不继续按微小macro差值盲调200桶。恢复祖先、输入、optimizer及新闭包共同组成比较合同；同时改计划时另用四臂拆开。<a href="confirmation-playbook-guide.html#confirmation-playbook-guide">完整手册</a>。删seed范围不是置信区间，没有新训练。</p></section><nav class="pager"><span></span><a href="training-decisions-guide.html">下一篇 →</a></nav></main></body></html>

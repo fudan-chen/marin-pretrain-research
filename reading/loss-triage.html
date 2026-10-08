@@ -1,0 +1,2067 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>配比切换后的loss变化：怎样逐步排查 · Marin 预训练研究</title><link rel="stylesheet" href="reading.css"></head><body><header><nav><a href="index.html">主题目录</a><a href="../report_standalone.html">完整报告（保留）</a><a href="code.html">源码与候选补丁</a><a href="tools.html">交互工具</a></nav></header><main><p class="muted"><a href="theme-loss.html">04 · Loss、梯度与数值精度</a> / 本页只含一篇专题</p><details class="chapter-toc"><summary>本篇目录</summary><ol><li><a href="#loss-triage-1">1. 先写清楚这次变化</a></li><li><a href="#loss-triage-2">2. 第一站：曲线是否表示同一个量</a></li><li><a href="#loss-triage-3">3. 第二站：到底送进了什么数据</a></li><li><a href="#loss-triage-4">4. 第三站：执行与更新是否改变</a></li><li><a href="#loss-triage-5">5. 怎样决定下一步</a></li><li><a href="#loss-triage-6">6. 让每次诊断留下可交接的记录</a></li><li><a href="#loss-triage-v72-loss">V72：预测不变，训练 loss 仍能变化多少</a></li><li><a href="#loss-triage-cross_entropy_loss-z-loss">cross_entropy_loss 字段可能包含输出 z-loss</a></li><li><a href="#loss-triage-_1">配比决策应查看什么</a></li><li><a href="#loss-triage-v73">V73：用四格重放区分组成、预测与交互</a></li><li><a href="#loss-triage-_2">三项分解如何闭合</a></li><li><a href="#loss-triage-_3">哪些条件不满足就不能填四格</a></li><li><a href="#loss-triage-_4">输出罚项与配比决策分开保存</a></li></ol></details><section class="chapter" id="loss-triage"><h1 id="loss-triage-loss">配比切换后的loss变化：怎样逐步排查</h1>
+<p>假设从配比A切到B后，训练loss立刻下降，吞吐也提高。现在最需要回答的不是“B好多少”，而是下一步怎样区分三种情况：输入变容易、计算路径改变、固定评估上的能力改善。本章把已有源码发现合到同一条诊断流程，不新增训练结果。</p>
+<p>贯穿流程的原则是：先验证曲线能否比较，再定位变化，最后做能力确认。诊断实验可以隔离机制，但其人工输入或短窗结果不能代替完整续训。</p>
+<h2 id="loss-triage-1">1. 先写清楚这次变化</h2>
+<p>用一行记录：什么时间、哪个run、从哪个实际状态、改了什么、首先出现哪个异常。</p>
+<p>例如下面这句是合格的问题定义，而非结果：</p>
+<blockquote>
+<p>在共同checkpoint上保留完整optimizer和pending路由状态，把代码桶从A改到B；检查固定程序执行评估是否改善，同时保留数学退步限制。</p>
+</blockquote>
+<p>如果实际换了store、tokenizer、去重、质量评分、batch、optimizer或通信实现，就列出来。这样的运行仍可用于完整配方比较；不能在解释时删掉这些共同变化，称为单独配比收益。</p>
+<h2 id="loss-triage-2">2. 第一站：曲线是否表示同一个量</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>先问什么</th>
+<th>从哪里拿证据</th>
+<th>不通过时怎样处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>loss到底含哪些项</td>
+<td>执行版本、next_token_loss调用、实际loss_weight</td>
+<td>分开目标口径；不要把不同loss直接相减</td>
+</tr>
+<tr>
+<td>分母是否相同</td>
+<td>scored targets、有效query、名义token、byte计数</td>
+<td>用对应分母重算；保留原日志</td>
+</tr>
+<tr>
+<td>比较的是同一模型视图吗</td>
+<td>stored/EMA/master、pending beta是否已应用、dtype/backend</td>
+<td>对齐同一视图重新评估</td>
+</tr>
+<tr>
+<td>batch/step标签是否对应同一进度</td>
+<td>state.step、下一loader index、实际token计数</td>
+<td>以共同进度比较，单列恢复与重复样本</td>
+</tr>
+</tbody>
+</table></div>
+<p>Hero的训练CE可能含输出logit z-loss，而router z-loss是日志项；前向相同也不保证反向相同。小数loss_weight的行为不能只用0/1 mask证明。<a href="contracts-guide.html#contracts-guide">目标与梯度接口</a></p>
+<p>BPB的聚合与评估分批也需要核查。某些不同分母下的平均会改变比较结果；不能把这种差异解释为某领域学习更快。<a href="scale-guide.html#scale-guide">BPB口径</a></p>
+<p>本轮已经查到专用衰减字段默认零，所以“旧字段缺失、新字段0”先保持为声明差异，不再作为已知optimizer行为差异。更大的learning rate、beta2等差异仍须独立处理。<a href="optimizer-guide.html#optimizer-guide">有效optimizer设置</a></p>
+<h2 id="loss-triage-3">3. 第二站：到底送进了什么数据</h2>
+<p>先核对内容身份，再解释领域比例。至少保存store/缓存产物摘要、tokenizer revision、处理政策与实际样本映射；只有bucket名称与配置权重不够。</p>
+<p>下面这些变化都会影响train loss，却不能单独证明能力提高：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>表象</th>
+<th>一个可能的机制</th>
+<th>最小区分证据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>train loss整体更低</td>
+<td>易预测来源占比提高</td>
+<td>同checkpoint分别评估A/B输入分布；另做固定确认评估</td>
+</tr>
+<tr>
+<td>某质量桶效果突然更好</td>
+<td>质量评分观察窗口、词表或校准规则改变</td>
+<td>原文、实际评分产物、桶边界和评分模型身份</td>
+</tr>
+<tr>
+<td>有效token或吞吐改变</td>
+<td>EOS/BOS、padding、文档拼接或loss mask变化</td>
+<td>实际token序列、segment、query有效性与scored target mask</td>
+</tr>
+<tr>
+<td>曝光账本更“合理”</td>
+<td>去重豁免或稀疏属性缺失改变保留集合</td>
+<td>实际样本ID、去重覆盖率、缺失状态和排除顺序</td>
+</tr>
+<tr>
+<td>切换后来源比例偏离配置</td>
+<td>整数块、边缘块与resume cursor改变实际计数</td>
+<td>原加载器逐桶计数、next index、共同边缘输入</td>
+</tr>
+</tbody>
+</table></div>
+<p>同checkpoint的交叉分布诊断只能说明输入分布差异，不能说明训练后的B模型更好。它是排除“换了更容易的题”这类解释的辅助材料，能力结论仍来自固定评估。</p>
+<p>对应入口：<a href="cache-guide.html#cache-guide">缓存身份</a>、<a href="quality-guide.html#quality-guide">评分</a>、<a href="dedup-guide.html#dedup-guide">去重</a>、<a href="boundary-guide.html#boundary-guide">边界</a>、<a href="short-conv-guide.html#short-conv-guide">ShortConv与halo</a>、<a href="order-guide.html#order-guide">顺序账本</a>。</p>
+<h2 id="loss-triage-4">4. 第三站：执行与更新是否改变</h2>
+<p>若同时改了kernel、transport或恢复方式，先在共同输入与完整起点上比较一步。这个起点包括compute/master、optimizer、pending beta、EMA以及实际输入key/loader位置。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>诊断分支</th>
+<th>需要比较</th>
+<th>怎样解释差异</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>路由选择</td>
+<td>本步bias、selected experts、alpha、margin和新的beta</td>
+<td>数据可通过显式路由状态改变下一步选择；不能只查梯度</td>
+</tr>
+<tr>
+<td>容量接受</td>
+<td>接受索引、每token/每层drop、丢弃权重、receiver/chunk需求</td>
+<td>平均assignment drop不能替代受影响token或表示损伤</td>
+</tr>
+<tr>
+<td>数值路径</td>
+<td>前向、梯度、最终update、master差异与预声明容差</td>
+<td>loss相等只排除部分前向差异，不能批准反向语义</td>
+</tr>
+<tr>
+<td>optimizer分组</td>
+<td>实际路径/shape/组/mask、有效LR与衰减、各状态count</td>
+<td>参数名或状态时钟变化可能改变更新规则</td>
+</tr>
+<tr>
+<td>恢复接续</td>
+<td>未中断与恢复后的共同下一输入、多步状态轨迹</td>
+<td>读回成功只是恢复操作完成，不代表更新轨迹相同</td>
+</tr>
+</tbody>
+</table></div>
+<p>HIST的共享margin范围会影响网格精度；TOPK的局部阈值平均具有分组敏感性。六份ladder配置声明HIST，不应把TOPK反例套到它们。配比改变路由统计是完整干预的一部分；冻结路由状态的短诊断用于隔离机制，需另外记录。<a href="qb-guide.html#qb-guide">分位数与状态时序</a></p>
+<p>丢弃专家分配后，routed combine未必重归一化，token也不会自动退出语言loss；更低的平均drop不能代填能力确认。<a href="routing-guide.html#routing-guide">容量与训练目标</a></p>
+<p>不要一边定位问题一边同时调整capacity、bins、weight decay和配比。先保留可以复查的起点与一次声明清楚的变化。若必须一起改才能恢复，记录为复合缓解，再用拆开的诊断查机制。</p>
+<h2 id="loss-triage-5">5. 怎样决定下一步</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>现有证据</th>
+<th>当前允许的判断</th>
+<th>下一步</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>指标或内容身份不一致</td>
+<td>曲线不能用于这项归因</td>
+<td>回到口径/样本核查；保留整体观测</td>
+</tr>
+<tr>
+<td>共同输入下语义差异超过容差</td>
+<td>这不是已确认的语义保持改动</td>
+<td>定位并修复，或明确接受为新算法干预后重新设计</td>
+</tr>
+<tr>
+<td>故障恢复、短窗通过</td>
+<td>缓解在已测触发条件下有效</td>
+<td>长窗稳定性、成本与语义验收</td>
+</tr>
+<tr>
+<td>固定评估方向好，候选仍用于搜索</td>
+<td>值得保留的候选</td>
+<td>冻结候选与风险阈值，做独立确认</td>
+</tr>
+<tr>
+<td>独立评估改善但关键任务退步</td>
+<td>有取舍的配方</td>
+<td>检查供体设计或任务目标，不用总均值盖过退步</td>
+</tr>
+<tr>
+<td>独立确认、实际预算与风险限制均满足</td>
+<td>在该规模与条件下可接受</td>
+<td>放大验证和可回退切换，避免直接搬比例</td>
+</tr>
+</tbody>
+</table></div>
+<p>这是一条决策路径，不是打分表；某一项“通过”不能抵消另一项缺失。它接到七阶段管线：身份与口径属于P0，候选属于P1，干预/状态属于P2，能力确认属于P3，顺序属于P4，放大属于P5，失败解释与下一问题属于P6。</p>
+<h2 id="loss-triage-6">6. 让每次诊断留下可交接的记录</h2>
+<p>复制<a href="../templates/loss_change_diagnosis.json">诊断记录</a>，先保存原问题和观察，按本章三站填证据。缺失字段保持null，未检查项保持not_checked。输出决定保持pending_evidence，直到记录中的证据真的支持改变它；填满表格不证明训练收益。</p>
+<p>这份记录补充<a href="../templates/training_change_review.json">训练变更记录</a>，不会自动批准部署。它保留可能解释和推翻条件，避免把一个暂时说得通的机制写成已确定根因。</p>
+<p>V61在归因之前增加一项检查：事件记录映射到实际评估时刻后，各改动列是否可区分？当前配比/执行两个标记完全相同。矩阵审计不替代反事实，但能提前阻止无依据的分项回归结论，见<a href="mix-trajectory-guide.html#mix-trajectory-guide">MIX_TRAJECTORY</a>。</p>
+<h2 id="loss-triage-v72-loss">V72：预测不变，训练 loss 仍能变化多少</h2>
+<p>V71 分开配置权重、域样本与有效目标。这轮执行原 Transformer.next_token_loss 方法、原 Grug mean reducer、原 CPU reference CE，以及原 API 的输出 logsumexp 罚项语句。固定 hidden/provider 与 head，人工两域各一条序列；7 项检查通过，<a href="../analysis/loss_composition_cpu.json">输出值与梯度</a>可复查。没有执行 Transformer 前向或真实数据。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>控制，预测参数保持固定</th>
+<th>有效目标权重质量 A/B</th>
+<th style="text-align: right;">原路径纯 CE</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A 1个有效目标，B 3个</td>
+<td>1 / 3</td>
+<td style="text-align: right;">2.2985873</td>
+</tr>
+<tr>
+<td>A 3个有效目标，B 1个</td>
+<td>3 / 1</td>
+<td style="text-align: right;">0.7985873</td>
+</tr>
+<tr>
+<td>后一输入的 A 权重乘0.5</td>
+<td>1.5 / 1</td>
+<td style="text-align: right;">1.2485874</td>
+</tr>
+</tbody>
+</table></div>
+<p>本例所有位置的 logits 为 [2,-1]，A 的标签为0、B为1，故每域纯 CE 分别为0.04858735与3.04858735。把有效目标占比换向后，loss 下降1.5，没有任何参数更新。两个域的序列数始终各1，名义样本占比都是一半；目标质量与样本数量却不同。小数权重的分母是 sum(weight)，本例2.5，不是4个非零位置。将全部正权重统一乘7，mean 与 head 梯度在1e−6容差内保持；这只验证有限正分母的 CPU 小例，不能推广到下溢、全零分母或 GPU kernel。</p>
+<h3 id="loss-triage-cross_entropy_loss-z-loss">cross_entropy_loss 字段可能包含输出 z-loss</h3>
+<p>对 A3/B1 输入，纯 CE 为0.7985873；输出 logsumexp_weight=1e−4 时，原方法返回0.7990069，train/cross_entropy_loss 字段也等于这个含罚项的值。给两项 logits 都加10，softmax 概率不变，纯 CE 为0.7985878，与原值相差不足2e−6；含罚项的目标却变为0.8131046。head 梯度也随输出罚项改变。</p>
+<p>为什么？原 API 先执行 <code>loss = loss + logsumexp_weight * (lse**2)</code>，再加权归约；原 model 方法把返回值直接赋给 cross_entropy_loss 及同名指标。输出 z-loss 限制 logit 的绝对尺度，所以并不对共同平移不变。router z-loss 是另一条日志项，本例 provider 把它设为零；不能用 router 指标替代输出罚项分解。这里实际执行了含罚项的原模型 loss 方法，但 backend dispatcher 明确被 CPU reference delegate 替代，未复现 xla_fast_bwd/GPU 数值。</p>
+<h3 id="loss-triage-_1">配比决策应查看什么</h3>
+<p>训练平均 loss 至少受有效目标组成、loss_weight 与输出罚项影响。低 loss 可能来自更多易预测目标，也可能来自 logit 尺度约束；这些变化各有含义，不能仅凭训练曲线下降判断配比改善了模型能力。应同时保留域内纯 NLL、有效目标质量、输出 z-loss、明确固定分母的评估和能力保底项；按同一评估分布比较，而不是用新训练分布自己的 mean 判断收益。</p>
+<p>这不意味着混合训练 loss 没有价值：它适合监测当前目标和异常。若要分析原因，可先冻结一批 logits/labels，重放旧新 mask/weight 来量化计算口径差，再在固定输入上比较实际模型变化。两项作用可能交互，需要标明基准预测与基准权重，不把其中一个分解叫成唯一因果贡献。</p>
+<p>本轮只给出人工反例与接口事实，Hero 实际 per-domain targets、输出罚项贡献和配比效果仍未知。损失方法的 hidden/router 提供器、router summarizer、named_call 与 mesh 依赖均有显式替代；原 reference、原罚项语句和原归约实际执行，未修改上游。复现：<code>make loss-composition CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python</code>。</p>
+<h2 id="loss-triage-v73">V73：用四格重放区分组成、预测与交互</h2>
+<p>上一轮证明固定预测也能改变平均 loss。这次再换一组预测，把旧新预测分别放在旧新权重上计算。这里的“新预测”是人工替换 head，不是训练所得；执行的是 V72 的原 loss 方法、原 CPU reference 和原归约，显式替代前向与 GPU dispatcher。<a href="../analysis/loss_cross_replay_cpu.json">18项检查及原值</a>包含纯 CE、含输出罚项两套结果。</p>
+<div class="table-wrap" style="overflow-x:auto;"><svg height="316.8pt" style="display:block;width:100%;min-width:700px;height:auto;" version="1.1" viewbox="0 0 792 316.8" width="792pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<metadata>
+<rdf:rdf xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<cc:work>
+<dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"></dc:type>
+<dc:format>image/svg+xml</dc:format>
+<dc:creator>
+<cc:agent>
+<dc:title>Matplotlib v3.9.4, https://matplotlib.org/</dc:title>
+</cc:agent>
+</dc:creator>
+</cc:work>
+</rdf:rdf>
+</metadata>
+<defs>
+<style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+</defs>
+<g id="losscross-figure_1">
+<g id="losscross-patch_1">
+<path d="M 0 316.8
+L 792 316.8
+L 792 0
+L 0 0
+z
+" style="fill: #ffffff"></path>
+</g>
+<g id="losscross-axes_1">
+<g id="losscross-patch_2">
+<path d="M 113.233615 274.84
+L 291.599615 274.84
+L 291.599615 96.474
+L 113.233615 96.474
+z
+" style="fill: #ffffff"></path>
+</g>
+<g clip-path="url(#losscross-p602771770f)">
+<image height="178.56" id="losscross-image44ffeb23fc" transform="scale(1 -1) translate(0 -178.56)" width="178.56" x="113.233615" xlink:href="data:image/png;base64,
+iVBORw0KGgoAAAANSUhEUgAAAPgAAAD4CAYAAADB0SsLAAADDklEQVR4nO3VMRHCUBRFwYQKYejAD0V84CIC8MAMPQUOEhf/zxx2DbzbnHnr6/07Fv7G/vnOnsBAl5HHgLEEDmEChzCBQ5jAIUzgECZwCBM4hAkcwgQOYQKHMIFDmMAhTOAQJnAIEziECRzCBA5hAocwgUOYwCFM4BAmcAgTOIQJHMIEDmEChzCBQ5jAIUzgECZwCBM4hAkcwgQOYQKHMIFDmMAhTOAQJnAIEziECRzCBA5hAocwgUOYwCFM4BAmcAgTOIQJHMIEDmEChzCBQ5jAIUzgECZwCBM4hAkcwgQOYQKHMIFDmMAhTOAQJnAIEziECRzCBA5hAocwgUOYwCFM4BAmcAgTOIQJHMIEDmEChzCBQ5jAIUzgECZwCBM4hAkcwgQOYQKHMIFDmMAhTOAQJnAIEziECRzCBA5hAocwgUOYwCFM4BAmcAgTOIQJHMIEDmEChzCBQ5jAIUzgECZwCBM4hAkcwgQOYQKHMIFDmMAhTOAQJnAIEziECRzCBA5hAocwgUOYwCFM4BAmcAgTOIQJHMIEDmECh7D1enscs0cwznO7z57AQD44hAkcwgQOYQKHMIFDmMAhTOAQJnAIEziECRzCBA5hAocwgUOYwCFM4BAmcAgTOIQJHMIEDmEChzCBQ5jAIUzgECZwCBM4hAkcwgQOYQKHMIFDmMAhTOAQJnAIEziECRzCBA5hAocwgUOYwCFM4BAmcAgTOIQJHMIEDmEChzCBQ5jAIUzgECZwCBM4hAkcwgQOYQKHMIFDmMAhTOAQJnAIEziECRzCBA5hAocwgUOYwCFM4BAmcAgTOIQJHMIEDmEChzCBQ5jAIUzgECZwCBM4hAkcwgQOYQKHMIFDmMAhTOAQJnAIEziECRzCBA5hAocwgUOYwCFM4BAmcAgTOIQJHMIEDmEChzCBQ5jAIUzgECZwCBM4hAkcwgQOYQKHMIFDmMAhTOAQJnAIEziECRzCBA5hAocwgUOYwCFM4BAmcAgTOIQJHMIEDmEChzCBQ5jAIUzgECZwCBM4hAkcwgQOS9cJNi4Lem423NkAAAAASUVORK5CYII=" y="-96.28"/>
+</g>
+<g id="losscross-matplotlib.axis_1">
+<g id="losscross-xtick_1">
+<g id="losscross-line2d_1">
+<defs>
+<path d="M 0 0
+L 0 3.5
+" id="losscross-m7c12e3f186" style="stroke: #000000; stroke-width: 0.8"></path>
+</defs>
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="157.825115" xlink:href="#losscross-m7c12e3f186" y="274.84"></use>
+</g>
+</g>
+<g id="losscross-text_1">
+<!-- Old weights -->
+<g transform="translate(128.274333 289.438438) scale(0.1 -0.1)">
+<defs>
+<path d="M 2522 4238
+Q 1834 4238 1429 3725
+Q 1025 3213 1025 2328
+Q 1025 1447 1429 934
+Q 1834 422 2522 422
+Q 3209 422 3611 934
+Q 4013 1447 4013 2328
+Q 4013 3213 3611 3725
+Q 3209 4238 2522 4238
+z
+M 2522 4750
+Q 3503 4750 4090 4092
+Q 4678 3434 4678 2328
+Q 4678 1225 4090 567
+Q 3503 -91 2522 -91
+Q 1538 -91 948 565
+Q 359 1222 359 2328
+Q 359 3434 948 4092
+Q 1538 4750 2522 4750
+z
+" id="losscross-DejaVuSans-4f" transform="scale(0.015625)"></path>
+<path d="M 603 4863
+L 1178 4863
+L 1178 0
+L 603 0
+L 603 4863
+z
+" id="losscross-DejaVuSans-6c" transform="scale(0.015625)"></path>
+<path d="M 2906 2969
+L 2906 4863
+L 3481 4863
+L 3481 0
+L 2906 0
+L 2906 525
+Q 2725 213 2448 61
+Q 2172 -91 1784 -91
+Q 1150 -91 751 415
+Q 353 922 353 1747
+Q 353 2572 751 3078
+Q 1150 3584 1784 3584
+Q 2172 3584 2448 3432
+Q 2725 3281 2906 2969
+z
+M 947 1747
+Q 947 1113 1208 752
+Q 1469 391 1925 391
+Q 2381 391 2643 752
+Q 2906 1113 2906 1747
+Q 2906 2381 2643 2742
+Q 2381 3103 1925 3103
+Q 1469 3103 1208 2742
+Q 947 2381 947 1747
+z
+" id="losscross-DejaVuSans-64" transform="scale(0.015625)"></path>
+<path id="losscross-DejaVuSans-20" transform="scale(0.015625)"></path>
+<path d="M 269 3500
+L 844 3500
+L 1563 769
+L 2278 3500
+L 2956 3500
+L 3675 769
+L 4391 3500
+L 4966 3500
+L 4050 0
+L 3372 0
+L 2619 2869
+L 1863 0
+L 1184 0
+L 269 3500
+z
+" id="losscross-DejaVuSans-77" transform="scale(0.015625)"></path>
+<path d="M 3597 1894
+L 3597 1613
+L 953 1613
+Q 991 1019 1311 708
+Q 1631 397 2203 397
+Q 2534 397 2845 478
+Q 3156 559 3463 722
+L 3463 178
+Q 3153 47 2828 -22
+Q 2503 -91 2169 -91
+Q 1331 -91 842 396
+Q 353 884 353 1716
+Q 353 2575 817 3079
+Q 1281 3584 2069 3584
+Q 2775 3584 3186 3129
+Q 3597 2675 3597 1894
+z
+M 3022 2063
+Q 3016 2534 2758 2815
+Q 2500 3097 2075 3097
+Q 1594 3097 1305 2825
+Q 1016 2553 972 2059
+L 3022 2063
+z
+" id="losscross-DejaVuSans-65" transform="scale(0.015625)"></path>
+<path d="M 603 3500
+L 1178 3500
+L 1178 0
+L 603 0
+L 603 3500
+z
+M 603 4863
+L 1178 4863
+L 1178 4134
+L 603 4134
+L 603 4863
+z
+" id="losscross-DejaVuSans-69" transform="scale(0.015625)"></path>
+<path d="M 2906 1791
+Q 2906 2416 2648 2759
+Q 2391 3103 1925 3103
+Q 1463 3103 1205 2759
+Q 947 2416 947 1791
+Q 947 1169 1205 825
+Q 1463 481 1925 481
+Q 2391 481 2648 825
+Q 2906 1169 2906 1791
+z
+M 3481 434
+Q 3481 -459 3084 -895
+Q 2688 -1331 1869 -1331
+Q 1566 -1331 1297 -1286
+Q 1028 -1241 775 -1147
+L 775 -588
+Q 1028 -725 1275 -790
+Q 1522 -856 1778 -856
+Q 2344 -856 2625 -561
+Q 2906 -266 2906 331
+L 2906 616
+Q 2728 306 2450 153
+Q 2172 0 1784 0
+Q 1141 0 747 490
+Q 353 981 353 1791
+Q 353 2603 747 3093
+Q 1141 3584 1784 3584
+Q 2172 3584 2450 3431
+Q 2728 3278 2906 2969
+L 2906 3500
+L 3481 3500
+L 3481 434
+z
+" id="losscross-DejaVuSans-67" transform="scale(0.015625)"></path>
+<path d="M 3513 2113
+L 3513 0
+L 2938 0
+L 2938 2094
+Q 2938 2591 2744 2837
+Q 2550 3084 2163 3084
+Q 1697 3084 1428 2787
+Q 1159 2491 1159 1978
+L 1159 0
+L 581 0
+L 581 4863
+L 1159 4863
+L 1159 2956
+Q 1366 3272 1645 3428
+Q 1925 3584 2291 3584
+Q 2894 3584 3203 3211
+Q 3513 2838 3513 2113
+z
+" id="losscross-DejaVuSans-68" transform="scale(0.015625)"></path>
+<path d="M 1172 4494
+L 1172 3500
+L 2356 3500
+L 2356 3053
+L 1172 3053
+L 1172 1153
+Q 1172 725 1289 603
+Q 1406 481 1766 481
+L 2356 481
+L 2356 0
+L 1766 0
+Q 1100 0 847 248
+Q 594 497 594 1153
+L 594 3053
+L 172 3053
+L 172 3500
+L 594 3500
+L 594 4494
+L 1172 4494
+z
+" id="losscross-DejaVuSans-74" transform="scale(0.015625)"></path>
+<path d="M 2834 3397
+L 2834 2853
+Q 2591 2978 2328 3040
+Q 2066 3103 1784 3103
+Q 1356 3103 1142 2972
+Q 928 2841 928 2578
+Q 928 2378 1081 2264
+Q 1234 2150 1697 2047
+L 1894 2003
+Q 2506 1872 2764 1633
+Q 3022 1394 3022 966
+Q 3022 478 2636 193
+Q 2250 -91 1575 -91
+Q 1294 -91 989 -36
+Q 684 19 347 128
+L 347 722
+Q 666 556 975 473
+Q 1284 391 1588 391
+Q 1994 391 2212 530
+Q 2431 669 2431 922
+Q 2431 1156 2273 1281
+Q 2116 1406 1581 1522
+L 1381 1569
+Q 847 1681 609 1914
+Q 372 2147 372 2553
+Q 372 3047 722 3315
+Q 1072 3584 1716 3584
+Q 2034 3584 2315 3537
+Q 2597 3491 2834 3397
+z
+" id="losscross-DejaVuSans-73" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-4f"></use>
+<use x="78.710938" xlink:href="#losscross-DejaVuSans-6c"></use>
+<use x="106.494141" xlink:href="#losscross-DejaVuSans-64"></use>
+<use x="169.970703" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="201.757812" xlink:href="#losscross-DejaVuSans-77"></use>
+<use x="283.544922" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="345.068359" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="372.851562" xlink:href="#losscross-DejaVuSans-67"></use>
+<use x="436.328125" xlink:href="#losscross-DejaVuSans-68"></use>
+<use x="499.707031" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="538.916016" xlink:href="#losscross-DejaVuSans-73"></use>
+</g>
+<!-- A1 / B3 -->
+<g transform="translate(139.749333 300.63625) scale(0.1 -0.1)">
+<defs>
+<path d="M 2188 4044
+L 1331 1722
+L 3047 1722
+L 2188 4044
+z
+M 1831 4666
+L 2547 4666
+L 4325 0
+L 3669 0
+L 3244 1197
+L 1141 1197
+L 716 0
+L 50 0
+L 1831 4666
+z
+" id="losscross-DejaVuSans-41" transform="scale(0.015625)"></path>
+<path d="M 794 531
+L 1825 531
+L 1825 4091
+L 703 3866
+L 703 4441
+L 1819 4666
+L 2450 4666
+L 2450 531
+L 3481 531
+L 3481 0
+L 794 0
+L 794 531
+z
+" id="losscross-DejaVuSans-31" transform="scale(0.015625)"></path>
+<path d="M 1625 4666
+L 2156 4666
+L 531 -594
+L 0 -594
+L 1625 4666
+z
+" id="losscross-DejaVuSans-2f" transform="scale(0.015625)"></path>
+<path d="M 1259 2228
+L 1259 519
+L 2272 519
+Q 2781 519 3026 730
+Q 3272 941 3272 1375
+Q 3272 1813 3026 2020
+Q 2781 2228 2272 2228
+L 1259 2228
+z
+M 1259 4147
+L 1259 2741
+L 2194 2741
+Q 2656 2741 2882 2914
+Q 3109 3088 3109 3444
+Q 3109 3797 2882 3972
+Q 2656 4147 2194 4147
+L 1259 4147
+z
+M 628 4666
+L 2241 4666
+Q 2963 4666 3353 4366
+Q 3744 4066 3744 3513
+Q 3744 3084 3544 2831
+Q 3344 2578 2956 2516
+Q 3422 2416 3680 2098
+Q 3938 1781 3938 1306
+Q 3938 681 3513 340
+Q 3088 0 2303 0
+L 628 0
+L 628 4666
+z
+" id="losscross-DejaVuSans-42" transform="scale(0.015625)"></path>
+<path d="M 2597 2516
+Q 3050 2419 3304 2112
+Q 3559 1806 3559 1356
+Q 3559 666 3084 287
+Q 2609 -91 1734 -91
+Q 1441 -91 1130 -33
+Q 819 25 488 141
+L 488 750
+Q 750 597 1062 519
+Q 1375 441 1716 441
+Q 2309 441 2620 675
+Q 2931 909 2931 1356
+Q 2931 1769 2642 2001
+Q 2353 2234 1838 2234
+L 1294 2234
+L 1294 2753
+L 1863 2753
+Q 2328 2753 2575 2939
+Q 2822 3125 2822 3475
+Q 2822 3834 2567 4026
+Q 2313 4219 1838 4219
+Q 1578 4219 1281 4162
+Q 984 4106 628 3988
+L 628 4550
+Q 988 4650 1302 4700
+Q 1616 4750 1894 4750
+Q 2613 4750 3031 4423
+Q 3450 4097 3450 3541
+Q 3450 3153 3228 2886
+Q 3006 2619 2597 2516
+z
+" id="losscross-DejaVuSans-33" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-41"></use>
+<use x="68.408203" xlink:href="#losscross-DejaVuSans-31"></use>
+<use x="132.03125" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="163.818359" xlink:href="#losscross-DejaVuSans-2f"></use>
+<use x="197.509766" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="229.296875" xlink:href="#losscross-DejaVuSans-42"></use>
+<use x="297.900391" xlink:href="#losscross-DejaVuSans-33"></use>
+</g>
+</g>
+</g>
+<g id="losscross-xtick_2">
+<g id="losscross-line2d_2">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="247.008115" xlink:href="#losscross-m7c12e3f186" y="274.84"></use>
+</g>
+</g>
+<g id="losscross-text_2">
+<!-- New weights -->
+<g transform="translate(215.050302 289.438438) scale(0.1 -0.1)">
+<defs>
+<path d="M 628 4666
+L 1478 4666
+L 3547 763
+L 3547 4666
+L 4159 4666
+L 4159 0
+L 3309 0
+L 1241 3903
+L 1241 0
+L 628 0
+L 628 4666
+z
+" id="losscross-DejaVuSans-4e" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-4e"></use>
+<use x="74.804688" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="136.328125" xlink:href="#losscross-DejaVuSans-77"></use>
+<use x="218.115234" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="249.902344" xlink:href="#losscross-DejaVuSans-77"></use>
+<use x="331.689453" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="393.212891" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="420.996094" xlink:href="#losscross-DejaVuSans-67"></use>
+<use x="484.472656" xlink:href="#losscross-DejaVuSans-68"></use>
+<use x="547.851562" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="587.060547" xlink:href="#losscross-DejaVuSans-73"></use>
+</g>
+<!-- A3 / B1 -->
+<g transform="translate(228.932333 300.63625) scale(0.1 -0.1)">
+<use xlink:href="#losscross-DejaVuSans-41"></use>
+<use x="68.408203" xlink:href="#losscross-DejaVuSans-33"></use>
+<use x="132.03125" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="163.818359" xlink:href="#losscross-DejaVuSans-2f"></use>
+<use x="197.509766" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="229.296875" xlink:href="#losscross-DejaVuSans-42"></use>
+<use x="297.900391" xlink:href="#losscross-DejaVuSans-31"></use>
+</g>
+</g>
+</g>
+</g>
+<g id="losscross-matplotlib.axis_2">
+<g id="losscross-ytick_1">
+<g id="losscross-line2d_3">
+<defs>
+<path d="M 0 0
+L -3.5 0
+" id="losscross-m2ac640ff5f" style="stroke: #000000; stroke-width: 0.8"></path>
+</defs>
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="113.233615" xlink:href="#losscross-m2ac640ff5f" y="141.0655"></use>
+</g>
+</g>
+<g id="losscross-text_3">
+<!-- Old predictions -->
+<g transform="translate(30.68049 144.864719) scale(0.1 -0.1)">
+<defs>
+<path d="M 1159 525
+L 1159 -1331
+L 581 -1331
+L 581 3500
+L 1159 3500
+L 1159 2969
+Q 1341 3281 1617 3432
+Q 1894 3584 2278 3584
+Q 2916 3584 3314 3078
+Q 3713 2572 3713 1747
+Q 3713 922 3314 415
+Q 2916 -91 2278 -91
+Q 1894 -91 1617 61
+Q 1341 213 1159 525
+z
+M 3116 1747
+Q 3116 2381 2855 2742
+Q 2594 3103 2138 3103
+Q 1681 3103 1420 2742
+Q 1159 2381 1159 1747
+Q 1159 1113 1420 752
+Q 1681 391 2138 391
+Q 2594 391 2855 752
+Q 3116 1113 3116 1747
+z
+" id="losscross-DejaVuSans-70" transform="scale(0.015625)"></path>
+<path d="M 2631 2963
+Q 2534 3019 2420 3045
+Q 2306 3072 2169 3072
+Q 1681 3072 1420 2755
+Q 1159 2438 1159 1844
+L 1159 0
+L 581 0
+L 581 3500
+L 1159 3500
+L 1159 2956
+Q 1341 3275 1631 3429
+Q 1922 3584 2338 3584
+Q 2397 3584 2469 3576
+Q 2541 3569 2628 3553
+L 2631 2963
+z
+" id="losscross-DejaVuSans-72" transform="scale(0.015625)"></path>
+<path d="M 3122 3366
+L 3122 2828
+Q 2878 2963 2633 3030
+Q 2388 3097 2138 3097
+Q 1578 3097 1268 2742
+Q 959 2388 959 1747
+Q 959 1106 1268 751
+Q 1578 397 2138 397
+Q 2388 397 2633 464
+Q 2878 531 3122 666
+L 3122 134
+Q 2881 22 2623 -34
+Q 2366 -91 2075 -91
+Q 1284 -91 818 406
+Q 353 903 353 1747
+Q 353 2603 823 3093
+Q 1294 3584 2113 3584
+Q 2378 3584 2631 3529
+Q 2884 3475 3122 3366
+z
+" id="losscross-DejaVuSans-63" transform="scale(0.015625)"></path>
+<path d="M 1959 3097
+Q 1497 3097 1228 2736
+Q 959 2375 959 1747
+Q 959 1119 1226 758
+Q 1494 397 1959 397
+Q 2419 397 2687 759
+Q 2956 1122 2956 1747
+Q 2956 2369 2687 2733
+Q 2419 3097 1959 3097
+z
+M 1959 3584
+Q 2709 3584 3137 3096
+Q 3566 2609 3566 1747
+Q 3566 888 3137 398
+Q 2709 -91 1959 -91
+Q 1206 -91 779 398
+Q 353 888 353 1747
+Q 353 2609 779 3096
+Q 1206 3584 1959 3584
+z
+" id="losscross-DejaVuSans-6f" transform="scale(0.015625)"></path>
+<path d="M 3513 2113
+L 3513 0
+L 2938 0
+L 2938 2094
+Q 2938 2591 2744 2837
+Q 2550 3084 2163 3084
+Q 1697 3084 1428 2787
+Q 1159 2491 1159 1978
+L 1159 0
+L 581 0
+L 581 3500
+L 1159 3500
+L 1159 2956
+Q 1366 3272 1645 3428
+Q 1925 3584 2291 3584
+Q 2894 3584 3203 3211
+Q 3513 2838 3513 2113
+z
+" id="losscross-DejaVuSans-6e" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-4f"></use>
+<use x="78.710938" xlink:href="#losscross-DejaVuSans-6c"></use>
+<use x="106.494141" xlink:href="#losscross-DejaVuSans-64"></use>
+<use x="169.970703" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="201.757812" xlink:href="#losscross-DejaVuSans-70"></use>
+<use x="265.234375" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="304.097656" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="365.621094" xlink:href="#losscross-DejaVuSans-64"></use>
+<use x="429.097656" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="456.880859" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="511.861328" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="551.070312" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="578.853516" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="640.035156" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="703.414062" xlink:href="#losscross-DejaVuSans-73"></use>
+</g>
+</g>
+</g>
+<g id="losscross-ytick_2">
+<g id="losscross-line2d_4">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="113.233615" xlink:href="#losscross-m2ac640ff5f" y="230.2485"></use>
+</g>
+</g>
+<g id="losscross-text_4">
+<!-- New predictions -->
+<g transform="translate(25.866427 234.047719) scale(0.1 -0.1)">
+<use xlink:href="#losscross-DejaVuSans-4e"></use>
+<use x="74.804688" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="136.328125" xlink:href="#losscross-DejaVuSans-77"></use>
+<use x="218.115234" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="249.902344" xlink:href="#losscross-DejaVuSans-70"></use>
+<use x="313.378906" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="352.242188" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="413.765625" xlink:href="#losscross-DejaVuSans-64"></use>
+<use x="477.242188" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="505.025391" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="560.005859" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="599.214844" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="626.998047" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="688.179688" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="751.558594" xlink:href="#losscross-DejaVuSans-73"></use>
+</g>
+</g>
+</g>
+</g>
+<g id="losscross-patch_3">
+<path d="M 113.233615 274.84
+L 113.233615 96.474
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="losscross-patch_4">
+<path d="M 291.599615 274.84
+L 291.599615 96.474
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="losscross-patch_5">
+<path d="M 113.233615 274.84
+L 291.599615 274.84
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="losscross-patch_6">
+<path d="M 113.233615 96.474
+L 291.599615 96.474
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="losscross-text_5">
+<!-- 2.298587 -->
+<g style="fill: #ffffff" transform="translate(133.967302 143.824875) scale(0.1 -0.1)">
+<defs>
+<path d="M 1228 531
+L 3431 531
+L 3431 0
+L 469 0
+L 469 531
+Q 828 903 1448 1529
+Q 2069 2156 2228 2338
+Q 2531 2678 2651 2914
+Q 2772 3150 2772 3378
+Q 2772 3750 2511 3984
+Q 2250 4219 1831 4219
+Q 1534 4219 1204 4116
+Q 875 4013 500 3803
+L 500 4441
+Q 881 4594 1212 4672
+Q 1544 4750 1819 4750
+Q 2544 4750 2975 4387
+Q 3406 4025 3406 3419
+Q 3406 3131 3298 2873
+Q 3191 2616 2906 2266
+Q 2828 2175 2409 1742
+Q 1991 1309 1228 531
+z
+" id="losscross-DejaVuSans-32" transform="scale(0.015625)"></path>
+<path d="M 684 794
+L 1344 794
+L 1344 0
+L 684 0
+L 684 794
+z
+" id="losscross-DejaVuSans-2e" transform="scale(0.015625)"></path>
+<path d="M 703 97
+L 703 672
+Q 941 559 1184 500
+Q 1428 441 1663 441
+Q 2288 441 2617 861
+Q 2947 1281 2994 2138
+Q 2813 1869 2534 1725
+Q 2256 1581 1919 1581
+Q 1219 1581 811 2004
+Q 403 2428 403 3163
+Q 403 3881 828 4315
+Q 1253 4750 1959 4750
+Q 2769 4750 3195 4129
+Q 3622 3509 3622 2328
+Q 3622 1225 3098 567
+Q 2575 -91 1691 -91
+Q 1453 -91 1209 -44
+Q 966 3 703 97
+z
+M 1959 2075
+Q 2384 2075 2632 2365
+Q 2881 2656 2881 3163
+Q 2881 3666 2632 3958
+Q 2384 4250 1959 4250
+Q 1534 4250 1286 3958
+Q 1038 3666 1038 3163
+Q 1038 2656 1286 2365
+Q 1534 2075 1959 2075
+z
+" id="losscross-DejaVuSans-39" transform="scale(0.015625)"></path>
+<path d="M 2034 2216
+Q 1584 2216 1326 1975
+Q 1069 1734 1069 1313
+Q 1069 891 1326 650
+Q 1584 409 2034 409
+Q 2484 409 2743 651
+Q 3003 894 3003 1313
+Q 3003 1734 2745 1975
+Q 2488 2216 2034 2216
+z
+M 1403 2484
+Q 997 2584 770 2862
+Q 544 3141 544 3541
+Q 544 4100 942 4425
+Q 1341 4750 2034 4750
+Q 2731 4750 3128 4425
+Q 3525 4100 3525 3541
+Q 3525 3141 3298 2862
+Q 3072 2584 2669 2484
+Q 3125 2378 3379 2068
+Q 3634 1759 3634 1313
+Q 3634 634 3220 271
+Q 2806 -91 2034 -91
+Q 1263 -91 848 271
+Q 434 634 434 1313
+Q 434 1759 690 2068
+Q 947 2378 1403 2484
+z
+M 1172 3481
+Q 1172 3119 1398 2916
+Q 1625 2713 2034 2713
+Q 2441 2713 2670 2916
+Q 2900 3119 2900 3481
+Q 2900 3844 2670 4047
+Q 2441 4250 2034 4250
+Q 1625 4250 1398 4047
+Q 1172 3844 1172 3481
+z
+" id="losscross-DejaVuSans-38" transform="scale(0.015625)"></path>
+<path d="M 691 4666
+L 3169 4666
+L 3169 4134
+L 1269 4134
+L 1269 2991
+Q 1406 3038 1543 3061
+Q 1681 3084 1819 3084
+Q 2600 3084 3056 2656
+Q 3513 2228 3513 1497
+Q 3513 744 3044 326
+Q 2575 -91 1722 -91
+Q 1428 -91 1123 -41
+Q 819 9 494 109
+L 494 744
+Q 775 591 1075 516
+Q 1375 441 1709 441
+Q 2250 441 2565 725
+Q 2881 1009 2881 1497
+Q 2881 1984 2565 2268
+Q 2250 2553 1709 2553
+Q 1456 2553 1204 2497
+Q 953 2441 691 2322
+L 691 4666
+z
+" id="losscross-DejaVuSans-35" transform="scale(0.015625)"></path>
+<path d="M 525 4666
+L 3525 4666
+L 3525 4397
+L 1831 0
+L 1172 0
+L 2766 4134
+L 525 4134
+L 525 4666
+z
+" id="losscross-DejaVuSans-37" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-32"></use>
+<use x="63.623047" xlink:href="#losscross-DejaVuSans-2e"></use>
+<use x="95.410156" xlink:href="#losscross-DejaVuSans-32"></use>
+<use x="159.033203" xlink:href="#losscross-DejaVuSans-39"></use>
+<use x="222.65625" xlink:href="#losscross-DejaVuSans-38"></use>
+<use x="286.279297" xlink:href="#losscross-DejaVuSans-35"></use>
+<use x="349.902344" xlink:href="#losscross-DejaVuSans-38"></use>
+<use x="413.525391" xlink:href="#losscross-DejaVuSans-37"></use>
+</g>
+</g>
+<g id="losscross-text_6">
+<!-- 0.798587 -->
+<g style="fill: #123342" transform="translate(223.150302 143.824875) scale(0.1 -0.1)">
+<defs>
+<path d="M 2034 4250
+Q 1547 4250 1301 3770
+Q 1056 3291 1056 2328
+Q 1056 1369 1301 889
+Q 1547 409 2034 409
+Q 2525 409 2770 889
+Q 3016 1369 3016 2328
+Q 3016 3291 2770 3770
+Q 2525 4250 2034 4250
+z
+M 2034 4750
+Q 2819 4750 3233 4129
+Q 3647 3509 3647 2328
+Q 3647 1150 3233 529
+Q 2819 -91 2034 -91
+Q 1250 -91 836 529
+Q 422 1150 422 2328
+Q 422 3509 836 4129
+Q 1250 4750 2034 4750
+z
+" id="losscross-DejaVuSans-30" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-30"></use>
+<use x="63.623047" xlink:href="#losscross-DejaVuSans-2e"></use>
+<use x="95.410156" xlink:href="#losscross-DejaVuSans-37"></use>
+<use x="159.033203" xlink:href="#losscross-DejaVuSans-39"></use>
+<use x="222.65625" xlink:href="#losscross-DejaVuSans-38"></use>
+<use x="286.279297" xlink:href="#losscross-DejaVuSans-35"></use>
+<use x="349.902344" xlink:href="#losscross-DejaVuSans-38"></use>
+<use x="413.525391" xlink:href="#losscross-DejaVuSans-37"></use>
+</g>
+</g>
+<g id="losscross-text_7">
+<!-- 0.563262 -->
+<g style="fill: #123342" transform="translate(133.967302 233.007875) scale(0.1 -0.1)">
+<defs>
+<path d="M 2113 2584
+Q 1688 2584 1439 2293
+Q 1191 2003 1191 1497
+Q 1191 994 1439 701
+Q 1688 409 2113 409
+Q 2538 409 2786 701
+Q 3034 994 3034 1497
+Q 3034 2003 2786 2293
+Q 2538 2584 2113 2584
+z
+M 3366 4563
+L 3366 3988
+Q 3128 4100 2886 4159
+Q 2644 4219 2406 4219
+Q 1781 4219 1451 3797
+Q 1122 3375 1075 2522
+Q 1259 2794 1537 2939
+Q 1816 3084 2150 3084
+Q 2853 3084 3261 2657
+Q 3669 2231 3669 1497
+Q 3669 778 3244 343
+Q 2819 -91 2113 -91
+Q 1303 -91 875 529
+Q 447 1150 447 2328
+Q 447 3434 972 4092
+Q 1497 4750 2381 4750
+Q 2619 4750 2861 4703
+Q 3103 4656 3366 4563
+z
+" id="losscross-DejaVuSans-36" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-30"></use>
+<use x="63.623047" xlink:href="#losscross-DejaVuSans-2e"></use>
+<use x="95.410156" xlink:href="#losscross-DejaVuSans-35"></use>
+<use x="159.033203" xlink:href="#losscross-DejaVuSans-36"></use>
+<use x="222.65625" xlink:href="#losscross-DejaVuSans-33"></use>
+<use x="286.279297" xlink:href="#losscross-DejaVuSans-32"></use>
+<use x="349.902344" xlink:href="#losscross-DejaVuSans-36"></use>
+<use x="413.525391" xlink:href="#losscross-DejaVuSans-32"></use>
+</g>
+</g>
+<g id="losscross-text_8">
+<!-- 1.063262 -->
+<g style="fill: #123342" transform="translate(223.150302 233.007875) scale(0.1 -0.1)">
+<use xlink:href="#losscross-DejaVuSans-31"></use>
+<use x="63.623047" xlink:href="#losscross-DejaVuSans-2e"></use>
+<use x="95.410156" xlink:href="#losscross-DejaVuSans-30"></use>
+<use x="159.033203" xlink:href="#losscross-DejaVuSans-36"></use>
+<use x="222.65625" xlink:href="#losscross-DejaVuSans-33"></use>
+<use x="286.279297" xlink:href="#losscross-DejaVuSans-32"></use>
+<use x="349.902344" xlink:href="#losscross-DejaVuSans-36"></use>
+<use x="413.525391" xlink:href="#losscross-DejaVuSans-32"></use>
+</g>
+</g>
+<g id="losscross-text_9">
+<!-- Same labels / context / target support -->
+<g transform="translate(88.378177 90.474) scale(0.12 -0.12)">
+<defs>
+<path d="M 3425 4513
+L 3425 3897
+Q 3066 4069 2747 4153
+Q 2428 4238 2131 4238
+Q 1616 4238 1336 4038
+Q 1056 3838 1056 3469
+Q 1056 3159 1242 3001
+Q 1428 2844 1947 2747
+L 2328 2669
+Q 3034 2534 3370 2195
+Q 3706 1856 3706 1288
+Q 3706 609 3251 259
+Q 2797 -91 1919 -91
+Q 1588 -91 1214 -16
+Q 841 59 441 206
+L 441 856
+Q 825 641 1194 531
+Q 1563 422 1919 422
+Q 2459 422 2753 634
+Q 3047 847 3047 1241
+Q 3047 1584 2836 1778
+Q 2625 1972 2144 2069
+L 1759 2144
+Q 1053 2284 737 2584
+Q 422 2884 422 3419
+Q 422 4038 858 4394
+Q 1294 4750 2059 4750
+Q 2388 4750 2728 4690
+Q 3069 4631 3425 4513
+z
+" id="losscross-DejaVuSans-53" transform="scale(0.015625)"></path>
+<path d="M 2194 1759
+Q 1497 1759 1228 1600
+Q 959 1441 959 1056
+Q 959 750 1161 570
+Q 1363 391 1709 391
+Q 2188 391 2477 730
+Q 2766 1069 2766 1631
+L 2766 1759
+L 2194 1759
+z
+M 3341 1997
+L 3341 0
+L 2766 0
+L 2766 531
+Q 2569 213 2275 61
+Q 1981 -91 1556 -91
+Q 1019 -91 701 211
+Q 384 513 384 1019
+Q 384 1609 779 1909
+Q 1175 2209 1959 2209
+L 2766 2209
+L 2766 2266
+Q 2766 2663 2505 2880
+Q 2244 3097 1772 3097
+Q 1472 3097 1187 3025
+Q 903 2953 641 2809
+L 641 3341
+Q 956 3463 1253 3523
+Q 1550 3584 1831 3584
+Q 2591 3584 2966 3190
+Q 3341 2797 3341 1997
+z
+" id="losscross-DejaVuSans-61" transform="scale(0.015625)"></path>
+<path d="M 3328 2828
+Q 3544 3216 3844 3400
+Q 4144 3584 4550 3584
+Q 5097 3584 5394 3201
+Q 5691 2819 5691 2113
+L 5691 0
+L 5113 0
+L 5113 2094
+Q 5113 2597 4934 2840
+Q 4756 3084 4391 3084
+Q 3944 3084 3684 2787
+Q 3425 2491 3425 1978
+L 3425 0
+L 2847 0
+L 2847 2094
+Q 2847 2600 2669 2842
+Q 2491 3084 2119 3084
+Q 1678 3084 1418 2786
+Q 1159 2488 1159 1978
+L 1159 0
+L 581 0
+L 581 3500
+L 1159 3500
+L 1159 2956
+Q 1356 3278 1631 3431
+Q 1906 3584 2284 3584
+Q 2666 3584 2933 3390
+Q 3200 3197 3328 2828
+z
+" id="losscross-DejaVuSans-6d" transform="scale(0.015625)"></path>
+<path d="M 3116 1747
+Q 3116 2381 2855 2742
+Q 2594 3103 2138 3103
+Q 1681 3103 1420 2742
+Q 1159 2381 1159 1747
+Q 1159 1113 1420 752
+Q 1681 391 2138 391
+Q 2594 391 2855 752
+Q 3116 1113 3116 1747
+z
+M 1159 2969
+Q 1341 3281 1617 3432
+Q 1894 3584 2278 3584
+Q 2916 3584 3314 3078
+Q 3713 2572 3713 1747
+Q 3713 922 3314 415
+Q 2916 -91 2278 -91
+Q 1894 -91 1617 61
+Q 1341 213 1159 525
+L 1159 0
+L 581 0
+L 581 4863
+L 1159 4863
+L 1159 2969
+z
+" id="losscross-DejaVuSans-62" transform="scale(0.015625)"></path>
+<path d="M 3513 3500
+L 2247 1797
+L 3578 0
+L 2900 0
+L 1881 1375
+L 863 0
+L 184 0
+L 1544 1831
+L 300 3500
+L 978 3500
+L 1906 2253
+L 2834 3500
+L 3513 3500
+z
+" id="losscross-DejaVuSans-78" transform="scale(0.015625)"></path>
+<path d="M 544 1381
+L 544 3500
+L 1119 3500
+L 1119 1403
+Q 1119 906 1312 657
+Q 1506 409 1894 409
+Q 2359 409 2629 706
+Q 2900 1003 2900 1516
+L 2900 3500
+L 3475 3500
+L 3475 0
+L 2900 0
+L 2900 538
+Q 2691 219 2414 64
+Q 2138 -91 1772 -91
+Q 1169 -91 856 284
+Q 544 659 544 1381
+z
+M 1991 3584
+L 1991 3584
+z
+" id="losscross-DejaVuSans-75" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-53"></use>
+<use x="63.476562" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="124.755859" xlink:href="#losscross-DejaVuSans-6d"></use>
+<use x="222.167969" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="283.691406" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="315.478516" xlink:href="#losscross-DejaVuSans-6c"></use>
+<use x="343.261719" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="404.541016" xlink:href="#losscross-DejaVuSans-62"></use>
+<use x="468.017578" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="529.541016" xlink:href="#losscross-DejaVuSans-6c"></use>
+<use x="557.324219" xlink:href="#losscross-DejaVuSans-73"></use>
+<use x="609.423828" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="641.210938" xlink:href="#losscross-DejaVuSans-2f"></use>
+<use x="674.902344" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="706.689453" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="761.669922" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="822.851562" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="886.230469" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="925.439453" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="985.212891" xlink:href="#losscross-DejaVuSans-78"></use>
+<use x="1044.392578" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="1083.601562" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="1115.388672" xlink:href="#losscross-DejaVuSans-2f"></use>
+<use x="1149.080078" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="1180.867188" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="1220.076172" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="1281.355469" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="1320.71875" xlink:href="#losscross-DejaVuSans-67"></use>
+<use x="1384.195312" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="1445.71875" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="1484.927734" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="1516.714844" xlink:href="#losscross-DejaVuSans-73"></use>
+<use x="1568.814453" xlink:href="#losscross-DejaVuSans-75"></use>
+<use x="1632.193359" xlink:href="#losscross-DejaVuSans-70"></use>
+<use x="1695.669922" xlink:href="#losscross-DejaVuSans-70"></use>
+<use x="1759.146484" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="1820.328125" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="1861.441406" xlink:href="#losscross-DejaVuSans-74"></use>
+</g>
+</g>
+</g>
+<g id="losscross-axes_2">
+<g id="losscross-patch_7">
+<path d="M 477.283229 274.84
+L 769.17375 274.84
+L 769.17375 96.474
+L 477.283229 96.474
+z
+" style="fill: #ffffff"></path>
+</g>
+<g id="losscross-patch_8">
+<path clip-path="url(#losscross-pd37ddc3a4f)" d="M 623.22849 104.581545
+L 545.043529 104.581545
+L 545.043529 138.718579
+L 623.22849 138.718579
+z
+" style="fill: #176c76"></path>
+</g>
+<g id="losscross-patch_9">
+<path clip-path="url(#losscross-pd37ddc3a4f)" d="M 623.22849 147.252837
+L 532.777575 147.252837
+L 532.777575 181.389871
+L 623.22849 181.389871
+z
+" style="fill: #176c76"></path>
+</g>
+<g id="losscross-patch_10">
+<path clip-path="url(#losscross-pd37ddc3a4f)" d="M 623.22849 189.924129
+L 727.475104 189.924129
+L 727.475104 224.061163
+L 623.22849 224.061163
+z
+" style="fill: #ad641d"></path>
+</g>
+<g id="losscross-patch_11">
+<path clip-path="url(#losscross-pd37ddc3a4f)" d="M 623.22849 232.595421
+L 558.839229 232.595421
+L 558.839229 266.732455
+L 623.22849 266.732455
+z
+" style="fill: #30466b"></path>
+</g>
+<g id="losscross-matplotlib.axis_3">
+<g id="losscross-xtick_3">
+<g id="losscross-line2d_5">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="518.981875" xlink:href="#losscross-m7c12e3f186" y="274.84"></use>
+</g>
+</g>
+<g id="losscross-text_10">
+<!-- −2 -->
+<g transform="translate(511.610781 289.438438) scale(0.1 -0.1)">
+<defs>
+<path d="M 678 2272
+L 4684 2272
+L 4684 1741
+L 678 1741
+L 678 2272
+z
+" id="losscross-DejaVuSans-2212" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-2212"></use>
+<use x="83.789062" xlink:href="#losscross-DejaVuSans-32"></use>
+</g>
+</g>
+</g>
+<g id="losscross-xtick_4">
+<g id="losscross-line2d_6">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="571.105182" xlink:href="#losscross-m7c12e3f186" y="274.84"></use>
+</g>
+</g>
+<g id="losscross-text_11">
+<!-- −1 -->
+<g transform="translate(563.734089 289.438438) scale(0.1 -0.1)">
+<use xlink:href="#losscross-DejaVuSans-2212"></use>
+<use x="83.789062" xlink:href="#losscross-DejaVuSans-31"></use>
+</g>
+</g>
+</g>
+<g id="losscross-xtick_5">
+<g id="losscross-line2d_7">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="623.22849" xlink:href="#losscross-m7c12e3f186" y="274.84"></use>
+</g>
+</g>
+<g id="losscross-text_12">
+<!-- 0 -->
+<g transform="translate(620.04724 289.438438) scale(0.1 -0.1)">
+<use xlink:href="#losscross-DejaVuSans-30"></use>
+</g>
+</g>
+</g>
+<g id="losscross-xtick_6">
+<g id="losscross-line2d_8">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="675.351797" xlink:href="#losscross-m7c12e3f186" y="274.84"></use>
+</g>
+</g>
+<g id="losscross-text_13">
+<!-- 1 -->
+<g transform="translate(672.170547 289.438438) scale(0.1 -0.1)">
+<use xlink:href="#losscross-DejaVuSans-31"></use>
+</g>
+</g>
+</g>
+<g id="losscross-xtick_7">
+<g id="losscross-line2d_9">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="727.475104" xlink:href="#losscross-m7c12e3f186" y="274.84"></use>
+</g>
+</g>
+<g id="losscross-text_14">
+<!-- 2 -->
+<g transform="translate(724.293854 289.438438) scale(0.1 -0.1)">
+<use xlink:href="#losscross-DejaVuSans-32"></use>
+</g>
+</g>
+</g>
+<g id="losscross-text_15">
+<!-- Change in mean pure CE -->
+<g transform="translate(560.977708 303.116562) scale(0.1 -0.1)">
+<defs>
+<path d="M 4122 4306
+L 4122 3641
+Q 3803 3938 3442 4084
+Q 3081 4231 2675 4231
+Q 1875 4231 1450 3742
+Q 1025 3253 1025 2328
+Q 1025 1406 1450 917
+Q 1875 428 2675 428
+Q 3081 428 3442 575
+Q 3803 722 4122 1019
+L 4122 359
+Q 3791 134 3420 21
+Q 3050 -91 2638 -91
+Q 1578 -91 968 557
+Q 359 1206 359 2328
+Q 359 3453 968 4101
+Q 1578 4750 2638 4750
+Q 3056 4750 3426 4639
+Q 3797 4528 4122 4306
+z
+" id="losscross-DejaVuSans-43" transform="scale(0.015625)"></path>
+<path d="M 628 4666
+L 3578 4666
+L 3578 4134
+L 1259 4134
+L 1259 2753
+L 3481 2753
+L 3481 2222
+L 1259 2222
+L 1259 531
+L 3634 531
+L 3634 0
+L 628 0
+L 628 4666
+z
+" id="losscross-DejaVuSans-45" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-43"></use>
+<use x="69.824219" xlink:href="#losscross-DejaVuSans-68"></use>
+<use x="133.203125" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="194.482422" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="257.861328" xlink:href="#losscross-DejaVuSans-67"></use>
+<use x="321.337891" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="382.861328" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="414.648438" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="442.431641" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="505.810547" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="537.597656" xlink:href="#losscross-DejaVuSans-6d"></use>
+<use x="635.009766" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="696.533203" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="757.8125" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="821.191406" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="852.978516" xlink:href="#losscross-DejaVuSans-70"></use>
+<use x="916.455078" xlink:href="#losscross-DejaVuSans-75"></use>
+<use x="979.833984" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="1018.697266" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="1080.220703" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="1112.007812" xlink:href="#losscross-DejaVuSans-43"></use>
+<use x="1181.832031" xlink:href="#losscross-DejaVuSans-45"></use>
+</g>
+</g>
+</g>
+<g id="losscross-matplotlib.axis_4">
+<g id="losscross-ytick_3">
+<g id="losscross-line2d_10">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="477.283229" xlink:href="#losscross-m2ac640ff5f" y="121.650062"></use>
+</g>
+</g>
+<g id="losscross-text_16">
+<!-- Composition at old predictions -->
+<g transform="translate(317.626979 125.449281) scale(0.1 -0.1)">
+<use xlink:href="#losscross-DejaVuSans-43"></use>
+<use x="69.824219" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="131.005859" xlink:href="#losscross-DejaVuSans-6d"></use>
+<use x="228.417969" xlink:href="#losscross-DejaVuSans-70"></use>
+<use x="291.894531" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="353.076172" xlink:href="#losscross-DejaVuSans-73"></use>
+<use x="405.175781" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="432.958984" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="472.167969" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="499.951172" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="561.132812" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="624.511719" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="656.298828" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="717.578125" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="756.787109" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="788.574219" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="849.755859" xlink:href="#losscross-DejaVuSans-6c"></use>
+<use x="877.539062" xlink:href="#losscross-DejaVuSans-64"></use>
+<use x="941.015625" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="972.802734" xlink:href="#losscross-DejaVuSans-70"></use>
+<use x="1036.279297" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="1075.142578" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="1136.666016" xlink:href="#losscross-DejaVuSans-64"></use>
+<use x="1200.142578" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="1227.925781" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="1282.90625" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="1322.115234" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="1349.898438" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="1411.080078" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="1474.458984" xlink:href="#losscross-DejaVuSans-73"></use>
+</g>
+</g>
+</g>
+<g id="losscross-ytick_4">
+<g id="losscross-line2d_11">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="477.283229" xlink:href="#losscross-m2ac640ff5f" y="164.321354"></use>
+</g>
+</g>
+<g id="losscross-text_17">
+<!-- Prediction at old weights -->
+<g transform="translate(346.856667 168.120573) scale(0.1 -0.1)">
+<defs>
+<path d="M 1259 4147
+L 1259 2394
+L 2053 2394
+Q 2494 2394 2734 2622
+Q 2975 2850 2975 3272
+Q 2975 3691 2734 3919
+Q 2494 4147 2053 4147
+L 1259 4147
+z
+M 628 4666
+L 2053 4666
+Q 2838 4666 3239 4311
+Q 3641 3956 3641 3272
+Q 3641 2581 3239 2228
+Q 2838 1875 2053 1875
+L 1259 1875
+L 1259 0
+L 628 0
+L 628 4666
+z
+" id="losscross-DejaVuSans-50" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-50"></use>
+<use x="58.552734" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="97.416016" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="158.939453" xlink:href="#losscross-DejaVuSans-64"></use>
+<use x="222.416016" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="250.199219" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="305.179688" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="344.388672" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="372.171875" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="433.353516" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="496.732422" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="528.519531" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="589.798828" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="629.007812" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="660.794922" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="721.976562" xlink:href="#losscross-DejaVuSans-6c"></use>
+<use x="749.759766" xlink:href="#losscross-DejaVuSans-64"></use>
+<use x="813.236328" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="845.023438" xlink:href="#losscross-DejaVuSans-77"></use>
+<use x="926.810547" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="988.333984" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="1016.117188" xlink:href="#losscross-DejaVuSans-67"></use>
+<use x="1079.59375" xlink:href="#losscross-DejaVuSans-68"></use>
+<use x="1142.972656" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="1182.181641" xlink:href="#losscross-DejaVuSans-73"></use>
+</g>
+</g>
+</g>
+<g id="losscross-ytick_5">
+<g id="losscross-line2d_12">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="477.283229" xlink:href="#losscross-m2ac640ff5f" y="206.992646"></use>
+</g>
+</g>
+<g id="losscross-text_18">
+<!-- Interaction -->
+<g transform="translate(416.030104 210.791865) scale(0.1 -0.1)">
+<defs>
+<path d="M 628 4666
+L 1259 4666
+L 1259 0
+L 628 0
+L 628 4666
+z
+" id="losscross-DejaVuSans-49" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-49"></use>
+<use x="29.492188" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="92.871094" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="132.080078" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="193.603516" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="234.716797" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="295.996094" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="350.976562" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="390.185547" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="417.96875" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="479.150391" xlink:href="#losscross-DejaVuSans-6e"></use>
+</g>
+</g>
+</g>
+<g id="losscross-ytick_6">
+<g id="losscross-line2d_13">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="477.283229" xlink:href="#losscross-m2ac640ff5f" y="249.663938"></use>
+</g>
+</g>
+<g id="losscross-text_19">
+<!-- Total -->
+<g transform="translate(446.930104 253.463157) scale(0.1 -0.1)">
+<defs>
+<path d="M -19 4666
+L 3928 4666
+L 3928 4134
+L 2272 4134
+L 2272 0
+L 1638 0
+L 1638 4134
+L -19 4134
+L -19 4666
+z
+" id="losscross-DejaVuSans-54" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-54"></use>
+<use x="44.083984" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="105.265625" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="144.474609" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="205.753906" xlink:href="#losscross-DejaVuSans-6c"></use>
+</g>
+</g>
+</g>
+</g>
+<g id="losscross-line2d_14">
+<path clip-path="url(#losscross-pd37ddc3a4f)" d="M 623.22849 274.84
+L 623.22849 96.474
+" style="fill: none; stroke: #777777; stroke-width: 0.8; stroke-linecap: square"></path>
+</g>
+<g id="losscross-patch_12">
+<path d="M 477.283229 274.84
+L 477.283229 96.474
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="losscross-patch_13">
+<path d="M 477.283229 274.84
+L 769.17375 274.84
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="losscross-text_20">
+<!-- -1.500000 -->
+<g transform="translate(491.113926 124.409437) scale(0.1 -0.1)">
+<defs>
+<path d="M 313 2009
+L 1997 2009
+L 1997 1497
+L 313 1497
+L 313 2009
+z
+" id="losscross-DejaVuSans-2d" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-2d"></use>
+<use x="36.083984" xlink:href="#losscross-DejaVuSans-31"></use>
+<use x="99.707031" xlink:href="#losscross-DejaVuSans-2e"></use>
+<use x="131.494141" xlink:href="#losscross-DejaVuSans-35"></use>
+<use x="195.117188" xlink:href="#losscross-DejaVuSans-30"></use>
+<use x="258.740234" xlink:href="#losscross-DejaVuSans-30"></use>
+<use x="322.363281" xlink:href="#losscross-DejaVuSans-30"></use>
+<use x="385.986328" xlink:href="#losscross-DejaVuSans-30"></use>
+<use x="449.609375" xlink:href="#losscross-DejaVuSans-30"></use>
+</g>
+</g>
+<g id="losscross-text_21">
+<!-- -1.735326 -->
+<g transform="translate(478.847972 167.080729) scale(0.1 -0.1)">
+<use xlink:href="#losscross-DejaVuSans-2d"></use>
+<use x="36.083984" xlink:href="#losscross-DejaVuSans-31"></use>
+<use x="99.707031" xlink:href="#losscross-DejaVuSans-2e"></use>
+<use x="131.494141" xlink:href="#losscross-DejaVuSans-37"></use>
+<use x="195.117188" xlink:href="#losscross-DejaVuSans-33"></use>
+<use x="258.740234" xlink:href="#losscross-DejaVuSans-35"></use>
+<use x="322.363281" xlink:href="#losscross-DejaVuSans-33"></use>
+<use x="385.986328" xlink:href="#losscross-DejaVuSans-32"></use>
+<use x="449.609375" xlink:href="#losscross-DejaVuSans-36"></use>
+</g>
+</g>
+<g id="losscross-text_22">
+<!-- +2.000000 -->
+<g transform="translate(730.08127 209.752021) scale(0.1 -0.1)">
+<defs>
+<path d="M 2944 4013
+L 2944 2272
+L 4684 2272
+L 4684 1741
+L 2944 1741
+L 2944 0
+L 2419 0
+L 2419 1741
+L 678 1741
+L 678 2272
+L 2419 2272
+L 2419 4013
+L 2944 4013
+z
+" id="losscross-DejaVuSans-2b" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-2b"></use>
+<use x="83.789062" xlink:href="#losscross-DejaVuSans-32"></use>
+<use x="147.412109" xlink:href="#losscross-DejaVuSans-2e"></use>
+<use x="179.199219" xlink:href="#losscross-DejaVuSans-30"></use>
+<use x="242.822266" xlink:href="#losscross-DejaVuSans-30"></use>
+<use x="306.445312" xlink:href="#losscross-DejaVuSans-30"></use>
+<use x="370.068359" xlink:href="#losscross-DejaVuSans-30"></use>
+<use x="433.691406" xlink:href="#losscross-DejaVuSans-30"></use>
+<use x="497.314453" xlink:href="#losscross-DejaVuSans-30"></use>
+</g>
+</g>
+<g id="losscross-text_23">
+<!-- -1.235326 -->
+<g transform="translate(504.909626 252.423313) scale(0.1 -0.1)">
+<use xlink:href="#losscross-DejaVuSans-2d"></use>
+<use x="36.083984" xlink:href="#losscross-DejaVuSans-31"></use>
+<use x="99.707031" xlink:href="#losscross-DejaVuSans-2e"></use>
+<use x="131.494141" xlink:href="#losscross-DejaVuSans-32"></use>
+<use x="195.117188" xlink:href="#losscross-DejaVuSans-33"></use>
+<use x="258.740234" xlink:href="#losscross-DejaVuSans-35"></use>
+<use x="322.363281" xlink:href="#losscross-DejaVuSans-33"></use>
+<use x="385.986328" xlink:href="#losscross-DejaVuSans-32"></use>
+<use x="449.609375" xlink:href="#losscross-DejaVuSans-36"></use>
+</g>
+</g>
+</g>
+<g id="losscross-text_24">
+<!-- Four-cell replay: descriptive allocation depends on the reference distribution -->
+<g transform="translate(186.059844 14.694281) scale(0.11 -0.11)">
+<defs>
+<path d="M 628 4666
+L 3309 4666
+L 3309 4134
+L 1259 4134
+L 1259 2759
+L 3109 2759
+L 3109 2228
+L 1259 2228
+L 1259 0
+L 628 0
+L 628 4666
+z
+" id="losscross-DejaVuSans-46" transform="scale(0.015625)"></path>
+<path d="M 2059 -325
+Q 1816 -950 1584 -1140
+Q 1353 -1331 966 -1331
+L 506 -1331
+L 506 -850
+L 844 -850
+Q 1081 -850 1212 -737
+Q 1344 -625 1503 -206
+L 1606 56
+L 191 3500
+L 800 3500
+L 1894 763
+L 2988 3500
+L 3597 3500
+L 2059 -325
+z
+" id="losscross-DejaVuSans-79" transform="scale(0.015625)"></path>
+<path d="M 750 794
+L 1409 794
+L 1409 0
+L 750 0
+L 750 794
+z
+M 750 3309
+L 1409 3309
+L 1409 2516
+L 750 2516
+L 750 3309
+z
+" id="losscross-DejaVuSans-3a" transform="scale(0.015625)"></path>
+<path d="M 191 3500
+L 800 3500
+L 1894 563
+L 2988 3500
+L 3597 3500
+L 2284 0
+L 1503 0
+L 191 3500
+z
+" id="losscross-DejaVuSans-76" transform="scale(0.015625)"></path>
+<path d="M 2375 4863
+L 2375 4384
+L 1825 4384
+Q 1516 4384 1395 4259
+Q 1275 4134 1275 3809
+L 1275 3500
+L 2222 3500
+L 2222 3053
+L 1275 3053
+L 1275 0
+L 697 0
+L 697 3053
+L 147 3053
+L 147 3500
+L 697 3500
+L 697 3744
+Q 697 4328 969 4595
+Q 1241 4863 1831 4863
+L 2375 4863
+z
+" id="losscross-DejaVuSans-66" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-46"></use>
+<use x="53.894531" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="115.076172" xlink:href="#losscross-DejaVuSans-75"></use>
+<use x="178.455078" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="213.193359" xlink:href="#losscross-DejaVuSans-2d"></use>
+<use x="249.277344" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="304.257812" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="365.78125" xlink:href="#losscross-DejaVuSans-6c"></use>
+<use x="393.564453" xlink:href="#losscross-DejaVuSans-6c"></use>
+<use x="421.347656" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="453.134766" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="491.998047" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="553.521484" xlink:href="#losscross-DejaVuSans-70"></use>
+<use x="616.998047" xlink:href="#losscross-DejaVuSans-6c"></use>
+<use x="644.78125" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="706.060547" xlink:href="#losscross-DejaVuSans-79"></use>
+<use x="757.990234" xlink:href="#losscross-DejaVuSans-3a"></use>
+<use x="791.681641" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="823.46875" xlink:href="#losscross-DejaVuSans-64"></use>
+<use x="886.945312" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="948.46875" xlink:href="#losscross-DejaVuSans-73"></use>
+<use x="1000.568359" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="1055.548828" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="1096.662109" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="1124.445312" xlink:href="#losscross-DejaVuSans-70"></use>
+<use x="1187.921875" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="1227.130859" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="1254.914062" xlink:href="#losscross-DejaVuSans-76"></use>
+<use x="1314.09375" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="1375.617188" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="1407.404297" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="1468.683594" xlink:href="#losscross-DejaVuSans-6c"></use>
+<use x="1496.466797" xlink:href="#losscross-DejaVuSans-6c"></use>
+<use x="1524.25" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="1585.431641" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="1640.412109" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="1701.691406" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="1740.900391" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="1768.683594" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="1829.865234" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="1893.244141" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="1925.03125" xlink:href="#losscross-DejaVuSans-64"></use>
+<use x="1988.507812" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="2050.03125" xlink:href="#losscross-DejaVuSans-70"></use>
+<use x="2113.507812" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="2175.03125" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="2238.410156" xlink:href="#losscross-DejaVuSans-64"></use>
+<use x="2301.886719" xlink:href="#losscross-DejaVuSans-73"></use>
+<use x="2353.986328" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="2385.773438" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="2446.955078" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="2510.333984" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="2542.121094" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="2581.330078" xlink:href="#losscross-DejaVuSans-68"></use>
+<use x="2644.708984" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="2706.232422" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="2738.019531" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="2776.882812" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="2838.40625" xlink:href="#losscross-DejaVuSans-66"></use>
+<use x="2873.611328" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="2935.134766" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="2973.998047" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="3035.521484" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="3098.900391" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="3153.880859" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="3215.404297" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="3247.191406" xlink:href="#losscross-DejaVuSans-64"></use>
+<use x="3310.667969" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="3338.451172" xlink:href="#losscross-DejaVuSans-73"></use>
+<use x="3390.550781" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="3429.759766" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="3470.873047" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="3498.65625" xlink:href="#losscross-DejaVuSans-62"></use>
+<use x="3562.132812" xlink:href="#losscross-DejaVuSans-75"></use>
+<use x="3625.511719" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="3664.720703" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="3692.503906" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="3753.685547" xlink:href="#losscross-DejaVuSans-6e"></use>
+</g>
+<!-- Synthetic CPU source-method control; no Hero or training-effect estimate -->
+<g transform="translate(193.652422 27.011875) scale(0.11 -0.11)">
+<defs>
+<path d="M 556 4666
+L 1191 4666
+L 1191 1831
+Q 1191 1081 1462 751
+Q 1734 422 2344 422
+Q 2950 422 3222 751
+Q 3494 1081 3494 1831
+L 3494 4666
+L 4128 4666
+L 4128 1753
+Q 4128 841 3676 375
+Q 3225 -91 2344 -91
+Q 1459 -91 1007 375
+Q 556 841 556 1753
+L 556 4666
+z
+" id="losscross-DejaVuSans-55" transform="scale(0.015625)"></path>
+<path d="M 750 3309
+L 1409 3309
+L 1409 2516
+L 750 2516
+L 750 3309
+z
+M 750 794
+L 1409 794
+L 1409 256
+L 897 -744
+L 494 -744
+L 750 256
+L 750 794
+z
+" id="losscross-DejaVuSans-3b" transform="scale(0.015625)"></path>
+<path d="M 628 4666
+L 1259 4666
+L 1259 2753
+L 3553 2753
+L 3553 4666
+L 4184 4666
+L 4184 0
+L 3553 0
+L 3553 2222
+L 1259 2222
+L 1259 0
+L 628 0
+L 628 4666
+z
+" id="losscross-DejaVuSans-48" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#losscross-DejaVuSans-53"></use>
+<use x="63.476562" xlink:href="#losscross-DejaVuSans-79"></use>
+<use x="122.65625" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="186.035156" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="225.244141" xlink:href="#losscross-DejaVuSans-68"></use>
+<use x="288.623047" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="350.146484" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="389.355469" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="417.138672" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="472.119141" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="503.90625" xlink:href="#losscross-DejaVuSans-43"></use>
+<use x="573.730469" xlink:href="#losscross-DejaVuSans-50"></use>
+<use x="634.033203" xlink:href="#losscross-DejaVuSans-55"></use>
+<use x="707.226562" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="739.013672" xlink:href="#losscross-DejaVuSans-73"></use>
+<use x="791.113281" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="852.294922" xlink:href="#losscross-DejaVuSans-75"></use>
+<use x="915.673828" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="954.537109" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="1009.517578" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="1071.041016" xlink:href="#losscross-DejaVuSans-2d"></use>
+<use x="1107.125" xlink:href="#losscross-DejaVuSans-6d"></use>
+<use x="1204.537109" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="1266.060547" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="1305.269531" xlink:href="#losscross-DejaVuSans-68"></use>
+<use x="1368.648438" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="1429.830078" xlink:href="#losscross-DejaVuSans-64"></use>
+<use x="1493.306641" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="1525.09375" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="1580.074219" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="1641.255859" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="1704.634766" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="1743.84375" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="1782.707031" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="1843.888672" xlink:href="#losscross-DejaVuSans-6c"></use>
+<use x="1871.671875" xlink:href="#losscross-DejaVuSans-3b"></use>
+<use x="1905.363281" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="1937.150391" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="2000.529297" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="2061.710938" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="2093.498047" xlink:href="#losscross-DejaVuSans-48"></use>
+<use x="2168.693359" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="2230.216797" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="2269.080078" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="2330.261719" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="2362.048828" xlink:href="#losscross-DejaVuSans-6f"></use>
+<use x="2423.230469" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="2464.34375" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="2496.130859" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="2535.339844" xlink:href="#losscross-DejaVuSans-72"></use>
+<use x="2576.453125" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="2637.732422" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="2665.515625" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="2728.894531" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="2756.677734" xlink:href="#losscross-DejaVuSans-6e"></use>
+<use x="2820.056641" xlink:href="#losscross-DejaVuSans-67"></use>
+<use x="2883.533203" xlink:href="#losscross-DejaVuSans-2d"></use>
+<use x="2919.617188" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="2981.140625" xlink:href="#losscross-DejaVuSans-66"></use>
+<use x="3016.345703" xlink:href="#losscross-DejaVuSans-66"></use>
+<use x="3051.550781" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="3113.074219" xlink:href="#losscross-DejaVuSans-63"></use>
+<use x="3168.054688" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="3207.263672" xlink:href="#losscross-DejaVuSans-20"></use>
+<use x="3239.050781" xlink:href="#losscross-DejaVuSans-65"></use>
+<use x="3300.574219" xlink:href="#losscross-DejaVuSans-73"></use>
+<use x="3352.673828" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="3391.882812" xlink:href="#losscross-DejaVuSans-69"></use>
+<use x="3419.666016" xlink:href="#losscross-DejaVuSans-6d"></use>
+<use x="3517.078125" xlink:href="#losscross-DejaVuSans-61"></use>
+<use x="3578.357422" xlink:href="#losscross-DejaVuSans-74"></use>
+<use x="3617.566406" xlink:href="#losscross-DejaVuSans-65"></use>
+</g>
+</g>
+</g>
+<defs>
+<clippath id="losscross-p602771770f">
+<rect height="178.366" width="178.366" x="113.233615" y="96.474"></rect>
+</clippath>
+<clippath id="losscross-pd37ddc3a4f">
+<rect height="178.366" width="291.890521" x="477.283229" y="96.474"></rect>
+</clippath>
+</defs>
+</svg></div>
+<p><a href="../assets/loss_cross_replay.svg">四格图原文件</a>：左侧为共同目标上的纯 CE，右侧为以旧预测/旧权重为基准的三项分解；负值表示均值下降。人工预测及目标，不代表真实训练收益。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>共同输入上的纯 CE</th>
+<th style="text-align: right;">旧权重 A1/B3</th>
+<th style="text-align: right;">新权重 A3/B1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>旧预测：logits [2,-1]</td>
+<td style="text-align: right;">L00 = 2.2985873</td>
+<td style="text-align: right;">L01 = 0.7985873</td>
+</tr>
+<tr>
+<td>新预测：logits [-2,-1]</td>
+<td style="text-align: right;">L10 = 0.5632616</td>
+<td style="text-align: right;">L11 = 1.0632616</td>
+</tr>
+</tbody>
+</table></div>
+<p>从左上到右下，loss 下降1.2353257。只看这一变化，会漏掉重要事实：新预测在旧分布上改善1.7353257，在新分布上却退步0.2646743。原因在域内：A 的 NLL 从0.0485874上升到1.3132617，B 从3.0485874下降到0.3132617。旧分布更重视 B，新分布更重视 A，因此同一预测变化得到相反评价。这不是配比训练收益的证据，而是评价分布决定均值含义的可执行反例。</p>
+<h3 id="loss-triage-_2">三项分解如何闭合</h3>
+<p>以旧预测、旧权重为基准：组成项 C=L01−L00，预测项 P=L10−L00，交互项 I=L11−L10−L01+L00。总变化 Δ=L11−L00=C+P+I。本例为 −1.5−1.7353257+2.0=−1.2353257。若只加前两项，会错算成下降3.2353257；遗漏的2.0正是改权重后各域预测变化被重新计入的部分。</p>
+<p>也可以按实际重放顺序做两段核算：先换权重再换预测，得到 −1.5+0.2646743；先换预测再换权重，得到 −1.7353257+0.5。两条路径都闭合，但分项不同。将两条路径平均，组成项为−0.5、预测项为−0.7353257。这个对称分摊把交互各分一半，是描述约定；它没有证明哪个因素“造成”了训练收益。正文同时保留三项与两种路径，避免一种记账约定被当作唯一因果答案。</p>
+<h3 id="loss-triage-_3">哪些条件不满足就不能填四格</h3>
+<p>四格需要同一目标支持集：相同 token IDs、标签、上下文、tokenizer、packing 与文档边界，且旧新模型对这些目标都已有预测。权重包括 valid mask、loss_weight 和明确的归约分母。域样本各一条不代表域目标质量相同，本例两套分母均为4，A/B质量从1/3变为3/1。</p>
+<p>真实训练前后往往换了样本、上下文长度或 packing。不能把两批不同 token 的旧新 logits 拼成四格。如果只存被采样的旧目标，新加入目标上没有旧预测，交叉格缺失；记录 null 并停止分解。本轮程序分别检查缺格与输入支持不一致时拒绝输出。可在另行冻结的共同评估集上重新运行两个 checkpoint，但所得解释对象是该评估集上的预测与权重，不能直接当成实际训练流的组成变化。</p>
+<p>零权重位置也要核对数值路径；共同支持不是用0代替缺失 logits。这里六个有效候选目标均有两套有限预测，最后的 padding 位置权重为零；没有测试真实数据中的异常值、全零分母或多设备归约。</p>
+<h3 id="loss-triage-_4">输出罚项与配比决策分开保存</h3>
+<p>同样四格另算 logsumexp_weight=1e−4 的原目标，并逐格保存“含罚项−纯 CE”。随后才做各自分解；纯 NLL 与总目标不能交叉混填。router z-loss 另记，本例为人工零值。重放只回答平均数为何不同，不能回答新配方训练出了什么能力。</p>
+<p>实际配比实验按以下次序走：冻结独立评估集及风险上限；从相同初态、优化器状态、训练预算出发比较候选与供体；在相同评估权重下比较域内 NLL、任务能力与回归；最后用四格解释观测值，不以解释替代独立确认。顺序研究还需匹配各域累计曝光并审查历史 batch schedule，见<a href="batch-clock-guide.html#batch-clock-guide">BATCH_CLOCK</a>。</p>
+<p>新的<a href="../templates/loss_cross_replay_review.json">四格记录模板</a>保存预测/输入身份、目标质量、四格、罚项和两条分解路径。结果全部留 null，状态为 planned_not_executed；这里的 CPU 数值留在探针账本，不写入真实实验模板。复现：<code>make loss-cross-replay CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python</code>。</p></section><nav class="pager"><span></span><a href="contracts-guide.html">下一篇 →</a></nav></main></body></html>

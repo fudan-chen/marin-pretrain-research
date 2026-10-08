@@ -1,0 +1,142 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>重复曝光与配比加量 · Marin 预训练研究</title><link rel="stylesheet" href="reading.css"></head><body><header><nav><a href="index.html">主题目录</a><a href="../report_standalone.html">完整报告（保留）</a><a href="code.html">源码与候选补丁</a><a href="tools.html">交互工具</a></nav></header><main><p class="muted"><a href="theme-data.html">02 · 数据配比与实验设计</a> / 本页只含一篇专题</p><details class="chapter-toc"><summary>本篇目录</summary><ol><li><a href="#repeat-exposure-guide-_2">重启与洗牌不是同一个动作</a></li><li><a href="#repeat-exposure-guide-_3">两种覆盖不能混用</a></li><li><a href="#repeat-exposure-guide-_4">可执行账本</a></li><li><a href="#repeat-exposure-guide-_5">怎样指导下一次加量</a></li><li><a href="#repeat-exposure-guide-v97restart">V97：restart的部分块，怎样改变首次覆盖与重复账目</a></li><li><a href="#repeat-exposure-guide-_6">哪些时候可以用紧凑计数，哪些时候必须保存边缘索引</a></li><li><a href="#repeat-exposure-guide-_7">怎样用于配比加量和顺序实验</a></li></ol></details><section class="chapter" id="repeat-exposure-guide"><h1 id="repeat-exposure-guide-_1">重复曝光与配比加量</h1>
+<p>增加一个小数据池的比例，可能增加此前未见的序列，也可能主要增加已经见过的序列。两者必须分开。固定混合器对有限child的数据索引取模；重启本身不提供新内容，也没有在这个接口传递epoch重洗牌信号。配比是否值得加量，不能只用配置权重或训练token总数判断。<a href="code-4d080f9a000afafc.html">混合器</a></p>
+<h2 id="repeat-exposure-guide-_2">重启与洗牌不是同一个动作</h2>
+<p>原<code>PermutationDataset</code>缓存排列对象。人工排列<code>[2,0,1]</code>与原取模方法组合后，8次抽取产生<code>[2,0,1,2,0,1,2,0]</code>。这是原方法加人工排列的CPU检查，没有运行Feistel或JAX。<a href="code-64fd4b079d65038d.html">排列实现</a></p>
+<p>Hero的10月6日快照声明<code>restart</code>和block shuffle，块大小256、窗口512块，而非上述full shuffle。block shuffle源码按有限范围内的索引、窗口ID和固定key构造映射；取模之后相同逻辑索引再次进入该映射。历史执行代码、真实排列和缓存是否稳定仍未取得，不能将人工排列写成Hero样本实况。<a href="../sources/live_2026_10_06/meta.json">配置</a></p>
+<p>重新洗牌能改变顺序与不完整一轮中的抽样覆盖，不能让重复文本变成新文本。即便每次换排列，完整遍历有限库存时，内容仍来自同一个数据池。当前证据也不允许把固定重复顺序认定为bug或性能根因。</p>
+<h2 id="repeat-exposure-guide-_3">两种覆盖不能混用</h2>
+<p>设一个稳定有限child有n个逻辑序列，当前计划连续抽取d次；从训练起点累计的component序列索引为c。以下账目要求实际域内未取模索引的多重集为连续区间c至c+d−1，且此前历史完整覆盖0至c−1；库存与索引映射固定。c不能仅用累计遇到该域的次数代替。n不是原始文件token量，而是该child实际能索引的序列数。V97核对了部分混合块不满足此条件的原类反例，见下节。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>账目</th>
+<th>计算</th>
+<th>回答的问题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>当前窗口内不同序列索引</td>
+<td><code>min(d,n)</code></td>
+<td>这段计划内部覆盖了多少索引</td>
+</tr>
+<tr>
+<td>窗口内重复抽取</td>
+<td><code>d−min(d,n)</code></td>
+<td>这段计划内部重复了多少次</td>
+</tr>
+<tr>
+<td>相对此前历史的新增索引</td>
+<td><code>min(c+d,n)−min(c,n)</code></td>
+<td>这段计划增加了多少从未索引过的位置</td>
+</tr>
+<tr>
+<td>相对历史的重复抽取</td>
+<td><code>d−新增索引</code></td>
+<td>这段计划多少次重访已见位置</td>
+</tr>
+<tr>
+<td>每个库存索引的窗口抽取次数</td>
+<td><code>floor(d/n)</code>或多一次</td>
+<td>加量是否高度集中在循环重复</td>
+</tr>
+</tbody>
+</table></div>
+<p>例子：n=3、c=3、d=2。窗口内两个索引各出现一次，窗口内部重复为0；但训练此前已经遍历这三个索引，所以新增覆盖为0，两次都是历史重访。把“本窗口没有重复”写成“本轮增加了新数据”，就会错误解释配比收益。</p>
+<p>游标未知时，账本可以给出窗口内计数，但历史新增覆盖为空；库存未知时相关计数为空。不能默认c=0，否则恢复训练很容易被误判为首次曝光。</p>
+<p>这些是<strong>不同逻辑序列索引</strong>，不是唯一文本或唯一文档数：同一文档可能产生多个窗口，不同缓存条目可能含重复文本，多个桶也可能共享内容。<a href="dedup-guide.html#dedup-guide">去重边界</a>、<a href="eval-target-alignment-guide.html#eval-target-alignment-guide">连续窗口覆盖</a>和<a href="cache-guide.html#cache-guide">缓存身份</a>应一起核查。</p>
+<h2 id="repeat-exposure-guide-_4">可执行账本</h2>
+<p>新增<a href="code-a59a3933ba60fafb.html">检查器</a>读取有限库存、计划抽取次数、起始component索引，输出窗口覆盖、历史新增覆盖、每个索引的抽取次数范围，以及多抽一次的索引区间。它用整数运算处理大计划，不枚举所有抽取；区间是固定逻辑索引坐标，未映射到真实文档内容。</p>
+<p>从<a href="../templates/repeat_exposure_input.json">空白输入</a>补齐实际证据后运行：</p>
+<pre><code class="language-sh">.venv/bin/python scripts/audit_repeat_exposure.py input.json output.json
+</code></pre>
+<p>显式声明<code>fixed_order_modulo_restart</code>才能计算。输入须说明库存与游标来自哪份缓存、哪个训练起点；检查器不会替用户验证这些声明。输出拒绝覆盖已有文件，并保存输入SHA256。22项检查用独立枚举核对算术，执行原取模与full shuffle缓存方法，并核对实际CLI；没有真实Hero库存、游标、block shuffle重放或训练收益。<a href="../analysis/repeat_exposure_validation.json">结果</a></p>
+<h2 id="repeat-exposure-guide-_5">怎样指导下一次加量</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>看到的情况</th>
+<th>下一步实验</th>
+<th>不能直接作出的结论</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>加量主要是首次覆盖</td>
+<td>固定总预算和供体，检查新覆盖的领域与去重后内容</td>
+<td>新内容必然更好</td>
+</tr>
+<tr>
+<td>加量主要是历史重访</td>
+<td>相同起点比较加量幅度，保留独立验证与受损域</td>
+<td>重复必然无效，或下降必然过拟合</td>
+</tr>
+<tr>
+<td>库存、游标或缓存身份缺失</td>
+<td>先取得长度、累计索引和内容摘要</td>
+<td>用原始token库存代替可索引序列数</td>
+</tr>
+<tr>
+<td>同累计量只改变排列</td>
+<td>固定内容集合、累计抽取量、batch预算和恢复状态</td>
+<td>重新洗牌等于增加数据多样性</td>
+</tr>
+<tr>
+<td>两个桶的索引不同但内容重叠</td>
+<td>做跨桶内容去重与文档来源核查</td>
+<td>两个桶的覆盖量可以直接相加为唯一文本</td>
+</tr>
+</tbody>
+</table></div>
+<p>加量计划必须写明扣减哪个供体，并按实际整数配比和batch区间求d。源文件数量、配置权重或平均tokens/step不能独立证明实际曝光。若阶段切换改变缓存、sequence length或库存，以上固定n账目须分段重建，不能继续沿用旧游标。<a href="transfer-guide.html#transfer-guide">预算和供体方案</a>及<a href="batch-clock-guide.html#batch-clock-guide">batch时钟</a></p>
+<p>重复曝光是解释变量，不是自动判坏的阈值。要判断边际收益，应比较不同加量幅度下的域级loss、生成任务、供体损失和训练/验证差距；保持公共起点与固定评估口径，选择后的候选另做独立确认。现有材料不支持给所有数据池规定统一“最多重复两遍”之类的经验常数。</p>
+<h2 id="repeat-exposure-guide-v97restart">V97：restart的部分块，怎样改变首次覆盖与重复账目</h2>
+<p>V45账本的连续区间公式在其数学合同下仍成立，但此前文字不够明确地区分“累计域抽取次数”和“实际域内索引集合”。本轮补充这一限制，旧脚本、原结果和两张表保留。不能把fixed_order_modulo_restart声明直接套给带原块排列的任意训练前缀。</p>
+<p>执行同固定版本MixtureDataset原类体、真实JAX CPU排列和restart读取，子域是稳定有限人工identity store。人工单A库存n=5，block8，key7。混合排列打乱“域ID+块内offset”，随后域内索引对库存取模。<a href="https://github.com/marin-community/marin/blob/b65be4c9550c5097f0a3add08933531a1c24d534/lib/levanter/src/levanter/data/mixture.py" rel="noopener" target="_blank">原混合源码</a></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>同一原读取流中的窗口</th>
+<th>实际身份</th>
+<th>实际覆盖账目</th>
+<th>误套连续区间时的预测</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>前5槽</td>
+<td>A:1、A:2、A:2、A:4、A:1</td>
+<td>5次读取，3个不同身份</td>
+<td>假定未取模索引为0–4，预测5个身份</td>
+</tr>
+<tr>
+<td>随后3槽</td>
+<td>A:3、A:0、A:0</td>
+<td>窗口2个身份、1次内部重复；2个身份相对此前新增</td>
+<td>假定c=5、d=3，预测窗口3个身份、历史新增0</td>
+</tr>
+<tr>
+<td>完整前8槽</td>
+<td>上述两段合并</td>
+<td>覆盖A:0至A:4，全部库存</td>
+<td>完整块的索引多重集0–7，连续公式在本例匹配</td>
+</tr>
+<tr>
+<td>关闭随机块的前5槽</td>
+<td>A:0至A:4</td>
+<td>5个身份</td>
+<td>连续公式在本例匹配</td>
+</tr>
+</tbody>
+</table></div>
+<p>这个差异不是库存变化、缓存增长或重洗牌创造了新文本。第一段根本没有覆盖全部5条库存，所以第二段仍可有首次身份。累计读取次数达到n，不等于已经看完一轮。相反，第二段窗口内部有重复，与历史新增同时存在；窗口内部重复和历史重访本来就是两个账目。</p>
+<p>此前c的说明应读成“实际连续域内索引的起点，且其之前已完整覆盖”，而不是泛指component被抽过多少次。原混合器在完整块中产生连续的域内offset多重集，在不完整块中则选中其排列子集。一个完整混合块的出现次数与其连续区间大小一致；部分块只知道次数，仍不足以知道选中了哪些位置。</p>
+<h3 id="repeat-exposure-guide-_6">哪些时候可以用紧凑计数，哪些时候必须保存边缘索引</h3>
+<p>本轮另用A/B两域、库存5/7、两阶段配额4/4与6/2，执行4个完整块。八个“块×域”控制中，原读取身份多重集均与独立连续域内索引取模的多重集一致；阶段切换仍承接原累计offset。整个完整前缀的distinct身份也与min(累计计数,n)一致。这里核对的是明确人工范围，不是所有代码路径或真实库存的证明。</p>
+<p>从源码构造看，在类型与累计没有溢出、域列表固定、阶段边界对齐的条件下，每个完整块包含该域offset0至quota−1各一次，再加连续基址；跨完整块便形成连续区间多重集。排列改变顺序，不改变这段完整多重集。库存固定时可以利用这一结构计算计数和覆盖，避免枚举全部训练位置。</p>
+<p>若窗口起止不在完整块边界，应拆成起始部分块、完整中段、结束部分块。中段用连续区间/取模账目；边缘保存实际解码后的域内索引，核对与中段和历史的集合重叠。只把三段覆盖数相加会重复计数，仍需做集合或区间并集。恢复前缀也是一个窗口，不能只用累计域次数填c。</p>
+<p>固定子域shuffle映射也不代表整个混合读取流按一个周期原样重复；外层混合块排列还依赖block_id。相同子域取模索引在固定child映射下仍对应相同身份，外层访问顺序可以不同。真实child mapping、库存增长、去重和文本重叠会再加一层条件，本轮没有读取它们。</p>
+<h3 id="repeat-exposure-guide-_7">怎样用于配比加量和顺序实验</h3>
+<p>先检查一段增量是在补未见身份，还是主要重访，并明确历史覆盖来自哪里。若只有抽取次数和名义epoch，先保留覆盖未知；别宣称“已经重复一轮，所以没有新内容”。共同checkpoint下改变顺序时，匹配完整中段的整数计数，同时核对边缘实际身份与历史交集，才容易分清配比量和内容覆盖变化。</p>
+<p>库存足够大、边缘占比较小时，这个效应可能相对小；小库存、稀有桶或短窗口则需要重点核查。但现有证据没有测模型loss，也没有取得Hero逐桶可索引长度和真实历史，不能报告生产覆盖幅度或据此给出最优配比。调整比例还须固定供体、总预算、独立评估，并测受益域与受损域。</p>
+<p><a href="../analysis/restart_prefix_coverage_cpu.json">16项原restart读取与条件公式控制</a>保留完整身份流、旧连续账本输出和八个阶段整块多重集对照。<a href="code-3ae5c076a54a5501.html">脚本</a>复用原类和已有CPU依赖。它没有修改混合器或旧账本；修正的是公式使用条件与研究解释。</p></section><nav class="pager"><a href="practical.html">← 上一篇</a><a href="order-guide.html">下一篇 →</a></nav></main></body></html>

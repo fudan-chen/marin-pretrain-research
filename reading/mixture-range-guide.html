@@ -1,0 +1,263 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>18T尺度下的混合计数：溢出风险与Hero配置的实际边界 · Marin 预训练研究</title><link rel="stylesheet" href="reading.css"></head><body><header><nav><a href="index.html">主题目录</a><a href="../report_standalone.html">完整报告（保留）</a><a href="code.html">源码与候选补丁</a><a href="tools.html">交互工具</a></nav></header><main><p class="muted"><a href="theme-input.html">03 · 数据管线与实际曝光</a> / 本页只含一篇专题</p><details class="chapter-toc"><summary>本篇目录</summary><ol><li><a href="#mixture-range-guide-1">1. 三处运算，不能用一种故障描述代替</a></li><li><a href="#mixture-range-guide-2">2. 负索引为何可以悄悄变成正常样本</a></li><li><a href="#mixture-range-guide-3-hero">3. 把Hero三阶段配置代进去，风险是否触发</a></li><li><a href="#mixture-range-guide-4">4. 修复候选与验收边界</a></li><li><a href="#mixture-range-guide-v88">V88：把连续曝光计划编译成整数块，再保留最后半块</a></li><li><a href="#mixture-range-guide-seed">最后不足一块，必须和seed一起保留</a></li><li><a href="#mixture-range-guide-_1">怎样调整配比才会真正改变曝光</a></li><li><a href="#mixture-range-guide-v89python184">V89：Python求和的一点误差，怎样变成184个桶的整数差异</a></li><li><a href="#mixture-range-guide-numpy">如何排除NumPy版本这个混杂因素</a></li><li><a href="#mixture-range-guide-_2">给自己的预训练管线的规则</a></li><li><a href="#mixture-range-guide-v95">V95：真正接到读取接口以后，单条与批量为何可能读到不同身份</a></li><li><a href="#mixture-range-guide-hero">同时把反例放回Hero声明范围</a></li><li><a href="#mixture-range-guide-v128">V128：桶级权重的数值合同</a></li></ol></details><section class="chapter" id="mixture-range-guide"><h1 id="mixture-range-guide-18thero">18T尺度下的混合计数：溢出风险与Hero配置的实际边界</h1>
+<p>归档MixtureDataset有一条可复现的整数溢出路径：每块计数和跨阶段累计量都使用int32，乘法或累计超过2,147,483,647后可能回绕；之后转成Python int无法恢复。有限数据集的restart取模还可能把错误的负索引变成合法索引，使训练继续读到另一个样本。</p>
+<p><strong>这不是Hero已发生事故的证据。</strong> V36本地计算的归档三阶段配置下，18T目标约对应43.96亿序列，单桶累计上界约2.57亿，低于int32限制；V89发现该取整结果依赖Python浮点求和语义，不能直接代填生产配额。必须按“每个实际混合组件”检查，而不是拿总序列数直接判故障。</p>
+<p>本章依据<a href="code-4d080f9a000afafc.html">固定源码</a>、<a href="../sources/wandb/hero-fa4sm100-nomask-step146k_meta.json">归档配置</a>和<a href="../analysis/mixture_range_probe.json">22项原函数检查</a>。原函数用真实NumPy 2.0.2执行，人工对象替代dataset和初始化依赖；没有模拟掉整数运算。未执行JAX、真实DataLoader、token流、GPU或历史事故重放；Hero当时的NumPy版本仍未知。</p>
+<h2 id="mixture-range-guide-1">1. 三处运算，不能用一种故障描述代替</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>源码位置</th>
+<th>风险与实际复现</th>
+<th>范围限制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>counts_this_stage * num_blocks_in_stage</code></td>
+<td>int32数组乘法结果仍为int32，单阶段累计过大即回绕</td>
+<td>人工输入已复现；不能靠结果出来后再astype/int补救</td>
+</tr>
+<tr>
+<td><code>cumulative_counts += stage_total_counts</code></td>
+<td>每阶段乘法都安全，多个阶段相加仍可能溢出</td>
+<td>人工两个阶段各1,474,560,000，累计得到−1,345,847,296而非2,949,120,000</td>
+</tr>
+<tr>
+<td><code>offset_in_stage * counts_per_block[...]</code></td>
+<td>NumPy 2下，Python int与np.int32标量组合可能保留int32并溢出</td>
+<td>单条索引的人工Python-int路径已复现；批量路径使用np.int64 block_id时，这一乘法得到正确int64结果，不能声称两条路径都因此失败</td>
+</tr>
+</tbody>
+</table></div>
+<p>最后一行尤其容易误判。<code>getitem_async</code>通常从Python索引计算block_id；<code>get_batch</code>构造NumPy block_ids数组，循环中的block_id通常是np.int64。相同数值、不同类型，可以走出不同的整数范围。跨阶段累计数组已损坏时，两条读取路径仍会继承错误base_offset；批量路径的局部乘法安全不能修复它。</p>
+<p><a href="https://numpy.org/doc/2.0/numpy_2_0_migration_guide.html#changes-to-numpy-data-type-promotion" rel="noopener" target="_blank">NumPy 2迁移文档</a>说明标量类型提升规则发生了变化，整数混合可能产生错误或溢出，并建议显式转换。这里对NumPy版本的说明只支持机制，不据此推断Hero实际环境。是否记录warning、是否把浮点/整数警告设为异常，也会影响“继续错误读取”还是“直接停止”；生产设置没有验证。</p>
+<h2 id="mixture-range-guide-2">2. 负索引为何可以悄悄变成正常样本</h2>
+<p>用生产同样的block_size=49,152，但人工设置只有一个数据组件，每块全部来自A。第43,691块的预期组件起始索引是2,147,500,032，刚超过int32上限。这个序列索引并不需要分配几十亿样本：探针只构造一个块及少量计数，再直接调用索引方法。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>人工对照</th>
+<th style="text-align: right;">得到的数值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Python整数独立计算</td>
+<td style="text-align: right;">2,147,500,032</td>
+<td>正确逻辑索引</td>
+</tr>
+<tr>
+<td>原跨阶段累计结果</td>
+<td style="text-align: right;">−2,147,467,264</td>
+<td>比正确值少2³²</td>
+</tr>
+<tr>
+<td>原Python-int当前阶段路径</td>
+<td style="text-align: right;">−2,147,467,264</td>
+<td>乘法完成后再int转换仍错误</td>
+</tr>
+<tr>
+<td>原np.int64 block_id当前阶段路径</td>
+<td style="text-align: right;">2,147,500,032</td>
+<td>该局部乘法正确</td>
+</tr>
+<tr>
+<td>有限数据集长度1009，正确索引取模</td>
+<td style="text-align: right;">936</td>
+<td>应读取的底层样本</td>
+</tr>
+<tr>
+<td>同一长度，损坏索引经原remap取模</td>
+<td style="text-align: right;">553</td>
+<td>合法范围内的错误样本</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>_remap_indices</code>对有限数据集的restart/all_exhausted执行 <code>idx % length</code>。负数取模落到0..length−1，所以“索引没有越界”和“继续训练时loss有限”都不能证明数据游标正确。若数据集长度恰好使2³²取模为0，某些错误映射还可能碰巧相同；本例证明存在错误读取路径，不声称所有长度都必然改变样本。</p>
+<h2 id="mixture-range-guide-3-hero">3. 把Hero三阶段配置代进去，风险是否触发</h2>
+<p>使用归档固定batch=11,264、长度4,096、block=49,152、计划结束step=390,251；阶段从0、108,000、312,192开始。先按生产方法归一化/取整，随后用Python整数独立累计。末尾不足一个block按整块计入，得到每桶的保守上界。223个声明键中，200个组件至少一个阶段有正权重。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>阶段起始step</th>
+<th style="text-align: right;">累计序列起点</th>
+<th style="text-align: right;">本阶段单桶最大计数上界</th>
+<th style="text-align: right;">截至本阶段末的单桶累计最大上界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">60,835,500</td>
+<td style="text-align: right;">60,835,500</td>
+</tr>
+<tr>
+<td>108,000</td>
+<td style="text-align: right;">1,216,512,000</td>
+<td style="text-align: right;">124,612,422</td>
+<td style="text-align: right;">173,562,246</td>
+</tr>
+<tr>
+<td>312,192</td>
+<td style="text-align: right;">3,516,530,688</td>
+<td style="text-align: right;">83,434,296</td>
+<td style="text-align: right;">256,996,542</td>
+</tr>
+</tbody>
+</table></div>
+<p>最终最大的累计桶为c30q4，约占int32上限的12%。总序列数4,395,787,264超过int32，不会自动导致逐组件计数溢出。这份配置在被审查的三处int32计数范围内，没有达到上述触发条件；这只是声明范围审计，不是历史运行安全证明。</p>
+<p>实际dataset键顺序未取回。本次按权重声明构造200个活跃组件，三个阶段分配余数的最大计数桶均唯一，计数不依赖平局裁决顺序；没有证明历史dataset集合、文件内容与该声明完全一致。零权重、微小正权重被截成0的情况仍保留在原值账本中。各阶段分别有17、0、1个正权重组件的整块计数为0，提醒读者权重声明与曝光仍须分开；不能将这些数字当作已重放的实际样本。</p>
+<p>这也给迁移配方一个具体提醒：把200桶改成更粗的域、连续做高比例CPT、增加训练预算，都可能把原先分散的计数集中到少数组件。检查应重新执行，不应沿用“Hero用过这段代码”的判断。</p>
+<h2 id="mixture-range-guide-4">4. 修复候选与验收边界</h2>
+<p><a href="code-98c7be305e940a25.html">三处候选补丁</a>仅用于本地审查，未修改源归档、未提交上游、未在训练环境应用：</p>
+<ol>
+<li>跨阶段累计数组改为int64。</li>
+<li>单阶段乘法<strong>之前</strong>将每块计数提升到int64。</li>
+<li>当前阶段标量乘法<strong>之前</strong>转为Python整数。</li>
+</ol>
+<p>探针执行这三处改动后的方法，核对两个溢出例、当前阶段索引、原小索引行为，以及每块计数仍保持int32。它没有把所有计数类型一起改掉，也没有改变配比、块内置换或随机key。int64也有上限，任意超大输入仍需Python整数预检。</p>
+<p>真实修复验收至少应覆盖：生产NumPy版本；Python int/np.int64两种入口；多阶段累加；有限数据集取模；同key下修改前后正常范围token流一致；阈值附近修复后与独立整数参考一致。当前只完成前述CPU计数和映射检查，真实token流与分布式读取未完成。</p>
+<p>可重跑：</p>
+<pre><code class="language-bash">.venv/bin/python scripts/probe_mixture_range.py
+</code></pre>
+<p>本章给配比管线增加一个具体的检查入口：<strong>先计算每个组件在所有阶段的计数上界，再检查每一步中间乘法的类型；不能只检查最终结果或总token预算。</strong> 在恢复和配比收益归因之前，把它与<a href="batch-clock-guide.html#batch-clock-guide">batch前缀</a>、缓存身份、真实cursor共同核对，避免将读取变化解释成训练策略收益。</p>
+<h2 id="mixture-range-guide-v88">V88：把连续曝光计划编译成整数块，再保留最后半块</h2>
+<p>V87按连续权重计算曝光，本轮用同head b65be4c9550c5097f0a3add08933531a1c24d534的原MixtureDataset归一化、块计数、打包ID与JAX block permutation函数，接入原Harrier builder返回的三个阶段。200桶来自同版spec JSON；不是回放历史W&amp;B已解析配置。dataset顺序按JSON插入顺序构造，seed=7/8为人工对照，不归因生产数据seed。完整类、loader、缓存与真实token没有执行。<a href="../analysis/integer_exposure_cpu.json">18项CPU检查</a> · <a href="../analysis/integer_exposure_cells.csv">200桶计数表</a></p>
+<p>原块算法将weight×49152写入int32，正数向零截断；剩余名额全部加给截断后计数最大的桶。一个桶在每块少不到一条，经过数万个块后仍会累积差异；增加训练步数不会把每块相同的截断误差自动平均掉。初始阶段24,750个完整块，98条余数每块都给c30q4；main阶段46,794块，cooldown有17,888完整块及最后25,600个槽位。后两阶段在这份spec的归一化输出下余数为零。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>同head spec声明桶</th>
+<th>每块initial/main/cooldown计数</th>
+<th style="text-align: right;">连续计划序列数</th>
+<th style="text-align: right;">整数序列数，人工seed7</th>
+<th>完整序列token/库存：连续→整数</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>c22q0</td>
+<td>0 / 0 / 0</td>
+<td style="text-align: right;">约1.1154</td>
+<td style="text-align: right;">0</td>
+<td>0.001350→0</td>
+</tr>
+<tr>
+<td>c27q0</td>
+<td>0 / 3 / 2</td>
+<td style="text-align: right;">约179221.9585</td>
+<td style="text-align: right;">176159</td>
+<td>6.740831→6.625628</td>
+</tr>
+<tr>
+<td>c30q4</td>
+<td>2458 / 2409 / 4481</td>
+<td style="text-align: right;">约251316054.8445</td>
+<td style="text-align: right;">253720735</td>
+<td>1.523533→1.538111</td>
+</tr>
+</tbody>
+</table></div>
+<p>表里的“轮数”是逻辑序列数×4096除以spec库存token量，仍是名义完整序列token预算。它不说明真实文档重复次数，也未扣除padding/mask或路由丢弃。c27q0的差主要来自初始阶段微小权重被逐块截断；c30q4则收到集中余数。c22q0的正连续量不保证任何实际assignment：只有调整后跨过整数计数门槛，或改变分配算法，才可能改变该桶的块曝光。</p>
+<h3 id="mixture-range-guide-seed">最后不足一块，必须和seed一起保留</h3>
+<p>原JAX fold_in与permutation对最后一块执行两个人工key；完整块多重集均与原配额完全一致，但前25,600槽的域计数不同。seed7/8的c27q0总量分别176159/176158，c30q4分别253720735/253720693。两者全域总和都精确为4,395,787,264条逻辑序列。末块不能按完整块计入后声称等预算，也不能按连续比例代填实际前缀。这里统计的是打包域ID，没有请求真实子dataset样本。</p>
+<p>V89对本段补证：V36的17、0、1与V88的17、0、0不能只用来源对象不同解释。同一W&amp;B权重在本轮Python 3.9/3.12原归一化对照中，也分别产生这两组数。配置确有末位浮点差别，但运行时求和语义是额外原因；见下节。原始V36结果保留为历史本地环境记录，源码spec与已解析配置仍分别绑定。</p>
+<h3 id="mixture-range-guide-_1">怎样调整配比才会真正改变曝光</h3>
+<p>先将候选weight编译成每块整数计数，与基线逐桶比较；记录零支持、接收余数的桶以及所有被连带改变的供体。调整一个微小桶而其整数计数不变，在这份确定块算法下不会改变完整块域配额。实验应以实际整数交换量定义预算，连续weight保留为设计目标；研究顺序时还要匹配末块和域内库存身份。</p>
+<p>本轮外部累计采用int64，避免把计数审计本身引入V36的int32溢出；原每块计数仍保持原dtype。没有执行原跨阶段累计或索引读取，不能用本次安全累计证明原整体实现安全。新增1份同head完整源码，495份旧非bookkeeping来源字节保持，来源共497份。<a href="../analysis/integer_exposure_acquisition.json">获取台账</a>。复现：<code>make integer-exposure-cpu CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python</code>。</p>
+<h2 id="mixture-range-guide-v89python184">V89：Python求和的一点误差，怎样变成184个桶的整数差异</h2>
+<p>V88保留了来源差异，却没有解释旧结果为何不同。本轮在两份实际环境执行同版原_normalize_weights与原块配额函数：Python 3.9.6 / NumPy 2.0.2，Python 3.12.13 / NumPy 2.5.3。三份输入分别是同head spec、历史W&amp;B配置、10月7日W&amp;B归档；每份均测试native sum、顺序求和控制与math.fsum控制。两环境各27格、54项守恒/独立整数参考检查，另有<a href="../analysis/normalization_runtime_compare.json">7项跨环境对照</a>。没有执行完整数据加载器或生产环境。</p>
+<p><a href="https://docs.python.org/3.12/library/functions.html#sum" rel="noopener" target="_blank">Python 3.12官方文档</a>说明浮点sum在3.12更换了提高精度的算法。本例cooldown权重在3.9 native sum为1.0000000000000002，在3.12 native sum为1.0。原归一化将每桶除以这个值；许多weight×49152本来就在整数门槛上，稍微减小后被int32赋值截成前一个整数。随后余数全部归最大桶，错误/差异既减少许多桶，又集中增加一个桶。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>同一份cooldown输入，原函数</th>
+<th style="text-align: right;">3.9与3.12间改变配额的桶数</th>
+<th>c30q4每块：3.9→3.12</th>
+<th>正weight但零计数：3.9→3.12</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>同head源码spec</td>
+<td style="text-align: right;">190</td>
+<td>4670→4481</td>
+<td>1→0</td>
+</tr>
+<tr>
+<td>历史W&amp;B配置</td>
+<td style="text-align: right;">184</td>
+<td>4664→4481</td>
+<td>1→0</td>
+</tr>
+<tr>
+<td>10月7日W&amp;B归档</td>
+<td style="text-align: right;">184</td>
+<td>4664→4481</td>
+<td>1→0</td>
+</tr>
+</tbody>
+</table></div>
+<p>对同一历史W&amp;B输入，initial与main的整数配额在这两环境完全一致，差异集中在cooldown。输入保持不变已经足以复现差异，所以不能把它全部归于配方改动、W&amp;B序列化或缓存变化。spec与W&amp;B的部分binary64权重确有末位差别，3.9下也使结果不同；3.12下本次三个阶段的配额一致。没有证据把末位差异归为某个序列化组件的bug。</p>
+<h3 id="mixture-range-guide-numpy">如何排除NumPy版本这个混杂因素</h3>
+<p>两环境的NumPy版本不同，直接看到quota不同仍不能只归因Python。本轮在同一原函数体中，仅替换全局sum依赖：明确逐项累加的控制在两环境输出全部一致，math.fsum控制也全部一致。每格还用独立Python int截断与余数计算核对原NumPy赋值结果，均匹配。3.9 native在本例对应顺序控制，3.12 native对应fsum控制。这些控制把差异定位到求和→归一化→取整链；替换依赖是诊断控制，没有改动上游，不能称作经过训练验证的修复。</p>
+<p>V36原JSON记录了NumPy 2.0.2，未记录Python版本。本轮3.9控制重现其cooldown计数，因此旧数值应按本地运行时结果阅读，不能断言原始执行Python二进制已经独立恢复。10月7日W&amp;B元数据声明Python 3.12.14，本轮使用3.12.13；这个声明与3.12算法说明有参考价值，但没有取回生产二进制、实际组件树或原始已编译quota。不能因此将本地3.12计数直接命名为真实Hero曝光。</p>
+<h3 id="mixture-range-guide-_2">给自己的预训练管线的规则</h3>
+<p>配置身份应同时包含输入float十六进制值、键顺序、Python/NumPy版本、归一化算法以及最后的整数quota，而非仅有JSON文本或“比例和接近1”。复现已有训练时，先核对共同阶段的整数向量；若要改变归一化实现，应作为会改变数据映射的迁移验收，检查域内cursor与恢复前缀。</p>
+<p>新管线可以显式保存整数配额并审查其预算，避免每次运行临时重算；也可研究稳定求和与明确的取整政策。但这些是设计建议，本轮没有比较其训练收益，不建议给所有weight随意加epsilon来掩盖门槛。源码没有改动，输入与输出原值见<a href="../analysis/normalization_python39.json">3.9记录</a>和<a href="../analysis/normalization_python312.json">3.12记录</a>。新增官方文档归档1份，旧496份非bookkeeping来源字节保持，来源498份。</p>
+<h2 id="mixture-range-guide-v95">V95：真正接到读取接口以后，单条与批量为何可能读到不同身份</h2>
+<p>V36已执行计数/索引原方法，发现int32风险；V88只统计域ID，没有执行原累计索引。本轮进一步执行固定版本MixtureDataset完整原类体、构造器、getitem_async和get_batch，把算术结果接到有限人工identity子域。依赖为前述AsyncDataset/stop容器、CPU mesh和立即完成future适配；真实JAX 0.7.2 CPU执行原块排列。没有真实token store、loader、GPU或生产cursor。<a href="https://github.com/marin-community/marin/blob/b65be4c9550c5097f0a3add08933531a1c24d534/lib/levanter/src/levanter/data/mixture.py" rel="noopener" target="_blank">同版本原类</a></p>
+<p>人工只有A域，block=8，有限库存1009条，key=7。取混合位置2,147,483,648；原排列在该槽选择块内offset=6，因此独立Python整数参考的域内逻辑位置为2,147,483,654，取模后应读取A:702。参考复用原打包ID，仅独立核对累计/乘法，不独立验证排列算法。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>原类端到端控制</th>
+<th>单条getitem_async</th>
+<th>批量get_batch</th>
+<th>独立宽整数参考</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>单阶段A=1，同一超大位置</td>
+<td>A:319</td>
+<td>A:702</td>
+<td>A:702</td>
+<td>当前阶段乘法类型不同，使单条路径溢出</td>
+</tr>
+<tr>
+<td>在该位置加入第二阶段，权重仍A=1</td>
+<td>A:319</td>
+<td>A:319</td>
+<td>A:702</td>
+<td>构造时prefix已溢出，两接口共享坏前缀</td>
+</tr>
+<tr>
+<td>阶段块数变为2,147,483,648，block仍8</td>
+<td>构造未成功</td>
+<td>构造未成功</td>
+<td>需宽类型先计算</td>
+<td>本轮NumPy抛OverflowError，不是静默wrap</td>
+</tr>
+<tr>
+<td>Hero归档200桶，原类本地构造；六个声明边界/末尾位置</td>
+<td>六身份逐项相同</td>
+<td>六身份逐项相同</td>
+<td>六身份全部匹配</td>
+<td>这些人工库存控制没有触发上述错误，不是生产token复核</td>
+</tr>
+</tbody>
+</table></div>
+<p>单条路径以Python整数生成block_id，offset乘np.int32配额时结果仍可能在窄类型内计算；批量路径先把block_ids放进NumPy数组，本轮得到np.int64，当前阶段乘法保持宽类型。因此，“只测一种取数接口”会遗漏另一种行为。这里结论绑定Python3.12.13 / NumPy2.5.3；真实调用方传入的类型和依赖版本也需保存。</p>
+<p>跨阶段控制更说明接口一致性不够。原构造器用int32的counts_this_stage乘阶段块数，初始阶段累计2,147,483,648条变为−2,147,483,648。后续两条读取路径都加这个坏base_offset，随后restart取模映射到合法库存身份A:319。没有越界错误，返回也不是NaN，但数据身份已经改变。共同错误前缀能使两个API互相通过，必须另有宽整数参考与内容/身份核对。</p>
+<p>更大Python块数在本轮运行时还会触发“Python integer out of bounds for int32”的OverflowError。不要把不同失败机制合并成“所有大计数都会静默溢出”。本轮直接保留三种原结果：接口分歧、共同错误、构造拒绝。<a href="../analysis/mixture_read_range_cpu.json">13项原构造/读取CPU控制</a> · <a href="code-337ef7676885f37e.html">复现脚本</a></p>
+<h3 id="mixture-range-guide-hero">同时把反例放回Hero声明范围</h3>
+<p>从10月7日归档读取constant train_batch_size=11264、num_train_steps=390251、block_size=49152，将三阶段声明位置换算为0、1,216,512,000、3,516,530,688条序列。它是声明恒定batch控制，不是实际历史loader复原。原构造器保留200个正支持桶；前两阶段原int32累计向量的全部200项，分别与独立Python整数累计完全一致，最大prefix为60,835,500和173,562,246。</p>
+<p>终点全局序列预算4,395,787,264超过int32，但这不是每个子域的计数。把最后不足一块按完整块纳入保守上界，逐桶最大计数为253,722,855，仍低于2,147,483,647。它绑定本轮运行时归一化和原配额，不能替换V36的历史本地上界，也不能称为实际曝光。六个读取点为起点、两阶段边界前后与预算最后一槽，使用人工1009库存，单条/批量均与独立索引算术匹配。六点没有证明所有真实token、缓存和恢复路径正确。</p>
+<p>结论应精确到条件：原接口风险已在人工集中配额下端到端复现；归档Hero的本地逐桶上界不满足该反例的溢出条件。新增CPT预算、合并数据桶、集中权重或重新设定阶段以后，应按新配额重检，不能搬用这个上界。</p>
+<p>修复原则仍是把类型提升放在乘法和累加之前：阶段产品、跨阶段累计、当前阶段offset三处分别处理；最终再int转换无法恢复已经溢出的值。应保留单条/批量共同位置的对照，同时加入独立宽整数参考，检查restart前的原始域内索引与取模后身份。本轮没有修改上游，也没有以人工正确读数宣称训练收益。</p>
+<h2 id="mixture-range-guide-v128">V128：桶级权重的数值合同</h2>
+<p>权重范围检查增加逐项有限性与总和有限性。两个有限大正数仍可让直接总和溢出；合法历史保留组件后，空/全零阶段的余数政策可把整块给首桶。正权重、归一化正支持与整数正曝光需分别记录；最小有限性保护未解决下溢或零整数配额。<a href="weight-domain-guide.html#weight-domain-guide">13控制、真实声明回归与未知</a>。</p></section><nav class="pager"><a href="mixture-identity-guide.html">← 上一篇</a><a href="assertion-contracts-guide.html">下一篇 →</a></nav></main></body></html>

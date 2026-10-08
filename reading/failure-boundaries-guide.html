@@ -1,0 +1,242 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>loss有限，为什么更新仍可能损坏 · Marin 预训练研究</title><link rel="stylesheet" href="reading.css"></head><body><header><nav><a href="index.html">主题目录</a><a href="../report_standalone.html">完整报告（保留）</a><a href="code.html">源码与候选补丁</a><a href="tools.html">交互工具</a></nav></header><main><p class="muted"><a href="theme-recovery.html">08 · 故障、保存与恢复</a> / 本页只含一篇专题</p><details class="chapter-toc"><summary>本篇目录</summary><ol><li><a href="#failure-boundaries-guide-_1">检查发生在更新之后，保存之前</a></li><li><a href="#failure-boundaries-guide-_2">人工故障逐项对应源码行为</a></li><li><a href="#failure-boundaries-guide-_3">为什么三个检查互不替代</a></li><li><a href="#failure-boundaries-guide-_4">数值验收需要自己的水位</a></li><li><a href="#failure-boundaries-guide-v113loss">V113：loss一直有限，路由异常也可能经过保存恢复</a></li><li><a href="#failure-boundaries-guide-_5">一条实跑的三步路径</a></li><li><a href="#failure-boundaries-guide-pendingbias">Pending有限，也不保证应用后的bias有限</a></li><li><a href="#failure-boundaries-guide-_6">存储忠实保留异常，不负责判定它是否能训练</a></li><li><a href="#failure-boundaries-guide-_7">一个尚未集成的有限性诊断候选</a></li><li><a href="#failure-boundaries-guide-v131">V131补证：保留原错误有条件</a></li></ol></details><section class="chapter" id="failure-boundaries-guide"><h1 id="failure-boundaries-guide-loss">loss有限，为什么更新仍可能损坏</h1>
+<p>上轮确认日志存在阶段与视图差异。这轮继续检查训练循环的失败边界：明确的数值检查只看<code>train/loss</code>；它不能替代对更新、状态或几何约束的验收。先发生更新异常，后发生loss变化的案例尤其容易被这种检查漏掉。</p>
+<p>核对固定来源<a href="code-e3d9a0d95c46dcdb.html">train_hero_ep.py</a>中的主循环try/except/else/finally。新增<a href="code-4b09833d4b8ecbb7.html">17项控制流探针</a>，执行原AST片段，替换训练步、callbacks、checkpointer、JAX同步与事件范围。结果在<a href="../analysis/failure_loop_probe.json">原值与事件记录</a>。没有真实GPU、autodiff、checkpoint I/O，也没有穷举外部callbacks/kernel中可能另有的检查。</p>
+<h2 id="failure-boundaries-guide-_1">检查发生在更新之后，保存之前</h2>
+<p>本循环依次执行：取batch与可选diagnostic → 调train_step并接收next_state → current_step读取新state.step → 发TRAIN_STEP_FINISHED → 检查本步loss有限 → 普通callbacks → checkpoint.on_step → 下一轮。</p>
+<p>正常退出时，else强制执行末步callbacks和checkpoint，并等待保存结束；发生异常则except记录并重新抛出，跳过该强制末尾路径；finally仍发TRAINING_FINISHED。</p>
+<p>三个事件不要混同：TRAIN_STEP_FINISHED早于loss检查，表示这一调用已返回并等待了loss；TRAINING_FINISHED也会在失败时发出；checkpoint.on_step只证明到达交接调用，不能证明内容有限、写入提交或恢复通过。</p>
+<h2 id="failure-boundaries-guide-_2">人工故障逐项对应源码行为</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>人工输入或故障</th>
+<th>实际原循环片段行为</th>
+<th>证明范围</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>一正常步后结束</td>
+<td>普通callbacks/save交接后，再强制末步callbacks/save并wait</td>
+<td>这是调用顺序，fake recorder不实现真实频率/去重/写盘</td>
+</tr>
+<tr>
+<td>本步loss为NaN</td>
+<td>state.step已到1，发finished后抛错；未调用本步callbacks/save或强制末尾save</td>
+<td>不是更新前阻断，也没有回滚next_state</td>
+</tr>
+<tr>
+<td>loss=2，但next_state参数为NaN</td>
+<td>没有抛错；callbacks与save recorder看到了NaN状态</td>
+<td>有限loss这一检查不检查next_state参数；不能断言真实backend已提交坏文件</td>
+</tr>
+<tr>
+<td>第一步更新为NaN，第二步loss才NaN</td>
+<td>第一步先交接state.step=1；第二步在state.step=2抛错</td>
+<td>晚发现不能证明之前交接的state健康</td>
+</tr>
+<tr>
+<td>参数每步缩小7倍，下一loss=9.14但仍有限</td>
+<td>两步均不触发finite guard，普通/强制交接照常</td>
+<td>有限值检查不检测有限的范数塌缩或有限loss尖峰</td>
+</tr>
+<tr>
+<td>callback或save交接抛错</td>
+<td>日志记录异常，不再走强制末尾重试</td>
+<td>不证明资源已清理或异步写入状态已恢复</td>
+</tr>
+<tr>
+<td>diagnostic先抛错</td>
+<td>没有调用synthetic train_step，state.step仍为0</td>
+<td>异常可发生在优化器之前；真实设备状态未测</td>
+</tr>
+</tbody>
+</table></div>
+<p>主循环只有一处显式isfinite调用，对象是train/loss。这是本次审查片段的事实，不能扩大成“整个仓库没有其他数值防护”。实际训练可能配置自定义callback，也可能由kernel/runtime报错；本地没有验证它们的覆盖率。</p>
+<h2 id="failure-boundaries-guide-_3">为什么三个检查互不替代</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>检查</th>
+<th>能抓住的例子</th>
+<th>抓不住的例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>loss是否有限</td>
+<td>已传播到当前前向的NaN/Inf loss</td>
+<td>当前更新才损坏；有限loss尖峰</td>
+</tr>
+<tr>
+<td>更新和状态是否有限</td>
+<td>NaN/Inf update、参数或moment</td>
+<td>#8073报告的有限范数缩小、错误方向、错视图/错计数</td>
+</tr>
+<tr>
+<td>更新几何与完整状态一致性</td>
+<td>范数不变量违例、同输入更新不一致</td>
+<td>未经确认的数据/评估口径变化；长窗能力退步</td>
+</tr>
+</tbody>
+</table></div>
+<p>历史<a href="muon-geometry-guide.html#muon-geometry-guide">#8073</a>曾报告参数范数150.73降到21.41、下一步loss到9.14；这些值本身都有限。因此不能从“finite检查存在”推出它能抓住那种事故。不过该案例在另一条训练路径，不能据此断言535B生产循环已发生或漏检同一故障。</p>
+<p><a href="code-ef5fae9e9007ffac.html">离线事故检查器</a>可检查明确全局叶的非有限计数、几何差异与分母一致性；它不在训练循环中自动拦截，也不决定接受、跳步或回滚。</p>
+<h2 id="failure-boundaries-guide-_4">数值验收需要自己的水位</h2>
+<p>此前<a href="checkpoint-commit-guide.html#checkpoint-commit-guide">checkpoint提交分析</a>区分训练步、交接、metadata可见和真实恢复。现在需补一条独立的<strong>拟议数值验收水位</strong>：哪个状态已通过明确列出的数值与更新检查。它不能由state.step、finished事件、checkpoint metadata或读回成功自动推定。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>拟议记录</th>
+<th>应保留什么</th>
+<th>没有证据时</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>trained step</td>
+<td>输入进度、输出state.step与日志step</td>
+<td>不称为健康状态</td>
+</tr>
+<tr>
+<td>numerically checked step</td>
+<td>参数视图、检查对象、组轴、容差、原值和通过项</td>
+<td>保持unknown，不用有限loss代填</td>
+</tr>
+<tr>
+<td>save handed-off step</td>
+<td>候选state摘要与交接时刻</td>
+<td>不称为已提交</td>
+</tr>
+<tr>
+<td>metadata-visible step</td>
+<td>提交标记与该次对象绑定</td>
+<td>不称为数值健康或可恢复</td>
+</tr>
+<tr>
+<td>restored step</td>
+<td>读回内容身份与同输入一步更新对照</td>
+<td>不由“发现目录”代填</td>
+</tr>
+</tbody>
+</table></div>
+<p><a href="../templates/numerical_acceptance_record.json">数值状态记录</a>保留全部为空；这是建议检查方案，不是Marin当前实现的新增机制。保存前的检查也可能增加同步与归约成本，需按<a href="observability-guide.html#observability-guide">监控成本</a>测量。</p>
+<p>不要直接把“发现异常”改为“跳过这一步”。moment、scheduler、loader/cursor、pending QB、EMA和state.step的推进必须有明确语义，跳更新与重放数据也会改变有效配比/曝光。没有同起点状态轨迹验证时，跳步只能叫新的干预策略，不能叫已证明无损的修复。</p>
+<p>原train_step的JIT声明donate_argnums=(0)。<a href="https://docs.jax.dev/en/latest/buffer_donation.html" rel="noopener" target="_blank">JAX官方buffer donation说明</a>解释了输入buffer可能被复用、之后不应继续使用。因而保存一个Python旧state引用不代表其设备buffer仍可用于回滚；是否成功复用取决于实际编译和形状条件。本轮没有执行donation或设备恢复；建议回退以内容绑定、已核对的checkpoint为依据，再验证数据与下一步状态接续。</p>
+<p>这轮允许的结论是：在所审查循环中，“loss有限”和“步已完成”不是完整状态健康证明；失败路径抑制强制末尾save有明确控制流依据；早期检查应分清非有限、几何和状态一致性。是否出现过污染提交、哪个真实checkpoint可恢复，仍需原训练事故包与实际恢复记录。</p>
+<h2 id="failure-boundaries-guide-v113loss">V113：loss一直有限，路由异常也可能经过保存恢复</h2>
+<p>V34以人工state recorder定位了主循环的loss-only检查边界；V63执行原QB setter，看到单个非有限pending会经中心化传播，但没有执行后续专家目标；V111接上了原训练步与真实恢复。这轮进一步让原训练闭包、setter、路由块、真实Adam和本地OCDBT处理异常pending，核对“异常是否必然让下一次loss变成NaN”。本控制中，答案是否定的。</p>
+<p><a href="../analysis/pending_finite_gap_cpu.json">13项CPU控制与逐步原值</a> · <a href="../analysis/pending_finite_gap_cpu_output.txt">执行输出</a> · <a href="code-d07087468d9c64d8.html">脚本</a>。原beta估计器被人工输出替代，没有证据证明真实Hero估计器产生过这些值，也没有读取真实Hero异常checkpoint。</p>
+<h3 id="failure-boundaries-guide-_5">一条实跑的三步路径</h3>
+<p>沿用V111的人工三专家模型、固定logits、平方误差、真实Adam与独立EMA缓冲区。四组控制只改变第一批输出beta：有限参照<code>[0,3,0]</code>、单NaN、单+Inf，以及三项均为有限float32的<code>3e38</code>。第二、三步输出beta恢复为共同有限值。输入beta作为模拟估计器输出，是本实验明确施加的故障，不是从生产记录发现的异常。</p>
+<p><svg aria-labelledby="pending-finite-title pending-finite-desc" height="560" role="img" style="display:block;width:100%;height:auto" viewbox="0 0 1200 560" width="1200" xmlns="http://www.w3.org/2000/svg">
+<title id="pending-finite-title">有限loss可以跨过非有限路由状态</title>
+<desc id="pending-finite-desc">人工CPU三专家模型，原训练闭包执行三步。所有loss有限；异常pending或中心化溢出可使下一步bias非有限。第三步状态重新有限但参数已偏离参照。</desc>
+<rect fill="#f8fafc" height="560" width="1200"></rect>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="26" x="24" y="38">loss 有限，不等于路由状态健康</text>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="16" x="24" y="67">人工 beta 注入 · 原 train_step / setter / route · 非 Hero 事故或误差估计</text>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="17" x="24" y="110">控制</text>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="17" x="280" y="110">第 1 步：输出注入 beta</text>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="17" x="585" y="110">第 2 步：使用该 beta</text>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="17" x="890" y="110">第 3 步：再次有限</text>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="17" x="24" y="169">有限 beta 参照</text>
+<rect fill="#e6f1eb" height="75" rx="6" width="294" x="270" y="132"></rect>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="16" x="280" y="155">loss 8.656469</text>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="15" x="280" y="177">P / stored / next: Y / Y / Y</text>
+<text fill="#215f55" font-family="system-ui,sans-serif" font-size="15" x="280" y="198">参数与参照相同</text>
+<rect fill="#e6f1eb" height="75" rx="6" width="294" x="575" y="132"></rect>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="16" x="585" y="155">loss 0.372697</text>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="15" x="585" y="177">P / stored / next: Y / Y / Y</text>
+<text fill="#215f55" font-family="system-ui,sans-serif" font-size="15" x="585" y="198">参数与参照相同</text>
+<rect fill="#e6f1eb" height="75" rx="6" width="294" x="880" y="132"></rect>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="16" x="890" y="155">loss 9.517222</text>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="15" x="890" y="177">P / stored / next: Y / Y / Y</text>
+<text fill="#215f55" font-family="system-ui,sans-serif" font-size="15" x="890" y="198">参数与参照相同</text>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="17" x="24" y="254">注入一个 NaN beta</text>
+<rect fill="#fff0df" height="75" rx="6" width="294" x="270" y="217"></rect>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="16" x="280" y="240">loss 8.656469</text>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="15" x="280" y="262">P / stored / next: N / Y / N</text>
+<text fill="#215f55" font-family="system-ui,sans-serif" font-size="15" x="280" y="283">参数与参照相同</text>
+<rect fill="#fff0df" height="75" rx="6" width="294" x="575" y="217"></rect>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="16" x="585" y="240">loss 8.509987</text>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="15" x="585" y="262">P / stored / next: Y / N / Y</text>
+<text fill="#a64c20" font-family="system-ui,sans-serif" font-size="15" x="585" y="283">参数已偏离参照</text>
+<rect fill="#e6f1eb" height="75" rx="6" width="294" x="880" y="217"></rect>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="16" x="890" y="240">loss 9.598701</text>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="15" x="890" y="262">P / stored / next: Y / Y / Y</text>
+<text fill="#a64c20" font-family="system-ui,sans-serif" font-size="15" x="890" y="283">参数已偏离参照</text>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="17" x="24" y="339">注入一个 +Inf beta</text>
+<rect fill="#fff0df" height="75" rx="6" width="294" x="270" y="302"></rect>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="16" x="280" y="325">loss 8.656469</text>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="15" x="280" y="347">P / stored / next: N / Y / N</text>
+<text fill="#215f55" font-family="system-ui,sans-serif" font-size="15" x="280" y="368">参数与参照相同</text>
+<rect fill="#fff0df" height="75" rx="6" width="294" x="575" y="302"></rect>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="16" x="585" y="325">loss 8.509987</text>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="15" x="585" y="347">P / stored / next: Y / N / Y</text>
+<text fill="#a64c20" font-family="system-ui,sans-serif" font-size="15" x="585" y="368">参数已偏离参照</text>
+<rect fill="#e6f1eb" height="75" rx="6" width="294" x="880" y="302"></rect>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="16" x="890" y="325">loss 9.598701</text>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="15" x="890" y="347">P / stored / next: Y / Y / Y</text>
+<text fill="#a64c20" font-family="system-ui,sans-serif" font-size="15" x="890" y="368">参数已偏离参照</text>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="17" x="24" y="424">有限 beta = [3e38]*3</text>
+<rect fill="#fff0df" height="75" rx="6" width="294" x="270" y="387"></rect>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="16" x="280" y="410">loss 8.656469</text>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="15" x="280" y="432">P / stored / next: Y / Y / N</text>
+<text fill="#215f55" font-family="system-ui,sans-serif" font-size="15" x="280" y="453">参数与参照相同</text>
+<rect fill="#fff0df" height="75" rx="6" width="294" x="575" y="387"></rect>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="16" x="585" y="410">loss 8.509987</text>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="15" x="585" y="432">P / stored / next: Y / N / Y</text>
+<text fill="#a64c20" font-family="system-ui,sans-serif" font-size="15" x="585" y="453">参数已偏离参照</text>
+<rect fill="#e6f1eb" height="75" rx="6" width="294" x="880" y="387"></rect>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="16" x="890" y="410">loss 9.598701</text>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="15" x="890" y="432">P / stored / next: Y / Y / Y</text>
+<text fill="#a64c20" font-family="system-ui,sans-serif" font-size="15" x="890" y="453">参数已偏离参照</text>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="16" x="24" y="518">原 loss-only 检查接受全部 12 步；P = pending 输入有限性，stored / next = 两种 bias 视图有限性。</text>
+<text fill="#18344b" font-family="system-ui,sans-serif" font-size="16" x="24" y="545">绿色仅表示三个有限性标志通过，不证明过去更新正确；图中数值是人工平方误差。</text>
+</svg></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>有限参照</th>
+<th>注入NaN或Inf</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>第1步结束</td>
+<td>loss 8.656469；params、pending有限</td>
+<td>同样loss、同样params；仅pending叶非有限</td>
+<td>新pending尚未参与这一步前向，loss不会检查它</td>
+</tr>
+<tr>
+<td>第2步结束</td>
+<td>loss 0.372697；bias有限</td>
+<td>loss 8.509987；params与EMA的router bias非有限，Adam moment有限</td>
+<td>异常bias可改变专家选择，但不一定将非有限值直接乘进专家输出</td>
+</tr>
+<tr>
+<td>第3步结束</td>
+<td>loss 9.517222；状态全部有限</td>
+<td>loss 9.598701；状态也全部有限，但参数已不同</td>
+<td>有限beta替换bias不等于撤销上一步参数与moment的变化</td>
+</tr>
+</tbody>
+</table></div>
+<p>12个实际训练步全部通过归档循环的原<code>not jnp.isfinite(metrics['train/loss'])</code>判定。这里只执行原判定表达式，不把它扩大为完整生产loop、callback或所有安全检查的验收。第3步状态恢复有限，也不能证明此前训练轨迹正确；只截取这一时刻做finite检查会漏掉已发生的更新分歧。</p>
+<p>为何会出现这种情况？<a href="code-35c1d8a2c74ee593.html">归档路由块</a>中，bias影响top-k专家选择；combine权重来自未加bias的logits。人工输入logits及所选专家输出都有限，因而非有限bias仍可能得到有限权重与有限平方误差。NaN/Inf下的具体top-k选择是本JAX CPU运行的观察，不能承诺其他backend具有相同选择规则，也不能将这种选择视为有效路由。</p>
+<p>本轮训练闭包和setter来自冻结<code>eee467…</code>入口；route块沿用固定路由归档，形状/模型由V111适配。没有将这一组合声明为某次线上Hero进程的完整执行版本。</p>
+<h3 id="failure-boundaries-guide-pendingbias">Pending有限，也不保证应用后的bias有限</h3>
+<p>三项beta都为<code>3e38</code>时，输入pending与第1步全部状态叶均有限。但原setter先取负、求均值、再中心化；本CPU中float32中间归约溢出，得到三个+Inf bias。相同实数beta在精确算术中应中心化为零，这个对照暴露的是有限精度运算边界。</p>
+<p>这意味着，单查pending有限性或单查保存时所有state叶有限，也不够覆盖“派生的下一次前向视图”健康性。此控制的第2步确实产生非有限stored bias且loss仍有限。<code>3e38</code>是故意设置的极端诊断值，不是Hero beta量级的观测；本轮没有修改中心化算式，也没有把另一种归约顺序称为生产等价修复。改变浮点路由算术还需检查专家ID、阈值、梯度与设备策略。</p>
+<h3 id="failure-boundaries-guide-_6">存储忠实保留异常，不负责判定它是否能训练</h3>
+<p>对单NaN与单Inf控制，取第1步结束状态，用原host serializer写入真实本地TensorStore/OCDBT，等待commit，手工发布metadata，再调用原Grug恢复策略和原tree/leaf reader。11个叶的二进制摘要在写前与恢复后完全相同，包含异常pending；随后执行原下一训练步，仍得到有限loss与非有限stored bias。</p>
+<p>这是本地存储往返的实际结果；没有调用生产checkpointer调度器、分布式publisher或真实故障自动恢复。它不能证明Hero提交过异常状态，却说明数组读写成功、值忠实、manifest完整与训练状态健康是不同验收层。TensorStore不应被当作模型数值校验器。</p>
+<h3 id="failure-boundaries-guide-_7">一个尚未集成的有限性诊断候选</h3>
+<p><a href="code-4ec3224c98f96e60.html">局部JAX候选</a>返回三个标志：原pending、stored bias和原setter产生的next-forward bias是否有限。输入都由调用方明确提供，不重写setter、不静默置零，也不修改state。</p>
+<p>本轮实际JIT执行该候选：有限参照三步均通过；三组异常控制的第1、2步均被标出；第3步又通过，但参数仍不同于参照。这最后一项限制同样重要：<strong>有限性诊断只能发现当下特定异常，不能证明更新正确或恢复等价。</strong> 还需共同起点/共同数据的下一次更新对照，以及必要的范数、路由和任务指标。</p>
+<p>候选状态为<code>candidate_not_integrated</code>。它没有接入生产loop、定义跳步/回滚策略、实现多rank一致终止或测量GPU开销。若准备集成，应将当前pending、实际前向视图和本步新pending分别绑定时刻，决定在哪个同步边界汇总诊断、拒绝保存或终止；不能检测到异常就擅自清零、跳更新或继续保存，那会改变状态、数据游标和有效曝光。</p>
+<p>本轮实际Hero非有限事件、原QB估计器异常输出、生产污染checkpoint、GPU与分布式守卫覆盖、候选开销仍为空。下一步需要真实checkpoint/事故包或原估计器输入边界实验，才能判断这些反例在实际训练中是否可达。</p>
+<h2 id="failure-boundaries-guide-v131">V131补证：保留原错误有条件</h2>
+<p>前文“跳过最终保存以保留根因”描述的是except分支意图；logger和最终事件都成功时，本地控制确实保留原异常。新增双故障控制发现：日志或finally事件再次抛错，会改变最外层异常，原错误仍在context中。原保存作用域也会在保存体失败时发CHECKPOINT_FINISHED；最终else分支失败不经过前面的fatal日志。详见 <a href="exception-provenance-guide.html#exception-provenance-guide">异常链与恢复归因</a>。这是固定源码上的人工故障，不是历史Hero事件证据。</p></section><nav class="pager"><a href="change-guide.html">← 上一篇</a><a href="exception-provenance-guide.html">下一篇 →</a></nav></main></body></html>

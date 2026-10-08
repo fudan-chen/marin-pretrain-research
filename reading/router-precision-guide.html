@@ -1,0 +1,132 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Router精度：把数值更准与训练策略更好分开 · Marin 预训练研究</title><link rel="stylesheet" href="reading.css"></head><body><header><nav><a href="index.html">主题目录</a><a href="../report_standalone.html">完整报告（保留）</a><a href="code.html">源码与候选补丁</a><a href="tools.html">交互工具</a></nav></header><main><p class="muted"><a href="theme-moe.html">05 · MoE、路由与性能</a> / 本页只含一篇专题</p><details class="chapter-toc"><summary>本篇目录</summary><ol><li><a href="#router-precision-guide-1-dot">1. 三种dot写法分别改了哪里</a></li><li><a href="#router-precision-guide-2-combine">2. 选择、顺序与combine权重是不同诊断量</a></li><li><a href="#router-precision-guide-3-rackschedule">3. 一rack诊断如何保留长期schedule</a></li><li><a href="#router-precision-guide-4">4. 现有评估究竟回答哪个问题</a></li><li><a href="#router-precision-guide-5">5. 下一项最有区分力的检查</a></li></ol></details><section class="chapter" id="router-precision-guide"><h1 id="router-precision-guide-router">Router精度：把数值更准与训练策略更好分开</h1>
+<p>本章回到#8435的C025，核对其公开实验fork代码，而不只转述评论结论。固定fork为<code>yonromai/marin@a00cb77a…</code>；它是实验分支，评论明确没有PR、没有改live Hero设置或checkpoint。本轮读取三份fork源码，没有下载真实fixture、HLO或native checkpoint，没有运行GPU或复现作者测量。<a href="../analysis/router_precision_audit.json">源码审计</a></p>
+<h2 id="router-precision-guide-1-dot">1. 三种dot写法分别改了哪里</h2>
+<p><a href="code-6e134b5d6010652b.html">实验模型</a>为router提供三个显式分支：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>分支</th>
+<th>输入</th>
+<th>dot调用与输出处理</th>
+<th>应核查的对象</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>current</td>
+<td>当前compute dtype的activation和router权重</td>
+<td>einsum后再astype(float32)</td>
+<td>dot原输出是否已经舍入</td>
+</tr>
+<tr>
+<td>preferred_fp32</td>
+<td>保留低精度输入</td>
+<td>einsum指定preferred_element_type=float32</td>
+<td>编译器实际dot精度与输出dtype</td>
+</tr>
+<tr>
+<td>fp32_operands</td>
+<td>先把两侧输入转float32</td>
+<td>einsum设置Precision.HIGHEST</td>
+<td>更高精度输入的代价与编译实现</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>astype(float32)</code>放在dot后面，只能扩展已有结果的表示，不能恢复已经丢失的尾数。<code>preferred_element_type</code>在dot调用内声明期望的累加/结果类型；最终GPU算术还需HLO与实际误差验证，不能只凭一个Python关键字宣布已复现。</p>
+<p>一个独立人工算例把两个FP32 score <code>[1.001,1.002]</code>按BF16输出舍入，二者都变成1；随后转回FP32仍是<code>[1,1]</code>。NumPy argmax采用首个最大值，因而人工选择从第二项变成第一项。这只展示信息丢失和离散选择敏感性；它不是原router dot，不证明实际JAX tie-break、fixture误差或真实专家变化率。</p>
+<p>Marin主仓固定版本84869ae8的router dot也是“einsum后astype(float32)”。代码注释中的“router path保持FP32”不能代替对dot内部累加和输出dtype的检查。<a href="code-e42e9d52d19b8f17.html">当前固定模型</a></p>
+<h2 id="router-precision-guide-2-combine">2. 选择、顺序与combine权重是不同诊断量</h2>
+<p>fork在相同当前bias下比较候选与current的top-K：直接比较ID数组得到order change；先对ID排序再比较得到set change。两者不能混称“换了多少专家”。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>变化</th>
+<th>可能改变什么</th>
+<th>单看这一项漏掉什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>只改变top-K顺序，集合未变</td>
+<td>分配排列与执行路径；理想加权和对同一组配对排列不敏感</td>
+<td>真实transport的接受/裁剪、舍入与索引配对仍需核查</td>
+</tr>
+<tr>
+<td>selected set改变</td>
+<td>实际专家函数、梯度和下一步状态</td>
+<td>不能由集合差异比例推算质量收益或损失</td>
+</tr>
+<tr>
+<td>集合/顺序未变但score改变</td>
+<td>sigmoid combine、归一权重、概率与beta统计</td>
+<td>“路由ID相同”不等于整个更新相同</td>
+</tr>
+</tbody>
+</table></div>
+<p>候选还会影响K+1阈值alpha、HIST网格和pending beta，因此一批次的细小数值差异可以进入下一批状态。评分误差更小、选择更接近高精度参照，说明算术更准确；它们没有直接证明原先训练出的模型应该中途改用这种策略。<a href="qb-guide.html#qb-guide">路由分位数</a>与<a href="routing-guide.html#routing-guide">接受路径</a></p>
+<h2 id="router-precision-guide-3-rackschedule">3. 一rack诊断如何保留长期schedule</h2>
+<p><a href="code-0fae51eb1c7d0027.html">launch_diagnostics</a>区分三项：实际训练batch、用于optimizer启发式配置的batch、完整schedule长度。短续训的停止step不等于重新从零跑一条短schedule。</p>
+<p>C025复现命令实际batch=1024，optimizer_batch_size=11264，schedule_steps=390251，从126000续到126020。源码使用optimizer_batch_size和完整schedule_steps构造optimizer参数；停止位置由num_steps设置。这样可以避免把短实验误配置成一条微型warmup/decay，也避免单rack batch直接触发另一套峰值LR启发式。</p>
+<p>但optimizer启发式使用生产batch，并不让真实梯度batch也变成生产batch。一次更新仍只看到一rack样本，HIST统计范围和跨rack归并条件仍不同。这个控制是必要的局部对齐，不是生产等价证明。<a href="optimizer-guide.html#optimizer-guide">optimizer分组与时钟</a></p>
+<p>在自己的短诊断中，应同时归档这三个数、解析后的有效LR/衰减和恢复count。否则“同checkpoint续20步”可能同时改变schedule和优化参数，无法把差异只归给router算术。</p>
+<h2 id="router-precision-guide-4">4. 现有评估究竟回答哪个问题</h2>
+<p>评论中的纠正评估应用各自pending beta，并固定使用current算术评价两份已续训checkpoint。它减少了评估算术本身的直接差异，但preferred-trained checkpoint被放到了不同于其训练的policy下。</p>
+<p>下面的四格是待设计的交叉评估，不是已执行结果：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>训练出来的checkpoint</th>
+<th>current评估policy</th>
+<th>preferred评估policy</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>current训练</td>
+<td>A：旧策略的匹配评估</td>
+<td>B：只切评估算术</td>
+</tr>
+<tr>
+<td>preferred训练</td>
+<td>C：切换后训练状态在旧policy下的评估</td>
+<td>D：新策略的匹配评估</td>
+</tr>
+</tbody>
+</table></div>
+<p>已有评论主要提供A与C。A对B、C对D可以诊断各checkpoint的评估policy敏感性；A对C是在共同旧policy下的训练状态比较；A对D是完整策略比较，同时改变训练和评估policy，不能称为纯训练算术效应。四格都必须绑定同一评估数据、状态视图和分母。</p>
+<p>fresh-run消融还需要另做共同初始化的新训练，而不是用四格评估替代。中途切换和从头采用新算术回答不同问题：旧权重、moments和beta已经适应旧策略。生产保持现状可以是有限证据下合理的决定，并不等于证明新算术没有价值。</p>
+<p>作者观察、完整数字和限制已在<a href="translation.html#translation">C025中文解读</a>保留，本章不把20步有限结果外推为长期优劣。</p>
+<h2 id="router-precision-guide-5">5. 下一项最有区分力的检查</h2>
+<p>按问题选择下一步，不把所有实验同时执行：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>最小新增证据</th>
+<th>所需资源与决定</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>当前源码是否真的发生低精度输出舍入</td>
+<td>实际dtype、编译HLO、共同保存输入误差</td>
+<td>对应GPU/runtime；确认算术机制，暂不判断能力</td>
+</tr>
+<tr>
+<td>checkpoint是否仅对评估policy敏感</td>
+<td>两checkpoint×两policy，正确pending state</td>
+<td>可访问checkpoint和评估算力；完成四格诊断</td>
+</tr>
+<tr>
+<td>生产中途切换是否可接受</td>
+<td>共同完整状态、生产相关batch/mesh、稳定性、预算和独立评估</td>
+<td>训练资源；按完整切换干预确认</td>
+</tr>
+<tr>
+<td>从头采用新算术是否更好</td>
+<td>共同初始化、固定预算、冻结评估与重复</td>
+<td>新训练资源；回答fresh-run策略问题</td>
+</tr>
+</tbody>
+</table></div>
+<p>本轮源码审计与人工舍入算例只能为这些检查提供实施依据，不代填结果。它接入<a href="loss-triage.html#loss-triage">loss诊断</a>的数值与更新分支；真实GPU/HLO、fixture、训练与四格评估字段均保持未知。</p></section><nav class="pager"><a href="qb-guide.html">← 上一篇</a><a href="short-conv-guide.html">下一篇 →</a></nav></main></body></html>

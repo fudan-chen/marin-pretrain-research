@@ -1,0 +1,1647 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>零权重、非有限值与反向梯度 · Marin 预训练研究</title><link rel="stylesheet" href="reading.css"></head><body><header><nav><a href="index.html">主题目录</a><a href="../report_standalone.html">完整报告（保留）</a><a href="code.html">源码与候选补丁</a><a href="tools.html">交互工具</a></nav></header><main><p class="muted"><a href="theme-loss.html">04 · Loss、梯度与数值精度</a> / 本页只含一篇专题</p><details class="chapter-toc"><summary>本篇目录</summary><ol><li><a href="#masked-numerics-guide-_2">从源码追到哪一步</a></li><li><a href="#masked-numerics-guide-cpu">实际CPU结果</a></li><li><a href="#masked-numerics-guide-_3">怎样解释，怎样修</a></li><li><a href="#masked-numerics-guide-_4">复现与证据范围</a></li><li><a href="#masked-numerics-guide-hero">这个触发条件是否符合公开Hero配方</a></li><li><a href="#masked-numerics-guide-v139">V139 新增：注册链与参考求导的证据分开</a></li></ol></details><section class="chapter" id="masked-numerics-guide"><h1 id="masked-numerics-guide-_1">零权重、非有限值与反向梯度</h1>
+<p>零权重表示某个位置不应贡献目标，但浮点运算不会自动把这个位置从计算图删除。本轮在独立JAX CPU环境运行固定源码中的归约、参考CE与fast backward scan函数体，确认了两个不同风险：全零权重可以让前向loss返回0而反向出现NaN；inactive位置的NaN/Inf也不能靠最后乘0隔离。</p>
+<p>这比上一轮NumPy适配检查多了一项真实证据：已经执行JAX自动微分和CPU编译。但没有执行Hero checkpoint、完整模型、GPU/TPU内核、分布式collective或完整optimizer step。也没有证明真实Hero batch出现了触发条件。</p>
+<h2 id="masked-numerics-guide-_2">从源码追到哪一步</h2>
+<p>固定源码版本为84869ae8c91ffe64e9f761c5bd714542eb1876e0。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>位置</th>
+<th>实际运算</th>
+<th>需要检查的触发条件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="code-511b01056d2b34c1.html">API归约</a>，_apply_reduction</td>
+<td>先loss乘weight，mean时用where选择总分子/总weight或0</td>
+<td>总有效weight为0；或零权重位置的loss已经非有限</td>
+</tr>
+<tr>
+<td><a href="code-13a5616b0bc6f4b0.html">Grug归约</a></td>
+<td>分片分子/分母求和后，同样用where保护除法</td>
+<td>应检查聚合后的全局分母；单rank为空不等于全局为空</td>
+</tr>
+<tr>
+<td><a href="code-85669132e02ac7b1.html">原参考CE</a></td>
+<td>dot得到logits，再求logsumexp与label logits差</td>
+<td>本轮运行原CPU分支；不是训练选择的完整xla_fast_bwd入口</td>
+</tr>
+<tr>
+<td><a href="code-f54050d663bc3799.html">原fast backward scan</a></td>
+<td>概率乘上游cotangent，再与x、w做GEMM</td>
+<td>NaN cotangent会传播；非有限概率/operand乘0仍可能非有限</td>
+</tr>
+</tbody>
+</table></div>
+<p>Grug传给fused kernel的是<code>reduction=None</code>：内部只做加权，外部才汇总分子/分母并求mean。因此下面API mean和Grug mean是两项不同入口的检查，不是对Hero loss连续执行两次mean。一个rank或microbatch为空也不能证明归约后的全局T为0。</p>
+<p>JAX的<a href="https://docs.jax.dev/en/latest/_autosummary/jax.numpy.where.html" rel="noopener" target="_blank">where说明</a>与<a href="https://docs.jax.dev/en/latest/faq.html#gradients-contain-nan-where-using-where" rel="noopener" target="_blank">FAQ</a>解释了反向中的这一限制：选择有限分支，不保证另一个分支的未定义运算不会污染导数。这里的CPU检查针对具体原函数，而不是仅凭文档猜测。</p>
+<h2 id="masked-numerics-guide-cpu">实际CPU结果</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>检查</th>
+<th>前向结果</th>
+<th>反向或后续结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>原归约，有限loss、全零weight、mean，eager与jit</td>
+<td>0</td>
+<td>对loss的cotangent全NaN</td>
+</tr>
+<tr>
+<td>原参考CE接原mean归约，全零weight，eager与jit</td>
+<td>0</td>
+<td>hidden与head梯度全NaN</td>
+</tr>
+<tr>
+<td>同一原参考CE，改用sum归约、全零weight</td>
+<td>0</td>
+<td>hidden与head梯度全0且有限</td>
+</tr>
+<tr>
+<td>提出的安全分母归约，有限loss、全零weight</td>
+<td>0</td>
+<td>cotangent全0；这是独立对照实现，未修改上游</td>
+</tr>
+<tr>
+<td>正分母，但零权重位置loss为NaN或Inf</td>
+<td>NaN</td>
+<td>最后乘0不能排除非有限值</td>
+</tr>
+<tr>
+<td>log计算后才where选择inactive结果，再安全归约</td>
+<td>0</td>
+<td>inactive输入仍有NaN梯度</td>
+</tr>
+<tr>
+<td>在log之前选择有效operand，再安全归约</td>
+<td>0</td>
+<td>inactive梯度为0；这个例子只验证log的处理</td>
+</tr>
+<tr>
+<td>原fast backward scan接入原mean产生的NaN cotangent</td>
+<td>不重算前向</td>
+<td>hidden与head梯度全NaN</td>
+</tr>
+<tr>
+<td>同一scan接入安全归约产生的零cotangent</td>
+<td>不重算前向</td>
+<td>hidden与head梯度全0且有限</td>
+</tr>
+<tr>
+<td>同一scan，inactive row的hidden含NaN、该row cotangent为0</td>
+<td>不重算前向</td>
+<td>该row hidden梯度与head梯度仍出现NaN</td>
+</tr>
+<tr>
+<td>原Grug单设备归约接原CPU参考CE delegate，全零weight</td>
+<td>0</td>
+<td>hidden与head梯度全NaN</td>
+</tr>
+</tbody>
+</table></div>
+<p>原mean检查与reference CE分别执行了eager和jit。另有一个有限float32正例：3行输入、词表3项，以2行/2词分块，包含尾行和词表padding；原scan与reference的hidden/head梯度在1e−6绝对/相对容差内一致。容差只用于这个小例子，未标定Hero数值误差。</p>
+<p>原scan直接接受提供的cotangent，在CPU运行其scan与GEMM；没有运行完整custom_vjp入口、自动backend选择、tensor core或BF16训练路径。Grug检查将mesh明确设为None，backend dispatcher替换为原CPU reference delegate；它验证归约组合，不验证多卡训练。</p>
+<h2 id="masked-numerics-guide-_3">怎样解释，怎样修</h2>
+<p>第一类是除法图的问题：T=0时，即使where前向选择0，另一分支仍含N/T。先把除法分母变成一个在T=0时也有限、非零的值，再按预先定义的空步策略选择结果，才能排除这段除零反向风险。CPU对照中的安全归约保留了正分母值，并在有限输入全零weight时得到零cotangent。这个局部改写不负责修复上游NaN。</p>
+<p>第二类是上游运算的问题：NaN×0与Inf×0仍会得到NaN。只在loss算出后做where，可以改善前向值，却仍可能留下未定义导数；log例子中，需要在log之前选择安全operand。实际CE不能机械套用log例子的修法。应针对被排除的位置检查logits、概率、激活、梯度与custom backward，并确认inactive operand如何处理；对活跃位置的非有限值应定位和拒绝，而不是靠nan_to_num制造有限曲线。</p>
+<p>即使数值上得到零梯度，也不等于完整训练步不发生变化。已有moment、weight decay、EMA、QB pending状态和scheduler可能继续改变状态。应先决定是接受空步、跳过哪些状态，还是报错；再核对实际执行。参见<a href="state-guide.html#state-guide">训练状态</a>、<a href="failure-boundaries-guide.html#failure-boundaries-guide">失败边界</a>和<a href="gradient-accumulation-guide.html#gradient-accumulation-guide">梯度累积分母</a>。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>验收层次</th>
+<th>最少材料</th>
+<th>不能用什么代替</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>触发是否实际存在</td>
+<td>实际global T、各rank/各块T、weight来源、输入身份</td>
+<td>不能用人工全零mask或单rank空块证明Hero触发</td>
+</tr>
+<tr>
+<td>活跃与inactive数值</td>
+<td>各类位置的非有限计数、CE前后、cotangent、grad_x/grad_w</td>
+<td>不能用loss有限代替梯度有限；MoE assignment drop也不自动等于CE mask</td>
+</tr>
+<tr>
+<td>单设备原函数</td>
+<td>相同参数/输入的eager、jit、reference与custom backward对照</td>
+<td>本轮CPU结果不能代替GPU/TPU、分布式或历史环境</td>
+</tr>
+<tr>
+<td>完整训练步</td>
+<td>参数、moment、计数、EMA/QB/调度状态更新前后</td>
+<td>零梯度或loss=0不能代替状态不变</td>
+</tr>
+<tr>
+<td>归因与修复</td>
+<td>实际事件触发记录、修复前后同输入/状态重放</td>
+<td>本轮未修改Marin代码，不能宣布修复了其训练事故</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="masked-numerics-guide-_4">复现与证据范围</h2>
+<p><a href="code-c74374c210144c0d.html">CPU脚本</a>使用AST选取原函数体，并通过future annotations载入。参考CE显式选择原_default_logsumexp CPU分支，CPU exp为jnp.exp；不运行TPU accuracy分支。没有用NumPy模拟自动微分。所有数组转回host后记录，非有限值以字符串NaN/Inf写入合法JSON。</p>
+<p>实际环境：Python 3.12.13，JAX 0.7.2，jaxlib 0.7.2，NumPy 2.5.3，backend=cpu，x64=False。这是独立研究环境，未证明与Hero执行环境一致。固定依赖见<a href="../requirements-cpu-numerics.txt">CPU requirements</a>，重跑入口为<code>make cpu-numerics CPU_PYTHON=/你的环境/bin/python</code>；常规report构建读取冻结结果，不隐式安装JAX。</p>
+<p>本轮21项检查的原值、函数行号、适配说明与源码SHA见<a href="../analysis/masked_numerics_cpu.json">结果记录</a>。当前缺口仍是真实Hero全零分母或inactive非有限operand的事件证据、历史运行版本绑定、真实内核及完整训练步重放。下一步优先获取这些材料，决定是否达到修复条件。</p>
+<h2 id="masked-numerics-guide-hero">这个触发条件是否符合公开Hero配方</h2>
+<p><a href="../analysis/default_target_weights.json">默认权重审计</a>读取10月7日归档配置：223个组件均声明普通text格式、pack=None、长度4096、batch 11264。固定版_effective_pack对text返回False；dataset_for_component选择TokenSeqDataset，不指定loss_weights_key，再由CausalLmDataset构造默认causal mask，未传ignore_id或外部segment_ids。原causal_loss_mask只有最后位置为0，每条有4095个有效位置。因此正常整批条件下，T应为11264×4095=46,126,080，严格为正。</p>
+<p>这不是实际global T测量：代码版本与声明必须绑定实际执行、cache必须正常提供整批序列、权重必须没有外部变更。该审计的9项检查使用原函数体、NumPy和dataset构造描述器，没有运行真实loader或读取实际缓存。长度1或空completion的另一个配方可给出空mask；不能把这些人工迁移反例写成目前Hero发生了全零分母。</p>
+<p>正分母排除的是全零归约条件，不保证每条序列被屏蔽末位的hidden、logits或上游导数有限。inactive非有限风险仍需另查；不能因为T为正就宣布数值验收通过。</p>
+<p>故当前结论是：数值危险分支已在CPU复现，但公开正常配方的条件推导不支持用它解释Hero历史loss。调查应先记录实际T与inactive非有限值，确认触发，再进入修复。</p>
+<h2 id="masked-numerics-guide-v139">V139 新增：注册链与参考求导的证据分开</h2>
+<p>本章旧控制只直接执行反向 scan，未运行 custom VJP 注册入口。<a href="ce-backward-path-guide.html#ce-backward-path-guide">新增注册链专题</a>已在小型 CPU 输入上执行原装饰器、defvjp、前向残余和两条反向，发现选定极端 FP16 转换中参考自动微分异常，而 slow/scan custom VJP 均有限。这不补齐本章零权重异常的完整后端验收，也不证明公共 dispatcher 或 GPU 已测试。</p><figure class="scientific-figure"><svg height="309.6pt" style="display:block;width:100%;height:auto" version="1.1" viewbox="0 0 648 309.6" width="648pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<metadata>
+<rdf:rdf xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<cc:work>
+<dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"></dc:type>
+<dc:format>image/svg+xml</dc:format>
+<dc:creator>
+<cc:agent>
+<dc:title>Matplotlib v3.9.4, https://matplotlib.org/</dc:title>
+</cc:agent>
+</dc:creator>
+</cc:work>
+</rdf:rdf>
+</metadata>
+<defs>
+<style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+</defs>
+<g id="masknum-figure_1">
+<g id="masknum-patch_1">
+<path d="M 0 309.6
+L 648 309.6
+L 648 0
+L 0 0
+z
+" style="fill: #ffffff"></path>
+</g>
+<g id="masknum-axes_1">
+<g id="masknum-patch_2">
+<path d="M 158.65 281.72
+L 637.2 281.72
+L 637.2 37.968
+L 158.65 37.968
+z
+" style="fill: #ffffff"></path>
+</g>
+<g clip-path="url(#masknum-p589b268eee)">
+<image height="244.08" id="masknum-image53aaa18fa5" transform="scale(1 -1) translate(0 -244.08)" width="478.8" x="158.65" xlink:href="data:image/png;base64,
+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" y="-37.64"/>
+</g>
+<g id="masknum-matplotlib.axis_1">
+<g id="masknum-xtick_1">
+<g id="masknum-line2d_1">
+<defs>
+<path d="M 0 0
+L 0 3.5
+" id="masknum-m62f7d0c40c" style="stroke: #000000; stroke-width: 0.8"></path>
+</defs>
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="278.2875" xlink:href="#masknum-m62f7d0c40c" y="281.72"></use>
+</g>
+</g>
+<g id="masknum-text_1">
+<!-- Forward value -->
+<g transform="translate(242.935938 296.318437) scale(0.1 -0.1)">
+<defs>
+<path d="M 628 4666
+L 3309 4666
+L 3309 4134
+L 1259 4134
+L 1259 2759
+L 3109 2759
+L 3109 2228
+L 1259 2228
+L 1259 0
+L 628 0
+L 628 4666
+z
+" id="masknum-DejaVuSans-46" transform="scale(0.015625)"></path>
+<path d="M 1959 3097
+Q 1497 3097 1228 2736
+Q 959 2375 959 1747
+Q 959 1119 1226 758
+Q 1494 397 1959 397
+Q 2419 397 2687 759
+Q 2956 1122 2956 1747
+Q 2956 2369 2687 2733
+Q 2419 3097 1959 3097
+z
+M 1959 3584
+Q 2709 3584 3137 3096
+Q 3566 2609 3566 1747
+Q 3566 888 3137 398
+Q 2709 -91 1959 -91
+Q 1206 -91 779 398
+Q 353 888 353 1747
+Q 353 2609 779 3096
+Q 1206 3584 1959 3584
+z
+" id="masknum-DejaVuSans-6f" transform="scale(0.015625)"></path>
+<path d="M 2631 2963
+Q 2534 3019 2420 3045
+Q 2306 3072 2169 3072
+Q 1681 3072 1420 2755
+Q 1159 2438 1159 1844
+L 1159 0
+L 581 0
+L 581 3500
+L 1159 3500
+L 1159 2956
+Q 1341 3275 1631 3429
+Q 1922 3584 2338 3584
+Q 2397 3584 2469 3576
+Q 2541 3569 2628 3553
+L 2631 2963
+z
+" id="masknum-DejaVuSans-72" transform="scale(0.015625)"></path>
+<path d="M 269 3500
+L 844 3500
+L 1563 769
+L 2278 3500
+L 2956 3500
+L 3675 769
+L 4391 3500
+L 4966 3500
+L 4050 0
+L 3372 0
+L 2619 2869
+L 1863 0
+L 1184 0
+L 269 3500
+z
+" id="masknum-DejaVuSans-77" transform="scale(0.015625)"></path>
+<path d="M 2194 1759
+Q 1497 1759 1228 1600
+Q 959 1441 959 1056
+Q 959 750 1161 570
+Q 1363 391 1709 391
+Q 2188 391 2477 730
+Q 2766 1069 2766 1631
+L 2766 1759
+L 2194 1759
+z
+M 3341 1997
+L 3341 0
+L 2766 0
+L 2766 531
+Q 2569 213 2275 61
+Q 1981 -91 1556 -91
+Q 1019 -91 701 211
+Q 384 513 384 1019
+Q 384 1609 779 1909
+Q 1175 2209 1959 2209
+L 2766 2209
+L 2766 2266
+Q 2766 2663 2505 2880
+Q 2244 3097 1772 3097
+Q 1472 3097 1187 3025
+Q 903 2953 641 2809
+L 641 3341
+Q 956 3463 1253 3523
+Q 1550 3584 1831 3584
+Q 2591 3584 2966 3190
+Q 3341 2797 3341 1997
+z
+" id="masknum-DejaVuSans-61" transform="scale(0.015625)"></path>
+<path d="M 2906 2969
+L 2906 4863
+L 3481 4863
+L 3481 0
+L 2906 0
+L 2906 525
+Q 2725 213 2448 61
+Q 2172 -91 1784 -91
+Q 1150 -91 751 415
+Q 353 922 353 1747
+Q 353 2572 751 3078
+Q 1150 3584 1784 3584
+Q 2172 3584 2448 3432
+Q 2725 3281 2906 2969
+z
+M 947 1747
+Q 947 1113 1208 752
+Q 1469 391 1925 391
+Q 2381 391 2643 752
+Q 2906 1113 2906 1747
+Q 2906 2381 2643 2742
+Q 2381 3103 1925 3103
+Q 1469 3103 1208 2742
+Q 947 2381 947 1747
+z
+" id="masknum-DejaVuSans-64" transform="scale(0.015625)"></path>
+<path id="masknum-DejaVuSans-20" transform="scale(0.015625)"></path>
+<path d="M 191 3500
+L 800 3500
+L 1894 563
+L 2988 3500
+L 3597 3500
+L 2284 0
+L 1503 0
+L 191 3500
+z
+" id="masknum-DejaVuSans-76" transform="scale(0.015625)"></path>
+<path d="M 603 4863
+L 1178 4863
+L 1178 0
+L 603 0
+L 603 4863
+z
+" id="masknum-DejaVuSans-6c" transform="scale(0.015625)"></path>
+<path d="M 544 1381
+L 544 3500
+L 1119 3500
+L 1119 1403
+Q 1119 906 1312 657
+Q 1506 409 1894 409
+Q 2359 409 2629 706
+Q 2900 1003 2900 1516
+L 2900 3500
+L 3475 3500
+L 3475 0
+L 2900 0
+L 2900 538
+Q 2691 219 2414 64
+Q 2138 -91 1772 -91
+Q 1169 -91 856 284
+Q 544 659 544 1381
+z
+M 1991 3584
+L 1991 3584
+z
+" id="masknum-DejaVuSans-75" transform="scale(0.015625)"></path>
+<path d="M 3597 1894
+L 3597 1613
+L 953 1613
+Q 991 1019 1311 708
+Q 1631 397 2203 397
+Q 2534 397 2845 478
+Q 3156 559 3463 722
+L 3463 178
+Q 3153 47 2828 -22
+Q 2503 -91 2169 -91
+Q 1331 -91 842 396
+Q 353 884 353 1716
+Q 353 2575 817 3079
+Q 1281 3584 2069 3584
+Q 2775 3584 3186 3129
+Q 3597 2675 3597 1894
+z
+M 3022 2063
+Q 3016 2534 2758 2815
+Q 2500 3097 2075 3097
+Q 1594 3097 1305 2825
+Q 1016 2553 972 2059
+L 3022 2063
+z
+" id="masknum-DejaVuSans-65" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#masknum-DejaVuSans-46"></use>
+<use x="53.894531" xlink:href="#masknum-DejaVuSans-6f"></use>
+<use x="115.076172" xlink:href="#masknum-DejaVuSans-72"></use>
+<use x="156.189453" xlink:href="#masknum-DejaVuSans-77"></use>
+<use x="237.976562" xlink:href="#masknum-DejaVuSans-61"></use>
+<use x="299.255859" xlink:href="#masknum-DejaVuSans-72"></use>
+<use x="338.619141" xlink:href="#masknum-DejaVuSans-64"></use>
+<use x="402.095703" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="433.882812" xlink:href="#masknum-DejaVuSans-76"></use>
+<use x="493.0625" xlink:href="#masknum-DejaVuSans-61"></use>
+<use x="554.341797" xlink:href="#masknum-DejaVuSans-6c"></use>
+<use x="582.125" xlink:href="#masknum-DejaVuSans-75"></use>
+<use x="645.503906" xlink:href="#masknum-DejaVuSans-65"></use>
+</g>
+</g>
+</g>
+<g id="masknum-xtick_2">
+<g id="masknum-line2d_2">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="517.5625" xlink:href="#masknum-m62f7d0c40c" y="281.72"></use>
+</g>
+</g>
+<g id="masknum-text_2">
+<!-- Reverse gradients -->
+<g transform="translate(472.207812 296.318437) scale(0.1 -0.1)">
+<defs>
+<path d="M 2841 2188
+Q 3044 2119 3236 1894
+Q 3428 1669 3622 1275
+L 4263 0
+L 3584 0
+L 2988 1197
+Q 2756 1666 2539 1819
+Q 2322 1972 1947 1972
+L 1259 1972
+L 1259 0
+L 628 0
+L 628 4666
+L 2053 4666
+Q 2853 4666 3247 4331
+Q 3641 3997 3641 3322
+Q 3641 2881 3436 2590
+Q 3231 2300 2841 2188
+z
+M 1259 4147
+L 1259 2491
+L 2053 2491
+Q 2509 2491 2742 2702
+Q 2975 2913 2975 3322
+Q 2975 3731 2742 3939
+Q 2509 4147 2053 4147
+L 1259 4147
+z
+" id="masknum-DejaVuSans-52" transform="scale(0.015625)"></path>
+<path d="M 2834 3397
+L 2834 2853
+Q 2591 2978 2328 3040
+Q 2066 3103 1784 3103
+Q 1356 3103 1142 2972
+Q 928 2841 928 2578
+Q 928 2378 1081 2264
+Q 1234 2150 1697 2047
+L 1894 2003
+Q 2506 1872 2764 1633
+Q 3022 1394 3022 966
+Q 3022 478 2636 193
+Q 2250 -91 1575 -91
+Q 1294 -91 989 -36
+Q 684 19 347 128
+L 347 722
+Q 666 556 975 473
+Q 1284 391 1588 391
+Q 1994 391 2212 530
+Q 2431 669 2431 922
+Q 2431 1156 2273 1281
+Q 2116 1406 1581 1522
+L 1381 1569
+Q 847 1681 609 1914
+Q 372 2147 372 2553
+Q 372 3047 722 3315
+Q 1072 3584 1716 3584
+Q 2034 3584 2315 3537
+Q 2597 3491 2834 3397
+z
+" id="masknum-DejaVuSans-73" transform="scale(0.015625)"></path>
+<path d="M 2906 1791
+Q 2906 2416 2648 2759
+Q 2391 3103 1925 3103
+Q 1463 3103 1205 2759
+Q 947 2416 947 1791
+Q 947 1169 1205 825
+Q 1463 481 1925 481
+Q 2391 481 2648 825
+Q 2906 1169 2906 1791
+z
+M 3481 434
+Q 3481 -459 3084 -895
+Q 2688 -1331 1869 -1331
+Q 1566 -1331 1297 -1286
+Q 1028 -1241 775 -1147
+L 775 -588
+Q 1028 -725 1275 -790
+Q 1522 -856 1778 -856
+Q 2344 -856 2625 -561
+Q 2906 -266 2906 331
+L 2906 616
+Q 2728 306 2450 153
+Q 2172 0 1784 0
+Q 1141 0 747 490
+Q 353 981 353 1791
+Q 353 2603 747 3093
+Q 1141 3584 1784 3584
+Q 2172 3584 2450 3431
+Q 2728 3278 2906 2969
+L 2906 3500
+L 3481 3500
+L 3481 434
+z
+" id="masknum-DejaVuSans-67" transform="scale(0.015625)"></path>
+<path d="M 603 3500
+L 1178 3500
+L 1178 0
+L 603 0
+L 603 3500
+z
+M 603 4863
+L 1178 4863
+L 1178 4134
+L 603 4134
+L 603 4863
+z
+" id="masknum-DejaVuSans-69" transform="scale(0.015625)"></path>
+<path d="M 3513 2113
+L 3513 0
+L 2938 0
+L 2938 2094
+Q 2938 2591 2744 2837
+Q 2550 3084 2163 3084
+Q 1697 3084 1428 2787
+Q 1159 2491 1159 1978
+L 1159 0
+L 581 0
+L 581 3500
+L 1159 3500
+L 1159 2956
+Q 1366 3272 1645 3428
+Q 1925 3584 2291 3584
+Q 2894 3584 3203 3211
+Q 3513 2838 3513 2113
+z
+" id="masknum-DejaVuSans-6e" transform="scale(0.015625)"></path>
+<path d="M 1172 4494
+L 1172 3500
+L 2356 3500
+L 2356 3053
+L 1172 3053
+L 1172 1153
+Q 1172 725 1289 603
+Q 1406 481 1766 481
+L 2356 481
+L 2356 0
+L 1766 0
+Q 1100 0 847 248
+Q 594 497 594 1153
+L 594 3053
+L 172 3053
+L 172 3500
+L 594 3500
+L 594 4494
+L 1172 4494
+z
+" id="masknum-DejaVuSans-74" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#masknum-DejaVuSans-52"></use>
+<use x="64.982422" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="126.505859" xlink:href="#masknum-DejaVuSans-76"></use>
+<use x="185.685547" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="247.208984" xlink:href="#masknum-DejaVuSans-72"></use>
+<use x="288.322266" xlink:href="#masknum-DejaVuSans-73"></use>
+<use x="340.421875" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="401.945312" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="433.732422" xlink:href="#masknum-DejaVuSans-67"></use>
+<use x="497.208984" xlink:href="#masknum-DejaVuSans-72"></use>
+<use x="538.322266" xlink:href="#masknum-DejaVuSans-61"></use>
+<use x="599.601562" xlink:href="#masknum-DejaVuSans-64"></use>
+<use x="663.078125" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="690.861328" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="752.384766" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="815.763672" xlink:href="#masknum-DejaVuSans-74"></use>
+<use x="854.972656" xlink:href="#masknum-DejaVuSans-73"></use>
+</g>
+</g>
+</g>
+</g>
+<g id="masknum-matplotlib.axis_2">
+<g id="masknum-ytick_1">
+<g id="masknum-line2d_3">
+<defs>
+<path d="M 0 0
+L -3.5 0
+" id="masknum-m0c3aefc37d" style="stroke: #000000; stroke-width: 0.8"></path>
+</defs>
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="158.65" xlink:href="#masknum-m0c3aefc37d" y="58.280667"></use>
+</g>
+</g>
+<g id="masknum-text_3">
+<!-- Original mean: all-zero weights -->
+<g transform="translate(11.234531 61.699964) scale(0.09 -0.09)">
+<defs>
+<path d="M 2522 4238
+Q 1834 4238 1429 3725
+Q 1025 3213 1025 2328
+Q 1025 1447 1429 934
+Q 1834 422 2522 422
+Q 3209 422 3611 934
+Q 4013 1447 4013 2328
+Q 4013 3213 3611 3725
+Q 3209 4238 2522 4238
+z
+M 2522 4750
+Q 3503 4750 4090 4092
+Q 4678 3434 4678 2328
+Q 4678 1225 4090 567
+Q 3503 -91 2522 -91
+Q 1538 -91 948 565
+Q 359 1222 359 2328
+Q 359 3434 948 4092
+Q 1538 4750 2522 4750
+z
+" id="masknum-DejaVuSans-4f" transform="scale(0.015625)"></path>
+<path d="M 3328 2828
+Q 3544 3216 3844 3400
+Q 4144 3584 4550 3584
+Q 5097 3584 5394 3201
+Q 5691 2819 5691 2113
+L 5691 0
+L 5113 0
+L 5113 2094
+Q 5113 2597 4934 2840
+Q 4756 3084 4391 3084
+Q 3944 3084 3684 2787
+Q 3425 2491 3425 1978
+L 3425 0
+L 2847 0
+L 2847 2094
+Q 2847 2600 2669 2842
+Q 2491 3084 2119 3084
+Q 1678 3084 1418 2786
+Q 1159 2488 1159 1978
+L 1159 0
+L 581 0
+L 581 3500
+L 1159 3500
+L 1159 2956
+Q 1356 3278 1631 3431
+Q 1906 3584 2284 3584
+Q 2666 3584 2933 3390
+Q 3200 3197 3328 2828
+z
+" id="masknum-DejaVuSans-6d" transform="scale(0.015625)"></path>
+<path d="M 750 794
+L 1409 794
+L 1409 0
+L 750 0
+L 750 794
+z
+M 750 3309
+L 1409 3309
+L 1409 2516
+L 750 2516
+L 750 3309
+z
+" id="masknum-DejaVuSans-3a" transform="scale(0.015625)"></path>
+<path d="M 313 2009
+L 1997 2009
+L 1997 1497
+L 313 1497
+L 313 2009
+z
+" id="masknum-DejaVuSans-2d" transform="scale(0.015625)"></path>
+<path d="M 353 3500
+L 3084 3500
+L 3084 2975
+L 922 459
+L 3084 459
+L 3084 0
+L 275 0
+L 275 525
+L 2438 3041
+L 353 3041
+L 353 3500
+z
+" id="masknum-DejaVuSans-7a" transform="scale(0.015625)"></path>
+<path d="M 3513 2113
+L 3513 0
+L 2938 0
+L 2938 2094
+Q 2938 2591 2744 2837
+Q 2550 3084 2163 3084
+Q 1697 3084 1428 2787
+Q 1159 2491 1159 1978
+L 1159 0
+L 581 0
+L 581 4863
+L 1159 4863
+L 1159 2956
+Q 1366 3272 1645 3428
+Q 1925 3584 2291 3584
+Q 2894 3584 3203 3211
+Q 3513 2838 3513 2113
+z
+" id="masknum-DejaVuSans-68" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#masknum-DejaVuSans-4f"></use>
+<use x="78.710938" xlink:href="#masknum-DejaVuSans-72"></use>
+<use x="119.824219" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="147.607422" xlink:href="#masknum-DejaVuSans-67"></use>
+<use x="211.083984" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="238.867188" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="302.246094" xlink:href="#masknum-DejaVuSans-61"></use>
+<use x="363.525391" xlink:href="#masknum-DejaVuSans-6c"></use>
+<use x="391.308594" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="423.095703" xlink:href="#masknum-DejaVuSans-6d"></use>
+<use x="520.507812" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="582.03125" xlink:href="#masknum-DejaVuSans-61"></use>
+<use x="643.310547" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="706.689453" xlink:href="#masknum-DejaVuSans-3a"></use>
+<use x="740.380859" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="772.167969" xlink:href="#masknum-DejaVuSans-61"></use>
+<use x="833.447266" xlink:href="#masknum-DejaVuSans-6c"></use>
+<use x="861.230469" xlink:href="#masknum-DejaVuSans-6c"></use>
+<use x="889.013672" xlink:href="#masknum-DejaVuSans-2d"></use>
+<use x="925.097656" xlink:href="#masknum-DejaVuSans-7a"></use>
+<use x="977.587891" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="1039.111328" xlink:href="#masknum-DejaVuSans-72"></use>
+<use x="1077.974609" xlink:href="#masknum-DejaVuSans-6f"></use>
+<use x="1139.15625" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="1170.943359" xlink:href="#masknum-DejaVuSans-77"></use>
+<use x="1252.730469" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="1314.253906" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="1342.037109" xlink:href="#masknum-DejaVuSans-67"></use>
+<use x="1405.513672" xlink:href="#masknum-DejaVuSans-68"></use>
+<use x="1468.892578" xlink:href="#masknum-DejaVuSans-74"></use>
+<use x="1508.101562" xlink:href="#masknum-DejaVuSans-73"></use>
+</g>
+</g>
+</g>
+<g id="masknum-ytick_2">
+<g id="masknum-line2d_4">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="158.65" xlink:href="#masknum-m0c3aefc37d" y="98.906"></use>
+</g>
+</g>
+<g id="masknum-text_4">
+<!-- Original reference CE + mean -->
+<g transform="translate(16.9875 102.325297) scale(0.09 -0.09)">
+<defs>
+<path d="M 2375 4863
+L 2375 4384
+L 1825 4384
+Q 1516 4384 1395 4259
+Q 1275 4134 1275 3809
+L 1275 3500
+L 2222 3500
+L 2222 3053
+L 1275 3053
+L 1275 0
+L 697 0
+L 697 3053
+L 147 3053
+L 147 3500
+L 697 3500
+L 697 3744
+Q 697 4328 969 4595
+Q 1241 4863 1831 4863
+L 2375 4863
+z
+" id="masknum-DejaVuSans-66" transform="scale(0.015625)"></path>
+<path d="M 3122 3366
+L 3122 2828
+Q 2878 2963 2633 3030
+Q 2388 3097 2138 3097
+Q 1578 3097 1268 2742
+Q 959 2388 959 1747
+Q 959 1106 1268 751
+Q 1578 397 2138 397
+Q 2388 397 2633 464
+Q 2878 531 3122 666
+L 3122 134
+Q 2881 22 2623 -34
+Q 2366 -91 2075 -91
+Q 1284 -91 818 406
+Q 353 903 353 1747
+Q 353 2603 823 3093
+Q 1294 3584 2113 3584
+Q 2378 3584 2631 3529
+Q 2884 3475 3122 3366
+z
+" id="masknum-DejaVuSans-63" transform="scale(0.015625)"></path>
+<path d="M 4122 4306
+L 4122 3641
+Q 3803 3938 3442 4084
+Q 3081 4231 2675 4231
+Q 1875 4231 1450 3742
+Q 1025 3253 1025 2328
+Q 1025 1406 1450 917
+Q 1875 428 2675 428
+Q 3081 428 3442 575
+Q 3803 722 4122 1019
+L 4122 359
+Q 3791 134 3420 21
+Q 3050 -91 2638 -91
+Q 1578 -91 968 557
+Q 359 1206 359 2328
+Q 359 3453 968 4101
+Q 1578 4750 2638 4750
+Q 3056 4750 3426 4639
+Q 3797 4528 4122 4306
+z
+" id="masknum-DejaVuSans-43" transform="scale(0.015625)"></path>
+<path d="M 628 4666
+L 3578 4666
+L 3578 4134
+L 1259 4134
+L 1259 2753
+L 3481 2753
+L 3481 2222
+L 1259 2222
+L 1259 531
+L 3634 531
+L 3634 0
+L 628 0
+L 628 4666
+z
+" id="masknum-DejaVuSans-45" transform="scale(0.015625)"></path>
+<path d="M 2944 4013
+L 2944 2272
+L 4684 2272
+L 4684 1741
+L 2944 1741
+L 2944 0
+L 2419 0
+L 2419 1741
+L 678 1741
+L 678 2272
+L 2419 2272
+L 2419 4013
+L 2944 4013
+z
+" id="masknum-DejaVuSans-2b" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#masknum-DejaVuSans-4f"></use>
+<use x="78.710938" xlink:href="#masknum-DejaVuSans-72"></use>
+<use x="119.824219" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="147.607422" xlink:href="#masknum-DejaVuSans-67"></use>
+<use x="211.083984" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="238.867188" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="302.246094" xlink:href="#masknum-DejaVuSans-61"></use>
+<use x="363.525391" xlink:href="#masknum-DejaVuSans-6c"></use>
+<use x="391.308594" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="423.095703" xlink:href="#masknum-DejaVuSans-72"></use>
+<use x="461.958984" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="523.482422" xlink:href="#masknum-DejaVuSans-66"></use>
+<use x="558.6875" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="620.210938" xlink:href="#masknum-DejaVuSans-72"></use>
+<use x="659.074219" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="720.597656" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="783.976562" xlink:href="#masknum-DejaVuSans-63"></use>
+<use x="838.957031" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="900.480469" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="932.267578" xlink:href="#masknum-DejaVuSans-43"></use>
+<use x="1002.091797" xlink:href="#masknum-DejaVuSans-45"></use>
+<use x="1065.275391" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="1097.0625" xlink:href="#masknum-DejaVuSans-2b"></use>
+<use x="1180.851562" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="1212.638672" xlink:href="#masknum-DejaVuSans-6d"></use>
+<use x="1310.050781" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="1371.574219" xlink:href="#masknum-DejaVuSans-61"></use>
+<use x="1432.853516" xlink:href="#masknum-DejaVuSans-6e"></use>
+</g>
+</g>
+</g>
+<g id="masknum-ytick_3">
+<g id="masknum-line2d_5">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="158.65" xlink:href="#masknum-m0c3aefc37d" y="139.531333"></use>
+</g>
+</g>
+<g id="masknum-text_5">
+<!-- Original reference CE + sum -->
+<g transform="translate(23.352188 142.95063) scale(0.09 -0.09)">
+<use xlink:href="#masknum-DejaVuSans-4f"></use>
+<use x="78.710938" xlink:href="#masknum-DejaVuSans-72"></use>
+<use x="119.824219" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="147.607422" xlink:href="#masknum-DejaVuSans-67"></use>
+<use x="211.083984" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="238.867188" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="302.246094" xlink:href="#masknum-DejaVuSans-61"></use>
+<use x="363.525391" xlink:href="#masknum-DejaVuSans-6c"></use>
+<use x="391.308594" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="423.095703" xlink:href="#masknum-DejaVuSans-72"></use>
+<use x="461.958984" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="523.482422" xlink:href="#masknum-DejaVuSans-66"></use>
+<use x="558.6875" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="620.210938" xlink:href="#masknum-DejaVuSans-72"></use>
+<use x="659.074219" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="720.597656" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="783.976562" xlink:href="#masknum-DejaVuSans-63"></use>
+<use x="838.957031" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="900.480469" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="932.267578" xlink:href="#masknum-DejaVuSans-43"></use>
+<use x="1002.091797" xlink:href="#masknum-DejaVuSans-45"></use>
+<use x="1065.275391" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="1097.0625" xlink:href="#masknum-DejaVuSans-2b"></use>
+<use x="1180.851562" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="1212.638672" xlink:href="#masknum-DejaVuSans-73"></use>
+<use x="1264.738281" xlink:href="#masknum-DejaVuSans-75"></use>
+<use x="1328.117188" xlink:href="#masknum-DejaVuSans-6d"></use>
+</g>
+</g>
+</g>
+<g id="masknum-ytick_4">
+<g id="masknum-line2d_6">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="158.65" xlink:href="#masknum-m0c3aefc37d" y="180.156667"></use>
+</g>
+</g>
+<g id="masknum-text_6">
+<!-- Proposed safe denominator -->
+<g transform="translate(27.902813 183.575964) scale(0.09 -0.09)">
+<defs>
+<path d="M 1259 4147
+L 1259 2394
+L 2053 2394
+Q 2494 2394 2734 2622
+Q 2975 2850 2975 3272
+Q 2975 3691 2734 3919
+Q 2494 4147 2053 4147
+L 1259 4147
+z
+M 628 4666
+L 2053 4666
+Q 2838 4666 3239 4311
+Q 3641 3956 3641 3272
+Q 3641 2581 3239 2228
+Q 2838 1875 2053 1875
+L 1259 1875
+L 1259 0
+L 628 0
+L 628 4666
+z
+" id="masknum-DejaVuSans-50" transform="scale(0.015625)"></path>
+<path d="M 1159 525
+L 1159 -1331
+L 581 -1331
+L 581 3500
+L 1159 3500
+L 1159 2969
+Q 1341 3281 1617 3432
+Q 1894 3584 2278 3584
+Q 2916 3584 3314 3078
+Q 3713 2572 3713 1747
+Q 3713 922 3314 415
+Q 2916 -91 2278 -91
+Q 1894 -91 1617 61
+Q 1341 213 1159 525
+z
+M 3116 1747
+Q 3116 2381 2855 2742
+Q 2594 3103 2138 3103
+Q 1681 3103 1420 2742
+Q 1159 2381 1159 1747
+Q 1159 1113 1420 752
+Q 1681 391 2138 391
+Q 2594 391 2855 752
+Q 3116 1113 3116 1747
+z
+" id="masknum-DejaVuSans-70" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#masknum-DejaVuSans-50"></use>
+<use x="58.552734" xlink:href="#masknum-DejaVuSans-72"></use>
+<use x="97.416016" xlink:href="#masknum-DejaVuSans-6f"></use>
+<use x="158.597656" xlink:href="#masknum-DejaVuSans-70"></use>
+<use x="222.074219" xlink:href="#masknum-DejaVuSans-6f"></use>
+<use x="283.255859" xlink:href="#masknum-DejaVuSans-73"></use>
+<use x="335.355469" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="396.878906" xlink:href="#masknum-DejaVuSans-64"></use>
+<use x="460.355469" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="492.142578" xlink:href="#masknum-DejaVuSans-73"></use>
+<use x="544.242188" xlink:href="#masknum-DejaVuSans-61"></use>
+<use x="605.521484" xlink:href="#masknum-DejaVuSans-66"></use>
+<use x="640.726562" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="702.25" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="734.037109" xlink:href="#masknum-DejaVuSans-64"></use>
+<use x="797.513672" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="859.037109" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="922.416016" xlink:href="#masknum-DejaVuSans-6f"></use>
+<use x="983.597656" xlink:href="#masknum-DejaVuSans-6d"></use>
+<use x="1081.009766" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="1108.792969" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="1172.171875" xlink:href="#masknum-DejaVuSans-61"></use>
+<use x="1233.451172" xlink:href="#masknum-DejaVuSans-74"></use>
+<use x="1272.660156" xlink:href="#masknum-DejaVuSans-6f"></use>
+<use x="1333.841797" xlink:href="#masknum-DejaVuSans-72"></use>
+</g>
+</g>
+</g>
+<g id="masknum-ytick_5">
+<g id="masknum-line2d_7">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="158.65" xlink:href="#masknum-m0c3aefc37d" y="220.782"></use>
+</g>
+</g>
+<g id="masknum-text_7">
+<!-- Select after undefined log -->
+<g transform="translate(35.007188 224.201297) scale(0.09 -0.09)">
+<defs>
+<path d="M 3425 4513
+L 3425 3897
+Q 3066 4069 2747 4153
+Q 2428 4238 2131 4238
+Q 1616 4238 1336 4038
+Q 1056 3838 1056 3469
+Q 1056 3159 1242 3001
+Q 1428 2844 1947 2747
+L 2328 2669
+Q 3034 2534 3370 2195
+Q 3706 1856 3706 1288
+Q 3706 609 3251 259
+Q 2797 -91 1919 -91
+Q 1588 -91 1214 -16
+Q 841 59 441 206
+L 441 856
+Q 825 641 1194 531
+Q 1563 422 1919 422
+Q 2459 422 2753 634
+Q 3047 847 3047 1241
+Q 3047 1584 2836 1778
+Q 2625 1972 2144 2069
+L 1759 2144
+Q 1053 2284 737 2584
+Q 422 2884 422 3419
+Q 422 4038 858 4394
+Q 1294 4750 2059 4750
+Q 2388 4750 2728 4690
+Q 3069 4631 3425 4513
+z
+" id="masknum-DejaVuSans-53" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#masknum-DejaVuSans-53"></use>
+<use x="63.476562" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="125" xlink:href="#masknum-DejaVuSans-6c"></use>
+<use x="152.783203" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="214.306641" xlink:href="#masknum-DejaVuSans-63"></use>
+<use x="269.287109" xlink:href="#masknum-DejaVuSans-74"></use>
+<use x="308.496094" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="340.283203" xlink:href="#masknum-DejaVuSans-61"></use>
+<use x="401.5625" xlink:href="#masknum-DejaVuSans-66"></use>
+<use x="435.017578" xlink:href="#masknum-DejaVuSans-74"></use>
+<use x="474.226562" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="535.75" xlink:href="#masknum-DejaVuSans-72"></use>
+<use x="576.863281" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="608.650391" xlink:href="#masknum-DejaVuSans-75"></use>
+<use x="672.029297" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="735.408203" xlink:href="#masknum-DejaVuSans-64"></use>
+<use x="798.884766" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="860.408203" xlink:href="#masknum-DejaVuSans-66"></use>
+<use x="895.613281" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="923.396484" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="986.775391" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="1048.298828" xlink:href="#masknum-DejaVuSans-64"></use>
+<use x="1111.775391" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="1143.5625" xlink:href="#masknum-DejaVuSans-6c"></use>
+<use x="1171.345703" xlink:href="#masknum-DejaVuSans-6f"></use>
+<use x="1232.527344" xlink:href="#masknum-DejaVuSans-67"></use>
+</g>
+</g>
+</g>
+<g id="masknum-ytick_6">
+<g id="masknum-line2d_8">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="158.65" xlink:href="#masknum-m0c3aefc37d" y="261.407333"></use>
+</g>
+</g>
+<g id="masknum-text_8">
+<!-- Make log operand safe first -->
+<g transform="translate(28.898438 264.82663) scale(0.09 -0.09)">
+<defs>
+<path d="M 628 4666
+L 1569 4666
+L 2759 1491
+L 3956 4666
+L 4897 4666
+L 4897 0
+L 4281 0
+L 4281 4097
+L 3078 897
+L 2444 897
+L 1241 4097
+L 1241 0
+L 628 0
+L 628 4666
+z
+" id="masknum-DejaVuSans-4d" transform="scale(0.015625)"></path>
+<path d="M 581 4863
+L 1159 4863
+L 1159 1991
+L 2875 3500
+L 3609 3500
+L 1753 1863
+L 3688 0
+L 2938 0
+L 1159 1709
+L 1159 0
+L 581 0
+L 581 4863
+z
+" id="masknum-DejaVuSans-6b" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#masknum-DejaVuSans-4d"></use>
+<use x="86.279297" xlink:href="#masknum-DejaVuSans-61"></use>
+<use x="147.558594" xlink:href="#masknum-DejaVuSans-6b"></use>
+<use x="201.84375" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="263.367188" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="295.154297" xlink:href="#masknum-DejaVuSans-6c"></use>
+<use x="322.9375" xlink:href="#masknum-DejaVuSans-6f"></use>
+<use x="384.119141" xlink:href="#masknum-DejaVuSans-67"></use>
+<use x="447.595703" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="479.382812" xlink:href="#masknum-DejaVuSans-6f"></use>
+<use x="540.564453" xlink:href="#masknum-DejaVuSans-70"></use>
+<use x="604.041016" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="665.564453" xlink:href="#masknum-DejaVuSans-72"></use>
+<use x="706.677734" xlink:href="#masknum-DejaVuSans-61"></use>
+<use x="767.957031" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="831.335938" xlink:href="#masknum-DejaVuSans-64"></use>
+<use x="894.8125" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="926.599609" xlink:href="#masknum-DejaVuSans-73"></use>
+<use x="978.699219" xlink:href="#masknum-DejaVuSans-61"></use>
+<use x="1039.978516" xlink:href="#masknum-DejaVuSans-66"></use>
+<use x="1075.183594" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="1136.707031" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="1168.494141" xlink:href="#masknum-DejaVuSans-66"></use>
+<use x="1203.699219" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="1231.482422" xlink:href="#masknum-DejaVuSans-72"></use>
+<use x="1272.595703" xlink:href="#masknum-DejaVuSans-73"></use>
+<use x="1324.695312" xlink:href="#masknum-DejaVuSans-74"></use>
+</g>
+</g>
+</g>
+</g>
+<g id="masknum-patch_3">
+<path d="M 158.65 281.72
+L 158.65 37.968
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="masknum-patch_4">
+<path d="M 637.2 281.72
+L 637.2 37.968
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="masknum-patch_5">
+<path d="M 158.65 281.72
+L 637.2 281.72
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="masknum-patch_6">
+<path d="M 158.65 37.968
+L 637.2 37.968
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="masknum-text_9">
+<!-- finite -->
+<g style="fill: #ffffff" transform="translate(265.54375 61.040042) scale(0.1 -0.1)">
+<use xlink:href="#masknum-DejaVuSans-66"></use>
+<use x="35.205078" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="62.988281" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="126.367188" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="154.150391" xlink:href="#masknum-DejaVuSans-74"></use>
+<use x="193.359375" xlink:href="#masknum-DejaVuSans-65"></use>
+</g>
+</g>
+<g id="masknum-text_10">
+<!-- 2 nonfinite -->
+<g style="fill: #ffffff" transform="translate(490.651563 61.040042) scale(0.1 -0.1)">
+<defs>
+<path d="M 1228 531
+L 3431 531
+L 3431 0
+L 469 0
+L 469 531
+Q 828 903 1448 1529
+Q 2069 2156 2228 2338
+Q 2531 2678 2651 2914
+Q 2772 3150 2772 3378
+Q 2772 3750 2511 3984
+Q 2250 4219 1831 4219
+Q 1534 4219 1204 4116
+Q 875 4013 500 3803
+L 500 4441
+Q 881 4594 1212 4672
+Q 1544 4750 1819 4750
+Q 2544 4750 2975 4387
+Q 3406 4025 3406 3419
+Q 3406 3131 3298 2873
+Q 3191 2616 2906 2266
+Q 2828 2175 2409 1742
+Q 1991 1309 1228 531
+z
+" id="masknum-DejaVuSans-32" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#masknum-DejaVuSans-32"></use>
+<use x="63.623047" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="95.410156" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="158.789062" xlink:href="#masknum-DejaVuSans-6f"></use>
+<use x="219.970703" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="283.349609" xlink:href="#masknum-DejaVuSans-66"></use>
+<use x="318.554688" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="346.337891" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="409.716797" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="437.5" xlink:href="#masknum-DejaVuSans-74"></use>
+<use x="476.708984" xlink:href="#masknum-DejaVuSans-65"></use>
+</g>
+</g>
+<g id="masknum-text_11">
+<!-- finite -->
+<g style="fill: #ffffff" transform="translate(265.54375 101.665375) scale(0.1 -0.1)">
+<use xlink:href="#masknum-DejaVuSans-66"></use>
+<use x="35.205078" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="62.988281" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="126.367188" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="154.150391" xlink:href="#masknum-DejaVuSans-74"></use>
+<use x="193.359375" xlink:href="#masknum-DejaVuSans-65"></use>
+</g>
+</g>
+<g id="masknum-text_12">
+<!-- 10 nonfinite -->
+<g style="fill: #ffffff" transform="translate(487.470312 101.665375) scale(0.1 -0.1)">
+<defs>
+<path d="M 794 531
+L 1825 531
+L 1825 4091
+L 703 3866
+L 703 4441
+L 1819 4666
+L 2450 4666
+L 2450 531
+L 3481 531
+L 3481 0
+L 794 0
+L 794 531
+z
+" id="masknum-DejaVuSans-31" transform="scale(0.015625)"></path>
+<path d="M 2034 4250
+Q 1547 4250 1301 3770
+Q 1056 3291 1056 2328
+Q 1056 1369 1301 889
+Q 1547 409 2034 409
+Q 2525 409 2770 889
+Q 3016 1369 3016 2328
+Q 3016 3291 2770 3770
+Q 2525 4250 2034 4250
+z
+M 2034 4750
+Q 2819 4750 3233 4129
+Q 3647 3509 3647 2328
+Q 3647 1150 3233 529
+Q 2819 -91 2034 -91
+Q 1250 -91 836 529
+Q 422 1150 422 2328
+Q 422 3509 836 4129
+Q 1250 4750 2034 4750
+z
+" id="masknum-DejaVuSans-30" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#masknum-DejaVuSans-31"></use>
+<use x="63.623047" xlink:href="#masknum-DejaVuSans-30"></use>
+<use x="127.246094" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="159.033203" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="222.412109" xlink:href="#masknum-DejaVuSans-6f"></use>
+<use x="283.59375" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="346.972656" xlink:href="#masknum-DejaVuSans-66"></use>
+<use x="382.177734" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="409.960938" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="473.339844" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="501.123047" xlink:href="#masknum-DejaVuSans-74"></use>
+<use x="540.332031" xlink:href="#masknum-DejaVuSans-65"></use>
+</g>
+</g>
+<g id="masknum-text_13">
+<!-- finite -->
+<g style="fill: #ffffff" transform="translate(265.54375 142.290708) scale(0.1 -0.1)">
+<use xlink:href="#masknum-DejaVuSans-66"></use>
+<use x="35.205078" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="62.988281" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="126.367188" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="154.150391" xlink:href="#masknum-DejaVuSans-74"></use>
+<use x="193.359375" xlink:href="#masknum-DejaVuSans-65"></use>
+</g>
+</g>
+<g id="masknum-text_14">
+<!-- finite -->
+<g style="fill: #ffffff" transform="translate(504.81875 142.290708) scale(0.1 -0.1)">
+<use xlink:href="#masknum-DejaVuSans-66"></use>
+<use x="35.205078" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="62.988281" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="126.367188" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="154.150391" xlink:href="#masknum-DejaVuSans-74"></use>
+<use x="193.359375" xlink:href="#masknum-DejaVuSans-65"></use>
+</g>
+</g>
+<g id="masknum-text_15">
+<!-- finite -->
+<g style="fill: #ffffff" transform="translate(265.54375 182.916042) scale(0.1 -0.1)">
+<use xlink:href="#masknum-DejaVuSans-66"></use>
+<use x="35.205078" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="62.988281" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="126.367188" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="154.150391" xlink:href="#masknum-DejaVuSans-74"></use>
+<use x="193.359375" xlink:href="#masknum-DejaVuSans-65"></use>
+</g>
+</g>
+<g id="masknum-text_16">
+<!-- finite -->
+<g style="fill: #ffffff" transform="translate(504.81875 182.916042) scale(0.1 -0.1)">
+<use xlink:href="#masknum-DejaVuSans-66"></use>
+<use x="35.205078" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="62.988281" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="126.367188" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="154.150391" xlink:href="#masknum-DejaVuSans-74"></use>
+<use x="193.359375" xlink:href="#masknum-DejaVuSans-65"></use>
+</g>
+</g>
+<g id="masknum-text_17">
+<!-- finite -->
+<g style="fill: #ffffff" transform="translate(265.54375 223.541375) scale(0.1 -0.1)">
+<use xlink:href="#masknum-DejaVuSans-66"></use>
+<use x="35.205078" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="62.988281" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="126.367188" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="154.150391" xlink:href="#masknum-DejaVuSans-74"></use>
+<use x="193.359375" xlink:href="#masknum-DejaVuSans-65"></use>
+</g>
+</g>
+<g id="masknum-text_18">
+<!-- 1 nonfinite -->
+<g style="fill: #ffffff" transform="translate(490.651563 223.541375) scale(0.1 -0.1)">
+<use xlink:href="#masknum-DejaVuSans-31"></use>
+<use x="63.623047" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="95.410156" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="158.789062" xlink:href="#masknum-DejaVuSans-6f"></use>
+<use x="219.970703" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="283.349609" xlink:href="#masknum-DejaVuSans-66"></use>
+<use x="318.554688" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="346.337891" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="409.716797" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="437.5" xlink:href="#masknum-DejaVuSans-74"></use>
+<use x="476.708984" xlink:href="#masknum-DejaVuSans-65"></use>
+</g>
+</g>
+<g id="masknum-text_19">
+<!-- finite -->
+<g style="fill: #ffffff" transform="translate(265.54375 264.166708) scale(0.1 -0.1)">
+<use xlink:href="#masknum-DejaVuSans-66"></use>
+<use x="35.205078" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="62.988281" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="126.367188" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="154.150391" xlink:href="#masknum-DejaVuSans-74"></use>
+<use x="193.359375" xlink:href="#masknum-DejaVuSans-65"></use>
+</g>
+</g>
+<g id="masknum-text_20">
+<!-- finite -->
+<g style="fill: #ffffff" transform="translate(504.81875 264.166708) scale(0.1 -0.1)">
+<use xlink:href="#masknum-DejaVuSans-66"></use>
+<use x="35.205078" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="62.988281" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="126.367188" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="154.150391" xlink:href="#masknum-DejaVuSans-74"></use>
+<use x="193.359375" xlink:href="#masknum-DejaVuSans-65"></use>
+</g>
+</g>
+<g id="masknum-text_21">
+<!-- Actual JAX 0.7.2 CPU checks, float32 -->
+<g transform="translate(297.651406 19.650406) scale(0.11 -0.11)">
+<defs>
+<path d="M 2188 4044
+L 1331 1722
+L 3047 1722
+L 2188 4044
+z
+M 1831 4666
+L 2547 4666
+L 4325 0
+L 3669 0
+L 3244 1197
+L 1141 1197
+L 716 0
+L 50 0
+L 1831 4666
+z
+" id="masknum-DejaVuSans-41" transform="scale(0.015625)"></path>
+<path d="M 628 4666
+L 1259 4666
+L 1259 325
+Q 1259 -519 939 -900
+Q 619 -1281 -91 -1281
+L -331 -1281
+L -331 -750
+L -134 -750
+Q 284 -750 456 -515
+Q 628 -281 628 325
+L 628 4666
+z
+" id="masknum-DejaVuSans-4a" transform="scale(0.015625)"></path>
+<path d="M 403 4666
+L 1081 4666
+L 2241 2931
+L 3406 4666
+L 4084 4666
+L 2584 2425
+L 4184 0
+L 3506 0
+L 2194 1984
+L 872 0
+L 191 0
+L 1856 2491
+L 403 4666
+z
+" id="masknum-DejaVuSans-58" transform="scale(0.015625)"></path>
+<path d="M 684 794
+L 1344 794
+L 1344 0
+L 684 0
+L 684 794
+z
+" id="masknum-DejaVuSans-2e" transform="scale(0.015625)"></path>
+<path d="M 525 4666
+L 3525 4666
+L 3525 4397
+L 1831 0
+L 1172 0
+L 2766 4134
+L 525 4134
+L 525 4666
+z
+" id="masknum-DejaVuSans-37" transform="scale(0.015625)"></path>
+<path d="M 556 4666
+L 1191 4666
+L 1191 1831
+Q 1191 1081 1462 751
+Q 1734 422 2344 422
+Q 2950 422 3222 751
+Q 3494 1081 3494 1831
+L 3494 4666
+L 4128 4666
+L 4128 1753
+Q 4128 841 3676 375
+Q 3225 -91 2344 -91
+Q 1459 -91 1007 375
+Q 556 841 556 1753
+L 556 4666
+z
+" id="masknum-DejaVuSans-55" transform="scale(0.015625)"></path>
+<path d="M 750 794
+L 1409 794
+L 1409 256
+L 897 -744
+L 494 -744
+L 750 256
+L 750 794
+z
+" id="masknum-DejaVuSans-2c" transform="scale(0.015625)"></path>
+<path d="M 2597 2516
+Q 3050 2419 3304 2112
+Q 3559 1806 3559 1356
+Q 3559 666 3084 287
+Q 2609 -91 1734 -91
+Q 1441 -91 1130 -33
+Q 819 25 488 141
+L 488 750
+Q 750 597 1062 519
+Q 1375 441 1716 441
+Q 2309 441 2620 675
+Q 2931 909 2931 1356
+Q 2931 1769 2642 2001
+Q 2353 2234 1838 2234
+L 1294 2234
+L 1294 2753
+L 1863 2753
+Q 2328 2753 2575 2939
+Q 2822 3125 2822 3475
+Q 2822 3834 2567 4026
+Q 2313 4219 1838 4219
+Q 1578 4219 1281 4162
+Q 984 4106 628 3988
+L 628 4550
+Q 988 4650 1302 4700
+Q 1616 4750 1894 4750
+Q 2613 4750 3031 4423
+Q 3450 4097 3450 3541
+Q 3450 3153 3228 2886
+Q 3006 2619 2597 2516
+z
+" id="masknum-DejaVuSans-33" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#masknum-DejaVuSans-41"></use>
+<use x="66.658203" xlink:href="#masknum-DejaVuSans-63"></use>
+<use x="121.638672" xlink:href="#masknum-DejaVuSans-74"></use>
+<use x="160.847656" xlink:href="#masknum-DejaVuSans-75"></use>
+<use x="224.226562" xlink:href="#masknum-DejaVuSans-61"></use>
+<use x="285.505859" xlink:href="#masknum-DejaVuSans-6c"></use>
+<use x="313.289062" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="345.076172" xlink:href="#masknum-DejaVuSans-4a"></use>
+<use x="372.818359" xlink:href="#masknum-DejaVuSans-41"></use>
+<use x="441.226562" xlink:href="#masknum-DejaVuSans-58"></use>
+<use x="509.732422" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="541.519531" xlink:href="#masknum-DejaVuSans-30"></use>
+<use x="605.142578" xlink:href="#masknum-DejaVuSans-2e"></use>
+<use x="636.929688" xlink:href="#masknum-DejaVuSans-37"></use>
+<use x="700.552734" xlink:href="#masknum-DejaVuSans-2e"></use>
+<use x="732.339844" xlink:href="#masknum-DejaVuSans-32"></use>
+<use x="795.962891" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="827.75" xlink:href="#masknum-DejaVuSans-43"></use>
+<use x="897.574219" xlink:href="#masknum-DejaVuSans-50"></use>
+<use x="957.876953" xlink:href="#masknum-DejaVuSans-55"></use>
+<use x="1031.070312" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="1062.857422" xlink:href="#masknum-DejaVuSans-63"></use>
+<use x="1117.837891" xlink:href="#masknum-DejaVuSans-68"></use>
+<use x="1181.216797" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="1242.740234" xlink:href="#masknum-DejaVuSans-63"></use>
+<use x="1297.720703" xlink:href="#masknum-DejaVuSans-6b"></use>
+<use x="1355.630859" xlink:href="#masknum-DejaVuSans-73"></use>
+<use x="1407.730469" xlink:href="#masknum-DejaVuSans-2c"></use>
+<use x="1439.517578" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="1471.304688" xlink:href="#masknum-DejaVuSans-66"></use>
+<use x="1506.509766" xlink:href="#masknum-DejaVuSans-6c"></use>
+<use x="1534.292969" xlink:href="#masknum-DejaVuSans-6f"></use>
+<use x="1595.474609" xlink:href="#masknum-DejaVuSans-61"></use>
+<use x="1656.753906" xlink:href="#masknum-DejaVuSans-74"></use>
+<use x="1695.962891" xlink:href="#masknum-DejaVuSans-33"></use>
+<use x="1759.585938" xlink:href="#masknum-DejaVuSans-32"></use>
+</g>
+<!-- Finite forward does not establish finite reverse derivatives -->
+<g transform="translate(237.798516 31.968) scale(0.11 -0.11)">
+<defs>
+<path d="M 3116 1747
+Q 3116 2381 2855 2742
+Q 2594 3103 2138 3103
+Q 1681 3103 1420 2742
+Q 1159 2381 1159 1747
+Q 1159 1113 1420 752
+Q 1681 391 2138 391
+Q 2594 391 2855 752
+Q 3116 1113 3116 1747
+z
+M 1159 2969
+Q 1341 3281 1617 3432
+Q 1894 3584 2278 3584
+Q 2916 3584 3314 3078
+Q 3713 2572 3713 1747
+Q 3713 922 3314 415
+Q 2916 -91 2278 -91
+Q 1894 -91 1617 61
+Q 1341 213 1159 525
+L 1159 0
+L 581 0
+L 581 4863
+L 1159 4863
+L 1159 2969
+z
+" id="masknum-DejaVuSans-62" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#masknum-DejaVuSans-46"></use>
+<use x="50.269531" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="78.052734" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="141.431641" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="169.214844" xlink:href="#masknum-DejaVuSans-74"></use>
+<use x="208.423828" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="269.947266" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="301.734375" xlink:href="#masknum-DejaVuSans-66"></use>
+<use x="336.939453" xlink:href="#masknum-DejaVuSans-6f"></use>
+<use x="398.121094" xlink:href="#masknum-DejaVuSans-72"></use>
+<use x="439.234375" xlink:href="#masknum-DejaVuSans-77"></use>
+<use x="521.021484" xlink:href="#masknum-DejaVuSans-61"></use>
+<use x="582.300781" xlink:href="#masknum-DejaVuSans-72"></use>
+<use x="621.664062" xlink:href="#masknum-DejaVuSans-64"></use>
+<use x="685.140625" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="716.927734" xlink:href="#masknum-DejaVuSans-64"></use>
+<use x="780.404297" xlink:href="#masknum-DejaVuSans-6f"></use>
+<use x="841.585938" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="903.109375" xlink:href="#masknum-DejaVuSans-73"></use>
+<use x="955.208984" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="986.996094" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="1050.375" xlink:href="#masknum-DejaVuSans-6f"></use>
+<use x="1111.556641" xlink:href="#masknum-DejaVuSans-74"></use>
+<use x="1150.765625" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="1182.552734" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="1244.076172" xlink:href="#masknum-DejaVuSans-73"></use>
+<use x="1296.175781" xlink:href="#masknum-DejaVuSans-74"></use>
+<use x="1335.384766" xlink:href="#masknum-DejaVuSans-61"></use>
+<use x="1396.664062" xlink:href="#masknum-DejaVuSans-62"></use>
+<use x="1460.140625" xlink:href="#masknum-DejaVuSans-6c"></use>
+<use x="1487.923828" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="1515.707031" xlink:href="#masknum-DejaVuSans-73"></use>
+<use x="1567.806641" xlink:href="#masknum-DejaVuSans-68"></use>
+<use x="1631.185547" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="1662.972656" xlink:href="#masknum-DejaVuSans-66"></use>
+<use x="1698.177734" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="1725.960938" xlink:href="#masknum-DejaVuSans-6e"></use>
+<use x="1789.339844" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="1817.123047" xlink:href="#masknum-DejaVuSans-74"></use>
+<use x="1856.332031" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="1917.855469" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="1949.642578" xlink:href="#masknum-DejaVuSans-72"></use>
+<use x="1988.505859" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="2050.029297" xlink:href="#masknum-DejaVuSans-76"></use>
+<use x="2109.208984" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="2170.732422" xlink:href="#masknum-DejaVuSans-72"></use>
+<use x="2211.845703" xlink:href="#masknum-DejaVuSans-73"></use>
+<use x="2263.945312" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="2325.46875" xlink:href="#masknum-DejaVuSans-20"></use>
+<use x="2357.255859" xlink:href="#masknum-DejaVuSans-64"></use>
+<use x="2420.732422" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="2482.255859" xlink:href="#masknum-DejaVuSans-72"></use>
+<use x="2523.369141" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="2551.152344" xlink:href="#masknum-DejaVuSans-76"></use>
+<use x="2610.332031" xlink:href="#masknum-DejaVuSans-61"></use>
+<use x="2671.611328" xlink:href="#masknum-DejaVuSans-74"></use>
+<use x="2710.820312" xlink:href="#masknum-DejaVuSans-69"></use>
+<use x="2738.603516" xlink:href="#masknum-DejaVuSans-76"></use>
+<use x="2797.783203" xlink:href="#masknum-DejaVuSans-65"></use>
+<use x="2859.306641" xlink:href="#masknum-DejaVuSans-73"></use>
+</g>
+</g>
+</g>
+</g>
+<defs>
+<clippath id="masknum-p589b268eee">
+<rect height="243.752" width="478.55" x="158.65" y="37.968"></rect>
+</clippath>
+</defs>
+</svg><figcaption>真实JAX CPU检查：绿色为有限，红色显示非有限梯度元素数；不是Hero批次或GPU/TPU重放。</figcaption></figure></section><nav class="pager"><a href="contracts-guide.html">← 上一篇</a><a href="loss-denominator-guide.html">下一篇 →</a></nav></main></body></html>

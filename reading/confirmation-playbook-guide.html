@@ -1,0 +1,80 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>接下来该把算力花在哪里：配比确认与源码验收手册 · Marin 预训练研究</title><link rel="stylesheet" href="reading.css"></head><body><header><nav><a href="index.html">主题目录</a><a href="../report_standalone.html">完整报告（保留）</a><a href="code.html">源码与候选补丁</a><a href="tools.html">交互工具</a></nav></header><main><p class="muted"><a href="theme-data.html">02 · 数据配比与实验设计</a> / 本页只含一篇专题</p><details class="chapter-toc"><summary>本篇目录</summary><ol><li><a href="#confirmation-playbook-guide-1">1. 哪些证据足以改变下一步</a></li><li><a href="#confirmation-playbook-guide-2">2. 开始训练前，先让两个臂确实拥有同一祖先</a></li><li><a href="#confirmation-playbook-guide-3">3. 优先做的实验：确认代码收益，保住数学能力</a></li><li><a href="#confirmation-playbook-guide-4">4. 如果数学风险成立，怎样加量才有解释力</a></li><li><a href="#confirmation-playbook-guide-5">5. 如果确实要同时改预算，用四臂拆开</a></li><li><a href="#confirmation-playbook-guide-6">6. 不用把所有检查变成一个总分</a></li></ol></details><section class="chapter" id="confirmation-playbook-guide"><h1 id="confirmation-playbook-guide-_1">接下来该把算力花在哪里：配比确认与源码验收手册</h1>
+<p>V135，2026-10-08。本章将配比证据和近期源码发现接成一条实验路线。新增的是已有三组公开终点的删seed敏感性复算，以及待执行的实验合同；没有新增模型训练，也没有给出“照着用就最优”的比例。</p>
+<p>先给判断：<strong>代码方向值得优先做独立确认；数学方向应先确认能力退步是否真实，再做有供体的加量实验；纯顺序优化排在总量效应和恢复合同之后。</strong> 这是一种有依据的算力排序，不是已验证的最优研究策略。</p>
+<h2 id="confirmation-playbook-guide-1">1. 哪些证据足以改变下一步</h2>
+<p>已有d512三组continuation比较中，选中配比相对库存比例基线的终点如下。本轮每次删去一组seed，用剩下两组分别求selected与baseline均值，再算均值比值；不是平均两个百分比。<a href="../analysis/strong_baseline_paired.csv">原终点</a> · <a href="../analysis/confirmation_priorities.json">完整复算</a>。负值代表BPB改善。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>固定文本指标</th>
+<th style="text-align: right;">三组均值相对变化</th>
+<th style="text-align: right;">删去任一seed后的变化范围</th>
+<th>对下一笔实验的含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Paloma macro BPB</td>
+<td style="text-align: right;">−0.0494%</td>
+<td style="text-align: right;">−0.0728%至−0.0225%</td>
+<td>方向稳定但幅度小；先做独立确认，别继续按这个微小差值精调200桶</td>
+</tr>
+<tr>
+<td>100语言代码文本BPB</td>
+<td style="text-align: right;">−1.8282%</td>
+<td style="text-align: right;">−1.8907%至−1.7936%</td>
+<td>现有重复中较一致，优先确认能否迁移到代码生成与更大代理</td>
+</tr>
+<tr>
+<td>HumanEval目标文本BPB</td>
+<td style="text-align: right;">−7.5005%</td>
+<td style="text-align: right;">−8.2255%至−6.6111%</td>
+<td>文本概率改善较一致；仍需执行程序的生成评估，不能称pass@1提升</td>
+</tr>
+<tr>
+<td>GSM8K目标文本BPB</td>
+<td style="text-align: right;">+1.4800%</td>
+<td style="text-align: right;">−0.1627%至+2.5965%</td>
+<td>删去一组后方向会改变；数学风险值得查，但还不能断言补数学权重必然有效</td>
+</tr>
+</tbody>
+</table></div>
+<p>删去seed0后，GSM8K相对比例基线的均值变化成为轻微改善；相对旧配比，三个删seed子集仍全部更差。这说明“数学退步”的具体陈述依赖参照，也受某次continuation影响。<a href="conclusions.html#conclusions">此前三seed与强基线分析</a>。</p>
+<p>这个范围不是置信区间，没有纠正候选经过搜索选择的偏差。剩下的两组彼此重叠，也不是三份独立新证据。它的作用是检查建议是否被一次重复左右，不能用来选择最好看的删seed结果。原研究的<a href="https://github.com/marin-community/marin/issues/9126" rel="noopener" target="_blank">配比ladder</a>提供规模验证，但这里的库存比例对照仍是d512结果，不能升级成535B收益估计。</p>
+<h2 id="confirmation-playbook-guide-2">2. 开始训练前，先让两个臂确实拥有同一祖先</h2>
+<p>最近源码控制把“共同checkpoint”的要求推进了一步：</p>
+<ul>
+<li><a href="optional-resume-guide.html#optional-resume-guide">可选恢复</a>可能因传父目录还是具体目录而进入不同失败/初始化分支。完整续训需声明恢复意图，并记录实际读取的祖先，不能只保存配置路径。</li>
+<li><a href="pending-resume-guide.html#pending-resume-guide">状态视图</a>说明params、master、EMA、pending和optimizer需要连同下一次forward验证。只核对参数值或step不够。</li>
+<li><a href="optimizer-schedule-guide.html#optimizer-schedule-guide">优化计划</a>说明新N会重新求值学习率与衰减；state里缓存的lr不能固定下一次update，多份count也不能互相替代。</li>
+<li><a href="schedule-config-guide.html#schedule-config-guide">配置几何</a>说明比例要按真实N展开，整数1可能表示全周期；能构造出有限函数也不证明端点合法。</li>
+<li><a href="experiment-controls-guide.html#experiment-controls-guide">数据构建</a>说明重建完整组件、key、shuffle、slice和历史阶段后，才谈得上下一批身份。共同state不能单独保证共同数据流。</li>
+</ul>
+<p>这些是实际原方法控制的条件证据，不是说公开的配比实验已经触发了上述故障。它们决定自己的确认实验要留下哪些材料：实际恢复路径与内容摘要、完整状态树摘要、实际下一批身份、实际LR/衰减和下一次update对照。缺项时，可以准备配方与预算，但不能把实验状态写为已经可比。</p>
+<h2 id="confirmation-playbook-guide-3">3. 优先做的实验：确认代码收益，保住数学能力</h2>
+<p><strong>第一步，固定现有候选与强基线。</strong> 保留库存比例方案作为主要参照；旧配比可用于历史定位，但不能代替这个更强的基线。冻结配方之后再选择独立continuation重复和确认评估。已经用于搜索与分析的seed0/1/2不应重新包装成新的独立重复。</p>
+<p><strong>第二步，约定主目标与保底项。</strong> 如果目标是代码，主指标应包含固定解码与执行环境下的代码生成结果，代码文本BPB保留作诊断；数学、一般语言和供体相关任务列为保底。容忍多少退步、额外耗时和重复，需要按自己的产品目标预先写下，本研究没有支持统一阈值。</p>
+<p><strong>第三步，只改变配比。</strong> 两臂沿用同一优化计划、同一评估视图和同一段更新预算。完整恢复state的同时绑定LR闭包、各调度状态与历史batch。相同实验窗口的stop条件与scheduler全程N分开，避免为了缩短确认窗口就无意重建整个学习率计划。</p>
+<p><strong>第四步，根据结果分支。</strong> 代码生成收益在独立重复中仍有价值且保底通过，进入更大代理确认；仅搜索文本BPB改善，继续调查评估迁移；触发预先写好的保底退步，废弃当前候选或进入明确的修复实验。不要看到结果以后才改“代码优先”的解释。</p>
+<h2 id="confirmation-playbook-guide-4">4. 如果数学风险成立，怎样加量才有解释力</h2>
+<p>先选一个供体，而不是全局缩放199个桶给数学让路。已有 <a href="transfer-guide.html#transfer-guide">供体草案</a> 与三份 <code>templates/math_factorial_donor_c*.json</code>保留整数修正方案，仍未执行。供体选择需要内容检查和该供体任务的风险预算，当前证据不支持宣布法律、新闻或代码中哪一个最便宜。</p>
+<p>第一轮只回答“固定pool里多给数学曝光是否值得”。固定选中集合、桶内索引映射、完整组件支持、共同恢复状态和优化计划，核对每桶整数变化与供体代价。数学多出来的曝光本来就应改变读取次数，不能又要求两臂最终身份多重集完全相同。</p>
+<p>若加量有收益，再区分“同样文本更多重复”和“更多独特数学文本”。扩pool但保持数学总曝光，与固定pool提高曝光，是不同后续问题。只提高q4占比也会改变题材覆盖与重复，不能把它自动解释为纯质量实验。</p>
+<p>纯顺序比较则更严格：每桶累计量、选中身份及次数要匹配，再改变发生时间。若只能匹配预算而无法核对身份多重集，应称为预算匹配的时序方案，保留文本曝光差异未排除的限制。</p>
+<h2 id="confirmation-playbook-guide-5">5. 如果确实要同时改预算，用四臂拆开</h2>
+<p>当研究只想估计配比效应，前面的两臂更直接；只有总N或优化计划也要改变时，才增加计划因素。新模板 <a href="../templates/mixture_schedule_confirmation.json">配比×计划确认合同</a>给出四臂：</p>
+<pre><code class="language-text">             原计划P0       新计划P1
+基线配比M0   M0P0           M0P1
+候选配比M1   M1P0           M1P1
+</code></pre>
+<p>四臂从同一完整checkpoint出发，保持同一观察窗口与每臂输入预算，优化器不重置。同一配比的P0/P1两臂还应保持数据阶段边界和实际采样轨迹；若修改总N顺带重新生成配比切换点，P因素就同时包含优化计划与数据历程变化，不能再单称学习率计划效应。P1明确改变哪些schedule/decay字段，不能只写“延长训练”。若还要研究moment重置，那是第三个因素，应另开实验或接受组合干预的解释范围。</p>
+<p>在预先声明的指标尺度Y上，分别计算：</p>
+<pre><code class="language-text">原计划下的配比效应 = Y(M1P0) − Y(M0P0)
+基线配比下的计划效应 = Y(M0P1) − Y(M0P0)
+交互项 = Y(M1P1) − Y(M1P0) − Y(M0P1) + Y(M0P0)
+</code></pre>
+<p>交互项说明在这份指标、窗口与状态下，联合改变是否偏离两个单项差值之和。它不意味着找到了通用因果系数，换成相对百分比或log尺度也可能得到不同交互解释。直接比较M1P1与M0P0只能回答组合方案，不足以分配收益给配比或计划。</p>
+<p>模板是待填写合同，所有真实checkpoint、LR、状态、数据、评估与结果为空，<code>launchable=false</code>。它不会启动集群训练，也不会替用户决定算力预算。准备好模板不等于恢复/配比/评估通过验收。</p>
+<h2 id="confirmation-playbook-guide-6">6. 不用把所有检查变成一个总分</h2>
+<p>最终记录保留三个独立判断：输入与状态能否对照；目标收益与保底是否达到事先声明的要求；放大后的成本和稳定性是否可接受。任何一项缺证据，就写具体缺口与下一项最小实验，不用其他检查的绿灯相抵。</p>
+<p>本轮11项复算检查通过；它们验证CSV聚合和删seed结果，不验证真实恢复或训练收益。对已有报告的“当前阶段”“最新配置”措辞也改为带日期的归档描述，防止读者把历史配方当作实时状态。研究目标仍包括真实输入映射、完整恢复接续和独立能力确认，这些尚未由公开材料与本地CPU控制补齐。</p></section><nav class="pager"><a href="experiment-controls-guide.html">← 上一篇</a><a href="scale-guide.html">下一篇 →</a></nav></main></body></html>

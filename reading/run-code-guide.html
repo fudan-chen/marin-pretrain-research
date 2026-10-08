@@ -1,0 +1,2562 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>V122：没有 Git commit，还能怎样核对历史加载器 · Marin 预训练研究</title><link rel="stylesheet" href="reading.css"></head><body><header><nav><a href="index.html">主题目录</a><a href="../report_standalone.html">完整报告（保留）</a><a href="code.html">源码与候选补丁</a><a href="tools.html">交互工具</a></nav></header><main><p class="muted"><a href="theme-input.html">03 · 数据管线与实际曝光</a> / 本页只含一篇专题</p><details class="chapter-toc"><summary>本篇目录</summary><ol><li><a href="#run-code-guide-_1">取得了什么，分别能证明什么</a></li><li><a href="#run-code-guide-_2">那一处源码变化，会不会推翻上轮结果</a></li><li><a href="#run-code-guide-_3">恢复日志比配置多告诉了什么</a></li><li><a href="#run-code-guide-_4">对自己训练最有用的规则</a></li><li><a href="#run-code-guide-_5">怎样复查本轮</a></li><li><a href="#run-code-guide-v123seed">V123：seed相同，还要问哪一条随机流相同</a></li><li><a href="#run-code-guide-none0">None 和0不是同一个配置</a></li><li><a href="#run-code-guide-_6">依赖版本核对后的结论更具体了</a></li><li><a href="#run-code-guide-key">用配置派生key后，部分块问题还在不在</a></li><li><a href="#run-code-guide-_7">怎样设计自己的实验</a></li><li><a href="#run-code-guide-v124checkpoint">V124：checkpoint接续，还要核对被抽到的训练子集</a></li><li><a href="#run-code-guide-_8">两个人工桶，把集合、顺序和重复拆开看</a></li><li><a href="#run-code-guide-_9">一个真实比例下的取整边界</a></li><li><a href="#run-code-guide-_10">对配比研究的影响</a></li><li><a href="#run-code-guide-v125shuffle">V125：有shuffle，不等于模拟子集就是全库存等概率抽样</a></li><li><a href="#run-code-guide-879512">879条前缀受到512块的结构限制</a></li><li><a href="#run-code-guide-_11">尾部样本可能有零入选机会，但影响量级要单独算</a></li><li><a href="#run-code-guide-window">把window调大，也不能直接称为修复</a></li><li><a href="#run-code-guide-_12">如何用这个结论改进配比研究</a></li><li><a href="#run-code-guide-v127">V127：配置断言与执行模式</a></li><li><a href="#run-code-guide-v128">V128：桶级权重的数值合同</a></li><li><a href="#run-code-guide-v129manager">V129：异步manager与任务级失败</a></li></ol></details><section class="chapter" id="run-code-guide"><h1 id="run-code-guide-v122-git-commit">V122：没有 Git commit，还能怎样核对历史加载器</h1>
+<p>这轮取得了共同 checkpoint 的生产 run，以及 <code>proportional-zero-c00-seed0</code> 续训 run 上传的代码快照。两份清单中的五个相关文件摘要一致；下载后也与清单内容摘要相符。续训日志明确记录了读取 <code>step-393</code>、TensorStore 恢复统计，以及随后出现的 <code>394it</code> 训练进度。因此，V121 的恢复边界不再只有配置路径和终点步数支持，还多了一个续训 run 的读取日志。</p>
+<p><strong>但目前仍不能把“条件复算中出现逻辑身份重叠”写成“历史训练重复了这些 token”。</strong> 上传的源码、实际导入的模块、恢复后的状态值、缓存中的样本，是不同的证据。这里补上前两者之间的一部分连接，没有读到真实 token 或 checkpoint 内容。</p>
+<div class="table-wrap" style="overflow-x:auto;"><svg aria-labelledby="run-code-evidence-title run-code-evidence-desc" role="img" style="display:block;width:100%;min-width:760px;height:auto;" viewbox="0 0 960 280" xmlns="http://www.w3.org/2000/svg">
+<title id="run-code-evidence-title">历史运行证据：哪些已取得，哪些仍缺</title>
+<desc id="run-code-evidence-desc">两份配置与代码快照、一个续训恢复日志已取得；实际导入路径、checkpoint内容与token身份仍未验证。箭头表示需要继续核查，不表示已经证明因果。</desc>
+<rect fill="#f5f7fa" height="280" rx="12" width="960"></rect>
+<g fill="#17263b" font-family="sans-serif">
+<text font-size="20" font-weight="700" x="28" y="34">证据不能跳级：从声明，走到真正读入了什么</text>
+<g font-size="16" font-weight="700">
+<rect fill="#deefe7" height="148" rx="9" stroke="#388263" width="210" x="24" y="58"></rect><text x="40" y="85">① 配置与运行身份</text>
+<rect fill="#deefe7" height="148" rx="9" stroke="#388263" width="210" x="258" y="58"></rect><text x="274" y="85">② 上传源码快照</text>
+<rect fill="#e6eefb" height="148" rx="9" stroke="#557ca8" width="210" x="492" y="58"></rect><text x="508" y="85">③ 恢复读取日志</text>
+<rect fill="#fff0db" height="148" rx="9" stroke="#b37a2d" width="210" x="726" y="58"></rect><text x="742" y="85">④ 状态与真实输入</text></g>
+<g font-size="15">
+<text x="40" y="117">生产 + 一个续训 run</text><text x="40" y="145">阶段声明已归档</text><text x="40" y="177">commit 字段为空</text>
+<text x="274" y="117">两份清单 / 五个文件</text><text x="274" y="145">80组条件复算一致</text><text x="274" y="177">实际 imports 仍未知</text>
+<text x="508" y="117">一个续训 run</text><text x="508" y="145">读取 step-393</text><text x="508" y="177">随后显示进度 394it</text>
+<text x="742" y="117">checkpoint 内容未知</text><text x="742" y="145">历史 key / token 未知</text><text x="742" y="177">不能判真实重复事故</text>
+<text x="239" y="143">→</text><text x="473" y="143">→</text><text x="707" y="143">→</text>
+<text x="28" y="238">源码快照提高局部机制可信度；日志支持曾发生读取；两者都不能替代输入身份核查。</text>
+<text fill="#52657a" x="28" y="262">V122 · 颜色表示本轮证据范围，不是生产成功率或因果置信度</text>
+</g></g></svg></div>
+<h2 id="run-code-guide-_1">取得了什么，分别能证明什么</h2>
+<p>两个 run 的匿名 GraphQL 查询都成功，<code>commit</code> 都是 <code>null</code>。每个文件目录只有一页，均为10项，没有 <code>wandb-metadata.json</code> 或 <code>diff.patch</code> 文件项。这个结果只描述本次取得的目录，不能推断这些文件从未生成，更不能把空 commit 当成未做版本管理。</p>
+<p><code>_wandb.code_path</code> 指向 <code>source-marin_moe-_callable_runner.py</code>。它的代码清单并不只有这个启动脚本：生产清单含29,890项，续训清单含29,896项，包括仓库源码和大量虚拟环境文件。本轮没有下载整套依赖，只取分析相关的五个源文件。W&amp;B 的文件取得方式和摘要解释参照其<a href="https://github.com/wandb/wandb/blob/main/wandb/sdk/artifacts/storage_policies/wandb_storage_policy.py" rel="noopener" target="_blank">公开 SDK 存储策略实现</a>。下载以清单的文件大小、Base64 MD5 核对，归档再记录 SHA-256；MD5 在这里用来匹配平台清单，不用作独立的安全证明。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>下载文件</th>
+<th>与此前探针输入的关系</th>
+<th>本轮能支持的判断</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>data/mixture.py</code></td>
+<td>文件不同；AST 差异仅在 <code>_get_stage_for_block</code></td>
+<td>必须用快照再算，不能拿文件名相同当实现相同</td>
+</tr>
+<tr>
+<td><code>schedule.py</code></td>
+<td>完整文件字节一致</td>
+<td>此前 batch 前缀计算所用源码与这两份快照一致</td>
+</tr>
+<tr>
+<td><code>data/text/datasets.py</code></td>
+<td>完整文件不同；四个选定的支持过滤、构建、child key 与评估命名方法 AST 一致</td>
+<td>V120 中历史正权重保留数据支持的源码机制得到更直接的版本支持；没有重跑整个 token 构建过程</td>
+</tr>
+<tr>
+<td><code>data/loader.py</code></td>
+<td>完整文件不同；此前探针使用的三个异步读取方法 AST 一致</td>
+<td>只能确认这三个方法，不能推广为加载器全部行为一致</td>
+</tr>
+<tr>
+<td><code>main/train_lm.py</code></td>
+<td>两份清单摘要一致，已下载</td>
+<td>仅保留为候选入口材料；未确认这个 run 执行的就是该入口</td>
+</tr>
+</tbody>
+</table></div>
+<p><a href="../sources/run_code_2026_10_08/producer_inventory.json">查询、源码与日志目录</a>、<a href="../sources/run_code_2026_10_08/producer_code_manifest.json">生产代码清单</a>、<a href="../sources/run_code_2026_10_08/continuation_code_manifest.json">续训代码清单</a>、<a href="../analysis/run_code_provenance.json">逐文件绑定与日志行号</a>。清单约7.9MB一份，离线浏览应优先打开较小的绑定结果。</p>
+<h2 id="run-code-guide-_2">那一处源码变化，会不会推翻上轮结果</h2>
+<p>此前版本先把阶段起点除以 <code>block_size</code>，再用 block 序号搜索所属阶段；上传快照则把当前 block 序号乘回序列坐标，再搜索阶段起点。对于这里合法、对齐到整块的阶段声明，两种表示在对应边界一致。这个判断没有靠文字猜测：本轮用上传的完整混合器类、原批量调度器和同一套有限身份子数据集，重新执行了80组条件复算。</p>
+<p>结果是：12项原控制通过，80组结果、16,000行逐桶前缀计数、下一批身份摘要及备用给定 key 的控制，与V121全部一致。主给定 key 下的部分块身份重叠范围仍为5129–5977；它仍然是合成 <code>(桶, 逻辑索引)</code> 的集合交，不是实际重复 token 数量。新结果另存于<a href="../analysis/historical_ablation_resume_boundary.json">历史快照复算</a>，没有覆盖V121原始结果。对齐边界的16个方法比较点也一致；这不是对所有整数范围与所有无效配置的证明。</p>
+<p>同样，四个数据集方法 AST 一致只支持“相同声明、相同输入下，所审计方法没有版本差异”。本轮没有恢复历史 child shuffle key，也没有新跑80份真实缓存读取。200桶、有限身份数据集、给定 key 等替代条件仍要随结果一起保留。</p>
+<h2 id="run-code-guide-_3">恢复日志比配置多告诉了什么</h2>
+<p><a href="../sources/run_code_2026_10_08/producer_output.log.txt">生产日志</a>记录 checkpoint 未找到后从头开始。<a href="../sources/run_code_2026_10_08/continuation_output.log.txt">续训日志</a>记录以下顺序，原始行号在分析JSON内：</p>
+<ol>
+<li>从共同生产 run 的 <code>checkpoints/step-393</code> 路径加载 checkpoint。</li>
+<li>TensorStore 报告读取约0.65GiB、物化约1.54GiB，涉及130个数组。</li>
+<li>后续训练进度出现 <code>394it/3.93kit</code>。</li>
+</ol>
+<p>这些是归档日志中的报告，支持这个 run 确实走到了恢复读取及后续训练。<code>394it</code> 是进度显示，不能独自当作某个 optimizer、data cursor 或保存 marker 的精确定义；字节量和数组数也不能证明所有叶子语义正确。checkpoint 状态树、真正的下一批输入和历史导入路径仍未取得。更不能用一个续训日志替80个 run 下结论。</p>
+<h2 id="run-code-guide-_4">对自己训练最有用的规则</h2>
+<p><strong>改配比时，保存“从哪段历史继续”，比只保存“现在的权重”更有用。</strong> V120发现过去阶段会影响数据支持与 child key 分配；V121发现阶段边界与恢复点之间还有部分混合块。V122进一步说明，复查这些行为时，不能只寻找一个 Git SHA：若 run 上传了源码，应先核对实际使用函数对应的文件，再核对入口和状态。</p>
+<p>评审可以按以下顺序推进，每步都要写出实际拿到的材料：</p>
+<ol>
+<li>固定生产与续训 run 身份，归档完整文件目录和阶段声明。查不到 commit 就记为空，继续查代码 artifact。</li>
+<li>下载关键文件，核对清单摘要；比较具体使用的方法。文件不同不自动判行为不同，局部 AST 相同不自动判整套程序相同。</li>
+<li>查恢复选择、读取完成及后续进度日志。把“声明要读”“日志报告已读”“独立检查内容”分开。</li>
+<li>在实际源码下复算完整历史前缀及恢复处的部分块。记录 key 来源、缓存身份、子数据集映射和未执行的替代依赖。</li>
+<li>进入真实训练确认时，保存导入模块路径与文件摘要、恢复状态步数、混合块位置，以及恢复前后有明确采样坐标的输入身份摘要。只保存总 count 不足以恢复部分乱序块。</li>
+</ol>
+<p>这条管线的作用是减少错误归因：加载器历史还没核对清楚时，不应急着把 loss 改善归功于某个数据域，也不应因为合成身份有交集就废弃一套配比。真实训练效应仍要靠输入可比、供体明确的对照与独立确认。</p>
+<p>可直接填写<a href="../templates/run_lineage_review.json">运行谱系检查模板</a>。模板为空、状态为未执行；八项本地证据控制通过，不代表这份模板已在生产使用。</p>
+<h2 id="run-code-guide-_5">怎样复查本轮</h2>
+<p>来源已随报告归档，普通离线阅读不需要重新抓取。<code>scripts/acquire_run_code_provenance.py</code> 在已有文件上只核对归档摘要；不存在时才做匿名只读下载。<code>scripts/analyze_run_code_provenance.py</code> 使用前轮已明确列出的身份子数据集与局部依赖替代，切换到本轮下载源码后重跑边界控制。</p>
+<pre><code class="language-sh">make run-code-snapshot
+make run-code-replay CPU_PYTHON=/path/to/python-with-jax
+make run-code-static
+</code></pre>
+<p>复算需要Python 3.10以上及可用的JAX CPU环境。本轮实测JAX 0.7.2、NumPy 2.5.3；离线HTML构建和静态检查使用报告已有的Markdown/BeautifulSoup环境。复算不启动GPU训练、不读取真实模型checkpoint。<code>run-code-static</code> 检查已经生成的HTML；修改正文后先运行 <code>scripts/build_html.py</code>。</p>
+<h2 id="run-code-guide-v123seed">V123：seed相同，还要问哪一条随机流相同</h2>
+<p>本轮从同一代码artifact再取得三个训练入口、checkpoint辅助代码、<code>key_iterator</code>和JAX版本文件，并归档两个run的依赖清单。这六份源码的大小和MD5均匹配生产与续训的两份清单。三个候选入口中，所选的根key生成语句与混合器构建函数AST完全一致。因此，这部分随机流机制不依赖于在这三个入口间做猜测；<strong>实际执行入口及导入路径仍未确认</strong>。</p>
+<div class="table-wrap" style="overflow-x:auto;"><svg aria-labelledby="historical-key-title historical-key-desc" role="img" style="display:block;width:100%;min-width:760px;height:auto;" viewbox="0 0 960 340" xmlns="http://www.w3.org/2000/svg">
+<title id="historical-key-title">相同训练seed，None与显式0沿不同路径生成数据key</title>
+<desc id="historical-key-desc">给定训练seed0、threefry2x32和partitionable true。默认None取根拆分的第一个key；显式0覆盖为PRNGKey0。模型初始化key相同，但200桶child key不同。实际恢复模型与历史执行key未验证。</desc>
+<rect fill="#f5f7fa" height="340" rx="12" width="960"></rect>
+<g fill="#17263b" font-family="sans-serif">
+<text font-size="20" font-weight="700" x="26" y="32">同一个训练 seed=0，数据流仍可能不同</text>
+<text fill="#52657a" font-size="14" x="26" y="58">给定 threefry2x32，jax_threefry_partitionable=True；展示上传源码下的 CPU 派生结果</text>
+<rect fill="#deefe7" height="185" rx="9" stroke="#388263" width="440" x="24" y="78"></rect>
+<rect fill="#e6eefb" height="185" rx="9" stroke="#557ca8" width="440" x="496" y="78"></rect>
+<g font-size="17" font-weight="700"><text x="42" y="106">data_seed=None：保留根 key 的拆分结果</text><text x="514" y="106">data_seed=0：显式覆盖数据 key</text></g>
+<g font-size="15">
+<text x="42" y="137">data_key = [1797259609, 2579123966]</text><text x="514" y="137">data_key = [0, 0]</text>
+<text x="42" y="166">↓ 再拆分一次</text><text x="514" y="166">↓ 再拆分一次</text>
+<text x="42" y="195">mix_key = [4165894930, 804218099]</text><text x="514" y="195">mix_key = [1797259609, 2579123966]</text>
+<text x="42" y="235">shuffle_key → 200 个命名桶 child key</text><text x="514" y="235">200 个 child key 均与左侧不同</text>
+<text x="26" y="292">模型初始化 key 相同；续训参数还受 checkpoint 恢复分支控制，不能由初始化 key 直接判断。</text>
+<text fill="#52657a" x="26" y="320">JAX 0.11.0 / 0.7.2 所选控制一致 · 实际历史执行 key、缓存映射与 token 仍未验证</text>
+</g></g></svg></div>
+<h3 id="run-code-guide-none0"><code>None</code>和0不是同一个配置</h3>
+<p>历史入口使用下面的逻辑，见<a href="code-ba4dd49959e38954.html">EP入口</a>的808–810行，以及251行开始的混合器构建：</p>
+<pre><code class="language-python">data_key, model_key = jax.random.split(jax.random.PRNGKey(trainer.seed), 2)
+if config.trainer.data_seed is not None:
+    data_key = jax.random.PRNGKey(config.trainer.data_seed)
+mix_key, shuffle_key = jax.random.split(data_key)
+</code></pre>
+<p>最后一行在数据集构建函数内；上面合写是为了展示依赖关系，不是原文的连续四行。<code>shuffle_key</code>再经<a href="code-27bea0bca83d8312.html">原key迭代器</a>不断拆分，按训练数据集的插入顺序分给各桶。</p>
+<p>公开配置声明训练seed为0、<code>data_seed=None</code>、<code>jax_threefry_partitionable=True</code>、数据模式为<code>MIXTURE</code>。在本轮明确使用<code>threefry2x32</code>的CPU环境中：</p>
+<ul>
+<li>默认<code>None</code>：先取根key拆分的第一个作为数据key，得到<code>[1797259609, 2579123966]</code>；混合器key为<code>[4165894930, 804218099]</code>。</li>
+<li>显式0：覆盖成<code>PRNGKey(0)</code>，即<code>[0, 0]</code>；混合器key变成<code>[1797259609, 2579123966]</code>。</li>
+<li>两者模型key相同，但200个训练桶的child key全部不同，合成混合块前缀也不同。</li>
+</ul>
+<p>这不是历史代码中的bug。相反，原来的<code>is not None</code>保留了0的合法含义。本轮额外把这一处条件改为<code>if data_seed:</code>做反事实控制：在训练seed为1、显式数据seed为0时，错误写法会跳过覆盖，重新跟随训练seed。这个错误版本没有出现在已核查源码中，不能写进Marin事故清单。</p>
+<h3 id="run-code-guide-_6">依赖版本核对后的结论更具体了</h3>
+<p>两个run的依赖清单都声明<code>jax==jaxlib==0.11.0</code>、<code>numpy==2.3.5</code>；代码artifact中的JAX版本文件也写明release为0.11.0。本轮新建独立CPU环境匹配这几个版本，保留前轮JAX 0.7.2/NumPy 2.5.3环境做比较。</p>
+<p>每套环境执行9项控制、8组seed/数据seed/partitionable组合，导出每组200个child key。两套环境的8组结果、1600行key记录、合成混合块前缀摘要与逐桶计数全部一致。这里可以说“所选随机流控制没有复现版本差异”，不能说“两个JAX版本训练等价”。未比较完整模型、GPU编译、全部随机算子或实际运行的环境变量。</p>
+<p>将<code>jax_threefry_partitionable</code>从True改成False时，根拆分结果和200个child key会改变，合成块前缀也改变。这个flag同时参与所用随机路径，本轮没有把key变化和块置换实现的贡献拆开。故复现所需的信息应包括PRNG实现与相关配置，不能只记录整数seed。JAX对key表示、拆分与PRNG实现的说明见<a href="https://docs.jax.dev/en/latest/jax.random.html" rel="noopener" target="_blank">官方随机数文档</a>。</p>
+<h3 id="run-code-guide-key">用配置派生key后，部分块问题还在不在</h3>
+<p>V121/V122用直接给定的混合器key做边界控制。V123改用上传入口生成的数据key，再执行原混合器构建与child key分配。对子数据集仍使用有限身份替代，在生产配置与c00删域续训配置之间复算block8、切点9216：</p>
+<ul>
+<li>两个前缀各有7938个逻辑身份未匹配。</li>
+<li>生产前缀与续训配置下同块剩余部分相交5346个逻辑身份；下一批1024槽相交129个。</li>
+<li>逐桶前缀计数差的半L1为2574；总槽数仍守恒。</li>
+</ul>
+<p>这些数在两个选定CPU版本上完全相同。它们是<strong>声明配置 + 上传源码 + 本轮指定PRNG环境</strong>下的合成身份结果，替代了随意给定一个混合器key的控制条件；不是从真实历史进程读出的key，更不是5346条重复文档或重复token。只复算了这个生产/续训配置对，没有扩大为80个续训都重建了实际随机流。</p>
+<p><a href="../analysis/historical_key_versions.json">两版本比较与原值</a>、<a href="../analysis/historical_key_pipeline_jax_0_11_0.json">0.11.0完整控制</a>、<a href="../analysis/historical_key_pipeline_jax_0_7_2.json">0.7.2完整控制</a>、<a href="../analysis/historical_child_keys_jax_0_11_0.csv">逐桶key导出</a>。子数据集的真实block shuffle、模拟库存切片和缓存内容没有执行；记录的是分配给它们的key。</p>
+<p>还有一个恢复分支必须同时考虑：EP入口844行先以<code>model_key</code>初始化状态，848行开始再将<code>state</code>交给checkpoint恢复，返回值覆盖该变量；辅助恢复函数在读取成功后返回<code>loaded</code>。因此，<strong>初始化key改变不证明续训模型参数改变</strong>。完整恢复、部分恢复、找不到checkpoint而从头初始化，是不同情形。本轮只检查源码顺序，没有执行这些模型恢复分支；前述key控制不能当作实际初始化方差实验。</p>
+<h3 id="run-code-guide-_7">怎样设计自己的实验</h3>
+<ol>
+<li><strong>先说清楚要估计哪种波动。</strong> 默认数据seed跟随训练seed时，换seed会同时改变模型初始化key和数据key。从头训练时，这可能同时引入模型初始化与数据顺序变化，不能直接解释为纯模型初始化方差。只想看模型随机性，应在从头设计实验时，让所有候选及基线共享显式数据seed；想看数据顺序波动，则固定模型key并单独改变数据流。后者需要支持独立模型key的入口或受控改动，当前审计不声称已有该配置开关。</li>
+<li><strong>接续已有训练，不能为了“规范”把空数据seed补成0。</strong> 这会切换数据流。先记录原派生key、PRNG实现、相关flag、桶顺序与缓存身份；若决定换流，明确把它作为干预。新实验统一数据seed也要包含重新跑的基线，不能拿改变后的候选直接对旧默认流基线归因。</li>
+<li><strong>保存随机流的结构。</strong> 配置schema应区分缺省、<code>None</code>和合法0；评审记录拆分路径、命名数据桶到key的映射、混合块坐标与样本身份摘要。只存某个seed字段，无法检出多拆一次key、改桶顺序或修改flag。</li>
+<li><strong>声明派生不等于执行证明。</strong> 实际入口、导入文件摘要、执行的key和输入身份一旦可取得，应与本轮派生结果逐项对照；匹配之前，不把CPU身份控制升级成历史训练事故。</li>
+</ol>
+<p>新增<a href="../templates/random_stream_review.json">随机流评审模板</a>，为空且未执行。可用<code>make historical-key-replay CPU_PYTHON=/path/to/python-with-jax</code>生成当前运行时版本的控制结果；分别运行两套环境后，再执行<code>make historical-key-compare</code>。两个环境都要独立保留，不能升级前轮环境后声称做过跨版本比较。</p>
+<h2 id="run-code-guide-v124checkpoint">V124：checkpoint接续，还要核对被抽到的训练子集</h2>
+<p>历史EP入口先从启动配置生成数据key，恢复模型状态后，再调用<code>build_train_dataset</code>创建数据集；随后以<code>state.step</code>调用<code>train_loader.iter_from_step</code>。其<code>GrugTrainState</code>有六个顶层字段：<code>step</code>、<code>params</code>、<code>master_params</code>、<code>opt_state</code>、<code>ema_params</code>、<code>pending_qb_betas</code>，没有显式的数据key、数据配方或加载器游标字段。</p>
+<p>这是所见源码的状态边界，<strong>不是整个历史checkpoint文件内容的完整审计</strong>；嵌套状态和外部元数据也未检查。它说明恢复的step还需要与重建的数据流函数一起解释。只要改变了该函数的输入，同一个step就可能定位到另一批样本，模型checkpoint相同也不能替代数据谱系检查。</p>
+<p>这次进一步执行此前被替代的库存切片过程。上传的<a href="code-2f8107e74160d454.html">原train_sets</a>先分配child key并构建block shuffle，再执行：</p>
+<pre><code class="language-python">true_length_of_dataset = len(ds.as_sync_dataset())
+simulated_length_of_dataset = int(true_length_of_dataset * simulated_data_ratio)
+sliced_datasets[name] = ds.slice_dataset(end_index=simulated_length_of_dataset)
+</code></pre>
+<p>因此，<code>slice</code>截的是<strong>乱序后的位置前缀</strong>。换key可能改变被截进来的样本集合；不能一概说“只是换了一种读取顺序”。新取得的历史<a href="code-d1e4c5f1aa5913ae.html">dataset.py</a>与<a href="code-42d5d404c2ba974b.html">PRP源码</a>摘要均匹配生产和续训的代码清单。本轮执行原shuffle、slice和restart逻辑，未再禁用模拟库存分支。</p>
+<div class="table-wrap" style="overflow-x:auto;"><svg aria-labelledby="sim-inventory-title sim-inventory-desc" role="img" style="display:block;width:100%;min-width:760px;height:auto;" viewbox="0 0 960 370" xmlns="http://www.w3.org/2000/svg">
+<title id="sim-inventory-title">模拟库存先乱序再截取，换key可能改变子集集合</title>
+<desc id="sim-inventory-desc">原函数顺序为完整库存、child key乱序、前缀切片、混合器restart。两个人工桶各48条时完整集合跨key相同；截取24条后两套key的集合交分别8条和16条。实际历史子集未验证。</desc>
+<rect fill="#f5f7fa" height="370" rx="12" width="960"></rect>
+<g fill="#17263b" font-family="sans-serif">
+<text font-size="20" font-weight="700" x="26" y="34">换 key：既可能换顺序，也可能换“入选的是谁”</text>
+<g font-size="16" font-weight="700">
+<rect fill="#e6eefb" height="62" rx="8" width="210" x="24" y="58"></rect><text x="42" y="95">完整人工身份库存</text>
+<rect fill="#e6eefb" height="62" rx="8" width="210" x="258" y="58"></rect><text x="276" y="95">child key → shuffle</text>
+<rect fill="#fff0db" height="62" rx="8" width="210" x="492" y="58"></rect><text x="510" y="95">截取乱序位置前缀</text>
+<rect fill="#deefe7" height="62" rx="8" width="210" x="726" y="58"></rect><text x="744" y="95">restart 重复该子集</text></g>
+<g font-size="18"><text x="239" y="96">→</text><text x="473" y="96">→</text><text x="707" y="96">→</text></g>
+<rect fill="#deefe7" height="110" rx="8" stroke="#388263" width="440" x="24" y="142"></rect>
+<rect fill="#fff0db" height="110" rx="8" stroke="#b37a2d" width="440" x="496" y="142"></rect>
+<g font-size="17" font-weight="700"><text x="42" y="174">完整读取：每个人工桶 48 条</text><text x="514" y="174">各截取 24 条：集合已改变</text></g>
+<g font-size="16"><text x="42" y="207">两套 key 的集合交：48 / 48 条</text><text x="514" y="207">两套 key 的集合交：8 / 16 条</text>
+<text x="42" y="235">顺序不同，完整集合仍相同</text><text x="514" y="235">仅固定总长度不足以固定样本</text>
+<text x="26" y="287">公开比例与 shuffle 参数 + 每桶人工百万身份 → 各保留 879 条；两套 key 的交为 0 / 0。</text>
+<text x="26" y="317">固定 key 只改权重：人工选中集合不变，曝光次数改变；没有读取真实缓存或训练模型。</text>
+<text fill="#52657a" x="26" y="347">V124 · 所有集合数字均来自人工身份 CPU 控制，不能估计真实 run 的子集重合率或 loss 效应</text>
+</g></g></svg></div>
+<h3 id="run-code-guide-_8">两个人工桶，把集合、顺序和重复拆开看</h3>
+<p>以下全部是有限命名身份控制，不是真实缓存或文本。两个桶名为c00q0、c00q1；它们只是用来标记身份，并不宣称复现了真实桶内容。</p>
+<ol>
+<li>每桶完整库存48条，使用两套数据key生成原block shuffle，不截取。读取顺序不同，但每桶集合都仍是全部48条。这与此前“完整人工库存跨key保持相同”的控制一致。</li>
+<li>同样的48条，乱序后各截取24条。两套key下，c00q0的共同身份只有8条，c00q1有16条；集合已改变。该控制使用较小IO块4、window3来便于查看原值。</li>
+<li>使用公开预算比<code>16,483,614,720 / 18,750,000,000,000 = 0.0008791261184</code>，即约0.0879126%，并使用公开shuffle参数IO块256、window512。给每个人工桶1,000,000条身份，原函数各保留879条；两套key在这两个控制桶中的集合交都为0。这不是对真实训练子集重合率的估计，更不是均匀抽样或独立抽样的证明。</li>
+<li>固定key与切片，仅将两个桶的混合权重从1:1改成1:3。保留的子集和child key完全一致。原混合器抽取512槽时，桶曝光从256/256变为128/384；restart反复读取的是各自保留的24条，而非自动访问被截掉的另24条。</li>
+</ol>
+<p><a href="../analysis/simulated_inventory_cpu.json">完整身份、集合交与曝光直方图</a>。原函数构建、shuffle、slice和restart共9项控制通过，运行于JAX 0.11.0 CPU。同步长度查询使用代理，存储、tokenizer、packing和实际200桶库存仍未执行。</p>
+<h3 id="run-code-guide-_9">一个真实比例下的取整边界</h3>
+<p>模拟长度使用向下取整，当前比例下，人工子库存至少需要1138条序列才能留下1条；1137条会变成0。源码不会因为权重正就把长度自动保底为1，原restart读取这类空有限数据集会抛出<code>ValueError</code>。</p>
+<p>这里发现的是可执行边界，<strong>没有证据表明这次生产或搜索真实出现了空桶</strong>。真实长度要读取原token数据集的序列数，不能直接把组成报告的token数除以4096当成精确结果。自行做缩比搜索时，可以在启动前按原长度函数计算各桶截取长度，对“正权重但零长度”的情况明确报错或重新设计缩比；不应静默补1后继续声称曝光缩比完全相同。</p>
+<h3 id="run-code-guide-_10">对配比研究的影响</h3>
+<ul>
+<li><strong>多seed的含义再增加一层。</strong> 在模拟切片启用时，数据key变化可能同时改变保留子集、子集顺序及重复曝光的对象。当前控制不能给三者分摊loss贡献；只报告“数据顺序seed方差”会过窄。</li>
+<li><strong>配比候选应先共享子集，再比较权重。</strong> 从头做对照时，固定缓存版本、支持集合、桶顺序、PRNG配置、child key与切片边界，并归档选中身份的摘要。权重变更本身不应顺便重抽库存。已有80份历史声明在支持与key分配上的控制仍保留，但没有读取80份真实子集，不把“条件应相同”写成“已逐一实测相同”。</li>
+<li><strong>拆开验证子集泛化与顺序稳健性。</strong> 固定同一子集改变其中的顺序，是一种对照；重抽子集，是另一种。当前入口把shuffle和前缀截取串在一起，单独改变其key不能隔离这两者。独立子集选择与子集内shuffle需要额外的受控实现，本轮未实现或训练。</li>
+<li><strong>续训评审增加数据流摘要。</strong> checkpoint侧记录模型状态，旁边仍应保存阶段历史、派生key、库存长度、切片边界、缓存身份和恢复块坐标。先证明候选与基线读到可比的输入，再解释loss变化；否则“同checkpoint”这一项不足以支撑数据域归因。</li>
+</ul>
+<p><a href="../templates/simulated_inventory_review.json">模拟库存评审模板</a>仍为空且未执行。复查命令为<code>make simulated-inventory-cpu CPU_PYTHON=/path/to/python-with-jax</code>；来源已有归档，可离线复算，不启动模型训练或读取真实checkpoint。</p>
+<h2 id="run-code-guide-v125shuffle">V125：有shuffle，不等于模拟子集就是全库存等概率抽样</h2>
+<p>V124说明先shuffle再slice会改变入选集合。继续查原<code>BlockShufflingDataset</code>，还要问这个集合怎样被选出来。源码先打乱完整IO块的次序，再把若干完整块合为窗口，在窗口内排列序列；最后不足一个IO块的尾部留在整个输出末端，只在尾部内部排列。</p>
+<h3 id="run-code-guide-879512">879条前缀受到512块的结构限制</h3>
+<p>使用V124同样的人工库存：每桶1,000,000条序列身份、IO块256、每窗口512块、截取879条。第一个完整窗口容纳131,072条序列，因此879条前缀全部来自该窗口选中的512个物理完整IO块。四个固定key控制实际覆盖438–452个IO块。</p>
+<p>这不只是“观察到覆盖少”。可以构造一个反例集合：取第0至878个IO块中的各一条序列，共879条，所有身份都在百万库存内。这个集合在全库存等概率不放回抽样中概率严格为正，但在当前前缀最多512块的约束下不可能出现。因此，当前模拟子集不能按全库存等概率879条子集解释。这个判断来自源码支持范围，不需要拿四个key做显著性检验。</p>
+<svg aria-labelledby="prefix-sampling-title prefix-sampling-desc" height="374.4pt" role="img" style="display:block;width:100%;height:auto;" version="1.1" viewbox="0 0 892.8 374.4" width="892.8pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><title id="prefix-sampling-title">Synthetic block-shuffle prefix structure and window interventions</title><desc id="prefix-sampling-desc">Four prefixes cover 438 to 452 IO blocks, below the first-window cap512. Uniform-subset expected coverage is787.52. Fixed-key window interventions cover4,64,442,873blocks; these are not quality or performance scores.</desc>
+<metadata>
+<rdf:rdf xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<cc:work>
+<dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"></dc:type>
+<dc:format>image/svg+xml</dc:format>
+<dc:creator>
+<cc:agent>
+<dc:title>Matplotlib v3.9.4, https://matplotlib.org/</dc:title>
+</cc:agent>
+</dc:creator>
+</cc:work>
+</rdf:rdf>
+</metadata>
+<defs>
+<style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+</defs>
+<g id="pfxsample-figure_1">
+<g id="pfxsample-patch_1">
+<path d="M 0 374.4
+L 892.8 374.4
+L 892.8 0
+L 0 0
+z
+" style="fill: #ffffff"></path>
+</g>
+<g id="pfxsample-axes_1">
+<g id="pfxsample-patch_2">
+<path d="M 50.87 272.43475
+L 448.04 272.43475
+L 448.04 80.592
+L 50.87 80.592
+z
+" style="fill: #ffffff"></path>
+</g>
+<g id="pfxsample-matplotlib.axis_1">
+<g id="pfxsample-xtick_1">
+<g id="pfxsample-line2d_1">
+<defs>
+<path d="M 0 0
+L 0 3.5
+" id="pfxsample-mc9c06133a5" style="stroke: #000000; stroke-width: 0.8"></path>
+</defs>
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="96.697308" xlink:href="#pfxsample-mc9c06133a5" y="272.43475"></use>
+</g>
+</g>
+<g id="pfxsample-text_1">
+<!-- None/q0 -->
+<g transform="translate(75.612151 287.033187) scale(0.1 -0.1)">
+<defs>
+<path d="M 628 4666
+L 1478 4666
+L 3547 763
+L 3547 4666
+L 4159 4666
+L 4159 0
+L 3309 0
+L 1241 3903
+L 1241 0
+L 628 0
+L 628 4666
+z
+" id="pfxsample-DejaVuSans-4e" transform="scale(0.015625)"></path>
+<path d="M 1959 3097
+Q 1497 3097 1228 2736
+Q 959 2375 959 1747
+Q 959 1119 1226 758
+Q 1494 397 1959 397
+Q 2419 397 2687 759
+Q 2956 1122 2956 1747
+Q 2956 2369 2687 2733
+Q 2419 3097 1959 3097
+z
+M 1959 3584
+Q 2709 3584 3137 3096
+Q 3566 2609 3566 1747
+Q 3566 888 3137 398
+Q 2709 -91 1959 -91
+Q 1206 -91 779 398
+Q 353 888 353 1747
+Q 353 2609 779 3096
+Q 1206 3584 1959 3584
+z
+" id="pfxsample-DejaVuSans-6f" transform="scale(0.015625)"></path>
+<path d="M 3513 2113
+L 3513 0
+L 2938 0
+L 2938 2094
+Q 2938 2591 2744 2837
+Q 2550 3084 2163 3084
+Q 1697 3084 1428 2787
+Q 1159 2491 1159 1978
+L 1159 0
+L 581 0
+L 581 3500
+L 1159 3500
+L 1159 2956
+Q 1366 3272 1645 3428
+Q 1925 3584 2291 3584
+Q 2894 3584 3203 3211
+Q 3513 2838 3513 2113
+z
+" id="pfxsample-DejaVuSans-6e" transform="scale(0.015625)"></path>
+<path d="M 3597 1894
+L 3597 1613
+L 953 1613
+Q 991 1019 1311 708
+Q 1631 397 2203 397
+Q 2534 397 2845 478
+Q 3156 559 3463 722
+L 3463 178
+Q 3153 47 2828 -22
+Q 2503 -91 2169 -91
+Q 1331 -91 842 396
+Q 353 884 353 1716
+Q 353 2575 817 3079
+Q 1281 3584 2069 3584
+Q 2775 3584 3186 3129
+Q 3597 2675 3597 1894
+z
+M 3022 2063
+Q 3016 2534 2758 2815
+Q 2500 3097 2075 3097
+Q 1594 3097 1305 2825
+Q 1016 2553 972 2059
+L 3022 2063
+z
+" id="pfxsample-DejaVuSans-65" transform="scale(0.015625)"></path>
+<path d="M 1625 4666
+L 2156 4666
+L 531 -594
+L 0 -594
+L 1625 4666
+z
+" id="pfxsample-DejaVuSans-2f" transform="scale(0.015625)"></path>
+<path d="M 947 1747
+Q 947 1113 1208 752
+Q 1469 391 1925 391
+Q 2381 391 2643 752
+Q 2906 1113 2906 1747
+Q 2906 2381 2643 2742
+Q 2381 3103 1925 3103
+Q 1469 3103 1208 2742
+Q 947 2381 947 1747
+z
+M 2906 525
+Q 2725 213 2448 61
+Q 2172 -91 1784 -91
+Q 1150 -91 751 415
+Q 353 922 353 1747
+Q 353 2572 751 3078
+Q 1150 3584 1784 3584
+Q 2172 3584 2448 3432
+Q 2725 3281 2906 2969
+L 2906 3500
+L 3481 3500
+L 3481 -1331
+L 2906 -1331
+L 2906 525
+z
+" id="pfxsample-DejaVuSans-71" transform="scale(0.015625)"></path>
+<path d="M 2034 4250
+Q 1547 4250 1301 3770
+Q 1056 3291 1056 2328
+Q 1056 1369 1301 889
+Q 1547 409 2034 409
+Q 2525 409 2770 889
+Q 3016 1369 3016 2328
+Q 3016 3291 2770 3770
+Q 2525 4250 2034 4250
+z
+M 2034 4750
+Q 2819 4750 3233 4129
+Q 3647 3509 3647 2328
+Q 3647 1150 3233 529
+Q 2819 -91 2034 -91
+Q 1250 -91 836 529
+Q 422 1150 422 2328
+Q 422 3509 836 4129
+Q 1250 4750 2034 4750
+z
+" id="pfxsample-DejaVuSans-30" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#pfxsample-DejaVuSans-4e"></use>
+<use x="74.804688" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="135.986328" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="199.365234" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="260.888672" xlink:href="#pfxsample-DejaVuSans-2f"></use>
+<use x="294.580078" xlink:href="#pfxsample-DejaVuSans-71"></use>
+<use x="358.056641" xlink:href="#pfxsample-DejaVuSans-30"></use>
+</g>
+</g>
+</g>
+<g id="pfxsample-xtick_2">
+<g id="pfxsample-line2d_2">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="198.535769" xlink:href="#pfxsample-mc9c06133a5" y="272.43475"></use>
+</g>
+</g>
+<g id="pfxsample-text_2">
+<!-- None/q1 -->
+<g transform="translate(177.450613 287.033187) scale(0.1 -0.1)">
+<defs>
+<path d="M 794 531
+L 1825 531
+L 1825 4091
+L 703 3866
+L 703 4441
+L 1819 4666
+L 2450 4666
+L 2450 531
+L 3481 531
+L 3481 0
+L 794 0
+L 794 531
+z
+" id="pfxsample-DejaVuSans-31" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#pfxsample-DejaVuSans-4e"></use>
+<use x="74.804688" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="135.986328" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="199.365234" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="260.888672" xlink:href="#pfxsample-DejaVuSans-2f"></use>
+<use x="294.580078" xlink:href="#pfxsample-DejaVuSans-71"></use>
+<use x="358.056641" xlink:href="#pfxsample-DejaVuSans-31"></use>
+</g>
+</g>
+</g>
+<g id="pfxsample-xtick_3">
+<g id="pfxsample-line2d_3">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="300.374231" xlink:href="#pfxsample-mc9c06133a5" y="272.43475"></use>
+</g>
+</g>
+<g id="pfxsample-text_3">
+<!-- zero/q0 -->
+<g transform="translate(281.631262 287.033187) scale(0.1 -0.1)">
+<defs>
+<path d="M 353 3500
+L 3084 3500
+L 3084 2975
+L 922 459
+L 3084 459
+L 3084 0
+L 275 0
+L 275 525
+L 2438 3041
+L 353 3041
+L 353 3500
+z
+" id="pfxsample-DejaVuSans-7a" transform="scale(0.015625)"></path>
+<path d="M 2631 2963
+Q 2534 3019 2420 3045
+Q 2306 3072 2169 3072
+Q 1681 3072 1420 2755
+Q 1159 2438 1159 1844
+L 1159 0
+L 581 0
+L 581 3500
+L 1159 3500
+L 1159 2956
+Q 1341 3275 1631 3429
+Q 1922 3584 2338 3584
+Q 2397 3584 2469 3576
+Q 2541 3569 2628 3553
+L 2631 2963
+z
+" id="pfxsample-DejaVuSans-72" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#pfxsample-DejaVuSans-7a"></use>
+<use x="52.490234" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="114.013672" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="152.876953" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="214.058594" xlink:href="#pfxsample-DejaVuSans-2f"></use>
+<use x="247.75" xlink:href="#pfxsample-DejaVuSans-71"></use>
+<use x="311.226562" xlink:href="#pfxsample-DejaVuSans-30"></use>
+</g>
+</g>
+</g>
+<g id="pfxsample-xtick_4">
+<g id="pfxsample-line2d_4">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="402.212692" xlink:href="#pfxsample-mc9c06133a5" y="272.43475"></use>
+</g>
+</g>
+<g id="pfxsample-text_4">
+<!-- zero/q1 -->
+<g transform="translate(383.469724 287.033187) scale(0.1 -0.1)">
+<use xlink:href="#pfxsample-DejaVuSans-7a"></use>
+<use x="52.490234" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="114.013672" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="152.876953" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="214.058594" xlink:href="#pfxsample-DejaVuSans-2f"></use>
+<use x="247.75" xlink:href="#pfxsample-DejaVuSans-71"></use>
+<use x="311.226562" xlink:href="#pfxsample-DejaVuSans-31"></use>
+</g>
+</g>
+</g>
+<g id="pfxsample-text_5">
+<!-- data_seed / artificial child label -->
+<g transform="translate(171.547188 300.711313) scale(0.1 -0.1)">
+<defs>
+<path d="M 2906 2969
+L 2906 4863
+L 3481 4863
+L 3481 0
+L 2906 0
+L 2906 525
+Q 2725 213 2448 61
+Q 2172 -91 1784 -91
+Q 1150 -91 751 415
+Q 353 922 353 1747
+Q 353 2572 751 3078
+Q 1150 3584 1784 3584
+Q 2172 3584 2448 3432
+Q 2725 3281 2906 2969
+z
+M 947 1747
+Q 947 1113 1208 752
+Q 1469 391 1925 391
+Q 2381 391 2643 752
+Q 2906 1113 2906 1747
+Q 2906 2381 2643 2742
+Q 2381 3103 1925 3103
+Q 1469 3103 1208 2742
+Q 947 2381 947 1747
+z
+" id="pfxsample-DejaVuSans-64" transform="scale(0.015625)"></path>
+<path d="M 2194 1759
+Q 1497 1759 1228 1600
+Q 959 1441 959 1056
+Q 959 750 1161 570
+Q 1363 391 1709 391
+Q 2188 391 2477 730
+Q 2766 1069 2766 1631
+L 2766 1759
+L 2194 1759
+z
+M 3341 1997
+L 3341 0
+L 2766 0
+L 2766 531
+Q 2569 213 2275 61
+Q 1981 -91 1556 -91
+Q 1019 -91 701 211
+Q 384 513 384 1019
+Q 384 1609 779 1909
+Q 1175 2209 1959 2209
+L 2766 2209
+L 2766 2266
+Q 2766 2663 2505 2880
+Q 2244 3097 1772 3097
+Q 1472 3097 1187 3025
+Q 903 2953 641 2809
+L 641 3341
+Q 956 3463 1253 3523
+Q 1550 3584 1831 3584
+Q 2591 3584 2966 3190
+Q 3341 2797 3341 1997
+z
+" id="pfxsample-DejaVuSans-61" transform="scale(0.015625)"></path>
+<path d="M 1172 4494
+L 1172 3500
+L 2356 3500
+L 2356 3053
+L 1172 3053
+L 1172 1153
+Q 1172 725 1289 603
+Q 1406 481 1766 481
+L 2356 481
+L 2356 0
+L 1766 0
+Q 1100 0 847 248
+Q 594 497 594 1153
+L 594 3053
+L 172 3053
+L 172 3500
+L 594 3500
+L 594 4494
+L 1172 4494
+z
+" id="pfxsample-DejaVuSans-74" transform="scale(0.015625)"></path>
+<path d="M 3263 -1063
+L 3263 -1509
+L -63 -1509
+L -63 -1063
+L 3263 -1063
+z
+" id="pfxsample-DejaVuSans-5f" transform="scale(0.015625)"></path>
+<path d="M 2834 3397
+L 2834 2853
+Q 2591 2978 2328 3040
+Q 2066 3103 1784 3103
+Q 1356 3103 1142 2972
+Q 928 2841 928 2578
+Q 928 2378 1081 2264
+Q 1234 2150 1697 2047
+L 1894 2003
+Q 2506 1872 2764 1633
+Q 3022 1394 3022 966
+Q 3022 478 2636 193
+Q 2250 -91 1575 -91
+Q 1294 -91 989 -36
+Q 684 19 347 128
+L 347 722
+Q 666 556 975 473
+Q 1284 391 1588 391
+Q 1994 391 2212 530
+Q 2431 669 2431 922
+Q 2431 1156 2273 1281
+Q 2116 1406 1581 1522
+L 1381 1569
+Q 847 1681 609 1914
+Q 372 2147 372 2553
+Q 372 3047 722 3315
+Q 1072 3584 1716 3584
+Q 2034 3584 2315 3537
+Q 2597 3491 2834 3397
+z
+" id="pfxsample-DejaVuSans-73" transform="scale(0.015625)"></path>
+<path id="pfxsample-DejaVuSans-20" transform="scale(0.015625)"></path>
+<path d="M 603 3500
+L 1178 3500
+L 1178 0
+L 603 0
+L 603 3500
+z
+M 603 4863
+L 1178 4863
+L 1178 4134
+L 603 4134
+L 603 4863
+z
+" id="pfxsample-DejaVuSans-69" transform="scale(0.015625)"></path>
+<path d="M 2375 4863
+L 2375 4384
+L 1825 4384
+Q 1516 4384 1395 4259
+Q 1275 4134 1275 3809
+L 1275 3500
+L 2222 3500
+L 2222 3053
+L 1275 3053
+L 1275 0
+L 697 0
+L 697 3053
+L 147 3053
+L 147 3500
+L 697 3500
+L 697 3744
+Q 697 4328 969 4595
+Q 1241 4863 1831 4863
+L 2375 4863
+z
+" id="pfxsample-DejaVuSans-66" transform="scale(0.015625)"></path>
+<path d="M 3122 3366
+L 3122 2828
+Q 2878 2963 2633 3030
+Q 2388 3097 2138 3097
+Q 1578 3097 1268 2742
+Q 959 2388 959 1747
+Q 959 1106 1268 751
+Q 1578 397 2138 397
+Q 2388 397 2633 464
+Q 2878 531 3122 666
+L 3122 134
+Q 2881 22 2623 -34
+Q 2366 -91 2075 -91
+Q 1284 -91 818 406
+Q 353 903 353 1747
+Q 353 2603 823 3093
+Q 1294 3584 2113 3584
+Q 2378 3584 2631 3529
+Q 2884 3475 3122 3366
+z
+" id="pfxsample-DejaVuSans-63" transform="scale(0.015625)"></path>
+<path d="M 603 4863
+L 1178 4863
+L 1178 0
+L 603 0
+L 603 4863
+z
+" id="pfxsample-DejaVuSans-6c" transform="scale(0.015625)"></path>
+<path d="M 3513 2113
+L 3513 0
+L 2938 0
+L 2938 2094
+Q 2938 2591 2744 2837
+Q 2550 3084 2163 3084
+Q 1697 3084 1428 2787
+Q 1159 2491 1159 1978
+L 1159 0
+L 581 0
+L 581 4863
+L 1159 4863
+L 1159 2956
+Q 1366 3272 1645 3428
+Q 1925 3584 2291 3584
+Q 2894 3584 3203 3211
+Q 3513 2838 3513 2113
+z
+" id="pfxsample-DejaVuSans-68" transform="scale(0.015625)"></path>
+<path d="M 3116 1747
+Q 3116 2381 2855 2742
+Q 2594 3103 2138 3103
+Q 1681 3103 1420 2742
+Q 1159 2381 1159 1747
+Q 1159 1113 1420 752
+Q 1681 391 2138 391
+Q 2594 391 2855 752
+Q 3116 1113 3116 1747
+z
+M 1159 2969
+Q 1341 3281 1617 3432
+Q 1894 3584 2278 3584
+Q 2916 3584 3314 3078
+Q 3713 2572 3713 1747
+Q 3713 922 3314 415
+Q 2916 -91 2278 -91
+Q 1894 -91 1617 61
+Q 1341 213 1159 525
+L 1159 0
+L 581 0
+L 581 4863
+L 1159 4863
+L 1159 2969
+z
+" id="pfxsample-DejaVuSans-62" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#pfxsample-DejaVuSans-64"></use>
+<use x="63.476562" xlink:href="#pfxsample-DejaVuSans-61"></use>
+<use x="124.755859" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="163.964844" xlink:href="#pfxsample-DejaVuSans-61"></use>
+<use x="225.244141" xlink:href="#pfxsample-DejaVuSans-5f"></use>
+<use x="275.244141" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="327.34375" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="388.867188" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="450.390625" xlink:href="#pfxsample-DejaVuSans-64"></use>
+<use x="513.867188" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="545.654297" xlink:href="#pfxsample-DejaVuSans-2f"></use>
+<use x="579.345703" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="611.132812" xlink:href="#pfxsample-DejaVuSans-61"></use>
+<use x="672.412109" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="713.525391" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="752.734375" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="780.517578" xlink:href="#pfxsample-DejaVuSans-66"></use>
+<use x="815.722656" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="843.505859" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="898.486328" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="926.269531" xlink:href="#pfxsample-DejaVuSans-61"></use>
+<use x="987.548828" xlink:href="#pfxsample-DejaVuSans-6c"></use>
+<use x="1015.332031" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="1047.119141" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="1102.099609" xlink:href="#pfxsample-DejaVuSans-68"></use>
+<use x="1165.478516" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="1193.261719" xlink:href="#pfxsample-DejaVuSans-6c"></use>
+<use x="1221.044922" xlink:href="#pfxsample-DejaVuSans-64"></use>
+<use x="1284.521484" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="1316.308594" xlink:href="#pfxsample-DejaVuSans-6c"></use>
+<use x="1344.091797" xlink:href="#pfxsample-DejaVuSans-61"></use>
+<use x="1405.371094" xlink:href="#pfxsample-DejaVuSans-62"></use>
+<use x="1468.847656" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="1530.371094" xlink:href="#pfxsample-DejaVuSans-6c"></use>
+</g>
+</g>
+</g>
+<g id="pfxsample-matplotlib.axis_2">
+<g id="pfxsample-ytick_1">
+<g id="pfxsample-line2d_5">
+<path clip-path="url(#pfxsample-pf6f033f567)" d="M 50.87 272.43475
+L 448.04 272.43475
+" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.16; stroke-width: 0.8; stroke-linecap: square"></path>
+</g>
+<g id="pfxsample-line2d_6">
+<defs>
+<path d="M 0 0
+L -3.5 0
+" id="pfxsample-m18626e40fc" style="stroke: #000000; stroke-width: 0.8"></path>
+</defs>
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="50.87" xlink:href="#pfxsample-m18626e40fc" y="272.43475"></use>
+</g>
+</g>
+<g id="pfxsample-text_6">
+<!-- 0 -->
+<g transform="translate(37.5075 276.233969) scale(0.1 -0.1)">
+<use xlink:href="#pfxsample-DejaVuSans-30"></use>
+</g>
+</g>
+</g>
+<g id="pfxsample-ytick_2">
+<g id="pfxsample-line2d_7">
+<path clip-path="url(#pfxsample-pf6f033f567)" d="M 50.87 232.046803
+L 448.04 232.046803
+" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.16; stroke-width: 0.8; stroke-linecap: square"></path>
+</g>
+<g id="pfxsample-line2d_8">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="50.87" xlink:href="#pfxsample-m18626e40fc" y="232.046803"></use>
+</g>
+</g>
+<g id="pfxsample-text_7">
+<!-- 200 -->
+<g transform="translate(24.7825 235.846021) scale(0.1 -0.1)">
+<defs>
+<path d="M 1228 531
+L 3431 531
+L 3431 0
+L 469 0
+L 469 531
+Q 828 903 1448 1529
+Q 2069 2156 2228 2338
+Q 2531 2678 2651 2914
+Q 2772 3150 2772 3378
+Q 2772 3750 2511 3984
+Q 2250 4219 1831 4219
+Q 1534 4219 1204 4116
+Q 875 4013 500 3803
+L 500 4441
+Q 881 4594 1212 4672
+Q 1544 4750 1819 4750
+Q 2544 4750 2975 4387
+Q 3406 4025 3406 3419
+Q 3406 3131 3298 2873
+Q 3191 2616 2906 2266
+Q 2828 2175 2409 1742
+Q 1991 1309 1228 531
+z
+" id="pfxsample-DejaVuSans-32" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#pfxsample-DejaVuSans-32"></use>
+<use x="63.623047" xlink:href="#pfxsample-DejaVuSans-30"></use>
+<use x="127.246094" xlink:href="#pfxsample-DejaVuSans-30"></use>
+</g>
+</g>
+</g>
+<g id="pfxsample-ytick_3">
+<g id="pfxsample-line2d_9">
+<path clip-path="url(#pfxsample-pf6f033f567)" d="M 50.87 191.658855
+L 448.04 191.658855
+" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.16; stroke-width: 0.8; stroke-linecap: square"></path>
+</g>
+<g id="pfxsample-line2d_10">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="50.87" xlink:href="#pfxsample-m18626e40fc" y="191.658855"></use>
+</g>
+</g>
+<g id="pfxsample-text_8">
+<!-- 400 -->
+<g transform="translate(24.7825 195.458074) scale(0.1 -0.1)">
+<defs>
+<path d="M 2419 4116
+L 825 1625
+L 2419 1625
+L 2419 4116
+z
+M 2253 4666
+L 3047 4666
+L 3047 1625
+L 3713 1625
+L 3713 1100
+L 3047 1100
+L 3047 0
+L 2419 0
+L 2419 1100
+L 313 1100
+L 313 1709
+L 2253 4666
+z
+" id="pfxsample-DejaVuSans-34" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#pfxsample-DejaVuSans-34"></use>
+<use x="63.623047" xlink:href="#pfxsample-DejaVuSans-30"></use>
+<use x="127.246094" xlink:href="#pfxsample-DejaVuSans-30"></use>
+</g>
+</g>
+</g>
+<g id="pfxsample-ytick_4">
+<g id="pfxsample-line2d_11">
+<path clip-path="url(#pfxsample-pf6f033f567)" d="M 50.87 151.270908
+L 448.04 151.270908
+" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.16; stroke-width: 0.8; stroke-linecap: square"></path>
+</g>
+<g id="pfxsample-line2d_12">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="50.87" xlink:href="#pfxsample-m18626e40fc" y="151.270908"></use>
+</g>
+</g>
+<g id="pfxsample-text_9">
+<!-- 600 -->
+<g transform="translate(24.7825 155.070127) scale(0.1 -0.1)">
+<defs>
+<path d="M 2113 2584
+Q 1688 2584 1439 2293
+Q 1191 2003 1191 1497
+Q 1191 994 1439 701
+Q 1688 409 2113 409
+Q 2538 409 2786 701
+Q 3034 994 3034 1497
+Q 3034 2003 2786 2293
+Q 2538 2584 2113 2584
+z
+M 3366 4563
+L 3366 3988
+Q 3128 4100 2886 4159
+Q 2644 4219 2406 4219
+Q 1781 4219 1451 3797
+Q 1122 3375 1075 2522
+Q 1259 2794 1537 2939
+Q 1816 3084 2150 3084
+Q 2853 3084 3261 2657
+Q 3669 2231 3669 1497
+Q 3669 778 3244 343
+Q 2819 -91 2113 -91
+Q 1303 -91 875 529
+Q 447 1150 447 2328
+Q 447 3434 972 4092
+Q 1497 4750 2381 4750
+Q 2619 4750 2861 4703
+Q 3103 4656 3366 4563
+z
+" id="pfxsample-DejaVuSans-36" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#pfxsample-DejaVuSans-36"></use>
+<use x="63.623047" xlink:href="#pfxsample-DejaVuSans-30"></use>
+<use x="127.246094" xlink:href="#pfxsample-DejaVuSans-30"></use>
+</g>
+</g>
+</g>
+<g id="pfxsample-ytick_5">
+<g id="pfxsample-line2d_13">
+<path clip-path="url(#pfxsample-pf6f033f567)" d="M 50.87 110.882961
+L 448.04 110.882961
+" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.16; stroke-width: 0.8; stroke-linecap: square"></path>
+</g>
+<g id="pfxsample-line2d_14">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="50.87" xlink:href="#pfxsample-m18626e40fc" y="110.882961"></use>
+</g>
+</g>
+<g id="pfxsample-text_10">
+<!-- 800 -->
+<g transform="translate(24.7825 114.682179) scale(0.1 -0.1)">
+<defs>
+<path d="M 2034 2216
+Q 1584 2216 1326 1975
+Q 1069 1734 1069 1313
+Q 1069 891 1326 650
+Q 1584 409 2034 409
+Q 2484 409 2743 651
+Q 3003 894 3003 1313
+Q 3003 1734 2745 1975
+Q 2488 2216 2034 2216
+z
+M 1403 2484
+Q 997 2584 770 2862
+Q 544 3141 544 3541
+Q 544 4100 942 4425
+Q 1341 4750 2034 4750
+Q 2731 4750 3128 4425
+Q 3525 4100 3525 3541
+Q 3525 3141 3298 2862
+Q 3072 2584 2669 2484
+Q 3125 2378 3379 2068
+Q 3634 1759 3634 1313
+Q 3634 634 3220 271
+Q 2806 -91 2034 -91
+Q 1263 -91 848 271
+Q 434 634 434 1313
+Q 434 1759 690 2068
+Q 947 2378 1403 2484
+z
+M 1172 3481
+Q 1172 3119 1398 2916
+Q 1625 2713 2034 2713
+Q 2441 2713 2670 2916
+Q 2900 3119 2900 3481
+Q 2900 3844 2670 4047
+Q 2441 4250 2034 4250
+Q 1625 4250 1398 4047
+Q 1172 3844 1172 3481
+z
+" id="pfxsample-DejaVuSans-38" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#pfxsample-DejaVuSans-38"></use>
+<use x="63.623047" xlink:href="#pfxsample-DejaVuSans-30"></use>
+<use x="127.246094" xlink:href="#pfxsample-DejaVuSans-30"></use>
+</g>
+</g>
+</g>
+<g id="pfxsample-text_11">
+<!-- Distinct physical IO index blocks -->
+<g transform="translate(18.702813 257.402438) rotate(-90) scale(0.1 -0.1)">
+<defs>
+<path d="M 1259 4147
+L 1259 519
+L 2022 519
+Q 2988 519 3436 956
+Q 3884 1394 3884 2338
+Q 3884 3275 3436 3711
+Q 2988 4147 2022 4147
+L 1259 4147
+z
+M 628 4666
+L 1925 4666
+Q 3281 4666 3915 4102
+Q 4550 3538 4550 2338
+Q 4550 1131 3912 565
+Q 3275 0 1925 0
+L 628 0
+L 628 4666
+z
+" id="pfxsample-DejaVuSans-44" transform="scale(0.015625)"></path>
+<path d="M 1159 525
+L 1159 -1331
+L 581 -1331
+L 581 3500
+L 1159 3500
+L 1159 2969
+Q 1341 3281 1617 3432
+Q 1894 3584 2278 3584
+Q 2916 3584 3314 3078
+Q 3713 2572 3713 1747
+Q 3713 922 3314 415
+Q 2916 -91 2278 -91
+Q 1894 -91 1617 61
+Q 1341 213 1159 525
+z
+M 3116 1747
+Q 3116 2381 2855 2742
+Q 2594 3103 2138 3103
+Q 1681 3103 1420 2742
+Q 1159 2381 1159 1747
+Q 1159 1113 1420 752
+Q 1681 391 2138 391
+Q 2594 391 2855 752
+Q 3116 1113 3116 1747
+z
+" id="pfxsample-DejaVuSans-70" transform="scale(0.015625)"></path>
+<path d="M 2059 -325
+Q 1816 -950 1584 -1140
+Q 1353 -1331 966 -1331
+L 506 -1331
+L 506 -850
+L 844 -850
+Q 1081 -850 1212 -737
+Q 1344 -625 1503 -206
+L 1606 56
+L 191 3500
+L 800 3500
+L 1894 763
+L 2988 3500
+L 3597 3500
+L 2059 -325
+z
+" id="pfxsample-DejaVuSans-79" transform="scale(0.015625)"></path>
+<path d="M 628 4666
+L 1259 4666
+L 1259 0
+L 628 0
+L 628 4666
+z
+" id="pfxsample-DejaVuSans-49" transform="scale(0.015625)"></path>
+<path d="M 2522 4238
+Q 1834 4238 1429 3725
+Q 1025 3213 1025 2328
+Q 1025 1447 1429 934
+Q 1834 422 2522 422
+Q 3209 422 3611 934
+Q 4013 1447 4013 2328
+Q 4013 3213 3611 3725
+Q 3209 4238 2522 4238
+z
+M 2522 4750
+Q 3503 4750 4090 4092
+Q 4678 3434 4678 2328
+Q 4678 1225 4090 567
+Q 3503 -91 2522 -91
+Q 1538 -91 948 565
+Q 359 1222 359 2328
+Q 359 3434 948 4092
+Q 1538 4750 2522 4750
+z
+" id="pfxsample-DejaVuSans-4f" transform="scale(0.015625)"></path>
+<path d="M 3513 3500
+L 2247 1797
+L 3578 0
+L 2900 0
+L 1881 1375
+L 863 0
+L 184 0
+L 1544 1831
+L 300 3500
+L 978 3500
+L 1906 2253
+L 2834 3500
+L 3513 3500
+z
+" id="pfxsample-DejaVuSans-78" transform="scale(0.015625)"></path>
+<path d="M 581 4863
+L 1159 4863
+L 1159 1991
+L 2875 3500
+L 3609 3500
+L 1753 1863
+L 3688 0
+L 2938 0
+L 1159 1709
+L 1159 0
+L 581 0
+L 581 4863
+z
+" id="pfxsample-DejaVuSans-6b" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#pfxsample-DejaVuSans-44"></use>
+<use x="77.001953" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="104.785156" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="156.884766" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="196.09375" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="223.876953" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="287.255859" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="342.236328" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="381.445312" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="413.232422" xlink:href="#pfxsample-DejaVuSans-70"></use>
+<use x="476.708984" xlink:href="#pfxsample-DejaVuSans-68"></use>
+<use x="540.087891" xlink:href="#pfxsample-DejaVuSans-79"></use>
+<use x="599.267578" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="651.367188" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="679.150391" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="734.130859" xlink:href="#pfxsample-DejaVuSans-61"></use>
+<use x="795.410156" xlink:href="#pfxsample-DejaVuSans-6c"></use>
+<use x="823.193359" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="854.980469" xlink:href="#pfxsample-DejaVuSans-49"></use>
+<use x="884.472656" xlink:href="#pfxsample-DejaVuSans-4f"></use>
+<use x="963.183594" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="994.970703" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="1022.753906" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="1086.132812" xlink:href="#pfxsample-DejaVuSans-64"></use>
+<use x="1149.609375" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="1209.382812" xlink:href="#pfxsample-DejaVuSans-78"></use>
+<use x="1268.5625" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="1300.349609" xlink:href="#pfxsample-DejaVuSans-62"></use>
+<use x="1363.826172" xlink:href="#pfxsample-DejaVuSans-6c"></use>
+<use x="1391.609375" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="1452.791016" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="1507.771484" xlink:href="#pfxsample-DejaVuSans-6b"></use>
+<use x="1565.681641" xlink:href="#pfxsample-DejaVuSans-73"></use>
+</g>
+</g>
+</g>
+<g id="pfxsample-line2d_15">
+<path clip-path="url(#pfxsample-pf6f033f567)" d="M 50.87 169.041605
+L 448.04 169.041605
+" style="fill: none; stroke-dasharray: 1.5,2.475; stroke-dashoffset: 0; stroke: #b35c35; stroke-width: 1.5"></path>
+</g>
+<g id="pfxsample-line2d_16">
+<path clip-path="url(#pfxsample-pf6f033f567)" d="M 50.87 113.402477
+L 448.04 113.402477
+" style="fill: none; stroke-dasharray: 4.44,1.92; stroke-dashoffset: 0; stroke: #666666; stroke-width: 1.2"></path>
+</g>
+<g id="pfxsample-patch_3">
+<path d="M 50.87 272.43475
+L 50.87 80.592
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="pfxsample-patch_4">
+<path d="M 50.87 272.43475
+L 448.04 272.43475
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="pfxsample-PathCollection_1">
+<defs>
+<path d="M 0 4.031129
+C 1.069068 4.031129 2.094493 3.606384 2.850439 2.850439
+C 3.606384 2.094493 4.031129 1.069068 4.031129 0
+C 4.031129 -1.069068 3.606384 -2.094493 2.850439 -2.850439
+C 2.094493 -3.606384 1.069068 -4.031129 0 -4.031129
+C -1.069068 -4.031129 -2.094493 -3.606384 -2.850439 -2.850439
+C -3.606384 -2.094493 -4.031129 -1.069068 -4.031129 0
+C -4.031129 1.069068 -3.606384 2.094493 -2.850439 2.850439
+C -2.094493 3.606384 -1.069068 4.031129 0 4.031129
+z
+" id="pfxsample-m4cc2d237fe" style="stroke: #276181"></path>
+</defs>
+<g clip-path="url(#pfxsample-pf6f033f567)">
+<use style="fill: #276181; stroke: #276181" x="96.697308" xlink:href="#pfxsample-m4cc2d237fe" y="183.177386"></use>
+<use style="fill: #276181; stroke: #276181" x="198.535769" xlink:href="#pfxsample-m4cc2d237fe" y="183.177386"></use>
+<use style="fill: #276181; stroke: #276181" x="300.374231" xlink:href="#pfxsample-m4cc2d237fe" y="181.157989"></use>
+<use style="fill: #276181; stroke: #276181" x="402.212692" xlink:href="#pfxsample-m4cc2d237fe" y="183.985145"></use>
+</g>
+</g>
+<g id="pfxsample-text_12">
+<!-- 442 -->
+<g transform="translate(87.153558 201.177386) scale(0.1 -0.1)">
+<use xlink:href="#pfxsample-DejaVuSans-34"></use>
+<use x="63.623047" xlink:href="#pfxsample-DejaVuSans-34"></use>
+<use x="127.246094" xlink:href="#pfxsample-DejaVuSans-32"></use>
+</g>
+</g>
+<g id="pfxsample-text_13">
+<!-- 442 -->
+<g transform="translate(188.992019 201.177386) scale(0.1 -0.1)">
+<use xlink:href="#pfxsample-DejaVuSans-34"></use>
+<use x="63.623047" xlink:href="#pfxsample-DejaVuSans-34"></use>
+<use x="127.246094" xlink:href="#pfxsample-DejaVuSans-32"></use>
+</g>
+</g>
+<g id="pfxsample-text_14">
+<!-- 452 -->
+<g transform="translate(290.830481 199.157989) scale(0.1 -0.1)">
+<defs>
+<path d="M 691 4666
+L 3169 4666
+L 3169 4134
+L 1269 4134
+L 1269 2991
+Q 1406 3038 1543 3061
+Q 1681 3084 1819 3084
+Q 2600 3084 3056 2656
+Q 3513 2228 3513 1497
+Q 3513 744 3044 326
+Q 2575 -91 1722 -91
+Q 1428 -91 1123 -41
+Q 819 9 494 109
+L 494 744
+Q 775 591 1075 516
+Q 1375 441 1709 441
+Q 2250 441 2565 725
+Q 2881 1009 2881 1497
+Q 2881 1984 2565 2268
+Q 2250 2553 1709 2553
+Q 1456 2553 1204 2497
+Q 953 2441 691 2322
+L 691 4666
+z
+" id="pfxsample-DejaVuSans-35" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#pfxsample-DejaVuSans-34"></use>
+<use x="63.623047" xlink:href="#pfxsample-DejaVuSans-35"></use>
+<use x="127.246094" xlink:href="#pfxsample-DejaVuSans-32"></use>
+</g>
+</g>
+<g id="pfxsample-text_15">
+<!-- 438 -->
+<g transform="translate(392.668942 201.985145) scale(0.1 -0.1)">
+<defs>
+<path d="M 2597 2516
+Q 3050 2419 3304 2112
+Q 3559 1806 3559 1356
+Q 3559 666 3084 287
+Q 2609 -91 1734 -91
+Q 1441 -91 1130 -33
+Q 819 25 488 141
+L 488 750
+Q 750 597 1062 519
+Q 1375 441 1716 441
+Q 2309 441 2620 675
+Q 2931 909 2931 1356
+Q 2931 1769 2642 2001
+Q 2353 2234 1838 2234
+L 1294 2234
+L 1294 2753
+L 1863 2753
+Q 2328 2753 2575 2939
+Q 2822 3125 2822 3475
+Q 2822 3834 2567 4026
+Q 2313 4219 1838 4219
+Q 1578 4219 1281 4162
+Q 984 4106 628 3988
+L 628 4550
+Q 988 4650 1302 4700
+Q 1616 4750 1894 4750
+Q 2613 4750 3031 4423
+Q 3450 4097 3450 3541
+Q 3450 3153 3228 2886
+Q 3006 2619 2597 2516
+z
+" id="pfxsample-DejaVuSans-33" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#pfxsample-DejaVuSans-34"></use>
+<use x="63.623047" xlink:href="#pfxsample-DejaVuSans-33"></use>
+<use x="127.246094" xlink:href="#pfxsample-DejaVuSans-38"></use>
+</g>
+</g>
+<g id="pfxsample-text_16">
+<!-- Four fixed-key synthetic prefixes -->
+<g transform="translate(151.815313 74.592) scale(0.12 -0.12)">
+<defs>
+<path d="M 628 4666
+L 3309 4666
+L 3309 4134
+L 1259 4134
+L 1259 2759
+L 3109 2759
+L 3109 2228
+L 1259 2228
+L 1259 0
+L 628 0
+L 628 4666
+z
+" id="pfxsample-DejaVuSans-46" transform="scale(0.015625)"></path>
+<path d="M 544 1381
+L 544 3500
+L 1119 3500
+L 1119 1403
+Q 1119 906 1312 657
+Q 1506 409 1894 409
+Q 2359 409 2629 706
+Q 2900 1003 2900 1516
+L 2900 3500
+L 3475 3500
+L 3475 0
+L 2900 0
+L 2900 538
+Q 2691 219 2414 64
+Q 2138 -91 1772 -91
+Q 1169 -91 856 284
+Q 544 659 544 1381
+z
+M 1991 3584
+L 1991 3584
+z
+" id="pfxsample-DejaVuSans-75" transform="scale(0.015625)"></path>
+<path d="M 313 2009
+L 1997 2009
+L 1997 1497
+L 313 1497
+L 313 2009
+z
+" id="pfxsample-DejaVuSans-2d" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#pfxsample-DejaVuSans-46"></use>
+<use x="53.894531" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="115.076172" xlink:href="#pfxsample-DejaVuSans-75"></use>
+<use x="178.455078" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="219.568359" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="251.355469" xlink:href="#pfxsample-DejaVuSans-66"></use>
+<use x="286.560547" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="314.34375" xlink:href="#pfxsample-DejaVuSans-78"></use>
+<use x="370.398438" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="431.921875" xlink:href="#pfxsample-DejaVuSans-64"></use>
+<use x="495.398438" xlink:href="#pfxsample-DejaVuSans-2d"></use>
+<use x="531.482422" xlink:href="#pfxsample-DejaVuSans-6b"></use>
+<use x="585.767578" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="647.291016" xlink:href="#pfxsample-DejaVuSans-79"></use>
+<use x="706.470703" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="738.257812" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="790.357422" xlink:href="#pfxsample-DejaVuSans-79"></use>
+<use x="849.537109" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="912.916016" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="952.125" xlink:href="#pfxsample-DejaVuSans-68"></use>
+<use x="1015.503906" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="1077.027344" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="1116.236328" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="1144.019531" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="1199" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="1230.787109" xlink:href="#pfxsample-DejaVuSans-70"></use>
+<use x="1294.263672" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="1333.126953" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="1394.650391" xlink:href="#pfxsample-DejaVuSans-66"></use>
+<use x="1429.855469" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="1457.638672" xlink:href="#pfxsample-DejaVuSans-78"></use>
+<use x="1513.693359" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="1575.216797" xlink:href="#pfxsample-DejaVuSans-73"></use>
+</g>
+</g>
+<g id="pfxsample-legend_1">
+<g id="pfxsample-line2d_17">
+<path d="M 58.07 91.07075
+L 66.07 91.07075
+L 74.07 91.07075
+" style="fill: none; stroke-dasharray: 1.5,2.475; stroke-dashoffset: 0; stroke: #b35c35; stroke-width: 1.5"></path>
+</g>
+<g id="pfxsample-text_17">
+<!-- First-window support cap: 512 blocks -->
+<g transform="translate(80.47 93.87075) scale(0.08 -0.08)">
+<defs>
+<path d="M 269 3500
+L 844 3500
+L 1563 769
+L 2278 3500
+L 2956 3500
+L 3675 769
+L 4391 3500
+L 4966 3500
+L 4050 0
+L 3372 0
+L 2619 2869
+L 1863 0
+L 1184 0
+L 269 3500
+z
+" id="pfxsample-DejaVuSans-77" transform="scale(0.015625)"></path>
+<path d="M 750 794
+L 1409 794
+L 1409 0
+L 750 0
+L 750 794
+z
+M 750 3309
+L 1409 3309
+L 1409 2516
+L 750 2516
+L 750 3309
+z
+" id="pfxsample-DejaVuSans-3a" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#pfxsample-DejaVuSans-46"></use>
+<use x="50.269531" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="78.052734" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="119.166016" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="171.265625" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="210.474609" xlink:href="#pfxsample-DejaVuSans-2d"></use>
+<use x="246.558594" xlink:href="#pfxsample-DejaVuSans-77"></use>
+<use x="328.345703" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="356.128906" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="419.507812" xlink:href="#pfxsample-DejaVuSans-64"></use>
+<use x="482.984375" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="544.166016" xlink:href="#pfxsample-DejaVuSans-77"></use>
+<use x="625.953125" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="657.740234" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="709.839844" xlink:href="#pfxsample-DejaVuSans-75"></use>
+<use x="773.21875" xlink:href="#pfxsample-DejaVuSans-70"></use>
+<use x="836.695312" xlink:href="#pfxsample-DejaVuSans-70"></use>
+<use x="900.171875" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="961.353516" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="1002.466797" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="1041.675781" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="1073.462891" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="1128.443359" xlink:href="#pfxsample-DejaVuSans-61"></use>
+<use x="1189.722656" xlink:href="#pfxsample-DejaVuSans-70"></use>
+<use x="1253.199219" xlink:href="#pfxsample-DejaVuSans-3a"></use>
+<use x="1286.890625" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="1318.677734" xlink:href="#pfxsample-DejaVuSans-35"></use>
+<use x="1382.300781" xlink:href="#pfxsample-DejaVuSans-31"></use>
+<use x="1445.923828" xlink:href="#pfxsample-DejaVuSans-32"></use>
+<use x="1509.546875" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="1541.333984" xlink:href="#pfxsample-DejaVuSans-62"></use>
+<use x="1604.810547" xlink:href="#pfxsample-DejaVuSans-6c"></use>
+<use x="1632.59375" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="1693.775391" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="1748.755859" xlink:href="#pfxsample-DejaVuSans-6b"></use>
+<use x="1806.666016" xlink:href="#pfxsample-DejaVuSans-73"></use>
+</g>
+</g>
+<g id="pfxsample-line2d_18">
+<path d="M 58.07 102.81325
+L 66.07 102.81325
+L 74.07 102.81325
+" style="fill: none; stroke-dasharray: 4.44,1.92; stroke-dashoffset: 0; stroke: #666666; stroke-width: 1.2"></path>
+</g>
+<g id="pfxsample-text_18">
+<!-- Uniform-subset expected count: 787.52 -->
+<g transform="translate(80.47 105.61325) scale(0.08 -0.08)">
+<defs>
+<path d="M 556 4666
+L 1191 4666
+L 1191 1831
+Q 1191 1081 1462 751
+Q 1734 422 2344 422
+Q 2950 422 3222 751
+Q 3494 1081 3494 1831
+L 3494 4666
+L 4128 4666
+L 4128 1753
+Q 4128 841 3676 375
+Q 3225 -91 2344 -91
+Q 1459 -91 1007 375
+Q 556 841 556 1753
+L 556 4666
+z
+" id="pfxsample-DejaVuSans-55" transform="scale(0.015625)"></path>
+<path d="M 3328 2828
+Q 3544 3216 3844 3400
+Q 4144 3584 4550 3584
+Q 5097 3584 5394 3201
+Q 5691 2819 5691 2113
+L 5691 0
+L 5113 0
+L 5113 2094
+Q 5113 2597 4934 2840
+Q 4756 3084 4391 3084
+Q 3944 3084 3684 2787
+Q 3425 2491 3425 1978
+L 3425 0
+L 2847 0
+L 2847 2094
+Q 2847 2600 2669 2842
+Q 2491 3084 2119 3084
+Q 1678 3084 1418 2786
+Q 1159 2488 1159 1978
+L 1159 0
+L 581 0
+L 581 3500
+L 1159 3500
+L 1159 2956
+Q 1356 3278 1631 3431
+Q 1906 3584 2284 3584
+Q 2666 3584 2933 3390
+Q 3200 3197 3328 2828
+z
+" id="pfxsample-DejaVuSans-6d" transform="scale(0.015625)"></path>
+<path d="M 525 4666
+L 3525 4666
+L 3525 4397
+L 1831 0
+L 1172 0
+L 2766 4134
+L 525 4134
+L 525 4666
+z
+" id="pfxsample-DejaVuSans-37" transform="scale(0.015625)"></path>
+<path d="M 684 794
+L 1344 794
+L 1344 0
+L 684 0
+L 684 794
+z
+" id="pfxsample-DejaVuSans-2e" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#pfxsample-DejaVuSans-55"></use>
+<use x="73.193359" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="136.572266" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="164.355469" xlink:href="#pfxsample-DejaVuSans-66"></use>
+<use x="199.560547" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="260.742188" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="300.105469" xlink:href="#pfxsample-DejaVuSans-6d"></use>
+<use x="397.517578" xlink:href="#pfxsample-DejaVuSans-2d"></use>
+<use x="433.601562" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="485.701172" xlink:href="#pfxsample-DejaVuSans-75"></use>
+<use x="549.080078" xlink:href="#pfxsample-DejaVuSans-62"></use>
+<use x="612.556641" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="664.65625" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="726.179688" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="765.388672" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="797.175781" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="856.949219" xlink:href="#pfxsample-DejaVuSans-78"></use>
+<use x="916.128906" xlink:href="#pfxsample-DejaVuSans-70"></use>
+<use x="979.605469" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="1041.128906" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="1096.109375" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="1135.318359" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="1196.841797" xlink:href="#pfxsample-DejaVuSans-64"></use>
+<use x="1260.318359" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="1292.105469" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="1347.085938" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="1408.267578" xlink:href="#pfxsample-DejaVuSans-75"></use>
+<use x="1471.646484" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="1535.025391" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="1574.234375" xlink:href="#pfxsample-DejaVuSans-3a"></use>
+<use x="1607.925781" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="1639.712891" xlink:href="#pfxsample-DejaVuSans-37"></use>
+<use x="1703.335938" xlink:href="#pfxsample-DejaVuSans-38"></use>
+<use x="1766.958984" xlink:href="#pfxsample-DejaVuSans-37"></use>
+<use x="1830.582031" xlink:href="#pfxsample-DejaVuSans-2e"></use>
+<use x="1862.369141" xlink:href="#pfxsample-DejaVuSans-35"></use>
+<use x="1925.992188" xlink:href="#pfxsample-DejaVuSans-32"></use>
+</g>
+</g>
+</g>
+</g>
+<g id="pfxsample-axes_2">
+<g id="pfxsample-patch_5">
+<path d="M 484.83 272.43475
+L 882 272.43475
+L 882 80.592
+L 484.83 80.592
+z
+" style="fill: #ffffff"></path>
+</g>
+<g id="pfxsample-matplotlib.axis_3">
+<g id="pfxsample-xtick_5">
+<g id="pfxsample-line2d_19">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="500.472405" xlink:href="#pfxsample-mc9c06133a5" y="272.43475"></use>
+</g>
+</g>
+<g id="pfxsample-text_19">
+<!-- 1 -->
+<g transform="translate(497.291155 287.033187) scale(0.1 -0.1)">
+<use xlink:href="#pfxsample-DejaVuSans-31"></use>
+</g>
+</g>
+</g>
+<g id="pfxsample-xtick_6">
+<g id="pfxsample-line2d_20">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="682.865183" xlink:href="#pfxsample-mc9c06133a5" y="272.43475"></use>
+</g>
+</g>
+<g id="pfxsample-text_20">
+<!-- 64 -->
+<g transform="translate(676.502683 287.033187) scale(0.1 -0.1)">
+<use xlink:href="#pfxsample-DejaVuSans-36"></use>
+<use x="63.623047" xlink:href="#pfxsample-DejaVuSans-34"></use>
+</g>
+</g>
+</g>
+<g id="pfxsample-xtick_7">
+<g id="pfxsample-line2d_21">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="774.061572" xlink:href="#pfxsample-mc9c06133a5" y="272.43475"></use>
+</g>
+</g>
+<g id="pfxsample-text_21">
+<!-- 512 -->
+<g transform="translate(764.517822 287.033187) scale(0.1 -0.1)">
+<use xlink:href="#pfxsample-DejaVuSans-35"></use>
+<use x="63.623047" xlink:href="#pfxsample-DejaVuSans-31"></use>
+<use x="127.246094" xlink:href="#pfxsample-DejaVuSans-32"></use>
+</g>
+</g>
+</g>
+<g id="pfxsample-xtick_8">
+<g id="pfxsample-line2d_22">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="865.257961" xlink:href="#pfxsample-mc9c06133a5" y="272.43475"></use>
+</g>
+</g>
+<g id="pfxsample-text_22">
+<!-- 4096 -->
+<g transform="translate(852.532961 287.033187) scale(0.1 -0.1)">
+<defs>
+<path d="M 703 97
+L 703 672
+Q 941 559 1184 500
+Q 1428 441 1663 441
+Q 2288 441 2617 861
+Q 2947 1281 2994 2138
+Q 2813 1869 2534 1725
+Q 2256 1581 1919 1581
+Q 1219 1581 811 2004
+Q 403 2428 403 3163
+Q 403 3881 828 4315
+Q 1253 4750 1959 4750
+Q 2769 4750 3195 4129
+Q 3622 3509 3622 2328
+Q 3622 1225 3098 567
+Q 2575 -91 1691 -91
+Q 1453 -91 1209 -44
+Q 966 3 703 97
+z
+M 1959 2075
+Q 2384 2075 2632 2365
+Q 2881 2656 2881 3163
+Q 2881 3666 2632 3958
+Q 2384 4250 1959 4250
+Q 1534 4250 1286 3958
+Q 1038 3666 1038 3163
+Q 1038 2656 1286 2365
+Q 1534 2075 1959 2075
+z
+" id="pfxsample-DejaVuSans-39" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#pfxsample-DejaVuSans-34"></use>
+<use x="63.623047" xlink:href="#pfxsample-DejaVuSans-30"></use>
+<use x="127.246094" xlink:href="#pfxsample-DejaVuSans-39"></use>
+<use x="190.869141" xlink:href="#pfxsample-DejaVuSans-36"></use>
+</g>
+</g>
+</g>
+<g id="pfxsample-text_23">
+<!-- window_blocks (log2 spacing) -->
+<g transform="translate(608.865781 300.711313) scale(0.1 -0.1)">
+<defs>
+<path d="M 1984 4856
+Q 1566 4138 1362 3434
+Q 1159 2731 1159 2009
+Q 1159 1288 1364 580
+Q 1569 -128 1984 -844
+L 1484 -844
+Q 1016 -109 783 600
+Q 550 1309 550 2009
+Q 550 2706 781 3412
+Q 1013 4119 1484 4856
+L 1984 4856
+z
+" id="pfxsample-DejaVuSans-28" transform="scale(0.015625)"></path>
+<path d="M 2906 1791
+Q 2906 2416 2648 2759
+Q 2391 3103 1925 3103
+Q 1463 3103 1205 2759
+Q 947 2416 947 1791
+Q 947 1169 1205 825
+Q 1463 481 1925 481
+Q 2391 481 2648 825
+Q 2906 1169 2906 1791
+z
+M 3481 434
+Q 3481 -459 3084 -895
+Q 2688 -1331 1869 -1331
+Q 1566 -1331 1297 -1286
+Q 1028 -1241 775 -1147
+L 775 -588
+Q 1028 -725 1275 -790
+Q 1522 -856 1778 -856
+Q 2344 -856 2625 -561
+Q 2906 -266 2906 331
+L 2906 616
+Q 2728 306 2450 153
+Q 2172 0 1784 0
+Q 1141 0 747 490
+Q 353 981 353 1791
+Q 353 2603 747 3093
+Q 1141 3584 1784 3584
+Q 2172 3584 2450 3431
+Q 2728 3278 2906 2969
+L 2906 3500
+L 3481 3500
+L 3481 434
+z
+" id="pfxsample-DejaVuSans-67" transform="scale(0.015625)"></path>
+<path d="M 513 4856
+L 1013 4856
+Q 1481 4119 1714 3412
+Q 1947 2706 1947 2009
+Q 1947 1309 1714 600
+Q 1481 -109 1013 -844
+L 513 -844
+Q 928 -128 1133 580
+Q 1338 1288 1338 2009
+Q 1338 2731 1133 3434
+Q 928 4138 513 4856
+z
+" id="pfxsample-DejaVuSans-29" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#pfxsample-DejaVuSans-77"></use>
+<use x="81.787109" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="109.570312" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="172.949219" xlink:href="#pfxsample-DejaVuSans-64"></use>
+<use x="236.425781" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="297.607422" xlink:href="#pfxsample-DejaVuSans-77"></use>
+<use x="379.394531" xlink:href="#pfxsample-DejaVuSans-5f"></use>
+<use x="429.394531" xlink:href="#pfxsample-DejaVuSans-62"></use>
+<use x="492.871094" xlink:href="#pfxsample-DejaVuSans-6c"></use>
+<use x="520.654297" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="581.835938" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="636.816406" xlink:href="#pfxsample-DejaVuSans-6b"></use>
+<use x="694.726562" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="746.826172" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="778.613281" xlink:href="#pfxsample-DejaVuSans-28"></use>
+<use x="817.626953" xlink:href="#pfxsample-DejaVuSans-6c"></use>
+<use x="845.410156" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="906.591797" xlink:href="#pfxsample-DejaVuSans-67"></use>
+<use x="970.068359" xlink:href="#pfxsample-DejaVuSans-32"></use>
+<use x="1033.691406" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="1065.478516" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="1117.578125" xlink:href="#pfxsample-DejaVuSans-70"></use>
+<use x="1181.054688" xlink:href="#pfxsample-DejaVuSans-61"></use>
+<use x="1242.333984" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="1297.314453" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="1325.097656" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="1388.476562" xlink:href="#pfxsample-DejaVuSans-67"></use>
+<use x="1451.953125" xlink:href="#pfxsample-DejaVuSans-29"></use>
+</g>
+</g>
+</g>
+<g id="pfxsample-matplotlib.axis_4">
+<g id="pfxsample-ytick_6">
+<g id="pfxsample-line2d_23">
+<path clip-path="url(#pfxsample-p829390fd93)" d="M 484.83 266.562013
+L 882 266.562013
+" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.16; stroke-width: 0.8; stroke-linecap: square"></path>
+</g>
+<g id="pfxsample-line2d_24">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="484.83" xlink:href="#pfxsample-m18626e40fc" y="266.562013"></use>
+</g>
+</g>
+<g id="pfxsample-text_24">
+<!-- 0 -->
+<g transform="translate(471.4675 270.361232) scale(0.1 -0.1)">
+<use xlink:href="#pfxsample-DejaVuSans-30"></use>
+</g>
+</g>
+</g>
+<g id="pfxsample-ytick_7">
+<g id="pfxsample-line2d_25">
+<path clip-path="url(#pfxsample-p829390fd93)" d="M 484.83 227.410431
+L 882 227.410431
+" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.16; stroke-width: 0.8; stroke-linecap: square"></path>
+</g>
+<g id="pfxsample-line2d_26">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="484.83" xlink:href="#pfxsample-m18626e40fc" y="227.410431"></use>
+</g>
+</g>
+<g id="pfxsample-text_25">
+<!-- 200 -->
+<g transform="translate(458.7425 231.20965) scale(0.1 -0.1)">
+<use xlink:href="#pfxsample-DejaVuSans-32"></use>
+<use x="63.623047" xlink:href="#pfxsample-DejaVuSans-30"></use>
+<use x="127.246094" xlink:href="#pfxsample-DejaVuSans-30"></use>
+</g>
+</g>
+</g>
+<g id="pfxsample-ytick_8">
+<g id="pfxsample-line2d_27">
+<path clip-path="url(#pfxsample-p829390fd93)" d="M 484.83 188.258849
+L 882 188.258849
+" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.16; stroke-width: 0.8; stroke-linecap: square"></path>
+</g>
+<g id="pfxsample-line2d_28">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="484.83" xlink:href="#pfxsample-m18626e40fc" y="188.258849"></use>
+</g>
+</g>
+<g id="pfxsample-text_26">
+<!-- 400 -->
+<g transform="translate(458.7425 192.058068) scale(0.1 -0.1)">
+<use xlink:href="#pfxsample-DejaVuSans-34"></use>
+<use x="63.623047" xlink:href="#pfxsample-DejaVuSans-30"></use>
+<use x="127.246094" xlink:href="#pfxsample-DejaVuSans-30"></use>
+</g>
+</g>
+</g>
+<g id="pfxsample-ytick_9">
+<g id="pfxsample-line2d_29">
+<path clip-path="url(#pfxsample-p829390fd93)" d="M 484.83 149.107268
+L 882 149.107268
+" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.16; stroke-width: 0.8; stroke-linecap: square"></path>
+</g>
+<g id="pfxsample-line2d_30">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="484.83" xlink:href="#pfxsample-m18626e40fc" y="149.107268"></use>
+</g>
+</g>
+<g id="pfxsample-text_27">
+<!-- 600 -->
+<g transform="translate(458.7425 152.906487) scale(0.1 -0.1)">
+<use xlink:href="#pfxsample-DejaVuSans-36"></use>
+<use x="63.623047" xlink:href="#pfxsample-DejaVuSans-30"></use>
+<use x="127.246094" xlink:href="#pfxsample-DejaVuSans-30"></use>
+</g>
+</g>
+</g>
+<g id="pfxsample-ytick_10">
+<g id="pfxsample-line2d_31">
+<path clip-path="url(#pfxsample-p829390fd93)" d="M 484.83 109.955686
+L 882 109.955686
+" style="fill: none; stroke: #b0b0b0; stroke-opacity: 0.16; stroke-width: 0.8; stroke-linecap: square"></path>
+</g>
+<g id="pfxsample-line2d_32">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="484.83" xlink:href="#pfxsample-m18626e40fc" y="109.955686"></use>
+</g>
+</g>
+<g id="pfxsample-text_28">
+<!-- 800 -->
+<g transform="translate(458.7425 113.754905) scale(0.1 -0.1)">
+<use xlink:href="#pfxsample-DejaVuSans-38"></use>
+<use x="63.623047" xlink:href="#pfxsample-DejaVuSans-30"></use>
+<use x="127.246094" xlink:href="#pfxsample-DejaVuSans-30"></use>
+</g>
+</g>
+</g>
+</g>
+<g id="pfxsample-line2d_33">
+<path clip-path="url(#pfxsample-p829390fd93)" d="M 500.472405 265.778981
+L 682.865183 254.033507
+L 774.061572 180.037017
+L 865.257961 95.665359
+" style="fill: none; stroke: #3e846b; stroke-width: 1.3; stroke-linecap: square"></path>
+<defs>
+<path d="M 0 3
+C 0.795609 3 1.55874 2.683901 2.12132 2.12132
+C 2.683901 1.55874 3 0.795609 3 0
+C 3 -0.795609 2.683901 -1.55874 2.12132 -2.12132
+C 1.55874 -2.683901 0.795609 -3 0 -3
+C -0.795609 -3 -1.55874 -2.683901 -2.12132 -2.12132
+C -2.683901 -1.55874 -3 -0.795609 -3 0
+C -3 0.795609 -2.683901 1.55874 -2.12132 2.12132
+C -1.55874 2.683901 -0.795609 3 0 3
+z
+" id="pfxsample-m61f403ffab" style="stroke: #3e846b"></path>
+</defs>
+<g clip-path="url(#pfxsample-p829390fd93)">
+<use style="fill: #3e846b; stroke: #3e846b" x="500.472405" xlink:href="#pfxsample-m61f403ffab" y="265.778981"></use>
+<use style="fill: #3e846b; stroke: #3e846b" x="682.865183" xlink:href="#pfxsample-m61f403ffab" y="254.033507"></use>
+<use style="fill: #3e846b; stroke: #3e846b" x="774.061572" xlink:href="#pfxsample-m61f403ffab" y="180.037017"></use>
+<use style="fill: #3e846b; stroke: #3e846b" x="865.257961" xlink:href="#pfxsample-m61f403ffab" y="95.665359"></use>
+</g>
+</g>
+<g id="pfxsample-line2d_34">
+<path clip-path="url(#pfxsample-p829390fd93)" d="M 484.83 112.398075
+L 882 112.398075
+" style="fill: none; stroke-dasharray: 4.44,1.92; stroke-dashoffset: 0; stroke: #666666; stroke-width: 1.2"></path>
+</g>
+<g id="pfxsample-patch_6">
+<path d="M 484.83 272.43475
+L 484.83 80.592
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="pfxsample-patch_7">
+<path d="M 484.83 272.43475
+L 882 272.43475
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="pfxsample-text_29">
+<!-- 4 -->
+<g transform="translate(497.291155 255.778981) scale(0.1 -0.1)">
+<use xlink:href="#pfxsample-DejaVuSans-34"></use>
+</g>
+</g>
+<g id="pfxsample-text_30">
+<!-- 64 -->
+<g transform="translate(676.502683 244.033507) scale(0.1 -0.1)">
+<use xlink:href="#pfxsample-DejaVuSans-36"></use>
+<use x="63.623047" xlink:href="#pfxsample-DejaVuSans-34"></use>
+</g>
+</g>
+<g id="pfxsample-text_31">
+<!-- 442 -->
+<g transform="translate(764.517822 170.037017) scale(0.1 -0.1)">
+<use xlink:href="#pfxsample-DejaVuSans-34"></use>
+<use x="63.623047" xlink:href="#pfxsample-DejaVuSans-34"></use>
+<use x="127.246094" xlink:href="#pfxsample-DejaVuSans-32"></use>
+</g>
+</g>
+<g id="pfxsample-text_32">
+<!-- 873 -->
+<g transform="translate(855.714211 85.665359) scale(0.1 -0.1)">
+<use xlink:href="#pfxsample-DejaVuSans-38"></use>
+<use x="63.623047" xlink:href="#pfxsample-DejaVuSans-37"></use>
+<use x="127.246094" xlink:href="#pfxsample-DejaVuSans-33"></use>
+</g>
+</g>
+<g id="pfxsample-text_33">
+<!-- Window intervention, one fixed child key -->
+<g transform="translate(561.2475 74.592) scale(0.12 -0.12)">
+<defs>
+<path d="M 213 4666
+L 850 4666
+L 1831 722
+L 2809 4666
+L 3519 4666
+L 4500 722
+L 5478 4666
+L 6119 4666
+L 4947 0
+L 4153 0
+L 3169 4050
+L 2175 0
+L 1381 0
+L 213 4666
+z
+" id="pfxsample-DejaVuSans-57" transform="scale(0.015625)"></path>
+<path d="M 191 3500
+L 800 3500
+L 1894 563
+L 2988 3500
+L 3597 3500
+L 2284 0
+L 1503 0
+L 191 3500
+z
+" id="pfxsample-DejaVuSans-76" transform="scale(0.015625)"></path>
+<path d="M 750 794
+L 1409 794
+L 1409 256
+L 897 -744
+L 494 -744
+L 750 256
+L 750 794
+z
+" id="pfxsample-DejaVuSans-2c" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#pfxsample-DejaVuSans-57"></use>
+<use x="96.626953" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="124.410156" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="187.789062" xlink:href="#pfxsample-DejaVuSans-64"></use>
+<use x="251.265625" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="312.447266" xlink:href="#pfxsample-DejaVuSans-77"></use>
+<use x="394.234375" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="426.021484" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="453.804688" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="517.183594" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="556.392578" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="617.916016" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="659.029297" xlink:href="#pfxsample-DejaVuSans-76"></use>
+<use x="718.208984" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="779.732422" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="843.111328" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="882.320312" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="910.103516" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="971.285156" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="1034.664062" xlink:href="#pfxsample-DejaVuSans-2c"></use>
+<use x="1066.451172" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="1098.238281" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="1159.419922" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="1222.798828" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="1284.322266" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="1316.109375" xlink:href="#pfxsample-DejaVuSans-66"></use>
+<use x="1351.314453" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="1379.097656" xlink:href="#pfxsample-DejaVuSans-78"></use>
+<use x="1435.152344" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="1496.675781" xlink:href="#pfxsample-DejaVuSans-64"></use>
+<use x="1560.152344" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="1591.939453" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="1646.919922" xlink:href="#pfxsample-DejaVuSans-68"></use>
+<use x="1710.298828" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="1738.082031" xlink:href="#pfxsample-DejaVuSans-6c"></use>
+<use x="1765.865234" xlink:href="#pfxsample-DejaVuSans-64"></use>
+<use x="1829.341797" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="1861.128906" xlink:href="#pfxsample-DejaVuSans-6b"></use>
+<use x="1915.414062" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="1976.9375" xlink:href="#pfxsample-DejaVuSans-79"></use>
+</g>
+</g>
+<g id="pfxsample-legend_2">
+<g id="pfxsample-line2d_35">
+<path d="M 492.03 91.07075
+L 500.03 91.07075
+L 508.03 91.07075
+" style="fill: none; stroke-dasharray: 4.44,1.92; stroke-dashoffset: 0; stroke: #666666; stroke-width: 1.2"></path>
+</g>
+<g id="pfxsample-text_34">
+<!-- Uniform-subset expected count: 787.52 -->
+<g transform="translate(514.43 93.87075) scale(0.08 -0.08)">
+<use xlink:href="#pfxsample-DejaVuSans-55"></use>
+<use x="73.193359" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="136.572266" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="164.355469" xlink:href="#pfxsample-DejaVuSans-66"></use>
+<use x="199.560547" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="260.742188" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="300.105469" xlink:href="#pfxsample-DejaVuSans-6d"></use>
+<use x="397.517578" xlink:href="#pfxsample-DejaVuSans-2d"></use>
+<use x="433.601562" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="485.701172" xlink:href="#pfxsample-DejaVuSans-75"></use>
+<use x="549.080078" xlink:href="#pfxsample-DejaVuSans-62"></use>
+<use x="612.556641" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="664.65625" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="726.179688" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="765.388672" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="797.175781" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="856.949219" xlink:href="#pfxsample-DejaVuSans-78"></use>
+<use x="916.128906" xlink:href="#pfxsample-DejaVuSans-70"></use>
+<use x="979.605469" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="1041.128906" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="1096.109375" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="1135.318359" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="1196.841797" xlink:href="#pfxsample-DejaVuSans-64"></use>
+<use x="1260.318359" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="1292.105469" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="1347.085938" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="1408.267578" xlink:href="#pfxsample-DejaVuSans-75"></use>
+<use x="1471.646484" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="1535.025391" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="1574.234375" xlink:href="#pfxsample-DejaVuSans-3a"></use>
+<use x="1607.925781" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="1639.712891" xlink:href="#pfxsample-DejaVuSans-37"></use>
+<use x="1703.335938" xlink:href="#pfxsample-DejaVuSans-38"></use>
+<use x="1766.958984" xlink:href="#pfxsample-DejaVuSans-37"></use>
+<use x="1830.582031" xlink:href="#pfxsample-DejaVuSans-2e"></use>
+<use x="1862.369141" xlink:href="#pfxsample-DejaVuSans-35"></use>
+<use x="1925.992188" xlink:href="#pfxsample-DejaVuSans-32"></use>
+</g>
+</g>
+</g>
+</g>
+<g id="pfxsample-text_35">
+<!-- Block-shuffle prefixes are structured subsets, not a quality score -->
+<g transform="translate(236.69375 17.365969) scale(0.13 -0.13)">
+<defs>
+<path d="M 1259 2228
+L 1259 519
+L 2272 519
+Q 2781 519 3026 730
+Q 3272 941 3272 1375
+Q 3272 1813 3026 2020
+Q 2781 2228 2272 2228
+L 1259 2228
+z
+M 1259 4147
+L 1259 2741
+L 2194 2741
+Q 2656 2741 2882 2914
+Q 3109 3088 3109 3444
+Q 3109 3797 2882 3972
+Q 2656 4147 2194 4147
+L 1259 4147
+z
+M 628 4666
+L 2241 4666
+Q 2963 4666 3353 4366
+Q 3744 4066 3744 3513
+Q 3744 3084 3544 2831
+Q 3344 2578 2956 2516
+Q 3422 2416 3680 2098
+Q 3938 1781 3938 1306
+Q 3938 681 3513 340
+Q 3088 0 2303 0
+L 628 0
+L 628 4666
+z
+" id="pfxsample-DejaVuSans-42" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#pfxsample-DejaVuSans-42"></use>
+<use x="68.603516" xlink:href="#pfxsample-DejaVuSans-6c"></use>
+<use x="96.386719" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="157.568359" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="212.548828" xlink:href="#pfxsample-DejaVuSans-6b"></use>
+<use x="270.458984" xlink:href="#pfxsample-DejaVuSans-2d"></use>
+<use x="306.542969" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="358.642578" xlink:href="#pfxsample-DejaVuSans-68"></use>
+<use x="422.021484" xlink:href="#pfxsample-DejaVuSans-75"></use>
+<use x="485.400391" xlink:href="#pfxsample-DejaVuSans-66"></use>
+<use x="520.605469" xlink:href="#pfxsample-DejaVuSans-66"></use>
+<use x="555.810547" xlink:href="#pfxsample-DejaVuSans-6c"></use>
+<use x="583.59375" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="645.117188" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="676.904297" xlink:href="#pfxsample-DejaVuSans-70"></use>
+<use x="740.380859" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="779.244141" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="840.767578" xlink:href="#pfxsample-DejaVuSans-66"></use>
+<use x="875.972656" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="903.755859" xlink:href="#pfxsample-DejaVuSans-78"></use>
+<use x="959.810547" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="1021.333984" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="1073.433594" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="1105.220703" xlink:href="#pfxsample-DejaVuSans-61"></use>
+<use x="1166.5" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="1205.363281" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="1266.886719" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="1298.673828" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="1350.773438" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="1389.982422" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="1431.095703" xlink:href="#pfxsample-DejaVuSans-75"></use>
+<use x="1494.474609" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="1549.455078" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="1588.664062" xlink:href="#pfxsample-DejaVuSans-75"></use>
+<use x="1652.042969" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="1690.90625" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="1752.429688" xlink:href="#pfxsample-DejaVuSans-64"></use>
+<use x="1815.90625" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="1847.693359" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="1899.792969" xlink:href="#pfxsample-DejaVuSans-75"></use>
+<use x="1963.171875" xlink:href="#pfxsample-DejaVuSans-62"></use>
+<use x="2026.648438" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="2078.748047" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="2140.271484" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="2179.480469" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="2231.580078" xlink:href="#pfxsample-DejaVuSans-2c"></use>
+<use x="2263.367188" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="2295.154297" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="2358.533203" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="2419.714844" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="2458.923828" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="2490.710938" xlink:href="#pfxsample-DejaVuSans-61"></use>
+<use x="2551.990234" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="2583.777344" xlink:href="#pfxsample-DejaVuSans-71"></use>
+<use x="2647.253906" xlink:href="#pfxsample-DejaVuSans-75"></use>
+<use x="2710.632812" xlink:href="#pfxsample-DejaVuSans-61"></use>
+<use x="2771.912109" xlink:href="#pfxsample-DejaVuSans-6c"></use>
+<use x="2799.695312" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="2827.478516" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="2866.6875" xlink:href="#pfxsample-DejaVuSans-79"></use>
+<use x="2925.867188" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="2957.654297" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="3009.753906" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="3064.734375" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="3125.916016" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="3164.779297" xlink:href="#pfxsample-DejaVuSans-65"></use>
+</g>
+</g>
+<g id="pfxsample-text_36">
+<!-- Synthetic N=1,000,000; prefix K=879; IO block=256. No real documents or training. -->
+<g style="fill: #444444" transform="translate(17.856 344.883938) scale(0.09 -0.09)">
+<defs>
+<path d="M 3425 4513
+L 3425 3897
+Q 3066 4069 2747 4153
+Q 2428 4238 2131 4238
+Q 1616 4238 1336 4038
+Q 1056 3838 1056 3469
+Q 1056 3159 1242 3001
+Q 1428 2844 1947 2747
+L 2328 2669
+Q 3034 2534 3370 2195
+Q 3706 1856 3706 1288
+Q 3706 609 3251 259
+Q 2797 -91 1919 -91
+Q 1588 -91 1214 -16
+Q 841 59 441 206
+L 441 856
+Q 825 641 1194 531
+Q 1563 422 1919 422
+Q 2459 422 2753 634
+Q 3047 847 3047 1241
+Q 3047 1584 2836 1778
+Q 2625 1972 2144 2069
+L 1759 2144
+Q 1053 2284 737 2584
+Q 422 2884 422 3419
+Q 422 4038 858 4394
+Q 1294 4750 2059 4750
+Q 2388 4750 2728 4690
+Q 3069 4631 3425 4513
+z
+" id="pfxsample-DejaVuSans-53" transform="scale(0.015625)"></path>
+<path d="M 678 2906
+L 4684 2906
+L 4684 2381
+L 678 2381
+L 678 2906
+z
+M 678 1631
+L 4684 1631
+L 4684 1100
+L 678 1100
+L 678 1631
+z
+" id="pfxsample-DejaVuSans-3d" transform="scale(0.015625)"></path>
+<path d="M 750 3309
+L 1409 3309
+L 1409 2516
+L 750 2516
+L 750 3309
+z
+M 750 794
+L 1409 794
+L 1409 256
+L 897 -744
+L 494 -744
+L 750 256
+L 750 794
+z
+" id="pfxsample-DejaVuSans-3b" transform="scale(0.015625)"></path>
+<path d="M 628 4666
+L 1259 4666
+L 1259 2694
+L 3353 4666
+L 4166 4666
+L 1850 2491
+L 4331 0
+L 3500 0
+L 1259 2247
+L 1259 0
+L 628 0
+L 628 4666
+z
+" id="pfxsample-DejaVuSans-4b" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#pfxsample-DejaVuSans-53"></use>
+<use x="63.476562" xlink:href="#pfxsample-DejaVuSans-79"></use>
+<use x="122.65625" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="186.035156" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="225.244141" xlink:href="#pfxsample-DejaVuSans-68"></use>
+<use x="288.623047" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="350.146484" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="389.355469" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="417.138672" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="472.119141" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="503.90625" xlink:href="#pfxsample-DejaVuSans-4e"></use>
+<use x="578.710938" xlink:href="#pfxsample-DejaVuSans-3d"></use>
+<use x="662.5" xlink:href="#pfxsample-DejaVuSans-31"></use>
+<use x="726.123047" xlink:href="#pfxsample-DejaVuSans-2c"></use>
+<use x="757.910156" xlink:href="#pfxsample-DejaVuSans-30"></use>
+<use x="821.533203" xlink:href="#pfxsample-DejaVuSans-30"></use>
+<use x="885.15625" xlink:href="#pfxsample-DejaVuSans-30"></use>
+<use x="948.779297" xlink:href="#pfxsample-DejaVuSans-2c"></use>
+<use x="980.566406" xlink:href="#pfxsample-DejaVuSans-30"></use>
+<use x="1044.189453" xlink:href="#pfxsample-DejaVuSans-30"></use>
+<use x="1107.8125" xlink:href="#pfxsample-DejaVuSans-30"></use>
+<use x="1171.435547" xlink:href="#pfxsample-DejaVuSans-3b"></use>
+<use x="1205.126953" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="1236.914062" xlink:href="#pfxsample-DejaVuSans-70"></use>
+<use x="1300.390625" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="1339.253906" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="1400.777344" xlink:href="#pfxsample-DejaVuSans-66"></use>
+<use x="1435.982422" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="1463.765625" xlink:href="#pfxsample-DejaVuSans-78"></use>
+<use x="1522.945312" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="1554.732422" xlink:href="#pfxsample-DejaVuSans-4b"></use>
+<use x="1620.308594" xlink:href="#pfxsample-DejaVuSans-3d"></use>
+<use x="1704.097656" xlink:href="#pfxsample-DejaVuSans-38"></use>
+<use x="1767.720703" xlink:href="#pfxsample-DejaVuSans-37"></use>
+<use x="1831.34375" xlink:href="#pfxsample-DejaVuSans-39"></use>
+<use x="1894.966797" xlink:href="#pfxsample-DejaVuSans-3b"></use>
+<use x="1928.658203" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="1960.445312" xlink:href="#pfxsample-DejaVuSans-49"></use>
+<use x="1989.9375" xlink:href="#pfxsample-DejaVuSans-4f"></use>
+<use x="2068.648438" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="2100.435547" xlink:href="#pfxsample-DejaVuSans-62"></use>
+<use x="2163.912109" xlink:href="#pfxsample-DejaVuSans-6c"></use>
+<use x="2191.695312" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="2252.876953" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="2307.857422" xlink:href="#pfxsample-DejaVuSans-6b"></use>
+<use x="2365.767578" xlink:href="#pfxsample-DejaVuSans-3d"></use>
+<use x="2449.556641" xlink:href="#pfxsample-DejaVuSans-32"></use>
+<use x="2513.179688" xlink:href="#pfxsample-DejaVuSans-35"></use>
+<use x="2576.802734" xlink:href="#pfxsample-DejaVuSans-36"></use>
+<use x="2640.425781" xlink:href="#pfxsample-DejaVuSans-2e"></use>
+<use x="2672.212891" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="2704" xlink:href="#pfxsample-DejaVuSans-4e"></use>
+<use x="2778.804688" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="2839.986328" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="2871.773438" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="2910.636719" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="2972.160156" xlink:href="#pfxsample-DejaVuSans-61"></use>
+<use x="3033.439453" xlink:href="#pfxsample-DejaVuSans-6c"></use>
+<use x="3061.222656" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="3093.009766" xlink:href="#pfxsample-DejaVuSans-64"></use>
+<use x="3156.486328" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="3217.667969" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="3272.648438" xlink:href="#pfxsample-DejaVuSans-75"></use>
+<use x="3336.027344" xlink:href="#pfxsample-DejaVuSans-6d"></use>
+<use x="3433.439453" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="3494.962891" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="3558.341797" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="3597.550781" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="3649.650391" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="3681.4375" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="3742.619141" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="3783.732422" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="3815.519531" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="3854.728516" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="3895.841797" xlink:href="#pfxsample-DejaVuSans-61"></use>
+<use x="3957.121094" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="3984.904297" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="4048.283203" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="4076.066406" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="4139.445312" xlink:href="#pfxsample-DejaVuSans-67"></use>
+<use x="4202.921875" xlink:href="#pfxsample-DejaVuSans-2e"></use>
+</g>
+<!-- Dashed line: explicit uniform-without-replacement expectation, not a confidence interval. -->
+<g style="fill: #444444" transform="translate(17.856 354.961969) scale(0.09 -0.09)">
+<use xlink:href="#pfxsample-DejaVuSans-44"></use>
+<use x="77.001953" xlink:href="#pfxsample-DejaVuSans-61"></use>
+<use x="138.28125" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="190.380859" xlink:href="#pfxsample-DejaVuSans-68"></use>
+<use x="253.759766" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="315.283203" xlink:href="#pfxsample-DejaVuSans-64"></use>
+<use x="378.759766" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="410.546875" xlink:href="#pfxsample-DejaVuSans-6c"></use>
+<use x="438.330078" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="466.113281" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="529.492188" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="591.015625" xlink:href="#pfxsample-DejaVuSans-3a"></use>
+<use x="624.707031" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="656.494141" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="716.267578" xlink:href="#pfxsample-DejaVuSans-78"></use>
+<use x="775.447266" xlink:href="#pfxsample-DejaVuSans-70"></use>
+<use x="838.923828" xlink:href="#pfxsample-DejaVuSans-6c"></use>
+<use x="866.707031" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="894.490234" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="949.470703" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="977.253906" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="1016.462891" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="1048.25" xlink:href="#pfxsample-DejaVuSans-75"></use>
+<use x="1111.628906" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="1175.007812" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="1202.791016" xlink:href="#pfxsample-DejaVuSans-66"></use>
+<use x="1237.996094" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="1299.177734" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="1338.541016" xlink:href="#pfxsample-DejaVuSans-6d"></use>
+<use x="1435.953125" xlink:href="#pfxsample-DejaVuSans-2d"></use>
+<use x="1472.037109" xlink:href="#pfxsample-DejaVuSans-77"></use>
+<use x="1553.824219" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="1581.607422" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="1620.816406" xlink:href="#pfxsample-DejaVuSans-68"></use>
+<use x="1684.195312" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="1745.376953" xlink:href="#pfxsample-DejaVuSans-75"></use>
+<use x="1808.755859" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="1847.964844" xlink:href="#pfxsample-DejaVuSans-2d"></use>
+<use x="1884.048828" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="1922.912109" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="1984.435547" xlink:href="#pfxsample-DejaVuSans-70"></use>
+<use x="2047.912109" xlink:href="#pfxsample-DejaVuSans-6c"></use>
+<use x="2075.695312" xlink:href="#pfxsample-DejaVuSans-61"></use>
+<use x="2136.974609" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="2191.955078" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="2253.478516" xlink:href="#pfxsample-DejaVuSans-6d"></use>
+<use x="2350.890625" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="2412.414062" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="2475.792969" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="2515.001953" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="2546.789062" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="2606.5625" xlink:href="#pfxsample-DejaVuSans-78"></use>
+<use x="2665.742188" xlink:href="#pfxsample-DejaVuSans-70"></use>
+<use x="2729.21875" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="2790.742188" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="2845.722656" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="2884.931641" xlink:href="#pfxsample-DejaVuSans-61"></use>
+<use x="2946.210938" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="2985.419922" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="3013.203125" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="3074.384766" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="3137.763672" xlink:href="#pfxsample-DejaVuSans-2c"></use>
+<use x="3169.550781" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="3201.337891" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="3264.716797" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="3325.898438" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="3365.107422" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="3396.894531" xlink:href="#pfxsample-DejaVuSans-61"></use>
+<use x="3458.173828" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="3489.960938" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="3544.941406" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="3606.123047" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="3669.501953" xlink:href="#pfxsample-DejaVuSans-66"></use>
+<use x="3704.707031" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="3732.490234" xlink:href="#pfxsample-DejaVuSans-64"></use>
+<use x="3795.966797" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="3857.490234" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="3920.869141" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="3975.849609" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="4037.373047" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="4069.160156" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="4096.943359" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="4160.322266" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="4199.53125" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="4261.054688" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="4302.167969" xlink:href="#pfxsample-DejaVuSans-76"></use>
+<use x="4361.347656" xlink:href="#pfxsample-DejaVuSans-61"></use>
+<use x="4422.626953" xlink:href="#pfxsample-DejaVuSans-6c"></use>
+<use x="4450.410156" xlink:href="#pfxsample-DejaVuSans-2e"></use>
+</g>
+<!-- Window changes alter selected IDs; more blocks is not proof of better data, faster IO, or lower loss. -->
+<g style="fill: #444444" transform="translate(17.856 365.04) scale(0.09 -0.09)">
+<use xlink:href="#pfxsample-DejaVuSans-57"></use>
+<use x="96.626953" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="124.410156" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="187.789062" xlink:href="#pfxsample-DejaVuSans-64"></use>
+<use x="251.265625" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="312.447266" xlink:href="#pfxsample-DejaVuSans-77"></use>
+<use x="394.234375" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="426.021484" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="481.001953" xlink:href="#pfxsample-DejaVuSans-68"></use>
+<use x="544.380859" xlink:href="#pfxsample-DejaVuSans-61"></use>
+<use x="605.660156" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="669.039062" xlink:href="#pfxsample-DejaVuSans-67"></use>
+<use x="732.515625" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="794.039062" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="846.138672" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="877.925781" xlink:href="#pfxsample-DejaVuSans-61"></use>
+<use x="939.205078" xlink:href="#pfxsample-DejaVuSans-6c"></use>
+<use x="966.988281" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="1006.197266" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="1067.720703" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="1108.833984" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="1140.621094" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="1192.720703" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="1254.244141" xlink:href="#pfxsample-DejaVuSans-6c"></use>
+<use x="1282.027344" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="1343.550781" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="1398.53125" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="1437.740234" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="1499.263672" xlink:href="#pfxsample-DejaVuSans-64"></use>
+<use x="1562.740234" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="1594.527344" xlink:href="#pfxsample-DejaVuSans-49"></use>
+<use x="1624.019531" xlink:href="#pfxsample-DejaVuSans-44"></use>
+<use x="1701.021484" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="1753.121094" xlink:href="#pfxsample-DejaVuSans-3b"></use>
+<use x="1786.8125" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="1818.599609" xlink:href="#pfxsample-DejaVuSans-6d"></use>
+<use x="1916.011719" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="1977.193359" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="2016.056641" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="2077.580078" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="2109.367188" xlink:href="#pfxsample-DejaVuSans-62"></use>
+<use x="2172.84375" xlink:href="#pfxsample-DejaVuSans-6c"></use>
+<use x="2200.626953" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="2261.808594" xlink:href="#pfxsample-DejaVuSans-63"></use>
+<use x="2316.789062" xlink:href="#pfxsample-DejaVuSans-6b"></use>
+<use x="2374.699219" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="2426.798828" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="2458.585938" xlink:href="#pfxsample-DejaVuSans-69"></use>
+<use x="2486.369141" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="2538.46875" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="2570.255859" xlink:href="#pfxsample-DejaVuSans-6e"></use>
+<use x="2633.634766" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="2694.816406" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="2734.025391" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="2765.8125" xlink:href="#pfxsample-DejaVuSans-70"></use>
+<use x="2829.289062" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="2868.152344" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="2929.333984" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="2990.515625" xlink:href="#pfxsample-DejaVuSans-66"></use>
+<use x="3025.720703" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="3057.507812" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="3118.689453" xlink:href="#pfxsample-DejaVuSans-66"></use>
+<use x="3153.894531" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="3185.681641" xlink:href="#pfxsample-DejaVuSans-62"></use>
+<use x="3249.158203" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="3310.681641" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="3349.890625" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="3389.099609" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="3450.623047" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="3491.736328" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="3523.523438" xlink:href="#pfxsample-DejaVuSans-64"></use>
+<use x="3587" xlink:href="#pfxsample-DejaVuSans-61"></use>
+<use x="3648.279297" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="3687.488281" xlink:href="#pfxsample-DejaVuSans-61"></use>
+<use x="3748.767578" xlink:href="#pfxsample-DejaVuSans-2c"></use>
+<use x="3780.554688" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="3812.341797" xlink:href="#pfxsample-DejaVuSans-66"></use>
+<use x="3847.546875" xlink:href="#pfxsample-DejaVuSans-61"></use>
+<use x="3908.826172" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="3960.925781" xlink:href="#pfxsample-DejaVuSans-74"></use>
+<use x="4000.134766" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="4061.658203" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="4102.771484" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="4134.558594" xlink:href="#pfxsample-DejaVuSans-49"></use>
+<use x="4164.050781" xlink:href="#pfxsample-DejaVuSans-4f"></use>
+<use x="4242.761719" xlink:href="#pfxsample-DejaVuSans-2c"></use>
+<use x="4274.548828" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="4306.335938" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="4367.517578" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="4408.630859" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="4440.417969" xlink:href="#pfxsample-DejaVuSans-6c"></use>
+<use x="4468.201172" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="4529.382812" xlink:href="#pfxsample-DejaVuSans-77"></use>
+<use x="4611.169922" xlink:href="#pfxsample-DejaVuSans-65"></use>
+<use x="4672.693359" xlink:href="#pfxsample-DejaVuSans-72"></use>
+<use x="4713.806641" xlink:href="#pfxsample-DejaVuSans-20"></use>
+<use x="4745.59375" xlink:href="#pfxsample-DejaVuSans-6c"></use>
+<use x="4773.376953" xlink:href="#pfxsample-DejaVuSans-6f"></use>
+<use x="4834.558594" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="4886.658203" xlink:href="#pfxsample-DejaVuSans-73"></use>
+<use x="4938.757812" xlink:href="#pfxsample-DejaVuSans-2e"></use>
+</g>
+</g>
+</g>
+<defs>
+<clippath id="pfxsample-pf6f033f567">
+<rect height="191.84275" width="397.17" x="50.87" y="80.592"></rect>
+</clippath>
+<clippath id="pfxsample-p829390fd93">
+<rect height="191.84275" width="397.17" x="484.83" y="80.592"></rect>
+</clippath>
+</defs>
+</svg>
+<p>为便于理解，另外计算一个<strong>明确定义的比较基准</strong>：从百万序列中等概率、不放回地抽879条。在相同IO索引分组下，覆盖块数的期望约787.52；抽中序列中“属于同一IO块”的无序对数期望约98.40。原代码四个固定key控制的对数为642–754。基准公式另用长度10、抽3条的全部120种集合核对。</p>
+<p>这些数字不代表98.40是应该追求的目标，也不能换算为有效样本量或loss损失。这里的IO块是原序列索引分组；尚未取得真实文档、来源或主题标签，不能把“同块”自动当成“同文档”或“重复知识”。代码原值、基准和反例见<a href="../analysis/prefix_sampling_structure.json">结构复算</a>。</p>
+<h3 id="run-code-guide-_11">尾部样本可能有零入选机会，但影响量级要单独算</h3>
+<p>原<code>_map_index</code>把不足一个IO块的尾部固定到输出的末尾。设完整库存长度为N、尾部长度为t，则只截取K条前缀时，尾部被保留的条数为<code>max(0, K-(N-t))</code>。在K小于完整块区域长度时，尾部不会进入前缀；这依赖原排列保持索引范围的合同，不是用有限个key估计概率为零。</p>
+<p>人工百万库存的尾部为64条，879前缀不会选中它们。尾部只占完整库存0.0064%，不能据此宣称严重质量偏差。公开模拟比例下，正长度切片从1138条原序列开始；若原库存仅1279条，尾部255条占约19.94%，仍不会进入截出的1条前缀。这是该IO大小下、所有非空切片长度中尾部占比的算术上界示例，不是真实桶的测量。当前没有证据表明真实桶接近这个边界。</p>
+<p>本轮执行了12种长度、两种给定key的24组边界控制，以及长度22的完整排列和五个切点，均符合尾部位置规则。既没有读真实尾部内容，也没有据此给某个数据域降权。</p>
+<h3 id="run-code-guide-window">把window调大，也不能直接称为修复</h3>
+<p>固定同一child key、人工库存和879条切片，只改<code>window_blocks</code>为1、64、512、4096，实际覆盖的IO块数分别为4、64、442、873；对应同块序列对数为104025、5604、679、6。入选集合摘要四者均不同。</p>
+<p>4096窗口已能容纳所有完整块，但这一个固定key控制的同块对数仍不同于等概率子集的期望。不能从“窗口足够大”直接推出等概率子集，更不能从873比442多就推出训练更好。此前已经核实原PRP可产生双射；<strong>双射保证完整库存不丢身份，不保证特定前缀或key族具有所假设的抽样分布。</strong> 本轮没有做随机性检验、磁盘吞吐测试或模型训练，无法选出最佳window。</p>
+<h3 id="run-code-guide-_12">如何用这个结论改进配比研究</h3>
+<ol>
+<li><strong>先审核抽样目标。</strong> 如果缩比实验要保留大训练的重复曝光结构，应核对实际被选中的身份、各桶截取长度和来源构成；不能只核对总token预算与声明权重。块抽样可以有合理的IO目的，但应按实际结构解释结果。</li>
+<li><strong>不要用IO块覆盖替代质量评估。</strong> 先取得真实长度、文档与来源映射，再检查小来源、长度段和尾部在模拟子集中的份额及held-out差距。真实偏差证据不足时，保留候选观察，不因为本轮人工块统计就废弃配比。</li>
+<li><strong>把子集选择与读取布局分开设计。</strong> 可先冻结一份具有明确抽样合同的样本manifest，再为这份固定子集选择IO布局和顺序。这样比较window时才能避免顺便重抽训练集；该实现和模型对照仍未执行。</li>
+<li><strong>性能变更也要过数据合同。</strong> window、IO块大小、PRP版本都可能改变输入身份。候选须同时报告样本集合变化、真实IO成本和质量结果；只有CPU索引更分散，不足以进入生产切换。</li>
+</ol>
+<p>新增<a href="../templates/prefix_sampling_review.json">前缀抽样评审模板</a>，保留抽样合同、尾部与分组证据、性能/质量结果为空。<code>make prefix-sampling-cpu CPU_PYTHON=/path/to/python-with-jax</code>可重跑9项源码与数学控制。当前仍未验证真实模拟子集代表性、数据域质量偏差或535B收益。</p>
+<h2 id="run-code-guide-v127">V127：配置断言与执行模式</h2>
+<p>对已有两份绑定历史源码执行11项CPU控制，比较编译级别0/1/2。配置assert移除后，未对齐阶段可造成重复身份，非零首阶段产生负逻辑位置并被restart取模掩盖。四处显式异常候选保持合法轨迹并拒绝三类非法配置；仅局部AST控制，未修改上游。<a href="assertion-contracts-guide.html#assertion-contracts-guide">完整机制与原值</a>。</p>
+<h2 id="run-code-guide-v128">V128：桶级权重的数值合同</h2>
+<p>原历史混合器与配置初始化执行13项CPU控制。合法历史后的NaN-only或求和溢出阶段可落入整块首桶余数回退；单阶段相同输入则后续报错。有限性前置wrapper拒绝8种异常输入，保留两份小规模归档配方五阶段的原归一化和整数向量。完整历史保留200桶，个别阶段194正权重；比较边界人工重映射，仅验数值向量。<a href="weight-domain-guide.html#weight-domain-guide">机制与原值</a>。</p>
+<h2 id="run-code-guide-v129manager">V129：异步manager与任务级失败</h2>
+<p>新增1份上传依赖serialization.py，13477字节，两份代码清单size/MD5一致。执行其AsyncManager原类体，安装JAX0.7.2提供单进程查询/monitoring，与上传依赖版本身份分开；真实TensorStore仅内存driver32字节。595旧来源中的594份非bookkeeping保持，source_manifest追加记录，来源总计596。<a href="async-manager-guide.html#async-manager-guide">完整来源与控制</a>。</p></section><nav class="pager"><a href="weight-domain-guide.html">← 上一篇</a><a href="index.html">返回主题目录</a></nav></main></body></html>

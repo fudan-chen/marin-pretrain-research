@@ -1,5 +1,9 @@
 # Marin 535B 预训练研究
 
+**[在线主题阅读站](https://fudan-chen.github.io/marin-pretrain-research/)** · [本地主题目录](reading/index.html) · [保留的完整报告](report_standalone.html)
+
+按 10 个主题拆为 80 篇静态章节，另保留 9 项交互工具入口。图片随正文保留；[源码与候选补丁](reading/code.html)提供 164 份带行号阅读页和原文件下载。完整 HTML 未修改。重新拆页：安装 beautifulsoup4 后运行 `python scripts/build_reading_site.py`。
+
 当前版本V140：14 项原 CE 反向精度控制，普通 BF16 跨 batch 块累积可少算梯度，新 scan 的 FP32 累积在所测例子保留总量；另定位 FP16 GEMM 前转换的归零边界。[FP32 loss 与反向 dtype](CE_GRADIENT_DTYPE_ZH.md)。
 
 [MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并提供未执行的性能交互记录模板。

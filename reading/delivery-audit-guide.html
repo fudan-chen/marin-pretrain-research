@@ -1,0 +1,227 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>当前交付审计：文件覆盖与真实验证分别核对 · Marin 预训练研究</title><link rel="stylesheet" href="reading.css"></head><body><header><nav><a href="index.html">主题目录</a><a href="../report_standalone.html">完整报告（保留）</a><a href="code.html">源码与候选补丁</a><a href="tools.html">交互工具</a></nav></header><main><p class="muted"><a href="theme-method.html">09 · 规则、学习与证据</a> / 本页只含一篇专题</p><details class="chapter-toc"><summary>本篇目录</summary><ol><li><a href="#delivery-audit-guide-v18">V18及此前的历史审计（保留原文）</a></li><li><a href="#delivery-audit-guide-v18_1">V18补充：交付范围与实际训练范围分开</a></li><li><a href="#delivery-audit-guide-v52">V52：加载器恢复控制</a></li><li><a href="#delivery-audit-guide-v73">V73：四格重放与拒绝缺格</a></li><li><a href="#delivery-audit-guide-v74">V74：原评估累计到最终结果</a></li><li><a href="#delivery-audit-guide-v75callbackbyte">V75：callback形状、标签契约与byte索引</a></li><li><a href="#delivery-audit-guide-v76ce">V76：原累积与原CE自动微分联动</a></li><li><a href="#delivery-audit-guide-v77">V77：实际工程状态刷新与表述修正</a></li><li><a href="#delivery-audit-guide-v78portablecpu">V78：原portable专家与原CPU包装</a></li><li><a href="#delivery-audit-guide-v79">V79：接收前缀、返回身份与局部容量</a></li><li><a href="#delivery-audit-guide-v102-gang">V102：从退出分类追到 gang 重排与容量确认</a></li><li><a href="#delivery-audit-guide-v103">V103：控制器重开、备份一致性与失败保护</a></li><li><a href="#delivery-audit-guide-v104">V104：恢复候选与调用链门槛</a></li><li><a href="#delivery-audit-guide-v105">V105：状态内容与共同快照边界</a></li><li><a href="#delivery-audit-guide-v106">V106：快照所有权的执行边界</a></li><li><a href="#delivery-audit-guide-v107">V107：恢复后更新身份</a></li><li><a href="#delivery-audit-guide-v108">V108：数据派生与构造证据</a></li><li><a href="#delivery-audit-guide-v109">V109：计分口径与后端范围</a></li><li><a href="#delivery-audit-guide-v110">V110：进度的测量边界</a></li><li><a href="#delivery-audit-guide-v111">V111：恢复后的下一次更新</a></li><li><a href="#delivery-audit-guide-v112">V112：初始化与恢复的构造路径</a></li><li><a href="#delivery-audit-guide-v113loss">V113：有限loss与路由状态</a></li><li><a href="#delivery-audit-guide-v114">V114：原估计器输入边界</a></li><li><a href="#delivery-audit-guide-v115">V115：归约一致与近似误差</a></li><li><a href="#delivery-audit-guide-v116margin">V116：margin的原投影入口</a></li><li><a href="#delivery-audit-guide-v117">V117：目标与路由人口分开记账</a></li><li><a href="#delivery-audit-guide-v118">V118：研究收束为训练决策</a></li><li><a href="#delivery-audit-guide-v119">V119：评估补丁的调用合同</a></li><li><a href="#delivery-audit-guide-v120key">V120：删域响应依赖参照，过期历史也参与key分配</a></li><li><a href="#delivery-audit-guide-v121">V121：配比边界早于共同恢复点</a></li><li><a href="#delivery-audit-guide-v122">V122：历史源码与恢复证据</a></li><li><a href="#delivery-audit-guide-v123seed">V123：随机流与seed语义</a></li><li><a href="#delivery-audit-guide-v124">V124：模拟子集与恢复数据流</a></li><li><a href="#delivery-audit-guide-v125io">V125：前缀抽样支持与IO布局</a></li><li><a href="#delivery-audit-guide-v126">V126：实验改变了什么</a></li><li><a href="#delivery-audit-guide-v127">V127：配置断言与执行模式</a></li><li><a href="#delivery-audit-guide-v128">V128：桶级权重的数值合同</a></li><li><a href="#delivery-audit-guide-v129manager">V129：异步manager与任务级失败</a></li><li><a href="#delivery-audit-guide-v130">V130：保存调度与失败策略</a></li><li><a href="#delivery-audit-guide-v131">V131增量审计</a></li><li><a href="#delivery-audit-guide-v132">V132增量审计</a></li><li><a href="#delivery-audit-guide-v133">V133增量审计</a></li><li><a href="#delivery-audit-guide-v134">V134增量审计</a></li><li><a href="#delivery-audit-guide-v135">V135增量审计</a></li></ol></details><section class="chapter" id="delivery-audit-guide"><h1 id="delivery-audit-guide-_1">当前交付审计：文件覆盖与真实验证分别核对</h1>
+<p>当前增量 V140：<a href="ce-gradient-dtype-guide.html#ce-gradient-dtype-guide">反向 dtype 与分块</a>，14 项 CPU 控制、14 组原值。BF16 累积受控收益与 FP16 早期归零条件分别报告；作者 GB200 数值未复现。归档声明不是实际张量 dtype 证明，大分母不是全局 batch 执行。</p>
+<p>当前增量 V139：<a href="ce-backward-path-guide.html#ce-backward-path-guide">原 custom VJP 注册链</a>，14 项 CPU 控制、16 组路径/输入及一幅机制图。首次在本报告中执行所选原注册入口与两条反向的连接；不是公共 dispatcher、融合 GPU 或完整训练步验收。</p>
+<p>当前增量 V138：<a href="ce-label-bounds-guide.html#ce-label-bounds-guide">目标标签与后端合同</a>，14 项原函数 CPU 控制，包含自动微分、JIT 与一维有限差分。候选只做离线标签检查与忽略位置替换；真实 Hero 非法目标、融合后端、训练收益仍未验证。</p>
+<p>当前增量 V137：<a href="loss-denominator-guide.html#loss-denominator-guide">四 CPU 全局归约控制</a>完成 13 项断言、9 组输入。原 collective/自动微分已执行；融合后端仍为 CPU 参考替代，多主机/生产输入/训练效果未验收。</p>
+<p>当前增量 V136：新增<a href="loss-denominator-guide.html#loss-denominator-guide">分母精度解释与复现</a>，12 项单设备 CPU 控制。下方各历史条目保留其原版本范围。未验证生产权重 dtype、融合 GPU、分布式归约与训练收益。</p>
+<p>当前版本V72：原 loss 方法的有效目标组成与输出 z-loss 联动，7 项 CPU 检查。预测不变也能有明显训练 loss 变化；真实配比收益仍需固定评估。详见 <a href="loss-triage.html#loss-triage">loss 诊断</a>。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>用户要求</th>
+<th>当前权威产物</th>
+<th>覆盖与实际限制</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>中文解释问题、动作、解决范围与原因</td>
+<td><a href="translation.html#translation">#8435逐条整理</a>、<a href="operations.html#operations">58条运行记录</a>、<a href="engineering-map-guide.html#engineering-map-guide">15案总图</a></td>
+<td>区分作者观察、本地核对、缓解与未知；总图完整覆盖主报告15类，不声称穷举整个仓库所有bug</td>
+</tr>
+<tr>
+<td>结合源码深入分析</td>
+<td>接口、状态、边界、缓存、去重、质量、路由、优化器、ShortConv、router精度、评估、保存提交/内存等章节；<a href="../sources/archive_manifest.json">原源码归档</a></td>
+<td>固定代码解释与原辅助函数检查可复查；替代依赖逐项注明；没有自动证明历史执行SHA或真实GPU行为</td>
+</tr>
+<tr>
+<td>数据配比与loss对应</td>
+<td><a href="data.html#data">200桶数据</a>、<a href="decision-guide.html#decision-guide">候选比较</a>、<a href="mix-trajectory-guide.html#mix-trajectory-guide">真实轨迹</a>、<a href="eval-metrics-guide.html#eval-metrics-guide">评估口径</a></td>
+<td>库存、权重、曝光分母分别计算；67个完整日志step；V25的micro/macro误称已在V26修正；生产曲线没有独立配比反事实</td>
+</tr>
+<tr>
+<td>调整配比与顺序的方法</td>
+<td><a href="transfer-guide.html#transfer-guide">供体预算</a>、<a href="order-guide.html#order-guide">顺序账本</a>、<a href="pipeline.html#pipeline">七阶段管线</a></td>
+<td>简单基线、供体、整数/边缘块、独立确认和保底项均有执行入口；草案没有被写成已训练结果</td>
+</tr>
+<tr>
+<td>可读、可离线的可视化与理解文档</td>
+<td><a href="../report_standalone.html">独立HTML</a>、<a href="learning.html#learning">理解路线</a>、<a href="../README.md">问题阅读入口</a></td>
+<td>真实轨迹图、条件拟合图及机制图、数据查询与交互工具；当前验证结果见<a href="../analysis/validation.json">validation</a>，各版本浏览器范围独立保留；页面操作不证明理解效果</td>
+</tr>
+<tr>
+<td>提炼rubrics并持续改进</td>
+<td><a href="rubrics.html#rubrics">18条规则</a>、<a href="../analysis/engineering_case_map.json">15案/六入口规则映射</a>、<a href="improvement.html#improvement">改进记录</a></td>
+<td>仍使用1.1规则；不增加总分或自动根因判定；外部评分效度与迁移理解未测</td>
+</tr>
+<tr>
+<td>可重建、可分享与版本可追溯</td>
+<td><a href="../Makefile">Makefile</a>、scripts、sources、analysis、HTML与ZIP</td>
+<td>本轮构建从已归档材料出发，来源哈希与发布产物验证；本地交付不冒充远端发布</td>
+</tr>
+</tbody>
+</table></div>
+<p>现在最缺的不是更多章节数量，而是能改变结论的材料：真实执行包绑定、同checkpoint输入/状态重放、固定评估逐批N/T/B、独立GPU重复、真实save后restore，以及各rank首个异常和提交轨迹。它们分别限制历史归因、配比收益、评估排序、恢复可靠性和hang机制；没有这些材料时保留未知，不用本地绿灯补齐。</p>
+<p>总图按症状给出每项下一步与接受/继续调查边界；<a href="../config/engineering_case_map.json">可机读配置</a>将作者做过的动作和建议检查分开。长期研究目标保持进行中，V41没有以文件齐全为理由宣布全部研究已完成。V30的机制与范围见<a href="../analysis/muon_geometry_probe.json">原值账本</a>，此前V29发布见<a href="../analysis/release_v29.json">历史账本</a>。</p>
+<h2 id="delivery-audit-guide-v18">V18及此前的历史审计（保留原文）</h2>
+<p>本表核对“研究报告、可视化、理解文档、rubrics与决策管线”的交付要求。它不把Marin的18T训练写成完成，也不把本地原方法计数、页面操作或作者案例写成真实训练/读者结果。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>要求</th>
+<th>当前交付</th>
+<th>已执行的核对</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>中文对照工程问题、动作、原因与结果</td>
+<td>#8435主帖及27评论；#8506的58事件；主报告15类机制；新增八案工程证据链</td>
+<td>评论覆盖/链接归档；固定PR diff；11处实际文字修正保留旧文与新文</td>
+</tr>
+<tr>
+<td>分析配比与Loss关联并给出调整方法</td>
+<td>40域×5Q库存/权重/计划曝光；固定评估与三seed参照；54任务取舍；供体四臂与顺序账本</td>
+<td>934原始观测/915精确配比；独立算术；整数支持范围与边缘反例；保留BPB/能力和关联/因果边界</td>
+</tr>
+<tr>
+<td>可离线阅读和操作的可视化</td>
+<td>17幅静态图及读法；候选、预算、顺序、理解与八案时间线交互；单文件HTML；两幅源码机制示意图</td>
+<td>V11覆盖17图与历史交互；V12单独核对接口章节；V13–V17各章节的独立记录保留；V17新增字符窗口交互，核对八组原函数输出与桌面/手机/离线操作，不能互相替代</td>
+</tr>
+<tr>
+<td>有依据、可执行、可检验的rubrics</td>
+<td>18项、1.1版、状态/锚点/来源；不以总分抵消关键错误</td>
+<td>规则格式与阶段边界；R16实际自修；旧1.0显式迁移；外部效度未声称</td>
+</tr>
+<tr>
+<td>将规则用于修正报告</td>
+<td>V7取整、V8部分块、V9 R16范围、V10工程表述、V11初始配比与BPB口径、V12源码接口、V13 master/路由/step与指标说明；V14边界、V15缓存、V16去重、V17质量、V18变更规范</td>
+<td>原方法探针与替代依赖范围明示；历史执行版本未知；V13修正主报告CE日志键说明并保留V12题库原字节</td>
+</tr>
+<tr>
+<td>形成可复用管线</td>
+<td>七阶段配比管线；六动作工程检查支线；模板与可导出未执行草案</td>
+<td>阶段判定/关键项不可抵消；执行状态和能力/审批字段保留未知；V18连接五个冻结对象、三层工程结论与空白变更记录</td>
+</tr>
+<tr>
+<td>留下持续改进记录与可重建产物</td>
+<td>V10及后续增补章节、固定源档、脚本、版本标签和ZIP</td>
+<td>当前<code>make report</code>结果见validation；V12有46项接口辅助检查，V13有28项训练状态辅助检查；V14有17项边界检查、V15有四种缓存加载分支、V16与V17各有11项原辅助检查；这些检查不等于GPU复现或读者实验</td>
+</tr>
+</tbody>
+</table></div>
+<p>本轮的源头→计算→规则→实际纠错→界面验收→交付链已具备。第九轮列出的工程陈述审计已完成，由八案和24项作者陈述对照覆盖；这些陈述不是新增读者成绩。原十题的题目与锚点保持不变，源文修订后的摘要另存，旧题库/缓存不会被静默继承。</p>
+<p>以下研究需要新的实际材料，当前均没有结果：</p>
+<ul>
+<li>未参与配比选择的GPU重复、生成/程序执行评估与更大模型迁移。</li>
+<li>真实checkpoint/cursor/key/store下的token ID流重放。</li>
+<li>PDL旧边界的确认测量、组件消融与生产长窗稳定性。</li>
+<li>实际外部读者作答、双评一致性与迁移题理解。</li>
+</ul>
+<p>它们是后续研究的入口，不是本次“制作并审计研究材料”的未交付文件。后续获得新评论、曲线、训练结果或真实回答时，应新建来源版本，先检验现有主张和规则是否被推翻，再更新报告。定期任务可据此检查新的材料；不要由日期变化直接刷新历史结论。</p>
+<p>当前验收原值见<a href="../analysis/validation.json">验证清单</a>、<a href="../analysis/browser_validation_v10.json">第十轮历史浏览器记录</a>、<a href="../analysis/engineering_scope_audit.json">语义修正</a>、<a href="../analysis/implementation_contract_probe.json">源码接口探针</a>、<a href="../analysis/train_state_probe.json">训练状态探针</a>。公开数值仍以既有训练快照为准，源码核对没有刷新训练进度。</p>
+<h2 id="delivery-audit-guide-v18_1">V18补充：交付范围与实际训练范围分开</h2>
+<p><a href="change-guide.html#change-guide">训练变更评审</a>将已有源码分析接回实验执行与阅读路线。实际六份配置已按三个同规模配对核查：model配置三组相同，其他声明差异保留原值与摘要。完整配方比较不能写成单一配比收益；null、未指定与默认行为不混同。</p>
+<p>400份源归档包括原始材料、可读拷贝与抓取账本，不能全部叫作400项独立实验。NumPy插值契约保留web工具摘录，直接HTTP抓取的403也注明，未假装下载完整页面。报告内核、恢复、真实token流、实际评分模型和历史执行SHA的未知没有被本地测试代填。</p>
+<p>当前研究材料已覆盖工程问题/动作/机制、配比与loss、执行源码、可视化、理解路径与复用规范。持续研究下一步以新材料是否改变结论为准；当前目标保持进行中。版本与交付哈希见<a href="../analysis/release_v18.json">V18历史发布账本</a>。</p>
+<h2 id="delivery-audit-guide-v52">V52：加载器恢复控制</h2>
+<p>V52新增原异步loader host控制11项，人工store/layout/结果适配边界明确；已有BATCH_CLOCK章节与HTML更新。源码归档443份保持；实际token、完整恢复与浏览器渲染尚未验证。</p>
+<h2 id="delivery-audit-guide-v73">V73：四格重放与拒绝缺格</h2>
+<p>18项 CPU 原 loss 方法检查，新增实测矩阵图、三项/两路径分解和未执行实验模板。共同目标上的权重与预测变化可闭合；没有得到 Hero 的实际归因、模型训练收益或 GPU 验证。462份源归档保持，浏览器渲染尚未验证。</p>
+<h2 id="delivery-audit-guide-v74">V74：原评估累计到最终结果</h2>
+<p>12项CPU检查，执行原TaggedEvaluator累计器/evaluate与真实Equinox状态类。固定预测重分批、空域、小数权重和非有限零权重控制；显式JIT/sharding/loader/loss适配。未验证Hero受影响、GPU或历史版本绑定。462份来源保持。</p>
+<h2 id="delivery-audit-guide-v75callbackbyte">V75：callback形状、标签契约与byte索引</h2>
+<p>12人工输入、16检查，原累计/结果路径与原多标签构造；新增报告侧离线结构门禁，区分互斥与重叠。没有Hero错形callback证据、GPU或上游修复。462份来源保持。</p>
+<h2 id="delivery-audit-guide-v76ce">V76：原累积与原CE自动微分联动</h2>
+<p>10项真实JAX/Equinox CPU控制，原微批函数/重排/零状态与原loss语句；显式plain-array、fold/轴/sharding/provider/backend适配。局部空分母可污染非空整步梯度，报告侧分子优先控制通过；无上游修复、Hero路径绑定或GPU验收。462来源保持。</p>
+<h2 id="delivery-audit-guide-v77">V77：实际工程状态刷新与表述修正</h2>
+<p>16份新来源、12项离线审计；三issue完整评论，新增第59条运行记录；PR状态及新旧head完整源码，portable残差保存泛化已修正。旧461份非bookkeeping来源保持，当前来源478份。无生产控制面、GPU或部署验证。</p>
+<h2 id="delivery-audit-guide-v78portablecpu">V78：原portable专家与原CPU包装</h2>
+<p>14项检查，原_apply/forward/backward、原XLA ragged包装/512行补齐与caller选择；dense分组参考、inactive poison、空专家与保存out破坏控制。新增实测图。1新来源，旧477份非bookkeeping保持，479来源。无GPU、真实通信或生产输入验证。</p>
+<h2 id="delivery-audit-guide-v79">V79：接收前缀、返回身份与局部容量</h2>
+<p>10检查，原JAX元数据helper/chunk-plan和host拷贝重放，三个人工容量/编号控制；新增需求/容量图。1新来源、旧478非bookkeeping保持、480来源。未执行真实通信、GPU、生产mask或域偏置测量。</p>
+<p>V80交付增补：原route/mask/portable combine15项CPU检查，合成输出、固定接受mask；数值图已目视核查，真实浏览器呈现未验证。来源复用固定head归档，未新增来源。范围与结果见<a href="routing-guide.html#routing-guide">路由权重章节</a>，真实域偏置、GPU和优化器更新仍未知。</p>
+<p>V81增补：原router和实际portable专家在同head接通，17项CPU检查及九组精度数值表。原乘法/cast语句直接AST执行；真实collective、GPU、模型loss、更新和Hero事件仍未知。来源复用，未新增来源归档。</p>
+<p>V82增补：公开状态刷新与原运行默认helper13项隔离host检查；来源487份。三个PR仍未合并，Hero分支的构造选择和最终生产执行分开。静态HTML与ZIP验证不能替代真实浏览器、运行环境、XLA解析、HBM或部署证明。</p>
+<p>V83增补：490份来源；13项host启动链检查与静态child调用顺序。转发过滤、独立下游补值与版本前缀guard分别记录，不能作为实际child环境、wheel/插件加载或生产根因证明。</p>
+<p>V84增补：首页七个症状入口可原生展开，绑定十份既有数值/IO/host结果；保留综合章节原两张决策表。入口是人工研究整理，不是根因分类器或新增训练结果，交互呈现另按实际验证记录。</p>
+<p>V85增补：492份来源；可选clip数值与原AdamH状态19项CPU检查，六组对照表。归档max_grad_norm=None，实际Hero梯度dtype与事故仍未知。新章节静态构建，不扩展V84浏览器收据的验证范围。</p>
+<p>V86增补：493份来源，新增同head路径源码；真实Adam内存状态和原包装15项CPU检查，7张优化器章节表格。新章节静态构建，未新增浏览器、磁盘恢复或GPU验证。</p>
+<p>V87增补：496份来源；15项原Harrier host控制、九个构建对照、7张batch时钟表和3幅内联图。新图增加桌面index浏览器图与附近正文核对，收据限定于该视图；单文件与移动端未做本轮浏览器验证，真实token恢复与GPU仍未执行。</p>
+<p>V88增补：497份来源，18项CPU检查、200桶整数预算表；混合范围章节保留3张旧表并新增1张。没有新增浏览器或真实token验证，V87截图仍仅对应历史版本。</p>
+<p>V89增补：498份来源；两Python环境局部记录与7项比较，混合范围章节5张表。历史V36/V88结果与修正说明共同保留；没有新增浏览器、生产quota或训练收益验证。</p>
+<p>V90增补：25项混合原类/配置入口CPU控制；实时同版本datasets.py下载与原归档逐字节相同，没有新增来源文件。混合身份章节保留前三表并新增入口表。未新增浏览器、真实缓存、生产缺失桶或loss收益验证。</p>
+<p>V91增补：15项构造方法/原类CPU控制，混合身份章节保留四表并新增构造表。来源仍498份；没有新增浏览器、网络缓存构建、真实模型评估或Hero空concat事故证据。</p>
+<p>V92增补：10项原build_caches真实线程控制；来源仍498份，缓存章节新增派发表。未执行真实IO、缓存构建、分布式collective或浏览器验收；线程均已结束。</p>
+<p>V93增补：新提出的数据记录检查器、空/人工模板、归档示例与18组工具控制；不是新增原Marin方法执行。来源仍498份，管线章节保留原表并新增入口表。没有生产启动、token复核、GPU或浏览器验收。</p>
+<p>V94增补：严格记录工具与expected_hosts模板，12组回归；原V93输入/代码/结果保留。管线新增旧/新对照表，来源仍498份。检查器覆盖修正不能算作训练验证。</p>
+<p>V95增补：13项原类构造/实际人工读取控制，混合范围章节保留五表并新增API对照。来源498份不变；没有生产token、loader、GPU或浏览器验收。</p>
+<p>V96增补：32格原类有限停止与严格人工读取，8项控制；混合身份章节保留五表并新增策略对照。来源498份不变，未执行真实loader、token cache、模型或浏览器。</p>
+<p>V97增补：16项原restart读取/条件公式控制，重复曝光章节保留两表并新增窗口表。来源498份不变；未执行真实库存、文本去重、生产覆盖或模型收益验证。</p>
+<p>V98交付：新增原混合器历史阶段恢复映射探针与16项CPU控制；1587项既有检查加3项结果绑定检查，静态页面和ZIP另核对。真实Hero阶段改写、loader恢复、token和收益仍未知；本轮未做浏览器渲染验证。</p>
+<p>V99：13项原loader host/报警对照，实时10秒阈值，3项结果/源码绑定检查及等待路径SVG。真实Hero stall、完整后台队列和恢复仍未知；页面静态核对不等于浏览器渲染。</p>
+<p>V100：源归档500份，新增两份同head完整模块；19项原queue/thread控制、5项消费者候选控制。人工阻塞观察后明确释放/注入清理，未把清理算原代码能力；候选未接入Marin，真实关闭事故与完整DataLoader仍未知。</p>
+<p>V101：源513份，18项原函数/源码刷新控制；main与开放PR分叉，环境输出、纯Pod分类和真实事故证据分别记录。没有新增事故、生产部署、完整scheduler或GPU训练验证；报告静态检查不等于浏览器渲染。</p>
+<h2 id="delivery-audit-guide-v102-gang">V102：从退出分类追到 gang 重排与容量确认</h2>
+<p>固定 main eee467…；19 份完整原源码/测试/lock 归档，保留 512 份旧非 bookkeeping 文件。运行未改写的上游 test_transitions.py：33 passed、91 deselected，保留默认安全 marker 排除，单进程；原 pytest 输出 1.70 秒。完整 checkout 的 tracked 源码执行前后不变。实际部署、Hero 重试参数、逐 attempt checkpoint/游标和控制器崩溃重启仍未知。</p>
+<p>新增 <a href="gang-recovery-guide.html#gang-recovery-guide">Gang 恢复解释</a>、两条时间线 SVG、原命令/环境/XML/输出和未执行的恢复轨迹模板。全报告验证与发布产物见 analysis/release_v102.json；浏览器渲染未验证，Quick Look 缩略图不替代完整页面 QA。下一步优先补进程重启后的 SQLite 恢复和真实训练恢复链。</p>
+<h2 id="delivery-audit-guide-v103">V103：控制器重开、备份一致性与失败保护</h2>
+<p>51 项原上游用例通过（49+2）；12 项人工本地故障控制通过。固定 main eee467…，新增 14 份完整源码/测试，保留 531 份旧非 bookkeeping 文件；归档总 546。原源码未改，未运行云端集群操作。普通坏/缺失目标恢复保留原两份文件 SHA；请求回滚提前清空；auth 上传失败留下可发现的部分目录，下载返回成功与完整性探测要求不同。</p>
+<p>新增 <a href="controller-recovery-guide.html#controller-recovery-guide">控制器恢复文档</a>与机制图、逐用例/XML/日志/环境、完整原函数故障控制脚本。正常 stop 后重开有本地证据；强制杀进程、真实云传输、实际 auth 密钥影响与训练状态恢复仍未知。建议待实施，没有把源码缺口称为生产事故或上线修复。发布校验见 analysis/release_v103.json；浏览器渲染未核对。</p>
+<h2 id="delivery-audit-guide-v104">V104：恢复候选与调用链门槛</h2>
+<p>22 项本地候选控制通过：移除回滚预清空；最后写完成记录、整组尺寸/SHA 与 SQLite 校验、部分发布排除及同 epoch 覆盖拒绝。保留完整原模块副本/补丁/生成脚本/执行脚本，不改上游 checkout。旧格式拒绝是兼容缺口；原生产 Controller.begin_checkpoint 等入口尚未接入；不能宣布修复上线。</p>
+<p>新增 3 份当前 head/源码归档，保留 545 份旧非 bookkeeping 文件，总 549；新 head bb208b… 两份源码同旧基线字节一致，最新依赖未执行。浏览器渲染、云端存储、并发、强制中断、auth 密钥与训练 checkpoint 仍未验证。完整校验与发布哈希见 analysis/release_v104.json。</p>
+<h2 id="delivery-audit-guide-v105">V105：状态内容与共同快照边界</h2>
+<p>新增 4 份完整 auth/迁移/test/controller 源码，保留 548 份旧非 bookkeeping 文件，归档总 553。当前 auth 无业务表，签名 key 来自配置 secret，收紧 V103/V104 风险解释。8 项原/候选顺序快照控制通过；构造表 0/1 状态对可通过摘要与数据库检查，不代表生产 auth 不变量或真实训练错配。2 项原认证测试通过、61 未选；重建认证对象不当成完整服务重启。</p>
+<p>下一步回到训练 TrainState、异步 save 引用和 loader 完成时钟；当前真实 Hero 组件身份仍未知。发布校验见 analysis/release_v105.json；本轮未做浏览器渲染验收。</p>
+<h2 id="delivery-audit-guide-v106">V106：快照所有权的执行边界</h2>
+<p>10 项单 CPU donation 控制通过；2 组实际 donation、1 组保留视图对照、1 个显式 host 适配器分支。源码/脚本 SHA 与运行版本归档，新增 3 个完整文件，总 556；保留 552 个旧非 bookkeeping 文件。原函数 AST 执行不等于完整模块/训练入口执行；未做 GPU、TensorStore IO、多 rank、完整恢复或浏览器渲染验收。发布哈希见 analysis/release_v106.json。</p>
+<h2 id="delivery-audit-guide-v107">V107：恢复后更新身份</h2>
+<p>8 项单 CPU 小状态控制通过；原 Grug 状态/恢复/权重初始化函数与原 stage/host writer/reader，真实 Optax Adam 和本地 OCDBT。五个核心源码与冻结 eee467 完整 blob 字节一致，归档总 556，无新增源码。三参数 quadratic、单设备适配、记录 barrier、手工 metadata 均显式标注；不宣称原 Hero train_step、真实 loader、生产 publisher 或 GPU 验证。版本与发布哈希见 analysis/release_v107.json，浏览器渲染未验收。</p>
+<h2 id="delivery-audit-guide-v108">V108：数据派生与构造证据</h2>
+<p>12 项 CPU identity 控制，7 份核心源文件与冻结 eee467 blob 相同；源归档仍556。归档 W&amp;B 的 seed/data_seed 声明与实际执行 key 分开。图展示构造 key 绑定，表中变化数来自96槽人工控制，不是 Hero 数据事故或 loss 指标。DirectDatasetComponent/Axis 类型与空 cache 为适配，无真实 token、DataLoader、checkpoint 或模型执行。发布哈希见 analysis/release_v108.json；浏览器渲染未验收。</p>
+<h2 id="delivery-audit-guide-v109">V109：计分口径与后端范围</h2>
+<p>13项CPU控制，有终态退出码；因前临时环境/进程句柄已不存在，重建固定CPU依赖后重新执行。原方法请求xla_fast_bwd，但探针明确执行原CPU reference，不能计作该kernel复现。真实Hero mask与token未取得；223个文本format仅为归档声明。6份完整固定revision HTTP payload核对旧档，源归档556。计分权重和、梯度贡献、独立信息与硬件成本分别限定，发布见analysis/release_v109.json。浏览器渲染未验收。</p>
+<h2 id="delivery-audit-guide-v110">V110：进度的测量边界</h2>
+<p>V110新增范围：三issue完整评论增量核对、1000条公开采样、999区间的日历进度分解与原回调公式复算。新来源10份，旧555个非记账来源文件保持原字节；归档总数566。只补吞吐观察，没有新loss评估或工程修复。完整HTML与静态验收见本轮release记录；未执行浏览器渲染、设备性能或实际故障重放。</p>
+<h2 id="delivery-audit-guide-v111">V111：恢复后的下一次更新</h2>
+<p>V111新增19项原训练步CPU控制、状态视图图解与未执行消费者模板。继承真实本地host writer/tree reader/Grug恢复，手工metadata与记录barrier仍是适配；没有生产提交器。真实Equinox参与setter，完整模型loss/QB估计由人工目标替代。EMA共享叶错误与成功对照均保留，不称为Hero事故或已合入修复。外部归档566项未改变，浏览器渲染未验证。</p>
+<h2 id="delivery-audit-guide-v112">V112：初始化与恢复的构造路径</h2>
+<p>V112新增15项五路径CPU控制、共享与独立缓冲区记账图，以及只复制初始EMA的局部候选。人工状态逻辑116字节，共享路径按观测指针去重92字节，独立路径116字节；不是内存峰值。全部来源566项未变，官方JAX说明另给在线链接。真实Hero EMA事故、生产性能/峰值、GPU和上游修复集成仍未知；浏览器渲染未验证。</p>
+<h2 id="delivery-audit-guide-v113loss">V113：有限loss与路由状态</h2>
+<p>V113新增13项原训练闭包/路由/真实Adam/本地IO检查和三步图；执行原loop loss谓词，未执行完整loop、生产callbacks/checkpointer。人工beta输出替代原估计器，不能据此认定生产可达性或Hero事故。有限性候选仅本地JIT诊断，无分布式策略/性能/上游集成。旧566来源不变，浏览器渲染未验证。</p>
+<h2 id="delivery-audit-guide-v114">V114：原估计器输入边界</h2>
+<p>V114执行原QB histogram wrapper及单CPU真实collective接口，9项控制区分空有效集合、无效位置排除、有效异常传播，以及有限极端margin导致的beta/bias溢出。未执行实际Hero margin构造或跨host归约，未认定生产事故或修复。检查margin范围、beta与应用后bias分别记录；padding过滤不代替有效输入健康性验收。<a href="qb-guide.html#qb-guide">完整原值与机制</a>。566份来源未变。</p>
+<h2 id="delivery-audit-guide-v115">V115：归约一致与近似误差</h2>
+<p>V115执行四虚拟CPU设备的原histogram，11项控制：单/四设备、跨分片重排、空分片与padding过滤一致；其他专家的人工离群值扩大共同网格，精确参考阈值未变而histogram阈值与固定query专家集合改变。有限与归约一致不等于估计近似稳定。配比研究应另记margin分布、箱宽及参考误差，不能直接将人工例子解释为真实数据域问题。未测GPU/网络/完整模型或性能；566份来源保持。<a href="qb-guide.html#qb-guide">原值与分析</a>。</p>
+<h2 id="delivery-audit-guide-v116margin">V116：margin的原投影入口</h2>
+<p>V116执行原模型router投影/top-k/margin与真实四CPU histogram，9项控制。明确QB使用原logits减带bias alpha，sigmoid只用于combine；零bias E3/K2的每行margin最小值为0，非零bias可有负margin。满足原局部路径约束的人工离群值仍能改变共享网格，但较小离群值的阈值误差变化未改变共同query专家集合。未运行完整模型或真实域/能力对照，566份来源不变。<a href="qb-guide.html#qb-guide">完整原值与边界</a>。</p>
+<h2 id="delivery-audit-guide-v117">V117：目标与路由人口分开记账</h2>
+<p>V117接原causal目标mask、attention有效性、投影margin和四CPU histogram，9项控制：只改loss_weight不改变QB有效人口；零直接目标位置仍可改变阈值。boolean空query与additive mask的有效性合同不同。每域输入/路由有效/正目标/加权目标分开记录，不静默将prompt改为padding。本轮人工answer-only不是Hero配方，未测attention、完整梯度或能力收益；566份来源不变。<a href="boundary-guide.html#boundary-guide">原值及边界</a>。</p>
+<h2 id="delivery-audit-guide-v118">V118：研究收束为训练决策</h2>
+<p>新增<a href="training-decisions-guide.html#training-decisions-guide">训练决策备忘录</a>：六类症状的最小对照、#9352评估修正但排序不变的数值案例、配比五本账及供体/顺序/独立确认管线。将继续观察、废弃候选、进入放大验证分开，不给未执行实验判通过。新增机器可读案例只复算既有作者报告，无新训练、生产采用或最优配比结论；566份来源保持。</p>
+<h2 id="delivery-audit-guide-v119">V119：评估补丁的调用合同</h2>
+<p>固定作者最终fork补丁，执行原setter、runner、StepInfo与tagged callback的15项CPU控制：current/EMA视图正确且raw state不改，普通/未到期回调无QB应用；评分去重前已执行setter，装饰器会转发force。当前两种eval hook兼容，人工plain hook不兼容，不归为生产事故。完整循环、GPU、实际成本与生产采用未验证。7份新来源，API正文未变，来源总数573。<a href="pending-resume-guide.html#pending-resume-guide">局部结果与工程规则</a>。</p>
+<h2 id="delivery-audit-guide-v120key">V120：删域响应依赖参照，过期历史也参与key分配</h2>
+<p>重算80次删域的54字段4320行响应；两套参照下Paloma/GSM8K/HumanEval方向反转分别6/9/31个域，均非显著性结论。真实配置保留过去的正权重阶段，原函数条件复算仍给200桶相同命名child key；剪历史反事实才过滤额外桶并改变key。11项分析控制、16000条key记录和新响应图；不归因为历史事故或535B配比最优解。<a href="practical.html#practical">原值、源码与可执行规则</a>。</p>
+<h2 id="delivery-audit-guide-v121">V121：配比边界早于共同恢复点</h2>
+<p>新取得生产run声明0/3120阶段，与80份续训的0/384/3120不同；日志前沿对应393次更新。原49,152槽混合块条件复算显示部分块前缀计数和逻辑身份不同，不能扩大为真实重复token事故。直接改393违反原整块assert；step432桥接合法但改变39次续训更新和预算，仍未执行。12项控制、逐桶原值与时间线；实际checkpoint、历史key及训练收益未知。<a href="batch-clock-guide.html#batch-clock-guide">恢复边界与部分块</a>。</p>
+<h2 id="delivery-audit-guide-v122">V122：历史源码与恢复证据</h2>
+<p>V122新增11份来源，两份run目录和代码清单、两份日志、五个关键源码文件；8项谱系控制及12项历史源码条件重算通过。源码目录中含依赖清单条目，未下载整套环境。新增解释文档、证据分层图和未执行谱系模板。真实imports、checkpoint内容和token未验证。</p>
+<h2 id="delivery-audit-guide-v123seed">V123：随机流与seed语义</h2>
+<p>V123新归档8份来源，总计593份。两套CPU环境分别9项局部控制、5项跨版本比较；每版本1600条child key记录。新增随机流解释图和未执行模板。相同依赖版本只匹配所选JAX/JAXlib/NumPy，不等于完整历史环境或GPU复现。</p>
+<h2 id="delivery-audit-guide-v124">V124：模拟子集与恢复数据流</h2>
+<p>V124新增2份来源，总计595份。9项JAX0.11CPU控制执行实际shuffle/slice/restart而非仅记录key；结果包含人工身份集合与重复直方图。恢复状态schema与重建顺序为源码审查，未执行模型恢复。新增数据谱系与子集评审模板；无实际token重复数或loss因果结论。</p>
+<h2 id="delivery-audit-guide-v125io">V125：前缀抽样支持与IO布局</h2>
+<p>V125在既有历史源上新增9项CPU和数学控制，595份来源未变。新增两面板科学图、全量原值与前缀抽样模板。解析等概率无放回基准仅为比较，不作显著性检验或训练质量评分；真实代表性和性能仍未知。</p>
+<h2 id="delivery-audit-guide-v126">V126：实验改变了什么</h2>
+<p>新增综合实验设计文档并置于HTML第三章，前两章保持结论与训练决策。更新过期主叙述；历史数值、来源和既有控制结果保持。本轮无新增来源、无模型训练、无新的收益或显著性主张；浏览器视觉验收未执行。</p>
+<h2 id="delivery-audit-guide-v127">V127：配置断言与执行模式</h2>
+<p>新增配置执行模式专题与两份CPU原值、可重跑探针及Make入口。11项控制在普通与实际-O探针启动下均通过；选中原函数体分别显式编译级别0/1/2。595份归档来源不改，无新增训练、GPU执行、上游部署或浏览器视觉验收。</p>
+<h2 id="delivery-audit-guide-v128">V128：桶级权重的数值合同</h2>
+<p>新增桶级权重数值专题、原函数探针及JSON原值，HTML位于前部。13项CPU控制含11种输入、两项顺序反转及五份真实阶段权重比较；真实阶段边界人工重映射，仅比较归一化/配额。595份来源保持，无新训练、GPU结果、上游部署或浏览器视觉验收。</p>
+<h2 id="delivery-audit-guide-v129manager">V129：异步manager与任务级失败</h2>
+<p>新增JAX依赖原文件、双清单绑定记录、原类体探针和10项控制。包含真实Python线程及32字节TensorStore内存KV提交，不含模型checkpoint、分布式barrier、GPU或RSS。更新15案中保存内存的本地证据范围；来源596，旧594份非bookkeeping字节保留。</p>
+<h2 id="delivery-audit-guide-v130">V130：保存调度与失败策略</h2>
+<p>新增保存故障策略文档、原方法组合探针及11控制原值。源码596份保持；固定Marin快照与上传依赖并非已证实历史部署组合。实际广播、serializer、metadata、清理队列与删除替换为单进程/虚拟事件，不能称为真实checkpoint恢复或生产修复。</p>
+<h2 id="delivery-audit-guide-v131">V131增量审计</h2>
+<p>同一固定提交的训练循环、progress_event_scope、emit_event共11项人工CPU控制通过；包括双故障链、通知中断、else异常边界和保存失败时的FINISHED事件。未执行完整外围资源上下文、真实JAX训练、真实checkpoint IO或生产hook；未新增来源。阅读入口 <a href="exception-provenance-guide.html#exception-provenance-guide">异常链与恢复归因</a>。页面结构核对与报告验证见本版本账本；没有本轮浏览器渲染验收。</p>
+<h2 id="delivery-audit-guide-v132">V132增量审计</h2>
+<p>12项控制覆盖真实本地OCDBT小状态、原发现/布局hook/严格reader/恢复策略和原Shape模板guard。11个调用案例；metadata手工构造，初始化器与barrier记录适配；无完整训练、生产写入删除或Hero事故确认。来源未新增、旧探针结果未覆盖。<a href="optional-resume-guide.html#optional-resume-guide">正文与复现</a>。</p>
+<h2 id="delivery-audit-guide-v133">V133增量审计</h2>
+<p>新增同固定提交scheduler源码1份（23388字节），旧595份非bookkeeping来源字节保留。14项原scheduler/build/真实Optax控制；单叶Adam组、未选组identity、路径适配、内存state转交。无磁盘恢复、完整模型或训练loss。本轮HTML结构检查与报告验证见发布账本，未做浏览器渲染验收。<a href="optimizer-schedule-guide.html#optimizer-schedule-guide">正文</a>。</p>
+<h2 id="delivery-audit-guide-v134">V134增量审计</h2>
+<p>16项CPU控制、16个人工配置及一份归档声明对照；候选显式单位和8个preflight反例仅本地执行。新增双面板科学SVG/PNG并实际查看PNG；HTML仅结构与链接核对。597份来源归档条目不变，无配置parser、真实GPU或语言loss结果。<a href="schedule-config-guide.html#schedule-config-guide">正文</a>。</p>
+<h2 id="delivery-audit-guide-v135">V135增量审计</h2>
+<p>11项已有终点聚合/删seed复算，新增确认手册与配比×优化计划四臂待执行模板；没有模型训练、集群启动或能力验证。数据指南的历史阶段措辞改为归档语境。来源597条不变，旧材料字节保留；HTML仅结构/链接核对，无本轮浏览器验收。</p></section><nav class="pager"><a href="provenance.html">← 上一篇</a><a href="improvement.html">下一篇 →</a></nav></main></body></html>

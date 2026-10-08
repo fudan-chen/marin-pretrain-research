@@ -1,0 +1,124 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>配置校验也有执行模式：assert 消失以后会读到什么 · Marin 预训练研究</title><link rel="stylesheet" href="reading.css"></head><body><header><nav><a href="index.html">主题目录</a><a href="../report_standalone.html">完整报告（保留）</a><a href="code.html">源码与候选补丁</a><a href="tools.html">交互工具</a></nav></header><main><p class="muted"><a href="theme-input.html">03 · 数据管线与实际曝光</a> / 本页只含一篇专题</p><details class="chapter-toc"><summary>本篇目录</summary><ol><li><a href="#assertion-contracts-guide-_1">一、用了哪些源码，怎样执行</a></li><li><a href="#assertion-contracts-guide-_2">二、最有用的反例：没有越界异常，身份却重复了</a></li><li><a href="#assertion-contracts-guide-0restart">三、首阶段不从0开始，restart还可能掩盖负位置</a></li><li><a href="#assertion-contracts-guide-_3">四、不是所有校验都会消失</a></li><li><a href="#assertion-contracts-guide-_4">五、怎样修，如何确认修复没有改合法训练</a></li><li><a href="#assertion-contracts-guide-_5">六、对自己的预训练有什么具体影响</a></li></ol></details><section class="chapter" id="assertion-contracts-guide"><h1 id="assertion-contracts-guide-assert">配置校验也有执行模式：assert 消失以后会读到什么</h1>
+<p>预训练中的关键约束不仅要写进代码，还要确认它在实际启动方式下生效。历史上传源码用<code>assert</code>要求阶段从0开始、后续阶段按混合块对齐且严格递增；模拟预算与训练/验证切分的互斥也用<code>assert</code>。Python的优化模式会移除断言，因此这些约束不能单凭“源码里有检查”就认定一直有效。<a href="https://docs.python.org/3/using/cmdline.html#cmdoption-O" rel="noopener" target="_blank">Python官方说明</a></p>
+<p><strong>本轮确认的是执行模式下的局部失效路径，没有确认历史Hero启用了优化模式。</strong> 原代码在普通模式会拒绝下面的非法输入。问题不涉及GPU kernel调优；这里的“优化”特指Python编译级别，不是JAX的数值优化。</p>
+<h2 id="assertion-contracts-guide-_1">一、用了哪些源码，怎样执行</h2>
+<p>采用已经绑定producer与一个continuation代码artifact的历史<a href="code-67b27eb258a591ab.html"><code>mixture.py</code></a>和<a href="code-2f8107e74160d454.html"><code>datasets.py</code></a>，来源字节保持不变。执行完整<code>MixtureDataset</code>类体、原块排列函数与<code>LmDataConfig.__post_init__</code>原函数体，分别显式指定<code>compile(..., optimize=0/1/2)</code>。Python官方定义优化级别1移除assert，级别2还移除docstring。<a href="https://docs.python.org/3.12/library/functions.html#compile" rel="noopener" target="_blank">编译接口</a></p>
+<p>依赖适配为最小AsyncDataset基类、StopStrategy常量、CPU mesh空上下文及value future；两个子集返回严格有限身份A:0…99、B:0…99。JAX 0.11.0运行于CPU。主例关闭块内随机化，以便逐项读出索引；这是构造参数支持的诊断设置，不代表生产配置。没有导入完整训练入口、读取实际缓存、执行模型更新或测量loss。</p>
+<p><a href="code-c1e44accdcdc7180.html">探针</a>与<a href="../analysis/assertion_contracts_cpu.json">全部原值</a>保留源码SHA、逻辑索引、实际返回身份、累计计数与异常类型。探针自身的验收使用显式异常，避免其检查也被优化级别移除。11项控制通过，范围限于下面的合同。探针还分别以普通解释器与实际<code>-O</code>启动各执行一次；两份输出除探针解释器优化级别外完全一致。<a href="../analysis/assertion_contracts_optimized_probe.json">优化启动原值</a>保存实际级别1。</p>
+<h2 id="assertion-contracts-guide-_2">二、最有用的反例：没有越界异常，身份却重复了</h2>
+<p>混合块大小为8，阶段声明为：</p>
+<pre><code class="language-text">槽0开始：只读A
+槽9开始：只读B
+槽17开始：只读A
+</code></pre>
+<p>正常编译级别0在构造时触发AssertionError，尚未读取。级别1/2移除阶段断言，原方法接受这份配置，读取32槽得到：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>输出槽</th>
+<th>选择阶段</th>
+<th>实际读取身份</th>
+<th>对累计账本的影响</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0–7</td>
+<td>槽0的A阶段</td>
+<td>A:0…7</td>
+<td>A实际读8条</td>
+</tr>
+<tr>
+<td>8–15</td>
+<td>仍是槽0的A阶段</td>
+<td>A:8…15</td>
+<td>A实际累计16条</td>
+</tr>
+<tr>
+<td>16–23</td>
+<td>槽9的B阶段</td>
+<td>B:0…7</td>
+<td>B实际读8条</td>
+</tr>
+<tr>
+<td>24–31</td>
+<td>槽17的A阶段</td>
+<td>A:8…15</td>
+<td>重复此前8条A身份</td>
+</tr>
+</tbody>
+</table></div>
+<p>原因可以逐行对上：</p>
+<ol>
+<li><code>_get_stage_for_block</code>用<strong>块起点</strong>寻找阶段。第二块起点8小于9，整块继续用A；第三块起点16落在B阶段。</li>
+<li><code>_initialize_stage_counts</code>却用<code>(next_start−start)//block_size</code>累计阶段预算。A阶段按<code>9//8=1</code>块计算，只记A8条；实际块选择已经读了A16条。</li>
+<li>回到A阶段时，<code>_index_into_dataset_for_id</code>从累计A8条继续；该块相对槽17的局部偏移为<code>(24−17)//8=0</code>。因此又读A:8…15。</li>
+</ol>
+<p>这不是正当的有限库循环：A库存有100条，32槽远未耗尽；重复来自非法阶段触发的账本与块选择不一致。32个返回值全部在合法库存范围内，严格子集的越界检查也没有报错。因此，只验证“dataset可读”“索引没越界”或“batch形状正确”，不足以确认曝光账本正确。</p>
+<p>原实现依赖整块约束使两种计算一致。<strong>不能把移除断言解释成支持任意阶段边界。</strong> 若真的需要块内切换，必须重新设计部分块分配、累计偏移及恢复合同；删掉assert没有完成这项工作。</p>
+<h2 id="assertion-contracts-guide-0restart">三、首阶段不从0开始，restart还可能掩盖负位置</h2>
+<p>另一个人工输入只有阶段<code>(8, A=1)</code>。普通模式拒绝；优化级别1/2接受。</p>
+<p>块0仍被选为首阶段，但局部块偏移是<code>(0−8)//8=−1</code>，生成A的逻辑索引−8…−1。有限库restart随后执行<code>idx % 100</code>，实际返回A:92…99。底层严格identity store看到的是合法正索引，因此没有越界异常。</p>
+<p>这说明恢复/读取审计要同时保留<strong>取模前的逻辑位置与取模后的物理身份</strong>。合法的多轮曝光当然可以取模；这里的负位置则源于不满足初始阶段合同。把“restart最终读到了合法数据”当作位置正确，会漏掉这一层错误。</p>
+<h2 id="assertion-contracts-guide-_3">四、不是所有校验都会消失</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>配置或保护</th>
+<th>级别0</th>
+<th>级别1/2</th>
+<th>支持的判断</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>合法阶段0/8/16</td>
+<td>接受</td>
+<td>接受，32槽轨迹完全相同</td>
+<td>这份合法输入不因所选编译级别改变轨迹</td>
+</tr>
+<tr>
+<td>阶段0/9/17</td>
+<td>AssertionError</td>
+<td>接受，重复8个身份</td>
+<td>对齐合同依赖assert</td>
+</tr>
+<tr>
+<td>首阶段从8开始</td>
+<td>AssertionError</td>
+<td>接受，负逻辑位置被取模</td>
+<td>起点合同依赖assert</td>
+</tr>
+<tr>
+<td>模拟预算与num_validation_sequences同时设置</td>
+<td>AssertionError</td>
+<td>原post_init接受</td>
+<td>配置互斥合同依赖assert；未执行完整训练入口</td>
+</tr>
+<tr>
+<td>权重键不在组件集合</td>
+<td>ValueError</td>
+<td>ValueError</td>
+<td>显式异常保留</td>
+</tr>
+<tr>
+<td>MixtureDataset子集字典为空</td>
+<td>ValueError</td>
+<td>ValueError</td>
+<td>显式异常保留</td>
+</tr>
+</tbody>
+</table></div>
+<p>互斥配置行只执行初始化方法，不能扩大成“组合配置已成功训练”。其他入口检查或后续读取仍可能拒绝。历史两个上传文件还含有内部一致性、长度与batch限制的assert，原值附行号清单；本轮没有逐条执行它们的失败路径，不能把清单长度叫已验证漏洞数。</p>
+<h2 id="assertion-contracts-guide-_4">五、怎样修，如何确认修复没有改合法训练</h2>
+<p>候选处理是将<strong>外部配置前置条件</strong>改为显式<code>if not condition: raise ValueError(...)</code>。本轮对MixtureDataset初始化的三处断言与LmDataConfig互斥断言做了局部AST转换，在级别0/1/2分别执行：合法0/8/16轨迹与原普通模式一致；未对齐、非零起点及互斥配置均被ValueError拒绝。</p>
+<p>这是反事实候选控制，没有修改归档源码、提交上游补丁或部署到生产。将AssertionError改为ValueError还会改变异常类型；集成时需要检查配置解析器、重试策略与调用者是否依赖原异常类型。应在构造数据流之前报出阶段索引、实际值、块大小和相关配置字段，使失败可定位。</p>
+<p>不能据此建议机械替换全部assert。内部程序不变量与用户配置错误具有不同含义，需逐处判断；如果算法本身不支持部分块，显式拒绝就是诚实的接口合同。生产入口也可记录解释器优化级别，但记录或禁止优化模式不能代替底层显式校验，因为其他调用者可能直接构造数据对象。</p>
+<h2 id="assertion-contracts-guide-_5">六、对自己的预训练有什么具体影响</h2>
+<ul>
+<li>冻结执行身份时，除Python/JAX版本、源码和配置外，记录实际启动参数、解释器优化级别与相关环境；历史配置文件不能证明这些值。</li>
+<li>配比启动预检应在完整数据对象构造前拒绝非法阶段，随后用已绑定的身份轨迹核对整数曝光与恢复位置。不要把一次成功读取当作整个合同通过。</li>
+<li>设计顺序实验时，“必须整块对齐”是算法前置条件；当前源码的普通模式会执行它。绕过检查之后产生的结果不能进入配比优劣比较。</li>
+<li>日志/验收工具自身的重要失败检查使用不会被优化模式移除的路径。本报告现有检查脚本仍有assert，不能将它们在<code>-O</code>下未报错作为等价验收证据；本轮探针仅为自身新增检查避免了这一问题。</li>
+</ul>
+<p>下一步真正会改变事故判断的材料，是历史启动参数、实际导入文件及失败/恢复输入。现有材料不足以说Hero发生过断言绕过，也没有测量其loss或能力后果。</p></section><nav class="pager"><a href="mixture-range-guide.html">← 上一篇</a><a href="weight-domain-guide.html">下一篇 →</a></nav></main></body></html>

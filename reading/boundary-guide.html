@@ -1,0 +1,216 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>源码深读：文档边界、可见上下文与有效目标 · Marin 预训练研究</title><link rel="stylesheet" href="reading.css"></head><body><header><nav><a href="index.html">主题目录</a><a href="../report_standalone.html">完整报告（保留）</a><a href="code.html">源码与候选补丁</a><a href="tools.html">交互工具</a></nav></header><main><p class="muted"><a href="theme-input.html">03 · 数据管线与实际曝光</a> / 本页只含一篇专题</p><details class="chapter-toc"><summary>本篇目录</summary><ol><li><a href="#boundary-guide-1-attention">1. 禁止跨文档 attention，并没有取消跨文档目标</a></li><li><a href="#boundary-guide-2-loss">2. Loss有效性与路由有效性为何不同</a></li><li><a href="#boundary-guide-3-paddingtile">3. 左侧padding为什么能破坏tile跳过优化</a></li><li><a href="#boundary-guide-4-segment">4. segment编号必须满足表示法的假设</a></li><li><a href="#boundary-guide-5-prompt">5. Prompt权重也使用“预测位置”坐标</a></li><li><a href="#boundary-guide-6">6. 怎样把这些检查接到配比实验</a></li><li><a href="#boundary-guide-attentionshortconv">补充：attention之外还要检查ShortConv</a></li><li><a href="#boundary-guide-v117qb">V117：目标权重为零，仍可能参与QB与下一批路由</a></li><li><a href="#boundary-guide-booleanadditive-mask">Boolean与additive mask不是等价的有效性编码</a></li><li><a href="#boundary-guide-_2">对配比与顺序的含义</a></li></ol></details><section class="chapter" id="boundary-guide"><h1 id="boundary-guide-_1">源码深读：文档边界、可见上下文与有效目标</h1>
+<p>同样的 token 配比，可能因为文档长度、EOS、打包和 padding 产生不同的有效训练任务。本章把三个问题分开：某个 query 能看到哪些 key，某个位置预测的目标是否参与 loss，某个位置是否进入专家路由。它们有联系，但不是同一张 mask。</p>
+<p>源码固定于 <code>84869ae8c91ffe64e9f761c5bd714542eb1876e0</code>。新增七份源文件，原函数探针见 <a href="code-f287c9d09a52603d.html">probe_boundaries.py</a>，17项本地检查及逐位置矩阵见<a href="../analysis/boundary_probe.json">原值 JSON</a>。函数体沿用原代码，NumPy、函数式 <code>.at.set</code>、关联扫描和轻量对象替代 JAX/Equinox；本机没有执行 attention 内核、反向或真实 token cache。七份源码通过 Python 3.12 语法检查。</p>
+<h2 id="boundary-guide-1-attention">1. 禁止跨文档 attention，并没有取消跨文档目标</h2>
+<p>六个 ladder 公开配置均启用 <code>block_cross_document_attention</code>。<code>GrugLmExample.causal</code> 在给定 EOS 时，以“前一位置为 EOS”生成新 segment：EOS 属于旧文档，它后面的 token 才属于新文档。attention 限制 query 和 key 的 segment 相同，再叠加 causal/window 条件。<a href="https://github.com/marin-community/marin/blob/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/data/text/examples.py#L113" rel="noopener" target="_blank">样本构造</a></p>
+<p>可是 loss 使用当前位置预测下一位置。构造器没有因为下一 token 属于另一个 segment，就把当前位置的 loss 权重设为零。原函数探针给出如下输入，其中99只是人工指定的EOS编号，并非声称是Marin tokenizer的真实ID：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th style="text-align: right;">位置</th>
+<th style="text-align: right;">输入token</th>
+<th style="text-align: right;">segment</th>
+<th style="text-align: right;">预测目标</th>
+<th style="text-align: right;">loss权重</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">99 / EOS</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">99 / EOS</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">22 / 新文档首token</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">22</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">23</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">无真实后继</td>
+<td style="text-align: right;">0</td>
+</tr>
+</tbody>
+</table></div>
+<p>位置2看不到文档0，但位置1仍用旧文档上下文预测新文档首token。关掉跨文档限制后，attention可见性变化，loss权重仍是<code>[1,1,1,0]</code>。所以“独立文档attention”与“完全独立文档似然目标”不能互换。<a href="code-33b0a2bb50b079f6.html">mask实现</a></p>
+<p>这并不自动构成bug：连续文本流可以有意保留这种边界目标；若cache插入BOS、EOS或其他标记，目标含义又会变化。<strong>当前没有读取真实cache边界，不能宣称Hero实际优化了哪一种跨文档首token目标。</strong> 配置中开启隔离也不足以证明每条真实样本含有正确EOS或segment。</p>
+<p>对配比的直接启示是，短文档比例变化可能改变边界目标的数量，即使名义token比例相同。若要比较连续流与完全独立文档目标，应把边界目标作为一个明确干预，并重新核对有效target数；不能同时改mask、配比和预算，却把收益全部归到质量档。</p>
+<h2 id="boundary-guide-2-loss">2. Loss有效性与路由有效性为何不同</h2>
+<p>给定右侧padding的segment <code>[0,0,1,1,-1,-1]</code>，构造器用“下一位置segment非负”屏蔽预测padding的loss，再屏蔽序列末位。探针得到loss权重<code>[1,1,1,0,0,0]</code>，而路由有效性为<code>[真,真,真,真,假,假]</code>。</p>
+<p>第四个真实token虽然没有可计分的下一个目标，它仍是真实输入位置。零loss权重也可能表示prompt、被忽略的目标或其他训练约定，不能直接拿来删除路由输入。<a href="https://github.com/marin-community/marin/blob/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/grug/attention/_core.py#L145" rel="noopener" target="_blank">路由有效性函数</a></p>
+<p>左侧padding还有另一种边界。segment <code>[-1,-1,0,0,1,1,-1]</code>，未额外给定loss权重时，构造器得到<code>[0,1,1,1,1,0,0]</code>：第二个padding输入位置的后继是真实token，所以单凭“后继非padding”规则仍可能给它loss权重。实际上游权重可能已经屏蔽了该位置；这个例子仅检验构造器，不证明真实训练存在这一输入。</p>
+<p>如果任务要求排除所有padding query的目标，应检查完整上游权重链，明确是否还需要query-valid约束。不要凭一个零值token判断padding——真实token ID也可能为零，源码使用负segment表达padding。</p>
+<h2 id="boundary-guide-3-paddingtile">3. 左侧padding为什么能破坏tile跳过优化</h2>
+<p>FA4/CuTe路径把packed causal attention压缩成每个query的key下界与valid标记，而不是生成整张平方矩阵。某个query的下界来自文档起点；局部attention再取窗口下界的较大值。窗口W包含自身和前面W−1个位置。<a href="https://github.com/marin-community/marin/blob/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/grug/attention/_fa4_cute.py#L80" rel="noopener" target="_blank">下界计算</a></p>
+<p>问题出在tile级跳过：若tile首个query是左侧padding，给它“下界=序列长度”的哨兵，可能让tile后面的真实query也跳过所有key tile。固定源码为无效query传递后面有效query的下界，同时保留valid=false；尾部padding继续用哨兵。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>segment</th>
+<th style="text-align: right;">−1</th>
+<th style="text-align: right;">−1</th>
+<th style="text-align: right;">0</th>
+<th style="text-align: right;">0</th>
+<th style="text-align: right;">1</th>
+<th style="text-align: right;">1</th>
+<th style="text-align: right;">−1</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>原函数下界</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">7</td>
+</tr>
+<tr>
+<td>kernel valid</td>
+<td style="text-align: right;">假</td>
+<td style="text-align: right;">假</td>
+<td style="text-align: right;">真</td>
+<td style="text-align: right;">真</td>
+<td style="text-align: right;">真</td>
+<td style="text-align: right;">真</td>
+<td style="text-align: right;">假</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>较小下界没有把padding变成真实token。</strong> 下界负责安全跳过计算，valid才决定位置有效性。我们执行原下界函数，复现上表，并在真实query/key区域与dense mask比较一致；没有运行GPUtile优化。<a href="code-eef895a4ac24e0d9.html">上游左padding测试</a>还包含真实GPU测试，本机未执行。</p>
+<h2 id="boundary-guide-4-segment">4. segment编号必须满足表示法的假设</h2>
+<p>Dense mask按segment编号相等判断可见性；压缩下界按相邻编号变化识别连续文档起点。若在同一序列中复用已结束的ID，如<code>[0,0,1,0]</code>，dense语义允许最后一个query看到前面的0号位置，压缩下界则把最后一个0视为新连续段。原函数探针发现两个真实query/key位置不一致。</p>
+<p>这是假输入反例，<strong>没有证明Hero生成了复用ID</strong>。它说明自定义打包器应保证每个文档对应一个连续、不会被后续文档复用的编号段，或显式重新编号。有效输入上的mask对照通过，不能覆盖打包器不变量之外的输入。</p>
+<h2 id="boundary-guide-5-prompt">5. Prompt权重也使用“预测位置”坐标</h2>
+<p><code>prompt_length=3</code>、序列长度5时，原构造器的loss权重为<code>[0,0,1,1,0]</code>。第一个completion token位于输入索引3，但预测它的是索引2，所以从prompt_length−1开始计分。直接按输入token位置制作权重，会错过第一个completion目标，或多计一个prompt目标。</p>
+<p>布尔dense mask的全假query行可以表明padding；加性mask则不能无歧义地表达query有效性，原路由辅助函数将其视为全有效。因此自定义mask必须同时检查实际attention输出与token-valid接口，不要只看一个带−∞的矩阵。<a href="../analysis/boundary_probe.json">构造与validity原值</a></p>
+<h2 id="boundary-guide-6">6. 怎样把这些检查接到配比实验</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>验收项</th>
+<th>必须保留的证据</th>
+<th>为什么影响配比结论</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EOS/BOS与segment</td>
+<td>tokenizer、真实cache边界片段、ID与编号生成</td>
+<td>决定跨文档可见性及首token目标</td>
+</tr>
+<tr>
+<td>三种有效性</td>
+<td>attention mask、loss权重、路由valid逐位置对照</td>
+<td>避免把零loss当padding或把padding当真实输入</td>
+</tr>
+<tr>
+<td>编号不变量</td>
+<td>连续段、ID复用、q/kv对应、padding范围</td>
+<td>压缩表示可能有不同适用范围</td>
+</tr>
+<tr>
+<td>有效曝光</td>
+<td>名义token、真实query、计分target、边界target</td>
+<td>同样token预算可能对应不同训练目标数</td>
+</tr>
+<tr>
+<td>输入边界测试</td>
+<td>左/右padding、全padding、短文档、窗口、prompt长度</td>
+<td>常规无padding样本无法覆盖边缘错误</td>
+</tr>
+<tr>
+<td>backend一致性</td>
+<td>有效输入上的dense/压缩mask及前向/梯度</td>
+<td>mask正确仍不等于内核计算正确</td>
+</tr>
+</tbody>
+</table></div>
+<p>当前读取到的<code>TokenSeqDataset</code>用cache扁平长度除以seq_len取整，再按固定长度取切片；显式packing则走另一条带segment的路径。不要把连续流切片和文档打包混成一种数据处理。不同component的format/pack、尾部余数及已有权重还需逐项追踪。<a href="code-6f756ed49d697f15.html">dataset路径</a></p>
+<p>本轮的结论是：<strong>数据质量和配比之外，预处理还定义了上下文边界与计分目标。</strong> 解释loss前，先确定它到底在评价哪种任务。下一步需要把公开component的format/pack配置、tokenizer特殊标记与真实缓存样本对应起来；本轮没有把人工边界反例写成生产故障，也没有新的配方收益结果。</p>
+<h2 id="boundary-guide-attentionshortconv">补充：attention之外还要检查ShortConv</h2>
+<p>六份ladder启用K/attention输出/MLP输出三处ShortConv。模型将segment IDs传入卷积，但卷积自己执行tap两端ID比较；context shard还需要同时交换激活与segment halo。非连续ID重用、identity初始化遮蔽、分片梯度舍入分别见<a href="short-conv-guide.html#short-conv-guide">ShortConv深读</a>。不能把attention隔离验收替代整个模型的文档隔离验收。</p>
+<h2 id="boundary-guide-v117qb">V117：目标权重为零，仍可能参与QB与下一批路由</h2>
+<p>本章此前区分attention可见性、loss目标和路由有效性。V117把原<code>token_validity_from_attention_mask</code>、原<code>causal_loss_mask</code>、原投影/top-k/margin与四CPU原histogram接起来，实际核对这几个集合。<a href="../analysis/qb_target_validity_cpu.json">9项CPU控制</a> · <a href="../analysis/qb_target_validity_cpu_output.txt">完整输出</a> · <a href="code-dbaee7b72f8d972f.html">脚本</a>。这是人工answer-only配方，不能据此声称Hero预训练采用answer-only数据；V109归档的component声明仍保留原结论。</p>
+<p>冻结训练入口把<code>batch.loss_weight</code>交给loss，同时单独传<code>mask=batch.attn_mask</code>。原Block则从attention mask计算token_valid，再交MoE路由、统计和QB。这里没有把loss_weight传给QB：零直接目标权重并不自动排除前向token。</p>
+<p>本例两条长度4序列，共8个输入位置。原causal mask的密集目标为每条<code>[1,1,1,0]</code>；人工prompt_length=3后为<code>[0,0,1,0]</code>。router输入与attention有效性不变时，估计器看到的都是8个有效token。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>人工控制</th>
+<th style="text-align: right;">正目标位置数</th>
+<th style="text-align: right;">路由有效数</th>
+<th style="text-align: right;">目标零但路由有效数</th>
+<th>原hist beta（约）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>密集causal目标</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">2</td>
+<td>[0.199973,0.399973,0.000013]</td>
+</tr>
+<tr>
+<td>仅答案位置目标</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">6</td>
+<td>相同</td>
+</tr>
+<tr>
+<td>全部目标权重为零</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">8</td>
+<td>相同</td>
+</tr>
+<tr>
+<td>在prompt零目标位置加入logit离群值</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">6</td>
+<td>[33.333324,38.095226,33.333324]</td>
+</tr>
+<tr>
+<td>同一离群位置用boolean attention标为padding</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">5</td>
+<td>恢复到基线附近；误差小于1e-7</td>
+</tr>
+<tr>
+<td>同一boolean mask转为additive表示</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">8</td>
+<td style="text-align: right;">6</td>
+<td>与离群控制相同</td>
+</tr>
+</tbody>
+</table></div>
+<p>只改loss权重的前三行没有改变margin或QB有效集合，因此阈值相同。第四行只改一个loss_weight=0位置的人工router logit，该位置仍属于attention有效token，进入范围与计数，改变beta。第五行才真正从QB集合排除该位置；此处改变attention有效性是第二项干预，不是“更准确地解释零loss权重”。不能在配比对照中静默把零目标prompt当padding。</p>
+<p>第三行也不能解释为训练实现应推进或跳过全零目标批：本轮没有执行完整loss、分母归约或原优化器更新，只核对mask与估计器接口。要讨论空目标训练语义，仍需结合<a href="zero-gradient-state-guide.html#zero-gradient-state-guide">零目标与状态时钟</a>，不能用QB返回非零阈值代替loss验收。</p>
+<h3 id="boundary-guide-booleanadditive-mask">Boolean与additive mask不是等价的有效性编码</h3>
+<p>原helper对boolean dense mask用每个query是否存在allowed key判定padding；对additive mask无法无歧义推断query有效性，明确返回all-valid。本轮仅执行None/boolean/additive分支，<code>AttentionMask</code>类以类型哨兵替代，没有执行结构化mask类。</p>
+<p>因此，表中additive表示即使某query所有元素都为−Inf，helper仍将它记为有效token。这里只确认原接口合同，不是验证其attention前向数值、也不是认定生产mask转换bug。若希望additive mask同时表达padding，需要另行明确有效性来源并验收，不能假定路由会从−Inf自动推断。</p>
+<h3 id="boundary-guide-_2">对配比与顺序的含义</h3>
+<p>V109四本账区分采样序列、输入位置、正目标位置和加权目标质量；这里还需单列<strong>路由有效人口</strong>。目标份额低的域仍可能有较多prompt/上下文位置参与专家选择、容量和QB。不同域的prompt长度改变时，目标份额、路由人口与计算成本可能朝不同方向变动。</p>
+<p>这不表示应该排除prompt路由。prompt会为答案提供上下文；没有直接目标权重也不意味着没有间接梯度。本轮没有执行attention、完整loss或梯度，不能报告prompt梯度大小。改变token_valid以“对齐目标份额”会同时改变模型前向和阈值估计，应作为显式新策略比较，不能当作配比单位换算。</p>
+<p>建议每域另记：输入位置、路由有效位置、正目标位置、加权目标质量，以及零直接目标但路由有效的位置数。看到loss变化先查是哪一本账改变；再用共同checkpoint、共同query和原pending语义核对路由。真实Hero各域的这组比例、真实prompt效应、能力收益与GPU成本目前仍未知。</p>
+<p>原attention helper沿用固定归档，与原训练入口的局部连接用于机制分析，没有确认线上精确执行版本。四虚拟CPU均在单host；没有专家dispatch、容量丢弃、真实数据、完整Transformer或分布式网络验收。</p></section><nav class="pager"><a href="packing-fields-guide.html">← 上一篇</a><a href="mixture-identity-guide.html">下一篇 →</a></nav></main></body></html>

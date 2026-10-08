@@ -1,0 +1,141 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>去重与样本对齐：为什么数据处理细节会改变配比结论 · Marin 预训练研究</title><link rel="stylesheet" href="reading.css"></head><body><header><nav><a href="index.html">主题目录</a><a href="../report_standalone.html">完整报告（保留）</a><a href="code.html">源码与候选补丁</a><a href="tools.html">交互工具</a></nav></header><main><p class="muted"><a href="theme-input.html">03 · 数据管线与实际曝光</a> / 本页只含一篇专题</p><details class="chapter-toc"><summary>本篇目录</summary><ol><li><a href="#dedup-guide-1">1. 同一条去重规则对不同内容测量的东西不同</a></li><li><a href="#dedup-guide-2-16">2. 16个来源：故障修复与保留政策要分开</a></li><li><a href="#dedup-guide-3">3. 三个能直接执行核查的代码细节</a></li><li><a href="#dedup-guide-4-sparse">4. sparse属性缺失，为什么可能表现得像“没有重复”</a></li><li><a href="#dedup-guide-5">5. 删除计数有先后顺序，不能当成三项独立比例</a></li><li><a href="#dedup-guide-6-store">6. 库存表也有身份：文件日期不是store版本</a></li><li><a href="#dedup-guide-7">7. 怎样把结论用于自己的预训练</a></li></ol></details><section class="chapter" id="dedup-guide"><h1 id="dedup-guide-_1">去重与样本对齐：为什么数据处理细节会改变配比结论</h1>
+<p>现在可以把两个store的区别说得更具体。公开Harrier配置说明：<code>store_4d2e363d</code>重建<code>store_81e7e39a</code>，fuzzy dedup豁免从DNA单一来源扩大到16个来源；作者称其他构建条件相同，总库存由约23.01T变为23.11T。当前源码保留了同一组16个豁免名称。实际S3 ledger、逐桶旧库存与历史执行包仍未读取，所以这是一条公开构建说明与代码机制证据，尚非独立验证的完整数据差异。</p>
+<p>这也修正了上一轮表述：构建差别并非全部未知；已知的公开政策是扩大fuzzy豁免。未知的是这项声明与每个历史run实际缓存内容的完整对应关系。配比比较应把去重政策单列为干预，不能因为新增库存只占总体约0.4%，就认为它对被保留来源的影响也只有0.4%。</p>
+<p>主要来源：<a href="code-bc14182f9f9c0d20.html">固定版本的重建说明</a>、<a href="../sources/dedup_2026_10_05/exemption_commit.json">16来源政策提交</a>、<a href="code-b1fb960bcc839018.html">参考管线</a>、<a href="../analysis/dedup_probe.json">本地原函数探针</a>。PR #8405当前仍为draft；其中提交说明可以用于追查机制，不能被写成已合并代码或本次Hero的执行证明。</p>
+<h2 id="dedup-guide-1">1. 同一条去重规则对不同内容测量的东西不同</h2>
+<p>fuzzy规则的词3-gram特征按空白分词，再构造相邻三个词的集合。DNA序列常是一整条没有空白的长字符串；序列虽长，在这里却只有一个“词”。共同的说明头占据了大部分特征。</p>
+<p>本轮执行归档源码的<code>prepare_verification_text</code>，给两条互不相同的人工序列加上相同头：</p>
+<pre><code class="language-text">[DNA] [Region: coding sequence] aaaaa...（200个a）
+[DNA] [Region: coding sequence] ttttt...（200个t）
+</code></pre>
+<p>两者各产生3个不同的词3-gram，共享2个，原始containment为2/3。主要内容不同，但这个特征对共同头给出了很高的相似度。其原因是特征粒度与数据结构不匹配，不是阈值计算出错。</p>
+<p>这个人工反例只验证特征构造。归档的当前验证器还有under_tokenized和saturated等保护分支，本轮没有执行最终判定，不能说当前验证器一定会误删这两条序列。历史政策提交则明确解释了相同头与不间断序列带来的问题，以及为什么DNA要被豁免。</p>
+<p>对模板QA、函数调用和代码轨迹，风险是另一种：大量共同说明或格式可能盖过真正区分任务的字段。判定“重复”之前，应确认保留下来的代表仍覆盖被删记录中的问题、参数、答案或轨迹，而不能只看格式相似。</p>
+<h2 id="dedup-guide-2-16">2. 16个来源：故障修复与保留政策要分开</h2>
+<p><a href="code-92d9534587ab8822.html">政策源码</a>记录了测量比例。下面数值来自作者的提交注释，没有用本地缓存重新测量。比例按文档计算，不是token占比，也不是已审定的误删率。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>来源</th>
+<th style="text-align: right;">作者记录的fuzzy删除比例</th>
+<th>可以得出的判断</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>massive_function_calling</td>
+<td style="text-align: right;">94.45%</td>
+<td>规则对该来源影响极大，需要内容检查；不代表94.45%全是误删</td>
+</tr>
+<tr>
+<td>swe-rebench-contree</td>
+<td style="text-align: right;">52.56%</td>
+<td>保留政策会显著改变该来源的可用轨迹</td>
+</tr>
+<tr>
+<td>nemotron_specialized_v1_1/economics</td>
+<td style="text-align: right;">65.69%</td>
+<td>不能由全局库存小幅增长推断局部变化小</td>
+</tr>
+<tr>
+<td>nemotron_specialized_v1_1/formal_logic</td>
+<td style="text-align: right;">54.45%</td>
+<td>同上；需要按任务与内容核对</td>
+</tr>
+<tr>
+<td>nemotron_specialized_v1_2/fact_seeking</td>
+<td style="text-align: right;">4.97%</td>
+<td>比例不高但来源规模大，不能只按百分比排查</td>
+</tr>
+<tr>
+<td>biocorpus</td>
+<td style="text-align: right;">4.24%</td>
+<td>作者明确说部分低比例项是保留来源的政策选择，并非已证明规则误判</td>
+</tr>
+</tbody>
+</table></div>
+<p>完整16名称见<a href="../analysis/dedup_probe.json">探针JSON</a>。不能将“来源得到豁免”翻译成“该来源没有重复”，也不能将“作者保留它”翻译成“全部删除都是bug”。</p>
+<p>豁免只跳过fuzzy属性；污染过滤与exact dedup仍执行。源码通过registry名称匹配豁免来源，再把该来源的dedup属性路径置空。normalized source key与registry名称可能不同，直接做字符串前缀替换可能漏掉该保护。参考管线和store都对未知名称报错，使拼写错误不能静默改变政策。</p>
+<h2 id="dedup-guide-3">3. 三个能直接执行核查的代码细节</h2>
+<p>本轮<a href="code-71049f4699f311c0.html">scripts/probe_dedup.py</a>提取原函数，在临时目录写入真实Parquet，用本地pathlib替代StoragePath。11项检查覆盖分块重组、过滤与对齐。没有运行Zephyr、实际S3或完整历史语料。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>为什么会发生</th>
+<th>原源码采取的动作</th>
+<th>本轮直接验证</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>长文档多行被误当作多个文档</td>
+<td>一条文档超出单行token限制，其他属性却仍是一行一个文档</td>
+<td>按chunk_index重组后再与dense表对齐；缺列或跳号时报错</td>
+<td>原函数跨Arrow batch重组成功；缺列、0后直接2都被拒绝</td>
+</tr>
+<tr>
+<td>相邻同ID文档被错误合并</td>
+<td>内容ID相同不等于同一个行实例；按ID变化识别新文档会吞掉行边界</td>
+<td>chunk_index=0才开始新文档，允许相邻同ID的两个文档</td>
+<td>人工输入得到两个独立文档，第一个自身含两个chunk</td>
+</tr>
+<tr>
+<td>行数相同却分配到错桶</td>
+<td>dense表长度一致，但ID顺序不同，位置join会给文档套上另一个文档的cluster/quality</td>
+<td>先检查decon、cluster、quality ID逐元素一致，再检查tokenize文档ID</td>
+<td>将cluster ID顺序反转，原函数拒绝；行数没变</td>
+</tr>
+</tbody>
+</table></div>
+<p>这里的验收对象是数据行实例与顺序。只检验总行数、总token数或每个桶的总量，不能证明join正确。</p>
+<h2 id="dedup-guide-4-sparse">4. sparse属性缺失，为什么可能表现得像“没有重复”</h2>
+<p>exact/fuzzy属性是稀疏表，只写被标记的ID。归档读取函数对不存在的属性文件返回空集合。一个没有重复的shard与一个读错路径、缺少属性的shard，因此可以在这一层表现得相同。</p>
+<p><a href="code-1d0251796c60db5b.html">global_exact_dedup.py</a>的输出契约要求没有重复的shard也写空文件，为的是保留“计算过但没有标记”与“根本没有该输出”的区别。但store读取函数仍容许缺失文件，并未在这个局部接口强制契约。</p>
+<p>这不是说所有稀疏读取都必须在缺文件时失败：如果上游明确采用“省略空shard”契约，缺失本来可以合法。问题是生产者与消费者必须对同一约定有证据，而不是由消费者默默把两种状态合并。</p>
+<p>PR #8405的提交还报告过另一层危险：旧normalize的稀疏标记与新normalize的shard布局不一致时，路径错位可能读成没有重复；只重命名标记又可能误删新normalize留下的唯一副本。这里引用的是作者的故障解释，未独立重跑其全量重打包过程。</p>
+<p>正确的检查位置在过滤之前：冻结normalize身份、比较预期shard集合与属性产物覆盖、核对标记所指向的行实例或ID语义，然后才允许空集合被解释成“无重复”。</p>
+<h2 id="dedup-guide-5">5. 删除计数有先后顺序，不能当成三项独立比例</h2>
+<p>原store按“污染→fuzzy→exact”依次排除，遇到首个命中便continue。一个文档同时命中三项，也只记到污染删除计数。</p>
+<p>本轮人工四文档的过滤结果如下：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>路径</th>
+<th style="text-align: right;">输入</th>
+<th style="text-align: right;">污染删除</th>
+<th style="text-align: right;">fuzzy删除</th>
+<th style="text-align: right;">exact删除</th>
+<th style="text-align: right;">保留</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>普通来源</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr>
+<td>同输入，fuzzy豁免</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+</tr>
+</tbody>
+</table></div>
+<p>exact属性完全相同，但exact删除计数从0变1，因为此前被fuzzy先截走的文档现在走到了exact分支。因此，“exact删除变多”并不自动意味着exact规则更严格；“各项删除数相加等于总删除”也不意味着测出了三项原始命中的比例。</p>
+<p>生产监控应同时保留两类量：当前流水线的互斥删除计数用于守恒核查；各规则的原始命中与交集用于诊断。后者可能需要额外统计，不能拿前者冒充。比较新旧去重政策时，尤其要保持这一区别。</p>
+<h2 id="dedup-guide-6-store">6. 库存表也有身份：文件日期不是store版本</h2>
+<p>当前固定源码中的<code>harrier_mix_2026_08_17_1.json</code>指向<code>store_0381a974</code>，总量24,917,216,684,457 tokens；六个旧ladder run的配置却指向<code>store_81e7e39a</code>。<code>harrier_mix_2026_08_18.json</code>指向新store，总量23,106,103,007,622 tokens。</p>
+<p>这些数值是分别读取两个spec得到的，但<strong>不能相减当作81e7→4d2e的库存变化</strong>。公开重建说明的约23.01T→23.11T与这两个现有spec的约24.92T→23.11T比较的是不同对象。报告不生成伪造的200桶库存差图。</p>
+<p>一个历史run必须绑定“执行配置→实际store→对应库存表→采样与评估”，而不是“找到同日期文件→使用其库存”。文件被后续改写、名称被复用或artifacts被重新采用时，日期标签不够。这条规则也适用于质量桶：同一个q4标签只有在scorer、校准和路由内容身份相同的情况下才可直接比较。</p>
+<h2 id="dedup-guide-7">7. 怎样把结论用于自己的预训练</h2>
+<p>先按内容结构审查去重规则：普通长文、短答案、代码、函数调用、模板QA、序列数据分别抽取命中与未命中样本，并按来源记录文档数与token量。删除率异常是排查信号，不是自动豁免或自动加严的理由。</p>
+<p>再决定保护策略。若特征确实看不到区别，应修改特征或增加保护，而不只是降低删除比例。若是在数据价值与重复程度之间作政策取舍，应明确允许的重复量，并在固定预算下比较来源曝光、相关能力和其他域退步。</p>
+<p>最后才调整200桶权重。去重政策、库存、桶内来源构成与权重共同决定实际曝光。只看q0…q4的总权重，无法回答某个任务来源是否仍在桶里；把被误删来源的桶权重提高，也不能恢复已经不存在的样本。</p>
+<p>新增验收支线：<strong>内容粒度适配→normalize与属性身份→shard/ID/行实例对齐→原始命中与互斥删除计数→store及库存绑定→固定缓存的权重实验→独立评估</strong>。这条支线补充主管线，不给未执行的实验打通过标记。</p></section><nav class="pager"><a href="cache-guide.html">← 上一篇</a><a href="quality-guide.html">下一篇 →</a></nav></main></body></html>

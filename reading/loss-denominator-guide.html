@@ -1,0 +1,157 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Loss 下降之前，先检查分母有没有变形 · Marin 预训练研究</title><link rel="stylesheet" href="reading.css"></head><body><header><nav><a href="index.html">主题目录</a><a href="../report_standalone.html">完整报告（保留）</a><a href="code.html">源码与候选补丁</a><a href="tools.html">交互工具</a></nav></header><main><p class="muted"><a href="theme-loss.html">04 · Loss、梯度与数值精度</a> / 本页只含一篇专题</p><details class="chapter-toc"><summary>本篇目录</summary><ol><li><a href="#loss-denominator-guide-_1">同一份权重，在两个地方用了不同精度</a></li><li><a href="#loss-denominator-guide-loss_1">实测：有限的零 loss 也可能是假象</a></li><li><a href="#loss-denominator-guide-_2">对数据配比研究意味着什么</a></li><li><a href="#loss-denominator-guide-_3">可以复用的验收规则与排查顺序</a></li><li><a href="#loss-denominator-guide-_4">源码与复现</a></li><li><a href="#loss-denominator-guide-v137">V137：局部分母有限，跨设备求和后仍可能溢出</a></li><li><a href="#loss-denominator-guide-_5">对大批量训练的具体影响</a></li></ol></details><section class="chapter" id="loss-denominator-guide"><h1 id="loss-denominator-guide-loss">Loss 下降之前，先检查分母有没有变形</h1>
+<p>V136，2026-10-08。本章回答一个具体问题：改变数据配比后，loss 变小，是否一定意味着模型学得更好？如果权重归约的数值语义发生变化，答案可能是否定的。这里执行了固定版本的原始 Python 函数与 CPU CE 参考实现，完成 12 项控制；没有执行融合 GPU 内核，也没有证明 Hero 训练发生过下面的异常。</p>
+<h2 id="loss-denominator-guide-_1">同一份权重，在两个地方用了不同精度</h2>
+<p>加权平均 CE 的定义是 <code>L = sum(w_i * CE_i) / sum(w_i)</code>。如果所有权重同时乘正数 c，精确算术下 loss 与参数梯度都应保持不变。这提供了一个无需训练大模型的检查办法。</p>
+<p>固定源码中的共享 CE 接口先把权重转换为 token loss 的 dtype，再计算加权 loss；本次使用 FP32 loss。而外层 Grug 包装器请求逐 token loss 后，另行对原始权重求和作为分母。于是直接传入低精度权重时，分子用提升后的权重，分母仍按原权重 dtype 返回。分子精度足够，并不保证归一化正确。</p>
+<p>这里说的是归约输出的可表示范围与舍入结果，不推断底层实现每一步加法都使用低精度。分布式归约还涉及设备分片、局部分母及 collective，本次未测。</p>
+<h2 id="loss-denominator-guide-loss_1">实测：有限的零 loss 也可能是假象</h2>
+<p>控制模型只有一个隐藏特征、两个类别，分类头全零，标签全为类别 0。每个有效位置的 CE 都是 ln(2)，基准分类头梯度是 <code>[-0.5, +0.5]</code>。这不是训练轨迹，而是刻意排除模型和数据内容变化的微型对照。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>入口与权重</th>
+<th style="text-align: right;">有效权重的 FP32 和</th>
+<th style="text-align: right;">外层实际分母</th>
+<th style="text-align: right;">loss</th>
+<th>分类头梯度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>直接调用，257 个 BF16 单位权重</td>
+<td style="text-align: right;">257</td>
+<td style="text-align: right;">256</td>
+<td style="text-align: right;">0.695855</td>
+<td>[-0.501953, +0.501953]</td>
+</tr>
+<tr>
+<td>直接调用，257 个 FP32 单位权重</td>
+<td style="text-align: right;">257</td>
+<td style="text-align: right;">257</td>
+<td style="text-align: right;">0.693147</td>
+<td>[-0.5, +0.5]</td>
+</tr>
+<tr>
+<td>直接调用，65,536 个 FP16 单位权重</td>
+<td style="text-align: right;">65,536</td>
+<td style="text-align: right;">inf</td>
+<td style="text-align: right;">0，且有限</td>
+<td>[0, 0]</td>
+</tr>
+<tr>
+<td>上一行的权重全部乘 0.5</td>
+<td style="text-align: right;">32,768</td>
+<td style="text-align: right;">32,768</td>
+<td style="text-align: right;">0.693147</td>
+<td>[-0.5, +0.5]</td>
+</tr>
+<tr>
+<td>先把上述 FP16 权重提升到 FP32</td>
+<td style="text-align: right;">65,536</td>
+<td style="text-align: right;">65,536</td>
+<td style="text-align: right;">0.693147</td>
+<td>[-0.5, +0.5]</td>
+</tr>
+<tr>
+<td>原始 causal 构造器，65,537 个 FP16 输入位置</td>
+<td style="text-align: right;">65,536</td>
+<td style="text-align: right;">65,536，FP32</td>
+<td style="text-align: right;">0.693148</td>
+<td>[-0.5, +0.5]</td>
+</tr>
+</tbody>
+</table></div>
+<p>BF16 对照的误差因子约为 257/256，即 0.390625%。FP16 对照更隐蔽：分母变成 inf，有限分子除以 inf 得到零，梯度也归零。<code>isfinite(loss)</code> 会通过，所以“没有 NaN”不足以判定该步骤正常。同乘 0.5 改变了实际 loss 与梯度，违反了应有的缩放不变性。</p>
+<p>最后一行尤其重要：原始 <code>GrugLmExample.causal</code> 会将给定权重与 FP32 取共同 dtype，再施加 causal mask。它把最后一个目标屏蔽，并在进入包装器前输出 FP32 权重。这个正常入口在本次选定控制中避开了问题。不能把绕过构造器的反例写成 Hero 已发生的事故。</p>
+<h2 id="loss-denominator-guide-_2">对数据配比研究意味着什么</h2>
+<p>采样权重决定抽到哪些样本，loss 权重决定抽到之后如何进入目标函数，两者不能混为同一个参数。数学数据占比从 5% 改到 10%，通常首先改变样本频率；它是否同时改变 token 权重，需要查看实际输入张量。</p>
+<p>如果两个实验改变了有效 token 数、packing、mask 或样本构造入口，必须先确认它们的分母语义一致，再讨论领域迁移。上述反例说明归约错误可以伪装成 loss 改善，但不能据此解释既有 Marin 配比实验的优劣；我们没有那些运行的实际权重 dtype 和归约张量。</p>
+<p>提升 dtype 也有边界：权重 2^-26 先转 FP16 会在本次 CPU 控制中变为零，再转 FP32 仍是零。因此保护应尽量在权重生成和保存之前建立，而非只在最终求和时补一次转换。对于本来已能准确表示的单位权重，提前提升有效。</p>
+<h2 id="loss-denominator-guide-_3">可以复用的验收规则与排查顺序</h2>
+<ol>
+<li>在真实数据入口记录权重 dtype、有效目标数、FP32 权重和；同时记录包装器实际分母及 loss 分子，不能只看归一化后的标量。</li>
+<li>用相同样本和参数，把所有正权重共同缩放为 0.5、1、2，在安全数值范围内比较 loss 与梯度，提前规定误差容限。不要缩放采样概率后重抽样，那会换掉测试对象。</li>
+<li>测试真实构造器与直接调用两条路径，确认缓存读取、自定义数据集及恢复后的输入是否继承同一保护。源码有保护不等于每条运行路径都经过保护。</li>
+<li>逐步核对单设备、跨设备与梯度累积。梯度累积还须区分每个 microbatch 的平均再平均，与总分子除以总权重；dtype 正确不会自动修复这个语义差异。</li>
+<li>出现异常时先冻结配比实验的效果归因，定位权重表示、分母溢出或归约方式，再决定是否需要重跑。同样，仅凭微型反例不能废弃原有实验。</li>
+</ol>
+<p>本次不修改上游代码。将权重生成、分子与分母统一为足够精度，并对实际权重和检查有限性，是候选修正方向；完整实现还需测试分布式归约与融合内核，不把局部对照视为生产修复验收。</p>
+<h2 id="loss-denominator-guide-_4">源码与复现</h2>
+<p>固定版本：<code>84869ae8c91ffe64e9f761c5bd714542eb1876e0</code>。可直接阅读本地归档：<a href="code-13a5616b0bc6f4b0.html">外层归约</a>、<a href="code-511b01056d2b34c1.html">共享接口</a>、<a href="code-85669132e02ac7b1.html">CPU CE 参考</a>、<a href="code-6622836f6fa2bb5e.html">原始样本构造器</a>。本次尝试在线打开固定源码页时连接失败，以上结论基于已有字节归档和本地执行，不声称已在线刷新。</p>
+<p>执行 <code>CPU_PYTHON=/tmp/marin-loss-mass-v109/bin/python make loss-denominator-dtype</code>。脚本通过 AST 提取原函数，attention mask 使用小型适配器；请求的 <code>xla_fast_bwd</code> 被显式替换为原始 CPU CE 参考加共享归约函数。各源文件和脚本 SHA、运行环境、8 组结果及 12 项断言见 <a href="../analysis/loss_denominator_dtype_cpu.json">结果 JSON</a> 与 <a href="code-e7783b3a6e177ca1.html">复现脚本</a>。</p>
+<p>结合 <a href="gradient-accumulation-guide.html#gradient-accumulation-guide">有效目标与梯度累积</a>、<a href="masked-numerics-guide.html#masked-numerics-guide">mask 数值边界</a> 和 <a href="confirmation-playbook-guide.html#confirmation-playbook-guide">下一笔算力怎样安排</a> 阅读。以上是 V136 的单设备证据边界；生产 dtype、GPU 内核和训练影响仍未验证，多设备补测见下节。</p>
+<h2 id="loss-denominator-guide-v137">V137：局部分母有限，跨设备求和后仍可能溢出</h2>
+<p>V136 只执行无 mesh 分支。V137 启动一个独立 JAX 进程，配置四个本地虚拟 CPU 设备，实际执行原包装器中的 <code>jax.shard_map</code>、<code>jax.lax.psum</code> 及其自动微分。这次不是用 Python 相加模拟 collective，也不是四台机器或 GPU 测试。融合 CE 仍明确替换为原 CPU 参考实现；sharding 查询与重分片辅助函数使用小型适配器，其中重分片实际调用 <code>device_put</code> 和 <code>NamedSharding</code>。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>四设备控制</th>
+<th>各本地分母</th>
+<th style="text-align: right;">全局分母</th>
+<th>实际观察</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FP16，四个 token 分片</td>
+<td>16,384 × 4</td>
+<td style="text-align: right;">inf</td>
+<td>loss=0，分类头梯度=[0,0]，两者均有限</td>
+</tr>
+<tr>
+<td>相同输入，全部权重乘 0.5</td>
+<td>8,192 × 4</td>
+<td style="text-align: right;">32,768</td>
+<td>loss≈ln(2)，梯度=[-0.5,+0.5]</td>
+</tr>
+<tr>
+<td>相同输入，权重使用 FP32</td>
+<td>16,384 × 4</td>
+<td style="text-align: right;">65,536</td>
+<td>loss 与梯度恢复参考值</td>
+</tr>
+<tr>
+<td>BF16，每片 257 个单位权重</td>
+<td>256 × 4</td>
+<td style="text-align: right;">1,024</td>
+<td>真实权重和 1,028，loss 放大约 1,028/1,024</td>
+</tr>
+<tr>
+<td>FP32，有效目标数不均且含空片</td>
+<td>257、1、0、258</td>
+<td style="text-align: right;">516</td>
+<td>全局 loss、梯度与 FP32 参考一致</td>
+</tr>
+<tr>
+<td>FP16，data×sequence 的 2×2 mesh</td>
+<td>16,384 × 4</td>
+<td style="text-align: right;">inf</td>
+<td>原多 token 轴 psum 同样产生有限零 loss/梯度</td>
+</tr>
+<tr>
+<td>FP32，同样的 2×2 token mesh</td>
+<td>16,384 × 4</td>
+<td style="text-align: right;">65,536</td>
+<td>与参考值一致</td>
+</tr>
+<tr>
+<td>FP32，data×model 的 2×2 mesh，model 仅复制</td>
+<td>32,768 × 4（含复制副本）</td>
+<td style="text-align: right;">65,536</td>
+<td>只归约 data 轴，没有把复制副本重复计数</td>
+</tr>
+<tr>
+<td>FP32，所有分片目标权重全零</td>
+<td>0 × 4</td>
+<td style="text-align: right;">0</td>
+<td>前向 loss=0，但分类头梯度非有限</td>
+</tr>
+</tbody>
+</table></div>
+<p>最后一行与“只有一个空片”不同。一个空片并不会必然导致全局梯度异常：其他片仍有目标时，原实现先聚合总分子与总分母，再做除法，本次 FP32 对照通过。所有片都为空时，<code>where</code> 的零输出保护仍未让本次自动微分梯度变得有限。这延续了已有单设备的零分母结论，但增加了原 collective 路径的证据。</p>
+<p>复制轴控制也不等于执行了词表分片：原包装器把 lm_head 设为复制，本次 model 轴上的副本不承载不同词表。它只验证本次 token sharding 声明下，分母没有沿无关复制轴额外累加；不能推广为所有模型并行设计都已正确。</p>
+<h3 id="loss-denominator-guide-_5">对大批量训练的具体影响</h3>
+<p>如果全局参与求和的权重和超出了归约输出 dtype 的范围，多加数据并行设备并不能靠缩小单片分母解决问题。本例的 65,536 个目标拆成四份，每份都没有溢出，全局 FP16 分母依然溢出。检查必须覆盖 <strong>局部权重和 → 全局权重和 → 梯度累积总权重</strong>，且分别注明 dtype、参与轴与是否包含复制副本。</p>
+<p>这不意味着 Hero 的大批量必然失效。V136 已验证正常 causal 构造入口输出 FP32，本轮则验证了 FP32 在选定四设备控制中的正确结果。实际生产入口、真实权重 dtype、GPU 编译和多主机通信仍缺运行证据。</p>
+<p>对于配比实验，新增一个可执行门槛：固定全局样本集合与权重，对照单设备和设备分片后的 loss/梯度；至少覆盖不均目标数、空片、两个 token 轴及复制轴。分片只是实现策略时，不应改变希望优化的目标。若同时改变样本、精度或累积方式，应逐项拆开，不能把差异全部归因于数据配比。</p>
+<p>本轮 9 组控制、13 项断言，见<a href="../analysis/loss_denominator_mesh_cpu.json">四 CPU 原值</a>和<a href="code-2e348a6a87dded6d.html">复现脚本</a>。执行 <code>CPU_PYTHON=/tmp/marin-loss-mass-v109/bin/python make loss-denominator-mesh</code>。脚本只加载 V136 探针的定义前缀，不执行旧结果生成；原 source 与两个脚本的 SHA 均绑定。最初运行曾因定义前缀缺少 <code>__file__</code> 失败，补齐路径上下文后重新执行；最终结果文件只记录成功执行的控制。本轮没有上游补丁、生产事故归因、性能结论或新的训练结果。</p></section><nav class="pager"><a href="masked-numerics-guide.html">← 上一篇</a><a href="ce-label-bounds-guide.html">下一篇 →</a></nav></main></body></html>

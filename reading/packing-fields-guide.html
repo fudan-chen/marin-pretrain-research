@@ -1,0 +1,130 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>打包字段对齐与权重坐标 · Marin 预训练研究</title><link rel="stylesheet" href="reading.css"></head><body><header><nav><a href="index.html">主题目录</a><a href="../report_standalone.html">完整报告（保留）</a><a href="code.html">源码与候选补丁</a><a href="tools.html">交互工具</a></nav></header><main><p class="muted"><a href="theme-input.html">03 · 数据管线与实际曝光</a> / 本页只含一篇专题</p><details class="chapter-toc"><summary>本篇目录</summary><ol><li><a href="#packing-fields-guide-_2">通用接口与调用方不变量</a></li><li><a href="#packing-fields-guide-shape">相同shape如何遮住错位</a></li><li><a href="#packing-fields-guide-_3">截断策略必须进入曝光账目</a></li><li><a href="#packing-fields-guide-_4">验证范围</a></li></ol></details><section class="chapter" id="packing-fields-guide"><h1 id="packing-fields-guide-_1">打包字段对齐与权重坐标</h1>
+<p>最终数组shape相同，不代表输入token与权重仍属于同一篇文档。同名文档索引也不够：逐token字段必须在每篇文档中保留相同长度和坐标。固定打包器在人工存储接口上接受了一个“总长度相同、逐文档长度不同”的输入；它符合通用多字段打包的约定，却违反了token与权重逐位置对应的要求。</p>
+<p>这不是当前Hero故障结论。10月6日公开配置快照的223个component均声明文本格式、<code>pack=None</code>，固定构造实现选择连续流。以下结果用于准备自定义打包、权重与旁路评估时的验收。<a href="../sources/live_2026_10_06/meta.json">配置快照</a></p>
+<h2 id="packing-fields-guide-_2">通用接口与调用方不变量</h2>
+<p><code>pack_documents</code>按同一组文档范围组织各字段，并检查字段的文档数量一致；每个字段用自己的长度与offset读取、生成segment。通用多模态或多字段数据不必具有相同序列长度，因此不能无条件要求所有字段相等。若某字段是另一个字段的逐token权重或标签，则调用方须另外保证其逐文档长度及顺序一致。<a href="https://github.com/marin-community/marin/blob/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/data/packing.py" rel="noopener" target="_blank">固定源码</a></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>接口层</th>
+<th>实际核查或使用的量</th>
+<th>不足以证明的性质</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>通用pack规划</td>
+<td>各字段文档数量、各自容量、segment数量上限</td>
+<td>逐文档token/权重长度相等</td>
+</tr>
+<tr>
+<td>各字段数据重建</td>
+<td>各自offset、切片、padding及segment</td>
+<td>不同字段的同一数组位置属于同一文档</td>
+</tr>
+<tr>
+<td><code>PackedTokenDataset</code>调用方</td>
+<td>输入字段segment，另一个字段的权重值</td>
+<td>权重字段原有segment是否与输入一致</td>
+</tr>
+<tr>
+<td>LM例子因果mask</td>
+<td>窗口末位及padding后继等规则</td>
+<td>权重在有效位置是否已经错位</td>
+</tr>
+</tbody>
+</table></div>
+<p><code>PackedTokenDataset</code>将<code>seg_ids['input_ids']</code>与原权重数组交给LM构造器，未在此处比较权重字段的segment。<a href="code-07c446f045482abe.html">调用实现</a></p>
+<h2 id="packing-fields-guide-shape">相同shape如何遮住错位</h2>
+<p>人工输入有两篇文档：输入长度为<code>[3,1]</code>，正确权重长度也是<code>[3,1]</code>；错误权重长度为<code>[2,2]</code>。打包容量设为4，两组字段都能装下。输入内容是<code>[10,11,12]</code>和<code>[20]</code>，数值仅用于标识人工位置。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>输出</th>
+<th>正确对应</th>
+<th>错误对应</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>输入token</td>
+<td><code>[10,11,12,20]</code></td>
+<td><code>[10,11,12,20]</code></td>
+</tr>
+<tr>
+<td>输入segment</td>
+<td><code>[0,0,0,1]</code></td>
+<td><code>[0,0,0,1]</code></td>
+</tr>
+<tr>
+<td>权重segment</td>
+<td><code>[0,0,0,1]</code></td>
+<td><code>[0,0,1,1]</code></td>
+</tr>
+<tr>
+<td>原权重</td>
+<td><code>[1,0.5,0,1]</code></td>
+<td><code>[1,0.5,1,0]</code></td>
+</tr>
+<tr>
+<td>应用原末位mask后</td>
+<td><code>[1,0.5,0,0]</code></td>
+<td><code>[1,0.5,1,0]</code></td>
+</tr>
+<tr>
+<td>有效权重和T</td>
+<td>1.5</td>
+<td>2.5</td>
+</tr>
+<tr>
+<td>人工loss固定为<code>[1,2,9,8]</code>时的N</td>
+<td>2</td>
+<td>11</td>
+</tr>
+</tbody>
+</table></div>
+<p>原方法在两种情况下都产生同shape输出。错误输入将第二篇文档的权重放到了第一篇文档末位；默认末位mask只屏蔽整个窗口末位，不能重建权重原来的文档坐标。N的差别来自人工权重和人工loss，不是模型前向结果，也不是生产精度误差。这里的N/T按评估加权定义计算；训练目标对分数权重的处理还须另查<a href="contracts-guide.html#contracts-guide">损失接口契约</a>，不能直接混用。</p>
+<p>已有<a href="eval-target-alignment-guide.html#eval-target-alignment-guide">下一token契约</a>处理的是评分ID与输入后继的关系。即使目标ID都正确，权重仍可能选错目标。导出器会把权重纳入摘要，两次权重改变能被发现；但两次都使用同样错误的权重，仍需要调用方的坐标证据才能诊断。</p>
+<h2 id="packing-fields-guide-_3">截断策略必须进入曝光账目</h2>
+<p>人工过长文档<code>[10,11,12,13,14]</code>在容量4时，left保留前四个位置，right保留后四个位置；已正确对齐的权重沿同方向切片。raise在pack规划时拒绝过长文档，drop跳过整篇，并保留后续文档原来的索引。这些原方法行为已在人工存储上核查，但未读取实际TensorStore或运行GPU。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>验收对象</th>
+<th>建议记录</th>
+<th>影响</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>token对齐字段</td>
+<td>逐文档length、document ID与特殊token插入位置</td>
+<td>总length和最终shape相同仍可能错位</td>
+</tr>
+<tr>
+<td>切片策略</td>
+<td>原length、保留区间、丢弃区间、权重坐标约定</td>
+<td>左截与右截可能保留不同内容或只留下prompt</td>
+</tr>
+<tr>
+<td>drop策略</td>
+<td>被丢文档的来源与length分布</td>
+<td>配置比例不等于留下来的实际曝光比例</td>
+</tr>
+<tr>
+<td>segment上限</td>
+<td>每pack文档数、真实输入数、有效目标数</td>
+<td>达到文档数上限时仍可能有较多padding</td>
+</tr>
+<tr>
+<td>权重变换</td>
+<td>缓存权重表示输入位置还是预测位置，是否已shift</td>
+<td>重复shift或漏shift都可能选择错误目标</td>
+</tr>
+</tbody>
+</table></div>
+<p>固定chat路径会把assistant token选择mask向左roll一次，再交给因果构造器；prebuilt路径则通过可选<code>loss_weight_transform</code>处理权重，不能假定所有缓存采用同一种坐标。<a href="code-07c446f045482abe.html">数据构造实现</a></p>
+<p>建议在进入通用packer前，对明确声明为token对齐的字段比较逐文档length和ID；加入BOS/EOS后再次核对；抽样导出输入、后继目标、原权重、变换后权重及各字段segment。若长度或ID不一致，先修复缓存，不能以补齐到同shape代替坐标恢复。不同语义字段可具有不同长度，这项约束须限定到逐token对应字段。</p>
+<h2 id="packing-fields-guide-_4">验证范围</h2>
+<p><a href="code-5daa7f28681dc17d.html">探针</a>执行固定<code>pack_documents</code>、<code>GreedyPrepackedDataset</code>方法和原因果mask，共14项检查，含匹配/错位字段、padding、左右截断、raise、drop、segment上限及223个声明配置。PyTree限于单层字典，TensorStore读写由人工NumPy存储、offset结果与异步副本替代；严格zip由兼容适配器处理。没有实际TensorStore读、JAX设备计算或Hero字段错位证据。<a href="../analysis/parallel_packing_probe.json">原值结果</a></p>
+<p>这轮得到的规则是：<strong>逐token字段按文档检查坐标，不以最终shape或相同loss摘要作为对齐证明。</strong> 它为自定义配比与评分管线增加验收入口，没有给出新的训练配方收益。</p></section><nav class="pager"><a href="quality-guide.html">← 上一篇</a><a href="boundary-guide.html">下一篇 →</a></nav></main></body></html>

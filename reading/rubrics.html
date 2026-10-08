@@ -1,0 +1,652 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Rubrics：证据允许我们把结论推进到哪一步 · Marin 预训练研究</title><link rel="stylesheet" href="reading.css"></head><body><header><nav><a href="index.html">主题目录</a><a href="../report_standalone.html">完整报告（保留）</a><a href="code.html">源码与候选补丁</a><a href="tools.html">交互工具</a></nav></header><main><p class="muted"><a href="theme-method.html">09 · 规则、学习与证据</a> / 本页只含一篇专题</p><details class="chapter-toc"><summary>本篇目录</summary><ol><li><a href="#rubrics-1">1. 怎样使用规则</a></li><li><a href="#rubrics-2-100">2. 为什么不做一个100分排名</a></li><li><a href="#rubrics-3">3. 两个实际练习</a></li><li><a href="#rubrics-4">4. 规则如何持续改进</a></li><li><a href="#rubrics-_1">完整规则与判断锚点</a></li><li><a href="#rubrics-r01">R01 · 来源和版本能回查</a></li><li><a href="#rubrics-r02">R02 · 结论范围写清</a></li><li><a href="#rubrics-r03">R03 · 指标含义和评估路径一致</a></li><li><a href="#rubrics-r04">R04 · 包含有竞争力的简单参照</a></li><li><a href="#rubrics-r05">R05 · 预算从实际区间计算</a></li><li><a href="#rubrics-r06">R06 · 平均指标可拆回组成项</a></li><li><a href="#rubrics-r07">R07 · 选择后有独立确认</a></li><li><a href="#rubrics-r08">R08 · 每次加量都写供体</a></li><li><a href="#rubrics-r09">R09 · 库存、历史与重复分开</a></li><li><a href="#rubrics-r10">R10 · 顺序比较匹配累计量和游标</a></li><li><a href="#rubrics-r11">R11 · 跨规模结论有对应对照</a></li><li><a href="#rubrics-r12">R12 · 目标和能力保底预先冻结</a></li><li><a href="#rubrics-r13">R13 · 根因证据和缓解效果分开</a></li><li><a href="#rubrics-r14">R14 · 执行状态不只看配置路径</a></li><li><a href="#rubrics-r15">R15 · 能力主张有实际任务验证</a></li><li><a href="#rubrics-r16">R16 · 图表准备与理解证据分开</a></li><li><a href="#rubrics-r17">R17 · 结论可离线复算</a></li><li><a href="#rubrics-r18">R18 · 未解决问题有下一步和退出条件</a></li><li><a href="#rubrics-v47macromicro">V47应用：macro与micro相反时怎样评审</a></li><li><a href="#rubrics-v48">V48应用：训练归约先于配比归因</a></li><li><a href="#rubrics-v49">V49应用：先核对危险分支，再核对实际触发</a></li><li><a href="#rubrics-v50update0">V50：空目标处理不能只把梯度或update改成0</a></li><li><a href="#rubrics-v51">V51：裁剪验收要看归约范围和后续状态</a></li><li><a href="#rubrics-v52">V52：加载器恢复控制</a></li><li><a href="#rubrics-v53">V53：混合数据身份</a></li><li><a href="#rubrics-v54shuffle">V54：桶内shuffle与切分</a></li><li><a href="#rubrics-v55">V55：小实验库存缩放</a></li><li><a href="#rubrics-v56moe">V56：新MoE提案</a></li><li><a href="#rubrics-v57">V57：性能归因</a></li><li><a href="#rubrics-gang-v102">Gang 恢复评审的三个追问（V102）</a></li><li><a href="#rubrics-v103">控制器恢复的失败验收（V103）</a></li><li><a href="#rubrics-v104">候选通过与生产接入分开验收（V104）</a></li><li><a href="#rubrics-v105">先确认状态内容，再判断备份风险（V105）</a></li><li><a href="#rubrics-donationv106">保存优化必须跨过实际 donation（V106）</a></li><li><a href="#rubrics-v107">恢复验收需要比较第一次更新（V107）</a></li><li><a href="#rubrics-v108">数据前缀验收要包括未来支持域（V108）</a></li><li><a href="#rubrics-v109">采样权重先标明单位（V109）</a></li><li><a href="#rubrics-v110">V110：进度的测量边界</a></li><li><a href="#rubrics-v111">V111：恢复后的下一次更新</a></li><li><a href="#rubrics-v112">V112：初始化与恢复的构造路径</a></li><li><a href="#rubrics-v113loss">V113：有限loss与路由状态</a></li><li><a href="#rubrics-v114">V114：原估计器输入边界</a></li><li><a href="#rubrics-v115">V115：归约一致与近似误差</a></li><li><a href="#rubrics-v116margin">V116：margin的原投影入口</a></li><li><a href="#rubrics-v117">V117：目标与路由人口分开记账</a></li><li><a href="#rubrics-v118">V118：研究收束为训练决策</a></li><li><a href="#rubrics-v119">V119：评估补丁的调用合同</a></li><li><a href="#rubrics-v120key">V120：删域响应依赖参照，过期历史也参与key分配</a></li><li><a href="#rubrics-v121">V121：配比边界早于共同恢复点</a></li><li><a href="#rubrics-v122">V122：历史源码与恢复证据</a></li><li><a href="#rubrics-v123seed">V123：随机流与seed语义</a></li><li><a href="#rubrics-v124">V124：模拟子集与恢复数据流</a></li><li><a href="#rubrics-v125io">V125：前缀抽样支持与IO布局</a></li><li><a href="#rubrics-v126">V126：实验改变了什么</a></li><li><a href="#rubrics-v127">V127：配置断言与执行模式</a></li><li><a href="#rubrics-v128">V128：桶级权重的数值合同</a></li><li><a href="#rubrics-v129manager">V129：异步manager与任务级失败</a></li><li><a href="#rubrics-v130">V130：保存调度与失败策略</a></li><li><a href="#rubrics-v131">V131应用例：异常归因与事件语义</a></li><li><a href="#rubrics-v132">V132应用例：可选恢复的意图与历史证据</a></li><li><a href="#rubrics-v133">V133应用例：状态相同与计划接续</a></li><li><a href="#rubrics-v134">V134应用例：配置类型、单位与几何</a></li><li><a href="#rubrics-v135">V135应用例：敏感性、确认和组合干预</a></li></ol></details><section class="chapter" id="rubrics"><h1 id="rubrics-rubrics">Rubrics：证据允许我们把结论推进到哪一步</h1>
+<p>V140 执行补充：检查跨 batch 块梯度累计 dtype，以及 dlogits 进入 GEMM 前后的转换。有限 loss/梯度不等于总量正确；同一目标分别控制块大小、操作数 dtype 和归一化尺度，并绑定真实 mixed precision 声明。<a href="ce-gradient-dtype-guide.html#ce-gradient-dtype-guide">原注册链精度控制</a>。</p>
+<p>V139 执行补充：反向证据须注明参考自动微分、手工 scan、原 custom VJP 注册入口或公共 dispatcher。对照至少含正常非零梯度与罚项 cotangent；参考异常不自动等于训练内核异常。<a href="ce-backward-path-guide.html#ce-backward-path-guide">14 项注册链控制</a>。</p>
+<p>V138 执行补充：形状/整数类型不等于 token ID 合法。检查逻辑与物理词表、特殊 token 和移位目标；有效目标越界应拒绝，明确忽略位置在 CE 前安全处理，不能依赖乘零或 clip。跨后端同时核对 loss 与梯度。<a href="ce-label-bounds-guide.html#ce-label-bounds-guide">原函数控制</a>。</p>
+<p>V137 执行补充：分片不变性须固定全局样本与权重，核对局部、全局及累积的分母 dtype/参与轴。局部 finite 不能代替全局 finite；含空片与全空分别验证。复制轴不能计入有效人口。<a href="loss-denominator-guide.html#loss-denominator-guide">四设备原实现控制</a>。</p>
+<p>V136 执行补充（不改变既有评分版本）：比较配比收益前，要求权重 dtype、分母有限性、统一缩放不变性与真实构造入口的证据。仅有 isfinite(loss) 不通过归约正确性验收；详见<a href="loss-denominator-guide.html#loss-denominator-guide">分母精度控制</a>。</p>
+<p>这些规则由本报告的误读、反例与复算提炼，服务于理解和实验评审。<strong>它们是本地工作方法，不是Marin官方标准，也不是经外部验证的评分量表。</strong></p>
+<p>当前版本1.1只改R16：明确区分图表准备与真实读者理解证据，避免用界面验收支持理解主张。旧1.0评审可显式迁移；其余17项保留，R16设未确认并保存旧依据，不自动继承通过。</p>
+<p>最重要的原则是：分别评“材料够不够支持这层结论”和“方案实际表现好不好”。公开材料缺checkpoint内容，不证明训练失败；BPB改善但没有生成评估，只能保留能力线索。也不能用十个格式项通过来抵消一个关键预算错误。</p>
+<h2 id="rubrics-1">1. 怎样使用规则</h2>
+<p>先写评审目标，例如“描述配比切换的观察”“推荐一个代码候选”“声称稳定能力收益”或“准备更大模型切换”。再对相关规则填状态和证据入口。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>代表什么</th>
+<th>如何处理</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>在明确范围内达到该项锚点</td>
+<td>保存可回查的证据，不自动推广到别的范围</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>有线索，但仍有明确缺口</td>
+<td>写出缺什么；限制当前陈述</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>已发现与当前主张冲突的证据</td>
+<td>修正主张或实验设计，保留反例</td>
+</tr>
+<tr>
+<td>未确认</td>
+<td>尚未核对所需证据</td>
+<td>补材料或保留未知，不能当作已经失败</td>
+</tr>
+<tr>
+<td>本阶段不适用</td>
+<td>问题在当前范围不涉及这一项</td>
+<td>写理由；换阶段后重新判断</td>
+</tr>
+</tbody>
+</table></div>
+<p>工作台的“下一步”状态按阶段要求检查，不计算总分。关键项缺失会留下明确缺口；单击“证据齐全”但不填写证据，仍不能使阶段通过。不适用也需要理由，并不能替代所选阶段的必备项。静态方案可以有理由跳过顺序阶段，不能称其已验证。这些是自评输入的完整性检查，不会自动验证你输入的链接或推断内容是否真实。</p>
+<h2 id="rubrics-2-100">2. 为什么不做一个100分排名</h2>
+<p>图表清楚、资料很多与因果证据充分，是不同的质量维度。597个seed0候选不能替代选择后的独立重复；完整CSV也不能证明实际恢复内容一致。总分会掩盖这种不互相替代的缺口。</p>
+<p>因此本规则保留每项判断、范围和证据。对“提出候选”可以有足够材料，对“稳定提升实际能力”仍可能缺生成评估；两者可以同时成立。当前公开示例能够进入观察与候选讨论，不能据此宣称535B能力与生产切换已经被本地验证。</p>
+<h2 id="rubrics-3">3. 两个实际练习</h2>
+<p><strong>练习A：声称“新配比让通用能力全面提升”。</strong> 先查R03指标是否支持能力表述，R04是否补齐比例基线，R06是否保留退步项，R07是否独立确认，R12是否预先定义全面提升，R15是否实际任务验证。当前公开材料支持有取舍的BPB候选结论，不支持这句全面能力主张。</p>
+<p><strong>练习B：声称“高质量统一后置有效”。</strong> 先查R05阶段预算、R09已有曝光、R10累计量和cursor。只互换阶段权重通常改变总量；连续补偿通过也不等于完整token流匹配。未匹配以前，应把结果写成“这套整体安排的观察差异”。</p>
+<h2 id="rubrics-4">4. 规则如何持续改进</h2>
+<p>第六轮把R04/R06/R07/R12/R15用于597个真实候选的条件重算，保留了六个错误主张的回放。见<a href="decision-guide.html#decision-guide">候选选择与规则回放</a>。没有启用限制、以自己作参照、没有符合条件者与事后修改阈值，都需要明确的陈述边界。工具提供探索结果，不会替评审记录自动勾选通过。</p>
+<p>第七轮用R05/R08/R09/R10/R14检查<a href="transfer-guide.html#transfer-guide">逐桶预算和供体草案</a>。规则实际发现“连续方案只改两个域，整数取整却改到额外桶”的问题；修正后原加载器24次整块计数匹配目标。这只支持整块算术范围，实际库存、游标、内部shuffle和生成能力仍未确认。规则锚点没有改变，版本仍为1.0。</p>
+<p>第八轮把R05/R10/R14用于<a href="order-guide.html#order-guide">顺序账本</a>。完整块残差为零仍可能漏掉两端部分块；关闭shuffle的原方法诊断提供了具体反例。修正保留原预算、共同边缘输入和累计游标，只支持共同状态条件下的逻辑索引证明，不使真实token流或能力项通过。规则数量和锚点仍为1.0。</p>
+<p>第九轮审计R16自身，发现“正确复述”的问题与“图表可读”的通过条件范围不一致，改为1.1的两种证据声明。新增<a href="assessment-guide.html#assessment-guide">十题理解协议</a>，允许保留有界候选，同时记录关键越界、人工评分与分歧。30份作者校准例只回放工具状态；没有真实读者结果，不能据此使理解主张通过。</p>
+<p>第十轮把R03/R12/R13/R14用于<a href="engineering-guide.html#engineering-guide">八个工程案例</a>。实际修正包括200步训练CE的质量表述、PDL机制确认范围与第54条遗漏的清理后停滞。每案另写一项预测与推翻条件，判断恢复进度能否支持根因；规则1.1锚点未改，GPU与真实读者结果仍为空。</p>
+<p>新增的<a href="packing-fields-guide.html#packing-fields-guide">打包字段案例</a>细化R03/R05/R14的使用：逐token字段核对逐文档长度和坐标，名义输入与有效目标分开记账，同shape不自动通过。人工反例不证明Hero发生错位；规则锚点与1.1版本保持不变，不自动提升任何已有评审状态。</p>
+<p><a href="repeat-exposure-guide.html#repeat-exposure-guide">重复曝光账本</a>补充R05/R09/R10：窗口内不同索引与对历史新增索引分别记录；库存或游标未知不补零。重复本身不使配比收益或过拟合判断通过，规则仍为1.1。</p>
+<p>规则可以被新证据修改。发现一项规则过宽、过严或无法指导行动时，记录具体案例：哪条判断被误放行或误阻挡，缺了什么证据，修改后的锚点如何避免同类问题。版本变化保存在<a href="improvement.html#improvement">持续改进记录</a>。</p>
+<p>本轮没有用虚构训练来验证规则效度。已经验证的是规则格式、阶段判定的边界、公开数据引用、交互导入导出与离线阅读；GPU实验、实际能力和完整token流仍属未完成工作。</p>
+<!-- GENERATED_RULES -->
+<h2 id="rubrics-_1">完整规则与判断锚点</h2>
+<p>状态评的是所选范围的证据。缺证据不等于实验失败；有反证也不等于一个域永远无用。以下规则由本报告提炼，未经外部评分效度验证。</p>
+<h3 id="rubrics-r01">R01 · 来源和版本能回查</h3>
+<p>这个数字来自哪个版本、时点和原文件？ 线上run会变；没有版本就无法分清新事实与旧结论。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>原文件、版本/时间、计算入口可以互相对应。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>只有原链接或截图，版本/计算入口缺一项。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>不同快照混用，或原值无法对应。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="provenance.html#provenance">来源说明</a> · <a href="../sources/archive_manifest.json">源归档完整性清单</a></p>
+<h3 id="rubrics-r02">R02 · 结论范围写清</h3>
+<p>这是哪个模型、训练阶段、任务和实验？ 同一个权重在不同历史和模型上不是同一干预。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>模型规模、恢复阶段、参照和适用范围明确。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>信息可追溯，但正文省略关键范围。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>把代理实验写成535B已验证结果。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="conclusions.html#conclusions">代理与放大边界</a> · <a href="../analysis/swarm_audit.json">swarm审计</a></p>
+<h3 id="rubrics-r03">R03 · 指标含义和评估路径一致</h3>
+<p>Loss、BPB、正确率与drop口径是否分清？ 度量对象变了，曲线就不能按原含义解读。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>指标分母、方向、dropless/有drop路径和能力边界明确。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>指标名称有了，分母或路由路径不明。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>BPB当准确率，或训练CE与固定验证混作同一种证据。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="report.html#report">三种Loss误读</a> · <a href="../analysis/summary.json">配对窗口</a></p>
+<h3 id="rubrics-r04">R04 · 包含有竞争力的简单参照</h3>
+<p>候选优于旧方案，还是也优于简单方案？ 92.05%的观察macro差值已由比例基线取得，参照影响结论。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>旧方案与库存比例等简单基线均纳入相同范围对照。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>只有旧方案对照，或简单基线条件不同。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>把所有旧→新差值都归给复杂搜索。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="../analysis/strong_baseline_comparison.csv">强基线对照</a> · <a href="conclusions.html#conclusions">第四轮判断</a></p>
+<h3 id="rubrics-r05">R05 · 预算从实际区间计算</h3>
+<p>相同预算指token、更新、时间中的哪一种？ 一步差与模拟预算差是不同的问题。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>恢复起止、tokens/update和预算口径明确；比较使用匹配口径。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>名义预算明确，但真实恢复边界或执行量未确认。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>把13.125T/3.75T与2726/810更新口径直接混用。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="../analysis/order_budget_audit.csv">三种顺序预算</a> · <a href="../analysis/findings_audit.json">恢复窗口核对</a></p>
+<h3 id="rubrics-r06">R06 · 平均指标可拆回组成项</h3>
+<p>总平均的收益由哪些子集贡献？ 16项macro里代码/学术收益和其他文本退步同时存在。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>组成项、聚合方式和退步项全部列出，能重建平均。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>只有平均与部分有利子集。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>把整体汇总再当一个子集，或把重叠任务当独立投票。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="../analysis/macro_contributions.csv">16项贡献</a> · <a href="../analysis/strong_baseline_paired.csv">54项任务原值</a></p>
+<h3 id="rubrics-r07">R07 · 选择后有独立确认</h3>
+<p>这份结果是用来选候选，还是用来确认候选？ 搜索极值容易含有噪声；确认预算不能被搜索预算替代。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>候选先冻结，再做未参与选择的重复与确认评估，报告波动。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>有多seed，但参与选择，或共享历史的依赖未处理。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>把597个单seed候选当成597次独立复验。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="../analysis/findings_audit.json">候选seed分布</a> · <a href="conclusions.html#conclusions">配对重复边界</a></p>
+<h3 id="rubrics-r08">R08 · 每次加量都写供体</h3>
+<p>给B加量时，A失去了多少？ 混合权重总和为1；收益包含替代关系。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>接收域、供体、转移量、其余变化和替代策略明确。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>加量或删域已知，空出预算分给谁不明。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>把删域再分配结果当成该域自身的纯贡献。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="../analysis/domain_ablation_audit.csv">80个删除干预</a> · <a href="practical.html#practical">第三轮实验方案</a></p>
+<h3 id="rubrics-r09">R09 · 库存、历史与重复分开</h3>
+<p>增加比例后，独立覆盖和累计曝光各变多少？ 相同百分比在小库存上可能意味着高重复。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>有效库存、已有曝光、后续计划和上限有定义，并检查容量可行性。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>只有公开名义库存与计划，真实去重/历史量未确认。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>把库存占比当抽样权重，或把名义epochs当实际文档重复证明。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="../analysis/cell_weights.csv">200桶库存与计划</a> · <a href="../analysis/planner_example.json">预算工具例子</a></p>
+<h3 id="rubrics-r10">R10 · 顺序比较匹配累计量和游标</h3>
+<p>两种顺序真的只差先后吗？ 时序和总量一起变，就无法归因到先后。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>逐桶累计量、完整块计数、恢复cursor和token流重放可对应。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>连续补偿或完整块计算已做，token ID/内部shuffle未重放。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>互换不同长度阶段却宣称曝光相同。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="../analysis/cursor_audit.csv">完整块游标</a> · <a href="../analysis/order_budget_audit.csv">顺序预算审计</a></p>
+<h3 id="rubrics-r11">R11 · 跨规模结论有对应对照</h3>
+<p>放大后是否仍保留强基线和关键风险对照？ 代码收益的方向在ladder上并非一致。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>更大模型同范围确认方向，并说明阶段/系统差异。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>有放大结果，但缺简单基线或条件不同。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>直接把d512收益幅度写成535B收益。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="../analysis/proxy_scale_effects.csv">跨规模终点</a> · <a href="https://github.com/marin-community/marin/issues/9126" rel="noopener" target="_blank">公开配比研究</a></p>
+<h3 id="rubrics-r12">R12 · 目标和能力保底预先冻结</h3>
+<p>选配比究竟要优化什么，允许牺牲什么？ 观察前沿随任务组合改变；未知selector不能靠猜测补齐。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>主目标、独立确认集、能力退步界限和停止条件在看结果前规定。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>目标大致明确，约束或冻结时间缺失。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>看完结果再换目标，把最终哈希当作全面最优证明。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="../analysis/observed_pareto_frontiers.csv">观察前沿</a> · <a href="../analysis/candidate_197c_counterexample.csv">197c反例</a></p>
+<h3 id="rubrics-r13">R13 · 根因证据和缓解效果分开</h3>
+<p>恢复运行能证明哪个假设，排除了什么？ silent hang、存储故障和数值异常需要不同证据。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>根因证据、排除实验、缓解动作和残余未知分别归档。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>有恢复和可行解释，但关键排除或底层证据不足。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>恢复成功就写成根因已确认。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="operations.html#operations">58条运行记录</a> · <a href="report.html#report">15类工程机制</a></p>
+<h3 id="rubrics-r14">R14 · 执行状态不只看配置路径</h3>
+<p>实际加载的代码、checkpoint和数据状态是什么？ 配置相同能减少混杂，但不能保证每次启动执行相同。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>代码/环境、checkpoint内容、随机与数据状态可核对，回退点明确。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>记录配置与fallback相同，实际恢复内容尚未确认。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>相同路径就断言状态逐字节一致。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="../analysis/strong_baseline_config_audit.csv">原始配置对照</a> · <a href="deep.html#deep">恢复与游标边界</a></p>
+<h3 id="rubrics-r15">R15 · 能力主张有实际任务验证</h3>
+<p>目标文本概率的变化是否转化为任务表现？ 预测指定答案与自己生成正确答案不是同一个测试。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>生成正确率/执行测试与BPB并列，题目、解码和污染检查有记录。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>只有BPB线索，能力主张保持为候选假设。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>HumanEval BPB写成pass@1，GSM8K BPB写成正确率。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="conclusions.html#conclusions">任务BPB边界</a> · <a href="../analysis/strong_baseline_paired.csv">逐seed任务表</a></p>
+<h3 id="rubrics-r16">R16 · 图表准备与理解证据分开</h3>
+<p>当前验证的是图表准备，还是读者能正确复述？ 界面可用与读者理解是两种证据；图表准备足够时仍可进入候选讨论。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>先声明范围：图表准备检查单位、参照、样本数、原值和窄屏；理解主张另需真实回答、评审依据、分歧及修订记录。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>图表准备可核对，但缺读者回答；不能据此声称理解效果已验证。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>以页面能打开、自评勾选或作者校准例，代替真实读者理解证据。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="assessment-guide.html#assessment-guide">理解检查协议</a> · <a href="../analysis/browser_validation_v5.json">图与交互复核</a></p>
+<h3 id="rubrics-r17">R17 · 结论可离线复算</h3>
+<p>分享包能从固定材料重建关键结果吗？ 复算不等于重训；两者的验证范围都应写清。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>归档、计算脚本、数字检查、链接和离线阅读验证齐全。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>报告可读，但部分计算需未知在线状态。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>只有截图/结论，关键原值或公式丢失。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="../Makefile">离线构建</a> · <a href="../analysis/validation.json">计算验证</a></p>
+<h3 id="rubrics-r18">R18 · 未解决问题有下一步和退出条件</h3>
+<p>下一次工作会消除哪个不确定性？ 持续改进应降低具体不确定性。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>状态</th>
+<th>判断锚点</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>证据齐全</td>
+<td>缺口、下一步、所需资源、验收/推翻条件和变更记录明确。</td>
+</tr>
+<tr>
+<td>部分证据</td>
+<td>有待办，但只写“继续深入”或缺验收。</td>
+</tr>
+<tr>
+<td>有反证/口径冲突</td>
+<td>抓取条数/美化数量当作研究收益，反例被删除。</td>
+</tr>
+</tbody>
+</table></div>
+<p>依据：<a href="improvement.html#improvement">持续改进记录</a> · <a href="pipeline.html#pipeline">决策管线</a></p>
+<h2 id="rubrics-v47macromicro">V47应用：macro与micro相反时怎样评审</h2>
+<p>沿用1.1锚点。先核对聚合公式，列逐域变化与贡献，再询问权重来自真实分母还是条件拟合。<a href="eval-weight-guide.html#eval-weight-guide">23点反推</a>提供后一类证据；事后留出不等于预注册预测，扰动范围不等于置信区间，实际分母仍未确认。主指标与域保底应在看候选结果前确定；不能因micro更好就忽略PTB反弹，也不能将micro份额直接用于训练配比。</p>
+<h2 id="rubrics-v48">V48应用：训练归约先于配比归因</h2>
+<p>沿用既有规则与管线。改变microbatch前，先写清目标分母，确认实际调用入口，并记录每块有效T；不能仅凭loss有限与梯度已相加验收。对有效均值，核对整个optimizer step的归约，避免重复除micro步数。再核对RNG、路由、梯度裁剪与状态更新；分母正确不自动证明真实模型拆批等价。<a href="gradient-accumulation-guide.html#gradient-accumulation-guide">源码与14项检查</a>只证明原函数体的串行适配行为和人工反例，没有证明Hero事故或配比收益。下一步需要真实入口的loss函数、逐块N/T与逐参数梯度记录。</p>
+<h2 id="rubrics-v49">V49应用：先核对危险分支，再核对实际触发</h2>
+<p>沿用已有锚点。有限loss不能替代有限cotangent/梯度；零权重不能自动排除非有限operand。先核对global T与inactive数值，再区分除法guard和上游计算的处理，最后验证完整状态更新。<a href="masked-numerics-guide.html#masked-numerics-guide">CPU原函数结果与默认配方条件</a>不能自动升级成Hero事故证据。原配方若正常执行应有正T，因此人工全零mask只作回归/迁移反例。</p>
+<h2 id="rubrics-v50update0">V50：空目标处理不能只把梯度或update改成0</h2>
+<p><a href="zero-gradient-state-guide.html#zero-gradient-state-guide">原AdamH模块CPU对照</a>确认：有历史moment时，零梯度仍产生非零更新；只丢弃最终update，状态仍推进，下一有效步也会改变。空目标应按实际global T与接受策略判断，不能按grad==0跳步，也不能用某个未使用expert的叶梯度为0触发整步跳过。moment/count、训练step、调度、EMA与QB应分别记录接受条件。本轮只执行optimizer局部对照，完整Hero步与事故触发仍未验证；规则锚点不变。</p>
+<h2 id="rubrics-v51">V51：裁剪验收要看归约范围和后续状态</h2>
+<p><a href="optimizer-guide.html#optimizer-guide">分组章节的CPU对照</a>确认三组各裁剪到1时合并范数为√3，且原AdamH首步近乎相同的参数更新可留下不同moment；固定后续参数与梯度，差异仍进入下一次update。验收需记录clip范围、系数/触发率、moment/count和后续有效步，不能只看首次更新相似。最新归档max_grad_norm=None；这不是Hero已启用裁剪的事件证据，规则锚点不变。</p>
+<h2 id="rubrics-v52">V52：加载器恢复控制</h2>
+<p>恢复验收新增约束：单独保存已完成更新、已交付batch、store预取范围。绑定历史batch前缀与实际next token/hash，不把fetch末尾当作训练cursor；对有限数据尾批明确padding/drop政策。<a href="batch-clock-guide.html#batch-clock-guide">原host控制</a>。</p>
+<h2 id="rubrics-v53">V53：混合数据身份</h2>
+<p>映射验收要求有序dataset_index、过滤后支持范围、整数计数/打包ID摘要、key、有限库存长度与版本、实际窗口身份与重复分布。禁止在恢复时无证据地排序字典；新规则必须显式版本化。<a href="mixture-identity-guide.html#mixture-identity-guide">原类控制</a>。</p>
+<h2 id="rubrics-v54shuffle">V54：桶内shuffle与切分</h2>
+<p>切分验收分别核对同快照train/val互斥与跨快照留出身份稳定；seed不能代替冻结评估样本。保存shuffle类型、窗口、尾块政策、截断位置和样本hash；同索引互斥不证明内容去重。<a href="mixture-identity-guide.html#mixture-identity-guide">原CPU控制</a>。</p>
+<h2 id="rubrics-v55">V55：小实验库存缩放</h2>
+<p>pilot库存验收逐桶保存输入库存长度、r、floor保留数、入口互斥约束、适用cap、真实曝光及重复率误差；活跃域保留0时拒绝或重新设计，不无记录抬到1。名义预算比例或重复率接近，不能代替生产配比排名确认。<a href="../analysis/budget_inventory_cpu.json">16项原函数控制</a>。</p>
+<h2 id="rubrics-v56moe">V56：新MoE提案</h2>
+<p>未写buffer验收覆盖全部read/write集合、强制drop/padding、NaN poison及每fill重trace；路由梯度保存EXACT基线并检查zero/小乘积/dtype边界。测试排除的输入不能写成已验证等价域。合并状态、短窗GPU测量与生产部署分别记录。<a href="recent-moe-guide.html#recent-moe-guide">提案审计</a>。</p>
+<h2 id="rubrics-v57">V57：性能归因</h2>
+<p>性能评审先核对每行实际base和测量窗口，再做最终图移除对照；只有兼容的四臂、共同输入与原始trace齐全，才估计指定条件下的交互量。空白步时不当0收益，scope时间不直接相加。<a href="../templates/performance_interaction_review.json">未执行记录模板</a>。</p>
+<p>V58数值验收：局部dS差异继续追踪到router梯度和同状态一步更新；按dtype/幅值分桶，分开输入cast为0与乘积变0。中位ulp、forward一致或正sigmoid声明不能代替反向链证据。</p>
+<p>V59权重路径验收：区分biased选择与unbiased权重，记录S/epsilon和最终cast。归一化目标不是所有输入的守恒量；人工VJP不能代替真实专家的完整梯度。</p>
+<p>V60验收补充：同token的归一化权重耦合多个专家，局部误差需追至完整router参数梯度；更新对照必须绑定count/mu/nu和LR/衰减。fresh与一个warm例都不能单独推断中途切换或全程风险。</p>
+<p>V61配比归因规则：先检查事件标记在实际评估时刻是否可区分。共线事件下，正则化系数不是贡献证据；满秩也不等于因果识别。多域重复结果不能替代共同checkpoint的训练对照。</p>
+<p>V62配比规则：同时展示逐续训seed收益、稳定退步与删pair敏感性。共享checkpoint不等于独立初始化；参与选优的数据不充当独立确认。cluster标签与评估域不一一对应，整配方收益不拆成单桶边际效应。</p>
+<p>V63恢复/评估规则：联合比较专家ID与按ID配对的权重；同combine数组不保证同专家。记录stored/pending-applied、master/EMA和dtype。检查原始pending及应用后bias有限性，不用静默置零代替等价恢复。</p>
+<p>V64恢复规则：区分元数据缺失/损坏、布局选择与严格数组读取；字面False永久标记不能用一般真假值替代。推理权重入口成功不代表完整训练状态恢复成功，布局兼容重试也要保留原candidate与异常来源。</p>
+<p>V65 补充恢复验收：open 成功、shape/dtype 正确、finite 全通过仍不等于内容完整。检查同 attempt 的预期状态、写入/提交回执和保存端—恢复端摘要；不得以缺逻辑 chunk 键直接判坏，因为合法填充值块也可省略。实测仅本地小数组，完整保存链未知。</p>
+<p>V66 恢复规则补充：区分“future 已结束并释放预算”和“保存成功”。异常被 manager 消费一次后，后续 wait 正常不应清除该 attempt 的失败账本。若新 save 入口报错，先核对前一次异步任务，不能直接归因于新目的路径。</p>
+<p>V67 接口规则：把“候选发现”“叶存在”“shape/dtype 一致”“内容完整”和“下一步行为”分别判定。字段在 manifest 中存在，不证明消费者使用其约束；本地原 leaf reader 的 shape 控制验证了这个边界，上层 schema 检查仍未知。人工完成标志仅测试消费条件，不是生产事故证据。</p>
+<p>V68 规则修正：说明上层保护时列出实际叶类型与具体检查。NamedArray 尺寸校验不等于 dtype 校验；本例普通 ShapeDtypeStruct 的形状也不受 exemplar 约束。每类叶分别核对 shape/dtype/content，实际 Hero 类型分布未知，不能据 toy tree 判整个训练系统的保护覆盖。</p>
+<p>V69 恢复规则：相同口语“缺数据”可能产生不同异常类与回退策略。分别保留原布局/legacy 的首错，不从后一次包装错误的缺叶数量推原存储损失。明确回退许可，并记录最终读取 master 或 compute 的权威来源；不把同 dtype 当作同内容。</p>
+<p>V70 配比归因规则：完整续训时先核对 marker step、恢复 state.step、optimizer 计数与历史 schedule，再确认真实首批身份/阶段；候选发现 step 不能直接当成数据消费时钟。weights-only 的新 step0 与源 step 分开记录。样本序号被原块置换打乱不单独判错，内容和顺序需按相同 key 重放。</p>
+<p>V71 配比规则：先核对正常 builder 的 step→offset 转换，不能把不匹配工件的跨批控制误称生产路径必然跨界。原 callback 的 completed-step 时钟本例对齐；stage 日志表示批次起点配置，不等于整批域占比或有效目标占比。域 IDs、valid targets 与 NLL 分别取证。</p>
+<p>V72 loss 规则：训练 CE 标签须核对是否含输出 z-loss；域样本占比、有效目标 sum(weight) 与纯 NLL 分开。固定预测重放 mask/weight 可检查组成效应，但不冒充真实模型能力收益；输出罚项与 router 日志项分别记录。</p>
+<p>V73 四格规则：只有共同目标、相同上下文与两套完整预测时才分解。报告组成、预测与交互，标明参考分布；缺格保留 null。对称分摊是描述约定，固定评估与独立配比训练才用于收益判断。</p>
+<p>V74 评估规则：缺域的0是累计初值，不是模型收益；先验收预期域覆盖。根级/父级macro空域政策与根级CE分母下限分别确认。权重为0不能默认屏蔽 NaN，非有限值须按有效位置和实际累计路径审查，不能最终填0通过。</p>
+<p>V75 callback规则：rank=2不足，loss/weight/评分ID必须逐位置同shape；tags行与有序列映射核对。明确互斥或重叠政策，多标签不可自动判bug。检查正权重行覆盖与ID范围；结构通过不证明标签身份、目标移位或前向来源。</p>
+<p>V76 累积规则：整步T&gt;0不保证局部mean梯度安全。先记录各块T并验收梯度有限性；空块mean乘0不能默认修复。正分母的T加权补偿须抵消框架除K，分子优先控制仍需验证实际接口与辅助项。不能把通用累积接口控制归因Hero专用入口。</p>
+<p>V77 工程证据规则：closed≠merged，head变化≠计算变化，共同模式名≠共同backend残差/内存收益。NoExecute驱逐与打taint的节点根因分开；公开triage恢复报告不代填原始控制面、checkpoint或重放成本。</p>
+<p>V78 专家接口规则：有效行与未定义尾部分别验收。普通梯度有限不证明row-dot或routing-weight梯度一致；saved-out与重算支线分别核对。局部caller选择通过不证明transport索引映射；CPU包装通过不证明GPU未写buffer安全。</p>
+<p>V79 布局/容量规则：sender未裁剪起点与接受前缀长度分别保存；receiver压实和最后expert尾部padding须对应portable前缀mask。核对return镜像与真实身份。总drop相同不证明接受身份相同；expert/chunk重排可改变前缀优先政策，实际域偏置须绑定样本证据。</p>
+<p>V80执行补充：审查drop相关改动时，分别写明assignment权重、已选logit、专家参数与总模型的梯度范围；记录裁剪前后权重质量、接受身份、全丢token及dtype。单一drop率不能判定语义等价；补归一化属于训练函数变更。本补充不增加总分，也没有外部评分效度验证。</p>
+<p>V81执行补充：接受零权重、被丢零权重和正权重但weighted cotangent为零需分桶。验收先对齐dtype/scale与mask，再比较dweight→router梯度→同状态更新；有限梯度和相同前向均不足以判断EXPERT_SIDE等价。</p>
+<p>V82执行补充：性能或质量结论须保存helper前后环境原文及flag列表，单列继承override、强制安全flag和重复项。模式名、repo默认或静态构造选择不能替代实际启动环境；JSON解析字典的末项值不能充当XLA parser规则。</p>
+<p>V83执行补充：保存父helper前、dispatcher过滤/resolve后、child初始化前与backend加载后四份证据。转发阶段缺键不代表最终缺键；metadata前缀通过不证明wheel哈希、加载插件或设备能力；GIT_COMMIT字符串不单独证明代码树。</p>
+<p>V84阅读补充：每次异常记录症状、实际共同起点、最小区分实验、通过项及仍缺证据。不要累加CPU/IO/静态检查数量作为生产可信度总分。七个症状入口是阅读工具，原18条规则不变，理解效果未测。</p>
+<p>V85执行补充：clipping结果有限不证明裁剪正确，有限全零需检查norm overflow，norm=0需检查平方underflow。activation dtype不代替optimizer输入dtype；归档未启用的分支不得归因生产事故。</p>
+<p>V86执行补充：结构兼容不证明更新等价；保留count不保证衰减计划相同，还依赖N。保留旧mu/nu却重置count会改Adam偏差校正。配比变更与优化状态重置需要分开归因。</p>
+<p>V87执行补充：校验器的预算范围必须和实验预算相同；固定spec通过不证明任意N满足曝光上限。同名配比不证明短实验进入过所有阶段。用返回阶段表和实际正时长验收。</p>
+<p>V88执行补充：小正weight不证明正整数曝光，连续配比改变不证明块计数改变；完整块一致不证明末块前缀一致。源码spec不得代替历史已解析配置。</p>
+<p>V89执行补充：比例和接近1不证明取整稳定；门槛附近的归一化末位误差可经余数集中被放大。跨环境差异要用同输入与隔离控制辨别，不得单归因数据。</p>
+<p>V90验收规则：底层反例必须连同正常入口保护一起分析。权重键属于components，只证明声明合法；启动前还需正权重键属于实际子数据集。对这两层分别记录接受/拒绝和读取证据，不把绕过入口的控制认定为生产事故。<a href="mixture-identity-guide.html#mixture-identity-guide">原类与入口控制</a></p>
+<p>V91规则：评估名称存在不代表内容相同。验证构造允许省略缺缓存域或concat子域；比较loss前核对域/子域集合与有效分母。训练则检查所有阶段的正支持，保留已有缺缓存报错，并明确空concat边界。</p>
+<p>V92规则：发现错误、停止派发、线程清理结束是三个状态。as_completed先收到异常不保证上下文立即退出；线程future取消不能停止已经运行的IO。并行化缓存构建前先核对跨机任务集合及顺序，而非只比较线程数。</p>
+<p>V93规则：记录有矛盾、缺执行证据、记录自洽分别输出。自洽不等于生产已验证；缺公开执行证据也不等于训练故障。新增<a href="code-242c28493356d39e.html">数据记录检查器</a>只核对所提供的字段与关系，全部结果禁止升级为生产证明。<a href="pipeline.html#pipeline">范围与运行方法</a></p>
+<p>V94修正：相等关系之前先验字段类型；多机清单必须有明确expected_hosts。部分机器相互一致仍缺覆盖证据。V93漏检作为本报告工具问题保留，不归因Marin；<a href="code-163ec07d01be05d2.html">严格工具</a>与<a href="../analysis/strict_data_record_probe.json">回归记录</a>可重放。</p>
+<p>V95规则：两个接口相等不能代替独立参考。计数先在窄类型溢出，再转int或取模，可能返回合法但错误的库存身份。检查原乘法/累计类型、restart前索引和两接口；按每个子域预算而非全局总量判断范围。</p>
+<p>V96规则：finite length并不自动证明其范围可读；exhausted策略也不自动保证无放回覆盖。用部分块、不同key和阶段切换重放实际读取，并核对unique身份。原first策略的人工越界与Hero restart声明分别记录。</p>
+<p>V97规则：名义epoch达到1不保证所有库存身份已出现。完整块可用连续区间多重集核算，部分块要保存实际索引；窗口内部重复与历史新增分别计算。V45公式和结果保留，使用条件已明确收窄。</p>
+<p>V98恢复规则：只有当前配比相同，不足以判为数据流连续。逐域核对过去阶段整数累计offset与边界，保留全局cursor、child mapping和库存身份。样本指纹一致但未取模offset不同，应判为需要解释的映射差异，不能直接批准历史等价；小库存取模可掩盖差异。原类16项人工控制不等于Hero恢复事件。<a href="mixture-identity-guide.html#mixture-identity-guide">依据</a>。</p>
+<p>V99：没有stalled日志不能判定loader健康，有10秒读取warning不能判定已超时或正在重试。验收分别检查等待开始/完成、实际错误传播和已交付/完成更新水位；prefetch深度的容错影响与吞吐收益应分别验证。<a href="batch-clock-guide.html#batch-clock-guide">原host控制</a>。</p>
+<p>V100规则：成功路径不能替代关闭路径。必测空队列消费者、满队列生产者、pending读取、有效项后错误及重复耗尽。只有consumer退出，不可判为生产IO已取消；只有producer退出，不可判为consumer已唤醒。原协议缺口已用CPU复现，Hero事故未知；局部消费候选仍需集成和分布式评审。<a href="batch-clock-guide.html#batch-clock-guide">依据</a>。</p>
+<p>V100另核未缓冲错误：RuntimeError可被原wrapper转成StopIteration，不能把迭代终止独立当作库存耗尽或训练预算完成。局部消费候选尚未修正该wrapper；保留异常来源与实际完成量。</p>
+<p>V101规则：未合并提案头不等于main，main不等于部署；default不等于forced，mode名不等于最终环境。exit137单独不足以归因taint/基础设施失败；错误预算要看原condition和命名task状态。当前实况正文与V77/V83相同，不计新增事故。<a href="recent-moe-guide.html#recent-moe-guide">对照依据</a>。</p>
+<h3 id="rubrics-gang-v102">Gang 恢复评审的三个追问（V102）</h3>
+<p>沿用现有规则，不增加分数：第一次应用 FAILED 与连带 COSCHED_FAILED 是否分别计账？旧 attempt 的资源释放是否有 worker 退出确认？新 attempt 是否有 checkpoint、数据游标和首个完成更新的对应记录？分别检查重试预算、容量账和训练进度，不能用一个 job RUNNING 截图替代。<a href="gang-recovery-guide.html#gang-recovery-guide">源码与原生测试解释</a>。</p>
+<h3 id="rubrics-v103">控制器恢复的失败验收（V103）</h3>
+<p>正常 roundtrip 通过以后，再用坏主库、缺失目标和第二份上传失败核对调用链。要求失败后保住原状态、候选整组完成、恢复身份明确，并把控制器备份与模型/optimizer/游标备份分别绑定。当前固定源码的普通恢复保住两份文件，但请求回滚先清空；部分主库发布也能被选为 latest。本轮是原函数本地故障控制，未修上游或证明生产发生。<a href="controller-recovery-guide.html#controller-recovery-guide">证据与待实施建议</a>。</p>
+<h3 id="rubrics-v104">候选通过与生产接入分开验收（V104）</h3>
+<p>检查所有写入者与读取者是否使用同一完成合同，旧格式迁移是否明确；文件配对、字节摘要、数据库可用性与共同状态时刻分别验收。22 项控制支持本地候选路径，不覆盖原生产调用链、并发、强制中断或模型恢复。<a href="controller-recovery-guide.html#controller-recovery-guide">恢复候选与未完成门槛</a>。</p>
+<h3 id="rubrics-v105">先确认状态内容，再判断备份风险（V105）</h3>
+<p>当前 auth 无业务表、签名 key 来自配置，缺文件不能直接推成密钥丢失。人工交错控制中各文件均有效且摘要通过，仍可来自不同 generation；先识别真实跨组件不变量，再审计 snapshot 获取时刻。文件完整、字节正确、数据库可用、共同状态时刻分别验收。<a href="controller-recovery-guide.html#controller-recovery-guide">源码与控制</a>。</p>
+<h3 id="rubrics-donationv106">保存优化必须跨过实际 donation（V106）</h3>
+<p>先断言旧输入实际失效，再让延迟消费者读取快照；把保留外部视图的对照单独记录。共同状态时刻、独立快照、提交完成、恢复模板和数据游标分别验收。10 项单 CPU 控制支持原 helper 的这个边界；不替代 GPU、多 rank 或完整模型恢复。<a href="checkpoint-memory-guide.html#checkpoint-memory-guide">执行与解释</a>。</p>
+<h3 id="rubrics-v107">恢复验收需要比较第一次更新（V107）</h3>
+<p>更新前 loss 相同只检查当前权重的前向行为，不能证明 optimizer、时钟和 loader 恢复一致。先在相同输入下比较参数增量与状态叶，再接真实数据游标。仅权重初始化是另一项干预；即便下一条 loss 更低，也不能把它冒充相同历史下的配比收益。8 项人工状态/真实 IO 控制提供反例，没有证明 Hero 实际发生。<a href="checkpoint-commit-guide.html#checkpoint-commit-guide">具体数值与边界</a>。</p>
+<h3 id="rubrics-v108">数据前缀验收要包括未来支持域（V108）</h3>
+<p>保留 seed 的派生方式，不把 None 与同名整数视为等价。核对完整阶段支持并集、构造顺序与逐域 shuffle key；未来新域插到前面也可能改当前内容顺序。当前配比、完整库存和当前域名序列都相同仍不足，最终比较固定索引的真实 token/hash。12 项原函数 CPU identity 控制支持这个机制，没有证明 Hero 发生断流。<a href="mixture-identity-guide.html#mixture-identity-guide">控制与适用边界</a>。</p>
+<h3 id="rubrics-v109">采样权重先标明单位（V109）</h3>
+<p>声明权重、整数序列quota、输入位置、正权重target数与Σloss_weight分别记账。按实际批次计算目标系数，不能把它称为梯度范数贡献；统一缩放全部权重也不代表学习量减少。只有真实密度证据支持时，才把反密度换算作为候选，并重新评估成本与供体退步。<a href="data.html#data">原接口控制与口径修正</a>。</p>
+<h2 id="rubrics-v110">V110：进度的测量边界</h2>
+<p>V110补充测量规则：单步duration、iteration_time、日历前沿速度和持久化进度分别记账；区间先除以步数增量，不把采样间隔或两种聚合口径的差额写成停机。配比比较声明名义输入、有效目标或日历预算的单位。与事故评论时间相容仍不构成独立根因验证。详见<a href="operational-progress-guide.html#operational-progress-guide">计时边界与证据</a>。现有18条规则版本不变，这些是其测量口径的补充。</p>
+<h2 id="rubrics-v111">V111：恢复后的下一次更新</h2>
+<p>V111恢复判据补充：值、shape、dtype和优化器计数之外，检查消费者的pending语义以及donation输入叶共享关系。原QB是中心化替换，同beta重复应用在本控制中幂等，零pending会重设bias；不以“应用恰好一次”推导清空协议。清空pending的配比切换应列为额外干预。当前18条规则版本不变，新增原训练步证据见<a href="pending-resume-guide.html#pending-resume-guide">19项控制</a>。</p>
+<h2 id="rubrics-v112">V112：初始化与恢复的构造路径</h2>
+<p>V112补充：fresh initialization和checkpoint restore分别验收。相同值/shape/dtype不保证相同输入共享关系；同一个数值状态可因构造路径不同而在donation下表现不同。记录EMA/master/offload/donation组合，将数值等价、缓冲区兼容、内存峰值和上游集成作为不同证据。当前18条规则版本不变。<a href="pending-resume-guide.html#pending-resume-guide">实测矩阵</a>。</p>
+<h2 id="rubrics-v113loss">V113：有限loss与路由状态</h2>
+<p>V113恢复/健康规则补充：loss有限不推出原pending、stored bias或应用后bias有限；全部状态重新有限也不推出历史更新等价。区分输入pending、实际前向、输出pending与下一次视图。中心化等派生操作须检查输出，不能只检查输入。本地守卫候选没有生产一致终止与开销验证。当前18条规则版本不变。<a href="failure-boundaries-guide.html#failure-boundaries-guide">13项控制</a>。</p>
+<h2 id="rubrics-v114">V114：原估计器输入边界</h2>
+<p>V114执行原QB histogram wrapper及单CPU真实collective接口，9项控制区分空有效集合、无效位置排除、有效异常传播，以及有限极端margin导致的beta/bias溢出。未执行实际Hero margin构造或跨host归约，未认定生产事故或修复。检查margin范围、beta与应用后bias分别记录；padding过滤不代替有效输入健康性验收。<a href="qb-guide.html#qb-guide">完整原值与机制</a>。566份来源未变。</p>
+<h2 id="rubrics-v115">V115：归约一致与近似误差</h2>
+<p>V115执行四虚拟CPU设备的原histogram，11项控制：单/四设备、跨分片重排、空分片与padding过滤一致；其他专家的人工离群值扩大共同网格，精确参考阈值未变而histogram阈值与固定query专家集合改变。有限与归约一致不等于估计近似稳定。配比研究应另记margin分布、箱宽及参考误差，不能直接将人工例子解释为真实数据域问题。未测GPU/网络/完整模型或性能；566份来源保持。<a href="qb-guide.html#qb-guide">原值与分析</a>。</p>
+<h2 id="rubrics-v116margin">V116：margin的原投影入口</h2>
+<p>V116执行原模型router投影/top-k/margin与真实四CPU histogram，9项控制。明确QB使用原logits减带bias alpha，sigmoid只用于combine；零bias E3/K2的每行margin最小值为0，非零bias可有负margin。满足原局部路径约束的人工离群值仍能改变共享网格，但较小离群值的阈值误差变化未改变共同query专家集合。未运行完整模型或真实域/能力对照，566份来源不变。<a href="qb-guide.html#qb-guide">完整原值与边界</a>。</p>
+<h2 id="rubrics-v117">V117：目标与路由人口分开记账</h2>
+<p>V117接原causal目标mask、attention有效性、投影margin和四CPU histogram，9项控制：只改loss_weight不改变QB有效人口；零直接目标位置仍可改变阈值。boolean空query与additive mask的有效性合同不同。每域输入/路由有效/正目标/加权目标分开记录，不静默将prompt改为padding。本轮人工answer-only不是Hero配方，未测attention、完整梯度或能力收益；566份来源不变。<a href="boundary-guide.html#boundary-guide">原值及边界</a>。</p>
+<h2 id="rubrics-v118">V118：研究收束为训练决策</h2>
+<p>新增<a href="training-decisions-guide.html#training-decisions-guide">训练决策备忘录</a>：六类症状的最小对照、#9352评估修正但排序不变的数值案例、配比五本账及供体/顺序/独立确认管线。将继续观察、废弃候选、进入放大验证分开，不给未执行实验判通过。新增机器可读案例只复算既有作者报告，无新训练、生产采用或最优配比结论；566份来源保持。</p>
+<h2 id="rubrics-v119">V119：评估补丁的调用合同</h2>
+<p>固定作者最终fork补丁，执行原setter、runner、StepInfo与tagged callback的15项CPU控制：current/EMA视图正确且raw state不改，普通/未到期回调无QB应用；评分去重前已执行setter，装饰器会转发force。当前两种eval hook兼容，人工plain hook不兼容，不归为生产事故。完整循环、GPU、实际成本与生产采用未验证。7份新来源，API正文未变，来源总数573。<a href="pending-resume-guide.html#pending-resume-guide">局部结果与工程规则</a>。</p>
+<h2 id="rubrics-v120key">V120：删域响应依赖参照，过期历史也参与key分配</h2>
+<p>重算80次删域的54字段4320行响应；两套参照下Paloma/GSM8K/HumanEval方向反转分别6/9/31个域，均非显著性结论。真实配置保留过去的正权重阶段，原函数条件复算仍给200桶相同命名child key；剪历史反事实才过滤额外桶并改变key。11项分析控制、16000条key记录和新响应图；不归因为历史事故或535B配比最优解。<a href="practical.html#practical">原值、源码与可执行规则</a>。</p>
+<h2 id="rubrics-v121">V121：配比边界早于共同恢复点</h2>
+<p>新取得生产run声明0/3120阶段，与80份续训的0/384/3120不同；日志前沿对应393次更新。原49,152槽混合块条件复算显示部分块前缀计数和逻辑身份不同，不能扩大为真实重复token事故。直接改393违反原整块assert；step432桥接合法但改变39次续训更新和预算，仍未执行。12项控制、逐桶原值与时间线；实际checkpoint、历史key及训练收益未知。<a href="batch-clock-guide.html#batch-clock-guide">恢复边界与部分块</a>。</p>
+<h2 id="rubrics-v122">V122：历史源码与恢复证据</h2>
+<p>补充源码谱系判断：文件名相同不足以绑定历史行为；文件不同也不自动推翻局部结论。先匹配上传快照摘要，再比较具体方法，最后核查实际入口、恢复状态和输入身份。本轮两份清单五文件绑定、一个续训恢复日志及80组条件重算通过，实际imports/checkpoint内容/token尚缺。<a href="run-code-guide.html#run-code-guide">可填写检查管线</a>。</p>
+<h2 id="rubrics-v123seed">V123：随机流与seed语义</h2>
+<p>随机流规则补充：None、缺省与合法0需保留语义；记录PRNG实现、相关flag、拆分路径与桶顺序。默认换训练seed同时改变模型与数据key，不能单称模型初始化方差。统一显式数据seed的候选须与同流基线比较；接续旧run不能静默补0。<a href="run-code-guide.html#run-code-guide">原代码、反事实与两个CPU版本</a>。</p>
+<h2 id="rubrics-v124">V124：模拟子集与恢复数据流</h2>
+<p>新增模拟库存判断锚点：权重实验应固定选中子集身份，顺序实验应固定子集集合；shuffle后slice时换key可能同时换两者。正权重不保证模拟后非空，需核对原序列长度和取整。模型checkpoint相同只是一项控制，不能替代数据谱系。规则来自9项原源码人工身份控制，真实pool/loss影响未知。</p>
+<h2 id="rubrics-v125io">V125：前缀抽样支持与IO布局</h2>
+<p>前缀抽样规则：先定义抽样合同，核对支持范围、tail、真实分组及选中身份；完整双射不替代前缀分布检查。IO块不能直接等同于文档或主题，覆盖更多块不自动判质量更好。更改window应同时评审输入、IO和质量证据，缺失项保持未知。</p>
+<h2 id="rubrics-v126">V126：实验改变了什么</h2>
+<p>对“单项收益”的陈述，新增配套审查说明：具体列出有意改变项、共同起点、选中集合、桶内映射、整数曝光、恢复前缀和评分视图。未排除的共同变化写入结论范围。此说明不改变现有18规则的机器评分结构，也不将设计完整当作训练成功。<a href="experiment-controls-guide.html#experiment-controls-guide">实例与边界</a>。</p>
+<h2 id="rubrics-v127">V127：配置断言与执行模式</h2>
+<p>“源码有检查”还需说明实际执行模式。外部配置前置条件不应只由可移除assert保护；身份审计同时核对取模前逻辑位置和实际返回身份。原函数反例证明合法读取不保证曝光账本正确，未证明历史训练触发。<a href="assertion-contracts-guide.html#assertion-contracts-guide">控制与边界</a>。</p>
+<h2 id="rubrics-v128">V128：桶级权重的数值合同</h2>
+<p>“配额总和等于块大小”只证明守恒。新增桶级数值审查说明：原正支持、归一化正支持、整数正曝光分列；检查逐项与总和均有限，记录余数接收者。坏阶段的首桶全量分配同样守恒，不能通过总和检查代替每桶合同。<a href="weight-domain-guide.html#weight-domain-guide">原代码反例</a>。</p>
+<h2 id="rubrics-v129manager">V129：异步manager与任务级失败</h2>
+<p>保存验收分别审查任务身份与首次失败、future对象、源数组可达性和RSS。completed future列表存在不能独立证明模型数组仍在；后续wait正常也不能撤销已观察到的提交/发布失败。新增规则说明未改变18项机器评分结构。<a href="async-manager-guide.html#async-manager-guide">实际依赖控制</a>。</p>
+<h2 id="rubrics-v130">V130：保存调度与失败策略</h2>
+<p>保存失败评审增加请求身份、交接水位、metadata发布与retention结果。重试要说明触发条件和attempt，不能将force开关视为原子覆盖或分布式重试保证。已发布后的清理错误不自动归为数据提交失败。<a href="checkpoint-failure-policy-guide.html#checkpoint-failure-policy-guide">原调用链控制</a>。</p>
+<h2 id="rubrics-v131">V131应用例：异常归因与事件语义</h2>
+<p>沿用现有18项规则，不增加总分。评审应附双故障控制：主操作和收尾同时失败时，最外层报错、cause/context及未运行hook是否有记录。FINISHED事件只按源码语义解释；如果未验证commit/发布/恢复，不能拿它支撑“保存成功”。重启前后配比比较还需恢复状态和输入身份，否则保留为观察。见 <a href="exception-provenance-guide.html#exception-provenance-guide">11项控制及评审合同</a>。</p>
+<h2 id="rubrics-v132">V132应用例：可选恢复的意图与历史证据</h2>
+<p>保持现有18项规则。评审应提交同一checkpoint父目录/具体路径对照，并区分真正空目录、未发布残留、损坏marker与数组缺叶。声明续训时，返回初始state不能记为恢复通过；required=True也不替代发布身份、schema和下一步验收。见 <a href="optional-resume-guide.html#optional-resume-guide">12项真实本地控制</a>。</p>
+<h2 id="rubrics-v133">V133应用例：状态相同与计划接续</h2>
+<p>沿用18项规则。续训证据应同时绑定原N/新N、schedule定义与单位、各组LR、各schedule count、Adam count和下一步update；不能拿缓存lr或一个outer count替代。只改配比与配比加预算重规划是不同干预。<a href="optimizer-schedule-guide.html#optimizer-schedule-guide">14项原构造/注入控制</a>。</p>
+<h2 id="rubrics-v134">V134应用例：配置类型、单位与几何</h2>
+<p>沿用18项规则。保存原值/类型/意图单位，以及真实预算下的周期点和warmup/stable/decay整数步数；在边界前后、恢复count及末端检查实际LR。构造成功或有限性不代替合法周期和声明的连续性合同。人工反例与归档Hero声明分开，候选parser/生产迁移未验证。<a href="schedule-config-guide.html#schedule-config-guide">16项控制与图</a>。</p>
+<h2 id="rubrics-v135">V135应用例：敏感性、确认和组合干预</h2>
+<p>沿用18项规则。删seed范围只描述已有选择结果的脆弱性，不作为置信区间或挑选重复的依据。确认主目标与保底先冻结，再做独立重复；若同时改变LR计划，用对应四臂或明确只回答组合方案。真实祖先、输入、状态、计划与评估证据缺项不能被其他通过项相抵。<a href="confirmation-playbook-guide.html#confirmation-playbook-guide">手册</a>。</p></section><nav class="pager"><a href="assessment-guide.html">← 上一篇</a><a href="pipeline.html">下一篇 →</a></nav></main></body></html>

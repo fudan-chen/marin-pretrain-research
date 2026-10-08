@@ -1,0 +1,141 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>从评估数组导出可比较的记录 · Marin 预训练研究</title><link rel="stylesheet" href="reading.css"></head><body><header><nav><a href="index.html">主题目录</a><a href="../report_standalone.html">完整报告（保留）</a><a href="code.html">源码与候选补丁</a><a href="tools.html">交互工具</a></nav></header><main><p class="muted"><a href="theme-eval.html">07 · 评估与曲线解释</a> / 本页只含一篇专题</p><details class="chapter-toc"><summary>本篇目录</summary><ol><li><a href="#eval-array-export-guide-1-manifest">1. 输入数组与manifest</a></li><li><a href="#eval-array-export-guide-2-ntb">2. N/T/B如何产生</a></li><li><a href="#eval-array-export-guide-3-v2">3. v2摘要的具体定义</a></li><li><a href="#eval-array-export-guide-4">4. 运行与接入</a></li><li><a href="#eval-array-export-guide-token">下一token坐标验收</a></li></ol></details><section class="chapter" id="eval-array-export-guide"><h1 id="eval-array-export-guide-_1">从评估数组导出可比较的记录</h1>
+<p><a href="eval-replay-guide.html#eval-replay-guide">重复评分检查器</a>已经能对照逐批记录，但V39尚未提供数组导出路径。现在新增<a href="code-f92f08e2ec636fb7.html">离线导出器</a>：读取已收集的全局NPZ数组，计算域级N/T/B、实际输入摘要和byte表摘要，输出检查器能直接使用的JSON。</p>
+<p>它补齐了“数组→记录”的离线环节，<strong>没有运行模型、收集GPU数组、汇总多rank或验证checkpoint</strong>。输入数组仍需从真实评估过程中采集；当前验证全部为人工数组，未取得Hero记录。</p>
+<h2 id="eval-array-export-guide-1-manifest">1. 输入数组与manifest</h2>
+<p>可从<a href="../templates/eval_array_manifest.json">空白manifest</a>填写实际运行信息；未填字段不能运行。manifest给出模型视图声明、ordered domains、mask_spec、global范围，以及按实际评估顺序列出的batch/NPZ路径。每个NPZ只能包含以下数组和命名为mask_*的显式mask叶子；禁止pickle/object数组。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>数组</th>
+<th>形状与要求</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>input_tokens</td>
+<td>整数[B,L]，合法vocab范围</td>
+<td>绑定模型实际输入；不是仅保留评分target</td>
+</tr>
+<tr>
+<td>scoring_token_ids</td>
+<td>整数[B,T]，合法byte表索引</td>
+<td>绑定loss位置使用的token；导出器不自行推测移位</td>
+</tr>
+<tr>
+<td>losses、weights</td>
+<td>非负有限浮点[B,T]</td>
+<td>逐位置NLL及实际loss权重；不是训练总loss，也不是名义token计数</td>
+</tr>
+<tr>
+<td>tags</td>
+<td>0/1的[B,D]，每行至多一个叶子域</td>
+<td>只支持互斥叶子域；正权重行必须属于一个域</td>
+</tr>
+<tr>
+<td>bytes_per_token</td>
+<td>非负有限一维表</td>
+<td>评分token查表后计算B，表内容也计算摘要</td>
+</tr>
+<tr>
+<td>mask_*</td>
+<td>有限实数、整数或布尔数组</td>
+<td>保存实际mask表示的各叶子；另在mask_spec写清语义与布局</td>
+</tr>
+</tbody>
+</table></div>
+<p>模型视图identity字段包括checkpoint_sha256、execution_sha、parameter_view、pending_beta_policy、compute_dtype、backend、tokenizer_sha256。byte_table_sha256可以不填，由导出器计算；如果填了却与提供的表不一致，则拒绝。不同batch的byte表也必须相同。</p>
+<p>mask可能是文档ID、布尔条件或其他显式叶子，导出器绑定它们的字节，不解释AttentionMask语义。若模型使用隐式causal条件，采集者须显式记录相应标志及mask_spec；不能为了通过校验随意造一个mask叶子。NPZ本身无法证明采集的就是实际前向输入。</p>
+<h2 id="eval-array-export-guide-2-ntb">2. N/T/B如何产生</h2>
+<p>对batch中属于域d的行，用float64独立计算：N=Σ(loss×weight)，T=Σweight，B=Σ(bytes_per_token[scoring_token_ids]×weight)。零权重位置不会贡献这些总量，但仍留在输入摘要中。</p>
+<p>评分token的对齐由采集者负责。归档入口使用移位token并在末尾补一个位置；如果实际运行使用另一种对齐，必须按实际loss位置输出，不能从input_tokens长度直接推断。losses的来源也必须是评估NLL；训练loss可能包含额外项，不能混用。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>对象</th>
+<th>现在实际验证了什么</th>
+<th>仍未验证什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>N/T/B</td>
+<td>对提供的人工数组计算与参考值一致</td>
+<td>Hero前向、全局归约和真实mask/权重</td>
+</tr>
+<tr>
+<td>输入摘要</td>
+<td>从提供的数组按规范重新计算</td>
+<td>数组是否等于真实运行输入</td>
+</tr>
+<tr>
+<td>byte表摘要</td>
+<td>从提供的完整typed表计算；拒绝虚假预填摘要</td>
+<td>表是否等于运行时tokenizer字节定义</td>
+</tr>
+<tr>
+<td>checkpoint/tokenizer身份</td>
+<td>要求格式合法并进入对照字段</td>
+<td>文件内容、模型状态和实际执行的对应关系</td>
+</tr>
+</tbody>
+</table></div>
+<p>这比只比较导出者手填的input_sha256更强，但仍不能把“给定文件内部可复查”推广成“真实训练身份已证明”。</p>
+<h2 id="eval-array-export-guide-3-v2">3. v2摘要的具体定义</h2>
+<p>新格式标记为typed_global_eval_arrays_v2。每个域记录的摘要绑定<strong>整个batch输入</strong>及当前域名，不只截取该域的行；这样分批与其他行变化也会进入检查。</p>
+<p>摘要帧按以下规则连接后计算SHA256：</p>
+<ol>
+<li>context按键排序、UTF-8、无额外空格的JSON，包含scheme、ordered domains和mask_spec。</li>
+<li>数组按名称排序，包含input_tokens、scoring_token_ids、weights、tags与所有mask_*；不包含losses或byte表。byte表单独进入身份字段。</li>
+<li>每数组先写名称/dtype/shape的规范JSON头，再写little-endian、C-order字节。每个帧先写8字节little-endian长度。</li>
+<li>以上得到batch_input_sha256；域摘要再对含domain与batch_input_sha256的排序键、无额外空格UTF-8 JSON计算SHA256。整批数组只需哈希一次，各域再绑定名称。</li>
+</ol>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>变化</th>
+<th>摘要处理</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>C-order改为Fortran内存布局</td>
+<td>相同typed值摘要相同</td>
+<td>物理内存布局不是这里要比较的输入变化</td>
+</tr>
+<tr>
+<td>只改变字节序</td>
+<td>规范化后摘要相同</td>
+<td>绑定typed值而非文件的主机字节序</td>
+</tr>
+<tr>
+<td>改变dtype宽度或shape</td>
+<td>摘要不同</td>
+<td>实际typed输入与布局声明不同</td>
+</tr>
+<tr>
+<td>改变loss，输入数组不变</td>
+<td>输入摘要相同，N不同</td>
+<td>可以进入声明一致下的数值调查</td>
+</tr>
+<tr>
+<td>改变token、权重、tags或mask</td>
+<td>摘要不同</td>
+<td>先检查输入身份，不自动解释为模型数值变化</td>
+</tr>
+</tbody>
+</table></div>
+<p>原v1声明记录仍可比较；v1与v2不同标记会触发身份核对，不能自动继承“哈希一致”。检查器仍不自行读取NPZ，使用v2记录时应保留导出manifest和所有NPZ以供复核。</p>
+<h2 id="eval-array-export-guide-4">4. 运行与接入</h2>
+<pre><code class="language-bash">.venv/bin/python scripts/export_eval_arrays.py manifest.json first.json
+.venv/bin/python scripts/export_eval_arrays.py repeat-manifest.json second.json
+.venv/bin/python scripts/compare_eval_replays.py first.json second.json comparison.json
+</code></pre>
+<p>输出文件拒绝覆盖，导出记录保留manifest文件与每个NPZ文件的SHA256。manifest的batch项形如<code>{"batch":0,"path":"batch-000.npz"}</code>；相对路径按manifest所在目录解析。记录顺序按manifest保持，不自动排序。</p>
+<p>采集接入时，应在实际eval_loss_fn得到loss、weight和评分token后保存对应模型输入、mask和域标签；先确认这些是全局数组，再做导出。不能把local shard改名为global，也不能将各rank已重复的全局总量再累加。这个多卡采集步骤当前尚未实现或验证。离线工具一次加载一个NPZ并规范化数组字节，不是受控的流式采集方案，真实批次的内存与导出开销尚未测量。</p>
+<p><a href="../analysis/eval_array_export_validation.json">23项检查</a>使用人工两行、两域输入，覆盖N/T/B参考值、typed摘要、loss/input差异、非法标签/值/范围、byte表声明和真实CLI拒绝覆盖；它们不是生产评估成绩。旧<a href="../analysis/eval_replay_validation.json">27项记录比较检查</a>也重新通过。</p>
+<p>已有能力是离线、可复核的“全局数组→逐批记录→重复评分对照”；尚缺实际前向采集、rank范围证明及Hero记录。拿到这些材料后，才能把PTB调查从声明比较推进到真实输入与数值重放。</p>
+<h2 id="eval-array-export-guide-token">下一token坐标验收</h2>
+<p>新增可选<code>target_contract="causal_next_token_v1"</code>，空白manifest默认启用。它要求输入与评分ID同形、末位权重为零、所有正权重位置的评分ID等于右侧输入token；零权重ID仍受范围与摘要约束。缺省通用接口会明确标记未验证此性质。该检查仅验证提供的数组坐标，不验证loss来源、真实前向或缓存。详见<a href="eval-target-alignment-guide.html#eval-target-alignment-guide">目标对齐与覆盖</a>。</p>
+<p>V75在原累计路径验证了单列广播和越界byte ID可以静默产生有限结果，见<a href="eval-metrics-guide.html#eval-metrics-guide">源码控制</a>。本导出器原本要求评分shape完全一致、ID合法、标签互斥；这是离线导出契约，不代表原TaggedEvaluator禁止多标签，也不证明同shape数组的域名/评分位置已正确绑定。</p></section><nav class="pager"><a href="eval-replay-guide.html">← 上一篇</a><a href="eval-weight-guide.html">下一篇 →</a></nav></main></body></html>

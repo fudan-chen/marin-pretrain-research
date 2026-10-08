@@ -1,0 +1,477 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>持续改进记录：下一步要减少哪种不确定性 · Marin 预训练研究</title><link rel="stylesheet" href="reading.css"></head><body><header><nav><a href="index.html">主题目录</a><a href="../report_standalone.html">完整报告（保留）</a><a href="code.html">源码与候选补丁</a><a href="tools.html">交互工具</a></nav></header><main><p class="muted"><a href="theme-method.html">09 · 规则、学习与证据</a> / 本页只含一篇专题</p><details class="chapter-toc"><summary>本篇目录</summary><ol><li><a href="#improvement-1">1. 本轮已经处理的问题</a></li><li><a href="#improvement-2">2. 下一轮按结论价值排列</a></li><li><a href="#improvement-3">3. 每轮记录格式</a></li><li><a href="#improvement-4">4. 版本纪律</a></li><li><a href="#improvement-5">5. 本轮回放规则后，实际修正了什么</a></li><li><a href="#improvement-6">6. 第六轮：候选选择与规则回放</a></li><li><a href="#improvement-7">7. 第七轮：逐桶账本和执行支持范围</a></li><li><a href="#improvement-8">8. 第八轮：完整块匹配之外的边缘问题</a></li><li><a href="#improvement-9">9. 第九轮：理解证据不能由页面验收代填</a></li><li><a href="#improvement-10">10. 第十轮：工程陈述回到事件和代码</a></li><li><a href="#improvement-_2">第十一轮：检验跨规模比较的对象和测量是否一致</a></li><li><a href="#improvement-_3">第十一至十四轮：从统计比较继续追到执行接口</a></li><li><a href="#improvement-_4">第十五轮：先核对缓存身份，再解释权重收益</a></li><li><a href="#improvement-_5">第十六轮：去重政策、稀疏属性与样本对齐</a></li><li><a href="#improvement-_6">第十七轮：质量评分能否观察并区分目标内容</a></li><li><a href="#improvement-_7">第十八轮：将源码发现接回实验规范</a></li><li><a href="#improvement-moe">第十九轮：MoE分配丢弃如何进入训练目标</a></li><li><a href="#improvement-v20">V20：路由均衡怎样受批次与分组影响</a></li><li><a href="#improvement-v21">V21：参数分组与衰减时钟</a></li><li><a href="#improvement-v22">V22：整合诊断流程并修正旧入口</a></li><li><a href="#improvement-v23attention">V23：attention之外的文档边界</a></li><li><a href="#improvement-v24c025">V24：回到C025核对实验实现</a></li><li><a href="#improvement-v25">V25：回到配比切换的真实验证轨迹</a></li><li><a href="#improvement-v26v25">V26：纠正V25汇总字段并追查累计单位</a></li><li><a href="#improvement-v27">V27：保存提交与真正可恢复的进度</a></li><li><a href="#improvement-v28">V28：保存内存预算与副本写入计划</a></li><li><a href="#improvement-v29">V29：将源码增补收束为症状驱动的交接图</a></li><li><a href="#improvement-v30">V30：从优化器分组深入到实际更新几何</a></li><li><a href="#improvement-v31">V31：把范数验收扩展为方向与状态验收</a></li><li><a href="#improvement-v32">V32：方向算子与布局变换的边界</a></li><li><a href="#improvement-v33">V33：将优化器发现连成可执行事故检查</a></li><li><a href="#improvement-v34loss">V34：区分loss检查、健康状态和保存交接</a></li><li><a href="#improvement-v35batch">V35：配比边界与batch历史不能各自解释</a></li><li><a href="#improvement-v36">V36：风险必须代入真实组件规模</a></li><li><a href="#improvement-v37">V37：用新评估核查宏平均的解释</a></li><li><a href="#improvement-v38">V38：评估随机重抽假设被收紧</a></li><li><a href="#improvement-v39">V39：重复评分有了具体比较工具</a></li><li><a href="#improvement-v40">V40：把专题收束成实际决策</a></li><li><a href="#improvement-v41">V41：提供的全局数组可以导出并复核</a></li><li><a href="#improvement-v42">V42 评分格式与缓存访问</a></li><li><a href="#improvement-v43-token">V43 下一token坐标与覆盖账目</a></li><li><a href="#improvement-v44">V44 打包字段与权重坐标</a></li><li><a href="#improvement-v45">V45 重复曝光与新增覆盖</a></li><li><a href="#improvement-v46">V46 新端点与均值方向</a></li><li><a href="#improvement-v47">V47：解释均值分歧，而不是按总均值改比例</a></li><li><a href="#improvement-v48">V48应用：训练归约先于配比归因</a></li><li><a href="#improvement-v48cpuv49">V48之后的历史准备记录（CPU验证已在V49完成）</a></li><li><a href="#improvement-v49cpu">V49：真实CPU验证与触发条件同时检查</a></li><li><a href="#improvement-v50update0">V50：空目标处理不能只把梯度或update改成0</a></li><li><a href="#improvement-v51">V51：裁剪验收要看归约范围和后续状态</a></li><li><a href="#improvement-v52">V52：加载器恢复控制</a></li><li><a href="#improvement-v53">V53：混合数据身份</a></li><li><a href="#improvement-v54shuffle">V54：桶内shuffle与切分</a></li><li><a href="#improvement-v55">V55：小实验库存缩放</a></li><li><a href="#improvement-v56moe">V56：新MoE提案</a></li><li><a href="#improvement-v57">V57：性能归因</a></li><li><a href="#improvement-v58">V58：从局部梯度到参数影响</a></li><li><a href="#improvement-v59router">V59：原router权重路径</a></li><li><a href="#improvement-v60">V60：归一化耦合与状态敏感更新</a></li><li><a href="#improvement-v61">V61：配比与执行事件的可区分性</a></li><li><a href="#improvement-v62seed">V62：逐seed配比证据</a></li><li><a href="#improvement-v63pendingrouter">V63：pending与router联合检查</a></li><li><a href="#improvement-v64">V64：推理恢复消费者故障路径</a></li><li><a href="#improvement-v65">V65：从消费者替身推进到真实本地存储</a></li><li><a href="#improvement-v66-host-manager">V66：原保存 host 分支、真实 manager 与失败预算释放</a></li><li><a href="#improvement-v67-manifest-schema-leaf">V67：原发现、真实 manifest schema 与原 leaf 恢复贯通</a></li><li><a href="#improvement-v68-load-wrapper-namedarray">V68：上层 load wrapper 与原 NamedArray 检查</a></li><li><a href="#improvement-v69-grug-io">V69：原 Grug 状态与恢复策略的真实 IO</a></li><li><a href="#improvement-v70-loader">V70：恢复、原 loader 与原混合身份联合检查</a></li><li><a href="#improvement-v71">V71：原回调时钟、正常边界与错配工件对照</a></li><li><a href="#improvement-v72-loss">V72：原 loss 方法的目标组成与输出罚项控制</a></li><li><a href="#improvement-v73">V73：预测×权重的交叉重放</a></li><li><a href="#improvement-v74">V74：覆盖、分母下限与非有限值传播</a></li><li><a href="#improvement-v75">V75：广播并不一定报错</a></li><li><a href="#improvement-v76ce">V76：把解析分母反例接到原CE梯度</a></li><li><a href="#improvement-v77">V77：实况更新改变了哪些结论</a></li><li><a href="#improvement-v78">V78：普通梯度安全不等于全部支线已验收</a></li><li><a href="#improvement-v79active">V79：把active前缀接回原布局计划</a></li><li><a href="#improvement-v102-gang">V102：从退出分类追到 gang 重排与容量确认</a></li><li><a href="#improvement-v103">V103：控制器重开、备份一致性与失败保护</a></li><li><a href="#improvement-v104">V104：恢复候选与调用链门槛</a></li><li><a href="#improvement-v105">V105：状态内容与共同快照边界</a></li><li><a href="#improvement-v106-donation">V106 · donation 与延迟消费者</a></li><li><a href="#improvement-v107">V107 · 从真实恢复接到第一次更新</a></li><li><a href="#improvement-v108-seed">V108 · seed 派生与未来支持域</a></li><li><a href="#improvement-v109">V109 · 序列曝光与计分份额</a></li><li><a href="#improvement-v110">V110：进度的测量边界</a></li><li><a href="#improvement-v111">V111：恢复后的下一次更新</a></li><li><a href="#improvement-v112">V112：初始化与恢复的构造路径</a></li><li><a href="#improvement-v113loss">V113：有限loss与路由状态</a></li><li><a href="#improvement-v114">V114：原估计器输入边界</a></li><li><a href="#improvement-v115">V115：归约一致与近似误差</a></li><li><a href="#improvement-v116margin">V116：margin的原投影入口</a></li><li><a href="#improvement-v117">V117：目标与路由人口分开记账</a></li><li><a href="#improvement-v118">V118：研究收束为训练决策</a></li><li><a href="#improvement-v119">V119：评估补丁的调用合同</a></li><li><a href="#improvement-v120key">V120：删域响应依赖参照，过期历史也参与key分配</a></li><li><a href="#improvement-v121">V121：配比边界早于共同恢复点</a></li><li><a href="#improvement-v122">V122：历史源码与恢复证据</a></li><li><a href="#improvement-v123seed">V123：随机流与seed语义</a></li><li><a href="#improvement-v124">V124：模拟子集与恢复数据流</a></li><li><a href="#improvement-v125io">V125：前缀抽样支持与IO布局</a></li><li><a href="#improvement-v126">V126：实验改变了什么</a></li><li><a href="#improvement-v127">V127：配置断言与执行模式</a></li><li><a href="#improvement-v128">V128：桶级权重的数值合同</a></li><li><a href="#improvement-v129manager">V129：异步manager与任务级失败</a></li><li><a href="#improvement-v130">V130：保存调度与失败策略</a></li><li><a href="#improvement-v1312026-10-08">V131，2026-10-08：检查“保留根因”的实际前提</a></li><li><a href="#improvement-v1322026-10-08">V132，2026-10-08：可选恢复不只取决于数组能否读出</a></li><li><a href="#improvement-v1332026-10-08optimizer-state">V133，2026-10-08：新闭包如何解释旧optimizer state</a></li><li><a href="#improvement-v1342026-10-08">V134，2026-10-08：数值合法性之外检查计划几何</a></li><li><a href="#improvement-v1352026-10-08">V135，2026-10-08：让源码细节改变实验安排</a></li></ol></details><section class="chapter" id="improvement"><h1 id="improvement-_1">持续改进记录：下一步要减少哪种不确定性</h1>
+<p>V140：14 项原注册 CE VJP CPU 控制、14 组输入。普通 BF16 512 行/单行块的旧累计得到 ±0.25，而 scan/较大块/FP32 对照为 ±0.5；纯 FP16 大分母控制揭示 GEMM 前 dlogits 归零，缩放只作诊断。绑定 Hero BF16 compute、FP32 param 与符号 T 声明，未测实际操作数或生产梯度。</p>
+<p>V139：原 custom_vjp 装饰器和 defvjp 注册、前向残余、slow/scan 反向完成 14 项 CPU 控制、16 组输入/路径。FP16 极端转换中的直接 streaming 求导异常被原显式反向避开；正常梯度、lse cotangent 和所选 scan JIT 对照通过。新增范围明确的机制图。没有公共 dispatcher、GPU、真实性能或训练效果证明。</p>
+<p>V138：原输入 validator、full/streaming CE 与 reducer 的 14 项 CPU 控制，包含 JIT 与前向有限差分。发现正越界标签有限 loss/梯度不一致、负标签后端分歧和零权重 streaming NaN；离线候选仅验证标签拒绝与忽略位置替换。重整综合入口，避免版本注记挤占解释。没有真实非法目标事件或融合 GPU 结论。</p>
+<p>V137：13 项四本地 CPU 控制，实际原 shard_map/psum 与 autodiff；局部 FP16 分母有限但全局溢出，FP32 不均/空片正确，复制轴不重复计数，全空目标有零 loss/非有限梯度。最初缺 <strong>file</strong> 失败后补齐重跑；未新增来源、GPU或生产训练。</p>
+<p>V136：新增原始包装器、共享 reducer、CPU CE 与原始 causal 构造器的 12 项控制。记录 BF16 分母舍入、FP16 分母溢出后的有限零 loss、权重同缩放不变性失效及正常入口 FP32 保护；没有新训练、上游补丁或 GPU 复现。</p>
+<p>用户本轮目标是完善可视化和理解文档，并把判断规则与管线提炼出来用于持续改进。本轮首先交付规则1.0和理解/评审工作台，让已有证据能被读懂、复查和用于规划。</p>
+<h2 id="improvement-1">1. 本轮已经处理的问题</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>原来的问题</th>
+<th>本轮处理</th>
+<th>验收依据</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>图很多，读者难判断每种Loss变化</td>
+<td>五个可切换案例，区分实测、机制和假设</td>
+<td>每例给出允许的陈述、缺失验证与证据入口</td>
+</tr>
+<tr>
+<td>参照变化藏在不同章节</td>
+<td>旧/比例参照切换，四项指标三seed图与原值表</td>
+<td>与归档逐seedCSV逐值对应</td>
+</tr>
+<tr>
+<td>结论边界难转成评审动作</td>
+<td>18条规则与判断锚点</td>
+<td>不用格式项抵消关键证据缺口</td>
+</tr>
+<tr>
+<td>“继续深入”缺少产物和退出条件</td>
+<td>七阶段管线、实验模板和缺口队列</td>
+<td>每阶段有文件产物、返回分支和所需证据</td>
+</tr>
+<tr>
+<td>长表淹没阅读主线</td>
+<td>完整长表默认收起，原值保留可展开</td>
+<td>行数、链接和复算不变</td>
+</tr>
+</tbody>
+</table></div>
+<h2 id="improvement-2">2. 下一轮按结论价值排列</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>优先级 / 关联规则</th>
+<th>当前缺口</th>
+<th>下一步</th>
+<th>什么算完成</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>高 · R12</td>
+<td>完整selector目标与约束没有恢复</td>
+<td>追查固定版本选择产物/脚本或公开说明；未知条件保持未知</td>
+<td>找到可回查的真实目标与约束，或明确公共材料的访问边界</td>
+</tr>
+<tr>
+<td>高 · R07/R15</td>
+<td>独立重复与生成评估未公开确认</td>
+<td>若有新公共结果，建立新快照；若自行训练，先填实验模板和预算</td>
+<td>冻结后的重复及实际任务评估可对应，而不是新增BPB解释</td>
+</tr>
+<tr>
+<td>高 · R09/R10/R14</td>
+<td>实际历史与token流未重放</td>
+<td>获得合法可用的token store/恢复状态后逐块重放</td>
+<td>实际读取ID、整数块、cursor与累计量对应</td>
+</tr>
+<tr>
+<td>中 · R11</td>
+<td>更大代理缺相同强基线</td>
+<td>搜集或设计同范围的比例/候选/风险对照</td>
+<td>方向、波动、任务保底和条件差异可核验</td>
+</tr>
+<tr>
+<td>中 · R16</td>
+<td>读者能否正确复述尚未外部测试</td>
+<td>用理解文档五题收集误读，再修标题/图解</td>
+<td>记录具体误读与修改；不能只统计“喜欢”</td>
+</tr>
+<tr>
+<td>中 · R18</td>
+<td>规则可能过宽或过严</td>
+<td>用新的真实案例回放规则判定</td>
+<td>有误放行/误阻挡例子，并修改判断锚点</td>
+</tr>
+</tbody>
+</table></div>
+<p>前三项可能需要公开之外的训练资源。本地报告不会把资源未具备时的建议写成已执行。当前已有资料足以继续改进表达与评审方法，但不能用更多页面替代这些实验缺口。</p>
+<h2 id="improvement-3">3. 每轮记录格式</h2>
+<pre><code class="language-text">问题：哪条现有判断可能不成立？
+证据：固定来源、原值、模型与预算范围。
+动作：新增材料/复算/实验/表达修正中的哪一种。
+结果：支持、反例、仍未知；保留失败路线。
+规则：影响哪个R编号，是否要改锚点。
+下一步：最小所需证据与完成/推翻条件。
+</code></pre>
+<h2 id="improvement-4">4. 版本纪律</h2>
+<p>规则和管线是本报告自拟方法，版本1.0。评审JSON保存规则版本；不同版本需要人工核对锚点，不能直接继承旧的通过判断。旧V1—V4研究结论与来源保留；本轮不刷新线上训练曲线。后续有新结果时建立新版本，记录哪些结论改变、哪些只是表述更清楚。浏览器里的评审记录是用户自评，可以导出JSON；它不等同于独立审稿或真实训练确认。</p>
+<h2 id="improvement-5">5. 本轮回放规则后，实际修正了什么</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>关联规则</th>
+<th>回放发现</th>
+<th>修正与验证</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R03</td>
+<td>Gate敲除案例只写loss，容易与BPB混读</td>
+<td>补dropless global macro loss，保留敲除与生产路径区别</td>
+</tr>
+<tr>
+<td>R07/R12</td>
+<td>“不适用”如果算作必备证据通过，可能绕过独立确认</td>
+<td>不适用保留理由，但不能替代所选阶段必备项；数值判定检查覆盖该反例</td>
+</tr>
+<tr>
+<td>R16</td>
+<td>规则筛选的label包含选项文字，精确语义定位失败</td>
+<td>改为明确label关联，浏览器重新完成筛选、输入和导入检查</td>
+</tr>
+<tr>
+<td>R17</td>
+<td>一条cursor原值入口使用了不存在的文件名</td>
+<td>指向实际cursor_audit.csv，全部18条来源和HTML链接检查</td>
+</tr>
+<tr>
+<td>R16/R17</td>
+<td>收起长表后，打印可能看不到完整原值</td>
+<td>打印前展开，打印后恢复；五张长表的状态回放通过</td>
+</tr>
+</tbody>
+</table></div>
+<p>这些修正验证的是表达与工作台行为。它们没有补齐独立训练确认、真实token流或外部读者理解测试。</p>
+<h2 id="improvement-6">6. 第六轮：候选选择与规则回放</h2>
+<p>问题：在多个候选有取舍时，单一排行榜会掩盖哪些风险？历史selector条件未恢复，是否还能提出可审查的下一步？</p>
+<p>证据：固定HF版本597个seed0候选、七项BPB原值；另存五个新公共入口文件，固定Marin revision <code>84869ae8c91ffe64e9f761c5bd714542eb1876e0</code>。两个issue查询均仅命中#9126，正文与旧归档一致；文件名匹配未定位到对应配比选择实现。检索范围有边界，不据此证明全网没有实现。</p>
+<p>动作：建立候选决策实验室，先执行硬限制再排序；保留全部点、越界原因、条件JSON和完整CSV。九个教学情景展示参照和限制变化；六个真实反例回放既有规则；未来确认单独填写选择契约。</p>
+<p>结果：相对996f，197c在三项公开BPB上更低，但示例医学/语言限制会排除它；比例参照下的严格六项交集为空，工具保留空结果并拒绝自动放宽。R12仍未确认，R07/R15仍缺独立训练与实际能力。</p>
+<p>规则：数量与锚点保持1.0；补充R04/R06/R07/R12/R15的应用案例，没有把检索或探索计成确认通过。<a href="decision-guide.html#decision-guide">完整决策文档</a></p>
+<p>验证：完整离线重建通过546项检查。九组边界测试包括缺失指标、硬限制不可抵消、197c医学反例、约束收紧子集、空集、参照分母、完整CSV与输入不可变；九情景另从原parquet复算。桌面与390px页面、局部放大、按钮输出和单文件检查通过。浏览器原笔记与评审记录未变；实际OS下载保存和外部读者理解没有测试。</p>
+<p>下一步：核查197c/996f以及符合不同限制候选的200桶预算差，挑出可由具体供体/接收域干预检验的假设。完成条件是能回查权重与预算差、保留不同解释，并写出固定总量的实验，而非把权重关联直接标成原因。真实GPU确认、token流重放和外部读者测试继续作为资源相关缺口。</p>
+<h2 id="improvement-7">7. 第七轮：逐桶账本和执行支持范围</h2>
+<p>问题：197c的三指标优势是否只来自数学加量？连续局部方案进入加载器以后，还是只改声明域吗？</p>
+<p>证据：四个候选、996f的固定两阶段权重；原MixtureDataset两段计数方法。197c改变195桶和全部40域累计份额，名义半L1重分配1.473T，其中0.759T在域内相抵。数学累计加量20.866B，同时有约8.070B名义时序前移；这些变化不能单独归因。</p>
+<p>动作：增加预算分解图和交互，生成三供体的数学量×域内Q档四臂草案。先审计连续守恒，再查49152序列/块。发现全局余数使c28q4/c30q4也变动，原误差表保留；改用声明域内整数分配和固定环境权重编码。</p>
+<p>结果：原方法在Python3.12.13核对24组计数，支持范围修正通过。数学量因61单位/块的精度变成307.503B而非307.426B，残差继续公开。12条记录含8套不同整数配方；没有新增训练结果，所有草案仍未执行、不可直接启动。</p>
+<p>规则：R05分清名义/实际预算；R08声明供体；R09保留库存/历史缺口；R10分离累计量与时序；R14从配置推进到计数检查，仍保留真实token流未知。规则版本1.0不变。<a href="transfer-guide.html#transfer-guide">机制与方案文档</a></p>
+<p>验证：622项报告检查；13组设计边界检查；原parquet独立重算；原方法修正24整块计数和原案24整块计数；两口径逐桶/域CSV完整性；浏览器切换、JSON输出、打印和窄屏/离线检查。具体范围见<a href="../analysis/validation.json">计算验证</a>和<a href="../analysis/browser_validation_v7.json">浏览器记录</a>。</p>
+<p>下一步：把匹配累计量的顺序方案编译到整数阶段账本，检查“先后”是否再次混入总量、边界或余数差。完成条件是有反向可行性检查、逐桶目标/整数残差、边界和恢复状态要求；不能仅交换阶段名称。外部读者自测、实际token流和GPU确认继续保留为独立缺口。</p>
+<h2 id="improvement-8">8. 第八轮：完整块匹配之外的边缘问题</h2>
+<p>八组公开顺序对照的连续补偿近乎匹配，但按归档方法和条件恢复窗口，72个完整块的累计计数仍有2.29M—4.72M token的L1折算差。完整窗口还缺两端排列，不能把整块结果用于解释BPB。</p>
+<p>新草案保留原3537更新预算，用共同边缘块包住56/16整块扰动；最小整数补偿+2k/−7k，双向可行范围0—19。原方法核对480草案阶段计数与20个共同边缘数组/游标关系，另核对48组历史计数。错误设计虽然整块残差为零，未排列ID诊断却有140序列L1差；诊断未写成历史实际读取差。</p>
+<p>R05/R10/R14的回放从配置走到索引条件，规则1.0不变。完整报告707项检查通过；12组Python和7组JS检查、浏览器的历史/40模式/无效输入/导出/离线行为见analysis记录。<a href="order-guide.html#order-guide">新文档</a></p>
+<p>下一步开始审计理解文档本身：为关键误读设计可重复的读者题目、答案证据和评分锚点，检查人工与工具的判定是否一致；先用报告中真实反例回放，再收集外部读者数据。完成条件是明确题目、允许/不允许的推论、评分分歧处理和可导出的记录，不能把界面操作成功当成理解能力。真实token流和GPU确认继续保留为资源相关缺口。</p>
+<h2 id="improvement-9">9. 第九轮：理解证据不能由页面验收代填</h2>
+<p>实际自审问题：旧R16问读者能否正确复述，通过条件却只列图表准备。当前有界面证据、没有真实回答，这两层可能被混用。本轮将R16改为1.1的范围声明：图表准备仍可用于当前候选讨论，理解主张另需真实回答和评审依据；其他17项与七阶段不变。</p>
+<p>交付十题协议与离线记录页：第一回答、参考展开、修订、三维人工评分、关键越界、双评分歧和仲裁均保留；分数不平均，不生成训练阶段决定。来源文件和整个题库有摘要。30份作者校准例明确为测试/讨论材料，不能写成真实读者。原1.0迁移保存旧R16，当前设未确认，旧缓存不覆盖。</p>
+<p>工具验证包括13组记录边界检查和11组实验评审检查，完整报告755项检查通过；浏览器另核对真实按钮、保存/重载、旧版本拒绝与迁移、XSS文本、离线与窄屏。题库和工具验收属于已执行本地工作；外部读者表现与评分效度仍为空。</p>
+<p>下一步用工程故障案例检验理解协议覆盖是否充分：当前十题集中在配比与Loss，尚未覆盖“缓解有效就断言根因”及“组合kernel收益归到单组件”。先从58条原运行记录挑可回查反例，补题目和可区分的下一项验证，检查会不会把暂时缓解误写成已解决根因；不增加无原值的机制故事。外部读者研究需要实际参与者，不补造结果，也不以作者答题冒充。</p>
+<h2 id="improvement-10">10. 第十轮：工程陈述回到事件和代码</h2>
+<p>问题：短窗数值能否被叫作质量验证？清理后的第二次保存停滞是否被漏掉？PDL机制与干净窗口是否互相代填？</p>
+<p>动作：新增12份有时间/摘要的公共GitHub快照，八案交互时间线和24项作者陈述对照；每案写出能区分解释的检查、预期和推翻条件。用R03/R12/R13/R14实际修正文：146k训练CE范围、整包GC与组件归因、PDL观测/机制区别、81716配对来源，以及事件54的256进程停滞。旧文与新文保留在语义审计。</p>
+<p>结果：三个issue的评论/正文没有新增变化；317个旧非抓取清单文件字节不变，抓取清单追加后共330项。原十题不改锚点，来源摘要变化时旧记录不静默继承；第九版题库和浏览器证据作为历史记录保留。规则1.1与七阶段不变。新增六动作工程支线与空表，不产生kernel部署审批。</p>
+<p>本地闭环完成条件：八案可离线操作，所有原始锚点/摘要匹配；语义修正可查；24项陈述和草案导出保留未知而不自动确认根因；当前/历史题库版本分别验收。真实读者观察、真实token重放和GPU训练仍是需要外部资源的后续研究，不写成结果。</p>
+<p>验证与交付：<code>make report</code>全量通过803项检查，含全部330项源文件SHA、24项陈述数据绑定、旧题库精确字节与11处当前语义修正。浏览器11项行为、file://14图、1440px/390px三张目视截图通过。首次浏览器测试在reload后查一个已折叠的输入，修正为先展开再查值；不是应用丢失数据。当前交付要求与资源相关后续研究逐项记于<a href="delivery-audit-guide.html#delivery-audit-guide">交付审计</a>。</p>
+<h2 id="improvement-_2">第十一轮：检验跨规模比较的对象和测量是否一致</h2>
+<p>本轮问题是：四个子集的方向变化，是否足以认定规模依赖或25%切换收益？动作是归档六个run配置、逐子集CE/BPB对应值、公共评估代码和三篇一手论文。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>回放规则</th>
+<th>实际发现</th>
+<th>完成的修正</th>
+<th>下一项验收</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>R11/R14</td>
+<td>三组切换前初始配比半L1差约20.39%</td>
+<td>DATA_GUIDE删掉“说明规模依赖”的因果跳跃；CONCLUSIONS补完整配方比较范围</td>
+<td>同恢复状态、同评估下独立确认</td>
+</tr>
+<tr>
+<td>R03</td>
+<td>两个代码端点CE改善而BPB略差；公共聚合公式依赖分批</td>
+<td>保存固定预测、改变分批即可翻转排名的人工反例</td>
+<td>实际checkpoint的序列/统计重评，核对执行版本</td>
+</tr>
+<tr>
+<td>R05/R17</td>
+<td>d1536实际token差一个新run更新；三个点拟合的floor/α耦合</td>
+<td>分列官方equal-compute约定与实际预算；联合重拟合和留出诊断</td>
+<td>新独立规模/预算点，统一指标后确认</td>
+</tr>
+<tr>
+<td>R07/R10/R18</td>
+<td>10%/25%也改变剩余量，不能直接叫顺序效应</td>
+<td>保存48槽位、约8.482T未执行草案；成本与状态未知字段不填假值</td>
+<td>事前冻结目标、权重、checkpoint、评估与风险阈值</td>
+</tr>
+</tbody>
+</table></div>
+<p>规则1.1与18条判断锚点不改。此轮增加17图中的三张读图任务，没有读者理解效度结果。题目仍十题；来源文件修改后题库摘要更新，V9/V10参考摘要保留，旧答卷不自动迁移。确认次序调整为“测量一致性→同状态强基线确认→放大→另做累计量匹配的顺序实验”。若第一项出现排序变化，先重建候选判断，再花放大预算。</p>
+<p>追加R14来源回放：六run的公共commit为空，已枚举文件的count存在一致的+1差；两份保存runner仅加载callable。保留这项负结果和枚举边界，下一步需要真实执行包/版本摘要或同checkpoint重评，不能把“已保存代码入口”当作“完整训练代码已恢复”。</p>
+<h2 id="improvement-_3">第十一至十四轮：从统计比较继续追到执行接口</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>增补</th>
+<th>实际进展</th>
+<th>仍不能声称</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>V11跨规模</td>
+<td>六个公开配置的初始配比、硬件与优化器差异；BPB分批反例；floor敏感性</td>
+<td>25%切换或规模本身的独立因果收益；历史eval执行SHA已绑定</td>
+</tr>
+<tr>
+<td>V12接口</td>
+<td>原辅助函数探针检查权重、环境覆盖与恢复策略；分清两种z-loss和计数dtype</td>
+<td>已复现GPU梯度、已找到线上小数权重故障</td>
+</tr>
+<tr>
+<td>V13状态</td>
+<td>原训练控制流探针；master、pending路由、模型视图、step标签；修正主报告指标说明</td>
+<td>实际checkpoint或token流恢复等价已验证</td>
+</tr>
+<tr>
+<td>V14边界</td>
+<td>原mask/下界构造探针；EOS目标、左padding、非连续ID、prompt坐标</td>
+<td>人工反例发生在Hero；真实cache上下文与目标已完全还原</td>
+</tr>
+</tbody>
+</table></div>
+<p>下一项研究优先核对component的format/pack配置、tokenizer特殊标记与缓存切片。配比、库存和计划曝光已有账本，但有效query、计分target、边界target还需要真实输入证据。它们会决定短文档比例变化究竟改变了多少训练目标，不能由名义token数推断。</p>
+<h2 id="improvement-_4">第十五轮：先核对缓存身份，再解释权重收益</h2>
+<p>六份配置的1200条component全部核对。旧组与mix25组各自引用不同store根，当前不能证明底层内容等价。新章列出告警式元数据校验、加载旧缓存不重写EOS、当前与历史tokenizer身份的区别，以及六项缓存验收规则。新增原加载分支的四个替代依赖检查，不声称已读取S3缓存。下一步需要两个store的ledger、内容摘要与构建版本；获得之前，将缓存身份变化保留为跨组配方比较的未排除因素。</p>
+<h2 id="improvement-_5">第十六轮：去重政策、稀疏属性与样本对齐</h2>
+<p>补正V15的未知范围：公开重建说明与16来源政策已经存在，实际缓存仍未独立读取。新增12份固定源码/公开GitHub快照，11项原函数本地Parquet检查；追查chunk_index、相邻重复ID、等行数错序、稀疏属性缺失和互斥删除计数。现有日期命名的旧spec指向第三个store，不用于伪造旧ladder库存差。下一项验收需要真正81e7库存与构建产物绑定；在此之前，去重政策与权重切换共同列为跨组完整配方的因素。</p>
+<h2 id="improvement-_6">第十七轮：质量评分能否观察并区分目标内容</h2>
+<p>新增10份质量源码与官方契约来源。11项原辅助函数检查确认BME按字符取窗、2001字符重复窗口、长文观察盲区、稀有token映射、分桶边界与重复校准节点风险。独立窗口工具对齐八组原函数输出并内嵌到离线报告；真实模型与校准文件未执行。五项质量验收规则连接类型内审查与固定预算交换，不将高q分数或低train loss作为任务收益证明。</p>
+<h2 id="improvement-_7">第十八轮：将源码发现接回实验规范</h2>
+<p>完整审计三组同规模配置的model/optimizer/eval/trainer/resources，保存缺键/null差异及数据身份。三组model声明完全相同；其余差异仍需语义核对，不按差异数计算实验质量。新增五对象冻结、三层工程结论、四类阅读路线与空白变更记录，沿用18条rubrics和七阶段。新增文件没有自动部署判定；实际状态、内容与执行等价仍未知。</p>
+<h2 id="improvement-moe">第十九轮：MoE分配丢弃如何进入训练目标</h2>
+<p>归档六份固定路由/容量源码，11项原辅助检查。分清旧版全部位置与新版valid分母、分配与token损伤、未重归一的combine、确定性prefix裁剪及字段记账位置。原combine加人工专家输出/二分类目标的机制图不是模型实验。真实collective、梯度与batch drop图仍未知；将这些检查接到变更评审，而不把drop下降单独归因为质量提升。</p>
+<h2 id="improvement-v20">V20：路由均衡怎样受批次与分组影响</h2>
+<p>沿固定源码执行16项局部阈值、归并与池化直方图辅助函数检查。TOPK人工反例表明同一token集合的不同分组可以改变下一步专家选择；六份ladder配置实际声明HIST/10000 bins，不把反例归因到这些运行。HIST人工反例表明另一专家的极端margin可以改变共享网格与本专家阈值，未测真实margin或训练影响。新章接入配比/顺序状态时序与六项核查规则；没有新来源归档，也没有实测能力收益。</p>
+<h2 id="improvement-v21">V21：参数分组与衰减时钟</h2>
+<p>新增固定optimizer源码，执行16项原mask与衰减包装检查；底层Adam用恒等替代，不宣称复现矩估计或真实恢复。核对六份ladder的通用0.1、专用字段缺失/零、裁剪None；新章区分配置默认、实际分支、参数叶子匹配与state.count退火。新增五项实验核查动作，真实执行版本、optimizer状态与训练效果仍未知。</p>
+<h2 id="improvement-v22">V22：整合诊断流程并修正旧入口</h2>
+<p>把V12–V21的源码发现合到loss变化诊断流程，明确三站排查顺序与证据分支。同步修正变更评审中的专用衰减默认值说明，连接路由/optimizer新章节和七阶段管线。新增未执行诊断模板，不增加原函数探针、训练结果或来源归档；本轮重点是减少章节之间的遗漏与旧表述造成的误读。</p>
+<h2 id="improvement-v23attention">V23：attention之外的文档边界</h2>
+<p>新增六份固定ShortConv实现与原测试，执行16项原FP32 reference、模拟halo函数体和API辅助检查。核对六份配置的三处width4卷积；反例表明非连续ID重用可重新接上旧文档，identity初始化会遮住此类问题。区分前向/dx/dw舍入契约与实际后端回退；原GPU测试未执行，真实通信、BF16和梯度结果仍未知。</p>
+<h2 id="improvement-v24c025">V24：回到C025核对实验实现</h2>
+<p>重新读取#8435公开API，27条评论的身份/正文均与归档一致，保留独立刷新核查记录。新增三份C025实验fork源码，静态提取三种router dot分支，明确后cast与preferred_element_type的区别；人工BF16输出舍入不是GPU复现。新章解释一rack诊断中实际batch、optimizer启发式batch、完整schedule的区别，提出未执行的训练/评估policy四格；真实fixture、HLO与训练结果未独立复现。</p>
+<h2 id="improvement-v25">V25：回到配比切换的真实验证轨迹</h2>
+<p>新增<a href="mix-trajectory-guide.html#mix-trajectory-guide">MIX_TRAJECTORY_ZH.md</a>。独立复算六份eval归档，按七段接续边界筛选；67个完整日志step、2144个子集值、67个macro值，排除528个继承值。换配比附近CE方向分裂，等权BPB与记录macro方向相反；16域图不平滑、不填补缺点。下一项检查优先共同checkpoint双分支和评估numerator/denominator，不从单条生产曲线估计因果收益。历史评估身份、训练桶到Paloma映射及反事实仍未取得。</p>
+<h2 id="improvement-v26v25">V26：纠正V25汇总字段并追查累计单位</h2>
+<p>V25把<code>paloma/bpb</code>错误命名为macro；它在固定公共源码中来自父级micro，真正macro是<code>paloma/macro_bpb</code>。补齐全部36指标，67个step的macro与16域等权重建在float32舍入量级一致。当前分析保留2144个子集值、268个父级值，排除576个继承值；V25的旧计数来自只选择33指标的历史版本。新增<a href="eval-metrics-guide.html#eval-metrics-guide">EVAL_METRICS_ZH.md</a>和14项原日志/层级、状态与静态数据流检查，追查名为byte total的状态实际累计token权重。保留历史release，修正当前章节与README。尚未执行真实evaluate、分布式归约或重新排序候选。</p>
+<h2 id="improvement-v27">V27：保存提交与真正可恢复的进度</h2>
+<p>新增<a href="checkpoint-commit-guide.html#checkpoint-commit-guide">CHECKPOINT_COMMIT_ZH.md</a>。追加五份固定源码，17项原atomic、metadata、发现和save-wrapper检查（本地fixture与假serializer）核对manifest早于数组、metadata回调、copy/delete权限冲突、标记前后失败和复用路径。记录训练、保存交接、metadata发布、独立恢复四个水位，容量预算与回退点分开验收。没有执行TensorStore、真实云权限、模型数组或分布式恢复；下一项优先真实各rank提交轨迹与自己save后restore。</p>
+<h2 id="improvement-v28">V28：保存内存预算与副本写入计划</h2>
+<p>新增<a href="checkpoint-memory-guide.html#checkpoint-memory-guide">CHECKPOINT_MEMORY_ZH.md</a>，追加固定HostByteBudget源码。17项CPU预算、原shape与synthetic sharding检查核对超大请求独占、线程释放、副本区间覆盖、单writer与奇数chunk超目标边界。默认16GiB/process和日志4倍乘数不冒充Hero实测；实际RSS、模型write plan、GPU切片和TensorStore I/O仍未验证。后续优先实际每rank计划和内存/提交时间分解，控制一个变量后选budget。</p>
+<h2 id="improvement-v29">V29：将源码增补收束为症状驱动的交接图</h2>
+<p>新增<a href="engineering-map-guide.html#engineering-map-guide">ENGINEERING_MAP_ZH.md</a>，以人工配置映射15类主报告问题与六种起点，分别保存作者动作/结果、本地证据范围、建议检查和决策边界，仍使用18条1.1规则。构建核对15标题完整覆盖、URL、文件SHA与规则ID；它不自动证明根因。更新交付审计，旧V18记录显式历史化；正文入口优先总图。没有新增集群运行、数据来源或读者成绩，长期目标继续进行中。</p>
+<h2 id="improvement-v30">V30：从优化器分组深入到实际更新几何</h2>
+<p>执行固定源码的MuonH投影函数，21项NumPy与恒等分片替代检查；独立解析几何、四维内部范数变化、零向量反例。新增<a href="muon-geometry-guide.html#muon-geometry-guide">机制章节</a>与空白分布式检查记录。实际Muon方向、JAX归约、多卡等价性及真实恢复仍未验证。旧题库与历史快照不改变。</p>
+<p>新增#8073主帖与四条评论，区分作者早期猜测、后续纠正、事故包与报告的修复验证；收紧评论中投影后步长界限。重新比较8435/8506/8870的body与评论ID/body均无变化，训练快照没有刷新。</p>
+<h2 id="improvement-v31">V31：把范数验收扩展为方向与状态验收</h2>
+<p>新增固定版本AdamH源文件，执行原函数体与NumPy moment/树/vmap/计数替代，17项检查；同参数/梯度人工两步例子中，保留/重置moments的范数相同，输出方向相差约3.86度。推导固定lr、零epsilon下count公共缩放抵消的边界，避免夸大count偏差；源码调用确认AdamH使用learning_rate而非adam_lr。新增<a href="adamh-state-guide.html#adamh-state-guide">章节</a>、机制图与四臂配比×状态草案。没有实际Optax、GPU、checkpoint反序列化或训练结果。</p>
+<h2 id="improvement-v32">V32：方向算子与布局变换的边界</h2>
+<p>新增固定源码grugmuon_hero.py与系数util.py；21项原NS函数/控制流与独立标量谱检查，BF16替换为float32、真实分片替换为全局数组/布局记录，未执行QuACK。人工矩阵五步到六步正交残差变差，反驳“多一步必然更准确”；核对专家bank保留但矩阵维度复制、仅DCN活跃时的fallback、三维padding与四维整除拒绝。新增<a href="muon-direction-guide.html#muon-direction-guide">章节</a>、谱图与空白执行记录。历史训练/性能结果没有刷新。</p>
+<h2 id="improvement-v33">V33：将优化器发现连成可执行事故检查</h2>
+<p>固定watch/tree_stats来源，22项原辅助函数/平坦数组统计与静态时序检查：inline计算/输出interval不同，diagnostic额外反向且不支持更新/state，total norm无条件返回、隐藏逐叶norm在Python构造但JIT可能消除；旧状态、master/compute视图及duration边界需区分。新增<a href="observability-guide.html#observability-guide">章节</a>、规范化全局NPZ离线检查器与27项合成输入验证。缺少方向/分母明确列出，root_cause始终null；没有历史事故包或真实GPU重放。</p>
+<h2 id="improvement-v34loss">V34：区分loss检查、健康状态和保存交接</h2>
+<p>新增<a href="failure-boundaries-guide.html#failure-boundaries-guide">失败边界</a>。执行固定训练源码主循环try片段，17项synthetic train/callback/checkpoint recorder检查：finite-loss NaN更新可到保存交接，下一步报错不保证之前状态健康，有限范数塌缩/高loss不触发finite guard；finished事件早于检查，异常跳过强制末尾save。保存交接不是实际坏提交证明；新增拟议数值验收水位空表，保留GPU/真实callback/提交/恢复未知。所有430项源档内容保持不变。</p>
+<h2 id="improvement-v35batch">V35：配比边界与batch历史不能各自解释</h2>
+<p>新增<a href="batch-clock-guide.html#batch-clock-guide">生效时钟</a>及调度审查器，执行原BatchSchedule、原转换/构造条件和原阶段回调片段。27项检查覆盖累计offset、对齐拒绝、负阶段接口差异、相同累计量但不同batch前缀，以及零权重键省略。第一次合成等累计量fixture误设为32而非20，修正为4/4/6/6后按独立累加核对；不是生产发现。重新抓取的schedule与旧归档字节一致，复用旧档，没有新增源文件数。</p>
+<p>新增可执行的阶段索引与前缀评审入口；只输出名义位置，不生成实际消费token或自动恢复结论。HTML静态核对和全仓构建另行记录；本轮未做浏览器视觉验收或真实训练。后续以实际cursor/token材料能否改变配比归因为准，不以章节数量增长作为进步。</p>
+<h2 id="improvement-v36">V36：风险必须代入真实组件规模</h2>
+<p>原方法执行确认int32阶段乘法、跨阶段累计、NumPy2标量路径与取模掩盖的风险；同时确认np.int64 block_id局部乘法安全，避免把单条和批量路径混同。归档Hero配置按200个活跃组件独立累计，最大上界256,996,542，低于int32限制；不认定生产事故。候选三处修复只在合成CPU方法中验证，不改档案或上游。22项检查与静态HTML核对的范围明示。下一步真实token流和运行版本绑定仍缺材料。</p>
+<h2 id="improvement-v37">V37：用新评估核查宏平均的解释</h2>
+<p>独立抓取同一run最新summary、六个同step评估和近期抽样训练曲线，旧源档不覆盖。训练约9.75T/4K；评估到209999，落后summary1368更新。72个重叠值完全一致，四个新增step；15域端点改善、twitterAAE端点上升，PTB占宏平均CE改善65.72%，去PTB后仍改善。12项原值/接续/重建核对。图PNG已目视查看；新增HTML仅静态验收。实际评估文本身份、统计显著性与配比反事实保持未知；下一步以固定样本和连续窗口检验这两个域，不能直接按单域端点改比例。</p>
+<h2 id="improvement-v38">V38：评估随机重抽假设被收紧</h2>
+<p>固定builder默认不shuffle，新配置无cap且无train拆validation；原loader规划两次从0给出相同逻辑序列。21项人工域索引/原规划和静态核对，仍未绑定真实缓存、历史SHA或前向可重复性。发现整除batch时len(loader)多1，实际迭代正确；明确只影响此处进度total，不能解释PTB。补充文本/模型视图/同checkpoint重评记录的调查路径。新归档为固定loader与计时iterator两个源文件；旧材料不覆盖。</p>
+<h2 id="improvement-v39">V39：重复评分有了具体比较工具</h2>
+<p>新增逐批、互斥叶子域的全局N/T/B记录对照：模型视图、输入/分批/分母声明和N数值差异分别输出。27项合成/CLI检查；哈希只验证输入文件字节，记录里的checkpoint和数组摘要仍是导出者声明。重建已核对的token加权BPB，保留相同总量但重新分批改变BPB的反例。没有实现生产导出器或拿到历史记录，不新增源材料或实际重评分结论。</p>
+<h2 id="improvement-v40">V40：把专题收束成实际决策</h2>
+<p>新增结论与操作指南，按已支持的七项结论、三道配比检查、六类异常的处理顺序与五步实验设计组织。分别标明作者记录、固定源码、人工反例与建议，不增加事实或指标。README入口收短，读者先进入主线再选择专题；保留既有18条规则1.1版与七阶段管线。静态结构和链接核对不能证明读者理解改善。</p>
+<h2 id="improvement-v41">V41：提供的全局数组可以导出并复核</h2>
+<p>补齐NPZ离线导出器：计算域级N/T/B、typed v2输入摘要和byte表摘要，拒绝不一致的表声明。23项人工数组/CLI检查，旧27项比较检查重新通过。v1声明记录保留，新规范不自动继承旧身份。生产前向采集、rank范围与Hero记录仍未接入；不把给定数组内部可复查当作真实训练输入已证明。未新增源材料。</p>
+<h2 id="improvement-v42">V42 评分格式与缓存访问</h2>
+<p>固定源码文本默认pack=False进入连续流；13项人工平坦缓存检查确认窗口与余数。公开Paloma卡片固定revision，最终NeurIPS论文独立归档。两域ledger匿名访问403，未读取实际缓存。新增配比结论之前须冻结评分格式、真实输入及有效分母；不以论文子采样方差解释Hero。下一步收集同checkpoint逐批数组，再做独立文档旁路评分。</p>
+<h2 id="improvement-v43-token">V43 下一token坐标与覆盖账目</h2>
+<p>离线导出器此前只绑定给定scoring IDs，不能证明它们是输入后继。新增可选causal_next_token_v1，空白manifest默认启用；18项合成检查通过。泛化接口保留且未验证状态显式输出。连续窗口默认mask的目标数为floor(M/L)*(L-1)，仅适用于单位权重、无额外ignore/padding的声明；实际Hero缓存数量未知。下一步收集真实loss位置、输入及mask，避免把同样错位的两次记录当成正确评分。</p>
+<h2 id="improvement-v44">V44 打包字段与权重坐标</h2>
+<p>通用打包器检查文档数量，但逐token字段须额外保证逐文档长度/ID相同。14项原方法/人工存储检查复现同shape错位，人工固定loss的N/T不同；不认定生产bug。最新归档223个component均声明text/pack=None，Hero此声明走连续流。下一步为明确逐token字段添加缓存前置核查，再采集真实各字段segment与变换前后权重。</p>
+<h2 id="improvement-v45">V45 重复曝光与新增覆盖</h2>
+<p>窗口内无重复不等于对历史有新覆盖。新增固定库存/固定索引声明账本，22项算术、原方法及CLI检查；空白库存或游标保留unknown。Hero声明block shuffle，人工full shuffle不能代替真实样本。配比加量先核对可索引库存、已有曝光和供体，再确认收益；不以重复轮数自动判过拟合。</p>
+<h2 id="improvement-v46">V46 新端点与均值方向</h2>
+<p>独立10月7日快照step214913/9.915561T，配置仍声明4K；新增完整评估212999，216个旧值保持。micro CE下降但macro CE上升，PTB反弹，14域端点下降。不认定事故、退化趋势或配比根因。9项数据核对，新图PNG查看，HTML静态核对；真实重评仍缺。库存表的历史不完全对应标记，不能被用作Hero重复轮数的真实分母。</p>
+<h2 id="improvement-v47">V47：解释均值分歧，而不是按总均值改比例</h2>
+<p><a href="eval-weight-guide.html#eval-weight-guide">权重反推</a>在固定份额假设下重建23个同分支点。18点拟合、5点事后留出最大残差约8.9×10⁻⁷；病态条件数约11557，数值扰动不是置信区间。最新点存在不同正权重得到相同预测聚合值，说明拟合不能代替实际分母。下一步优先取得逐批N/T/B与输入身份，检验权重是否固定；这些条件满足前，不把评估份额写入训练采样器。</p>
+<h2 id="improvement-v48">V48应用：训练归约先于配比归因</h2>
+<p>沿用既有规则与管线。改变microbatch前，先写清目标分母，确认实际调用入口，并记录每块有效T；不能仅凭loss有限与梯度已相加验收。对有效均值，核对整个optimizer step的归约，避免重复除micro步数。再核对RNG、路由、梯度裁剪与状态更新；分母正确不自动证明真实模型拆批等价。<a href="gradient-accumulation-guide.html#gradient-accumulation-guide">源码与14项检查</a>只证明原函数体的串行适配行为和人工反例，没有证明Hero事故或配比收益。下一步需要真实入口的loss函数、逐块N/T与逐参数梯度记录。</p>
+<h2 id="improvement-v48cpuv49">V48之后的历史准备记录（CPU验证已在V49完成）</h2>
+<p>以下保留当时的等待状态；当前结果见后面的V49条目。</p>
+<p>已核对API与Grug的mean入口不同：Grug内部请求reduction=None，外层才聚合分母，不能认定连续求了两次均值。下一项工作是执行<a href="code-c74374c210144c0d.html">原归约与backward的CPU自动微分脚本</a>，检查全零分母、inactive非有限值和正常padding正例。独立JAX 0.7.2/jaxlib 0.7.2依赖安装仍在运行；截至<a href="../analysis/cpu_setup_wait.json">本次观察</a>未执行CPU探针、未生成结果章节。保存的状态不是当前活性的证明，下一轮应重新核对同一进程/会话。当前完整报告与ZIP仍为V48，不将计划写成复现或Hero事故。</p>
+<h2 id="improvement-v49cpu">V49：真实CPU验证与触发条件同时检查</h2>
+<p>依赖安装已终止成功，见<a href="../analysis/cpu_setup_completed.json">完成记录</a>。<a href="../analysis/masked_numerics_cpu.json">21项JAX CPU检查</a>复现原mean的前向0/反向NaN、inactive非有限传播与局部安全分母对照；<a href="../analysis/default_target_weights.json">9项默认权重审计</a>说明公开text配方正常执行时应有正T。图像已查看，HTML仅静态核对。这两类证据分别回答危险分支是否成立、是否能用于当前Hero归因；真实T、输入、历史运行环境、GPU/TPU和完整状态更新仍未知。</p>
+<h2 id="improvement-v50update0">V50：空目标处理不能只把梯度或update改成0</h2>
+<p><a href="zero-gradient-state-guide.html#zero-gradient-state-guide">原AdamH模块CPU对照</a>确认：有历史moment时，零梯度仍产生非零更新；只丢弃最终update，状态仍推进，下一有效步也会改变。空目标应按实际global T与接受策略判断，不能按grad==0跳步，也不能用某个未使用expert的叶梯度为0触发整步跳过。moment/count、训练step、调度、EMA与QB应分别记录接受条件。本轮只执行optimizer局部对照，完整Hero步与事故触发仍未验证；规则锚点不变。</p>
+<h2 id="improvement-v51">V51：裁剪验收要看归约范围和后续状态</h2>
+<p><a href="optimizer-guide.html#optimizer-guide">分组章节的CPU对照</a>确认三组各裁剪到1时合并范数为√3，且原AdamH首步近乎相同的参数更新可留下不同moment；固定后续参数与梯度，差异仍进入下一次update。验收需记录clip范围、系数/触发率、moment/count和后续有效步，不能只看首次更新相似。最新归档max_grad_norm=None；这不是Hero已启用裁剪的事件证据，规则锚点不变。</p>
+<h2 id="improvement-v52">V52：加载器恢复控制</h2>
+<p>V52执行三个原异步loader方法与原BatchSchedule，11项人工host控制；补预取与完成水位、真实identity请求的历史改写差异及有限数据尾批边界。未执行完整DataLoader、background线程、JAX数组或实际Hero恢复。README同时更正旧观察段落与最新快照不一致的问题。</p>
+<h2 id="improvement-v53">V53：混合数据身份</h2>
+<p>V53执行原MixtureDataset类体和原block assignment，真实JAX 0.7.2 CPU，14项检查。新增同key字典重排、整数并列余数、完整/部分块、有限库存取模与阶段累计索引的对照；未运行真实token或inner shuffle。</p>
+<h2 id="improvement-v54shuffle">V54：桶内shuffle与切分</h2>
+<p>V54新取固定_prp.py；执行原PRP、Permutation/Sliced/BlockShuffling类体与split helper。14组控制含130个长度1–65双射检查；同快照train/val互斥，22→23跨快照出现人工交集。最新num_validation_sequences=None，实际Hero污染未测。</p>
+<h2 id="improvement-v55">V55：小实验库存缩放</h2>
+<p>V55执行原train_sets及既有原CPU shuffle/slice/mix；16项控制。r=1/4人工例中A重复率偏高75%、B偏高15%，更小库存变0触发原restart拒绝。最新模拟预算字段None；不认定Hero事故，也不代填pilot loss。</p>
+<p>V55范围修正：初次探针绕过了__post_init__，两个组合不属于合法配置。已补执行原初始化并明确记录拒绝，文档与最终结果按16项控制交付。</p>
+<h2 id="improvement-v56moe">V56：新MoE提案</h2>
+<p>V56主issue API完整复核无正文/评论变化；新增#9708与#9832/#9833来源11文件。两个子PR未合并，分析未写buffer与EXPERT_SIDE数值合同，7项CPU/源码控制；未运行GPU或部署。</p>
+<h2 id="improvement-v57">V57：性能归因</h2>
+<p>V57复算#9708冻结表18条、12条步时，6项检查；新增性能图和未执行交互模板。说明shared GEMM条件反转、异分母百分比、最终图移除与原始trace缺口。没有GPU重测或新来源。</p>
+<h2 id="improvement-v58">V58：从局部梯度到参数影响</h2>
+<p>新增48格CPU控制、两个人工router VJP、10项检查及数值范围图。极端bf16局部误差在本CPU的router VJP消失，另一float16例仍传到logits。完整GPU、真实更新、Hero分布与loss影响未测。原455份来源保持。</p>
+<h2 id="improvement-v59router">V59：原router权重路径</h2>
+<p>执行原moe_route block、四个人工输入与加权和梯度；9项CPU检查、eager/JIT一致。确认biased选择与unbiased权重、epsilon主导及有限极端输入零权重。无完整模型、GPU、Hero分布或训练影响，455份来源保持。</p>
+<h2 id="improvement-v60">V60：归一化耦合与状态敏感更新</h2>
+<p>接通原router、portable row-dot/division、原衰减包装与真实Optax CPU。10项控制证明一个局部舍入差异传到两个选中参数；fresh更新差异约1.07e-3，人工warm约7.48e-9。新增机制图。专家输出常数、路径/reshard替身，不是Hero生产执行。来源455份保持。</p>
+<h2 id="improvement-v61">V61：配比与执行事件的可区分性</h2>
+<p>回到真实67时刻轨迹，9项检查证明两个事件列相同，level秩2/3、分段秩4/6。新增设计CSV、图解和未执行比较模板；人工插入时刻只检查秩，没有伪造loss。无新因果训练结果，455份来源保持。</p>
+<h2 id="improvement-v62seed">V62：逐seed配比证据</h2>
+<p>复算6观察、25终点、75配对差值，9项检查。20终点三pair都改善、2退步、3混合，宏观均值与源CSV一致；新增逐pair图及描述性敏感性。符号翻转分辨率仅人工演示，不报告选择后p值或独立确认。原455来源保持。</p>
+<h2 id="improvement-v63pendingrouter">V63：pending与router联合检查</h2>
+<p>真实JAX执行原apply_qb_betas及moe_route；9项CPU/来源核对。ID由[1,0]变[0,2]而权重数组相同，非有限pending经mean传播。tree_at/reshard/spec替身，无checkpoint IO、完整模型或GPU复现。455份来源保持。</p>
+<h2 id="improvement-v64">V64：推理恢复消费者故障路径</h2>
+<p>执行原restore_weights与checkpoint_stores_master，10输入、9检查；真实临时metadata JSON IO，manifest/array/digest/template/tree替身。核对strict False、权威master选择、legacy marker、缺失/损坏分支和allow_partial=False。无OCDBT、实际checkpoint或生产恢复，455来源保持。</p>
+<h2 id="improvement-v65">V65：从消费者替身推进到真实本地存储</h2>
+<p>执行原 spec helpers、TensorStore 0.1.69、小数组与独立进程，8 检查；完整、部分写入、删除逻辑 chunk、缺元数据及 dtype 约束分别验证。新增矩阵图与内容验收规则。完整 Marin serializer、物理 blob 损坏、GPU/生产恢复未知；455 份来源保持。</p>
+<h2 id="improvement-v66-host-manager">V66：原保存 host 分支、真实 manager 与失败预算释放</h2>
+<p>9 项检查；执行原 _serialize_arrays、HostByteBudget 与真实 TensorStore/JAX 单进程 manager。核对快照值、96 字节峰值、真实异步元数据冲突、失败释放预算、成功 callback 守卫、上次错误阻止下次 staging，以及已报告异常只消费一次。无多 rank、完整 tree/restore、生产 metadata 验证。455 份来源保持。</p>
+<h2 id="improvement-v67-manifest-schema-leaf">V67：原发现、真实 manifest schema 与原 leaf 恢复贯通</h2>
+<p>9 项真实 IO 控制；原 writer 的两叶读回为真实 JAX 数组，核对人工 marker、缺叶/缺 metadata、部分块填充及 manifest/store shape 不一致。Pydantic 与 fsspec 真实，StoragePath 本地适配；无完整 tree/state、生产发布、多 rank 或旧 marker 事故证据。更新四合同验收模板。455 来源保持。</p>
+<h2 id="improvement-v68-load-wrapper-namedarray">V68：上层 load wrapper 与原 NamedArray 检查</h2>
+<p>六个真实 IO 输入、7 检查；原 load_checkpoint、Equinox partition/combine、原 tree/leaf reader 及原 NamedArray 类。命名轴尺寸会拒绝不一致，普通 shape exemplar 与 dtype 保护分开。新增六份固定来源，454 份旧材料字节保持，仅 source_manifest 扩展。单 CPU sharding 适配、未运行完整模型或生产事故。</p>
+<h2 id="improvement-v69-grug-io">V69：原 Grug 状态与恢复策略的真实 IO</h2>
+<p>9 检查、六叶完整恢复、两类缺失错误、legacy 错误证据及 master 迁移来源选择。原 GrugTrainState，params 字典代替 Transformer，实际 Optax 小状态不等于 Hero optimizer；barrier 记录适配、人工 metadata。新增固定 tree_utils，460 旧文件字节保持，仅 source_manifest 扩展。无实际生产事故/完整状态树验收。</p>
+<h2 id="improvement-v70-loader">V70：恢复、原 loader 与原混合身份联合检查</h2>
+<p>7 检查，真实小 checkpoint 与原恢复策略，原 schedule/三个 loader 方法/混合类连接身份子集；核对 marker100/state20、首批偏移148、marker反事实788、历史改写160和阶段边界156。新增实测顺序图与 full-resume/weights-only 验收区分。462 来源保持；无真实 token、完整训练或 loss 结果。</p>
+<h2 id="improvement-v71">V71：原回调时钟、正常边界与错配工件对照</h2>
+<p>五输入6检查：原 StepInfo/StateCallbackRunner/LambdaCallback/stage hook、原 loader 与真实 CPU 混合。正常同 schedule 边界对齐；旧边界+新 loader 控制 A4/B4，起点日志仍 stage0。新增域计数图与未执行模板；synthetic loss0不是测量。462来源保持。</p>
+<h2 id="improvement-v72-loss">V72：原 loss 方法的目标组成与输出罚项控制</h2>
+<p>7检查，固定 hidden/head 的原模型 loss、Grug reducer、CPU reference 和原输出罚项语句。权重组成反例、小数分母、统一缩放均值/梯度、logit平移与z-loss指标核对。显式前向/provider/backend替代，无真实Hero loss归因或GPU。462来源保持。</p>
+<h2 id="improvement-v73">V73：预测×权重的交叉重放</h2>
+<p>18检查、纯 CE 与含输出罚项两套四格、独立域 NLL 与分母对照、缺格/不同支持拒绝输出。人工预测改善方向随评价权重反转，交互2.0不可遗漏。新增图与实验记录；不是实际训练干预或 Hero 归因。</p>
+<h2 id="improvement-v74">V74：覆盖、分母下限与非有限值传播</h2>
+<p>12项原评估CPU检查，补足V26的NumPy helper/静态边界。根级macro含空域初值，父级过滤；T&lt;1根CE依赖分批；零权重NaN可污染BPB累计。澄清重评工具仅重建非空域父级口径，无线上修复或候选排名实测。</p>
+<h2 id="improvement-v75">V75：广播并不一定报错</h2>
+<p>16检查：单列loss/weight/ID、单行tags静默广播，rank/不兼容维度拒绝，多标签原支持、无标签覆盖、越界byte gather和同shape标签交换。新增离线检查函数，明确它不证明语义身份或生产前向。</p>
+<h2 id="improvement-v76ce">V76：把解析分母反例接到原CE梯度</h2>
+<p>10检查，真实JAX autodiff/scan与Equinox分区，验证方向反转、重分组、正分母补偿、局部空块NaN及分子优先恢复。澄清V48空块有限零梯度的假设，不将其套入原mean路径；无真实Hero累积bug证据。</p>
+<h2 id="improvement-v77">V77：实况更新改变了哪些结论</h2>
+<h1 id="improvement-8506noexecute97089833headastportablequack1612">8506新增NoExecute驱逐，#9708关闭未合并；#9833head仅说明变化，两文件计算AST相同。更正portable/QuACK保存输出的区别，补新评论中文翻译及节点根因边界。16新来源，12审计，旧字节保留。</h1>
+<h2 id="improvement-v78">V78：普通梯度安全不等于全部支线已验收</h2>
+<p>14原CPU检查，inactive row-dot可NaN而普通梯度有限；caller本地选择恢复有效weight梯度。原残差out破坏控制不改变普通梯度，却改变row-dot。新增原包装源码与有限元素图，明确通信/映射/GPU未测。</p>
+<h2 id="improvement-v79active">V79：把active前缀接回原布局计划</h2>
+<p>10检查验证send/recv互相一致、压实前缀、最后padding和返回身份。总容量32/需求32仍丢5；低容量expert重编号后接受总量不变、身份改变。增加实测元数据图与数据归因前置规则，无生产偏置结论。</p>
+<p>V80（2026-10-07）：执行固定head原route、mask语句和portable combine，15项CPU控制；验证丢弃的已选logit通过分母仍影响梯度，相同drop数可有不同保留质量；裁剪后重归一化控制明确属于不同函数。新增数值图、源码链与审查规则，没有执行真实GPU、优化器或Hero领域实验。</p>
+<p>V81（2026-10-07）：同head原router、真实portable MLP、combine transpose与EXPERT_SIDE恢复相接，17项CPU检查。九个正权重控制显式回传router，三个人工接受零权重边界；新增数值表与分桶验收，无真实GPU/优化器/生产事件证明。</p>
+<p>V82（2026-10-07）：公开PR三项与运行issue59评论刷新；新增固定head完整Hero model/train。原helper在六组隔离环境字典执行，13项检查；验证继承值、重复flag和模式残留，未修改本机环境/上游、未启动backend。来源新增7份、旧479份非bookkeeping字节保持。</p>
+<p>V83（2026-10-07）：新增固定head dispatcher/training/run_environment三份完整源码；原launcher/forwarding/PJRT guard及独立metadata/watchdog片段13项host检查。未创建任务、加载plugin或运行完整resolver，旧486份非bookkeeping来源保持。</p>
+<p>V84（2026-10-07）：综合首页增加七个可展开症状入口，将已有源码机制、结果文件、下一实验与判断边界对应；保留所有原表和专题。入口与十份既有结果SHA绑定，无新数值训练实验或理解效果证明。</p>
+<p>V85（2026-10-07）：取得同head optimizer/AdamH，真实Optax和原AdamH19项CPU检查，六组dtype/幅值控制；范数失败与warm状态更新接通。来源新增2份、旧489份非bookkeeping字节保持，无完整Hero build/GPU/训练收益。</p>
+<p>V86完成：真实Optax与原嵌套路径函数15项CPU检查，五个状态/预算对照。下一步需要真实执行包和checkpoint才能核查Hero时钟一致性；本轮控制不能代填生产异常或配比收益。</p>
+<p>V87完成：原Harrier构建/spec/预算辅助函数15项host检查，九个声明对照和共同绝对step图；原始预算扩大与短阶段覆盖边界已核查。下一步仍需实际token身份与有效目标流绑定，不能凭名义曝光推断真实记忆化或数据收益。</p>
+<p>V88完成：18项原块计数/ID及JAX CPU permutation检查，200桶CSV和两个末块key对照。仍缺生产组件顺序、真实key及token目标流，不能归因生产过采样或收益。</p>
+<p>V89完成：两实际Python环境各27格/54项局部检查及7项跨环境对照；修正V88对历史差异的解释。生产quota、精确运行时和token流仍未取得，继续保持未知。</p>
+<p>V90：完成混合支持边界25项真实CPU控制。底层缺失权重转为余数，正常配置拒绝未知键；九组归档正支持均存在于spec库存。新增实际子域差集验收建议，未修改上游；真实子域与token身份继续待取证。</p>
+<p>V91：15项原组件、配置、实际子域构造和concat/mixture CPU控制完成。普通训练缺缓存拒绝、未来活跃桶提前构造、验证省略与空concat路径分别记录。223个归档组件无concat形状；生产缓存/评估覆盖仍待取证。</p>
+<p>V92：原build_caches真实线程10项控制完成。不同完成顺序仍恢复原派发顺序；缓存命中集合变化会改变构建计划；异常future进入清理后仍等运行中任务结束。实际多机同步、存储超时与Hero构建记录仍未知。</p>
+<p>V93：实现五入口数据记录检查器，18组篡改/缺证据控制通过；当前归档声明加本地配额返回needs_evidence。工具尚未接入真实训练入口，也未读取token验证SHA。后续优先获取真实构造/读取导出记录，不继续用配置填充实际执行字段。</p>
+<p>V94：修正自建数据记录检查器的类型和host覆盖漏项，新增严格层，12组旧/新回归通过。V93代码与记录不改写；当前归档保持needs_evidence。没有生产运行、同步或收益验证。</p>
+<p>V95：13项原完整混合类构造/读取CPU控制完成；集中人工配额下单条/批量分歧，阶段前缀溢出下两者共同错误。Hero本地200项前缀全部匹配宽参考，逐桶保守上界253722855；生产cursor/token/事故仍未知。</p>
+<p>V96：原有限长度/读取32格控制完成，8个随机格包含越界；8项检查同时保留无随机保护、阶段切换、all重复覆盖与restart对照。Hero明确声明restart；生产有限停止事故、loader行为与token仍未知。</p>
+<p>V97：原restart读取16项控制完成，部分前缀5次仅3个身份、后3次新增2个；两阶段完整块多重集与连续公式匹配。修正V45文字适用条件，不改旧算法/记录。真实Hero库存、历史和loss效应仍未知。</p>
+<p>V98：原混合器历史阶段重算与恢复映射16项CPU控制，补充完整阶段表、未取模offset及样本摘要的联合核对；当前quota一致与指纹一致均不是历史等价的充分证据。没有上游修改、真实loader恢复或训练收益验证。</p>
+<p>V99：同固定head loader字节重新核对，原host/watchdog/next共13项真实等待与故障控制，新增等待路径图及恢复水位规则；未改源函数10秒阈值，未执行真实后台队列、IO取消或多host失败。</p>
+<p>V100：新增两份同head完整后台/线程模块，保留497份旧非bookkeeping源文件字节；19项原模块真实queue/thread控制＋5项本地消费者候选控制。复现buffered重复耗尽和stop唤醒缺口，候选未接入Marin，未验证远程IO或多host退出。</p>
+<p>V101：13份公开payload归档、499份旧非bookkeeping源字节保留；18项main/提案host与Pod分类控制。纠正刷新时将已收录NoExecute记录称为新增的判断，正文没有变化；逐文件绑定五同一异，实际部署与GPU/节点根因仍未知。</p>
+<h2 id="improvement-v102-gang">V102：从退出分类追到 gang 重排与容量确认</h2>
+<p>固定 main eee467…；19 份完整原源码/测试/lock 归档，保留 512 份旧非 bookkeeping 文件。运行未改写的上游 test_transitions.py：33 passed、91 deselected，保留默认安全 marker 排除，单进程；原 pytest 输出 1.70 秒。完整 checkout 的 tracked 源码执行前后不变。实际部署、Hero 重试参数、逐 attempt checkpoint/游标和控制器崩溃重启仍未知。</p>
+<p>新增 <a href="gang-recovery-guide.html#gang-recovery-guide">Gang 恢复解释</a>、两条时间线 SVG、原命令/环境/XML/输出和未执行的恢复轨迹模板。全报告验证与发布产物见 analysis/release_v102.json；浏览器渲染未验证，Quick Look 缩略图不替代完整页面 QA。下一步优先补进程重启后的 SQLite 恢复和真实训练恢复链。</p>
+<h2 id="improvement-v103">V103：控制器重开、备份一致性与失败保护</h2>
+<p>51 项原上游用例通过（49+2）；12 项人工本地故障控制通过。固定 main eee467…，新增 14 份完整源码/测试，保留 531 份旧非 bookkeeping 文件；归档总 546。原源码未改，未运行云端集群操作。普通坏/缺失目标恢复保留原两份文件 SHA；请求回滚提前清空；auth 上传失败留下可发现的部分目录，下载返回成功与完整性探测要求不同。</p>
+<p>新增 <a href="controller-recovery-guide.html#controller-recovery-guide">控制器恢复文档</a>与机制图、逐用例/XML/日志/环境、完整原函数故障控制脚本。正常 stop 后重开有本地证据；强制杀进程、真实云传输、实际 auth 密钥影响与训练状态恢复仍未知。建议待实施，没有把源码缺口称为生产事故或上线修复。发布校验见 analysis/release_v103.json；浏览器渲染未核对。</p>
+<h2 id="improvement-v104">V104：恢复候选与调用链门槛</h2>
+<p>22 项本地候选控制通过：移除回滚预清空；最后写完成记录、整组尺寸/SHA 与 SQLite 校验、部分发布排除及同 epoch 覆盖拒绝。保留完整原模块副本/补丁/生成脚本/执行脚本，不改上游 checkout。旧格式拒绝是兼容缺口；原生产 Controller.begin_checkpoint 等入口尚未接入；不能宣布修复上线。</p>
+<p>新增 3 份当前 head/源码归档，保留 545 份旧非 bookkeeping 文件，总 549；新 head bb208b… 两份源码同旧基线字节一致，最新依赖未执行。浏览器渲染、云端存储、并发、强制中断、auth 密钥与训练 checkpoint 仍未验证。完整校验与发布哈希见 analysis/release_v104.json。</p>
+<h2 id="improvement-v105">V105：状态内容与共同快照边界</h2>
+<p>新增 4 份完整 auth/迁移/test/controller 源码，保留 548 份旧非 bookkeeping 文件，归档总 553。当前 auth 无业务表，签名 key 来自配置 secret，收紧 V103/V104 风险解释。8 项原/候选顺序快照控制通过；构造表 0/1 状态对可通过摘要与数据库检查，不代表生产 auth 不变量或真实训练错配。2 项原认证测试通过、61 未选；重建认证对象不当成完整服务重启。</p>
+<p>下一步回到训练 TrainState、异步 save 引用和 loader 完成时钟；当前真实 Hero 组件身份仍未知。发布校验见 analysis/release_v105.json；本轮未做浏览器渲染验收。</p>
+<h2 id="improvement-v106-donation">V106 · donation 与延迟消费者</h2>
+<p>新增 3 份完整源码，保留 552 份旧非 bookkeeping 文件，归档 556。原 staging helper AST、真实 JAX CPU、事件门控 NumPy 消费者完成 10 项控制。首次观察视图阻止 donation 的断言失败，最终作为显式对照保留；实际 donation 两组释放观察视图并核实 deleted。增加所有权时序图与验收规则。没有 TensorStore IO、GPU DMA、多 rank、完整 TrainState 或生产事故归因。下一步优先用完整 state 与真实存储复核，不能从本轮推算性能收益。</p>
+<h2 id="improvement-v107">V107 · 从真实恢复接到第一次更新</h2>
+<p>8 项拼装 CPU 控制：原 helper 取所有叶快照、真实 state donation、原 host writer/真实 OCDBT、原恢复函数、下一 state 精确对照。原 weights-only 初始化同参数却不同 Adam 历史，更新前 loss 相同、下一 loss 更低的反例收紧配比归因。5 个核心源码同冻结 eee467 git blob 字节一致；源码归档总数维持 556。增加更新图、第一次更新验收规则与管线；pending 仅携带，不应用。下一步优先取得真实 Hero 状态 inventory/固定批次续训与 loader 身份。</p>
+<h2 id="improvement-v108-seed">V108 · seed 派生与未来支持域</h2>
+<p>12 项原入口/数据构造/原 shuffle 和 mix 的单 CPU 控制，7 个核心源文件同冻结 eee467 字节一致，无新增源文件，归档维持556。区分 None/显式0；未来正权重前置域提前改变 child key，但始终零域被过滤。当前域名槽序列/全库存相同仍能改变内容前缀。新增 key 分配图、完整支持域规则、真实交接空模板。优先取得实际 key manifest 与固定索引 token hash；当前未执行真实 loader/模型/恢复。</p>
+<h2 id="improvement-v109">V109 · 序列曝光与计分份额</h2>
+<p>13项原mask/model loss方法/Grug reducer CPU控制，显式CPU reference替代fused dispatcher，无完整Transformer。修正数据指南的一处单位混淆；分开序列、输入位置、计分位置与权重和。验证相同loss下域系数不同，以及统一缩放权重不变性；原整数quota实现条件反密度候选。6份固定revision完整HTTP源响应与旧档同字节，归档仍556。新增份额图、实际账本空模板和换算管线；真实Hero每域密度/梯度/成本/收益为空。</p>
+<h2 id="improvement-v110">V110：进度的测量边界</h2>
+<p>V110（2026-10-07）：回到公开工程现场，重新归档10份来源；三个issue评论27/59/30条，与V77无增删改。取得1000条吞吐采样，8项分析检查复算名义输入、原吞吐公式和评论时钟对应；新增科学图及未执行生命周期事件账。下一步需要独立attempt/节点/保存提交日志才能拆解慢区间，当前不推算故障停机、GPU利用率或配比因果收益。</p>
+<h2 id="improvement-v111">V111：恢复后的下一次更新</h2>
+<p>V111（2026-10-07）：完成V107排除的pending参与更新分支。执行原训练闭包、原初始化、真实Equinox setter、原route块、真实Adam与本地OCDBT保存/恢复；19项控制，11状态叶。第一次运行暴露共享EMA的重复donation，保留错误并加入独立缓冲区/EMA关闭对照；归档Hero EMA为空。修正工程地图“应用恰好一次”的潜在误导。无新外部来源，归档566项不变；实际Hero效果、生产GPU、完整Transformer和分布式恢复未知。</p>
+<h2 id="improvement-v112">V112：初始化与恢复的构造路径</h2>
+<p>V112（2026-10-07）：15项原初始化/训练闭包/本地IO控制。只复制EMA时参数与optimizer指针不变；真实IO往返保值但去除两组EMA共享；关闭donation仅修改原JIT装饰器。四条成功路径下一次完整状态相同。新增candidate_not_integrated函数和构造路径验收模板，未提交上游；未测GPU/生产内存。566项旧来源全部保持原字节；JAX官方donation文档仅作为当前接口说明链接。</p>
+<h2 id="improvement-v113loss">V113：有限loss与路由状态</h2>
+<p>V113（2026-10-07）：13项CPU控制将V34/V63未覆盖的原下一步与本地IO接通。四组人工beta×三步，全部loss通过原finite谓词；异常路由状态可暂时消失而参数分歧保留。另有有限3e38中心化溢出反例。两组真实OCDBT往返保留11叶字节。新增candidate_not_integrated三标志JIT诊断，未运行原QB估计器、完整loop或生产publisher；566旧来源保持。</p>
+<h2 id="improvement-v114">V114：原估计器输入边界</h2>
+<p>V114执行原QB histogram wrapper及单CPU真实collective接口，9项控制区分空有效集合、无效位置排除、有效异常传播，以及有限极端margin导致的beta/bias溢出。未执行实际Hero margin构造或跨host归约，未认定生产事故或修复。检查margin范围、beta与应用后bias分别记录；padding过滤不代替有效输入健康性验收。<a href="qb-guide.html#qb-guide">完整原值与机制</a>。566份来源未变。</p>
+<h2 id="improvement-v115">V115：归约一致与近似误差</h2>
+<p>V115执行四虚拟CPU设备的原histogram，11项控制：单/四设备、跨分片重排、空分片与padding过滤一致；其他专家的人工离群值扩大共同网格，精确参考阈值未变而histogram阈值与固定query专家集合改变。有限与归约一致不等于估计近似稳定。配比研究应另记margin分布、箱宽及参考误差，不能直接将人工例子解释为真实数据域问题。未测GPU/网络/完整模型或性能；566份来源保持。<a href="qb-guide.html#qb-guide">原值与分析</a>。</p>
+<h2 id="improvement-v116margin">V116：margin的原投影入口</h2>
+<p>V116执行原模型router投影/top-k/margin与真实四CPU histogram，9项控制。明确QB使用原logits减带bias alpha，sigmoid只用于combine；零bias E3/K2的每行margin最小值为0，非零bias可有负margin。满足原局部路径约束的人工离群值仍能改变共享网格，但较小离群值的阈值误差变化未改变共同query专家集合。未运行完整模型或真实域/能力对照，566份来源不变。<a href="qb-guide.html#qb-guide">完整原值与边界</a>。</p>
+<h2 id="improvement-v117">V117：目标与路由人口分开记账</h2>
+<p>V117接原causal目标mask、attention有效性、投影margin和四CPU histogram，9项控制：只改loss_weight不改变QB有效人口；零直接目标位置仍可改变阈值。boolean空query与additive mask的有效性合同不同。每域输入/路由有效/正目标/加权目标分开记录，不静默将prompt改为padding。本轮人工answer-only不是Hero配方，未测attention、完整梯度或能力收益；566份来源不变。<a href="boundary-guide.html#boundary-guide">原值及边界</a>。</p>
+<h2 id="improvement-v118">V118：研究收束为训练决策</h2>
+<p>新增<a href="training-decisions-guide.html#training-decisions-guide">训练决策备忘录</a>：六类症状的最小对照、#9352评估修正但排序不变的数值案例、配比五本账及供体/顺序/独立确认管线。将继续观察、废弃候选、进入放大验证分开，不给未执行实验判通过。新增机器可读案例只复算既有作者报告，无新训练、生产采用或最优配比结论；566份来源保持。</p>
+<h2 id="improvement-v119">V119：评估补丁的调用合同</h2>
+<p>固定作者最终fork补丁，执行原setter、runner、StepInfo与tagged callback的15项CPU控制：current/EMA视图正确且raw state不改，普通/未到期回调无QB应用；评分去重前已执行setter，装饰器会转发force。当前两种eval hook兼容，人工plain hook不兼容，不归为生产事故。完整循环、GPU、实际成本与生产采用未验证。7份新来源，API正文未变，来源总数573。<a href="pending-resume-guide.html#pending-resume-guide">局部结果与工程规则</a>。</p>
+<h2 id="improvement-v120key">V120：删域响应依赖参照，过期历史也参与key分配</h2>
+<p>重算80次删域的54字段4320行响应；两套参照下Paloma/GSM8K/HumanEval方向反转分别6/9/31个域，均非显著性结论。真实配置保留过去的正权重阶段，原函数条件复算仍给200桶相同命名child key；剪历史反事实才过滤额外桶并改变key。11项分析控制、16000条key记录和新响应图；不归因为历史事故或535B配比最优解。<a href="practical.html#practical">原值、源码与可执行规则</a>。</p>
+<h2 id="improvement-v121">V121：配比边界早于共同恢复点</h2>
+<p>新取得生产run声明0/3120阶段，与80份续训的0/384/3120不同；日志前沿对应393次更新。原49,152槽混合块条件复算显示部分块前缀计数和逻辑身份不同，不能扩大为真实重复token事故。直接改393违反原整块assert；step432桥接合法但改变39次续训更新和预算，仍未执行。12项控制、逐桶原值与时间线；实际checkpoint、历史key及训练收益未知。<a href="batch-clock-guide.html#batch-clock-guide">恢复边界与部分块</a>。</p>
+<h2 id="improvement-v122">V122：历史源码与恢复证据</h2>
+<p>V122补上部分历史源码缺口：公开commit为空，但两份代码artifact可读；下载五文件，核对两份清单，上传混合器仅阶段查找表示不同。80组条件重算与V121一致。一个续训日志确认step-393读取和后续进度。下一步仍需实际入口/导入路径、历史key和checkpoint输入身份；当前不能判真实重复token或loss影响。</p>
+<h2 id="improvement-v123seed">V123：随机流与seed语义</h2>
+<p>V123取得8份来源：三候选入口、checkpoint辅助、key迭代器、JAX版本与两份依赖清单。三入口选定key路径一致；JAX0.11.0/0.7.2各9项控制、两版本5项比较通过。None转0与partitionable flag变化均改200桶key；未确认历史实际key、导入路径或token。后续可沿入口调用者与运行导入证据继续绑定，不重复把声明派生称为历史恢复。</p>
+<h2 id="improvement-v124">V124：模拟子集与恢复数据流</h2>
+<p>V124推进到此前未执行的模拟库存切片：新增2份历史源，执行原train_sets、PRP、block shuffle、slice和restart。9控制通过；完整库存跨key同集合，切片后集合可不同；公开缩比人工百万库存留下879条，1137序列控制变0并被restart拒绝。恢复state六顶层字段与数据集重建顺序已查，整个checkpoint内容和真实子集未知。</p>
+<h2 id="improvement-v125io">V125：前缀抽样支持与IO布局</h2>
+<p>V125无新增来源，595份来源保持。9项结构/数学控制：四个879前缀仅覆盖438–452 IO块，512块窗口使某些等概率抽样下合法集合不可达；24组tail边界、120个小集合精确枚举及4种window控制。真实主题/来源相关性、尾部组成与IO/loss收益未测，下一步应查实际序列/来源映射，不能把索引块当文档。</p>
+<h2 id="improvement-v126">V126：实验改变了什么</h2>
+<p>更新主阅读入口，纠正已完成的#9352回调控制仍被列为未来任务、9.75T历史窗口被称为当前观察的表述。新增六类实验对照及数学加量决策路径。下一项关键缺口为真实身份到来源的映射、真实恢复下一批/更新和独立能力确认；本轮不新增人工训练反例。</p>
+<h2 id="improvement-v127">V127：配置断言与执行模式</h2>
+<p>原切分与模拟预算互斥此前已研究，未重复制作相同反例。本轮转向互斥与阶段对齐的执行保障：11控制及普通/-O双启动，发现非法阶段的8身份重复与负位置取模路径。下一步需要历史启动参数和完整入口集成，不能由此推断Hero事故或能力损失。</p>
+<h2 id="improvement-v128">V128：桶级权重的数值合同</h2>
+<p>本轮定位普通执行模式下的坏后续阶段回退：NaN-only/求和溢出可整块给首桶，反转插入顺序改变接收桶。13项控制通过。初版真实声明检查错误地假定每阶段都独立保留200桶，检查失败后改为完整历史支持；后两阶段194正权重但完整历史保留200，未将调试假设写成来源事实。五阶段候选数值向量保持。实际535B异常与loss效果未知。</p>
+<h2 id="improvement-v129manager">V129：异步manager与任务级失败</h2>
+<p>本轮从训练仓库边界追入JAX依赖，新增10项线程/引用/错误控制与真实TensorStore内存提交。原manager保留完成列表但不是累积所有历史列表；受控Future持数组不能替代真实后端，本次真实源数组已回收。任务错误仅消费一次；生产RSS/分布式保存/restore仍缺。</p>
+<h2 id="improvement-v130">V130：保存调度与失败策略</h2>
+<p>V129底层错误一次性消费之后，V130接到原Checkpointer调用者。11控制覆盖请求消费、同step去重、time节流和metadata后清理；未发起真实保存/删除。下一步应结合训练主循环异常处置与真实存储attempt身份，避免由局部调度行为推断历史事故。</p>
+<h2 id="improvement-v1312026-10-08">V131，2026-10-08：检查“保留根因”的实际前提</h2>
+<p>补足V34成功日志/通知假设：执行原作用域和原事件分发，验证11项主故障、收尾故障及双故障。最初复用旧探针定义时缺少exec命名空间的__file__导致NameError，补入后重跑通过，没有改原源码或覆盖旧结果。新增文档将事件语义、异常链、发布/恢复证据串入配比归因管线。候选错误隔离仅提出合同，没有应用或宣称验收；真实Hero事故、GPU、完整外围cleanup和loss影响仍未知。</p>
+<h2 id="improvement-v1322026-10-08">V132，2026-10-08：可选恢复不只取决于数组能否读出</h2>
+<p>同一真实本地缺叶夹具在父目录与具体目录出现失败/初始state差异；追到written谓词与marker扫描。补齐12项控制、原Shape模板guard和启动意图合同。首次运行在构造证据哈希时引用错误的继承模块属性，案例断言已通过但脚本失败；修正路径后完整重跑成功。一次编辑脚本本身有语法错误，未改文件，随后修正执行。未以这些探针错误解释上游行为。保持真实Hero事故、完整训练、loss效应未知。</p>
+<h2 id="improvement-v1332026-10-08optimizer-state">V133，2026-10-08：新闭包如何解释旧optimizer state</h2>
+<p>新增固定基础scheduler来源，接原Hero build与真实Optax注入/Adam。14项控制区分N改变、LR/decay解耦、缓存字段及outer/schedule count重置。首次夹具选token_embed，不在专用衰减目标中，隔离decay断言失败；修正为匹配router的人工路径后重跑，不将失败解释为上游错误。全参数树和未选MuonH/AdamH不在验证范围。网页工具raw链接cache miss后通过HTTPS实际取得来源；归档保留URL/hash，无历史runtime绑定。报告新增状态与计划接续合同，生产效应未知。</p>
+<h2 id="improvement-v1342026-10-08">V134，2026-10-08：数值合法性之外检查计划几何</h2>
+<p>原scheduler16项控制区分数值1、微小比例、周期端点与minimum；新增科学图及显式单位/preflight候选。最初假设N0会返回常量peak，原执行却在无周期后IndexError；更正断言与文档，不保留错误假设。候选预检最初还让零周期/空list进入原异常，随后补提前ValueError保护并重跑。10月7日声明N390251/warmup.01换算3902，明确未命中人工反例；实际执行绑定未知。旧结果和来源保持，未向上游应用候选。</p>
+<h2 id="improvement-v1352026-10-08">V135，2026-10-08：让源码细节改变实验安排</h2>
+<p>从四项既有BPB三组终点独立复算并做删seed敏感性，11项检查。数学相对比例基线的方向可翻转，代码相关方向保持；明确诊断不是独立确认或选择偏差校正。新增确认路线与四臂计划合同，将恢复/计划/数据细节落到比较对象，修正数据指南的历史“当前/最新”措辞。只读复查8435/9126/9352 metadata与body和对应归档相同，未据此声称逐条评论内容已刷新；未增加来源快照、训练或实际生产结论。</p></section><nav class="pager"><a href="delivery-audit-guide.html">← 上一篇</a><a href="index.html">返回主题目录</a></nav></main></body></html>

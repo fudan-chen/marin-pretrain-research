@@ -1,0 +1,1520 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>梯度累积：拆批是否改变了训练目标 · Marin 预训练研究</title><link rel="stylesheet" href="reading.css"></head><body><header><nav><a href="index.html">主题目录</a><a href="../report_standalone.html">完整报告（保留）</a><a href="code.html">源码与候选补丁</a><a href="tools.html">交互工具</a></nav></header><main><p class="muted"><a href="theme-loss.html">04 · Loss、梯度与数值精度</a> / 本页只含一篇专题</p><details class="chapter-toc"><summary>本篇目录</summary><ol><li><a href="#gradient-accumulation-guide-_2">源码在哪一层决定分母</a></li><li><a href="#gradient-accumulation-guide-_3">一个会改变更新方向的小例子</a></li><li><a href="#gradient-accumulation-guide-_4">修复和验收应按什么顺序做</a></li><li><a href="#gradient-accumulation-guide-v48">V48历史检查覆盖什么</a></li><li><a href="#gradient-accumulation-guide-v76-loss">V76：原 loss 自动微分接入原累积器，空块不只是稀释梯度</a></li><li><a href="#gradient-accumulation-guide-13ce">有效目标1/3，原CE梯度方向也会反转</a></li><li><a href="#gradient-accumulation-guide-_5">整步非空，局部零分母仍可污染全部梯度</a></li><li><a href="#gradient-accumulation-guide-_6">分母补偿要在什么位置做</a></li><li><a href="#gradient-accumulation-guide-packing">对数据配比和packing意味着什么</a></li></ol></details><section class="chapter" id="gradient-accumulation-guide"><h1 id="gradient-accumulation-guide-_1">梯度累积：拆批是否改变了训练目标</h1>
+<p>内存不足时，把一个optimizer step拆成几个microbatch，通常希望它们相加后仍对应原来的目标。这个要求不能只用“梯度已经累加”来判断：每块在反向之前除以了什么，决定每个有效目标最后获得多大权重。</p>
+<p>本轮在固定源码中确认了两条不同路径：通用Levanter累积器平均各microbatch返回的loss与普通梯度；Hero专用训练函数直接对整批调用一次<code>_loss_and_grads</code>，Grug loss内部汇总token分片的分子与有效权重分母。因此，本章发现的是通用接口的适用条件和迁移风险，<strong>没有发现Hero正在执行一个梯度累积bug</strong>。</p>
+<h2 id="gradient-accumulation-guide-_2">源码在哪一层决定分母</h2>
+<p>全部路径按同一版本<code>84869ae8c91ffe64e9f761c5bd714542eb1876e0</code>阅读。版本号不证明历史训练执行了这些文件。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>层次</th>
+<th>源码实际动作</th>
+<th>能够说明什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="code-1836e210328d624a.html">通用Trainer</a>，<code>_compute_gradients_microbatched</code></td>
+<td>先将model绑定到value-and-grad函数，再根据配置包装microbatched</td>
+<td>model不是待拆的batch输入；是否启用依赖配置和调用路径</td>
+</tr>
+<tr>
+<td><a href="code-2f73dc573c106e6a.html">microbatched</a></td>
+<td>拆batch轴，累加loss与普通梯度，最后除以micro步数；metrics自行fold，CustomGradientAccumulation使用专用归约</td>
+<td>它没有从loss中推断各块有效目标数；其平均语义并非通用bug</td>
+</tr>
+<tr>
+<td><a href="code-e3d9a0d95c46dcdb.html">Hero训练函数</a>，<code>_make_train_step</code></td>
+<td>对整批调用_loss_and_grads，再调用optimizer.update</td>
+<td>当前固定文件没有调用上述microbatched；不据此断言所有历史执行没有累积</td>
+</tr>
+<tr>
+<td><a href="code-13a5616b0bc6f4b0.html">Grug loss</a></td>
+<td>每个token分片求loss总和与weight总和，再沿token分片轴psum，最后总分子除以总分母</td>
+<td>是“先汇总再相除”；这里仅静态确认collective调用，没有运行多卡</td>
+</tr>
+</tbody>
+</table></div>
+<p>当每块返回<code>N_j / T_j</code>时，普通平均优化的是<code>Σ_j(N_j/T_j)/K</code>。整批有效token目标是<code>Σ_j N_j / Σ_j T_j</code>。二者要对任意分子相同，需要各块有效权重分母相等；某组数据上的偶然相等不能证明一般等价。若返回的是除以相同固定位置数的loss，等大小拆批可以保持该固定位置目标，即使其中有效权重数不同。先确定想优化哪个目标，再评判实现。</p>
+<p>Grug fused kernel已经接收weight，外层对返回loss求和；不能假定它返回未加权值，再乘一次weight。模型还包含logsumexp penalty、router监控和QB等机制；各辅助项原来的归约口径要单独保留。</p>
+<h2 id="gradient-accumulation-guide-_3">一个会改变更新方向的小例子</h2>
+<p>这不是语言模型实验。设只有参数θ，单个目标的loss为<code>(θ-y)²/2</code>，在θ=0求解析梯度。一个microbatch有一个有效目标y=3，另一个有三个有效目标y=-2。两块输入位置数相同，权重mask使有效数为1和3。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>计算方式</th>
+<th style="text-align: right;">loss</th>
+<th style="text-align: right;">θ梯度</th>
+<th>在正学习率SGD下的方向</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>整批有效token均值</td>
+<td style="text-align: right;">2.625</td>
+<td style="text-align: right;">+0.75</td>
+<td>θ减小</td>
+</tr>
+<tr>
+<td>各块有效均值再平均</td>
+<td style="text-align: right;">3.25</td>
+<td style="text-align: right;">−0.5</td>
+<td>θ增大</td>
+</tr>
+<tr>
+<td>先按各块有效分母加权，再合并</td>
+<td style="text-align: right;">2.625</td>
+<td style="text-align: right;">+0.75</td>
+<td>θ减小</td>
+</tr>
+<tr>
+<td>同一批目标重新分组，再平均各块均值</td>
+<td style="text-align: right;">2.416667</td>
+<td style="text-align: right;">+1.166667</td>
+<td>方向恢复，但大小仍不同</td>
+</tr>
+<tr>
+<td>整批固定位置均值</td>
+<td style="text-align: right;">1.3125</td>
+<td style="text-align: right;">+0.375</td>
+<td>θ减小</td>
+</tr>
+<tr>
+<td>等大小拆批的固定位置均值</td>
+<td style="text-align: right;">1.3125</td>
+<td style="text-align: right;">+0.375</td>
+<td>与上一行相同</td>
+</tr>
+</tbody>
+</table></div>
+<p>逐块均值给两块各一半份额，因而单独的y=3获得50%影响；整批有效均值给它25%。把同一批目标重新分组，可以改变这种隐含份额。这解释了为什么拆批、padding和顺序需要一起检查，但不能将这个例子写成Hero配比变化的根因。</p>
+<p>若一块全空，而loss函数约定空分母返回0，普通平均仍把它计入micro步数。这会稀释有内容那块的梯度。全空步该跳过optimizer、仍推进状态时钟，还是报错，是另外一项训练策略；不能只看loss为0。源码的专用自定义梯度状态也不能按普通梯度除法处理。</p>
+<h2 id="gradient-accumulation-guide-_4">修复和验收应按什么顺序做</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>步骤</th>
+<th>需要记录或核对的量</th>
+<th>通过条件与边界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>先确定目标</td>
+<td>有效token均值、固定位置均值或逐例均值；CE与各辅助项分别记录</td>
+<td>目标在看曲线前确定；不能因为某种归约loss更低就切换口径</td>
+</tr>
+<tr>
+<td>确认执行入口</td>
+<td>实际代码版本、配置microbatch大小、实际调用函数</td>
+<td>通用Trainer、专用Hero与另一个pipeline分开；文件存在不证明调用</td>
+</tr>
+<tr>
+<td>核对分母</td>
+<td>每块N、T、输入形状、mask、跨rank聚合轴与replica范围</td>
+<td>对有效均值，用整个optimizer step的总T；同一token不能重复计算replica分母</td>
+</tr>
+<tr>
+<td>再决定如何缩放</td>
+<td>若各块返回N_j/T_j，则该块普通梯度乘T_j/总T后求和；或者对分子反向，最后除总T</td>
+<td>这只适用于T不依赖参数的相应项；不能再被框架默认除K一次。T依赖参数时，必须处理分母的导数</td>
+</tr>
+<tr>
+<td>规定空块与空步行为</td>
+<td>单块T=0、全步T=0、optimizer/EMA/QB/调度时钟</td>
+<td>不能仅靠除零返回0推定整个训练步正确；具体状态策略需单独验证</td>
+</tr>
+<tr>
+<td>对照确定性基础目标</td>
+<td>整批与不同拆分，保留目标、权重、参数、逐参数梯度</td>
+<td>先在简单无随机目标验证归约；记录差值与容差依据</td>
+</tr>
+<tr>
+<td>扩展到真实模型</td>
+<td>RNG、dropout、MoE容量/路由、跨块QB统计、辅助项、精度、梯度裁剪、optimizer状态</td>
+<td>分母相等只是一个条件；真实路由可能随拆批改变。若目标是整步梯度裁剪，应在归约完成后裁剪</td>
+</tr>
+</tbody>
+</table></div>
+<p>额外检查输入的拆分规则：通用microbatched会识别带Batch轴的NamedArray，也会把首维等于Batch.size的普通数组当作batch。固定版Trainer先闭包绑定model，避免因参数首维恰巧等于batch大小而误拆。其他调用方传入不应拆的数组时，需要明确其语义；本轮未发现实际metadata误拆事件。</p>
+<h2 id="gradient-accumulation-guide-v48">V48历史检查覆盖什么</h2>
+<p><a href="code-36d9174ffb846c5f.html">检查脚本</a>从原文件提取microbatched与_reshape_for_microbatch函数体执行，只移除类型注解以便载入。NumPy与串行适配器替代JAX、Equinox、Haliax的设备运行；shape inference由纯函数数值调用代替，分片约束为恒等，reshape为串行数组重排，未提供RNG key。测试只覆盖普通标量梯度与空metrics，没有运行自定义量化梯度状态。</p>
+<p><a href="../analysis/gradient_accumulation_probe.json">原值记录</a>包含14项检查：有效分母反例、重新分组、固定位置与等有效分母的正例、分母加权恢复、空块与全空、原函数shortcut、三种无效microbatch大小，以及三个静态调用/归约核对。梯度由标量目标解析计算，<strong>不是JAX自动微分结果，也不是模型梯度或多卡验收</strong>。</p>
+<p>两份新增源码通过完整raw下载取得。后续重取出现超时和不完整响应，归档使用此前完成的两份文件，并以固定字节hash约束；不完整下载未入库。获取时间用本地下载完成mtime近似，未保存精确服务器时间，见<a href="../analysis/accumulation_acquisition.json">来源记录</a>。</p>
+<p>下一步能改变实际结论的材料，是某一真实训练入口的loss函数、有效分母与逐参数梯度对照，以及真实路由和状态更新范围。取得这些材料前，本章用于评审和迁移验收，不归因Hero历史loss、不推荐改其训练采样比例。</p>
+<h2 id="gradient-accumulation-guide-v76-loss">V76：原 loss 自动微分接入原累积器，空块不只是稀释梯度</h2>
+<p>V48用解析平方误差与NumPy适配解释了分母风险；V49检查全零分母的原CPU loss导数。现在把原通用 microbatched 函数、原普通数组重排函数、原 zeros_like_tree 与原模型 loss 方法接起来：真实 Equinox shape inference/partition/combine，真实 JAX value_and_grad，fold由真实 lax.scan执行。10项检查通过，<a href="../analysis/microbatch_loss_cpu.json">loss、head梯度与原值</a>可复查。原 Transformer 前向仍由固定hidden/router provider替代，backend仍使用V72原CPU reference delegate；轴元数据、物理轴大小1、sharding恒等与普通数组reshape有显式适配，未运行完整Haliax fold或多设备。只测试普通head梯度，未测试custom gradient state、metrics、RNG或辅助损失。</p>
+<h3 id="gradient-accumulation-guide-13ce">有效目标1/3，原CE梯度方向也会反转</h3>
+<p>人工head初值[-0.4,0]，四条序列、每条四个位置；前两条域A标签0，后两条域B标签1，末尾padding权重为0。两个microbatch的有效目标质量分别1与3。按整批调用原模型loss方法，CE=0.6130153，head第一分量梯度+0.1513123；逐块有效均值再由原累积器除2，CE=0.7130153，梯度−0.0986876。V48的解析反例在原CE自动微分接口中也出现了，仍不是训练收益实验。</p>
+<p>将同一批行重排为[0,2,1,3]，整批梯度不变，但原累积梯度变为+0.2346457。两个microbatch质量变为3与1，且各块标签组成不同；均值的均值重新分配了每个目标的影响。若保持两块有效质量相等，本控制的整批与累积结果在1e−6容差内一致。用θ−0.1g做一次无状态SGD算术对照，head第一分量分别走到−0.4151312和−0.3901312，方向相反；这里未调用实际Hero optimizer，也没有优化器轨迹。</p>
+<h3 id="gradient-accumulation-guide-_5">整步非空，局部零分母仍可污染全部梯度</h3>
+<p>将第一块权重全部清零，第二块保留三个有效目标。整步总T=3，原整批梯度仍有限；但逐块mean在空块的导数上产生NaN，经累加污染整个head。前向loss仍有限，甚至减半，看曲线不能发现这个问题。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>相同输入上的计算路径</th>
+<th style="text-align: right;">整步loss</th>
+<th style="text-align: right;">head第一分量梯度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>两块T=1/3：整批mean</td>
+<td style="text-align: right;">0.6130153</td>
+<td style="text-align: right;">+0.1513123</td>
+</tr>
+<tr>
+<td>两块T=1/3：原均值累积</td>
+<td style="text-align: right;">0.7130153</td>
+<td style="text-align: right;">−0.0986876</td>
+</tr>
+<tr>
+<td>两块T=1/3：各块mean按T补偿</td>
+<td style="text-align: right;">0.6130153</td>
+<td style="text-align: right;">+0.1513123</td>
+</tr>
+<tr>
+<td>两块T=0/3：整批mean</td>
+<td style="text-align: right;">0.5130153</td>
+<td style="text-align: right;">+0.4013124</td>
+</tr>
+<tr>
+<td>两块T=0/3：原均值累积</td>
+<td style="text-align: right;">0.2565076</td>
+<td style="text-align: right;">NaN</td>
+</tr>
+<tr>
+<td>两块T=0/3：各块mean按T补偿</td>
+<td style="text-align: right;">0.5130153</td>
+<td style="text-align: right;">NaN</td>
+</tr>
+<tr>
+<td>两块T=0/3：先对分子反向，再按总T归一化</td>
+<td style="text-align: right;">0.5130153</td>
+<td style="text-align: right;">+0.4013124</td>
+</tr>
+</tbody>
+</table></div>
+<p>本章原先的“空块稀释”例子假设空块返回有限的零梯度；这里原CPU mean路径不满足该假设。把已经求过局部均值的loss乘0，虽然让前向数值看似正确，却没有去掉局部零分母的反向污染。这与“整个optimizer step没有有效目标”不同：总步明明有有效数据，也可能因为拆分方式触发非有限梯度。</p>
+<h3 id="gradient-accumulation-guide-_6">分母补偿要在什么位置做</h3>
+<p>正分母各块的控制中，普通梯度补偿采用局部mean×T_j×K/总T；K抵消原累积器最后除K。两块都正时，它恢复整批loss与梯度。但有空块时，该方法依赖的局部mean导数已非有限，补偿不能修好。</p>
+<p>另一个控制直接调用原Grug loss的sum归约，在每块计算N_j×K/总T，再交给原累积器。局部路径没有mean的零分母，最后得到ΣN_j/总T；T=0/3与T=1/3都恢复有限的整批结果。本轮这只是报告侧的调用适配，<strong>没有修改上游训练函数</strong>，也没有验收真实模型修复。总T必须来自相同整步输入、与参数独立且为正；全步T=0仍需另定策略。非有限hidden/logits、输出z-loss、router/QB、自定义梯度状态以及分布式分母覆盖不在这项修复控制范围。</p>
+<p>不要先把各块结果求均值，再事后尝试修补梯度；也不要把一个CE归约改法自动推广到辅助项。真实改动需要确认实际loss接口能返回哪个分子、是否已经加权、框架还会除几次，以及每项辅助目标的分母和状态范围。已有collective还要审查replica/token轴，不能重复计入同一个目标。</p>
+<h3 id="gradient-accumulation-guide-packing">对数据配比和packing意味着什么</h3>
+<p>按样本条数或名义长度相同来对齐microbatch，并不能保证有效目标质量相同。文档边界mask、短序列padding、过滤、选择性loss权重，都可能改变局部分母；在错误的均值累积口径下，数据顺序会同时改变梯度权重。因而“换一种packing之后某域改善”至少要排查目标组成、实际有效T、局部空块、原归约和路由改变，不能直接归因数据质量。</p>
+<p>固定版Hero专用入口仍未调用本轮通用microbatched函数；这轮验证两项接口可以产生什么，不证明生产正在这样组合。若迁移训练框架或启用累积，应保存各块T、整步T、有限loss和逐参数梯度，在无随机基础目标上先做整批/重分批对照，再扩大到真实模型和状态。loss有限不能代替gradient有限；总T&gt;0也不能代替局部mean安全。</p>
+<p>复现：<code>make microbatch-loss-cpu CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python TENSORSTORE_PATH=/tmp/marin-tensorstore-lib</code>。隔离依赖用于Equinox，没有执行TensorStore IO或GPU。</p><figure class="scientific-figure"><svg height="288pt" style="display:block;width:100%;height:auto" version="1.1" viewbox="0 0 576 288" width="576pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<metadata>
+<rdf:rdf xmlns:cc="http://creativecommons.org/ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+<cc:work>
+<dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"></dc:type>
+<dc:format>image/svg+xml</dc:format>
+<dc:creator>
+<cc:agent>
+<dc:title>Matplotlib v3.9.4, https://matplotlib.org/</dc:title>
+</cc:agent>
+</dc:creator>
+</cc:work>
+</rdf:rdf>
+</metadata>
+<defs>
+<style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+</defs>
+<g id="gradacc-figure_1">
+<g id="gradacc-patch_1">
+<path d="M 0 288
+L 576 288
+L 576 0
+L 0 0
+z
+" style="fill: #ffffff"></path>
+</g>
+<g id="gradacc-axes_1">
+<g id="gradacc-patch_2">
+<path d="M 128.23 246.04
+L 557.28 246.04
+L 557.28 37.968
+L 128.23 37.968
+z
+" style="fill: #ffffff"></path>
+</g>
+<g id="gradacc-patch_3">
+<path clip-path="url(#gradacc-pcf27622557)" d="M 277.464783 236.582182
+L 417.372391 236.582182
+L 417.372391 182.537506
+L 277.464783 182.537506
+z
+" style="fill: #245987"></path>
+</g>
+<g id="gradacc-patch_4">
+<path clip-path="url(#gradacc-pcf27622557)" d="M 277.464783 169.026338
+L 184.193043 169.026338
+L 184.193043 114.981662
+L 277.464783 114.981662
+z
+" style="fill: #b85137"></path>
+</g>
+<g id="gradacc-patch_5">
+<path clip-path="url(#gradacc-pcf27622557)" d="M 277.464783 101.470494
+L 495.098841 101.470494
+L 495.098841 47.425818
+L 277.464783 47.425818
+z
+" style="fill: #6a8075"></path>
+</g>
+<g id="gradacc-matplotlib.axis_1">
+<g id="gradacc-xtick_1">
+<g id="gradacc-line2d_1">
+<defs>
+<path d="M 0 0
+L 0 3.5
+" id="gradacc-mfd5d7ab8b6" style="stroke: #000000; stroke-width: 0.8"></path>
+</defs>
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="184.193043" xlink:href="#gradacc-mfd5d7ab8b6" y="246.04"></use>
+</g>
+</g>
+<g id="gradacc-text_1">
+<!-- −0.5 -->
+<g transform="translate(172.051637 260.638438) scale(0.1 -0.1)">
+<defs>
+<path d="M 678 2272
+L 4684 2272
+L 4684 1741
+L 678 1741
+L 678 2272
+z
+" id="gradacc-DejaVuSans-2212" transform="scale(0.015625)"></path>
+<path d="M 2034 4250
+Q 1547 4250 1301 3770
+Q 1056 3291 1056 2328
+Q 1056 1369 1301 889
+Q 1547 409 2034 409
+Q 2525 409 2770 889
+Q 3016 1369 3016 2328
+Q 3016 3291 2770 3770
+Q 2525 4250 2034 4250
+z
+M 2034 4750
+Q 2819 4750 3233 4129
+Q 3647 3509 3647 2328
+Q 3647 1150 3233 529
+Q 2819 -91 2034 -91
+Q 1250 -91 836 529
+Q 422 1150 422 2328
+Q 422 3509 836 4129
+Q 1250 4750 2034 4750
+z
+" id="gradacc-DejaVuSans-30" transform="scale(0.015625)"></path>
+<path d="M 684 794
+L 1344 794
+L 1344 0
+L 684 0
+L 684 794
+z
+" id="gradacc-DejaVuSans-2e" transform="scale(0.015625)"></path>
+<path d="M 691 4666
+L 3169 4666
+L 3169 4134
+L 1269 4134
+L 1269 2991
+Q 1406 3038 1543 3061
+Q 1681 3084 1819 3084
+Q 2600 3084 3056 2656
+Q 3513 2228 3513 1497
+Q 3513 744 3044 326
+Q 2575 -91 1722 -91
+Q 1428 -91 1123 -41
+Q 819 9 494 109
+L 494 744
+Q 775 591 1075 516
+Q 1375 441 1709 441
+Q 2250 441 2565 725
+Q 2881 1009 2881 1497
+Q 2881 1984 2565 2268
+Q 2250 2553 1709 2553
+Q 1456 2553 1204 2497
+Q 953 2441 691 2322
+L 691 4666
+z
+" id="gradacc-DejaVuSans-35" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#gradacc-DejaVuSans-2212"></use>
+<use x="83.789062" xlink:href="#gradacc-DejaVuSans-30"></use>
+<use x="147.412109" xlink:href="#gradacc-DejaVuSans-2e"></use>
+<use x="179.199219" xlink:href="#gradacc-DejaVuSans-35"></use>
+</g>
+</g>
+</g>
+<g id="gradacc-xtick_2">
+<g id="gradacc-line2d_2">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="277.464783" xlink:href="#gradacc-mfd5d7ab8b6" y="246.04"></use>
+</g>
+</g>
+<g id="gradacc-text_2">
+<!-- 0.0 -->
+<g transform="translate(269.51322 260.638438) scale(0.1 -0.1)">
+<use xlink:href="#gradacc-DejaVuSans-30"></use>
+<use x="63.623047" xlink:href="#gradacc-DejaVuSans-2e"></use>
+<use x="95.410156" xlink:href="#gradacc-DejaVuSans-30"></use>
+</g>
+</g>
+</g>
+<g id="gradacc-xtick_3">
+<g id="gradacc-line2d_3">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="370.736522" xlink:href="#gradacc-mfd5d7ab8b6" y="246.04"></use>
+</g>
+</g>
+<g id="gradacc-text_3">
+<!-- 0.5 -->
+<g transform="translate(362.784959 260.638438) scale(0.1 -0.1)">
+<use xlink:href="#gradacc-DejaVuSans-30"></use>
+<use x="63.623047" xlink:href="#gradacc-DejaVuSans-2e"></use>
+<use x="95.410156" xlink:href="#gradacc-DejaVuSans-35"></use>
+</g>
+</g>
+</g>
+<g id="gradacc-xtick_4">
+<g id="gradacc-line2d_4">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="464.008261" xlink:href="#gradacc-mfd5d7ab8b6" y="246.04"></use>
+</g>
+</g>
+<g id="gradacc-text_4">
+<!-- 1.0 -->
+<g transform="translate(456.056698 260.638438) scale(0.1 -0.1)">
+<defs>
+<path d="M 794 531
+L 1825 531
+L 1825 4091
+L 703 3866
+L 703 4441
+L 1819 4666
+L 2450 4666
+L 2450 531
+L 3481 531
+L 3481 0
+L 794 0
+L 794 531
+z
+" id="gradacc-DejaVuSans-31" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#gradacc-DejaVuSans-31"></use>
+<use x="63.623047" xlink:href="#gradacc-DejaVuSans-2e"></use>
+<use x="95.410156" xlink:href="#gradacc-DejaVuSans-30"></use>
+</g>
+</g>
+</g>
+<g id="gradacc-xtick_5">
+<g id="gradacc-line2d_5">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="557.28" xlink:href="#gradacc-mfd5d7ab8b6" y="246.04"></use>
+</g>
+</g>
+<g id="gradacc-text_5">
+<!-- 1.5 -->
+<g transform="translate(549.328437 260.638438) scale(0.1 -0.1)">
+<use xlink:href="#gradacc-DejaVuSans-31"></use>
+<use x="63.623047" xlink:href="#gradacc-DejaVuSans-2e"></use>
+<use x="95.410156" xlink:href="#gradacc-DejaVuSans-35"></use>
+</g>
+</g>
+</g>
+<g id="gradacc-text_6">
+<!-- Analytic gradient dL/dtheta at theta=0 -->
+<g transform="translate(245.562813 274.316562) scale(0.1 -0.1)">
+<defs>
+<path d="M 2188 4044
+L 1331 1722
+L 3047 1722
+L 2188 4044
+z
+M 1831 4666
+L 2547 4666
+L 4325 0
+L 3669 0
+L 3244 1197
+L 1141 1197
+L 716 0
+L 50 0
+L 1831 4666
+z
+" id="gradacc-DejaVuSans-41" transform="scale(0.015625)"></path>
+<path d="M 3513 2113
+L 3513 0
+L 2938 0
+L 2938 2094
+Q 2938 2591 2744 2837
+Q 2550 3084 2163 3084
+Q 1697 3084 1428 2787
+Q 1159 2491 1159 1978
+L 1159 0
+L 581 0
+L 581 3500
+L 1159 3500
+L 1159 2956
+Q 1366 3272 1645 3428
+Q 1925 3584 2291 3584
+Q 2894 3584 3203 3211
+Q 3513 2838 3513 2113
+z
+" id="gradacc-DejaVuSans-6e" transform="scale(0.015625)"></path>
+<path d="M 2194 1759
+Q 1497 1759 1228 1600
+Q 959 1441 959 1056
+Q 959 750 1161 570
+Q 1363 391 1709 391
+Q 2188 391 2477 730
+Q 2766 1069 2766 1631
+L 2766 1759
+L 2194 1759
+z
+M 3341 1997
+L 3341 0
+L 2766 0
+L 2766 531
+Q 2569 213 2275 61
+Q 1981 -91 1556 -91
+Q 1019 -91 701 211
+Q 384 513 384 1019
+Q 384 1609 779 1909
+Q 1175 2209 1959 2209
+L 2766 2209
+L 2766 2266
+Q 2766 2663 2505 2880
+Q 2244 3097 1772 3097
+Q 1472 3097 1187 3025
+Q 903 2953 641 2809
+L 641 3341
+Q 956 3463 1253 3523
+Q 1550 3584 1831 3584
+Q 2591 3584 2966 3190
+Q 3341 2797 3341 1997
+z
+" id="gradacc-DejaVuSans-61" transform="scale(0.015625)"></path>
+<path d="M 603 4863
+L 1178 4863
+L 1178 0
+L 603 0
+L 603 4863
+z
+" id="gradacc-DejaVuSans-6c" transform="scale(0.015625)"></path>
+<path d="M 2059 -325
+Q 1816 -950 1584 -1140
+Q 1353 -1331 966 -1331
+L 506 -1331
+L 506 -850
+L 844 -850
+Q 1081 -850 1212 -737
+Q 1344 -625 1503 -206
+L 1606 56
+L 191 3500
+L 800 3500
+L 1894 763
+L 2988 3500
+L 3597 3500
+L 2059 -325
+z
+" id="gradacc-DejaVuSans-79" transform="scale(0.015625)"></path>
+<path d="M 1172 4494
+L 1172 3500
+L 2356 3500
+L 2356 3053
+L 1172 3053
+L 1172 1153
+Q 1172 725 1289 603
+Q 1406 481 1766 481
+L 2356 481
+L 2356 0
+L 1766 0
+Q 1100 0 847 248
+Q 594 497 594 1153
+L 594 3053
+L 172 3053
+L 172 3500
+L 594 3500
+L 594 4494
+L 1172 4494
+z
+" id="gradacc-DejaVuSans-74" transform="scale(0.015625)"></path>
+<path d="M 603 3500
+L 1178 3500
+L 1178 0
+L 603 0
+L 603 3500
+z
+M 603 4863
+L 1178 4863
+L 1178 4134
+L 603 4134
+L 603 4863
+z
+" id="gradacc-DejaVuSans-69" transform="scale(0.015625)"></path>
+<path d="M 3122 3366
+L 3122 2828
+Q 2878 2963 2633 3030
+Q 2388 3097 2138 3097
+Q 1578 3097 1268 2742
+Q 959 2388 959 1747
+Q 959 1106 1268 751
+Q 1578 397 2138 397
+Q 2388 397 2633 464
+Q 2878 531 3122 666
+L 3122 134
+Q 2881 22 2623 -34
+Q 2366 -91 2075 -91
+Q 1284 -91 818 406
+Q 353 903 353 1747
+Q 353 2603 823 3093
+Q 1294 3584 2113 3584
+Q 2378 3584 2631 3529
+Q 2884 3475 3122 3366
+z
+" id="gradacc-DejaVuSans-63" transform="scale(0.015625)"></path>
+<path id="gradacc-DejaVuSans-20" transform="scale(0.015625)"></path>
+<path d="M 2906 1791
+Q 2906 2416 2648 2759
+Q 2391 3103 1925 3103
+Q 1463 3103 1205 2759
+Q 947 2416 947 1791
+Q 947 1169 1205 825
+Q 1463 481 1925 481
+Q 2391 481 2648 825
+Q 2906 1169 2906 1791
+z
+M 3481 434
+Q 3481 -459 3084 -895
+Q 2688 -1331 1869 -1331
+Q 1566 -1331 1297 -1286
+Q 1028 -1241 775 -1147
+L 775 -588
+Q 1028 -725 1275 -790
+Q 1522 -856 1778 -856
+Q 2344 -856 2625 -561
+Q 2906 -266 2906 331
+L 2906 616
+Q 2728 306 2450 153
+Q 2172 0 1784 0
+Q 1141 0 747 490
+Q 353 981 353 1791
+Q 353 2603 747 3093
+Q 1141 3584 1784 3584
+Q 2172 3584 2450 3431
+Q 2728 3278 2906 2969
+L 2906 3500
+L 3481 3500
+L 3481 434
+z
+" id="gradacc-DejaVuSans-67" transform="scale(0.015625)"></path>
+<path d="M 2631 2963
+Q 2534 3019 2420 3045
+Q 2306 3072 2169 3072
+Q 1681 3072 1420 2755
+Q 1159 2438 1159 1844
+L 1159 0
+L 581 0
+L 581 3500
+L 1159 3500
+L 1159 2956
+Q 1341 3275 1631 3429
+Q 1922 3584 2338 3584
+Q 2397 3584 2469 3576
+Q 2541 3569 2628 3553
+L 2631 2963
+z
+" id="gradacc-DejaVuSans-72" transform="scale(0.015625)"></path>
+<path d="M 2906 2969
+L 2906 4863
+L 3481 4863
+L 3481 0
+L 2906 0
+L 2906 525
+Q 2725 213 2448 61
+Q 2172 -91 1784 -91
+Q 1150 -91 751 415
+Q 353 922 353 1747
+Q 353 2572 751 3078
+Q 1150 3584 1784 3584
+Q 2172 3584 2448 3432
+Q 2725 3281 2906 2969
+z
+M 947 1747
+Q 947 1113 1208 752
+Q 1469 391 1925 391
+Q 2381 391 2643 752
+Q 2906 1113 2906 1747
+Q 2906 2381 2643 2742
+Q 2381 3103 1925 3103
+Q 1469 3103 1208 2742
+Q 947 2381 947 1747
+z
+" id="gradacc-DejaVuSans-64" transform="scale(0.015625)"></path>
+<path d="M 3597 1894
+L 3597 1613
+L 953 1613
+Q 991 1019 1311 708
+Q 1631 397 2203 397
+Q 2534 397 2845 478
+Q 3156 559 3463 722
+L 3463 178
+Q 3153 47 2828 -22
+Q 2503 -91 2169 -91
+Q 1331 -91 842 396
+Q 353 884 353 1716
+Q 353 2575 817 3079
+Q 1281 3584 2069 3584
+Q 2775 3584 3186 3129
+Q 3597 2675 3597 1894
+z
+M 3022 2063
+Q 3016 2534 2758 2815
+Q 2500 3097 2075 3097
+Q 1594 3097 1305 2825
+Q 1016 2553 972 2059
+L 3022 2063
+z
+" id="gradacc-DejaVuSans-65" transform="scale(0.015625)"></path>
+<path d="M 628 4666
+L 1259 4666
+L 1259 531
+L 3531 531
+L 3531 0
+L 628 0
+L 628 4666
+z
+" id="gradacc-DejaVuSans-4c" transform="scale(0.015625)"></path>
+<path d="M 1625 4666
+L 2156 4666
+L 531 -594
+L 0 -594
+L 1625 4666
+z
+" id="gradacc-DejaVuSans-2f" transform="scale(0.015625)"></path>
+<path d="M 3513 2113
+L 3513 0
+L 2938 0
+L 2938 2094
+Q 2938 2591 2744 2837
+Q 2550 3084 2163 3084
+Q 1697 3084 1428 2787
+Q 1159 2491 1159 1978
+L 1159 0
+L 581 0
+L 581 4863
+L 1159 4863
+L 1159 2956
+Q 1366 3272 1645 3428
+Q 1925 3584 2291 3584
+Q 2894 3584 3203 3211
+Q 3513 2838 3513 2113
+z
+" id="gradacc-DejaVuSans-68" transform="scale(0.015625)"></path>
+<path d="M 678 2906
+L 4684 2906
+L 4684 2381
+L 678 2381
+L 678 2906
+z
+M 678 1631
+L 4684 1631
+L 4684 1100
+L 678 1100
+L 678 1631
+z
+" id="gradacc-DejaVuSans-3d" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#gradacc-DejaVuSans-41"></use>
+<use x="68.408203" xlink:href="#gradacc-DejaVuSans-6e"></use>
+<use x="131.787109" xlink:href="#gradacc-DejaVuSans-61"></use>
+<use x="193.066406" xlink:href="#gradacc-DejaVuSans-6c"></use>
+<use x="220.849609" xlink:href="#gradacc-DejaVuSans-79"></use>
+<use x="280.029297" xlink:href="#gradacc-DejaVuSans-74"></use>
+<use x="319.238281" xlink:href="#gradacc-DejaVuSans-69"></use>
+<use x="347.021484" xlink:href="#gradacc-DejaVuSans-63"></use>
+<use x="402.001953" xlink:href="#gradacc-DejaVuSans-20"></use>
+<use x="433.789062" xlink:href="#gradacc-DejaVuSans-67"></use>
+<use x="497.265625" xlink:href="#gradacc-DejaVuSans-72"></use>
+<use x="538.378906" xlink:href="#gradacc-DejaVuSans-61"></use>
+<use x="599.658203" xlink:href="#gradacc-DejaVuSans-64"></use>
+<use x="663.134766" xlink:href="#gradacc-DejaVuSans-69"></use>
+<use x="690.917969" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="752.441406" xlink:href="#gradacc-DejaVuSans-6e"></use>
+<use x="815.820312" xlink:href="#gradacc-DejaVuSans-74"></use>
+<use x="855.029297" xlink:href="#gradacc-DejaVuSans-20"></use>
+<use x="886.816406" xlink:href="#gradacc-DejaVuSans-64"></use>
+<use x="950.292969" xlink:href="#gradacc-DejaVuSans-4c"></use>
+<use x="1006.005859" xlink:href="#gradacc-DejaVuSans-2f"></use>
+<use x="1039.697266" xlink:href="#gradacc-DejaVuSans-64"></use>
+<use x="1103.173828" xlink:href="#gradacc-DejaVuSans-74"></use>
+<use x="1142.382812" xlink:href="#gradacc-DejaVuSans-68"></use>
+<use x="1205.761719" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="1267.285156" xlink:href="#gradacc-DejaVuSans-74"></use>
+<use x="1306.494141" xlink:href="#gradacc-DejaVuSans-61"></use>
+<use x="1367.773438" xlink:href="#gradacc-DejaVuSans-20"></use>
+<use x="1399.560547" xlink:href="#gradacc-DejaVuSans-61"></use>
+<use x="1460.839844" xlink:href="#gradacc-DejaVuSans-74"></use>
+<use x="1500.048828" xlink:href="#gradacc-DejaVuSans-20"></use>
+<use x="1531.835938" xlink:href="#gradacc-DejaVuSans-74"></use>
+<use x="1571.044922" xlink:href="#gradacc-DejaVuSans-68"></use>
+<use x="1634.423828" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="1695.947266" xlink:href="#gradacc-DejaVuSans-74"></use>
+<use x="1735.15625" xlink:href="#gradacc-DejaVuSans-61"></use>
+<use x="1796.435547" xlink:href="#gradacc-DejaVuSans-3d"></use>
+<use x="1880.224609" xlink:href="#gradacc-DejaVuSans-30"></use>
+</g>
+</g>
+</g>
+<g id="gradacc-matplotlib.axis_2">
+<g id="gradacc-ytick_1">
+<g id="gradacc-line2d_6">
+<defs>
+<path d="M 0 0
+L -3.5 0
+" id="gradacc-m02e965f98c" style="stroke: #000000; stroke-width: 0.8"></path>
+</defs>
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="128.23" xlink:href="#gradacc-m02e965f98c" y="209.559844"></use>
+</g>
+</g>
+<g id="gradacc-text_7">
+<!-- Global effective mean -->
+<g transform="translate(10.99875 213.359063) scale(0.1 -0.1)">
+<defs>
+<path d="M 3809 666
+L 3809 1919
+L 2778 1919
+L 2778 2438
+L 4434 2438
+L 4434 434
+Q 4069 175 3628 42
+Q 3188 -91 2688 -91
+Q 1594 -91 976 548
+Q 359 1188 359 2328
+Q 359 3472 976 4111
+Q 1594 4750 2688 4750
+Q 3144 4750 3555 4637
+Q 3966 4525 4313 4306
+L 4313 3634
+Q 3963 3931 3569 4081
+Q 3175 4231 2741 4231
+Q 1884 4231 1454 3753
+Q 1025 3275 1025 2328
+Q 1025 1384 1454 906
+Q 1884 428 2741 428
+Q 3075 428 3337 486
+Q 3600 544 3809 666
+z
+" id="gradacc-DejaVuSans-47" transform="scale(0.015625)"></path>
+<path d="M 1959 3097
+Q 1497 3097 1228 2736
+Q 959 2375 959 1747
+Q 959 1119 1226 758
+Q 1494 397 1959 397
+Q 2419 397 2687 759
+Q 2956 1122 2956 1747
+Q 2956 2369 2687 2733
+Q 2419 3097 1959 3097
+z
+M 1959 3584
+Q 2709 3584 3137 3096
+Q 3566 2609 3566 1747
+Q 3566 888 3137 398
+Q 2709 -91 1959 -91
+Q 1206 -91 779 398
+Q 353 888 353 1747
+Q 353 2609 779 3096
+Q 1206 3584 1959 3584
+z
+" id="gradacc-DejaVuSans-6f" transform="scale(0.015625)"></path>
+<path d="M 3116 1747
+Q 3116 2381 2855 2742
+Q 2594 3103 2138 3103
+Q 1681 3103 1420 2742
+Q 1159 2381 1159 1747
+Q 1159 1113 1420 752
+Q 1681 391 2138 391
+Q 2594 391 2855 752
+Q 3116 1113 3116 1747
+z
+M 1159 2969
+Q 1341 3281 1617 3432
+Q 1894 3584 2278 3584
+Q 2916 3584 3314 3078
+Q 3713 2572 3713 1747
+Q 3713 922 3314 415
+Q 2916 -91 2278 -91
+Q 1894 -91 1617 61
+Q 1341 213 1159 525
+L 1159 0
+L 581 0
+L 581 4863
+L 1159 4863
+L 1159 2969
+z
+" id="gradacc-DejaVuSans-62" transform="scale(0.015625)"></path>
+<path d="M 2375 4863
+L 2375 4384
+L 1825 4384
+Q 1516 4384 1395 4259
+Q 1275 4134 1275 3809
+L 1275 3500
+L 2222 3500
+L 2222 3053
+L 1275 3053
+L 1275 0
+L 697 0
+L 697 3053
+L 147 3053
+L 147 3500
+L 697 3500
+L 697 3744
+Q 697 4328 969 4595
+Q 1241 4863 1831 4863
+L 2375 4863
+z
+" id="gradacc-DejaVuSans-66" transform="scale(0.015625)"></path>
+<path d="M 191 3500
+L 800 3500
+L 1894 563
+L 2988 3500
+L 3597 3500
+L 2284 0
+L 1503 0
+L 191 3500
+z
+" id="gradacc-DejaVuSans-76" transform="scale(0.015625)"></path>
+<path d="M 3328 2828
+Q 3544 3216 3844 3400
+Q 4144 3584 4550 3584
+Q 5097 3584 5394 3201
+Q 5691 2819 5691 2113
+L 5691 0
+L 5113 0
+L 5113 2094
+Q 5113 2597 4934 2840
+Q 4756 3084 4391 3084
+Q 3944 3084 3684 2787
+Q 3425 2491 3425 1978
+L 3425 0
+L 2847 0
+L 2847 2094
+Q 2847 2600 2669 2842
+Q 2491 3084 2119 3084
+Q 1678 3084 1418 2786
+Q 1159 2488 1159 1978
+L 1159 0
+L 581 0
+L 581 3500
+L 1159 3500
+L 1159 2956
+Q 1356 3278 1631 3431
+Q 1906 3584 2284 3584
+Q 2666 3584 2933 3390
+Q 3200 3197 3328 2828
+z
+" id="gradacc-DejaVuSans-6d" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#gradacc-DejaVuSans-47"></use>
+<use x="77.490234" xlink:href="#gradacc-DejaVuSans-6c"></use>
+<use x="105.273438" xlink:href="#gradacc-DejaVuSans-6f"></use>
+<use x="166.455078" xlink:href="#gradacc-DejaVuSans-62"></use>
+<use x="229.931641" xlink:href="#gradacc-DejaVuSans-61"></use>
+<use x="291.210938" xlink:href="#gradacc-DejaVuSans-6c"></use>
+<use x="318.994141" xlink:href="#gradacc-DejaVuSans-20"></use>
+<use x="350.78125" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="412.304688" xlink:href="#gradacc-DejaVuSans-66"></use>
+<use x="447.509766" xlink:href="#gradacc-DejaVuSans-66"></use>
+<use x="482.714844" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="544.238281" xlink:href="#gradacc-DejaVuSans-63"></use>
+<use x="599.21875" xlink:href="#gradacc-DejaVuSans-74"></use>
+<use x="638.427734" xlink:href="#gradacc-DejaVuSans-69"></use>
+<use x="666.210938" xlink:href="#gradacc-DejaVuSans-76"></use>
+<use x="725.390625" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="786.914062" xlink:href="#gradacc-DejaVuSans-20"></use>
+<use x="818.701172" xlink:href="#gradacc-DejaVuSans-6d"></use>
+<use x="916.113281" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="977.636719" xlink:href="#gradacc-DejaVuSans-61"></use>
+<use x="1038.916016" xlink:href="#gradacc-DejaVuSans-6e"></use>
+</g>
+</g>
+</g>
+<g id="gradacc-ytick_2">
+<g id="gradacc-line2d_7">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="128.23" xlink:href="#gradacc-m02e965f98c" y="142.004"></use>
+</g>
+</g>
+<g id="gradacc-text_8">
+<!-- Mean of micro means -->
+<g transform="translate(13.219062 145.803219) scale(0.1 -0.1)">
+<defs>
+<path d="M 628 4666
+L 1569 4666
+L 2759 1491
+L 3956 4666
+L 4897 4666
+L 4897 0
+L 4281 0
+L 4281 4097
+L 3078 897
+L 2444 897
+L 1241 4097
+L 1241 0
+L 628 0
+L 628 4666
+z
+" id="gradacc-DejaVuSans-4d" transform="scale(0.015625)"></path>
+<path d="M 2834 3397
+L 2834 2853
+Q 2591 2978 2328 3040
+Q 2066 3103 1784 3103
+Q 1356 3103 1142 2972
+Q 928 2841 928 2578
+Q 928 2378 1081 2264
+Q 1234 2150 1697 2047
+L 1894 2003
+Q 2506 1872 2764 1633
+Q 3022 1394 3022 966
+Q 3022 478 2636 193
+Q 2250 -91 1575 -91
+Q 1294 -91 989 -36
+Q 684 19 347 128
+L 347 722
+Q 666 556 975 473
+Q 1284 391 1588 391
+Q 1994 391 2212 530
+Q 2431 669 2431 922
+Q 2431 1156 2273 1281
+Q 2116 1406 1581 1522
+L 1381 1569
+Q 847 1681 609 1914
+Q 372 2147 372 2553
+Q 372 3047 722 3315
+Q 1072 3584 1716 3584
+Q 2034 3584 2315 3537
+Q 2597 3491 2834 3397
+z
+" id="gradacc-DejaVuSans-73" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#gradacc-DejaVuSans-4d"></use>
+<use x="86.279297" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="147.802734" xlink:href="#gradacc-DejaVuSans-61"></use>
+<use x="209.082031" xlink:href="#gradacc-DejaVuSans-6e"></use>
+<use x="272.460938" xlink:href="#gradacc-DejaVuSans-20"></use>
+<use x="304.248047" xlink:href="#gradacc-DejaVuSans-6f"></use>
+<use x="365.429688" xlink:href="#gradacc-DejaVuSans-66"></use>
+<use x="400.634766" xlink:href="#gradacc-DejaVuSans-20"></use>
+<use x="432.421875" xlink:href="#gradacc-DejaVuSans-6d"></use>
+<use x="529.833984" xlink:href="#gradacc-DejaVuSans-69"></use>
+<use x="557.617188" xlink:href="#gradacc-DejaVuSans-63"></use>
+<use x="612.597656" xlink:href="#gradacc-DejaVuSans-72"></use>
+<use x="651.460938" xlink:href="#gradacc-DejaVuSans-6f"></use>
+<use x="712.642578" xlink:href="#gradacc-DejaVuSans-20"></use>
+<use x="744.429688" xlink:href="#gradacc-DejaVuSans-6d"></use>
+<use x="841.841797" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="903.365234" xlink:href="#gradacc-DejaVuSans-61"></use>
+<use x="964.644531" xlink:href="#gradacc-DejaVuSans-6e"></use>
+<use x="1028.023438" xlink:href="#gradacc-DejaVuSans-73"></use>
+</g>
+</g>
+</g>
+<g id="gradacc-ytick_3">
+<g id="gradacc-line2d_8">
+<g>
+<use style="stroke: #000000; stroke-width: 0.8" x="128.23" xlink:href="#gradacc-m02e965f98c" y="74.448156"></use>
+</g>
+</g>
+<g id="gradacc-text_9">
+<!-- After repartition -->
+<g transform="translate(41.564375 78.247375) scale(0.1 -0.1)">
+<defs>
+<path d="M 1159 525
+L 1159 -1331
+L 581 -1331
+L 581 3500
+L 1159 3500
+L 1159 2969
+Q 1341 3281 1617 3432
+Q 1894 3584 2278 3584
+Q 2916 3584 3314 3078
+Q 3713 2572 3713 1747
+Q 3713 922 3314 415
+Q 2916 -91 2278 -91
+Q 1894 -91 1617 61
+Q 1341 213 1159 525
+z
+M 3116 1747
+Q 3116 2381 2855 2742
+Q 2594 3103 2138 3103
+Q 1681 3103 1420 2742
+Q 1159 2381 1159 1747
+Q 1159 1113 1420 752
+Q 1681 391 2138 391
+Q 2594 391 2855 752
+Q 3116 1113 3116 1747
+z
+" id="gradacc-DejaVuSans-70" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#gradacc-DejaVuSans-41"></use>
+<use x="64.783203" xlink:href="#gradacc-DejaVuSans-66"></use>
+<use x="98.238281" xlink:href="#gradacc-DejaVuSans-74"></use>
+<use x="137.447266" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="198.970703" xlink:href="#gradacc-DejaVuSans-72"></use>
+<use x="240.083984" xlink:href="#gradacc-DejaVuSans-20"></use>
+<use x="271.871094" xlink:href="#gradacc-DejaVuSans-72"></use>
+<use x="310.734375" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="372.257812" xlink:href="#gradacc-DejaVuSans-70"></use>
+<use x="435.734375" xlink:href="#gradacc-DejaVuSans-61"></use>
+<use x="497.013672" xlink:href="#gradacc-DejaVuSans-72"></use>
+<use x="538.126953" xlink:href="#gradacc-DejaVuSans-74"></use>
+<use x="577.335938" xlink:href="#gradacc-DejaVuSans-69"></use>
+<use x="605.119141" xlink:href="#gradacc-DejaVuSans-74"></use>
+<use x="644.328125" xlink:href="#gradacc-DejaVuSans-69"></use>
+<use x="672.111328" xlink:href="#gradacc-DejaVuSans-6f"></use>
+<use x="733.292969" xlink:href="#gradacc-DejaVuSans-6e"></use>
+</g>
+</g>
+</g>
+</g>
+<g id="gradacc-line2d_9">
+<path clip-path="url(#gradacc-pcf27622557)" d="M 277.464783 246.04
+L 277.464783 37.968
+" style="fill: none; stroke: #333333; stroke-linecap: square"></path>
+</g>
+<g id="gradacc-patch_6">
+<path d="M 128.23 246.04
+L 128.23 37.968
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="gradacc-patch_7">
+<path d="M 557.28 246.04
+L 557.28 37.968
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="gradacc-patch_8">
+<path d="M 128.23 246.04
+L 557.28 246.04
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="gradacc-patch_9">
+<path d="M 128.23 37.968
+L 557.28 37.968
+" style="fill: none; stroke: #000000; stroke-width: 0.8; stroke-linejoin: miter; stroke-linecap: square"></path>
+</g>
+<g id="gradacc-text_10">
+<!-- +0.7500 -->
+<g transform="translate(422.035978 212.319219) scale(0.1 -0.1)">
+<defs>
+<path d="M 2944 4013
+L 2944 2272
+L 4684 2272
+L 4684 1741
+L 2944 1741
+L 2944 0
+L 2419 0
+L 2419 1741
+L 678 1741
+L 678 2272
+L 2419 2272
+L 2419 4013
+L 2944 4013
+z
+" id="gradacc-DejaVuSans-2b" transform="scale(0.015625)"></path>
+<path d="M 525 4666
+L 3525 4666
+L 3525 4397
+L 1831 0
+L 1172 0
+L 2766 4134
+L 525 4134
+L 525 4666
+z
+" id="gradacc-DejaVuSans-37" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#gradacc-DejaVuSans-2b"></use>
+<use x="83.789062" xlink:href="#gradacc-DejaVuSans-30"></use>
+<use x="147.412109" xlink:href="#gradacc-DejaVuSans-2e"></use>
+<use x="179.199219" xlink:href="#gradacc-DejaVuSans-37"></use>
+<use x="242.822266" xlink:href="#gradacc-DejaVuSans-35"></use>
+<use x="306.445312" xlink:href="#gradacc-DejaVuSans-30"></use>
+<use x="370.068359" xlink:href="#gradacc-DejaVuSans-30"></use>
+</g>
+</g>
+<g id="gradacc-text_11">
+<!-- -0.5000 -->
+<g transform="translate(140.931019 144.763375) scale(0.1 -0.1)">
+<defs>
+<path d="M 313 2009
+L 1997 2009
+L 1997 1497
+L 313 1497
+L 313 2009
+z
+" id="gradacc-DejaVuSans-2d" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#gradacc-DejaVuSans-2d"></use>
+<use x="36.083984" xlink:href="#gradacc-DejaVuSans-30"></use>
+<use x="99.707031" xlink:href="#gradacc-DejaVuSans-2e"></use>
+<use x="131.494141" xlink:href="#gradacc-DejaVuSans-35"></use>
+<use x="195.117188" xlink:href="#gradacc-DejaVuSans-30"></use>
+<use x="258.740234" xlink:href="#gradacc-DejaVuSans-30"></use>
+<use x="322.363281" xlink:href="#gradacc-DejaVuSans-30"></use>
+</g>
+</g>
+<g id="gradacc-text_12">
+<!-- +1.1667 -->
+<g transform="translate(499.762428 77.207531) scale(0.1 -0.1)">
+<defs>
+<path d="M 2113 2584
+Q 1688 2584 1439 2293
+Q 1191 2003 1191 1497
+Q 1191 994 1439 701
+Q 1688 409 2113 409
+Q 2538 409 2786 701
+Q 3034 994 3034 1497
+Q 3034 2003 2786 2293
+Q 2538 2584 2113 2584
+z
+M 3366 4563
+L 3366 3988
+Q 3128 4100 2886 4159
+Q 2644 4219 2406 4219
+Q 1781 4219 1451 3797
+Q 1122 3375 1075 2522
+Q 1259 2794 1537 2939
+Q 1816 3084 2150 3084
+Q 2853 3084 3261 2657
+Q 3669 2231 3669 1497
+Q 3669 778 3244 343
+Q 2819 -91 2113 -91
+Q 1303 -91 875 529
+Q 447 1150 447 2328
+Q 447 3434 972 4092
+Q 1497 4750 2381 4750
+Q 2619 4750 2861 4703
+Q 3103 4656 3366 4563
+z
+" id="gradacc-DejaVuSans-36" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#gradacc-DejaVuSans-2b"></use>
+<use x="83.789062" xlink:href="#gradacc-DejaVuSans-31"></use>
+<use x="147.412109" xlink:href="#gradacc-DejaVuSans-2e"></use>
+<use x="179.199219" xlink:href="#gradacc-DejaVuSans-31"></use>
+<use x="242.822266" xlink:href="#gradacc-DejaVuSans-36"></use>
+<use x="306.445312" xlink:href="#gradacc-DejaVuSans-36"></use>
+<use x="370.068359" xlink:href="#gradacc-DejaVuSans-37"></use>
+</g>
+</g>
+<g id="gradacc-text_13">
+<!-- Same weighted targets, different reduction -->
+<g transform="translate(223.906016 19.650406) scale(0.11 -0.11)">
+<defs>
+<path d="M 3425 4513
+L 3425 3897
+Q 3066 4069 2747 4153
+Q 2428 4238 2131 4238
+Q 1616 4238 1336 4038
+Q 1056 3838 1056 3469
+Q 1056 3159 1242 3001
+Q 1428 2844 1947 2747
+L 2328 2669
+Q 3034 2534 3370 2195
+Q 3706 1856 3706 1288
+Q 3706 609 3251 259
+Q 2797 -91 1919 -91
+Q 1588 -91 1214 -16
+Q 841 59 441 206
+L 441 856
+Q 825 641 1194 531
+Q 1563 422 1919 422
+Q 2459 422 2753 634
+Q 3047 847 3047 1241
+Q 3047 1584 2836 1778
+Q 2625 1972 2144 2069
+L 1759 2144
+Q 1053 2284 737 2584
+Q 422 2884 422 3419
+Q 422 4038 858 4394
+Q 1294 4750 2059 4750
+Q 2388 4750 2728 4690
+Q 3069 4631 3425 4513
+z
+" id="gradacc-DejaVuSans-53" transform="scale(0.015625)"></path>
+<path d="M 269 3500
+L 844 3500
+L 1563 769
+L 2278 3500
+L 2956 3500
+L 3675 769
+L 4391 3500
+L 4966 3500
+L 4050 0
+L 3372 0
+L 2619 2869
+L 1863 0
+L 1184 0
+L 269 3500
+z
+" id="gradacc-DejaVuSans-77" transform="scale(0.015625)"></path>
+<path d="M 750 794
+L 1409 794
+L 1409 256
+L 897 -744
+L 494 -744
+L 750 256
+L 750 794
+z
+" id="gradacc-DejaVuSans-2c" transform="scale(0.015625)"></path>
+<path d="M 544 1381
+L 544 3500
+L 1119 3500
+L 1119 1403
+Q 1119 906 1312 657
+Q 1506 409 1894 409
+Q 2359 409 2629 706
+Q 2900 1003 2900 1516
+L 2900 3500
+L 3475 3500
+L 3475 0
+L 2900 0
+L 2900 538
+Q 2691 219 2414 64
+Q 2138 -91 1772 -91
+Q 1169 -91 856 284
+Q 544 659 544 1381
+z
+M 1991 3584
+L 1991 3584
+z
+" id="gradacc-DejaVuSans-75" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#gradacc-DejaVuSans-53"></use>
+<use x="63.476562" xlink:href="#gradacc-DejaVuSans-61"></use>
+<use x="124.755859" xlink:href="#gradacc-DejaVuSans-6d"></use>
+<use x="222.167969" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="283.691406" xlink:href="#gradacc-DejaVuSans-20"></use>
+<use x="315.478516" xlink:href="#gradacc-DejaVuSans-77"></use>
+<use x="397.265625" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="458.789062" xlink:href="#gradacc-DejaVuSans-69"></use>
+<use x="486.572266" xlink:href="#gradacc-DejaVuSans-67"></use>
+<use x="550.048828" xlink:href="#gradacc-DejaVuSans-68"></use>
+<use x="613.427734" xlink:href="#gradacc-DejaVuSans-74"></use>
+<use x="652.636719" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="714.160156" xlink:href="#gradacc-DejaVuSans-64"></use>
+<use x="777.636719" xlink:href="#gradacc-DejaVuSans-20"></use>
+<use x="809.423828" xlink:href="#gradacc-DejaVuSans-74"></use>
+<use x="848.632812" xlink:href="#gradacc-DejaVuSans-61"></use>
+<use x="909.912109" xlink:href="#gradacc-DejaVuSans-72"></use>
+<use x="949.275391" xlink:href="#gradacc-DejaVuSans-67"></use>
+<use x="1012.751953" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="1074.275391" xlink:href="#gradacc-DejaVuSans-74"></use>
+<use x="1113.484375" xlink:href="#gradacc-DejaVuSans-73"></use>
+<use x="1165.583984" xlink:href="#gradacc-DejaVuSans-2c"></use>
+<use x="1197.371094" xlink:href="#gradacc-DejaVuSans-20"></use>
+<use x="1229.158203" xlink:href="#gradacc-DejaVuSans-64"></use>
+<use x="1292.634766" xlink:href="#gradacc-DejaVuSans-69"></use>
+<use x="1320.417969" xlink:href="#gradacc-DejaVuSans-66"></use>
+<use x="1355.623047" xlink:href="#gradacc-DejaVuSans-66"></use>
+<use x="1390.828125" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="1452.351562" xlink:href="#gradacc-DejaVuSans-72"></use>
+<use x="1491.214844" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="1552.738281" xlink:href="#gradacc-DejaVuSans-6e"></use>
+<use x="1616.117188" xlink:href="#gradacc-DejaVuSans-74"></use>
+<use x="1655.326172" xlink:href="#gradacc-DejaVuSans-20"></use>
+<use x="1687.113281" xlink:href="#gradacc-DejaVuSans-72"></use>
+<use x="1725.976562" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="1787.5" xlink:href="#gradacc-DejaVuSans-64"></use>
+<use x="1850.976562" xlink:href="#gradacc-DejaVuSans-75"></use>
+<use x="1914.355469" xlink:href="#gradacc-DejaVuSans-63"></use>
+<use x="1969.335938" xlink:href="#gradacc-DejaVuSans-74"></use>
+<use x="2008.544922" xlink:href="#gradacc-DejaVuSans-69"></use>
+<use x="2036.328125" xlink:href="#gradacc-DejaVuSans-6f"></use>
+<use x="2097.509766" xlink:href="#gradacc-DejaVuSans-6e"></use>
+</g>
+<!-- Synthetic squared-error objective; no JAX/model/distributed execution -->
+<g transform="translate(150.176797 31.968) scale(0.11 -0.11)">
+<defs>
+<path d="M 947 1747
+Q 947 1113 1208 752
+Q 1469 391 1925 391
+Q 2381 391 2643 752
+Q 2906 1113 2906 1747
+Q 2906 2381 2643 2742
+Q 2381 3103 1925 3103
+Q 1469 3103 1208 2742
+Q 947 2381 947 1747
+z
+M 2906 525
+Q 2725 213 2448 61
+Q 2172 -91 1784 -91
+Q 1150 -91 751 415
+Q 353 922 353 1747
+Q 353 2572 751 3078
+Q 1150 3584 1784 3584
+Q 2172 3584 2448 3432
+Q 2725 3281 2906 2969
+L 2906 3500
+L 3481 3500
+L 3481 -1331
+L 2906 -1331
+L 2906 525
+z
+" id="gradacc-DejaVuSans-71" transform="scale(0.015625)"></path>
+<path d="M 603 3500
+L 1178 3500
+L 1178 -63
+Q 1178 -731 923 -1031
+Q 669 -1331 103 -1331
+L -116 -1331
+L -116 -844
+L 38 -844
+Q 366 -844 484 -692
+Q 603 -541 603 -63
+L 603 3500
+z
+M 603 4863
+L 1178 4863
+L 1178 4134
+L 603 4134
+L 603 4863
+z
+" id="gradacc-DejaVuSans-6a" transform="scale(0.015625)"></path>
+<path d="M 750 3309
+L 1409 3309
+L 1409 2516
+L 750 2516
+L 750 3309
+z
+M 750 794
+L 1409 794
+L 1409 256
+L 897 -744
+L 494 -744
+L 750 256
+L 750 794
+z
+" id="gradacc-DejaVuSans-3b" transform="scale(0.015625)"></path>
+<path d="M 628 4666
+L 1259 4666
+L 1259 325
+Q 1259 -519 939 -900
+Q 619 -1281 -91 -1281
+L -331 -1281
+L -331 -750
+L -134 -750
+Q 284 -750 456 -515
+Q 628 -281 628 325
+L 628 4666
+z
+" id="gradacc-DejaVuSans-4a" transform="scale(0.015625)"></path>
+<path d="M 403 4666
+L 1081 4666
+L 2241 2931
+L 3406 4666
+L 4084 4666
+L 2584 2425
+L 4184 0
+L 3506 0
+L 2194 1984
+L 872 0
+L 191 0
+L 1856 2491
+L 403 4666
+z
+" id="gradacc-DejaVuSans-58" transform="scale(0.015625)"></path>
+<path d="M 3513 3500
+L 2247 1797
+L 3578 0
+L 2900 0
+L 1881 1375
+L 863 0
+L 184 0
+L 1544 1831
+L 300 3500
+L 978 3500
+L 1906 2253
+L 2834 3500
+L 3513 3500
+z
+" id="gradacc-DejaVuSans-78" transform="scale(0.015625)"></path>
+</defs>
+<use xlink:href="#gradacc-DejaVuSans-53"></use>
+<use x="63.476562" xlink:href="#gradacc-DejaVuSans-79"></use>
+<use x="122.65625" xlink:href="#gradacc-DejaVuSans-6e"></use>
+<use x="186.035156" xlink:href="#gradacc-DejaVuSans-74"></use>
+<use x="225.244141" xlink:href="#gradacc-DejaVuSans-68"></use>
+<use x="288.623047" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="350.146484" xlink:href="#gradacc-DejaVuSans-74"></use>
+<use x="389.355469" xlink:href="#gradacc-DejaVuSans-69"></use>
+<use x="417.138672" xlink:href="#gradacc-DejaVuSans-63"></use>
+<use x="472.119141" xlink:href="#gradacc-DejaVuSans-20"></use>
+<use x="503.90625" xlink:href="#gradacc-DejaVuSans-73"></use>
+<use x="556.005859" xlink:href="#gradacc-DejaVuSans-71"></use>
+<use x="619.482422" xlink:href="#gradacc-DejaVuSans-75"></use>
+<use x="682.861328" xlink:href="#gradacc-DejaVuSans-61"></use>
+<use x="744.140625" xlink:href="#gradacc-DejaVuSans-72"></use>
+<use x="783.003906" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="844.527344" xlink:href="#gradacc-DejaVuSans-64"></use>
+<use x="908.003906" xlink:href="#gradacc-DejaVuSans-2d"></use>
+<use x="944.087891" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="1005.611328" xlink:href="#gradacc-DejaVuSans-72"></use>
+<use x="1044.974609" xlink:href="#gradacc-DejaVuSans-72"></use>
+<use x="1083.837891" xlink:href="#gradacc-DejaVuSans-6f"></use>
+<use x="1145.019531" xlink:href="#gradacc-DejaVuSans-72"></use>
+<use x="1186.132812" xlink:href="#gradacc-DejaVuSans-20"></use>
+<use x="1217.919922" xlink:href="#gradacc-DejaVuSans-6f"></use>
+<use x="1279.101562" xlink:href="#gradacc-DejaVuSans-62"></use>
+<use x="1342.578125" xlink:href="#gradacc-DejaVuSans-6a"></use>
+<use x="1370.361328" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="1431.884766" xlink:href="#gradacc-DejaVuSans-63"></use>
+<use x="1486.865234" xlink:href="#gradacc-DejaVuSans-74"></use>
+<use x="1526.074219" xlink:href="#gradacc-DejaVuSans-69"></use>
+<use x="1553.857422" xlink:href="#gradacc-DejaVuSans-76"></use>
+<use x="1613.037109" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="1674.560547" xlink:href="#gradacc-DejaVuSans-3b"></use>
+<use x="1708.251953" xlink:href="#gradacc-DejaVuSans-20"></use>
+<use x="1740.039062" xlink:href="#gradacc-DejaVuSans-6e"></use>
+<use x="1803.417969" xlink:href="#gradacc-DejaVuSans-6f"></use>
+<use x="1864.599609" xlink:href="#gradacc-DejaVuSans-20"></use>
+<use x="1896.386719" xlink:href="#gradacc-DejaVuSans-4a"></use>
+<use x="1924.128906" xlink:href="#gradacc-DejaVuSans-41"></use>
+<use x="1992.537109" xlink:href="#gradacc-DejaVuSans-58"></use>
+<use x="2061.042969" xlink:href="#gradacc-DejaVuSans-2f"></use>
+<use x="2094.734375" xlink:href="#gradacc-DejaVuSans-6d"></use>
+<use x="2192.146484" xlink:href="#gradacc-DejaVuSans-6f"></use>
+<use x="2253.328125" xlink:href="#gradacc-DejaVuSans-64"></use>
+<use x="2316.804688" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="2378.328125" xlink:href="#gradacc-DejaVuSans-6c"></use>
+<use x="2406.111328" xlink:href="#gradacc-DejaVuSans-2f"></use>
+<use x="2439.802734" xlink:href="#gradacc-DejaVuSans-64"></use>
+<use x="2503.279297" xlink:href="#gradacc-DejaVuSans-69"></use>
+<use x="2531.0625" xlink:href="#gradacc-DejaVuSans-73"></use>
+<use x="2583.162109" xlink:href="#gradacc-DejaVuSans-74"></use>
+<use x="2622.371094" xlink:href="#gradacc-DejaVuSans-72"></use>
+<use x="2663.484375" xlink:href="#gradacc-DejaVuSans-69"></use>
+<use x="2691.267578" xlink:href="#gradacc-DejaVuSans-62"></use>
+<use x="2754.744141" xlink:href="#gradacc-DejaVuSans-75"></use>
+<use x="2818.123047" xlink:href="#gradacc-DejaVuSans-74"></use>
+<use x="2857.332031" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="2918.855469" xlink:href="#gradacc-DejaVuSans-64"></use>
+<use x="2982.332031" xlink:href="#gradacc-DejaVuSans-20"></use>
+<use x="3014.119141" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="3073.892578" xlink:href="#gradacc-DejaVuSans-78"></use>
+<use x="3129.947266" xlink:href="#gradacc-DejaVuSans-65"></use>
+<use x="3191.470703" xlink:href="#gradacc-DejaVuSans-63"></use>
+<use x="3246.451172" xlink:href="#gradacc-DejaVuSans-75"></use>
+<use x="3309.830078" xlink:href="#gradacc-DejaVuSans-74"></use>
+<use x="3349.039062" xlink:href="#gradacc-DejaVuSans-69"></use>
+<use x="3376.822266" xlink:href="#gradacc-DejaVuSans-6f"></use>
+<use x="3438.003906" xlink:href="#gradacc-DejaVuSans-6e"></use>
+</g>
+</g>
+</g>
+</g>
+<defs>
+<clippath id="gradacc-pcf27622557">
+<rect height="208.072" width="429.05" x="128.23" y="37.968"></rect>
+</clippath>
+</defs>
+</svg><figcaption>同一组加权目标的解析标量梯度；不是模型、JAX或多卡实验。</figcaption></figure></section><nav class="pager"><a href="ce-gradient-dtype-guide.html">← 上一篇</a><a href="zero-gradient-state-guide.html">下一篇 →</a></nav></main></body></html>

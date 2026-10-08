@@ -1,0 +1,158 @@
+{
+  "complete_report_sha256": "a2621d1e7401c232144614c009c3deaa94aba8e251ab2b33c6a1b56838867233",
+  "groups": [
+    {
+      "slug": "start",
+      "title": "01 · 全貌与阅读路线",
+      "sections": [
+        "synthesis-guide",
+        "training-decisions-guide",
+        "report",
+        "engineering-map-guide",
+        "translation",
+        "operations",
+        "operational-progress-guide"
+      ]
+    },
+    {
+      "slug": "data",
+      "title": "02 · 数据配比与实验设计",
+      "sections": [
+        "data",
+        "mix-trajectory-guide",
+        "decision-guide",
+        "transfer-guide",
+        "experiment-controls-guide",
+        "confirmation-playbook-guide",
+        "scale-guide",
+        "conclusions",
+        "deep",
+        "practical",
+        "repeat-exposure-guide",
+        "order-guide",
+        "batch-clock-guide"
+      ]
+    },
+    {
+      "slug": "input",
+      "title": "03 · 数据管线与实际曝光",
+      "sections": [
+        "cache-guide",
+        "dedup-guide",
+        "quality-guide",
+        "packing-fields-guide",
+        "boundary-guide",
+        "mixture-identity-guide",
+        "mixture-range-guide",
+        "assertion-contracts-guide",
+        "weight-domain-guide",
+        "run-code-guide"
+      ]
+    },
+    {
+      "slug": "loss",
+      "title": "04 · Loss、梯度与数值精度",
+      "sections": [
+        "loss-triage",
+        "contracts-guide",
+        "masked-numerics-guide",
+        "loss-denominator-guide",
+        "ce-label-bounds-guide",
+        "ce-backward-path-guide",
+        "ce-gradient-dtype-guide",
+        "gradient-accumulation-guide",
+        "zero-gradient-state-guide"
+      ]
+    },
+    {
+      "slug": "moe",
+      "title": "05 · MoE、路由与性能",
+      "sections": [
+        "recent-moe-guide",
+        "routing-guide",
+        "qb-guide",
+        "router-precision-guide",
+        "short-conv-guide"
+      ]
+    },
+    {
+      "slug": "optimizer",
+      "title": "06 · 优化器与学习率",
+      "sections": [
+        "optimizer-guide",
+        "optimizer-schedule-guide",
+        "schedule-config-guide",
+        "muon-geometry-guide",
+        "muon-direction-guide",
+        "adamh-state-guide",
+        "state-guide"
+      ]
+    },
+    {
+      "slug": "eval",
+      "title": "07 · 评估与曲线解释",
+      "sections": [
+        "eval-metrics-guide",
+        "eval-format-guide",
+        "eval-target-alignment-guide",
+        "eval-identity-guide",
+        "eval-replay-guide",
+        "eval-array-export-guide",
+        "eval-weight-guide",
+        "live-observation-guide",
+        "live-oct7-guide"
+      ]
+    },
+    {
+      "slug": "recovery",
+      "title": "08 · 故障、保存与恢复",
+      "sections": [
+        "engineering-guide",
+        "change-guide",
+        "failure-boundaries-guide",
+        "exception-provenance-guide",
+        "observability-guide",
+        "pending-resume-guide",
+        "optional-resume-guide",
+        "checkpoint-commit-guide",
+        "checkpoint-memory-guide",
+        "async-manager-guide",
+        "checkpoint-failure-policy-guide",
+        "gang-recovery-guide",
+        "controller-recovery-guide"
+      ]
+    },
+    {
+      "slug": "method",
+      "title": "09 · 规则、学习与证据",
+      "sections": [
+        "learning",
+        "assessment-guide",
+        "rubrics",
+        "pipeline",
+        "provenance",
+        "delivery-audit-guide",
+        "improvement"
+      ]
+    },
+    {
+      "slug": "tools",
+      "title": "10 · 交互工具",
+      "sections": [
+        "engineering-lab",
+        "assessment-lab",
+        "workbench",
+        "decision-lab",
+        "transfer-lab",
+        "order-lab",
+        "planner",
+        "explorer",
+        "notes"
+      ]
+    }
+  ],
+  "sections": 89,
+  "code_viewers": 164,
+  "chapter_pages_script_free": true,
+  "interactive_tools_original_logic_with_optional_sidebar_guard": true
+}

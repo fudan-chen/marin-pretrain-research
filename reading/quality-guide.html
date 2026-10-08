@@ -1,0 +1,164 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>质量桶不是数据价值：从评分窗口追到配比决策 · Marin 预训练研究</title><link rel="stylesheet" href="reading.css"></head><body><header><nav><a href="index.html">主题目录</a><a href="../report_standalone.html">完整报告（保留）</a><a href="code.html">源码与候选补丁</a><a href="tools.html">交互工具</a></nav></header><main><p class="muted"><a href="theme-input.html">03 · 数据管线与实际曝光</a> / 本页只含一篇专题</p><details class="chapter-toc"><summary>本篇目录</summary><ol><li><a href="#quality-guide-1-whole-doc">1. “whole-doc”实际是三个字符窗口</a></li><li><a href="#quality-guide-2">2. 文档还会经过截断与紧凑词表</a></li><li><a href="#quality-guide-3">3. 校准改的是尺度与分桶，不会凭空修好排序</a></li><li><a href="#quality-guide-4">4. 标签目标、文档说明与实际部署要分清</a></li><li><a href="#quality-guide-5">5. 模型文件名与路径不是内容证明</a></li><li><a href="#quality-guide-6-q4">6. 怎样据此调整配比，而不是盲目追q4</a></li></ol></details><section class="chapter" id="quality-guide"><h1 id="quality-guide-_1">质量桶不是数据价值：从评分窗口追到配比决策</h1>
+<p>提高q4权重之前，先问四件事：评分器看到了哪里？它保留了哪些token区别？校准只改变阈值，还是改善了判断？这份评分能否代表你的训练目标？本轮沿着<code>score_bme→PooledScorer.score→np.interp→np.digitize→quality_bucket</code>追查归档源码。真实模型权重、calib_bme.json和历史评分产物没有读取，以下不宣称复现了Hero的质量判断。</p>
+<p><a href="../analysis/quality_acquisition.json">来源账本</a>固定了Marin代码版本<code>84869ae8c91ffe64e9f761c5bd714542eb1876e0</code>。模型目录、校准名称与质量桶编号都只是身份线索；只有实际产物摘要和执行记录才能把它们绑定到历史数据。</p>
+<h2 id="quality-guide-1-whole-doc">1. “whole-doc”实际是三个字符窗口</h2>
+<p><a href="code-9ff3f54f62d09c9d.html">scorer.py</a>中的BME：短文档不超过2000字符时打一次分；长文档取开头2000字符、中点前后各1000字符、末尾2000字符，三个窗口的分数等权平均。源码注释把它描述为约512-token窗口，但切片单位是字符，并不是先分词后严格选512 tokens。</p>
+<iframe id="quality-window-frame" loading="lazy" srcdoc="&lt;!doctype html&gt;&lt;html lang=&quot;zh-CN&quot;&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width,initial-scale=1&quot;&gt;&lt;title&gt;BME评分窗口：观察范围&lt;/title&gt;&lt;style&gt;
+body{font:16px/1.65 system-ui,sans-serif;color:#163447;background:#fff;margin:0;padding:18px;box-sizing:border-box}h1{font-size:22px;margin:0 0 8px}p{margin:8px 0}label{display:block;font-weight:600}input{width:min(100%,660px)}select{font-size:16px;padding:6px}.bar{height:26px;position:relative;background:#e8eef2;border-radius:4px;margin:9px 0;overflow:hidden}.segment{position:absolute;top:0;bottom:0;background:#226b95}.mid{background:#b07819}.end{background:#66824e}.caption{font-size:14px;color:#485f70}.note{background:#eef5f8;padding:10px;border-left:3px solid #226b95}output{font-weight:700}button{padding:7px 12px;margin:6px 8px 6px 0;font-size:15px;border:1px solid #abc;background:white;border-radius:4px}button[aria-pressed=true]{background:#deedf5}#stats{font-variant-numeric:tabular-nums}svg{display:block;width:100%;height:auto}pre{white-space:pre-wrap;font-size:13px}
+&lt;/style&gt;&lt;h1&gt;BME评分到底观察了文档的哪些部分？&lt;/h1&gt;&lt;p&gt;按归档源码的&lt;strong&gt;字符切片&lt;/strong&gt;规则绘制。这里不运行分词器或质量模型，字符覆盖率不等于token覆盖率。&lt;/p&gt;
+&lt;label for=&quot;qlength&quot;&gt;文档字符数：&lt;output id=&quot;qlength-value&quot;&gt;10000&lt;/output&gt;&lt;/label&gt;&lt;input id=&quot;qlength&quot; type=&quot;range&quot; min=&quot;1000&quot; max=&quot;40000&quot; step=&quot;1&quot; value=&quot;10000&quot;&gt;
+&lt;div&gt;&lt;button data-length=&quot;2000&quot;&gt;2000：单窗口&lt;/button&gt;&lt;button data-length=&quot;2001&quot;&gt;2001：重复窗口&lt;/button&gt;&lt;button data-length=&quot;3000&quot;&gt;3000：重叠&lt;/button&gt;&lt;button data-length=&quot;10000&quot;&gt;10000：有盲区&lt;/button&gt;&lt;button data-length=&quot;20000&quot;&gt;20000：更长文档&lt;/button&gt;&lt;/div&gt;
+&lt;div class=&quot;caption&quot;&gt;开头窗口&lt;/div&gt;&lt;div class=&quot;bar&quot; id=&quot;qbegin&quot;&gt;&lt;/div&gt;&lt;div class=&quot;caption&quot;&gt;中间窗口&lt;/div&gt;&lt;div class=&quot;bar&quot; id=&quot;qmiddle&quot;&gt;&lt;/div&gt;&lt;div class=&quot;caption&quot;&gt;结尾窗口&lt;/div&gt;&lt;div class=&quot;bar&quot; id=&quot;qend&quot;&gt;&lt;/div&gt;&lt;p id=&quot;stats&quot; aria-live=&quot;polite&quot;&gt;&lt;/p&gt;
+&lt;p class=&quot;caption&quot;&gt;窗口覆盖的字符并集（深色）；浅色部分未进入这些窗口。&lt;/p&gt;&lt;div class=&quot;bar&quot; id=&quot;qunion&quot;&gt;&lt;/div&gt;&lt;p class=&quot;note&quot; id=&quot;qmeaning&quot;&gt;&lt;/p&gt;
+&lt;p&gt;三个窗口等权平均分数；重叠字符会重复进入模型，不能把它理解成全文逐字符等权评分。实际评分还会分词、截断并映射低频token到UNK。&lt;/p&gt;&lt;details&gt;&lt;summary&gt;查看切片与证据边界&lt;/summary&gt;&lt;pre id=&quot;qjson&quot;&gt;&lt;/pre&gt;&lt;p&gt;源码：Marin 84869ae8… / fast_transformer/scorer.py。人工窗口示意，没有真实模型评分、真实缓存或历史执行绑定。&lt;/p&gt;&lt;/details&gt;&lt;script&gt;(function(root){
+  function windowsFor(n){
+    if(!Number.isSafeInteger(n)||n&lt;1)throw new Error('字符数必须是正整数');
+    if(n&lt;=2000)return [[0,n]];
+    const m=Math.floor(n/2);return [[0,2000],[Math.max(0,m-1000),m+1000],[n-2000,n]];
+  }
+  function coverage(n){
+    const spans=windowsFor(n), sorted=spans.slice().sort((a,b)=&gt;a[0]-b[0]);let total=0,last=0;
+    for(const [a,b] of sorted){total+=Math.max(0,b-Math.max(a,last));last=Math.max(last,b);}
+    return {spans,covered:total,fraction:total/n};
+  }
+  const api={windowsFor,coverage};if(typeof module==='object'&amp;&amp;module.exports)module.exports=api;else root.QualityWindows=api;
+})(typeof globalThis!=='undefined'?globalThis:this);
+&lt;/script&gt;&lt;script&gt;
+const slider=document.getElementById('qlength');function render(){const n=Number(slider.value),r=QualityWindows.coverage(n);document.getElementById('qlength-value').value=n;['qbegin','qmiddle','qend'].forEach((id,i)=&gt;{const bar=document.getElementById(id);bar.replaceChildren();if(r.spans[i]){const [a,b]=r.spans[i],s=document.createElement('span');s.className='segment '+['','mid','end'][i];s.style.left=100*a/n+'%';s.style.width=100*(b-a)/n+'%';bar.append(s);bar.setAttribute('aria-label',a+'至'+b+'字符（半开区间）');}else bar.setAttribute('aria-label','该文档只有一个窗口');});const u=document.getElementById('qunion');u.replaceChildren();for(const[a,b]of r.spans){const s=document.createElement('span');s.className='segment';s.style.left=100*a/n+'%';s.style.width=100*(b-a)/n+'%';u.append(s);}document.getElementById('stats').textContent=r.spans.length+'个窗口；唯一覆盖 '+r.covered+' / '+n+' 字符（'+(100*r.fraction).toFixed(2)+'%）；未覆盖 '+(n-r.covered)+' 字符。';document.getElementById('qmeaning').textContent=n&lt;=2000?'短文档只有一个窗口。':n===2001?'开头与中间切片完全相同；同一段文本被打分两次。':r.covered&lt;n?'存在未被窗口观察的区间；那些区间的改变可以不改变送入评分器的文本。':'字符并集覆盖全文，但窗口重叠；窗口均分仍不等于全文均匀评分。';document.getElementById('qjson').textContent=JSON.stringify({characters:n,half_open_spans:r.spans,unique_characters:r.covered,character_coverage:r.fraction,real_model_result:null},null,2);document.querySelectorAll('[data-length]').forEach(b=&gt;b.setAttribute('aria-pressed',String(Number(b.dataset.length)===n)));}slider.addEventListener('input',render);document.querySelectorAll('[data-length]').forEach(b=&gt;b.addEventListener('click',()=&gt;{slider.value=b.dataset.length;render();}));render();
+&lt;/script&gt;&lt;/html&gt;" style="width:100%;height:780px;border:1px solid #cedde6;border-radius:6px;" title="BME字符窗口交互示意"></iframe>
+<p><a href="../QUALITY_WINDOWS.html">独立打开窗口工具</a>。图中只计算字符范围，不运行真实分词器或评分器。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>文档字符数</th>
+<th>原函数产生的切片，半开区间</th>
+<th style="text-align: right;">唯一字符覆盖</th>
+<th>需要注意</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2000</td>
+<td>[0,2000)</td>
+<td style="text-align: right;">100%</td>
+<td>一个窗口</td>
+</tr>
+<tr>
+<td>2001</td>
+<td>[0,2000)、[0,2000)、[1,2001)</td>
+<td style="text-align: right;">100%</td>
+<td>前两个窗口完全重复，开头被评分两次</td>
+</tr>
+<tr>
+<td>3000</td>
+<td>[0,2000)、[500,2500)、[1000,3000)</td>
+<td style="text-align: right;">100%</td>
+<td>重叠区域多次进入模型，并非全文等权</td>
+</tr>
+<tr>
+<td>10000</td>
+<td>[0,2000)、[4000,6000)、[8000,10000)</td>
+<td style="text-align: right;">60%</td>
+<td>4000字符未进入窗口</td>
+</tr>
+<tr>
+<td>20000</td>
+<td>[0,2000)、[9000,11000)、[18000,20000)</td>
+<td style="text-align: right;">30%</td>
+<td>14000字符未进入窗口</td>
+</tr>
+</tbody>
+</table></div>
+<p><a href="../analysis/quality_probe.json">原函数检查</a>还构造了一个可区分限制的反例：10000字符文档在位置3000插入人工损坏标记，送入评分器的三个窗口完全不变。一个人工标记检测器因此给出相同分数。真实模型没有运行，但“输入窗口不变”已经说明这条路径无法直接观察该位置的改变。</p>
+<p>BME缓解了只看开头被共同模板支配的问题，仍不是全文覆盖的质量证明。审查长代码、证明或agent轨迹时，应按文档长度、缺陷位置、窗口覆盖分别检查，不要只抽取开头片段看起来干净的样本。</p>
+<h2 id="quality-guide-2">2. 文档还会经过截断与紧凑词表</h2>
+<p><a href="code-52be3c144c97b781.html">评分数据入口</a>先按<code>max_tokens×8</code>字符限制编码工作量，再关闭特殊token并按max_tokens截断。评分器随后将原token ID映射到自己的紧凑词表，未保留的ID变成UNK。紧凑词表依据评分器训练集的频次和可选词表上限构造。</p>
+<p>本轮执行原<code>_build_vocab</code>，人工训练token为<code>[[10,10,11],[10,12]]</code>、min_count=2，只留下10；11、12在评分时会落入UNK。这不是生产词表覆盖率，而是接口行为。若某类内容包含大量训练标签集很少见的token，评分器看到的区别可能少于预训练模型看到的区别，需要测实际UNK率才能判断影响。</p>
+<p>这里讲的是质量评分器的tokenizer与词表，不是将Marin大模型的训练token统一替换为UNK。两套链路不能混为一谈。模块README描述评分器使用multilingual-e5-small、max_tokens=512；实际历史模型meta仍未绑定。</p>
+<p>建议将原始字符窗口、编码后的有效长度、截断比例、UNK比例按内容类型和语言分别记录。字符数相同不保证信息保留程度相同，尤其不能把注释中的“约512 tokens”当作每种语言的精确窗口预算。</p>
+<h2 id="quality-guide-3">3. 校准改的是尺度与分桶，不会凭空修好排序</h2>
+<p><a href="code-df33075a8ab5b2e9.html">calibrate.py</a>对人工标签1…5分别取raw score中位数；相邻中位数的均值形成四个切点，再以maximum.accumulate使切点非递减。分段线性映射把切点对应到0.2、0.4、0.6、0.8，生产评分由np.interp重映射，np.digitize生成q0…q4。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>层次</th>
+<th>能改变什么</th>
+<th>不能由此推断什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BME取窗与评分模型</td>
+<td>原始分数，以及其对内容的观察</td>
+<td>已看见全文、已证明代码或数学正确</td>
+</tr>
+<tr>
+<td>有效的单调校准</td>
+<td>原分数尺度、桶边界、桶占比；端点裁剪还可产生并列</td>
+<td>自动纠正领域偏见或反转错误排序</td>
+</tr>
+<tr>
+<td>固定阈值分桶</td>
+<td>连续分数被压缩为五级</td>
+<td>q4就是所有训练任务上最有价值的数据</td>
+</tr>
+<tr>
+<td>提高q4采样权重</td>
+<td>增加被分到q4的数据曝光</td>
+<td>提高了所有内容类型的真实质量</td>
+</tr>
+</tbody>
+</table></div>
+<p>边界归属也有细节：默认np.digitize下，校准分数恰好为0.2、0.4、0.6、0.8分别进入q1、q2、q3、q4。跨实现重写分桶时，<code>&gt;</code>与<code>&gt;=</code>的区别必须核对，尤其在大量相同分数或量化分数下。</p>
+<p>原校准代码拒绝缺少任一标签等级。但“五级都存在”不保证插值节点严格递增。若五级的raw中位数相同，四个切点相同；maximum.accumulate只能保证非递减。人工算例确认这种输入不会被现有辅助函数拒绝。</p>
+<p><a href="https://numpy.org/doc/stable/reference/generated/numpy.interp.html" rel="noopener" target="_blank">NumPy官方契约</a>要求插值横坐标递增，并建议检查<code>np.all(np.diff(xp)&gt;0)</code>。本轮把重复节点算例标为不满足插值契约，而不将本地NumPy返回值当作可靠校准结果。没有证据表明生产calib文件包含重复节点。</p>
+<p>工程验收应检查节点有限、严格递增、长度一致，以及各类型的等级排序与独立样本误差。不要为了“让插值跑起来”随意加epsilon：它可能把一大批相近分数推过多个桶，需要重新说明统计意义与验证结果。</p>
+<h2 id="quality-guide-4">4. 标签目标、文档说明与实际部署要分清</h2>
+<p><a href="code-17631d542918b273.html">rubric.py</a>强调按内容自身类型评判，让优秀代码、数学与非英语文本能够达到高分，避免把英语散文风格当成质量。这个目标合理，但存在prompt文件不代表实际标签正确，也不证明历史生产模型采用了它。</p>
+<p>归档README将部署模型描述为type-aware，而rubric说明又把旧v0描述为通用“预训练价值”目标。这些文字反映了目标演进；本轮没有实际标签表与模型meta，不用文档中的部署称谓代替执行证据。</p>
+<p>校准入口在同一批标签上拟合切点，并计算校准后的exact/within-1等级一致率。这是该批数据上的拟合诊断，不能自动成为独立留出验证。仍需确认评分器训练集、校准集和审查集的关系，按来源、语言、类型分层留出，防止模型或阈值只适配标签样本。</p>
+<h2 id="quality-guide-5">5. 模型文件名与路径不是内容证明</h2>
+<p><a href="code-c2d94cca49aea89c.html">QualityScores契约</a>说明模型目录按约定保持不可变，并记录model_dir、calib_file与bucket_edges。参考管线把model_version标签加入质量步骤身份。字符串标签可以使正常版本变更得到新路径，但本身不验证目录中的模型、remap、meta或校准文件是否确实对应这个版本。</p>
+<p>PR #8405另有模型与校准内容摘要校验的提交说明，详见<a href="../sources/dedup_2026_10_05/pr8405_commits.json">已归档提交列表</a>。这里保留“该PR提交报告的修复”与“本轮固定基线源码行为”的区别，未把draft head视为历史Hero已部署版本。</p>
+<p>因此，“模型目录相同、q4标签相同”最多说明名称口径相同。比较缓存或新旧配比时，仍要绑定模型权重、remap、meta、校准文件与实际分桶结果的摘要。</p>
+<h2 id="quality-guide-6-q4">6. 怎样据此调整配比，而不是盲目追q4</h2>
+<p>先固定评分器与缓存版本，从每个目标内容类型的五个质量桶抽样。样本应包含不同长度与来源，检查有效内容、完整性、UNK与截断、去重误删，并记录评分器看不到的位置。不要以校准后分数本身作为人工复核答案。</p>
+<p>随后在同类型内做局部权重交换，冻结总token预算、序列构造、去重与评估口径。按任务能力和其他域退步决定是否接受，再考虑跨类型转移。代码/数学正确性最好增加能够执行的检查或有参考答案的任务；文体评分器无法代替这些证据。</p>
+<p>如果q4包含更多容易预测的清晰文本，训练loss下降可能来自混合分布改变；它不自动证明目标能力提升。若q0中含被错误压低的高价值类型，直接删掉q0也可能丢失能力所需的样本。两者都需要桶内内容与固定评估证据，不能仅靠曲线决定。</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>新增验收规则</th>
+<th>所需证据</th>
+<th>未满足时</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Q1 窗口不是全文</td>
+<td>按长度的观察范围与缺陷位置；实际编码长度</td>
+<td>不把BME叫全文质量验证</td>
+</tr>
+<tr>
+<td>Q2 评分器看见哪些区别</td>
+<td>各类型/语言UNK率、截断率与人工复核</td>
+<td>不假定所有类型评分同样可靠</td>
+</tr>
+<tr>
+<td>Q3 校准满足契约</td>
+<td>有限严格递增节点、边界归属、独立校准诊断</td>
+<td>不用异常节点结果调整桶权重</td>
+</tr>
+<tr>
+<td>Q4 评分产物身份固定</td>
+<td>model/remap/meta/calib摘要与实际bucket绑定</td>
+<td>新旧q桶不可直接视为等价</td>
+</tr>
+<tr>
+<td>Q5 质量代理对应目标</td>
+<td>类型内人工审查、任务能力与退步限制</td>
+<td>不将高分或低train loss当作能力收益</td>
+</tr>
+</tbody>
+</table></div>
+<p>将这条支线接到主管线：<strong>评分身份→观察范围→类型内误差→有效校准→桶内内容→固定预算局部交换→独立任务确认</strong>。本轮完成源码、人工算例与可视化核查；真实模型、标签表、calib文件、历史评分结果仍保留未知。</p></section><nav class="pager"><a href="dedup-guide.html">← 上一篇</a><a href="packing-fields-guide.html">下一篇 →</a></nav></main></body></html>

@@ -326,3 +326,7 @@ checkpoint-schedule-cpu:
 .PHONY: exception-provenance-cpu
 exception-provenance-cpu:
 	$(PYTHON) scripts/probe_exception_provenance_cpu.py
+
+.PHONY: optional-resume-evidence-cpu
+optional-resume-evidence-cpu:
+	$(CPU_PYTHON) scripts/probe_optional_resume_evidence_cpu.py

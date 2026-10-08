@@ -1,0 +1,343 @@
+{
+  "scope": "Original pinned restore discovery/layout/reader with real local OCDBT fixtures.\nManual metadata and synthetic Grug state; no full training entry or production incident.\n",
+  "checks_passed": 12,
+  "checks": [
+    {
+      "name": "parent missing manifest leaf fails optional resume",
+      "passed": true
+    },
+    {
+      "name": "same concrete broken checkpoint returns initial object under optional resume",
+      "passed": true
+    },
+    {
+      "name": "same concrete broken checkpoint fails when required",
+      "passed": true
+    },
+    {
+      "name": "concrete broken fixture executes real original reader and legacy retry",
+      "passed": true
+    },
+    {
+      "name": "malformed child marker skips complete payload and returns initial",
+      "passed": true
+    },
+    {
+      "name": "direct same malformed-marker fixture restores actual step20",
+      "passed": true
+    },
+    {
+      "name": "parent unpublished child skipped while concrete path loads same payload",
+      "passed": true
+    },
+    {
+      "name": "valid JSON null marker aborts scanner outside JSON parse exception guard",
+      "passed": true
+    },
+    {
+      "name": "empty first launch returns initial state",
+      "passed": true
+    },
+    {
+      "name": "normal parent complete checkpoint restores state and optimizer",
+      "passed": true
+    },
+    {
+      "name": "no barrier is recorded for initial-state fallback",
+      "passed": true
+    },
+    {
+      "name": "original entry guard reinitializes returned shape template",
+      "passed": true
+    }
+  ],
+  "cases": {
+    "parent_valid_marker_missing_leaf_optional": {
+      "configured_path_kind": "parent",
+      "required": false,
+      "candidates": [
+        "broken/step20",
+        "broken"
+      ],
+      "written_count_by_original_predicate": 1,
+      "returned": false,
+      "error_type": "FileNotFoundError",
+      "error": "1 checkpoint(s) exist under <fixture>/broken but none could be loaded: <fixture>/broken/step20",
+      "array_load_calls": [
+        {
+          "path": "broken/step20",
+          "legacy_wrapper": false,
+          "error_type": "FileNotFoundError"
+        },
+        {
+          "path": "broken/step20",
+          "legacy_wrapper": true,
+          "error_type": "FileNotFoundError"
+        }
+      ],
+      "barrier_calls": 0
+    },
+    "concrete_valid_marker_missing_leaf_optional": {
+      "configured_path_kind": "concrete",
+      "required": false,
+      "candidates": [
+        "step20"
+      ],
+      "written_count_by_original_predicate": 0,
+      "returned_shape_template": false,
+      "returned": true,
+      "step": 0,
+      "adam_count": 0,
+      "same_object_as_initial": true,
+      "params": [
+        1.0,
+        2.0
+      ],
+      "entry_reinit_calls": [],
+      "array_load_calls": [
+        {
+          "path": "step20",
+          "legacy_wrapper": false,
+          "error_type": "FileNotFoundError"
+        },
+        {
+          "path": "step20",
+          "legacy_wrapper": true,
+          "error_type": "FileNotFoundError"
+        }
+      ],
+      "barrier_calls": 0
+    },
+    "concrete_valid_marker_missing_leaf_required": {
+      "configured_path_kind": "concrete",
+      "required": true,
+      "candidates": [
+        "step20"
+      ],
+      "written_count_by_original_predicate": 0,
+      "returned": false,
+      "error_type": "FileNotFoundError",
+      "error": "Could not load a checkpoint from search paths <fixture>/step20. Attempted: <fixture>/step20",
+      "array_load_calls": [
+        {
+          "path": "step20",
+          "legacy_wrapper": false,
+          "error_type": "FileNotFoundError"
+        },
+        {
+          "path": "step20",
+          "legacy_wrapper": true,
+          "error_type": "FileNotFoundError"
+        }
+      ],
+      "barrier_calls": 0
+    },
+    "concrete_broken_optional_shape_template_entry_guard": {
+      "configured_path_kind": "concrete",
+      "required": false,
+      "candidates": [
+        "step20"
+      ],
+      "written_count_by_original_predicate": 0,
+      "returned_shape_template": true,
+      "returned": true,
+      "step": 0,
+      "adam_count": 0,
+      "same_object_as_initial": true,
+      "params": [
+        1.0,
+        2.0
+      ],
+      "entry_reinit_calls": [
+        "same_model_key"
+      ],
+      "array_load_calls": [
+        {
+          "path": "step20",
+          "legacy_wrapper": false,
+          "error_type": "FileNotFoundError"
+        },
+        {
+          "path": "step20",
+          "legacy_wrapper": true,
+          "error_type": "FileNotFoundError"
+        }
+      ],
+      "barrier_calls": 0
+    },
+    "parent_malformed_marker_complete_arrays_optional": {
+      "configured_path_kind": "parent",
+      "required": false,
+      "candidates": [
+        "malformed"
+      ],
+      "written_count_by_original_predicate": 0,
+      "returned_shape_template": false,
+      "returned": true,
+      "step": 0,
+      "adam_count": 0,
+      "same_object_as_initial": true,
+      "params": [
+        1.0,
+        2.0
+      ],
+      "entry_reinit_calls": [],
+      "array_load_calls": [],
+      "barrier_calls": 0
+    },
+    "concrete_malformed_marker_complete_arrays_optional": {
+      "configured_path_kind": "concrete",
+      "required": false,
+      "candidates": [
+        "step20"
+      ],
+      "written_count_by_original_predicate": 0,
+      "returned_shape_template": false,
+      "returned": true,
+      "step": 20,
+      "adam_count": 1,
+      "same_object_as_initial": false,
+      "params": [
+        11.0,
+        12.0
+      ],
+      "entry_reinit_calls": [],
+      "array_load_calls": [
+        {
+          "path": "step20",
+          "legacy_wrapper": false
+        }
+      ],
+      "barrier_calls": 1
+    },
+    "parent_no_marker_complete_arrays_optional": {
+      "configured_path_kind": "parent",
+      "required": false,
+      "candidates": [
+        "unpublished"
+      ],
+      "written_count_by_original_predicate": 0,
+      "returned_shape_template": false,
+      "returned": true,
+      "step": 0,
+      "adam_count": 0,
+      "same_object_as_initial": true,
+      "params": [
+        1.0,
+        2.0
+      ],
+      "entry_reinit_calls": [],
+      "array_load_calls": [],
+      "barrier_calls": 0
+    },
+    "concrete_no_marker_complete_arrays_optional": {
+      "configured_path_kind": "concrete",
+      "required": false,
+      "candidates": [
+        "step20"
+      ],
+      "written_count_by_original_predicate": 0,
+      "returned_shape_template": false,
+      "returned": true,
+      "step": 20,
+      "adam_count": 1,
+      "same_object_as_initial": false,
+      "params": [
+        11.0,
+        12.0
+      ],
+      "entry_reinit_calls": [],
+      "array_load_calls": [
+        {
+          "path": "step20",
+          "legacy_wrapper": false
+        }
+      ],
+      "barrier_calls": 1
+    },
+    "parent_null_marker_complete_arrays_optional": {
+      "configured_path_kind": "parent",
+      "required": false,
+      "returned": false,
+      "error_type": "AttributeError",
+      "error": "'NoneType' object has no attribute 'get'",
+      "array_load_calls": [],
+      "barrier_calls": 0
+    },
+    "empty_parent_optional": {
+      "configured_path_kind": "parent",
+      "required": false,
+      "candidates": [
+        "empty"
+      ],
+      "written_count_by_original_predicate": 0,
+      "returned_shape_template": false,
+      "returned": true,
+      "step": 0,
+      "adam_count": 0,
+      "same_object_as_initial": true,
+      "params": [
+        1.0,
+        2.0
+      ],
+      "entry_reinit_calls": [],
+      "array_load_calls": [],
+      "barrier_calls": 0
+    },
+    "parent_complete_optional": {
+      "configured_path_kind": "parent",
+      "required": false,
+      "candidates": [
+        "good/step20",
+        "good"
+      ],
+      "written_count_by_original_predicate": 1,
+      "returned_shape_template": false,
+      "returned": true,
+      "step": 20,
+      "adam_count": 1,
+      "same_object_as_initial": false,
+      "params": [
+        11.0,
+        12.0
+      ],
+      "entry_reinit_calls": [],
+      "array_load_calls": [
+        {
+          "path": "good/step20",
+          "legacy_wrapper": false
+        }
+      ],
+      "barrier_calls": 1
+    }
+  },
+  "runtime": {
+    "jax": "0.7.2",
+    "optax": "0.2.5"
+  },
+  "source_sha256": {
+    "scripts/probe_grug_state_restore_real_io.py": "df728a527b1cf24289723ce1b7ae0f2d5515ab3ad3089aa3dc34c0bd99984dc3",
+    "scripts/probe_restore_candidate_real_io.py": "b995b584aea9defbecf0ce61b8b799fa4c9554b27fea89c6b4bc3205ffa30943",
+    "scripts/probe_serialize_arrays_real_io.py": "d8651706d87d978832c65eaa7e662469970adaf651fad65f3c1b2b5f811f1e0b",
+    "scripts/probe_tree_restore_contracts.py": "9b5c12ecd6b14ba0f57d3f851e68a646e5947fed3a3172d91197281695f01dea",
+    "sources/checkpoint_commit_2026_10_05/checkpoint.py": "3997faa8082442fcdf16df2fd0c13bf30a26a9c5db62eb81cce0758bff4a2274",
+    "sources/checkpoint_commit_2026_10_05/checkpoint_manifest.py": "ae7a3535d2721bcd4ac598bd3f75c9bb8878fbbb1656f87f22b0c988dd0d9b3b",
+    "sources/checkpoint_commit_2026_10_05/tensorstore_serialization.py": "5dddf8c6cc87cb062593482abe6775eee59eea443c28c7fd8d8b7ddf261f89ea",
+    "sources/contracts_2026_10_05/checkpointing.py": "1f7395e4caeb60f31db7d84e32e972b75791e43e454dafd146449b9148e5016d",
+    "sources/scale_2026_10_05/train_hero_ep.py": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7",
+    "sources/state_restore_2026_10_07/tree_utils.py": "c9acb36c912b0bfb6ff7c8b794b38445c52ff48d3f5870db49ce4791761cde6d",
+    "sources/tree_restore_2026_10_07/haliax_axis.py": "4e6d6bdd4c414f6177b1f8cf7352eb31be2c2d91bd5c97a0308f4d10b6ef0830",
+    "sources/tree_restore_2026_10_07/haliax_core.py": "bb6eb762678ed5d9871f8921e292909c6afc500026380c6057a0af654ce63cf8",
+    "sources/tree_restore_2026_10_07/haliax_jax_utils.py": "8b928182089ce70ebd24a4b996c0ca2a74b3052771ede15770046976416f9c2d",
+    "sources/tree_restore_2026_10_07/haliax_util.py": "ae8737a35f9b0c8902c63c48cc853dfd3bc7e52fae05385fb10986611cb4f37a",
+    "sources/tree_restore_2026_10_07/jax_utils.py": "647a16ab5d7adac4166e63a429b112afdda0f11dd4fcb4866dde77cb3a4263d1"
+  },
+  "probe_script_sha256": "56a1a2a5b4a281f93d80b47bf23e96702ed6d9ff5e96037de8c531acf62223a5",
+  "metadata_publication": "manually constructed fixture after real local commit",
+  "collective": "barrier recorder only",
+  "actual_Hero_optional_resume_reset": null,
+  "actual_production_metadata_corruption": null,
+  "actual_full_training_entry_execution": null,
+  "actual_training_loss_effect": null,
+  "upstream_patch_applied": false
+}

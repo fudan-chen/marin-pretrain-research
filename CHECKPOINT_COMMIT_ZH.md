@@ -307,3 +307,7 @@ V113对人工NaN/Inf pending做真实本地保存恢复，11叶二进制摘要�
 ## V130：保存调度与失败策略
 
 原Checkpointer五方法、原发布回调与原manager组合执行11项控制。交接前失败不推进step但消费请求；交接后失败推进去重/time水位，同step普通调用不重提；retention失败发生在metadata之后。虚拟后端只记录事件，无真实写入删除或restore。两来源并非已证明的历史部署组合。[分层故障与策略](CHECKPOINT_FAILURE_POLICY_ZH.md)。
+
+## V132：路径分类与可选恢复
+
+12项原策略/真实本地小状态控制：同一manifest缺叶夹具，optional父目录搜索明确失败，直接具体目录却返回初始state；required=True拒绝。损坏JSON marker在父目录下被跳过，合法JSON null则在scanner中抛AttributeError。直接路径完整数组还可在无有效marker时读回；读取与发布合同需分开。Shape模板返回后原入口guard会调用初始化器，已以记录器验证。见 [完整对照与启动合同](OPTIONAL_RESUME_ZH.md)，未执行完整训练或证明Hero重置。

@@ -305,3 +305,7 @@ V125在既有历史源上新增9项CPU和数学控制，595份来源未变。新
 ## V131增量审计
 
 同一固定提交的训练循环、progress_event_scope、emit_event共11项人工CPU控制通过；包括双故障链、通知中断、else异常边界和保存失败时的FINISHED事件。未执行完整外围资源上下文、真实JAX训练、真实checkpoint IO或生产hook；未新增来源。阅读入口 [异常链与恢复归因](EXCEPTION_PROVENANCE_ZH.md)。页面结构核对与报告验证见本版本账本；没有本轮浏览器渲染验收。
+
+## V132增量审计
+
+12项控制覆盖真实本地OCDBT小状态、原发现/布局hook/严格reader/恢复策略和原Shape模板guard。11个调用案例；metadata手工构造，初始化器与barrier记录适配；无完整训练、生产写入删除或Hero事故确认。来源未新增、旧探针结果未覆盖。[正文与复现](OPTIONAL_RESUME_ZH.md)。

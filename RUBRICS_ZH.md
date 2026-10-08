@@ -597,3 +597,7 @@ V117接原causal目标mask、attention有效性、投影margin和四CPU histogra
 ## V131应用例：异常归因与事件语义
 
 沿用现有18项规则，不增加总分。评审应附双故障控制：主操作和收尾同时失败时，最外层报错、cause/context及未运行hook是否有记录。FINISHED事件只按源码语义解释；如果未验证commit/发布/恢复，不能拿它支撑“保存成功”。重启前后配比比较还需恢复状态和输入身份，否则保留为观察。见 [11项控制及评审合同](EXCEPTION_PROVENANCE_ZH.md)。
+
+## V132应用例：可选恢复的意图与历史证据
+
+保持现有18项规则。评审应提交同一checkpoint父目录/具体路径对照，并区分真正空目录、未发布残留、损坏marker与数组缺叶。声明续训时，返回初始state不能记为恢复通过；required=True也不替代发布身份、schema和下一步验收。见 [12项真实本地控制](OPTIONAL_RESUME_ZH.md)。

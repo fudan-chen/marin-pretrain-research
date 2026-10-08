@@ -368,3 +368,7 @@ V117接原causal目标mask、attention有效性、投影margin和四CPU histogra
 ### V131：训练失败的最后一条报错可能来自收尾
 
 固定源码11项人工控制显示，finally进度hook或日志再次失败，会成为最外层异常，先前训练错误仍在context。CHECKPOINT_FINISHED即使保存交接抛错也可能发出；最终wait失败也可能没有训练体fatal日志。排错需完整异常链，恢复需commit/发布/读取证据；这些缺失时，不应把重启后loss变化解释为配比收益。见 [异常链与恢复归因](EXCEPTION_PROVENANCE_ZH.md)。未证明Hero实际出现该事故。
+
+### V132：同一个坏checkpoint，恢复路径也会改变启动结果
+
+原策略/真实本地IO的12项控制确认：optional模式下，父目录搜索会把已发现但缺叶的checkpoint记为失败恢复，直接指定同一具体目录却可能返回初始state。完整数组的坏marker在父目录下可被跳过；JSON null则中止扫描。由此建议独立声明首次启动/续训/weights-only，并记录实际祖先，再开展配比比较。见 [启动合同](OPTIONAL_RESUME_ZH.md)。这些是人工夹具结果，Hero是否受影响未知。

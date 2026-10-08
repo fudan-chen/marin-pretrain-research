@@ -130,3 +130,7 @@ V112将共享EMA边界隔离为五路径矩阵：原初始化、只复制EMA、�
 ## V113：有限loss与路由状态
 
 V113接原训练闭包、setter、路由、真实Adam及本地IO，13项CPU控制：故障注入后的loss可三步均有限，第二步stored/EMA bias非有限，第三步全部状态恢复有限但参数轨迹不同。有限极端pending还可在中心化时溢出，故需区分原pending、stored bias与next-forward bias。原估计器未执行，实际Hero事件未知。[完整对照](FAILURE_BOUNDARIES_ZH.md)。
+
+## V132：返回state不等于恢复成功
+
+原可选恢复通过候选与搜索根路径是否不同判断历史存在；具体目录缺叶时可能返回初始state，原入口的Shape模板guard随后允许重新初始化。12项控制使用真实本地小数组与Adam，状态step20/count1为人工夹具；初始化器为记录器，没有完整训练。续训、首次启动、weights-only应独立声明并记录实际祖先。[路径对照](OPTIONAL_RESUME_ZH.md)。

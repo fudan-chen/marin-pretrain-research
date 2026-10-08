@@ -131,3 +131,49 @@ return dataclasses.replace(state, ema_params=ema)
 把“从零初始化”和“从checkpoint恢复”设为两个独立入口，各自至少走到第一次真实更新，再对比下一次更新。EMA/master/offload/donation开关应记录具体组合，不能只填“恢复成功”。在值、shape、dtype、状态计数之外，补充输入叶共享与实际deleted状态观察。对于可以跑通的替代路径，同时保留数值等价证据和资源开销的未知项；不要把绕过错误与生产修复合并成同一结论。
 
 [初始化构造路径验收模板](templates/initial_state_alias_review.json)保留实际设备、模型、内存和线上部署结果为空。当前只有这个人工CPU矩阵的结论，未执行GPU、分布式或完整Transformer验收。
+
+
+## V119：执行作者的最终评估补丁，而不只解释缺陷
+
+这一轮固定到作者fork的[`a00cb77a491f4777a2c66edce54f47ff7b255c40`](https://github.com/yonromai/marin/commit/a00cb77a491f4777a2c66edce54f47ff7b255c40)，归档train、原回归测试、callback core、state adapter、tagged evaluator、commit差异及#9352最新正文，共7份新来源。API正文与旧归档一致，状态Open、评论数0；正文仍注明未合并。该状态不能单独证明所有生产分支的采用情况，本轮没有验证生产部署。
+
+### 为什么最终补丁要收窄到eval hook
+
+commit差异显示前一版把应用pending的逻辑放进runner的通用model getter。getter构造每次回调共用的`CallbackStateView`；即使这次只做日志，也会先取模型。最终补丁恢复getter读取stored params，EMA关闭时回退current params；只在评估hook的外层构造两份带pending的视图。这解决了“为了修评估，却改变所有回调读到的模型并增加工作”的范围问题。[原差异](sources/eval_fix_2026_10_08/commit.json)、[runner](sources/eval_fix_2026_10_08/state_adapter.py)。
+
+实际次序为：runner按原getter创建StepInfo → 判断hook是否到期或force → 评估包装器替换current/EMA模型视图 → 原评估hook判断重复step → 评分。包装器用`dataclasses.replace`创建新的callback state和StepInfo，保持事件处理器、step、loss、duration及optimizer引用；没有向训练state写回bias，也没有清空pending。setter仍是替换，而不是累加。
+
+train源码在初始化runner时绑定pending，在正常步`state_callbacks.run`前刷新，并在强制结束回调前再刷新。嵌套包装器读取的是同一个外层变量，不能提前捕获一次固定数组。局部探针把原嵌套函数放入人工闭包，刷新pending后看到了新的bias；生产循环这些赋值位置是源码检查，未执行完整循环。[固定train](sources/eval_fix_2026_10_08/train.py)、[对应线上位置](https://github.com/yonromai/marin/blob/a00cb77a491f4777a2c66edce54f47ff7b255c40/experiments/grug/moe_hero_ep/train.py#L1118)。
+
+### 15项CPU控制实际覆盖什么
+
+执行原setter、原StepInfo/Callback/LambdaCallback、原StateCallbackRunner、原包装器和原tagged callback；模型替换成有相同router_bias层级的微型Equinox对象，评估器和日志替换成记录器。作者的原字符串回归测试也执行了，但使用最小monkeypatch接口适配，不是跑过整份pytest文件。[探针](scripts/probe_eval_pending_fix_cpu.py)、[原值与边界](analysis/eval_pending_fix_cpu.json)。
+
+|局部路径|观测|支持的结论|
+|---|---|---|
+|只有普通hook，评估未到期|setter调用0次，普通hook读stored bias|此次调用不承担QB应用工作|
+|checkpoint-only强制回调|current与EMA均由beta `[1,3,2]`得到bias `[1,−1,0]`|两种评估视图覆盖pending，raw state未改|
+|刷新闭包pending为 `[3,0,0]`|两份bias变为 `[−2,1,1]`|没有固定读取首次pending|
+|EMA关闭|原getter回退current，真实setter成功|不用向setter传None|
+|同次runner调用两个eval hook|setter调用4次，视图值相同|包装器按hook执行，不能描述成每step仅应用一次|
+|同step强制回调两次|setter调用4次，仅有2次模型评分，即current与EMA各一次|评分去重位于QB应用之后|
+|state.step=0时force|setter调用2次，评分0次|completed-step为−1的guard也在包装之后|
+|只启用current评分|setter调用2次，评分1次|包装器仍构造EMA视图|
+|评估函数抛错|错误传播，同一runner调用的后续hook未执行|新视图未污染输入state，但不保证后续回调执行|
+|包装只接受step的普通函数|普通run也收到force参数并TypeError|扩展hook必须满足包装后的调用合同|
+
+这里的setter调用计数不是kernel次数或内存测量。JAX可能异步执行，重复计算对真实训练时长、显存或通信的影响均未测量。`eval_current=True, eval_ema=False`也构造两份视图，说明可讨论进一步收窄工作，但不能据此认定值得修改；共享计算、对象生命期与真实成本需要另测。
+
+### 一个容易被装饰器掩盖的接口变化
+
+原`LambdaCallback`先检查函数签名：只接受step的函数不会收到force。最终包装器签名为`wrapped(step, *args, **kwargs)`，因此runner认为它能接受force；包装器再把force转发给内层hook。于是一个原本可以直接注册的`lambda step: ...`，包装后即使force=False也失败。这不是当前生产hook已失败的证据：固定版本的`cb_tagged_evaluate`显式接受force，dropless hook接受kwargs，二者兼容。
+
+这个反例给出的工程规则更具体：**为回调加装饰器时，既检查模型视图，也检查签名、force传播、异常传播和去重位置。** 原作者测试只把helper结果append到列表，能检查current/EMA转发，却没有执行`with_pending_qb`包装链，因而不能覆盖这些接口条件。
+
+### 对训练与配比研究的实际影响
+
+对照run应记录使用raw还是pending-corrected的评估视图。校正评估不能靠在训练state中先应用pending再清零实现；先前原setter控制已证明，零beta会替换bias为零。评估补丁只应改变评分视图，继续训练的state需单独验收。
+
+同step强制重评的评分去重也要考虑：同一个callback实例记住last_eval_step，包装器即便传入了新pending，内部仍可能跳过评分。要比较同checkpoint不同评估策略，应建立独立、明确标识的评估调用，不能仅凭runner被再次调用就认为已经重评。本轮只验证原callback按step去重的局部行为，没有执行真实Paloma重评。
+
+15项控制支持作者最终补丁的局部视图行为，未运行完整Transformer、训练循环、真实checkpoint发布器、dropless mesh迁移或GPU；真实Paloma loss、额外成本和生产采用均未知。也没有得到任何数据桶最优比例或能力因果结论。

@@ -241,3 +241,8 @@ V117接原causal目标mask、attention有效性、投影margin和四CPU histogra
 ## V118：研究收束为训练决策
 
 新增[训练决策备忘录](TRAINING_DECISIONS_ZH.md)：六类症状的最小对照、#9352评估修正但排序不变的数值案例、配比五本账及供体/顺序/独立确认管线。将继续观察、废弃候选、进入放大验证分开，不给未执行实验判通过。新增机器可读案例只复算既有作者报告，无新训练、生产采用或最优配比结论；566份来源保持。
+
+
+## V119：评估补丁的调用合同
+
+固定作者最终fork补丁，执行原setter、runner、StepInfo与tagged callback的15项CPU控制：current/EMA视图正确且raw state不改，普通/未到期回调无QB应用；评分去重前已执行setter，装饰器会转发force。当前两种eval hook兼容，人工plain hook不兼容，不归为生产事故。完整循环、GPU、实际成本与生产采用未验证。7份新来源，API正文未变，来源总数573。[局部结果与工程规则](PENDING_RESUME_ZH.md)。

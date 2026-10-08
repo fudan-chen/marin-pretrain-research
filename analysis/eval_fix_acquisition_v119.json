@@ -1,0 +1,60 @@
+{
+  "records": [
+    {
+      "file": "eval_fix_2026_10_08/train.py",
+      "url": "https://raw.githubusercontent.com/yonromai/marin/a00cb77a491f4777a2c66edce54f47ff7b255c40/experiments/grug/moe_hero_ep/train.py",
+      "final_url": "https://raw.githubusercontent.com/yonromai/marin/a00cb77a491f4777a2c66edce54f47ff7b255c40/experiments/grug/moe_hero_ep/train.py",
+      "bytes": 64538,
+      "sha256": "76f812a760fbea8fb6d56c3cf9a1e2f1e6d5e59ab07b9f4e7a7ac1501e388414",
+      "retrieved_utc": "2026-10-08T02:05:13.630558+00:00"
+    },
+    {
+      "file": "eval_fix_2026_10_08/test_moe_hero_ep.py",
+      "url": "https://raw.githubusercontent.com/yonromai/marin/a00cb77a491f4777a2c66edce54f47ff7b255c40/tests/test_moe_hero_ep.py",
+      "final_url": "https://raw.githubusercontent.com/yonromai/marin/a00cb77a491f4777a2c66edce54f47ff7b255c40/tests/test_moe_hero_ep.py",
+      "bytes": 53051,
+      "sha256": "c4f03659184e50662c6b09eda012174e37354712b1df1bd28d23c71c06cee507",
+      "retrieved_utc": "2026-10-08T02:05:19.780321+00:00"
+    },
+    {
+      "file": "eval_fix_2026_10_08/commit.json",
+      "url": "https://api.github.com/repos/yonromai/marin/commits/a00cb77a491f4777a2c66edce54f47ff7b255c40",
+      "final_url": "https://api.github.com/repos/yonromai/marin/commits/a00cb77a491f4777a2c66edce54f47ff7b255c40",
+      "bytes": 9686,
+      "sha256": "ce64f93600fcb549ca837fd773416555263310f0ae164a99268c15e56706707d",
+      "retrieved_utc": "2026-10-08T02:05:21.227546+00:00"
+    },
+    {
+      "file": "eval_fix_2026_10_08/issue_9352.json",
+      "url": "https://api.github.com/repos/marin-community/marin/issues/9352",
+      "final_url": "https://api.github.com/repos/marin-community/marin/issues/9352",
+      "bytes": 11177,
+      "sha256": "3e295992ad2c115f5f32a3a0546c26440d919d410ba958517f28123e6bb1c3f5",
+      "retrieved_utc": "2026-10-08T02:05:26.194584+00:00"
+    },
+    {
+      "file": "eval_fix_2026_10_08/state_adapter.py",
+      "url": "https://raw.githubusercontent.com/yonromai/marin/a00cb77a491f4777a2c66edce54f47ff7b255c40/lib/levanter/src/levanter/callbacks/state_adapter.py",
+      "final_url": "https://raw.githubusercontent.com/yonromai/marin/a00cb77a491f4777a2c66edce54f47ff7b255c40/lib/levanter/src/levanter/callbacks/state_adapter.py",
+      "bytes": 2580,
+      "sha256": "fdde652f95b9fb82d322d5e4cfed3b0750fdb15cd7507869e39a4e47bd82b70b",
+      "retrieved_utc": "2026-10-08T02:06:42.919690+00:00"
+    },
+    {
+      "file": "eval_fix_2026_10_08/callback_core.py",
+      "url": "https://raw.githubusercontent.com/yonromai/marin/a00cb77a491f4777a2c66edce54f47ff7b255c40/lib/levanter/src/levanter/callbacks/_core.py",
+      "final_url": "https://raw.githubusercontent.com/yonromai/marin/a00cb77a491f4777a2c66edce54f47ff7b255c40/lib/levanter/src/levanter/callbacks/_core.py",
+      "bytes": 5345,
+      "sha256": "093eb427fd538123007ef3e14658be3462fddfbe8f43783977bb11bb0a3b24ce",
+      "retrieved_utc": "2026-10-08T02:06:47.622863+00:00"
+    },
+    {
+      "file": "eval_fix_2026_10_08/eval.py",
+      "url": "https://raw.githubusercontent.com/yonromai/marin/a00cb77a491f4777a2c66edce54f47ff7b255c40/lib/levanter/src/levanter/eval.py",
+      "final_url": "https://raw.githubusercontent.com/yonromai/marin/a00cb77a491f4777a2c66edce54f47ff7b255c40/lib/levanter/src/levanter/eval.py",
+      "bytes": 35454,
+      "sha256": "b67cc96335f667982a0fe43618215734140c28392be215a88177979c712dee2c",
+      "retrieved_utc": "2026-10-08T02:08:19.604525+00:00"
+    }
+  ]
+}

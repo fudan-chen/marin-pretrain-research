@@ -1,0 +1,195 @@
+{
+  "scope": "Execute pinned author eval wrapper, original runner/core and original regression on CPU.\nTiny Eqx model and recording hooks replace full Transformer/evaluator; no complete training loop.\n",
+  "checks_passed": 15,
+  "checks": [
+    {
+      "name": "Original author string regression executes with pinned original runner/core",
+      "passed": true
+    },
+    {
+      "name": "Non-due evaluation and ordinary hook perform no QB application",
+      "passed": true
+    },
+    {
+      "name": "Forced checkpoint-only callback applies pending to current and EMA",
+      "passed": true
+    },
+    {
+      "name": "Evaluation preserves distinct model weights optimizer identity and callback clocks",
+      "passed": true
+    },
+    {
+      "name": "Raw input state and ordinary hook remain stored views",
+      "passed": true
+    },
+    {
+      "name": "Replaced StepInfo preserves event handler",
+      "passed": true
+    },
+    {
+      "name": "Original nested wrapper reads refreshed closure pending not first bound value",
+      "passed": true
+    },
+    {
+      "name": "EMA-off production getter fallback works with real setter",
+      "passed": true
+    },
+    {
+      "name": "Two due evaluation hooks trigger four setter calls with equal views",
+      "passed": true
+    },
+    {
+      "name": "Wrapped plain hook without force parameter fails even in ordinary run",
+      "passed": true
+    },
+    {
+      "name": "Evaluation error propagates and prevents later hooks in same runner call",
+      "passed": true
+    },
+    {
+      "name": "Zero pending replaces stored bias with zero without mutating input",
+      "passed": true
+    },
+    {
+      "name": "Duplicate forced evaluation suppresses scores after four real QB setter calls",
+      "passed": true
+    },
+    {
+      "name": "Step-zero forced callback applies QB before negative completed-step score guard",
+      "passed": true
+    },
+    {
+      "name": "Current-only scoring still constructs current and EMA corrected views",
+      "passed": true
+    }
+  ],
+  "cases": {
+    "ema_on": [
+      {
+        "current": [
+          [
+            1.0,
+            -1.0,
+            0.0
+          ]
+        ],
+        "ema": [
+          [
+            1.0,
+            -1.0,
+            0.0
+          ]
+        ],
+        "step": 1,
+        "next_step": 2,
+        "force": true,
+        "optimizer_identity": true,
+        "weight_current": [
+          2.0
+        ],
+        "weight_ema": [
+          7.0
+        ]
+      },
+      {
+        "current": [
+          [
+            -2.0,
+            1.0,
+            1.0
+          ]
+        ],
+        "ema": [
+          [
+            -2.0,
+            1.0,
+            1.0
+          ]
+        ],
+        "step": 1,
+        "next_step": 2,
+        "force": true,
+        "optimizer_identity": true,
+        "weight_current": [
+          2.0
+        ],
+        "weight_ema": [
+          7.0
+        ]
+      }
+    ],
+    "multiple_eval_hooks": {
+      "hook_count": 2,
+      "setter_calls": 4,
+      "views": [
+        [
+          [
+            1.0,
+            -1.0,
+            0.0
+          ]
+        ],
+        [
+          [
+            1.0,
+            -1.0,
+            0.0
+          ]
+        ]
+      ]
+    },
+    "plain_hook_contract": {
+      "error": "<lambda>() got an unexpected keyword argument 'force'",
+      "existing_production_hooks_compatible": "cb_tagged_evaluate accepts force; dropless hook accepts kwargs, checked in pinned source"
+    },
+    "duplicate_forced_eval": {
+      "runner_calls": 2,
+      "setter_calls": 4,
+      "model_scores": 2
+    },
+    "zero_completed_steps": {
+      "state_step": 0,
+      "completed_step": -1,
+      "setter_calls": 2,
+      "model_scores": 0
+    },
+    "current_only_eval": {
+      "setter_calls": 2,
+      "model_scores": 1
+    },
+    "issue_status": {
+      "state": "open",
+      "updated_at": "2026-09-23T00:29:15Z",
+      "body_sha256": "b3e7b60d42f7f5d2ded7eef526e681e24e48dfce3cf2b4f71d5814bf0a595cbe"
+    }
+  },
+  "runtime": {
+    "jax": "0.7.2",
+    "jaxlib": "0.7.2",
+    "equinox": "0.13.2",
+    "numpy": "2.5.3"
+  },
+  "backend": "cpu",
+  "source_sha256": {
+    "scripts/probe_eval_pending_fix_cpu.py": "6ede59af73d275c997290fde4fb08ae240691aa8cdd9bf48c0f6f25965fd63aa",
+    "sources/eval_fix_2026_10_08/callback_core.py": "093eb427fd538123007ef3e14658be3462fddfbe8f43783977bb11bb0a3b24ce",
+    "sources/eval_fix_2026_10_08/commit.json": "ce64f93600fcb549ca837fd773416555263310f0ae164a99268c15e56706707d",
+    "sources/eval_fix_2026_10_08/eval.py": "b67cc96335f667982a0fe43618215734140c28392be215a88177979c712dee2c",
+    "sources/eval_fix_2026_10_08/issue_9352.json": "3e295992ad2c115f5f32a3a0546c26440d919d410ba958517f28123e6bb1c3f5",
+    "sources/eval_fix_2026_10_08/state_adapter.py": "fdde652f95b9fb82d322d5e4cfed3b0750fdb15cd7507869e39a4e47bd82b70b",
+    "sources/eval_fix_2026_10_08/test_moe_hero_ep.py": "c4f03659184e50662c6b09eda012174e37354712b1df1bd28d23c71c06cee507",
+    "sources/eval_fix_2026_10_08/train.py": "76f812a760fbea8fb6d56c3cf9a1e2f1e6d5e59ab07b9f4e7a7ac1501e388414"
+  },
+  "substitutions": [
+    "Tiny Eqx router hierarchy instead of complete Transformer",
+    "Recording evaluation and ordinary hooks; no real Paloma or checkpoint publisher",
+    "AST original callback/core functions/classes with type-only imports omitted",
+    "Synthetic enclosing closure and setter preserve original nested with_pending_qb; production loop assignment sites inspected, not executed",
+    "Minimal monkeypatch.setattr adapter for unchanged author regression"
+  ],
+  "actual_GPU_execution": null,
+  "actual_Paloma_loss": null,
+  "actual_production_fix_deployed": null,
+  "actual_full_training_loop_execution": null,
+  "actual_eager_QB_memory_cost": null
+}

@@ -1,0 +1,31 @@
+{
+  "checks_passed": 5,
+  "checks": [
+    {
+      "name": "Historical appended prose and all historical section tables retained",
+      "passed": true
+    },
+    {
+      "name": "Fifteen CPU controls and seven acquired payloads bind fixed source bytes",
+      "passed": true
+    },
+    {
+      "name": "565 prior non-bookkeeping sources byte preserved and acquisition records append-only",
+      "passed": true
+    },
+    {
+      "name": "Both HTML variants explain force forwarding duplicate scoring and unknown deployment",
+      "passed": true
+    },
+    {
+      "name": "Pinned final commit and three production closure-refresh sites inspected",
+      "passed": true
+    }
+  ],
+  "production_refresh_assignment_lines": [
+    1124,
+    1257,
+    1318
+  ],
+  "actual_browser_rendering": null
+}

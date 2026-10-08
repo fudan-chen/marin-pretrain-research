@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本V115：原QB histogram在四虚拟CPU设备上执行，单/四设备与跨分片重排一致；其他专家的人工离群值却会改变共享分箱、阈值与共同下一批query路由。11项控制，未认定真实Hero域级问题。[分片归约与近似误差](QB_ESTIMATION_ZH.md)。
+当前版本V116：原router投影、top-k和margin接四设备histogram，补齐任意margin与原模型局部路径之间的约束；9项控制显示阈值误差改变不必导致专家集合改变。[完整路径与证据边界](QB_ESTIMATION_ZH.md)。
 
 [MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并提供未执行的性能交互记录模板。
 

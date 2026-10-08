@@ -152,3 +152,29 @@ XLA_FLAGS=--xla_force_host_platform_device_count=4 /path/to/cpu-python scripts/p
 ```
 
 需要V114同版本JAX依赖；该变量创建的是本机虚拟CPU设备。真实Hero离群事件、完整模型margin构造、多host/GPU执行、估计器性能成本与域级因果影响均未知。下一步应取得真实批次margin分布或完整模型对照，而不是把人工1e6阈值误差当作生产常见问题。
+
+## V116：从原router投影到margin，而不是任意估计器输入
+
+V114/V115输入是人工margin，尚未约束它必须满足原top-k关系。本轮执行冻结`eee467…`的`MoEMLP.__call__`中原投影、top-k、combine和margin语句，再接原四CPU histogram与中心化。输入激活是12×12单位矩阵，router权重人为指定；因此可控地复现给定logits，但没有运行完整Transformer的embedding、attention、norm或真实训练批。[9项原路径控制](analysis/qb_margin_path_cpu.json) · [执行输出](analysis/qb_margin_path_cpu_output.txt) · [脚本](scripts/probe_qb_margin_path_cpu.py)。router片段的reshard/token spec为明确替代，histogram仍使用真实四虚拟CPU归约。
+
+先分清三个不同的量：原始投影logits参与QB；加上stop-gradient bias后选top-(K+1)，最后一项为alpha；选中专家的combine权重才对未加bias的logits做sigmoid。**QB输入是未加bias的logits减去带bias的alpha，不是[0,1]概率，也不是简单的biased logits margin。**
+
+本例E=3、K=2。incoming bias为零时，alpha是每行最小原logit，margin每行的最小值必为零。V115的任意正margin矩阵未施加这一约束，不能直接称为这条零bias模型路径的实际输入。本轮重新构造logits三列为`0.1×行号+[0.4,0.6,0.2]`，执行原einsum和top-k；得到符合约束的margin，再单独把expert1已有最大logit换为更大的值。alpha和expert0/expert2 margin均保持原值，显式降序rank8参考阈值约[0.2,0.4,0]也保持不变。
+
+|expert1最大logit的替换|共享箱宽|hist beta0|与rank8参考的绝对差|同一query专家集合|
+|---|---:|---:|---:|---|
+|未替换|0.000040|0.199978|0.000022|[1,2]|
+|2|0.000070|0.200013|0.000013|[1,2]|
+|10|0.000870|0.199520|0.000480|[1,2]|
+|100|0.009870|0.200690|0.000690|[1,2]|
+|1e6|99.999869|33.333290|33.133290|[0,2]|
+
+固定query logits仍为`[0.1,0.6,0]`，query投影、top-k与combine也使用同一原模型语句。这次改变来自原投影输出形成的margin，而不是直接传入无约束margin。它缩小了V115的接口缺口：存在满足这条原投影/top-k关系的人工有限输入，使共享网格效应改变下一批专家集合。
+
+但这个表也收窄了结论。换成2时，参考误差反而更小；10和100改变了阈值误差，却没有改变本query专家集合。箱宽变大不保证每次误差单调变大，阈值变化不保证每次top-k变化，更不能推出任务loss下降或上升。只能结合具体边界、固定输入与配对权重判断实际影响，不能把“有离群值”作为自动删数据的规则。
+
+incoming bias非零时，零margin约束也会改变。本轮用中心化bias`[-0.15,-0.15,0.3]`执行原top-k，得到负margin。这与“margin一定非负”不同；bias和上一批pending仍是输入合同的一部分。V114的极端margin接口实验也仍不能自动证明真实模型可产生这些值。
+
+本轮没有训练router权重，也没有估计激活/权重的真实分布；单位矩阵输入构造只证明原局部路径存在这样的数值关系，未证明535B模型、真实数据域或生产期间的可达概率。不同rank参考与箱内插值仍不是同一精确算法。真实Hero margin分布、域级因果影响、GPU/跨host、容量与专家输出、任务能力收益都未知。
+
+数据配比实验应把“当前批改变了什么”和“下一批消费者读到什么”接起来：域来源 → 激活/投影logits → 带bias alpha → margin网格 → beta/pending → 共同下一批路由 → 完整梯度与能力评价。当前证据已覆盖人工局部路径中的中间环节；首尾的真实数据与能力结果尚未完成，不能由中间机制直接开出生产配比处方。

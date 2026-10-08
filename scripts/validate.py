@@ -1286,6 +1286,13 @@ ok('V115 ordinary one/four-device and permutation pooled thresholds agree',mc['b
 ok('V115 shared grid outlier changes approximate estimate despite equal exact reference',qm['exact_reference']['beta']==qm['exact_reference']['outlier_beta'] and mc['base_four']['beta'][0]!=mc['wide_four']['beta'][0] and mc['base_four']['query_expert_ids']==[[1,2]] and mc['wide_four']['query_expert_ids']==[[0,2]] and mc['wide_one']['beta']==mc['wide_four']['beta'])
 ok('V115 single-host virtual devices not promoted to Hero GPU or domain causal evidence',all(qm[k] is None for k in ['actual_Hero_outlier_event','actual_multi_host_collectives','actual_GPU_execution','actual_full_model_margin_construction','actual_domain_causal_effect','actual_histogram_performance_cost']))
 report['highlights']+=['V115 eleven real four-virtual-CPU histogram controls; collective agreement and shared-grid outlier approximation distinguished; no real Hero domain/performance claim']
+
+qp=read(A/'qb_margin_path_cpu.json'); cp=qp['cases']
+ok('V116 nine projected-source controls bind original margin path and four CPU devices',qp['checks_passed']==len(qp['checks'])==9 and qp['device_count']==4 and all(x['passed'] for x in qp['checks']) and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in qp['source_sha256'].items()))
+ok('V116 constructed projected logits reproduce weights and alpha unchanged by maximum replacement',all(x['actual_projected_logits']==x['router_matrix'] and x['alpha']==cp['base']['alpha'] for x in cp.values()))
+ok('V116 moderate estimation changes distinguished from actual expert-set change',cp['outlier_100']['beta']!=cp['base']['beta'] and cp['outlier_100']['query_ids']==cp['base']['query_ids']==[[1,2]] and cp['outlier_1e6']['query_ids']==[[0,2]] and qp['incoming_nonzero_bias_case']['margin_min']<0)
+ok('V116 model local path does not claim actual full model or data-domain causal effect',all(qp[k] is None for k in ['actual_Hero_margin_distribution','actual_real_data_domain_effect','actual_GPU_execution','actual_full_Transformer_execution','actual_multi_host_collectives','actual_training_quality_effect']))
+report['highlights']+=['V116 nine original router projection/top-k/margin controls linked to four-CPU histogram; structurally constrained input and query-set changes distinguished from approximate thresholds']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

@@ -322,3 +322,7 @@ async-manager-cpu:
 .PHONY: checkpoint-schedule-cpu
 checkpoint-schedule-cpu:
 	$(CPU_PYTHON) scripts/probe_checkpoint_schedule_cpu.py
+
+.PHONY: exception-provenance-cpu
+exception-provenance-cpu:
+	$(PYTHON) scripts/probe_exception_provenance_cpu.py

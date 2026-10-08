@@ -593,3 +593,7 @@ V117接原causal目标mask、attention有效性、投影margin和四CPU histogra
 ## V130：保存调度与失败策略
 
 保存失败评审增加请求身份、交接水位、metadata发布与retention结果。重试要说明触发条件和attempt，不能将force开关视为原子覆盖或分布式重试保证。已发布后的清理错误不自动归为数据提交失败。[原调用链控制](CHECKPOINT_FAILURE_POLICY_ZH.md)。
+
+## V131应用例：异常归因与事件语义
+
+沿用现有18项规则，不增加总分。评审应附双故障控制：主操作和收尾同时失败时，最外层报错、cause/context及未运行hook是否有记录。FINISHED事件只按源码语义解释；如果未验证commit/发布/恢复，不能拿它支撑“保存成功”。重启前后配比比较还需恢复状态和输入身份，否则保留为观察。见 [11项控制及评审合同](EXCEPTION_PROVENANCE_ZH.md)。

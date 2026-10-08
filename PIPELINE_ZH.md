@@ -465,3 +465,7 @@ V117接原causal目标mask、attention有效性、投影margin和四CPU histogra
 ## V130：保存调度与失败策略
 
 保存支线按交接前、commit、metadata及retention四类失败安排后续；显式请求可能已消费，step/time调度水位可能已推进。建议另存失败attempt并明确重新排队/同step重试政策；本轮未实现生产重试或验证覆盖路径。
+
+## V131：重启后的loss进入配比判断前
+
+先保存完整异常链并区分训练体、最终else收尾与事件通知；再核对已发布且可恢复的checkpoint，最后核对恢复step、阶段边界、数据key和输入身份。任何FINISHED事件都不能跳过这两次核对。缺少恢复证据时，loss变化进入“继续调查”，不能据此增加某个数据源权重。固定源码的条件控制见 [异常归因文档](EXCEPTION_PROVENANCE_ZH.md)，实际Hero受影响程度未知。

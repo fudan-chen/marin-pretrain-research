@@ -1,0 +1,402 @@
+{
+  "scope": "Original pinned loop/scope/event dispatch, synthetic faults and training services.\nNot a historical Hero incident, complete training function, or checkpoint IO test.\n",
+  "checks_passed": 11,
+  "checks": [
+    {
+      "name": "clean path reaches tracker finish after wait",
+      "passed": true
+    },
+    {
+      "name": "nonfinite loss remains primary with successful logger and final event",
+      "passed": true
+    },
+    {
+      "name": "final event fault becomes primary with loss in context",
+      "passed": true
+    },
+    {
+      "name": "event dispatch stops before later registered hooks",
+      "passed": true
+    },
+    {
+      "name": "logger fault becomes primary with loss in context",
+      "passed": true
+    },
+    {
+      "name": "checkpoint finished event emitted even after save body raises",
+      "passed": true
+    },
+    {
+      "name": "checkpoint finish event fault replaces save as primary but context remains",
+      "passed": true
+    },
+    {
+      "name": "start event failure prevents save body and paired finished event",
+      "passed": true
+    },
+    {
+      "name": "forced callback fault bypasses preceding except and skips final save",
+      "passed": true
+    },
+    {
+      "name": "final wait fault bypasses preceding except but still emits checkpoint finished",
+      "passed": true
+    },
+    {
+      "name": "every exception prevents selected post-loop tracker finish",
+      "passed": true
+    }
+  ],
+  "cases": {
+    "clean": {
+      "error": null,
+      "train_call_steps": [
+        0
+      ],
+      "state_step_after": 1,
+      "state_parameter_finite_after": true,
+      "events": [
+        "started",
+        "tail:started",
+        "finished",
+        "tail:finished",
+        "save_started",
+        "tail:save_started",
+        "save_finished",
+        "tail:save_finished",
+        "save_started",
+        "tail:save_started",
+        "wait_save",
+        "save_finished",
+        "tail:save_finished",
+        "training_finished",
+        "tail:training_finished",
+        "tracker_finish"
+      ],
+      "callback_calls": [
+        {
+          "step": 1,
+          "force": false,
+          "parameter_finite": true
+        },
+        {
+          "step": 1,
+          "force": true,
+          "parameter_finite": true
+        }
+      ],
+      "checkpoint_handoffs": [
+        {
+          "step": 1,
+          "force": false,
+          "parameter_finite": true
+        },
+        {
+          "step": 1,
+          "force": true,
+          "parameter_finite": true
+        }
+      ]
+    },
+    "train_fault": {
+      "error": [
+        {
+          "type": "RuntimeError",
+          "message": "Non-finite loss (nan) at step 1."
+        }
+      ],
+      "train_call_steps": [
+        0
+      ],
+      "state_step_after": 1,
+      "state_parameter_finite_after": true,
+      "events": [
+        "started",
+        "tail:started",
+        "finished",
+        "tail:finished",
+        "fatal_logged",
+        "training_finished",
+        "tail:training_finished"
+      ],
+      "callback_calls": [],
+      "checkpoint_handoffs": []
+    },
+    "train_and_finish_fault": {
+      "error": [
+        {
+          "type": "RuntimeError",
+          "message": "event:training_finished"
+        },
+        {
+          "type": "RuntimeError",
+          "message": "Non-finite loss (nan) at step 1."
+        }
+      ],
+      "train_call_steps": [
+        0
+      ],
+      "state_step_after": 1,
+      "state_parameter_finite_after": true,
+      "events": [
+        "started",
+        "tail:started",
+        "finished",
+        "tail:finished",
+        "fatal_logged",
+        "training_finished"
+      ],
+      "callback_calls": [],
+      "checkpoint_handoffs": []
+    },
+    "train_and_logger_fault": {
+      "error": [
+        {
+          "type": "RuntimeError",
+          "message": "logger failed"
+        },
+        {
+          "type": "RuntimeError",
+          "message": "Non-finite loss (nan) at step 1."
+        }
+      ],
+      "train_call_steps": [
+        0
+      ],
+      "state_step_after": 1,
+      "state_parameter_finite_after": true,
+      "events": [
+        "started",
+        "tail:started",
+        "finished",
+        "tail:finished",
+        "fatal_logged",
+        "training_finished",
+        "tail:training_finished"
+      ],
+      "callback_calls": [],
+      "checkpoint_handoffs": []
+    },
+    "save_fault": {
+      "error": [
+        {
+          "type": "RuntimeError",
+          "message": "synthetic checkpoint handoff failure"
+        }
+      ],
+      "train_call_steps": [
+        0
+      ],
+      "state_step_after": 1,
+      "state_parameter_finite_after": true,
+      "events": [
+        "started",
+        "tail:started",
+        "finished",
+        "tail:finished",
+        "save_started",
+        "tail:save_started",
+        "save_finished",
+        "tail:save_finished",
+        "fatal_logged",
+        "training_finished",
+        "tail:training_finished"
+      ],
+      "callback_calls": [
+        {
+          "step": 1,
+          "force": false,
+          "parameter_finite": true
+        }
+      ],
+      "checkpoint_handoffs": [
+        {
+          "step": 1,
+          "force": false,
+          "parameter_finite": true
+        }
+      ]
+    },
+    "save_and_scope_finish_fault": {
+      "error": [
+        {
+          "type": "RuntimeError",
+          "message": "event:save_finished"
+        },
+        {
+          "type": "RuntimeError",
+          "message": "synthetic checkpoint handoff failure"
+        }
+      ],
+      "train_call_steps": [
+        0
+      ],
+      "state_step_after": 1,
+      "state_parameter_finite_after": true,
+      "events": [
+        "started",
+        "tail:started",
+        "finished",
+        "tail:finished",
+        "save_started",
+        "tail:save_started",
+        "save_finished",
+        "fatal_logged",
+        "training_finished",
+        "tail:training_finished"
+      ],
+      "callback_calls": [
+        {
+          "step": 1,
+          "force": false,
+          "parameter_finite": true
+        }
+      ],
+      "checkpoint_handoffs": [
+        {
+          "step": 1,
+          "force": false,
+          "parameter_finite": true
+        }
+      ]
+    },
+    "save_start_fault": {
+      "error": [
+        {
+          "type": "RuntimeError",
+          "message": "event:save_started"
+        }
+      ],
+      "train_call_steps": [
+        0
+      ],
+      "state_step_after": 1,
+      "state_parameter_finite_after": true,
+      "events": [
+        "started",
+        "tail:started",
+        "finished",
+        "tail:finished",
+        "save_started",
+        "fatal_logged",
+        "training_finished",
+        "tail:training_finished"
+      ],
+      "callback_calls": [
+        {
+          "step": 1,
+          "force": false,
+          "parameter_finite": true
+        }
+      ],
+      "checkpoint_handoffs": []
+    },
+    "final_callback_fault": {
+      "error": [
+        {
+          "type": "RuntimeError",
+          "message": "forced callback failed"
+        }
+      ],
+      "train_call_steps": [
+        0
+      ],
+      "state_step_after": 1,
+      "state_parameter_finite_after": true,
+      "events": [
+        "started",
+        "tail:started",
+        "finished",
+        "tail:finished",
+        "save_started",
+        "tail:save_started",
+        "save_finished",
+        "tail:save_finished",
+        "final_callback_attempt",
+        "training_finished",
+        "tail:training_finished"
+      ],
+      "callback_calls": [
+        {
+          "step": 1,
+          "force": false,
+          "parameter_finite": true
+        }
+      ],
+      "checkpoint_handoffs": [
+        {
+          "step": 1,
+          "force": false,
+          "parameter_finite": true
+        }
+      ]
+    },
+    "final_wait_fault": {
+      "error": [
+        {
+          "type": "RuntimeError",
+          "message": "final wait failed"
+        }
+      ],
+      "train_call_steps": [
+        0
+      ],
+      "state_step_after": 1,
+      "state_parameter_finite_after": true,
+      "events": [
+        "started",
+        "tail:started",
+        "finished",
+        "tail:finished",
+        "save_started",
+        "tail:save_started",
+        "save_finished",
+        "tail:save_finished",
+        "save_started",
+        "tail:save_started",
+        "wait_save",
+        "save_finished",
+        "tail:save_finished",
+        "training_finished",
+        "tail:training_finished"
+      ],
+      "callback_calls": [
+        {
+          "step": 1,
+          "force": false,
+          "parameter_finite": true
+        },
+        {
+          "step": 1,
+          "force": true,
+          "parameter_finite": true
+        }
+      ],
+      "checkpoint_handoffs": [
+        {
+          "step": 1,
+          "force": false,
+          "parameter_finite": true
+        },
+        {
+          "step": 1,
+          "force": true,
+          "parameter_finite": true
+        }
+      ]
+    }
+  },
+  "source_sha256": {
+    "sources/scale_2026_10_05/train_hero_ep.py": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7",
+    "sources/state_2026_10_05/callback_core.py": "093eb427fd538123007ef3e14658be3462fddfbe8f43783977bb11bb0a3b24ce",
+    "sources/state_2026_10_05/state_adapter.py": "fdde652f95b9fb82d322d5e4cfed3b0750fdb15cd7507869e39a4e47bd82b70b",
+    "scripts/probe_failure_loop.py": "78d72b46f328addf6f0320eaa0da2eeb1583ca1f113e2983f5a588d753a0d0f6"
+  },
+  "probe_script_sha256": "eb64870b1bf56bcf1213c3231b55f10e7fcd8e95ca37bd9c72f189c46adeeb93",
+  "source_revision": "84869ae8c91ffe64e9f761c5bd714542eb1876e0",
+  "actual_Hero_secondary_exception": null,
+  "actual_production_event_hook_failure": null,
+  "actual_full_function_cleanup": null,
+  "actual_checkpoint_commit": null,
+  "actual_training_loss_effect": null
+}

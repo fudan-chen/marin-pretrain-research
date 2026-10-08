@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本V130：接通原保存调度、发布回调和异步manager，分别注入交接、commit、metadata与retention失败，核对请求消费、同step去重和time重试触发。11项控制，无真实checkpoint写入或删除。[调用合同与故障策略](CHECKPOINT_FAILURE_POLICY_ZH.md)。
+当前版本V131：11项原循环/进度作用域/事件分发人工故障控制，核对最外层异常、context、FINISHED语义与最终收尾失败。新增恢复后loss归因的验收顺序。[异常链与恢复归因](EXCEPTION_PROVENANCE_ZH.md)。
 
 [MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并提供未执行的性能交互记录模板。
 

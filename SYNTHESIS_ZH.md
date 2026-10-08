@@ -364,3 +364,7 @@ V117接原causal目标mask、attention有效性、投影margin和四CPU histogra
 ## V125：前缀抽样支持与IO布局
 
 模拟搜索还需审查“怎么抽到子集”。历史窗口式shuffle的前缀不等于全库存等概率子集；这是源码支持范围结论，并不直接证明真实质量偏差。先取得真实身份/来源构成，再评估是否需要重抽或改window。[V125反例与边界](RUN_CODE_PROVENANCE_ZH.md)。
+
+### V131：训练失败的最后一条报错可能来自收尾
+
+固定源码11项人工控制显示，finally进度hook或日志再次失败，会成为最外层异常，先前训练错误仍在context。CHECKPOINT_FINISHED即使保存交接抛错也可能发出；最终wait失败也可能没有训练体fatal日志。排错需完整异常链，恢复需commit/发布/读取证据；这些缺失时，不应把重启后loss变化解释为配比收益。见 [异常链与恢复归因](EXCEPTION_PROVENANCE_ZH.md)。未证明Hero实际出现该事故。

@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本V132：12项原恢复策略与真实本地小状态控制，验证父目录/具体目录、损坏marker与可选初始化的边界；补齐首次启动、续训、weights-only合同。[可选恢复与启动身份](OPTIONAL_RESUME_ZH.md)。
+当前版本V133：14项原scheduler/build与真实Optax注入控制，核对新预算、缓存学习率及多份count如何影响下一步；新增固定scheduler源码。[状态与优化计划接续](OPTIMIZER_SCHEDULE_ZH.md)。
 
 [MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并提供未执行的性能交互记录模板。
 

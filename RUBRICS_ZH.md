@@ -601,3 +601,7 @@ V117接原causal目标mask、attention有效性、投影margin和四CPU histogra
 ## V132应用例：可选恢复的意图与历史证据
 
 保持现有18项规则。评审应提交同一checkpoint父目录/具体路径对照，并区分真正空目录、未发布残留、损坏marker与数组缺叶。声明续训时，返回初始state不能记为恢复通过；required=True也不替代发布身份、schema和下一步验收。见 [12项真实本地控制](OPTIONAL_RESUME_ZH.md)。
+
+## V133应用例：状态相同与计划接续
+
+沿用18项规则。续训证据应同时绑定原N/新N、schedule定义与单位、各组LR、各schedule count、Adam count和下一步update；不能拿缓存lr或一个outer count替代。只改配比与配比加预算重规划是不同干预。[14项原构造/注入控制](OPTIMIZER_SCHEDULE_ZH.md)。

@@ -330,3 +330,10 @@ exception-provenance-cpu:
 .PHONY: optional-resume-evidence-cpu
 optional-resume-evidence-cpu:
 	$(CPU_PYTHON) scripts/probe_optional_resume_evidence_cpu.py
+
+.PHONY: optimizer-schedule-source optimizer-schedule-resume-cpu
+optimizer-schedule-source:
+	$(PYTHON) scripts/acquire_optimizer_schedule_source.py
+	$(PYTHON) scripts/archive_manifest.py
+optimizer-schedule-resume-cpu:
+	$(CPU_PYTHON) scripts/probe_optimizer_schedule_resume_cpu.py

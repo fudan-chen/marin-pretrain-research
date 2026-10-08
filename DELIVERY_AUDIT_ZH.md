@@ -309,3 +309,7 @@ V125在既有历史源上新增9项CPU和数学控制，595份来源未变。新
 ## V132增量审计
 
 12项控制覆盖真实本地OCDBT小状态、原发现/布局hook/严格reader/恢复策略和原Shape模板guard。11个调用案例；metadata手工构造，初始化器与barrier记录适配；无完整训练、生产写入删除或Hero事故确认。来源未新增、旧探针结果未覆盖。[正文与复现](OPTIONAL_RESUME_ZH.md)。
+
+## V133增量审计
+
+新增同固定提交scheduler源码1份（23388字节），旧595份非bookkeeping来源字节保留。14项原scheduler/build/真实Optax控制；单叶Adam组、未选组identity、路径适配、内存state转交。无磁盘恢复、完整模型或训练loss。本轮HTML结构检查与报告验证见发布账本，未做浏览器渲染验收。[正文](OPTIMIZER_SCHEDULE_ZH.md)。

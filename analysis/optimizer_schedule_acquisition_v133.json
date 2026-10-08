@@ -1,0 +1,14 @@
+{
+  "records": [
+    {
+      "file": "optimizer_schedule_2026_10_08/config.py",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/optim/config.py",
+      "bytes": 23388,
+      "sha256": "d79455726465316272eef363c2a2daad7f370f440d3c6e95a3e71658fcd79606",
+      "retrieved_utc": "2026-10-08T04:35:15.279307+00:00",
+      "git_revision": "84869ae8c91ffe64e9f761c5bd714542eb1876e0",
+      "execution_binding": "Pinned public source, not verified as historical deployed code"
+    }
+  ],
+  "historical_runtime_binding": null
+}

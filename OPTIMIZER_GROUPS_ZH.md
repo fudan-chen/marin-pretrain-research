@@ -187,3 +187,7 @@ V51已验证裁剪位于组内变换，而不是全模型只做一次；本节�
 改变配比时重置优化器，会同时改变moment适应、Adam偏差校正、专用衰减时钟和可能的外层学习率。此时loss变化不能单归因于数据。若要先观察配比效应，保持共同状态和计划、只改变采样输入；若研究重置是否有利，则把它另列为实验因素。这里是由实现推导的实验要求，尚无真实Hero配比干预结果。
 
 [15项CPU检查](analysis/decay_resume_cpu.json)保存原路径、真实状态控制和逐项更新；[脚本](scripts/probe_decay_resume_cpu.py)可复核。新增1份同head路径源码，491份旧非bookkeeping来源字节保持，归档共493份。本轮没有发现或宣称Hero实际发生count错配，没有执行GPU、磁盘恢复或长期训练收益验证。复现使用已记录的CPU环境及Equinox依赖：`PYTHONPATH=/tmp/marin-tensorstore-lib make decay-resume-cpu CPU_PYTHON=/tmp/marin-jax-cpu-072/bin/python`。
+
+## V133：外层学习率注入与多份count
+
+补足V86未执行的外层：固定scheduler与原Hero build配合真实Optax注入，14项CPU控制。同一内存state重建N100→200，下步adam_lr从0.006变为0.0085，专用衰减也改变；缓存hyperparams不能锁定下一步。只改外层count不会重置WrappedScheduleState；只改schedule count可让lr为0，而Adam仍推进。未选中MuonH/AdamH为identity，单叶路径适配、无磁盘恢复或完整Hero训练。[详细机制与数值](OPTIMIZER_SCHEDULE_ZH.md)。

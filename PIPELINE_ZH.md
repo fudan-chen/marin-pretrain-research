@@ -473,3 +473,7 @@ V117接原causal目标mask、attention有效性、投影margin和四CPU histogra
 ## V132：启动前的分支合同
 
 启动记录必须声明首次训练、续训或weights-only，记录搜索路径、跳过候选原因与实际恢复身份。可选恢复的“没有历史”分类不能仅凭候选等于根路径推断；若意图续训而返回初始state，先中止配比效果判断。损坏marker和未发布残留进入单独处理分支，不能自动删除。[原策略的路径反例](OPTIONAL_RESUME_ZH.md)。
+
+## V133：预算重规划进入干预定义
+
+共同checkpoint比较之前，分别核对实际下一步LR、专用衰减和完整计数器。原状态能被新optimizer接受，不证明原优化计划接续；改变N或重置部分count需独立对照或标为组合干预。先做同状态同梯度update对照，再做同batch完整训练和固定评估。[源码与控制](OPTIMIZER_SCHEDULE_ZH.md)。

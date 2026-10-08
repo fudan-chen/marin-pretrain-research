@@ -1,0 +1,559 @@
+{
+  "scope": "Original scheduler and Hero build, real Optax injection/Adam in selected Adam group.\nSynthetic single-group parameters; unused MuonH/AdamH transforms are identities.\nIn-memory state transfer, not disk restore, full Hero optimizer, or training experiment.\n",
+  "checks_passed": 14,
+  "checks": [
+    {
+      "name": "original mask selects only Adam group",
+      "passed": true
+    },
+    {
+      "name": "complete injected state carries count50 with distinct cached pre-update schedule",
+      "passed": true
+    },
+    {
+      "name": "same state with rebuilt horizon uses new LR on next update",
+      "passed": true
+    },
+    {
+      "name": "unchanged input state preserved by all branches",
+      "passed": true
+    },
+    {
+      "name": "same gradients preserve all next inner Adam states across rebuilt plans",
+      "passed": true
+    },
+    {
+      "name": "changing cached hyperparams alone does not bind scheduled next value",
+      "passed": true
+    },
+    {
+      "name": "isolated LR multiplies identical direction by known schedule ratio",
+      "passed": true
+    },
+    {
+      "name": "isolated horizon decay changes direction independently of LR",
+      "passed": true
+    },
+    {
+      "name": "shortened horizon remains at minimum LR not frozen",
+      "passed": true
+    },
+    {
+      "name": "eager and JIT updates agree within float tolerance",
+      "passed": true
+    },
+    {
+      "name": "all branches advance outer clock exactly once",
+      "passed": true
+    },
+    {
+      "name": "outer count reset alone does not reset wrapped schedule or Adam direction",
+      "passed": true
+    },
+    {
+      "name": "schedule clock reset alone zeroes initial warmup LR and update",
+      "passed": true
+    },
+    {
+      "name": "zero LR update still advances unchanged inner Adam state",
+      "passed": true
+    }
+  ],
+  "cases": {
+    "same_N": {
+      "build_N": 100,
+      "schedule_N": 100,
+      "input_schedule_counts": {
+        "learning_rate": 50,
+        "adam_lr": 50
+      },
+      "output_schedule_counts": {
+        "learning_rate": 51,
+        "adam_lr": 51
+      },
+      "input_outer_count": 50,
+      "output_outer_count": 51,
+      "cached_input_hyperparams": {
+        "learning_rate": 0.012199999764561653,
+        "adam_lr": 0.006099999882280827
+      },
+      "used_output_hyperparams": {
+        "learning_rate": 0.012000000104308128,
+        "adam_lr": 0.006000000052154064
+      },
+      "update": [
+        -0.006120000500231981,
+        -0.006240000482648611
+      ],
+      "next_state_leaves": [
+        51,
+        0.006000000052154064,
+        0.012000000104308128,
+        51,
+        51,
+        51,
+        [
+          0.24884042143821716,
+          0.24884042143821716
+        ],
+        [
+          0.05793139338493347,
+          0.05793139338493347
+        ]
+      ]
+    },
+    "new_N": {
+      "build_N": 200,
+      "schedule_N": 200,
+      "input_schedule_counts": {
+        "learning_rate": 50,
+        "adam_lr": 50
+      },
+      "output_schedule_counts": {
+        "learning_rate": 51,
+        "adam_lr": 51
+      },
+      "input_outer_count": 50,
+      "output_outer_count": 51,
+      "cached_input_hyperparams": {
+        "learning_rate": 0.012199999764561653,
+        "adam_lr": 0.006099999882280827
+      },
+      "used_output_hyperparams": {
+        "learning_rate": 0.016999999061226845,
+        "adam_lr": 0.008499999530613422
+      },
+      "update": [
+        -0.008755000308156013,
+        -0.00901000015437603
+      ],
+      "next_state_leaves": [
+        51,
+        0.008499999530613422,
+        0.016999999061226845,
+        51,
+        51,
+        51,
+        [
+          0.24884042143821716,
+          0.24884042143821716
+        ],
+        [
+          0.05793139338493347,
+          0.05793139338493347
+        ]
+      ]
+    },
+    "decay_only_counterfactual": {
+      "build_N": 200,
+      "schedule_N": 100,
+      "input_schedule_counts": {
+        "learning_rate": 50,
+        "adam_lr": 50
+      },
+      "output_schedule_counts": {
+        "learning_rate": 51,
+        "adam_lr": 51
+      },
+      "input_outer_count": 50,
+      "output_outer_count": 51,
+      "cached_input_hyperparams": {
+        "learning_rate": 0.012199999764561653,
+        "adam_lr": 0.006099999882280827
+      },
+      "used_output_hyperparams": {
+        "learning_rate": 0.012000000104308128,
+        "adam_lr": 0.006000000052154064
+      },
+      "update": [
+        -0.006180000491440296,
+        -0.006360000465065241
+      ],
+      "next_state_leaves": [
+        51,
+        0.006000000052154064,
+        0.012000000104308128,
+        51,
+        51,
+        51,
+        [
+          0.24884042143821716,
+          0.24884042143821716
+        ],
+        [
+          0.05793139338493347,
+          0.05793139338493347
+        ]
+      ]
+    },
+    "lr_only_counterfactual": {
+      "build_N": 100,
+      "schedule_N": 200,
+      "input_schedule_counts": {
+        "learning_rate": 50,
+        "adam_lr": 50
+      },
+      "output_schedule_counts": {
+        "learning_rate": 51,
+        "adam_lr": 51
+      },
+      "input_outer_count": 50,
+      "output_outer_count": 51,
+      "cached_input_hyperparams": {
+        "learning_rate": 0.012199999764561653,
+        "adam_lr": 0.006099999882280827
+      },
+      "used_output_hyperparams": {
+        "learning_rate": 0.016999999061226845,
+        "adam_lr": 0.008499999530613422
+      },
+      "update": [
+        -0.008670000359416008,
+        -0.008840000256896019
+      ],
+      "next_state_leaves": [
+        51,
+        0.008499999530613422,
+        0.016999999061226845,
+        51,
+        51,
+        51,
+        [
+          0.24884042143821716,
+          0.24884042143821716
+        ],
+        [
+          0.05793139338493347,
+          0.05793139338493347
+        ]
+      ]
+    },
+    "shortened_N": {
+      "build_N": 40,
+      "schedule_N": 40,
+      "input_schedule_counts": {
+        "learning_rate": 50,
+        "adam_lr": 50
+      },
+      "output_schedule_counts": {
+        "learning_rate": 51,
+        "adam_lr": 51
+      },
+      "input_outer_count": 50,
+      "output_outer_count": 51,
+      "cached_input_hyperparams": {
+        "learning_rate": 0.012199999764561653,
+        "adam_lr": 0.006099999882280827
+      },
+      "used_output_hyperparams": {
+        "learning_rate": 0.0020000000949949026,
+        "adam_lr": 0.0010000000474974513
+      },
+      "update": [
+        -0.0010000001639127731,
+        -0.0010000001639127731
+      ],
+      "next_state_leaves": [
+        51,
+        0.0010000000474974513,
+        0.0020000000949949026,
+        51,
+        51,
+        51,
+        [
+          0.24884042143821716,
+          0.24884042143821716
+        ],
+        [
+          0.05793139338493347,
+          0.05793139338493347
+        ]
+      ]
+    },
+    "cached_hyperparams_only_changed": {
+      "build_N": 100,
+      "schedule_N": 100,
+      "input_schedule_counts": {
+        "learning_rate": 50,
+        "adam_lr": 50
+      },
+      "output_schedule_counts": {
+        "learning_rate": 51,
+        "adam_lr": 51
+      },
+      "input_outer_count": 50,
+      "output_outer_count": 51,
+      "cached_input_hyperparams": {
+        "learning_rate": 123.0,
+        "adam_lr": 123.0
+      },
+      "used_output_hyperparams": {
+        "learning_rate": 0.012000000104308128,
+        "adam_lr": 0.006000000052154064
+      },
+      "update": [
+        -0.006120000500231981,
+        -0.006240000482648611
+      ],
+      "next_state_leaves": [
+        51,
+        0.006000000052154064,
+        0.012000000104308128,
+        51,
+        51,
+        51,
+        [
+          0.24884042143821716,
+          0.24884042143821716
+        ],
+        [
+          0.05793139338493347,
+          0.05793139338493347
+        ]
+      ]
+    },
+    "outer_count_only_reset": {
+      "build_N": 100,
+      "schedule_N": 100,
+      "input_schedule_counts": {
+        "learning_rate": 50,
+        "adam_lr": 50
+      },
+      "output_schedule_counts": {
+        "learning_rate": 51,
+        "adam_lr": 51
+      },
+      "input_outer_count": 0,
+      "output_outer_count": 1,
+      "cached_input_hyperparams": {
+        "learning_rate": 0.012199999764561653,
+        "adam_lr": 0.006099999882280827
+      },
+      "used_output_hyperparams": {
+        "learning_rate": 0.012000000104308128,
+        "adam_lr": 0.006000000052154064
+      },
+      "update": [
+        -0.006120000500231981,
+        -0.006240000482648611
+      ],
+      "next_state_leaves": [
+        1,
+        0.006000000052154064,
+        0.012000000104308128,
+        51,
+        51,
+        51,
+        [
+          0.24884042143821716,
+          0.24884042143821716
+        ],
+        [
+          0.05793139338493347,
+          0.05793139338493347
+        ]
+      ]
+    },
+    "schedule_counts_only_reset": {
+      "build_N": 100,
+      "schedule_N": 100,
+      "input_schedule_counts": {
+        "learning_rate": 0,
+        "adam_lr": 0
+      },
+      "output_schedule_counts": {
+        "learning_rate": 1,
+        "adam_lr": 1
+      },
+      "input_outer_count": 50,
+      "output_outer_count": 51,
+      "cached_input_hyperparams": {
+        "learning_rate": 0.012199999764561653,
+        "adam_lr": 0.006099999882280827
+      },
+      "used_output_hyperparams": {
+        "learning_rate": 0.0,
+        "adam_lr": 0.0
+      },
+      "update": [
+        -0.0,
+        -0.0
+      ],
+      "next_state_leaves": [
+        51,
+        0.0,
+        0.0,
+        1,
+        1,
+        51,
+        [
+          0.24884042143821716,
+          0.24884042143821716
+        ],
+        [
+          0.05793139338493347,
+          0.05793139338493347
+        ]
+      ]
+    }
+  },
+  "schedule_values": {
+    "40": [
+      {
+        "count": 0,
+        "adam_lr": 0.0
+      },
+      {
+        "count": 5,
+        "adam_lr": 0.009749999269843102
+      },
+      {
+        "count": 10,
+        "adam_lr": 0.008499999530613422
+      },
+      {
+        "count": 20,
+        "adam_lr": 0.006000000052154064
+      },
+      {
+        "count": 49,
+        "adam_lr": 0.0010000000474974513
+      },
+      {
+        "count": 50,
+        "adam_lr": 0.0010000000474974513
+      },
+      {
+        "count": 90,
+        "adam_lr": 0.0010000000474974513
+      },
+      {
+        "count": 100,
+        "adam_lr": 0.0010000000474974513
+      },
+      {
+        "count": 150,
+        "adam_lr": 0.0010000000474974513
+      },
+      {
+        "count": 200,
+        "adam_lr": 0.0010000000474974513
+      }
+    ],
+    "100": [
+      {
+        "count": 0,
+        "adam_lr": 0.0
+      },
+      {
+        "count": 5,
+        "adam_lr": 0.004999999888241291
+      },
+      {
+        "count": 10,
+        "adam_lr": 0.009999999776482582
+      },
+      {
+        "count": 20,
+        "adam_lr": 0.008999999612569809
+      },
+      {
+        "count": 49,
+        "adam_lr": 0.006099999882280827
+      },
+      {
+        "count": 50,
+        "adam_lr": 0.006000000052154064
+      },
+      {
+        "count": 90,
+        "adam_lr": 0.001999999862164259
+      },
+      {
+        "count": 100,
+        "adam_lr": 0.0010000000474974513
+      },
+      {
+        "count": 150,
+        "adam_lr": 0.0010000000474974513
+      },
+      {
+        "count": 200,
+        "adam_lr": 0.0010000000474974513
+      }
+    ],
+    "200": [
+      {
+        "count": 0,
+        "adam_lr": 0.0
+      },
+      {
+        "count": 5,
+        "adam_lr": 0.0024999999441206455
+      },
+      {
+        "count": 10,
+        "adam_lr": 0.004999999888241291
+      },
+      {
+        "count": 20,
+        "adam_lr": 0.009999999776482582
+      },
+      {
+        "count": 49,
+        "adam_lr": 0.008549999445676804
+      },
+      {
+        "count": 50,
+        "adam_lr": 0.008499999530613422
+      },
+      {
+        "count": 90,
+        "adam_lr": 0.0064999996684491634
+      },
+      {
+        "count": 100,
+        "adam_lr": 0.006000000052154064
+      },
+      {
+        "count": 150,
+        "adam_lr": 0.0035000001080334187
+      },
+      {
+        "count": 200,
+        "adam_lr": 0.0010000000474974513
+      }
+    ]
+  },
+  "input_state_leaves": [
+    50,
+    0.006099999882280827,
+    0.012199999764561653,
+    50,
+    50,
+    50,
+    [
+      0.24871157109737396,
+      0.24871157109737396
+    ],
+    [
+      0.05769094079732895,
+      0.05769094079732895
+    ]
+  ],
+  "selected_group": "adam",
+  "parameters_fixed_during_moment_prewarm": true,
+  "source_sha256": {
+    "sources/optimizer_schedule_2026_10_08/config.py": "d79455726465316272eef363c2a2daad7f370f440d3c6e95a3e71658fcd79606",
+    "sources/optimizer_2026_10_05/optimizer.py": "50dddad265e18974e8529f7a9df26d37e44430ffc5442d5c93e58cb2e924ae0e"
+  },
+  "probe_script_sha256": "5f5721e089b0c22c6df3e1cfcd934984d2b1ae6176c4e434d266b38eac22c69d",
+  "runtime": {
+    "jax": "0.7.2",
+    "optax": "0.2.5"
+  },
+  "actual_disk_checkpoint_restore": null,
+  "actual_Hero_schedule_rebuild": null,
+  "actual_full_Hero_optimizer_execution": null,
+  "actual_training_loss_effect": null
+}

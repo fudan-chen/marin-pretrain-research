@@ -1,5 +1,5 @@
 {
-  "integrity_manifest_created_utc": "2026-10-08T04:13:07.866010+00:00",
+  "integrity_manifest_created_utc": "2026-10-08T04:35:15.527698+00:00",
   "files": [
     {
       "file": "accumulation_2026_10_07/grad_accum.py",
@@ -2044,6 +2044,13 @@
       "retrieved_utc": "2026-10-05T10:42:58.975435+00:00"
     },
     {
+      "file": "optimizer_schedule_2026_10_08/config.py",
+      "bytes": 23388,
+      "sha256": "d79455726465316272eef363c2a2daad7f370f440d3c6e95a3e71658fcd79606",
+      "url": "https://raw.githubusercontent.com/marin-community/marin/84869ae8c91ffe64e9f761c5bd714542eb1876e0/lib/levanter/src/levanter/optim/config.py",
+      "retrieved_utc": "2026-10-08T04:35:15.279307+00:00"
+    },
+    {
       "file": "packing_2026_10_07/packing.py",
       "bytes": 22612,
       "sha256": "99ea8aa52d7f06f765447312226502bd0f95a93327b3295d25a8ee9dcb5b9812",
@@ -3613,8 +3620,8 @@
     },
     {
       "file": "source_manifest.json",
-      "bytes": 280727,
-      "sha256": "840ee7385c6c933c7d8770ae8dc1643d0f199997af9d6a2f00720a24d28e62e7",
+      "bytes": 281257,
+      "sha256": "3e4854b92871ecd27b5ef796ecac3e25c6b42b3383ffb30fead0f9f3b8b005a5",
       "origin": "Derived readable copy, browser excerpt, or archive bookkeeping; see source_manifest and acquisition scripts."
     },
     {

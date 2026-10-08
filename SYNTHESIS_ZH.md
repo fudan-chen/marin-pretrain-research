@@ -372,3 +372,7 @@ V117接原causal目标mask、attention有效性、投影margin和四CPU histogra
 ### V132：同一个坏checkpoint，恢复路径也会改变启动结果
 
 原策略/真实本地IO的12项控制确认：optional模式下，父目录搜索会把已发现但缺叶的checkpoint记为失败恢复，直接指定同一具体目录却可能返回初始state。完整数组的坏marker在父目录下可被跳过；JSON null则中止扫描。由此建议独立声明首次启动/续训/weights-only，并记录实际祖先，再开展配比比较。见 [启动合同](OPTIONAL_RESUME_ZH.md)。这些是人工夹具结果，Hero是否受影响未知。
+
+### V133：完整state之外还有新构建的优化计划
+
+原scheduler/build与真实Optax注入的14项控制：相同state在不同N下得到不同LR和衰减；缓存lr在下一步重新求值，外层count与WrappedScheduleState.count并不互相替代。只重置调度count可让参数不动而Adam状态继续推进。配比比较须绑定实际计划和各时钟。[机制对照](OPTIMIZER_SCHEDULE_ZH.md)。仅选中人工Adam组，无完整Hero/GPU或语言loss收益。

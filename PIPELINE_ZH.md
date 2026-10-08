@@ -6,6 +6,8 @@
 
 后端验收须绑定实际反向入口：[原 custom VJP 注册链](CE_BACKWARD_PATH_ZH.md)已完成正常目标、罚项 cotangent 与极端转换控制；直接参考求导、手工反向子函数、原注册入口和公共 dispatcher 分别记录，不能互相代填。
 
+反向数值预检进一步记录 x/w、logits、GEMM 操作数、跨块累计 buffer 和输出 dtype，固定目标分别改变块大小及转换位置；[BF16 累积与 FP16 早期归零控制](CE_GRADIENT_DTYPE_ZH.md)说明有限性不足以验收更新量。大分母只作符号 cotangent 控制，没有执行全局训练 batch。
+
 ## 1. 七个阶段的输入和产物
 
 | 阶段 | 输入与问题 | 留下什么 | 哪些缺口需要先处理 |

@@ -1,0 +1,515 @@
+{
+  "scope": "Original registered streaming CE VJP on CPU synthetic BF16/FP16/FP32 operands. Batch accumulation and dlogit cast counterexamples, symbolic large denominator without allocating global batch.",
+  "checks_passed": 14,
+  "checks": [
+    {
+      "name": "BF16 slow 512 one-row chunks lose half of selected accumulated head gradient",
+      "passed": true
+    },
+    {
+      "name": "BF16 slow single full batch GEMM retains selected head gradient",
+      "passed": true
+    },
+    {
+      "name": "BF16 slow larger 32-row chunks retain selected head gradient",
+      "passed": true
+    },
+    {
+      "name": "Original scan FP32 accumulation retains selected BF16 gradient across both backward chunks",
+      "passed": true
+    },
+    {
+      "name": "FP32 slow one-row chunks retain selected gradient",
+      "passed": true
+    },
+    {
+      "name": "Identical logits target and normalization retain equal forward loss across batch chunk controls",
+      "passed": true
+    },
+    {
+      "name": "All selected dtype gradients finite including inaccurate and zero controls",
+      "passed": true
+    },
+    {
+      "name": "FP16 early dlogit conversion zeros selected representable final gradient at power denominator",
+      "passed": true
+    },
+    {
+      "name": "FP16 uniform scale8 and FP32 unscale restores selected power-of-two gradient",
+      "passed": true
+    },
+    {
+      "name": "FP16 declared-sized denominator same selected early conversion failure",
+      "passed": true
+    },
+    {
+      "name": "Scaling128 at declared-sized denominator yields nonzero approximate not exact recovery",
+      "passed": true
+    },
+    {
+      "name": "BF16 and mixed FP16 activation FP32 head avoid selected all-zero conversion",
+      "passed": true
+    },
+    {
+      "name": "Archived Hero declaration uses BF16 compute and FP32 params not pure FP16 control",
+      "passed": true
+    },
+    {
+      "name": "Pinned model explicitly documents backward numerical change and FP32 loss default",
+      "passed": true
+    }
+  ],
+  "cases": {
+    "bf16_slow_chunk1": {
+      "rows": 512,
+      "x_dtype": "<class 'jax.numpy.bfloat16'>",
+      "w_dtype": "<class 'jax.numpy.bfloat16'>",
+      "backward_gemm_dtype": "bfloat16",
+      "logits_dtype": "float32",
+      "fast_backward": false,
+      "forward_batch_chunk": 1,
+      "backward_batch_chunk": null,
+      "denominator": 512,
+      "loss_scale": 1.0,
+      "hidden_value": 1.0,
+      "scaled_loss": 0.6931471824645996,
+      "loss_before_scale": 0.6931471824645996,
+      "head_gradient_unscaled": [
+        [
+          -0.25,
+          0.25
+        ]
+      ],
+      "head_gradient_dtype": "bfloat16",
+      "gradient_finite": true,
+      "FP32_analytic_head_gradient": [
+        [
+          -0.5,
+          0.5
+        ]
+      ],
+      "per_row_precast_dlogit_magnitude": 0.0009765625
+    },
+    "bf16_slow_chunk32": {
+      "rows": 512,
+      "x_dtype": "<class 'jax.numpy.bfloat16'>",
+      "w_dtype": "<class 'jax.numpy.bfloat16'>",
+      "backward_gemm_dtype": "bfloat16",
+      "logits_dtype": "float32",
+      "fast_backward": false,
+      "forward_batch_chunk": 32,
+      "backward_batch_chunk": null,
+      "denominator": 512,
+      "loss_scale": 1.0,
+      "hidden_value": 1.0,
+      "scaled_loss": 0.6931471824645996,
+      "loss_before_scale": 0.6931471824645996,
+      "head_gradient_unscaled": [
+        [
+          -0.5,
+          0.5
+        ]
+      ],
+      "head_gradient_dtype": "bfloat16",
+      "gradient_finite": true,
+      "FP32_analytic_head_gradient": [
+        [
+          -0.5,
+          0.5
+        ]
+      ],
+      "per_row_precast_dlogit_magnitude": 0.0009765625
+    },
+    "bf16_slow_chunk512": {
+      "rows": 512,
+      "x_dtype": "<class 'jax.numpy.bfloat16'>",
+      "w_dtype": "<class 'jax.numpy.bfloat16'>",
+      "backward_gemm_dtype": "bfloat16",
+      "logits_dtype": "float32",
+      "fast_backward": false,
+      "forward_batch_chunk": 512,
+      "backward_batch_chunk": null,
+      "denominator": 512,
+      "loss_scale": 1.0,
+      "hidden_value": 1.0,
+      "scaled_loss": 0.6931471824645996,
+      "loss_before_scale": 0.6931471824645996,
+      "head_gradient_unscaled": [
+        [
+          -0.5,
+          0.5
+        ]
+      ],
+      "head_gradient_dtype": "bfloat16",
+      "gradient_finite": true,
+      "FP32_analytic_head_gradient": [
+        [
+          -0.5,
+          0.5
+        ]
+      ],
+      "per_row_precast_dlogit_magnitude": 0.0009765625
+    },
+    "bf16_scan_chunk1": {
+      "rows": 512,
+      "x_dtype": "<class 'jax.numpy.bfloat16'>",
+      "w_dtype": "<class 'jax.numpy.bfloat16'>",
+      "backward_gemm_dtype": "bfloat16",
+      "logits_dtype": "float32",
+      "fast_backward": true,
+      "forward_batch_chunk": 1,
+      "backward_batch_chunk": 1,
+      "denominator": 512,
+      "loss_scale": 1.0,
+      "hidden_value": 1.0,
+      "scaled_loss": 0.6931471824645996,
+      "loss_before_scale": 0.6931471824645996,
+      "head_gradient_unscaled": [
+        [
+          -0.5,
+          0.5
+        ]
+      ],
+      "head_gradient_dtype": "bfloat16",
+      "gradient_finite": true,
+      "FP32_analytic_head_gradient": [
+        [
+          -0.5,
+          0.5
+        ]
+      ],
+      "per_row_precast_dlogit_magnitude": 0.0009765625
+    },
+    "bf16_scan_chunk512": {
+      "rows": 512,
+      "x_dtype": "<class 'jax.numpy.bfloat16'>",
+      "w_dtype": "<class 'jax.numpy.bfloat16'>",
+      "backward_gemm_dtype": "bfloat16",
+      "logits_dtype": "float32",
+      "fast_backward": true,
+      "forward_batch_chunk": 1,
+      "backward_batch_chunk": 512,
+      "denominator": 512,
+      "loss_scale": 1.0,
+      "hidden_value": 1.0,
+      "scaled_loss": 0.6931471824645996,
+      "loss_before_scale": 0.6931471824645996,
+      "head_gradient_unscaled": [
+        [
+          -0.5,
+          0.5
+        ]
+      ],
+      "head_gradient_dtype": "bfloat16",
+      "gradient_finite": true,
+      "FP32_analytic_head_gradient": [
+        [
+          -0.5,
+          0.5
+        ]
+      ],
+      "per_row_precast_dlogit_magnitude": 0.0009765625
+    },
+    "fp32_slow_chunk1": {
+      "rows": 512,
+      "x_dtype": "<class 'jax.numpy.float32'>",
+      "w_dtype": "<class 'jax.numpy.float32'>",
+      "backward_gemm_dtype": "float32",
+      "logits_dtype": "float32",
+      "fast_backward": false,
+      "forward_batch_chunk": 1,
+      "backward_batch_chunk": null,
+      "denominator": 512,
+      "loss_scale": 1.0,
+      "hidden_value": 1.0,
+      "scaled_loss": 0.6931471824645996,
+      "loss_before_scale": 0.6931471824645996,
+      "head_gradient_unscaled": [
+        [
+          -0.5,
+          0.5
+        ]
+      ],
+      "head_gradient_dtype": "float32",
+      "gradient_finite": true,
+      "FP32_analytic_head_gradient": [
+        [
+          -0.5,
+          0.5
+        ]
+      ],
+      "per_row_precast_dlogit_magnitude": 0.0009765625
+    },
+    "fp16_slow_power": {
+      "rows": 1,
+      "x_dtype": "<class 'jax.numpy.float16'>",
+      "w_dtype": "<class 'jax.numpy.float16'>",
+      "backward_gemm_dtype": "float16",
+      "logits_dtype": "float32",
+      "fast_backward": false,
+      "forward_batch_chunk": 1,
+      "backward_batch_chunk": null,
+      "denominator": 67108864,
+      "loss_scale": 1,
+      "hidden_value": 4096.0,
+      "scaled_loss": 1.0328697896966332e-08,
+      "loss_before_scale": 1.0328697896966332e-08,
+      "head_gradient_unscaled": [
+        [
+          -3.0517578125e-05,
+          3.0517578125e-05
+        ]
+      ],
+      "head_gradient_dtype": "float16",
+      "gradient_finite": true,
+      "FP32_analytic_head_gradient": [
+        [
+          -3.0517578125e-05,
+          3.0517578125e-05
+        ]
+      ],
+      "per_row_precast_dlogit_magnitude": 7.450580596923828e-09
+    },
+    "fp16_scan_power": {
+      "rows": 1,
+      "x_dtype": "<class 'jax.numpy.float16'>",
+      "w_dtype": "<class 'jax.numpy.float16'>",
+      "backward_gemm_dtype": "float16",
+      "logits_dtype": "float32",
+      "fast_backward": true,
+      "forward_batch_chunk": 1,
+      "backward_batch_chunk": null,
+      "denominator": 67108864,
+      "loss_scale": 1,
+      "hidden_value": 4096.0,
+      "scaled_loss": 1.0328697896966332e-08,
+      "loss_before_scale": 1.0328697896966332e-08,
+      "head_gradient_unscaled": [
+        [
+          -0.0,
+          0.0
+        ]
+      ],
+      "head_gradient_dtype": "float16",
+      "gradient_finite": true,
+      "FP32_analytic_head_gradient": [
+        [
+          -3.0517578125e-05,
+          3.0517578125e-05
+        ]
+      ],
+      "per_row_precast_dlogit_magnitude": 7.450580596923828e-09
+    },
+    "fp16_scan_power_scale8": {
+      "rows": 1,
+      "x_dtype": "<class 'jax.numpy.float16'>",
+      "w_dtype": "<class 'jax.numpy.float16'>",
+      "backward_gemm_dtype": "float16",
+      "logits_dtype": "float32",
+      "fast_backward": true,
+      "forward_batch_chunk": 1,
+      "backward_batch_chunk": null,
+      "denominator": 67108864,
+      "loss_scale": 8,
+      "hidden_value": 4096.0,
+      "scaled_loss": 8.262958317573066e-08,
+      "loss_before_scale": 1.0328697896966332e-08,
+      "head_gradient_unscaled": [
+        [
+          -3.0517578125e-05,
+          3.0517578125e-05
+        ]
+      ],
+      "head_gradient_dtype": "float16",
+      "gradient_finite": true,
+      "FP32_analytic_head_gradient": [
+        [
+          -3.0517578125e-05,
+          3.0517578125e-05
+        ]
+      ],
+      "per_row_precast_dlogit_magnitude": 5.960464477539063e-08
+    },
+    "fp16_slow_declared_T": {
+      "rows": 1,
+      "x_dtype": "<class 'jax.numpy.float16'>",
+      "w_dtype": "<class 'jax.numpy.float16'>",
+      "backward_gemm_dtype": "float16",
+      "logits_dtype": "float32",
+      "fast_backward": false,
+      "forward_batch_chunk": 1,
+      "backward_batch_chunk": null,
+      "denominator": 46126080,
+      "loss_scale": 1,
+      "hidden_value": 4096.0,
+      "scaled_loss": 1.5027229238739892e-08,
+      "loss_before_scale": 1.5027229238739892e-08,
+      "head_gradient_unscaled": [
+        [
+          -4.4405460357666016e-05,
+          4.4405460357666016e-05
+        ]
+      ],
+      "head_gradient_dtype": "float16",
+      "gradient_finite": true,
+      "FP32_analytic_head_gradient": [
+        [
+          -4.44000444000444e-05,
+          4.44000444000444e-05
+        ]
+      ],
+      "per_row_precast_dlogit_magnitude": 1.083985458985459e-08
+    },
+    "fp16_scan_declared_T": {
+      "rows": 1,
+      "x_dtype": "<class 'jax.numpy.float16'>",
+      "w_dtype": "<class 'jax.numpy.float16'>",
+      "backward_gemm_dtype": "float16",
+      "logits_dtype": "float32",
+      "fast_backward": true,
+      "forward_batch_chunk": 1,
+      "backward_batch_chunk": null,
+      "denominator": 46126080,
+      "loss_scale": 1,
+      "hidden_value": 4096.0,
+      "scaled_loss": 1.5027229238739892e-08,
+      "loss_before_scale": 1.5027229238739892e-08,
+      "head_gradient_unscaled": [
+        [
+          -0.0,
+          0.0
+        ]
+      ],
+      "head_gradient_dtype": "float16",
+      "gradient_finite": true,
+      "FP32_analytic_head_gradient": [
+        [
+          -4.44000444000444e-05,
+          4.44000444000444e-05
+        ]
+      ],
+      "per_row_precast_dlogit_magnitude": 1.083985458985459e-08
+    },
+    "fp16_scan_declared_T_scale128": {
+      "rows": 1,
+      "x_dtype": "<class 'jax.numpy.float16'>",
+      "w_dtype": "<class 'jax.numpy.float16'>",
+      "backward_gemm_dtype": "float16",
+      "logits_dtype": "float32",
+      "fast_backward": true,
+      "forward_batch_chunk": 1,
+      "backward_batch_chunk": null,
+      "denominator": 46126080,
+      "loss_scale": 128,
+      "hidden_value": 4096.0,
+      "scaled_loss": 1.923485342558706e-06,
+      "loss_before_scale": 1.5027229238739892e-08,
+      "head_gradient_unscaled": [
+        [
+          -4.38690185546875e-05,
+          4.38690185546875e-05
+        ]
+      ],
+      "head_gradient_dtype": "float16",
+      "gradient_finite": true,
+      "FP32_analytic_head_gradient": [
+        [
+          -4.44000444000444e-05,
+          4.44000444000444e-05
+        ]
+      ],
+      "per_row_precast_dlogit_magnitude": 1.3875013875013875e-06
+    },
+    "bf16_scan_declared_T": {
+      "rows": 1,
+      "x_dtype": "<class 'jax.numpy.bfloat16'>",
+      "w_dtype": "<class 'jax.numpy.bfloat16'>",
+      "backward_gemm_dtype": "bfloat16",
+      "logits_dtype": "float32",
+      "fast_backward": true,
+      "forward_batch_chunk": 1,
+      "backward_batch_chunk": null,
+      "denominator": 46126080,
+      "loss_scale": 1,
+      "hidden_value": 4096.0,
+      "scaled_loss": 1.5027229238739892e-08,
+      "loss_before_scale": 1.5027229238739892e-08,
+      "head_gradient_unscaled": [
+        [
+          -4.4345855712890625e-05,
+          4.4345855712890625e-05
+        ]
+      ],
+      "head_gradient_dtype": "bfloat16",
+      "gradient_finite": true,
+      "FP32_analytic_head_gradient": [
+        [
+          -4.44000444000444e-05,
+          4.44000444000444e-05
+        ]
+      ],
+      "per_row_precast_dlogit_magnitude": 1.083985458985459e-08
+    },
+    "mixed_scan_declared_T": {
+      "rows": 1,
+      "x_dtype": "<class 'jax.numpy.float16'>",
+      "w_dtype": "<class 'jax.numpy.float32'>",
+      "backward_gemm_dtype": "float32",
+      "logits_dtype": "float32",
+      "fast_backward": true,
+      "forward_batch_chunk": 1,
+      "backward_batch_chunk": null,
+      "denominator": 46126080,
+      "loss_scale": 1,
+      "hidden_value": 4096.0,
+      "scaled_loss": 1.5027229238739892e-08,
+      "loss_before_scale": 1.5027229238739892e-08,
+      "head_gradient_unscaled": [
+        [
+          -4.4400043407222256e-05,
+          4.4400043407222256e-05
+        ]
+      ],
+      "head_gradient_dtype": "float32",
+      "gradient_finite": true,
+      "FP32_analytic_head_gradient": [
+        [
+          -4.44000444000444e-05,
+          4.44000444000444e-05
+        ]
+      ],
+      "per_row_precast_dlogit_magnitude": 1.083985458985459e-08
+    }
+  },
+  "archived_Hero_mixed_precision_declaration": {
+    "compute_dtype": "jax.numpy.bfloat16",
+    "output_dtype": "jax.numpy.bfloat16",
+    "param_dtype": "jax.numpy.float32"
+  },
+  "normalization_control": {
+    "declared_batch": 11264,
+    "declared_max_seq_len": 4096,
+    "assumption": "one masked final target per full-length sequence; no other mask",
+    "derived_symbolic_T": 46126080,
+    "actual_measured_global_weight_sum": null
+  },
+  "source_sha256": {
+    "sources/contracts_2026_10_05/reference.py": "f113b3b6872af2d6aa4658cf4326b6c52c2675bf537690d5653604e9d559c0d5",
+    "sources/contracts_2026_10_05/xla.py": "4a4f086b968934114ba450ec90d1e875842a04a3b79c7ae82879eda882a4d7d4",
+    "sources/contracts_2026_10_05/model.py": "8fdfd89cf6814da05683f134f154525916728370368a2493843195d9a489859c",
+    "sources/wandb/hero-fa4sm100-nomask-step146k_meta.json": "ca57924fb6cb56a3927696550a238c004b84fb7b31b9ced3cf65b266f11fe058"
+  },
+  "base_probe_sha256": "e6e0accfa3f950e515aa52cf24690e3b8897dddf600854e90f9bd79977d2395f",
+  "probe_script_sha256": "c7e2316d8dfbd3e4b81a78a0d64e338425621e62c004fd51b2dd2a926dd0cbc1",
+  "runtime": {
+    "jax": "0.7.2",
+    "numpy": "2.5.3",
+    "backend": "cpu"
+  },
+  "actual_global_batch_allocated": false,
+  "actual_Hero_operand_dtypes": null,
+  "actual_Hero_gradient_loss_event": null,
+  "actual_GPU_execution": null,
+  "actual_training_loss_effect": null,
+  "upstream_patch_applied": false
+}

@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本V139：14 项原 custom VJP 注册链 CPU 控制；同一极端输入上，直接 streaming 参考求导出现 NaN，而原 slow/scan 显式反向保持有限。[同一前向，两条反向](CE_BACKWARD_PATH_ZH.md)。
+当前版本V140：14 项原 CE 反向精度控制，普通 BF16 跨 batch 块累积可少算梯度，新 scan 的 FP32 累积在所测例子保留总量；另定位 FP16 GEMM 前转换的归零边界。[FP32 loss 与反向 dtype](CE_GRADIENT_DTYPE_ZH.md)。
 
 [MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并提供未执行的性能交互记录模板。
 

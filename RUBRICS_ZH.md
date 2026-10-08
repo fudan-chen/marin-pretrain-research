@@ -1,5 +1,7 @@
 # Rubrics：证据允许我们把结论推进到哪一步
 
+V140 执行补充：检查跨 batch 块梯度累计 dtype，以及 dlogits 进入 GEMM 前后的转换。有限 loss/梯度不等于总量正确；同一目标分别控制块大小、操作数 dtype 和归一化尺度，并绑定真实 mixed precision 声明。[原注册链精度控制](CE_GRADIENT_DTYPE_ZH.md)。
+
 V139 执行补充：反向证据须注明参考自动微分、手工 scan、原 custom VJP 注册入口或公共 dispatcher。对照至少含正常非零梯度与罚项 cotangent；参考异常不自动等于训练内核异常。[14 项注册链控制](CE_BACKWARD_PATH_ZH.md)。
 
 V138 执行补充：形状/整数类型不等于 token ID 合法。检查逻辑与物理词表、特殊 token 和移位目标；有效目标越界应拒绝，明确忽略位置在 CE 前安全处理，不能依赖乘零或 clip。跨后端同时核对 loss 与梯度。[原函数控制](CE_LABEL_BOUNDS_ZH.md)。

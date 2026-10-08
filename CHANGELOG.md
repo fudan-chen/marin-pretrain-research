@@ -1,5 +1,7 @@
 # 版本记录
 
+V140 (2026-10-08): 14 original registered CE backward CPU controls for BF16 batch-chunk accumulation and FP16 pre-GEMM dlogit conversion. Archived mixed-precision and symbolic normalization declarations bound; no actual global batch, GPU, optimizer or training effect.
+
 V139 (2026-10-08): 14 CPU controls of original registered streaming custom VJP, both backward branches, normal and lse cotangents, selected JIT and FP16 conversion boundary. Direct reference autodiff failure does not reproduce through original explicit backward. Added scoped mechanism diagram; no GPU or dispatcher claim.
 
 V138 (2026-10-08): 14 original CE label bounds CPU controls, finite-forward/autodiff discrepancy on positive invalid labels, full/streaming divergence and masked invalid target NaN. Offline target-only guard, not production patch. Consolidated synthesis/pipeline intros.

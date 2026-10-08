@@ -1,5 +1,7 @@
 # 持续改进记录：下一步要减少哪种不确定性
 
+V140：14 项原注册 CE VJP CPU 控制、14 组输入。普通 BF16 512 行/单行块的旧累计得到 ±0.25，而 scan/较大块/FP32 对照为 ±0.5；纯 FP16 大分母控制揭示 GEMM 前 dlogits 归零，缩放只作诊断。绑定 Hero BF16 compute、FP32 param 与符号 T 声明，未测实际操作数或生产梯度。
+
 V139：原 custom_vjp 装饰器和 defvjp 注册、前向残余、slow/scan 反向完成 14 项 CPU 控制、16 组输入/路径。FP16 极端转换中的直接 streaming 求导异常被原显式反向避开；正常梯度、lse cotangent 和所选 scan JIT 对照通过。新增范围明确的机制图。没有公共 dispatcher、GPU、真实性能或训练效果证明。
 
 V138：原输入 validator、full/streaming CE 与 reducer 的 14 项 CPU 控制，包含 JIT 与前向有限差分。发现正越界标签有限 loss/梯度不一致、负标签后端分歧和零权重 streaming NaN；离线候选仅验证标签拒绝与忽略位置替换。重整综合入口，避免版本注记挤占解释。没有真实非法目标事件或融合 GPU 结论。

@@ -363,3 +363,7 @@ ce-label-bounds:
 .PHONY: ce-custom-vjp
 ce-custom-vjp:
 	$(CPU_PYTHON) scripts/probe_ce_custom_vjp_cpu.py
+
+.PHONY: ce-gradient-dtype
+ce-gradient-dtype:
+	$(CPU_PYTHON) scripts/probe_ce_gradient_dtype_cpu.py

@@ -57,3 +57,7 @@ V139，2026-10-08。上一章检查非法标签，本章使用合法标签，比
 [14 项控制及 16 组原值](analysis/ce_custom_vjp_cpu.json) · [脚本](scripts/probe_ce_custom_vjp_cpu.py)。运行 `CPU_PYTHON=/tmp/marin-loss-mass-v109/bin/python make ce-custom-vjp`。源码版本固定为 `84869ae8c91ffe64e9f761c5bd714542eb1876e0`，原 [reference.py](sources/contracts_2026_10_05/reference.py) 与 [xla.py](sources/contracts_2026_10_05/xla.py) 的字节 SHA 和脚本 SHA 均保留。
 
 通过 AST 加载原函数和注册表达式，CPU logsumexp/exp/logaddexp 分支被显式选择；没有导入全部模块或调用公共 backend dispatcher。未执行 GPU/tensor core、自动调优、多设备 custom VJP、真实 Hero FP16 logits 事件、完整优化器更新或长期 loss 曲线。本轮没有上游补丁。历史[零权重数值章节](MASKED_NUMERICS_ZH.md)中“未执行完整 custom VJP”的表述保留原版本范围，不能用于否定本轮新增的受控注册链执行。
+
+## V140 补充：注册链一致后，还需核对梯度 dtype
+
+[梯度精度专题](CE_GRADIENT_DTYPE_ZH.md)沿同一原注册入口进一步检查普通 BF16 的跨 batch 块舍入与 FP16 的 GEMM 前 dlogits 归零。上一轮 selected FP32 正常控制通过，不证明所有 dtype 与分块下更新相同；新控制同时记录 scan 的受控累积收益与另一条件下的转换边界。

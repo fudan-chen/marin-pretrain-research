@@ -309,3 +309,8 @@ V113确认一个完整性反例：人工异常pending可保存在原本地IO中�
 ## V114：原估计器输入边界
 
 V114执行原QB histogram wrapper及单CPU真实collective接口，9项控制区分空有效集合、无效位置排除、有效异常传播，以及有限极端margin导致的beta/bias溢出。未执行实际Hero margin构造或跨host归约，未认定生产事故或修复。检查margin范围、beta与应用后bias分别记录；padding过滤不代替有效输入健康性验收。[完整原值与机制](QB_ESTIMATION_ZH.md)。566份来源未变。
+
+
+## V115：归约一致与近似误差
+
+V115执行四虚拟CPU设备的原histogram，11项控制：单/四设备、跨分片重排、空分片与padding过滤一致；其他专家的人工离群值扩大共同网格，精确参考阈值未变而histogram阈值与固定query专家集合改变。有限与归约一致不等于估计近似稳定。配比研究应另记margin分布、箱宽及参考误差，不能直接将人工例子解释为真实数据域问题。未测GPU/网络/完整模型或性能；566份来源保持。[原值与分析](QB_ESTIMATION_ZH.md)。

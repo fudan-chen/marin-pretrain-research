@@ -1,0 +1,26 @@
+{
+  "checks_passed": 5,
+  "checks": [
+    {
+      "name": "Historical prose retained before appendix",
+      "passed": true
+    },
+    {
+      "name": "Historical tables retained before two new pooled-grid tables",
+      "passed": true
+    },
+    {
+      "name": "Eleven controls bind original code and four CPU devices",
+      "passed": true
+    },
+    {
+      "name": "Both HTML variants expose measured values and retain unknown reachability",
+      "passed": true
+    },
+    {
+      "name": "All 566 original files unchanged",
+      "passed": true
+    }
+  ],
+  "actual_browser_rendering": null
+}

@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本V114：原全局QB histogram在真实单CPU shard_map中执行，区分空有效集合、padding异常过滤、有效异常传播与有限极端范围溢出；9项边界检查。[原估计器接口与局限](QB_ESTIMATION_ZH.md)。
+当前版本V115：原QB histogram在四虚拟CPU设备上执行，单/四设备与跨分片重排一致；其他专家的人工离群值却会改变共享分箱、阈值与共同下一批query路由。11项控制，未认定真实Hero域级问题。[分片归约与近似误差](QB_ESTIMATION_ZH.md)。
 
 [MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并提供未执行的性能交互记录模板。
 

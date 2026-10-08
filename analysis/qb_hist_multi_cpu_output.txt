@@ -1,0 +1,435 @@
+Multi-device original histogram controls 11
+{
+  "base_one": {
+    "devices": 1,
+    "bins": 10000,
+    "beta": [
+      0.40000003576278687,
+      0.5999500751495361,
+      0.19990001618862152
+    ],
+    "bias": [
+      -5.0008296966552734e-05,
+      -0.20000004768371582,
+      0.2000500112771988
+    ],
+    "lo": -0.20000000298023224,
+    "hi": 1.2999999523162842,
+    "bin_width": 0.00014999999552965163,
+    "shards": [
+      {
+        "device_id": 0,
+        "rows": 12,
+        "valid_count": 12
+      }
+    ],
+    "beta_finite": true,
+    "bias_finite": true,
+    "query_expert_ids": [
+      [
+        1,
+        2
+      ]
+    ],
+    "query_weights": [
+      [
+        1.4089221954345703,
+        1.0910775661468506
+      ]
+    ]
+  },
+  "base_four": {
+    "devices": 4,
+    "bins": 10000,
+    "beta": [
+      0.40000003576278687,
+      0.5999500751495361,
+      0.19990001618862152
+    ],
+    "bias": [
+      -5.0008296966552734e-05,
+      -0.20000004768371582,
+      0.2000500112771988
+    ],
+    "lo": -0.20000000298023224,
+    "hi": 1.2999999523162842,
+    "bin_width": 0.00014999999552965163,
+    "shards": [
+      {
+        "device_id": 0,
+        "rows": 3,
+        "valid_count": 3
+      },
+      {
+        "device_id": 1,
+        "rows": 3,
+        "valid_count": 3
+      },
+      {
+        "device_id": 2,
+        "rows": 3,
+        "valid_count": 3
+      },
+      {
+        "device_id": 3,
+        "rows": 3,
+        "valid_count": 3
+      }
+    ],
+    "beta_finite": true,
+    "bias_finite": true,
+    "query_expert_ids": [
+      [
+        1,
+        2
+      ]
+    ],
+    "query_weights": [
+      [
+        1.4089221954345703,
+        1.0910775661468506
+      ]
+    ]
+  },
+  "permuted_four": {
+    "devices": 4,
+    "bins": 10000,
+    "beta": [
+      0.40000003576278687,
+      0.5999500751495361,
+      0.19990001618862152
+    ],
+    "bias": [
+      -5.0008296966552734e-05,
+      -0.20000004768371582,
+      0.2000500112771988
+    ],
+    "lo": -0.20000000298023224,
+    "hi": 1.2999999523162842,
+    "bin_width": 0.00014999999552965163,
+    "shards": [
+      {
+        "device_id": 0,
+        "rows": 3,
+        "valid_count": 3
+      },
+      {
+        "device_id": 1,
+        "rows": 3,
+        "valid_count": 3
+      },
+      {
+        "device_id": 2,
+        "rows": 3,
+        "valid_count": 3
+      },
+      {
+        "device_id": 3,
+        "rows": 3,
+        "valid_count": 3
+      }
+    ],
+    "beta_finite": true,
+    "bias_finite": true,
+    "query_expert_ids": [
+      [
+        1,
+        2
+      ]
+    ],
+    "query_weights": [
+      [
+        1.4089221954345703,
+        1.0910775661468506
+      ]
+    ]
+  },
+  "wide_one": {
+    "devices": 1,
+    "bins": 10000,
+    "beta": [
+      33.133338928222656,
+      36.16364288330078,
+      33.133338928222656
+    ],
+    "bias": [
+      1.010101318359375,
+      -2.02020263671875,
+      1.010101318359375
+    ],
+    "lo": -0.20000000298023224,
+    "hi": 1000000.0,
+    "bin_width": 100.0000200000003,
+    "shards": [
+      {
+        "device_id": 0,
+        "rows": 12,
+        "valid_count": 12
+      }
+    ],
+    "beta_finite": true,
+    "bias_finite": true,
+    "query_expert_ids": [
+      [
+        0,
+        2
+      ]
+    ],
+    "query_weights": [
+      [
+        1.2804630994796753,
+        1.2195370197296143
+      ]
+    ]
+  },
+  "wide_four": {
+    "devices": 4,
+    "bins": 10000,
+    "beta": [
+      33.133338928222656,
+      36.16364288330078,
+      33.133338928222656
+    ],
+    "bias": [
+      1.010101318359375,
+      -2.02020263671875,
+      1.010101318359375
+    ],
+    "lo": -0.20000000298023224,
+    "hi": 1000000.0,
+    "bin_width": 100.0000200000003,
+    "shards": [
+      {
+        "device_id": 0,
+        "rows": 3,
+        "valid_count": 3
+      },
+      {
+        "device_id": 1,
+        "rows": 3,
+        "valid_count": 3
+      },
+      {
+        "device_id": 2,
+        "rows": 3,
+        "valid_count": 3
+      },
+      {
+        "device_id": 3,
+        "rows": 3,
+        "valid_count": 3
+      }
+    ],
+    "beta_finite": true,
+    "bias_finite": true,
+    "query_expert_ids": [
+      [
+        0,
+        2
+      ]
+    ],
+    "query_weights": [
+      [
+        1.2804630994796753,
+        1.2195370197296143
+      ]
+    ]
+  },
+  "wide_more_bins": {
+    "devices": 4,
+    "bins": 100000,
+    "beta": [
+      3.133333921432495,
+      3.43636417388916,
+      3.133333921432495
+    ],
+    "bias": [
+      0.10101032257080078,
+      -0.20201992988586426,
+      0.10101032257080078
+    ],
+    "lo": -0.20000000298023224,
+    "hi": 1000000.0,
+    "bin_width": 10.00000200000003,
+    "shards": [
+      {
+        "device_id": 0,
+        "rows": 3,
+        "valid_count": 3
+      },
+      {
+        "device_id": 1,
+        "rows": 3,
+        "valid_count": 3
+      },
+      {
+        "device_id": 2,
+        "rows": 3,
+        "valid_count": 3
+      },
+      {
+        "device_id": 3,
+        "rows": 3,
+        "valid_count": 3
+      }
+    ],
+    "beta_finite": true,
+    "bias_finite": true,
+    "query_expert_ids": [
+      [
+        1,
+        0
+      ]
+    ],
+    "query_weights": [
+      [
+        1.3788585662841797,
+        1.1211414337158203
+      ]
+    ]
+  },
+  "three_valid_one": {
+    "devices": 1,
+    "bins": 10000,
+    "beta": [
+      0.10000000894069672,
+      0.2999800443649292,
+      -0.1000399962067604
+    ],
+    "bias": [
+      -1.9982457160949707e-05,
+      -0.20000001788139343,
+      0.20002001523971558
+    ],
+    "lo": -0.20000000298023224,
+    "hi": 0.4000000059604645,
+    "bin_width": 6.000000089406967e-05,
+    "shards": [
+      {
+        "device_id": 0,
+        "rows": 12,
+        "valid_count": 3
+      }
+    ],
+    "beta_finite": true,
+    "bias_finite": true,
+    "query_expert_ids": [
+      [
+        1,
+        2
+      ]
+    ],
+    "query_weights": [
+      [
+        1.4089221954345703,
+        1.0910775661468506
+      ]
+    ]
+  },
+  "three_valid_four": {
+    "devices": 4,
+    "bins": 10000,
+    "beta": [
+      0.10000000894069672,
+      0.2999800443649292,
+      -0.1000399962067604
+    ],
+    "bias": [
+      -1.9982457160949707e-05,
+      -0.20000001788139343,
+      0.20002001523971558
+    ],
+    "lo": -0.20000000298023224,
+    "hi": 0.4000000059604645,
+    "bin_width": 6.000000089406967e-05,
+    "shards": [
+      {
+        "device_id": 0,
+        "rows": 3,
+        "valid_count": 3
+      },
+      {
+        "device_id": 1,
+        "rows": 3,
+        "valid_count": 0
+      },
+      {
+        "device_id": 2,
+        "rows": 3,
+        "valid_count": 0
+      },
+      {
+        "device_id": 3,
+        "rows": 3,
+        "valid_count": 0
+      }
+    ],
+    "beta_finite": true,
+    "bias_finite": true,
+    "query_expert_ids": [
+      [
+        1,
+        2
+      ]
+    ],
+    "query_weights": [
+      [
+        1.4089221954345703,
+        1.0910775661468506
+      ]
+    ]
+  },
+  "all_invalid_four": {
+    "devices": 4,
+    "bins": 10000,
+    "beta": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "bias": [
+      -0.0,
+      -0.0,
+      -0.0
+    ],
+    "lo": 0.0,
+    "hi": 0.0,
+    "bin_width": 0.0,
+    "shards": [
+      {
+        "device_id": 0,
+        "rows": 3,
+        "valid_count": 0
+      },
+      {
+        "device_id": 1,
+        "rows": 3,
+        "valid_count": 0
+      },
+      {
+        "device_id": 2,
+        "rows": 3,
+        "valid_count": 0
+      },
+      {
+        "device_id": 3,
+        "rows": 3,
+        "valid_count": 0
+      }
+    ],
+    "beta_finite": true,
+    "bias_finite": true,
+    "query_expert_ids": [
+      [
+        1,
+        0
+      ]
+    ],
+    "query_weights": [
+      [
+        1.3788585662841797,
+        1.1211414337158203
+      ]
+    ]
+  }
+}

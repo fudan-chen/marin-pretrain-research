@@ -1,0 +1,668 @@
+{
+  "scope": "Original histogram wrapper over four real virtual CPU devices, one host.\nSynthetic margins/query; no model margin construction, GPU, network or task loss.\n",
+  "checks_passed": 11,
+  "checks": [
+    {
+      "name": "Four real local CPU devices execute original histogram shard_map",
+      "passed": true
+    },
+    {
+      "name": "Same ordinary data gives equal one/four-device beta bias and query route",
+      "passed": true
+    },
+    {
+      "name": "Ordinary permutation across shards preserves histogram and route",
+      "passed": true
+    },
+    {
+      "name": "Outlier case gives equal one/four-device pooled estimate",
+      "passed": true
+    },
+    {
+      "name": "Three valid rows on one shard aggregate without padded poison",
+      "passed": true
+    },
+    {
+      "name": "All four shards empty valid gives zero thresholds",
+      "passed": true
+    },
+    {
+      "name": "Other-expert outlier changes unchanged expert-zero estimate",
+      "passed": true
+    },
+    {
+      "name": "Range expansion coarsens shared bins and more bins changes unchanged expert estimate",
+      "passed": true
+    },
+    {
+      "name": "Exact order statistic remains unchanged after replacing already maximal other-expert margin",
+      "passed": true
+    },
+    {
+      "name": "More bins reduces expert-zero reference error here but does not recover exact threshold",
+      "passed": true
+    },
+    {
+      "name": "Finite pooled estimates need not reproduce base next query route",
+      "passed": true
+    }
+  ],
+  "runtime": {
+    "jax": "0.7.2",
+    "jaxlib": "0.7.2",
+    "numpy": "2.5.3"
+  },
+  "device_inventory": [
+    {
+      "id": 0,
+      "platform": "cpu",
+      "kind": "cpu"
+    },
+    {
+      "id": 1,
+      "platform": "cpu",
+      "kind": "cpu"
+    },
+    {
+      "id": 2,
+      "platform": "cpu",
+      "kind": "cpu"
+    },
+    {
+      "id": 3,
+      "platform": "cpu",
+      "kind": "cpu"
+    }
+  ],
+  "launch_XLA_FLAGS": "--xla_force_host_platform_device_count=4",
+  "margin_input": [
+    [
+      0.0,
+      0.20000000298023224,
+      -0.20000000298023224
+    ],
+    [
+      0.10000000149011612,
+      0.30000001192092896,
+      -0.10000000149011612
+    ],
+    [
+      0.20000000298023224,
+      0.4000000059604645,
+      0.0
+    ],
+    [
+      0.30000001192092896,
+      0.5,
+      0.10000000149011612
+    ],
+    [
+      0.4000000059604645,
+      0.6000000238418579,
+      0.20000000298023224
+    ],
+    [
+      0.5,
+      0.699999988079071,
+      0.30000001192092896
+    ],
+    [
+      0.6000000238418579,
+      0.800000011920929,
+      0.4000000059604645
+    ],
+    [
+      0.699999988079071,
+      0.8999999761581421,
+      0.5
+    ],
+    [
+      0.800000011920929,
+      1.0,
+      0.6000000238418579
+    ],
+    [
+      0.8999999761581421,
+      1.100000023841858,
+      0.699999988079071
+    ],
+    [
+      1.0,
+      1.2000000476837158,
+      0.800000011920929
+    ],
+    [
+      1.100000023841858,
+      1.2999999523162842,
+      0.8999999761581421
+    ]
+  ],
+  "outlier_input": [
+    [
+      0.0,
+      0.20000000298023224,
+      -0.20000000298023224
+    ],
+    [
+      0.10000000149011612,
+      0.30000001192092896,
+      -0.10000000149011612
+    ],
+    [
+      0.20000000298023224,
+      0.4000000059604645,
+      0.0
+    ],
+    [
+      0.30000001192092896,
+      0.5,
+      0.10000000149011612
+    ],
+    [
+      0.4000000059604645,
+      0.6000000238418579,
+      0.20000000298023224
+    ],
+    [
+      0.5,
+      0.699999988079071,
+      0.30000001192092896
+    ],
+    [
+      0.6000000238418579,
+      0.800000011920929,
+      0.4000000059604645
+    ],
+    [
+      0.699999988079071,
+      0.8999999761581421,
+      0.5
+    ],
+    [
+      0.800000011920929,
+      1.0,
+      0.6000000238418579
+    ],
+    [
+      0.8999999761581421,
+      1.100000023841858,
+      0.699999988079071
+    ],
+    [
+      1.0,
+      1.2000000476837158,
+      0.800000011920929
+    ],
+    [
+      1.100000023841858,
+      1000000.0,
+      0.8999999761581421
+    ]
+  ],
+  "exact_reference": {
+    "convention": "descending sorted value at ceil(N*K/E), separate from interpolation",
+    "rank": 8,
+    "beta": [
+      0.4000000059604645,
+      0.6000000238418579,
+      0.20000000298023224
+    ],
+    "outlier_beta": [
+      0.4000000059604645,
+      0.6000000238418579,
+      0.20000000298023224
+    ]
+  },
+  "cases": {
+    "base_one": {
+      "devices": 1,
+      "bins": 10000,
+      "beta": [
+        0.40000003576278687,
+        0.5999500751495361,
+        0.19990001618862152
+      ],
+      "bias": [
+        -5.0008296966552734e-05,
+        -0.20000004768371582,
+        0.2000500112771988
+      ],
+      "lo": -0.20000000298023224,
+      "hi": 1.2999999523162842,
+      "bin_width": 0.00014999999552965163,
+      "shards": [
+        {
+          "device_id": 0,
+          "rows": 12,
+          "valid_count": 12
+        }
+      ],
+      "beta_finite": true,
+      "bias_finite": true,
+      "query_expert_ids": [
+        [
+          1,
+          2
+        ]
+      ],
+      "query_weights": [
+        [
+          1.4089221954345703,
+          1.0910775661468506
+        ]
+      ]
+    },
+    "base_four": {
+      "devices": 4,
+      "bins": 10000,
+      "beta": [
+        0.40000003576278687,
+        0.5999500751495361,
+        0.19990001618862152
+      ],
+      "bias": [
+        -5.0008296966552734e-05,
+        -0.20000004768371582,
+        0.2000500112771988
+      ],
+      "lo": -0.20000000298023224,
+      "hi": 1.2999999523162842,
+      "bin_width": 0.00014999999552965163,
+      "shards": [
+        {
+          "device_id": 0,
+          "rows": 3,
+          "valid_count": 3
+        },
+        {
+          "device_id": 1,
+          "rows": 3,
+          "valid_count": 3
+        },
+        {
+          "device_id": 2,
+          "rows": 3,
+          "valid_count": 3
+        },
+        {
+          "device_id": 3,
+          "rows": 3,
+          "valid_count": 3
+        }
+      ],
+      "beta_finite": true,
+      "bias_finite": true,
+      "query_expert_ids": [
+        [
+          1,
+          2
+        ]
+      ],
+      "query_weights": [
+        [
+          1.4089221954345703,
+          1.0910775661468506
+        ]
+      ]
+    },
+    "permuted_four": {
+      "devices": 4,
+      "bins": 10000,
+      "beta": [
+        0.40000003576278687,
+        0.5999500751495361,
+        0.19990001618862152
+      ],
+      "bias": [
+        -5.0008296966552734e-05,
+        -0.20000004768371582,
+        0.2000500112771988
+      ],
+      "lo": -0.20000000298023224,
+      "hi": 1.2999999523162842,
+      "bin_width": 0.00014999999552965163,
+      "shards": [
+        {
+          "device_id": 0,
+          "rows": 3,
+          "valid_count": 3
+        },
+        {
+          "device_id": 1,
+          "rows": 3,
+          "valid_count": 3
+        },
+        {
+          "device_id": 2,
+          "rows": 3,
+          "valid_count": 3
+        },
+        {
+          "device_id": 3,
+          "rows": 3,
+          "valid_count": 3
+        }
+      ],
+      "beta_finite": true,
+      "bias_finite": true,
+      "query_expert_ids": [
+        [
+          1,
+          2
+        ]
+      ],
+      "query_weights": [
+        [
+          1.4089221954345703,
+          1.0910775661468506
+        ]
+      ]
+    },
+    "wide_one": {
+      "devices": 1,
+      "bins": 10000,
+      "beta": [
+        33.133338928222656,
+        36.16364288330078,
+        33.133338928222656
+      ],
+      "bias": [
+        1.010101318359375,
+        -2.02020263671875,
+        1.010101318359375
+      ],
+      "lo": -0.20000000298023224,
+      "hi": 1000000.0,
+      "bin_width": 100.0000200000003,
+      "shards": [
+        {
+          "device_id": 0,
+          "rows": 12,
+          "valid_count": 12
+        }
+      ],
+      "beta_finite": true,
+      "bias_finite": true,
+      "query_expert_ids": [
+        [
+          0,
+          2
+        ]
+      ],
+      "query_weights": [
+        [
+          1.2804630994796753,
+          1.2195370197296143
+        ]
+      ]
+    },
+    "wide_four": {
+      "devices": 4,
+      "bins": 10000,
+      "beta": [
+        33.133338928222656,
+        36.16364288330078,
+        33.133338928222656
+      ],
+      "bias": [
+        1.010101318359375,
+        -2.02020263671875,
+        1.010101318359375
+      ],
+      "lo": -0.20000000298023224,
+      "hi": 1000000.0,
+      "bin_width": 100.0000200000003,
+      "shards": [
+        {
+          "device_id": 0,
+          "rows": 3,
+          "valid_count": 3
+        },
+        {
+          "device_id": 1,
+          "rows": 3,
+          "valid_count": 3
+        },
+        {
+          "device_id": 2,
+          "rows": 3,
+          "valid_count": 3
+        },
+        {
+          "device_id": 3,
+          "rows": 3,
+          "valid_count": 3
+        }
+      ],
+      "beta_finite": true,
+      "bias_finite": true,
+      "query_expert_ids": [
+        [
+          0,
+          2
+        ]
+      ],
+      "query_weights": [
+        [
+          1.2804630994796753,
+          1.2195370197296143
+        ]
+      ]
+    },
+    "wide_more_bins": {
+      "devices": 4,
+      "bins": 100000,
+      "beta": [
+        3.133333921432495,
+        3.43636417388916,
+        3.133333921432495
+      ],
+      "bias": [
+        0.10101032257080078,
+        -0.20201992988586426,
+        0.10101032257080078
+      ],
+      "lo": -0.20000000298023224,
+      "hi": 1000000.0,
+      "bin_width": 10.00000200000003,
+      "shards": [
+        {
+          "device_id": 0,
+          "rows": 3,
+          "valid_count": 3
+        },
+        {
+          "device_id": 1,
+          "rows": 3,
+          "valid_count": 3
+        },
+        {
+          "device_id": 2,
+          "rows": 3,
+          "valid_count": 3
+        },
+        {
+          "device_id": 3,
+          "rows": 3,
+          "valid_count": 3
+        }
+      ],
+      "beta_finite": true,
+      "bias_finite": true,
+      "query_expert_ids": [
+        [
+          1,
+          0
+        ]
+      ],
+      "query_weights": [
+        [
+          1.3788585662841797,
+          1.1211414337158203
+        ]
+      ]
+    },
+    "three_valid_one": {
+      "devices": 1,
+      "bins": 10000,
+      "beta": [
+        0.10000000894069672,
+        0.2999800443649292,
+        -0.1000399962067604
+      ],
+      "bias": [
+        -1.9982457160949707e-05,
+        -0.20000001788139343,
+        0.20002001523971558
+      ],
+      "lo": -0.20000000298023224,
+      "hi": 0.4000000059604645,
+      "bin_width": 6.000000089406967e-05,
+      "shards": [
+        {
+          "device_id": 0,
+          "rows": 12,
+          "valid_count": 3
+        }
+      ],
+      "beta_finite": true,
+      "bias_finite": true,
+      "query_expert_ids": [
+        [
+          1,
+          2
+        ]
+      ],
+      "query_weights": [
+        [
+          1.4089221954345703,
+          1.0910775661468506
+        ]
+      ]
+    },
+    "three_valid_four": {
+      "devices": 4,
+      "bins": 10000,
+      "beta": [
+        0.10000000894069672,
+        0.2999800443649292,
+        -0.1000399962067604
+      ],
+      "bias": [
+        -1.9982457160949707e-05,
+        -0.20000001788139343,
+        0.20002001523971558
+      ],
+      "lo": -0.20000000298023224,
+      "hi": 0.4000000059604645,
+      "bin_width": 6.000000089406967e-05,
+      "shards": [
+        {
+          "device_id": 0,
+          "rows": 3,
+          "valid_count": 3
+        },
+        {
+          "device_id": 1,
+          "rows": 3,
+          "valid_count": 0
+        },
+        {
+          "device_id": 2,
+          "rows": 3,
+          "valid_count": 0
+        },
+        {
+          "device_id": 3,
+          "rows": 3,
+          "valid_count": 0
+        }
+      ],
+      "beta_finite": true,
+      "bias_finite": true,
+      "query_expert_ids": [
+        [
+          1,
+          2
+        ]
+      ],
+      "query_weights": [
+        [
+          1.4089221954345703,
+          1.0910775661468506
+        ]
+      ]
+    },
+    "all_invalid_four": {
+      "devices": 4,
+      "bins": 10000,
+      "beta": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "bias": [
+        -0.0,
+        -0.0,
+        -0.0
+      ],
+      "lo": 0.0,
+      "hi": 0.0,
+      "bin_width": 0.0,
+      "shards": [
+        {
+          "device_id": 0,
+          "rows": 3,
+          "valid_count": 0
+        },
+        {
+          "device_id": 1,
+          "rows": 3,
+          "valid_count": 0
+        },
+        {
+          "device_id": 2,
+          "rows": 3,
+          "valid_count": 0
+        },
+        {
+          "device_id": 3,
+          "rows": 3,
+          "valid_count": 0
+        }
+      ],
+      "beta_finite": true,
+      "bias_finite": true,
+      "query_expert_ids": [
+        [
+          1,
+          0
+        ]
+      ],
+      "query_weights": [
+        [
+          1.3788585662841797,
+          1.1211414337158203
+        ]
+      ]
+    }
+  },
+  "source_sha256": {
+    "scripts/probe_qb_hist_multi_cpu.py": "8f9e6a34f3c24e0f05a4466f1c12e1ca83c3144f5d3c130b0111e1e823c8b7cd",
+    "scripts/probe_qb_hist_real_cpu.py": "e2b89fd8333b2c1f537eed05156e94b4910fb6ecd9a34aee7679d55eb39371f2",
+    "sources/main_incident_2026_10_07/model.py": "8fdfd89cf6814da05683f134f154525916728370368a2493843195d9a489859c",
+    "scripts/probe_router_weight_path_cpu.py": "4d5359eedba146495bdcfdec6e2f1e6f89fa3448ee03e320cc4c267869257274",
+    "sources/routing_2026_10_05/grug_moe.py": "5b67e36774981b8e42c753f62b638a5700fbf204c8b16c71df6d72c0b0ea398c"
+  },
+  "substitutions": [
+    "Synthetic margins and fixed router query, no full model margin construction",
+    "Original route block uses identity reshard and partition-spec placeholder; no capacity/dispatch",
+    "Four virtual CPU devices on one host, no network/GPU validation"
+  ],
+  "actual_Hero_outlier_event": null,
+  "actual_multi_host_collectives": null,
+  "actual_GPU_execution": null,
+  "actual_full_model_margin_construction": null,
+  "actual_domain_causal_effect": null,
+  "actual_histogram_performance_cost": null
+}

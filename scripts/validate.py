@@ -1279,6 +1279,13 @@ ok('V114 empty valid zero and invalid poison filtering distinct from active pois
 ok('V114 finite extreme margins expose beta and centered bias separately',qc['large_equal']['beta_finite'] and not qc['large_equal']['bias_finite'] and not qc['wide_finite']['beta_finite'])
 ok('V114 actual Hero margin generation GPU and multi-device effects unknown',all(qh[k] is None for k in ['actual_Hero_extreme_margin_event','actual_multi_device_collectives','actual_original_margin_construction','actual_GPU_execution','actual_estimator_causal_training_effect']))
 report['highlights']+=['V114 nine original histogram CPU controls; real single-device shard_map; empty-valid and finite extreme margins, no Hero reachability claim']
+
+qm=read(A/'qb_hist_multi_cpu.json'); mc=qm['cases']
+ok('V115 eleven real four-virtual-CPU histogram controls source bound',qm['checks_passed']==len(qm['checks'])==11 and len(qm['device_inventory'])==4 and all(x['passed'] for x in qm['checks']) and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in qm['source_sha256'].items()))
+ok('V115 ordinary one/four-device and permutation pooled thresholds agree',mc['base_one']['beta']==mc['base_four']['beta']==mc['permuted_four']['beta'] and [s['valid_count'] for s in mc['three_valid_four']['shards']]==[3,0,0,0] and mc['three_valid_one']['beta']==mc['three_valid_four']['beta'])
+ok('V115 shared grid outlier changes approximate estimate despite equal exact reference',qm['exact_reference']['beta']==qm['exact_reference']['outlier_beta'] and mc['base_four']['beta'][0]!=mc['wide_four']['beta'][0] and mc['base_four']['query_expert_ids']==[[1,2]] and mc['wide_four']['query_expert_ids']==[[0,2]] and mc['wide_one']['beta']==mc['wide_four']['beta'])
+ok('V115 single-host virtual devices not promoted to Hero GPU or domain causal evidence',all(qm[k] is None for k in ['actual_Hero_outlier_event','actual_multi_host_collectives','actual_GPU_execution','actual_full_model_margin_construction','actual_domain_causal_effect','actual_histogram_performance_cost']))
+report['highlights']+=['V115 eleven real four-virtual-CPU histogram controls; collective agreement and shared-grid outlier approximation distinguished; no real Hero domain/performance claim']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

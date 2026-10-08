@@ -1,6 +1,6 @@
 # Marin 535B 预训练研究
 
-当前版本V116：原router投影、top-k和margin接四设备histogram，补齐任意margin与原模型局部路径之间的约束；9项控制显示阈值误差改变不必导致专家集合改变。[完整路径与证据边界](QB_ESTIMATION_ZH.md)。
+当前版本V117：原loss目标mask与attention路由有效性接四设备QB估计，零目标权重位置仍可影响阈值；配比账本新增路由有效人口。9项CPU控制，人工answer-only不代表Hero配方。[目标与路由集合](DOCUMENT_BOUNDARIES_ZH.md)。
 
 [MoE性能归因与图解](RECENT_MOE_CHANGES_ZH.md)复算12条作者步时，区分时间下降、速度提高与MFU百分点；解释单项负收益与最终组合正作用的反转，并提供未执行的性能交互记录模板。
 

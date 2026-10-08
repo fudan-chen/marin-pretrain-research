@@ -76,3 +76,40 @@ Dense mask按segment编号相等判断可见性；压缩下界按相邻编号变
 ## 补充：attention之外还要检查ShortConv
 
 六份ladder启用K/attention输出/MLP输出三处ShortConv。模型将segment IDs传入卷积，但卷积自己执行tap两端ID比较；context shard还需要同时交换激活与segment halo。非连续ID重用、identity初始化遮蔽、分片梯度舍入分别见[ShortConv深读](SHORT_CONV_ZH.md)。不能把attention隔离验收替代整个模型的文档隔离验收。
+
+## V117：目标权重为零，仍可能参与QB与下一批路由
+
+本章此前区分attention可见性、loss目标和路由有效性。V117把原`token_validity_from_attention_mask`、原`causal_loss_mask`、原投影/top-k/margin与四CPU原histogram接起来，实际核对这几个集合。[9项CPU控制](analysis/qb_target_validity_cpu.json) · [完整输出](analysis/qb_target_validity_cpu_output.txt) · [脚本](scripts/probe_qb_target_validity_cpu.py)。这是人工answer-only配方，不能据此声称Hero预训练采用answer-only数据；V109归档的component声明仍保留原结论。
+
+冻结训练入口把`batch.loss_weight`交给loss，同时单独传`mask=batch.attn_mask`。原Block则从attention mask计算token_valid，再交MoE路由、统计和QB。这里没有把loss_weight传给QB：零直接目标权重并不自动排除前向token。
+
+本例两条长度4序列，共8个输入位置。原causal mask的密集目标为每条`[1,1,1,0]`；人工prompt_length=3后为`[0,0,1,0]`。router输入与attention有效性不变时，估计器看到的都是8个有效token。
+
+|人工控制|正目标位置数|路由有效数|目标零但路由有效数|原hist beta（约）|
+|---|---:|---:|---:|---|
+|密集causal目标|6|8|2|[0.199973,0.399973,0.000013]|
+|仅答案位置目标|2|8|6|相同|
+|全部目标权重为零|0|8|8|相同|
+|在prompt零目标位置加入logit离群值|2|8|6|[33.333324,38.095226,33.333324]|
+|同一离群位置用boolean attention标为padding|2|7|5|恢复到基线附近；误差小于1e-7|
+|同一boolean mask转为additive表示|2|8|6|与离群控制相同|
+
+只改loss权重的前三行没有改变margin或QB有效集合，因此阈值相同。第四行只改一个loss_weight=0位置的人工router logit，该位置仍属于attention有效token，进入范围与计数，改变beta。第五行才真正从QB集合排除该位置；此处改变attention有效性是第二项干预，不是“更准确地解释零loss权重”。不能在配比对照中静默把零目标prompt当padding。
+
+第三行也不能解释为训练实现应推进或跳过全零目标批：本轮没有执行完整loss、分母归约或原优化器更新，只核对mask与估计器接口。要讨论空目标训练语义，仍需结合[零目标与状态时钟](ZERO_GRADIENT_STATE_ZH.md)，不能用QB返回非零阈值代替loss验收。
+
+### Boolean与additive mask不是等价的有效性编码
+
+原helper对boolean dense mask用每个query是否存在allowed key判定padding；对additive mask无法无歧义推断query有效性，明确返回all-valid。本轮仅执行None/boolean/additive分支，`AttentionMask`类以类型哨兵替代，没有执行结构化mask类。
+
+因此，表中additive表示即使某query所有元素都为−Inf，helper仍将它记为有效token。这里只确认原接口合同，不是验证其attention前向数值、也不是认定生产mask转换bug。若希望additive mask同时表达padding，需要另行明确有效性来源并验收，不能假定路由会从−Inf自动推断。
+
+### 对配比与顺序的含义
+
+V109四本账区分采样序列、输入位置、正目标位置和加权目标质量；这里还需单列**路由有效人口**。目标份额低的域仍可能有较多prompt/上下文位置参与专家选择、容量和QB。不同域的prompt长度改变时，目标份额、路由人口与计算成本可能朝不同方向变动。
+
+这不表示应该排除prompt路由。prompt会为答案提供上下文；没有直接目标权重也不意味着没有间接梯度。本轮没有执行attention、完整loss或梯度，不能报告prompt梯度大小。改变token_valid以“对齐目标份额”会同时改变模型前向和阈值估计，应作为显式新策略比较，不能当作配比单位换算。
+
+建议每域另记：输入位置、路由有效位置、正目标位置、加权目标质量，以及零直接目标但路由有效的位置数。看到loss变化先查是哪一本账改变；再用共同checkpoint、共同query和原pending语义核对路由。真实Hero各域的这组比例、真实prompt效应、能力收益与GPU成本目前仍未知。
+
+原attention helper沿用固定归档，与原训练入口的局部连接用于机制分析，没有确认线上精确执行版本。四虚拟CPU均在单host；没有专家dispatch、容量丢弃、真实数据、完整Transformer或分布式网络验收。

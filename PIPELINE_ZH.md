@@ -395,3 +395,8 @@ V115执行四虚拟CPU设备的原histogram，11项控制：单/四设备、跨�
 ## V116：margin的原投影入口
 
 V116执行原模型router投影/top-k/margin与真实四CPU histogram，9项控制。明确QB使用原logits减带bias alpha，sigmoid只用于combine；零bias E3/K2的每行margin最小值为0，非零bias可有负margin。满足原局部路径约束的人工离群值仍能改变共享网格，但较小离群值的阈值误差变化未改变共同query专家集合。未运行完整模型或真实域/能力对照，566份来源不变。[完整原值与边界](QB_ESTIMATION_ZH.md)。
+
+
+## V117：目标与路由人口分开记账
+
+V117接原causal目标mask、attention有效性、投影margin和四CPU histogram，9项控制：只改loss_weight不改变QB有效人口；零直接目标位置仍可改变阈值。boolean空query与additive mask的有效性合同不同。每域输入/路由有效/正目标/加权目标分开记录，不静默将prompt改为padding。本轮人工answer-only不是Hero配方，未测attention、完整梯度或能力收益；566份来源不变。[原值及边界](DOCUMENT_BOUNDARIES_ZH.md)。

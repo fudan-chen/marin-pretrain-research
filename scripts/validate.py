@@ -442,7 +442,7 @@ ok('Boundary target and attention isolation remain distinct',boundary['cases'][0
 ok('Padding bounds and routing validity preserve separate meanings',boundary['cases'][3]['lower_bounds']==[2,2,2,2,4,4,7] and boundary['cases'][3]['kernel_valid']==[False,False,True,True,True,True,False] and boundary['cases'][3]['loss_weights']==[0,1,1,1,1,0,0])
 ok('Contiguous masks match while reused-ID counterexample differs',all(boundary['cases'][i]['real_token_mask_mismatches']==0 for i in [2,3,4]) and boundary['cases'][5]['real_token_mask_mismatches']==2)
 for p,sha in boundary['source_sha256'].items():ok('Boundary source checksum '+p,hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==sha)
-ok('Boundary chapter retains three tables and explicit production limits',soup.select_one('#boundary-guide') is not None and len(soup.select('#boundary-guide table'))==3 and '没有证明Hero生成了复用ID' in soup.select_one('#boundary-guide').text)
+ok('Boundary chapter retains historical tables plus V117 validity table and production limits',soup.select_one('#boundary-guide') is not None and len(soup.select('#boundary-guide table'))==4 and '没有证明Hero生成了复用ID' in soup.select_one('#boundary-guide').text)
 report['highlights']=[x.replace('361 source archive checksums valid','368 source archive checksums valid') for x in report['highlights']]
 report['highlights']+=['seven boundary sources / 17 original-helper checks / EOS, padding, segment and target-position audit']
 browser14=read(A/'browser_validation_v14.json')
@@ -1293,6 +1293,13 @@ ok('V116 constructed projected logits reproduce weights and alpha unchanged by m
 ok('V116 moderate estimation changes distinguished from actual expert-set change',cp['outlier_100']['beta']!=cp['base']['beta'] and cp['outlier_100']['query_ids']==cp['base']['query_ids']==[[1,2]] and cp['outlier_1e6']['query_ids']==[[0,2]] and qp['incoming_nonzero_bias_case']['margin_min']<0)
 ok('V116 model local path does not claim actual full model or data-domain causal effect',all(qp[k] is None for k in ['actual_Hero_margin_distribution','actual_real_data_domain_effect','actual_GPU_execution','actual_full_Transformer_execution','actual_multi_host_collectives','actual_training_quality_effect']))
 report['highlights']+=['V116 nine original router projection/top-k/margin controls linked to four-CPU histogram; structurally constrained input and query-set changes distinguished from approximate thresholds']
+
+qv=read(A/'qb_target_validity_cpu.json'); vc=qv['cases']
+ok('V117 nine original validity/target/projected histogram controls source bound',qv['checks_passed']==len(qv['checks'])==9 and qv['device_count']==4 and all(x['passed'] for x in qv['checks']) and all(hashlib.sha256((ROOT/p).read_bytes()).hexdigest()==h for p,h in qv['source_sha256'].items()))
+ok('V117 target weighting distinct from router population and beta',vc['dense']['positive_targets']==6 and vc['answer_only']['positive_targets']==2 and vc['zero_targets']['positive_targets']==0 and all(vc[n]['router_valid_count']==8 and vc[n]['beta']==vc['dense']['beta'] for n in ['dense','answer_only','zero_targets']))
+ok('V117 zero-target outlier and boolean/additive validity paths distinguished',vc['zero_weight_prompt_outlier']['loss_weight'][0][0]==0 and vc['zero_weight_prompt_outlier']['beta']!=vc['answer_only']['beta'] and vc['same_outlier_padding_excluded']['router_valid_count']==7 and vc['additive_same_empty_query']['router_valid_count']==8 and vc['additive_same_empty_query']['beta']==vc['zero_weight_prompt_outlier']['beta'])
+ok('V117 synthetic answer-only mask not promoted to Hero recipe or prompt gradient evidence',all(qv[k] is None for k in ['actual_Hero_answer_only_training','actual_Hero_router_valid_target_ratio','actual_prompt_gradient_effect','actual_GPU_execution','actual_training_quality_effect','actual_additive_mask_production_incident']))
+report['highlights']+=['V117 nine original target/attention/QB CPU controls; zero-target valid context enters histogram; router population separate from weighted target mass; no Hero answer-only claim']
 report['checks_passed']=len(checks)
 (A/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2))
 print(json.dumps(report,ensure_ascii=False,indent=2))

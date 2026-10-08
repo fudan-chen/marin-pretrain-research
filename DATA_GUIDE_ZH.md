@@ -407,3 +407,8 @@ V89修正整数曝光解释：同一W&B权重在Python 3.9/3.12本地原函数�
 13项CPU控制通过；6份完整原源码重新从公开固定revision eee467…获取并与现有归档逐字节核对一致。临时CPU环境已重建并完成有终态退出码的运行，版本见结果；未重放Hero模型、cache、token或xla_fast_bwd/GPU路径。
 
 [全部原值与替代项](analysis/loss_mass_cpu.json) · [完整HTTP源码核对](analysis/loss_mass_source_binding.json) · [运行脚本](scripts/probe_loss_mass_cpu.py) · [真实曝光账本空模板](templates/domain_exposure_review.json)。复现：安装requirements-cpu-numerics.txt后运行`make loss-mass-cpu CPU_PYTHON=/tmp/marin-loss-mass-v109/bin/python`。真实Hero目标份额、梯度贡献与配比收益仍未知。
+
+
+## V117：目标与路由人口分开记账
+
+V117接原causal目标mask、attention有效性、投影margin和四CPU histogram，9项控制：只改loss_weight不改变QB有效人口；零直接目标位置仍可改变阈值。boolean空query与additive mask的有效性合同不同。每域输入/路由有效/正目标/加权目标分开记录，不静默将prompt改为padding。本轮人工answer-only不是Hero配方，未测attention、完整梯度或能力收益；566份来源不变。[原值及边界](DOCUMENT_BOUNDARIES_ZH.md)。

@@ -1,5 +1,5 @@
 {
-  "checks_passed": 1695,
+  "checks_passed": 1699,
   "highlights": [
     "27 comments translated and anchored",
     "58 operations entries",
@@ -164,7 +164,8 @@
     "V113 thirteen original-step CPU controls; finite loss can coexist with poisoned bias and faithful OCDBT restore; finite later state not trajectory equivalence; estimator/Hero reachability unknown",
     "V114 nine original histogram CPU controls; real single-device shard_map; empty-valid and finite extreme margins, no Hero reachability claim",
     "V115 eleven real four-virtual-CPU histogram controls; collective agreement and shared-grid outlier approximation distinguished; no real Hero domain/performance claim",
-    "V116 nine original router projection/top-k/margin controls linked to four-CPU histogram; structurally constrained input and query-set changes distinguished from approximate thresholds"
+    "V116 nine original router projection/top-k/margin controls linked to four-CPU histogram; structurally constrained input and query-set changes distinguished from approximate thresholds",
+    "V117 nine original target/attention/QB CPU controls; zero-target valid context enters histogram; router population separate from weighted target mass; no Hero answer-only claim"
   ],
   "not_verified": [
     "GPU training/kernel reproduction",

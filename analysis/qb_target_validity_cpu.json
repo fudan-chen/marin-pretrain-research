@@ -1,0 +1,383 @@
+{
+  "scope": "Original attention-derived validity + causal target mask + projected margin/histogram.\nArtificial answer-only weights, margins/router inputs; no actual Hero answer-only data or full loss.\nFour virtual CPU devices one host. AttentionMask class sentinel for None/dense branches only.\n",
+  "checks_passed": 9,
+  "checks": [
+    {
+      "name": "Original masks distinguish dense six answer two zero objective targets",
+      "passed": true
+    },
+    {
+      "name": "Objective weighting alone leaves eight router-valid tokens and identical beta",
+      "passed": true
+    },
+    {
+      "name": "Six zero-target prompt or final positions remain router-valid in answer control",
+      "passed": true
+    },
+    {
+      "name": "Outlier position has no direct target weight but participates in QB",
+      "passed": true
+    },
+    {
+      "name": "Excluding same position as actual padding removes outlier threshold effect",
+      "passed": true
+    },
+    {
+      "name": "Boolean no-key query and additive mask differ in original validity contract",
+      "passed": true
+    },
+    {
+      "name": "Zero objective mass does not imply zero histogram target population",
+      "passed": true
+    },
+    {
+      "name": "All declared synthetic masks and histogram outputs remain finite beta",
+      "passed": true
+    },
+    {
+      "name": "Frozen actual loss entry passes loss_weight and attention mask separately",
+      "passed": true
+    }
+  ],
+  "runtime": {
+    "jax": "0.7.2",
+    "jaxlib": "0.7.2",
+    "numpy": "2.5.3"
+  },
+  "device_count": 4,
+  "cases": {
+    "dense": {
+      "loss_weight": [
+        [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ],
+        [
+          1.0,
+          1.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "positive_targets": 6,
+      "target_mass": 6.0,
+      "router_valid": [
+        [
+          true,
+          true,
+          true,
+          true
+        ],
+        [
+          true,
+          true,
+          true,
+          true
+        ]
+      ],
+      "router_valid_count": 8,
+      "zero_weight_but_router_valid": 2,
+      "beta": [
+        0.19997334480285645,
+        0.3999733626842499,
+        1.3333333299669903e-05
+      ],
+      "bias": [
+        1.33514404296875e-05,
+        -0.19998666644096375,
+        0.19997335970401764
+      ],
+      "lo": 0.0,
+      "hi": 0.40000003576278687,
+      "margin_first_row": [
+        0.20000000298023224,
+        0.40000003576278687,
+        0.0
+      ],
+      "all_finite_beta": true
+    },
+    "answer_only": {
+      "loss_weight": [
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "positive_targets": 2,
+      "target_mass": 2.0,
+      "router_valid": [
+        [
+          true,
+          true,
+          true,
+          true
+        ],
+        [
+          true,
+          true,
+          true,
+          true
+        ]
+      ],
+      "router_valid_count": 8,
+      "zero_weight_but_router_valid": 6,
+      "beta": [
+        0.19997334480285645,
+        0.3999733626842499,
+        1.3333333299669903e-05
+      ],
+      "bias": [
+        1.33514404296875e-05,
+        -0.19998666644096375,
+        0.19997335970401764
+      ],
+      "lo": 0.0,
+      "hi": 0.40000003576278687,
+      "margin_first_row": [
+        0.20000000298023224,
+        0.40000003576278687,
+        0.0
+      ],
+      "all_finite_beta": true
+    },
+    "zero_targets": {
+      "loss_weight": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "positive_targets": 0,
+      "target_mass": 0.0,
+      "router_valid": [
+        [
+          true,
+          true,
+          true,
+          true
+        ],
+        [
+          true,
+          true,
+          true,
+          true
+        ]
+      ],
+      "router_valid_count": 8,
+      "zero_weight_but_router_valid": 8,
+      "beta": [
+        0.19997334480285645,
+        0.3999733626842499,
+        1.3333333299669903e-05
+      ],
+      "bias": [
+        1.33514404296875e-05,
+        -0.19998666644096375,
+        0.19997335970401764
+      ],
+      "lo": 0.0,
+      "hi": 0.40000003576278687,
+      "margin_first_row": [
+        0.20000000298023224,
+        0.40000003576278687,
+        0.0
+      ],
+      "all_finite_beta": true
+    },
+    "zero_weight_prompt_outlier": {
+      "loss_weight": [
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "positive_targets": 2,
+      "target_mass": 2.0,
+      "router_valid": [
+        [
+          true,
+          true,
+          true,
+          true
+        ],
+        [
+          true,
+          true,
+          true,
+          true
+        ]
+      ],
+      "router_valid_count": 8,
+      "zero_weight_but_router_valid": 6,
+      "beta": [
+        33.33332443237305,
+        38.0952262878418,
+        33.33332443237305
+      ],
+      "bias": [
+        1.5872993469238281,
+        -3.174602508544922,
+        1.5872993469238281
+      ],
+      "lo": 0.0,
+      "hi": 999999.8125,
+      "margin_first_row": [
+        0.20000000298023224,
+        999999.8125,
+        0.0
+      ],
+      "all_finite_beta": true
+    },
+    "same_outlier_padding_excluded": {
+      "loss_weight": [
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "positive_targets": 2,
+      "target_mass": 2.0,
+      "router_valid": [
+        [
+          false,
+          true,
+          true,
+          true
+        ],
+        [
+          true,
+          true,
+          true,
+          true
+        ]
+      ],
+      "router_valid_count": 7,
+      "zero_weight_but_router_valid": 5,
+      "beta": [
+        0.19997334480285645,
+        0.3999733626842499,
+        1.3333335118659306e-05
+      ],
+      "bias": [
+        1.33514404296875e-05,
+        -0.19998666644096375,
+        0.19997335970401764
+      ],
+      "lo": 0.0,
+      "hi": 0.40000003576278687,
+      "margin_first_row": [
+        0.20000000298023224,
+        999999.8125,
+        0.0
+      ],
+      "all_finite_beta": true
+    },
+    "additive_same_empty_query": {
+      "loss_weight": [
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ]
+      ],
+      "positive_targets": 2,
+      "target_mass": 2.0,
+      "router_valid": [
+        [
+          true,
+          true,
+          true,
+          true
+        ],
+        [
+          true,
+          true,
+          true,
+          true
+        ]
+      ],
+      "router_valid_count": 8,
+      "zero_weight_but_router_valid": 6,
+      "beta": [
+        33.33332443237305,
+        38.0952262878418,
+        33.33332443237305
+      ],
+      "bias": [
+        1.5872993469238281,
+        -3.174602508544922,
+        1.5872993469238281
+      ],
+      "lo": 0.0,
+      "hi": 999999.8125,
+      "margin_first_row": [
+        0.20000000298023224,
+        999999.8125,
+        0.0
+      ],
+      "all_finite_beta": true
+    }
+  },
+  "source_sha256": {
+    "scripts/probe_qb_target_validity_cpu.py": "fe04e8f627337e79994f8701bb9ca9637e101a1d8159a5af0a5719d5a0bb1447",
+    "scripts/probe_qb_margin_path_cpu.py": "db975ca2218ffc1a8a28de2e079fa78a7763c2a5bfe5ab712159c1d0c81f6df3",
+    "scripts/probe_qb_hist_real_cpu.py": "e2b89fd8333b2c1f537eed05156e94b4910fb6ecd9a34aee7679d55eb39371f2",
+    "sources/boundaries_2026_10_05/attention_core.py": "233674b8abbeef3e8a08743b3ffa366973d10fa5258214907a36031bdd0e1041",
+    "sources/boundaries_2026_10_05/examples.py": "199a86abfd0f85eca39e6e73042c05ba56822dc35c26a5ed048dbb2f1299ec49",
+    "sources/main_incident_2026_10_07/train.py": "12df3d9015e82846d1942415d4fd3eeae949d3d863cacf38bad4689caf2583d7",
+    "sources/main_incident_2026_10_07/model.py": "8fdfd89cf6814da05683f134f154525916728370368a2493843195d9a489859c"
+  },
+  "substitutions": [
+    "Artificial one-hot activations/router matrices and answer-only causal weights, not Hero data",
+    "AttentionMask sentinel only for None/boolean/additive branches; no structured-mask class execution",
+    "Original router fragment uses identity reshard/token spec; histogram actual four virtual CPU collectives",
+    "No complete loss, gradients, attention forward, capacity, expert dispatch or training update"
+  ],
+  "actual_Hero_answer_only_training": null,
+  "actual_Hero_router_valid_target_ratio": null,
+  "actual_prompt_gradient_effect": null,
+  "actual_GPU_execution": null,
+  "actual_training_quality_effect": null,
+  "actual_additive_mask_production_incident": null
+}

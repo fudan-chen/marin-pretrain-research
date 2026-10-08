@@ -1,0 +1,315 @@
+Original target/router validity controls 9
+{
+  "dense": {
+    "loss_weight": [
+      [
+        1.0,
+        1.0,
+        1.0,
+        0.0
+      ],
+      [
+        1.0,
+        1.0,
+        1.0,
+        0.0
+      ]
+    ],
+    "positive_targets": 6,
+    "target_mass": 6.0,
+    "router_valid": [
+      [
+        true,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        true,
+        true
+      ]
+    ],
+    "router_valid_count": 8,
+    "zero_weight_but_router_valid": 2,
+    "beta": [
+      0.19997334480285645,
+      0.3999733626842499,
+      1.3333333299669903e-05
+    ],
+    "bias": [
+      1.33514404296875e-05,
+      -0.19998666644096375,
+      0.19997335970401764
+    ],
+    "lo": 0.0,
+    "hi": 0.40000003576278687,
+    "margin_first_row": [
+      0.20000000298023224,
+      0.40000003576278687,
+      0.0
+    ],
+    "all_finite_beta": true
+  },
+  "answer_only": {
+    "loss_weight": [
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ]
+    ],
+    "positive_targets": 2,
+    "target_mass": 2.0,
+    "router_valid": [
+      [
+        true,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        true,
+        true
+      ]
+    ],
+    "router_valid_count": 8,
+    "zero_weight_but_router_valid": 6,
+    "beta": [
+      0.19997334480285645,
+      0.3999733626842499,
+      1.3333333299669903e-05
+    ],
+    "bias": [
+      1.33514404296875e-05,
+      -0.19998666644096375,
+      0.19997335970401764
+    ],
+    "lo": 0.0,
+    "hi": 0.40000003576278687,
+    "margin_first_row": [
+      0.20000000298023224,
+      0.40000003576278687,
+      0.0
+    ],
+    "all_finite_beta": true
+  },
+  "zero_targets": {
+    "loss_weight": [
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ]
+    ],
+    "positive_targets": 0,
+    "target_mass": 0.0,
+    "router_valid": [
+      [
+        true,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        true,
+        true
+      ]
+    ],
+    "router_valid_count": 8,
+    "zero_weight_but_router_valid": 8,
+    "beta": [
+      0.19997334480285645,
+      0.3999733626842499,
+      1.3333333299669903e-05
+    ],
+    "bias": [
+      1.33514404296875e-05,
+      -0.19998666644096375,
+      0.19997335970401764
+    ],
+    "lo": 0.0,
+    "hi": 0.40000003576278687,
+    "margin_first_row": [
+      0.20000000298023224,
+      0.40000003576278687,
+      0.0
+    ],
+    "all_finite_beta": true
+  },
+  "zero_weight_prompt_outlier": {
+    "loss_weight": [
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ]
+    ],
+    "positive_targets": 2,
+    "target_mass": 2.0,
+    "router_valid": [
+      [
+        true,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        true,
+        true
+      ]
+    ],
+    "router_valid_count": 8,
+    "zero_weight_but_router_valid": 6,
+    "beta": [
+      33.33332443237305,
+      38.0952262878418,
+      33.33332443237305
+    ],
+    "bias": [
+      1.5872993469238281,
+      -3.174602508544922,
+      1.5872993469238281
+    ],
+    "lo": 0.0,
+    "hi": 999999.8125,
+    "margin_first_row": [
+      0.20000000298023224,
+      999999.8125,
+      0.0
+    ],
+    "all_finite_beta": true
+  },
+  "same_outlier_padding_excluded": {
+    "loss_weight": [
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ]
+    ],
+    "positive_targets": 2,
+    "target_mass": 2.0,
+    "router_valid": [
+      [
+        false,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        true,
+        true
+      ]
+    ],
+    "router_valid_count": 7,
+    "zero_weight_but_router_valid": 5,
+    "beta": [
+      0.19997334480285645,
+      0.3999733626842499,
+      1.3333335118659306e-05
+    ],
+    "bias": [
+      1.33514404296875e-05,
+      -0.19998666644096375,
+      0.19997335970401764
+    ],
+    "lo": 0.0,
+    "hi": 0.40000003576278687,
+    "margin_first_row": [
+      0.20000000298023224,
+      999999.8125,
+      0.0
+    ],
+    "all_finite_beta": true
+  },
+  "additive_same_empty_query": {
+    "loss_weight": [
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ]
+    ],
+    "positive_targets": 2,
+    "target_mass": 2.0,
+    "router_valid": [
+      [
+        true,
+        true,
+        true,
+        true
+      ],
+      [
+        true,
+        true,
+        true,
+        true
+      ]
+    ],
+    "router_valid_count": 8,
+    "zero_weight_but_router_valid": 6,
+    "beta": [
+      33.33332443237305,
+      38.0952262878418,
+      33.33332443237305
+    ],
+    "bias": [
+      1.5872993469238281,
+      -3.174602508544922,
+      1.5872993469238281
+    ],
+    "lo": 0.0,
+    "hi": 999999.8125,
+    "margin_first_row": [
+      0.20000000298023224,
+      999999.8125,
+      0.0
+    ],
+    "all_finite_beta": true
+  }
+}
